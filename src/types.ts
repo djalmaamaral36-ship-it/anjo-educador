@@ -11,7 +11,29 @@ export const isStaffUser = (user: { tipo?: string; nome?: string; parentesco?: s
   }
   const t = (user.tipo || '').toLowerCase();
   const n = (user.nome || '').toLowerCase();
+  const p = (user.parentesco || '').toLowerCase();
   const id = (user.id || '').toLowerCase();
+
+  // Family members / parents / guardians are strictly NON-staff (read-only monitoring, no chronometer controls)
+  if (
+    t === 'familiar' ||
+    t === 'familiar_admin' ||
+    t === 'familiar_convidado' ||
+    t === 'responsavel' ||
+    p.includes('mãe') ||
+    p.includes('mae') ||
+    p.includes('pai') ||
+    p.includes('familiar') ||
+    p.includes('responsável') ||
+    p.includes('responsavel') ||
+    n.includes('mãe') ||
+    n.includes('mae') ||
+    n.includes('clarice') ||
+    id.startsWith('user_mae_') ||
+    id.startsWith('user_pai_')
+  ) {
+    return false;
+  }
 
   return (
     t === 'admin' ||
@@ -35,11 +57,11 @@ export const isStaffUser = (user: { tipo?: string; nome?: string; parentesco?: s
     n.includes('cuidad') ||
     n.includes('diretor') ||
     n.includes('coordenad') ||
-    n.includes('admin') ||
+    (n.includes('admin') && t !== 'familiar') ||
     id.includes('cuidador') ||
     id.includes('professor') ||
     id.includes('educador') ||
-    id.includes('admin') ||
+    (id.includes('admin') && t !== 'familiar') ||
     id.includes('dev')
   );
 };

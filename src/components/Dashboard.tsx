@@ -9900,7 +9900,7 @@ Segunda-feira:
       )}
 
       {/* 📍 Strategic Compact Floating Toggle Pill for "Painel dos Professores" & "Painel dos Pais" */}
-      {usuarioAtual?.tipo !== 'familiar' && usuarioAtual?.tipo !== 'admin' && (
+      {isStaffUser(usuarioAtual) && (
         <div className="fixed bottom-6 left-4 sm:left-6 z-40 select-none animate-fade-in">
           <div className="bg-slate-900/90 hover:bg-slate-900 text-white backdrop-blur-md p-1 sm:p-1.5 rounded-full border border-slate-700/80 shadow-xl flex items-center gap-1 transition-all">
             <button
