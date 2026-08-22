@@ -1,0 +1,6 @@
+{
+  "name": "Anjo Cuidador",
+  "description": "O Anjo Cuidador e Anjo Escolar contam com um fluxo completo de governança do cuidado, diário de infância e agora a Anjinha AI: uma assistente inteligente integrada para criar atividades pedagógicas/lúdicas personalizadas, auxiliar na redação de pareceres descritivos e relatórios de evolução pedagógica, preencher rotinas rápidas e preparar comunicados afetuosos prontos para WhatsApp.",
+  "requestFramePermissions": ["microphone", "camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
