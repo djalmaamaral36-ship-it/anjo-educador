@@ -235,9 +235,17 @@ export default function App() {
     startFirebaseSync();
     
     const handleUserUpdatedEvent = (e: any) => {
-      if (e.detail && typeof e.detail === 'object' && e.detail.id && e.detail.tipo) {
+      const savedUserId = localStorage.getItem('anjo_simulacao_user_id');
+      const allUsers = getFromDB<Usuario[]>('anjo_usuarios', []);
+      if (e?.detail && typeof e.detail === 'object' && e.detail.id) {
         setUsuarioAtual(e.detail);
+      } else if (savedUserId) {
+        const match = allUsers.find(u => u.id === savedUserId);
+        if (match) {
+          setUsuarioAtual(match);
+        }
       }
+      setKeyTrigger(prev => prev + 1);
     };
     const handleIdososUpdatedEvent = () => {
       const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
@@ -926,7 +934,42 @@ export default function App() {
     const nameLower = (usuarioAtual.nome || '').toLowerCase();
     const idLower = (usuarioAtual.id || '').toLowerCase();
 
-    // Developers / Devs
+    // 1. Explicit Family members (Mãe, Pai, Familiar, Convidado, Responsável)
+    if (
+      uType === 'familiar' || 
+      uType === 'familiar_convidado' || 
+      uType === 'familiar_admin' || 
+      uType === 'responsavel' ||
+      uParentesco.includes('mãe') || 
+      uParentesco.includes('mae') || 
+      uParentesco.includes('pai') || 
+      uParentesco.includes('familiar') ||
+      nameLower.includes('clarice') ||
+      idLower.startsWith('user_mae_') || 
+      idLower.startsWith('user_pai_')
+    ) {
+      if (uType === 'familiar_convidado' || uType === 'convidado' || uParentesco.includes('convidado') || uObs.includes('convidado')) {
+        return {
+          ...usuarioAtual,
+          tipo: 'familiar_convidado',
+          parentesco: usuarioAtual.parentesco || 'Convidado'
+        };
+      }
+      if (uType === 'familiar_admin' || uParentesco.includes('admin')) {
+        return {
+          ...usuarioAtual,
+          tipo: 'familiar_admin',
+          parentesco: usuarioAtual.parentesco || 'Responsável (Admin)'
+        };
+      }
+      return {
+        ...usuarioAtual,
+        tipo: 'familiar',
+        parentesco: usuarioAtual.parentesco || (nameLower.includes('pai') ? 'Pai' : 'Mãe')
+      };
+    }
+
+    // 2. Developers / Devs
     if (uType === 'desenvolvedor' || uType === 'dev' || uType === 'developer' || nameLower.includes('desenvolvedor') || nameLower.includes('dev') || idLower.includes('dev')) {
       return {
         ...usuarioAtual,
@@ -934,8 +977,8 @@ export default function App() {
       };
     }
 
-    // Directors / Admin
-    if (uType === 'diretor' || uType === 'diretora' || nameLower.includes('diretor') || nameLower.includes('diretora') || nameLower.includes('direção') || nameLower.includes('direcao') || nameLower.includes('nilva') || idLower === 'user_admin') {
+    // 3. Directors / Admin
+    if (uType === 'diretor' || uType === 'diretora' || (uType === 'admin' && !uParentesco.includes('mãe')) || nameLower.includes('diretor') || nameLower.includes('diretora') || nameLower.includes('direção') || nameLower.includes('nilva')) {
       return {
         ...usuarioAtual,
         tipo: 'diretor',
@@ -943,7 +986,7 @@ export default function App() {
       };
     }
 
-    // Coordinators
+    // 4. Coordinators
     if (uType === 'coordenador' || uType === 'coordenadora' || nameLower.includes('coordenad') || idLower === 'user_medico_1') {
       return {
         ...usuarioAtual,
@@ -951,7 +994,7 @@ export default function App() {
       };
     }
 
-    // Teachers / Educators / Caregivers
+    // 5. Teachers / Educators / Caregivers
     if (
       uType === 'professor' || uType === 'professora' || uType === 'educador' || uType === 'educadora' || uType === 'cuidador' ||
       nameLower.includes('profª') || nameLower.includes('prof.') || nameLower.includes('prof ') || nameLower.includes('professor') || nameLower.includes('educad') || nameLower.includes('cuidador') ||
@@ -963,23 +1006,6 @@ export default function App() {
         nome: idLower === 'user_cuidador_1' ? (isCustomizedName ? usuarioAtual.nome : (isEscolar ? 'Profª Ana Silva (Educadora)' : 'Ana Silva (Cuidadora)')) : usuarioAtual.nome,
         tipo: isEscolar ? 'professor' : 'cuidador',
         observacoes: usuarioAtual.observacoes || (isEscolar ? 'Professora licenciada em Pedagogia, responsável pela classe.' : 'Cuidadora técnica responsável.')
-      };
-    }
-
-    // Familiar Convidado vs Familiar Admin explicit handling
-    if (uType === 'familiar_convidado' || uType === 'convidado' || uParentesco.includes('convidado') || uObs.includes('convidado')) {
-      return {
-        ...usuarioAtual,
-        tipo: 'familiar_convidado',
-        parentesco: usuarioAtual.parentesco || 'Convidado'
-      };
-    }
-
-    if (uType === 'familiar_admin') {
-      return {
-        ...usuarioAtual,
-        tipo: 'familiar_admin',
-        parentesco: usuarioAtual.parentesco || 'Responsável (Admin)'
       };
     }
 

@@ -1400,6 +1400,24 @@ export function initializeDB() {
         // Auto-fix staff user types if misclassified or saved with wrong role
         const nameLower = (u.nome || '').toLowerCase();
         const idLower = (u.id || '').toLowerCase();
+        const parentescoLower = (u.parentesco || '').toLowerCase();
+
+        // Strictly preserve family member roles (Mãe, Pai, Familiar, etc.)
+        if (
+          u.tipo === 'familiar' || 
+          u.tipo === 'familiar_convidado' || 
+          u.tipo === 'familiar_admin' || 
+          parentescoLower.includes('mãe') || 
+          parentescoLower.includes('mae') || 
+          parentescoLower.includes('pai') || 
+          parentescoLower.includes('familiar') ||
+          nameLower.includes('clarice') ||
+          idLower.startsWith('user_mae_') || 
+          idLower.startsWith('user_pai_')
+        ) {
+          return u;
+        }
+
         if (
           nameLower.includes('prof') || 
           nameLower.includes('educad') || 
@@ -1410,7 +1428,7 @@ export function initializeDB() {
           idLower.includes('cuidador') ||
           idLower.includes('dev') ||
           idLower === 'user_cuidador_1' ||
-          idLower === 'user_admin' ||
+          (idLower === 'user_admin' && !nameLower.includes('clarice') && !parentescoLower.includes('mãe')) ||
           idLower === 'user_medico_1'
         ) {
           let targetType = u.tipo;

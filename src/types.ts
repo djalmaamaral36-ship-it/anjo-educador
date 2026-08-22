@@ -51,6 +51,13 @@ export const isDirectorOrAdminUser = (user: { tipo?: string; nome?: string; pare
   }
   const t = (user.tipo || '').toLowerCase();
   const n = (user.nome || '').toLowerCase();
+  const p = (user.parentesco || '').toLowerCase();
+
+  // If user is explicitly set to family / mother / father / guest, they are NOT director
+  if (t === 'familiar' || t === 'familiar_convidado' || t === 'familiar_admin' || p.includes('mãe') || p.includes('mae') || p.includes('pai') || p.includes('familiar') || p.includes('responsável')) {
+    return false;
+  }
+
   const id = (user.id || '').toLowerCase();
 
   return (
@@ -64,9 +71,9 @@ export const isDirectorOrAdminUser = (user: { tipo?: string; nome?: string; pare
     t === 'dev' ||
     t === 'developer' ||
     n.includes('diretor') ||
+    n.includes('diretora') ||
     n.includes('coordenad') ||
-    n.includes('admin') ||
-    id.includes('admin') ||
+    (id.includes('admin') && t !== 'familiar') ||
     id.includes('djalma')
   );
 };
@@ -75,12 +82,30 @@ export const getRoleLabel = (user: { tipo?: string; nome?: string; parentesco?: 
   if (!user) return 'Usuário';
   const t = (user.tipo || '').toLowerCase();
   const n = (user.nome || '').toLowerCase();
+  const p = (user.parentesco || '').toLowerCase();
   const id = (user.id || '').toLowerCase();
+
+  // Prioritize family / parents if user is set to familiar or has parentesco/mãe/pai
+  if (
+    t === 'familiar' || 
+    t === 'familiar_admin' || 
+    t === 'familiar_convidado' || 
+    p.includes('mãe') || 
+    p.includes('mae') || 
+    p.includes('pai') || 
+    p.includes('responsável') || 
+    p.includes('familiar')
+  ) {
+    if (t === 'familiar_convidado' || p.includes('convidado')) return 'Familiar Convidado';
+    if (t === 'familiar_admin' || p.includes('admin')) return 'Familiar Responsável (Admin)';
+    if (user.parentesco && !p.includes('dire')) return `Familiar (${user.parentesco})`;
+    return 'Familiar (Mãe/Responsável)';
+  }
 
   if (t === 'desenvolvedor' || t === 'dev' || n.includes('desenvolvedor') || n.includes('dev') || id.includes('dev')) {
     return 'Desenvolvedor Master';
   }
-  if (t === 'diretor' || t === 'diretora' || (t === 'admin' && isEscolar) || n.includes('direç') || n.includes('diret') || id === 'user_admin') {
+  if (t === 'diretor' || t === 'diretora' || (t === 'admin' && isEscolar) || n.includes('direç') || n.includes('diret')) {
     return isEscolar ? 'Direção Escolar' : 'Administrador';
   }
   if (t === 'coordenador' || t === 'coordenadora' || (t === 'profissional' && isEscolar) || n.includes('coordenad') || id === 'user_medico_1') {

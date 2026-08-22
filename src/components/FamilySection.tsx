@@ -503,8 +503,8 @@ export default function FamilySection({
     saveToDB('anjo_usuarios', updated);
     
     // Also update current active user session if we updated current user
-    if (editingMemberId === usuarioAtual.id) {
-      const updatedSelf = updated.find(u => u.id === usuarioAtual.id);
+    if (editingMemberId === usuarioAtual?.id || (usuarioAtual?.nome && usuarioAtual.nome.toLowerCase().includes(editMemberForm.nome.trim().toLowerCase()))) {
+      const updatedSelf = updated.find(u => u.id === editingMemberId);
       if (updatedSelf) {
         localStorage.setItem('anjo_simulacao_user_id', updatedSelf.id);
         window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: updatedSelf }));

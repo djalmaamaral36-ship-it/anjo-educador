@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Usuario } from '../types';
+import { Usuario, getRoleLabel, UserType } from '../types';
 import { getFromDB, saveToDB, compressImage, isPinUnique } from '../data';
 import { 
   X, 
@@ -13,6 +13,7 @@ import {
   RefreshCw, 
   Sparkles,
   ShieldCheck,
+  Heart,
   Image as ImageIcon
 } from 'lucide-react';
 
@@ -45,6 +46,8 @@ export default function EditProfileModal({
   const [telefone, setTelefone] = useState(usuarioAtual.telefone || '');
   const [foto, setFoto] = useState(usuarioAtual.foto || '');
   const [pin, setPin] = useState(usuarioAtual.pin || '1234');
+  const [tipo, setTipo] = useState<UserType>(usuarioAtual.tipo || 'familiar');
+  const [parentesco, setParentesco] = useState(usuarioAtual.parentesco || 'Mãe (Responsável)');
   const [observacoes, setObservacoes] = useState(usuarioAtual.observacoes || '');
 
   const [isSaving, setIsSaving] = useState(false);
@@ -65,6 +68,8 @@ export default function EditProfileModal({
       setTelefone(usuarioAtual.telefone || '');
       setFoto(usuarioAtual.foto || '');
       setPin(usuarioAtual.pin || '1234');
+      setTipo(usuarioAtual.tipo || 'familiar');
+      setParentesco(usuarioAtual.parentesco || 'Mãe (Responsável)');
       setObservacoes(usuarioAtual.observacoes || '');
     }
   }, [usuarioAtual, isOpen]);
@@ -163,6 +168,8 @@ export default function EditProfileModal({
         telefone: telefone.trim() || usuarioAtual.telefone || '(11) 98765-9181',
         foto: foto.trim() || usuarioAtual.foto,
         pin: newPin,
+        tipo: tipo,
+        parentesco: parentesco.trim() || usuarioAtual.parentesco,
         observacoes: observacoes.trim() || usuarioAtual.observacoes
       };
 
@@ -177,10 +184,14 @@ export default function EditProfileModal({
       // Save active session
       localStorage.setItem('anjo_simulacao_user_id', updatedUser.id);
 
+      // Dispatch global user updated event
+      window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: updatedUser }));
+      window.dispatchEvent(new CustomEvent('anjo_user_updated'));
+
       // Notify parent App component
       onSaveUsuario(updatedUser);
 
-      setSuccessMsg("✨ Perfil e foto atualizados permanentemente!");
+      setSuccessMsg("✨ Perfil, foto e função atualizados permanentemente!");
       setTimeout(() => {
         setIsSaving(false);
         setSuccessMsg('');
@@ -411,16 +422,40 @@ export default function EditProfileModal({
 
             <div className="space-y-1">
               <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 block flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> Nível do Perfil
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> Função / Nível de Acesso
               </label>
-              <div className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 font-bold uppercase tracking-wider">
-                {usuarioAtual.tipo === 'desenvolvedor' ? '💻 Desenvolvedor Master' :
-                 usuarioAtual.tipo === 'diretor' ? '👔 Direção / Administrador' :
-                 usuarioAtual.tipo === 'coordenador' ? '👩‍🏫 Coordenador(a)' :
-                 usuarioAtual.tipo === 'professor' ? '👨‍🏫 Professor(a)' :
-                 '👨‍👩‍👧 Familiar'}
-              </div>
+              <select
+                value={tipo}
+                onChange={e => {
+                  const newT = e.target.value as UserType;
+                  setTipo(newT);
+                  if (newT === 'familiar' && !parentesco) {
+                    setParentesco('Mãe (Responsável)');
+                  }
+                }}
+                className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-850 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500/20"
+              >
+                <option value="familiar">👨‍👩‍👧 Familiar (Mãe / Pai / Responsável)</option>
+                <option value="professor">👨‍🏫 Professor(a) / Educador(a)</option>
+                <option value="coordenador">👩‍🏫 Coordenação Pedagógica</option>
+                <option value="diretor">👔 Direção Escolar / Gestão</option>
+                <option value="desenvolvedor">💻 Desenvolvedor Master</option>
+              </select>
             </div>
+          </div>
+
+          {/* Parentesco / Vínculo (if familiar or desired) */}
+          <div className="space-y-1">
+            <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 block flex items-center gap-1.5">
+              <Heart className="w-3.5 h-3.5 text-rose-500" /> Parentesco / Vínculo / Cargo
+            </label>
+            <input
+              type="text"
+              value={parentesco}
+              onChange={e => setParentesco(e.target.value)}
+              placeholder="Ex: Mãe (Responsável), Pai, Tia, Diretora Escolar"
+              className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500/20 font-medium"
+            />
           </div>
 
           {/* Observações / Bio */}
