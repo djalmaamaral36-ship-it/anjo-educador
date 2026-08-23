@@ -87,15 +87,18 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
     if (appMode.startsWith('escolar') && (!isStudent || isFundamental)) return false;
     if (appMode === 'idoso' && isStudent) return false;
 
-    // Security & Isolation for Non-Master/Non-Admin users (when not master mode):
-    if (!isDevOrAdmin && usuarioAtual) {
+    const isSearching = searchTerm.trim().length > 0;
+
+    // Security & Isolation for Non-Master/Non-Admin users (when not master mode and not actively searching):
+    if (!isDevOrAdmin && usuarioAtual && !isSearching && selectedRoomFilter === 'todas') {
       const uType = (usuarioAtual.tipo || '').toLowerCase();
       
       // If user is a family member:
       if (uType === 'familiar' || uType === 'familiar_admin' || uType === 'familiar_convidado') {
         const isKnownChild = (usuarioAtual.id === 'user_mae_heitor' && (student.id === 'aluno_5' || student.id === 'aluno_22' || norm(student.nome).includes('heitor') || norm(student.nome).includes('giovan'))) ||
           (usuarioAtual.id === 'user_pai_bernardo' && (student.id === 'aluno_2' || norm(student.nome).includes('bernardo'))) ||
-          (usuarioAtual.id === 'user_pai_miguel' && (student.id === 'aluno_10' || norm(student.nome).includes('miguel')));
+          (usuarioAtual.id === 'user_pai_miguel' && (student.id === 'aluno_10' || norm(student.nome).includes('miguel'))) ||
+          (usuarioAtual.id === 'user_mae_alice' && (student.id === 'aluno_6' || norm(student.nome).includes('alice')));
 
         const cleanUserPhone = usuarioAtual.telefone ? usuarioAtual.telefone.replace(/\D/g, '') : '';
         const cleanContactPhone = student.contatoEmergencia?.telefone ? student.contatoEmergencia.telefone.replace(/\D/g, '') : '';
@@ -109,14 +112,12 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
         );
         const isActiveChild = activeIdoso && activeIdoso.id === student.id;
 
-        // If the user entered a search query, let them search by student name/room/notes as well
-        const isSearchingSpecific = searchTerm.trim().length > 0;
-
-        if (!isKnownChild && !phoneMatches && !nameMatches && !isActiveChild && !isSearchingSpecific) {
+        if (!isKnownChild && !phoneMatches && !nameMatches && !isActiveChild) {
           return false;
         }
       } else {
-        // Teacher / Caregiver isolation: Restrict to assigned room(s)
+        // Teacher / Caregiver isolation:
+        // Only restrict default list if no search term and "todas" is selected
         if (usuarioAtual.salaAula && usuarioAtual.salaAula !== 'Todas') {
           const userRooms = usuarioAtual.salaAula.split(',').map(r => norm(r));
           const studentRoomStr = norm(student.salaAula || student.quarto || (student as any).sala || student.nome || '');
@@ -128,18 +129,23 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
 
     // Filter by room chip
     if (selectedRoomFilter !== 'todas') {
-      const studentRoomName = norm(student.nome);
+      const studentRoomInfo = norm(`${student.salaAula || ''} ${student.quarto || ''} ${student.nome || ''}`);
       const filterLower = norm(selectedRoomFilter);
-      if (!studentRoomName.includes(filterLower)) return false;
+      if (!studentRoomInfo.includes(filterLower)) return false;
     }
 
-    // Filter by search query (Name, Room, Parent Name, Allergies, Observations)
-    if (!searchTerm.trim()) return true;
+    // Filter by search query (Name, Room, Parent Name, Phone, Allergies, Observations)
+    if (!isSearching) return true;
 
     const term = norm(searchTerm);
+    const termDigits = searchTerm.replace(/\D/g, '');
+    const contactPhoneDigits = (student.contatoEmergencia?.telefone || '').replace(/\D/g, '');
+
     const matchName = norm(student.nome).includes(term);
-    const matchContact = norm(student.contatoEmergencia?.nome || '').includes(term);
-    const matchPhone = (student.contatoEmergencia?.telefone || '').replace(/\D/g, '').includes(term.replace(/\D/g, '')) || norm(student.contatoEmergencia?.telefone || '').includes(term);
+    const matchContactName = norm(student.contatoEmergencia?.nome || '').includes(term);
+    const matchPhone = (termDigits.length >= 3 && contactPhoneDigits.includes(termDigits)) || 
+      norm(student.contatoEmergencia?.telefone || '').includes(term);
+    const matchRoom = norm(`${student.salaAula || ''} ${student.quarto || ''} ${student.nome || ''}`).includes(term);
     const matchAllergies = Array.isArray(student.alergias)
       ? student.alergias.some((a: string) => norm(a).includes(term))
       : (typeof student.alergias === 'string' && norm(student.alergias as string).includes(term));
@@ -147,9 +153,8 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
       ? student.condicoesMedicas.some((c: string) => norm(c).includes(term))
       : false;
     const matchObs = norm(student.observacoes || '').includes(term) || norm((student as any).observacoesGerais || '').includes(term);
-    const matchRoom = norm(student.salaAula || student.quarto || (student as any).sala || '').includes(term);
 
-    return matchName || matchContact || matchPhone || matchAllergies || matchCond || matchObs || matchRoom;
+    return matchName || matchContactName || matchPhone || matchRoom || matchAllergies || matchCond || matchObs;
   });
 
   const handleSelectStudent = (studentId: string) => {
