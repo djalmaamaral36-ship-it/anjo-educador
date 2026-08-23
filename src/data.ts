@@ -191,17 +191,6 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
     salaAula: 'Berçário III'
   },
   {
-    id: 'user_cuidador_2',
-    nome: 'Carlos Souza (Familiar)',
-    email: 'carlos.souza@outlook.com',
-    telefone: '(11) 95555-9944',
-    tipo: 'familiar',
-    parentesco: 'Neto',
-    foto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Ajuda nos finais de semana e acompanha consultas.',
-    pin: '9944'
-  },
-  {
     id: 'user_medico_1',
     nome: 'Dr. Roberto K. (Médico)',
     email: 'roberto.kardec@clinica.com',
@@ -210,6 +199,39 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
     foto: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&q=80&w=150',
     observacoes: 'Geriatra e cardiologista do idoso.',
     pin: '8888'
+  },
+  {
+    id: 'user_mae_clarice',
+    nome: 'Clarice Souza (Mãe (Responsável))',
+    email: 'clarice.souza@gmail.com',
+    telefone: '(11) 98765-4321',
+    tipo: 'familiar',
+    parentesco: 'Mãe (Responsável)',
+    foto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Mãe e responsável legal da aluna Mariana Souza (Berçário I - A) e familiar de Dona Maria de Souza.',
+    pin: '4321'
+  },
+  {
+    id: 'user_pai_thiago',
+    nome: 'Thiago Alencar (Pai)',
+    email: 'thiago.alencar@outlook.com',
+    telefone: '(11) 95555-4440',
+    tipo: 'familiar',
+    parentesco: 'Pai',
+    foto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Pai do Enzo Alencar (Berçário I - A) e familiar do Seu João Alencar.',
+    pin: '4440'
+  },
+  {
+    id: 'user_mae_beatriz',
+    nome: 'Mariana Castro (Mãe)',
+    email: 'mariana.castro@gmail.com',
+    telefone: '(11) 99823-3310',
+    tipo: 'familiar',
+    parentesco: 'Mãe',
+    foto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Mãe da Beatriz Castro (Berçário I - A). Acompanha a rotina da filha.',
+    pin: '3310'
   },
   {
     id: 'user_pai_bernardo',
@@ -230,8 +252,85 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
     tipo: 'familiar',
     parentesco: 'Mãe',
     foto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Mãe do Heitor Ramos (Berçário I - A) e da Giovanna Fonseca (Maternal I - B). Focada no desenvolvimento.',
+    observacoes: 'Mãe do Heitor Ramos (Berçário I - A). Focada no desenvolvimento.',
     pin: '8877'
+  },
+  {
+    id: 'user_mae_alice',
+    nome: 'Simone Santos (Mãe)',
+    email: 'simone.santos@gmail.com',
+    telefone: '(11) 98877-6610',
+    tipo: 'familiar',
+    parentesco: 'Mãe',
+    foto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Mãe da Alice Santos (Berçário I - B).',
+    pin: '6610'
+  },
+  {
+    id: 'user_cuidador_2',
+    nome: 'Carlos Souza (Pai/Familiar)',
+    email: 'carlos.souza@outlook.com',
+    telefone: '(11) 95555-9944',
+    tipo: 'familiar',
+    parentesco: 'Pai / Neto',
+    foto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Pai do Arthur Oliveira (Berçário I - B) e familiar.',
+    pin: '9944'
+  },
+  {
+    id: 'user_mae_sophia',
+    nome: 'Débora Gomes (Mãe)',
+    email: 'debora.gomes@gmail.com',
+    telefone: '(11) 99881-1121',
+    tipo: 'familiar',
+    parentesco: 'Mãe',
+    foto: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Mãe da Sophia Gomes (Berçário I - B).',
+    pin: '1121'
+  },
+  {
+    id: 'user_mae_laura',
+    nome: 'Marisa Mel (Mãe)',
+    email: 'marisa.mel@gmail.com',
+    telefone: '(11) 98811-2241',
+    tipo: 'familiar',
+    parentesco: 'Mãe',
+    foto: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Mãe da Laura Mel (Berçário I - B).',
+    pin: '2241'
+  },
+  {
+    id: 'user_pai_livia',
+    nome: 'Felipe Teixeira (Pai)',
+    email: 'felipe.teixeira@outlook.com',
+    telefone: '(11) 98822-3321',
+    tipo: 'familiar',
+    parentesco: 'Pai',
+    foto: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Pai da Lívia Teixeira (Berçário I - B).',
+    pin: '3321'
+  },
+  {
+    id: 'user_mae_davi',
+    nome: 'Aline Cardozo (Mãe)',
+    email: 'aline.cardozo@gmail.com',
+    telefone: '(11) 99115-5561',
+    tipo: 'familiar',
+    parentesco: 'Mãe',
+    foto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Mãe do Davi Cardozo (Berçário II).',
+    pin: '5561'
+  },
+  {
+    id: 'user_mae_gabriel',
+    nome: 'Tatiane Silva (Mãe)',
+    email: 'tatiane.silva@gmail.com',
+    telefone: '(11) 99221-6651',
+    tipo: 'familiar',
+    parentesco: 'Mãe',
+    foto: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Mãe do Gabriel Silva (Berçário II).',
+    pin: '6651'
   },
   {
     id: 'user_pai_miguel',
@@ -245,6 +344,182 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
     pin: '1133'
   },
   {
+    id: 'user_mae_helena_f',
+    nome: 'Márcia Ferraz (Mãe)',
+    email: 'marcia.ferraz@gmail.com',
+    telefone: '(11) 98844-5541',
+    tipo: 'familiar',
+    parentesco: 'Mãe',
+    foto: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Mãe da Helena Ferraz (Berçário II).',
+    pin: '5541'
+  },
+  {
+    id: 'user_mae_manuela',
+    nome: 'Vanessa Rocha (Mãe)',
+    email: 'vanessa.rocha@gmail.com',
+    telefone: '(11) 98811-2242',
+    tipo: 'familiar',
+    parentesco: 'Mãe',
+    foto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Mãe da Manuela Rocha (Berçário II).',
+    pin: '2242'
+  },
+  {
+    id: 'user_pai_matheus',
+    nome: 'Ricardo Barbosa (Pai)',
+    email: 'ricardo.barbosa@outlook.com',
+    telefone: '(11) 98711-1101',
+    tipo: 'familiar',
+    parentesco: 'Pai',
+    foto: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Pai do Matheus Barbosa (Maternal I - A).',
+    pin: '1101'
+  },
+  {
+    id: 'user_mae_lucas',
+    nome: 'Silvia Barros (Mãe)',
+    email: 'silvia.barros@gmail.com',
+    telefone: '(11) 99122-4411',
+    tipo: 'familiar',
+    parentesco: 'Mãe',
+    foto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Mãe do Lucas Barros (Maternal I - A).',
+    pin: '4411'
+  },
+  {
+    id: 'user_mae_samuel',
+    nome: 'Fernanda Mendes (Mãe)',
+    email: 'fernanda.mendes@gmail.com',
+    telefone: '(11) 99311-4431',
+    tipo: 'familiar',
+    parentesco: 'Mãe',
+    foto: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Mãe do Samuel Mendes (Maternal I - B).',
+    pin: '4431'
+  },
+  {
+    id: 'user_pai_giovanna',
+    nome: 'Maurício Fonseca (Pai)',
+    email: 'mauricio.fonseca@outlook.com',
+    telefone: '(11) 99122-8871',
+    tipo: 'familiar',
+    parentesco: 'Pai',
+    foto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Pai da Giovanna Fonseca (Maternal I - B).',
+    pin: '8871'
+  },
+  {
+    id: 'user_pai_felipe',
+    nome: 'Renato Antunes (Pai)',
+    email: 'renato.antunes@outlook.com',
+    telefone: '(11) 98711-2231',
+    tipo: 'familiar',
+    parentesco: 'Pai',
+    foto: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Pai do Felipe Antunes (Maternal I - C). Apenas perfil de pai/responsável.',
+    pin: '2231'
+  },
+  {
+    id: 'user_mae_lorena',
+    nome: 'Helena Machado (Mãe)',
+    email: 'helena.machado@gmail.com',
+    telefone: '(11) 99311-4451',
+    tipo: 'familiar',
+    parentesco: 'Mãe',
+    foto: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Mãe da Lorena Machado (Maternal I - D).',
+    pin: '4451'
+  },
+  {
+    id: 'user_mae_pedro',
+    nome: 'Fabiana Lima (Mãe)',
+    email: 'fabiana.lima@gmail.com',
+    telefone: '(11) 98877-6641',
+    tipo: 'familiar',
+    parentesco: 'Mãe',
+    foto: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Mãe do Pedro Henrique (Berçário III).',
+    pin: '6641'
+  },
+  {
+    id: 'user_pai_theo',
+    nome: 'Marcelo Lemos (Pai)',
+    email: 'marcelo.lemos@outlook.com',
+    telefone: '(11) 92222-2211',
+    tipo: 'familiar',
+    parentesco: 'Pai',
+    foto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Pai do Theo Lemos (Maternal II - A).',
+    pin: '2211'
+  },
+  {
+    id: 'user_mae_heloisa',
+    nome: 'Carolina Toledo (Mãe)',
+    email: 'carolina.toledo@gmail.com',
+    telefone: '(11) 98844-1123',
+    tipo: 'familiar',
+    parentesco: 'Mãe',
+    foto: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Mãe da Heloísa Toledo (Maternal II - B).',
+    pin: '1123'
+  },
+  {
+    id: 'user_mae_nicolas',
+    nome: 'Fernanda Castro (Mãe)',
+    email: 'fernanda.castro@gmail.com',
+    telefone: '(11) 99221-1231',
+    tipo: 'familiar',
+    parentesco: 'Mãe',
+    foto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Mãe do Nicolas Castro (Maternal II - C).',
+    pin: '1231'
+  },
+  {
+    id: 'user_pai_cecilia',
+    nome: 'Eduardo Rocha (Pai)',
+    email: 'eduardo.rocha@outlook.com',
+    telefone: '(11) 98811-2243',
+    tipo: 'familiar',
+    parentesco: 'Pai',
+    foto: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Pai da Cecília Rocha (Jardim I - A).',
+    pin: '2243'
+  },
+  {
+    id: 'user_mae_joaquim',
+    nome: 'Juliana Dias (Mãe)',
+    email: 'juliana.dias@gmail.com',
+    telefone: '(11) 99877-7788',
+    tipo: 'familiar',
+    parentesco: 'Mãe',
+    foto: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Mãe do Joaquim Dias (Jardim I - B). Apenas perfil de mãe/responsável.',
+    pin: '7788'
+  },
+  {
+    id: 'user_mae_valentina',
+    nome: 'Patrícia Pinto (Mãe)',
+    email: 'patricia.pinto@gmail.com',
+    telefone: '(11) 98711-4412',
+    tipo: 'familiar',
+    parentesco: 'Mãe',
+    foto: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Mãe da Valentina Pinto (Jardim II - A).',
+    pin: '4412'
+  },
+  {
+    id: 'user_pai_isabella',
+    nome: 'Jorge Cardoso (Pai)',
+    email: 'jorge.cardoso@outlook.com',
+    telefone: '(11) 99311-3322',
+    tipo: 'familiar',
+    parentesco: 'Pai',
+    foto: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Pai da Isabella Cardoso (Jardim II - B).',
+    pin: '3322'
+  },
+  {
     id: 'user_familiar_convidado',
     nome: 'Tio Roberto (Familiar Convidado)',
     email: 'roberto.convidado@gmail.com',
@@ -254,18 +529,6 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
     foto: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150',
     observacoes: 'Familiar Convidado com acesso apenas de leitura ao diário (sem permissão de autorizar ou cadastrar medicamentos).',
     pin: '6677'
-  },
-  {
-    id: 'user_mae_clarice',
-    nome: 'Clarice Souza (Mãe (Responsável))',
-    email: 'clarice.souza@gmail.com',
-    telefone: '(11) 98765-4321',
-    tipo: 'familiar',
-    parentesco: 'Mãe (Responsável)',
-    foto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Mãe e responsável legal da aluna Mariana Souza (Berçário I - A) e familiar de Dona Maria de Souza.',
-    pin: '4321',
-    salaAula: 'Berçário I - A'
   }
 ];
 
@@ -2087,6 +2350,13 @@ export function getStudentRoomName(studentObj: any): string | null {
   return null;
 }
 
+export function isStudentInRoom(student: Idoso | null | undefined, roomName: string | null | undefined): boolean {
+  if (!student || !roomName) return false;
+  const sRoom = student.salaAula || student.quarto || getStudentRoomName(student);
+  if (!sRoom) return false;
+  return keyMatches(sRoom, roomName);
+}
+
 export function getShiftActiveState(studentId: string, customShiftStates?: ShiftState[]): { active: boolean; startTime: string | null } {
   if (typeof window === 'undefined' || !studentId) return { active: false, startTime: null };
   
@@ -2095,8 +2365,9 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
   const studentObj = allStudents.find(s => 
     s.id === targetStudentId || 
     (s.nome && s.nome.toLowerCase() === targetStudentId.toLowerCase()) ||
-    normalizeKey(s.id) === normalizeKey(targetStudentId) ||
-    (s.nome && normalizeKey(s.nome) === normalizeKey(targetStudentId))
+    keyMatches(s.id, targetStudentId) ||
+    (s.nome && keyMatches(s.nome, targetStudentId)) ||
+    (s.nome && keyMatches(s.nome.split(' (')[0], targetStudentId))
   );
 
   const realId = studentObj?.id || targetStudentId;
@@ -2109,7 +2380,7 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
     ? customShiftStates 
     : getFromDB<ShiftState[]>('anjo_shift_states', []);
 
-  // Find all records that match this student directly or via classroom
+  // Find all records that match this student directly or via exact classroom
   const matchingRecords: { record: ShiftState; time: number; isDirectStudent: boolean }[] = [];
 
   shiftStates.forEach(s => {
@@ -2130,26 +2401,19 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
     if (
       sid === realId || 
       sid === targetStudentId ||
-      (studentName && sid.toLowerCase() === studentName.toLowerCase()) ||
-      (studentCleanName && sid.toLowerCase() === studentCleanName.toLowerCase()) ||
-      normalizeKey(sid) === normalizeKey(realId) ||
-      (studentName && normalizeKey(sid) === normalizeKey(studentName)) ||
-      (studentCleanName && normalizeKey(sid) === normalizeKey(studentCleanName))
+      keyMatches(sid, realId) ||
+      keyMatches(sid, targetStudentId) ||
+      (studentName && keyMatches(sid, studentName)) ||
+      (studentCleanName && keyMatches(sid, studentCleanName))
     ) {
       matchingRecords.push({ record: s, time, isDirectStudent: true });
       return;
     }
 
-    // Classroom match (e.g. "Berçário I - A", "Berçário I", "Maternal I - A")
-    if (studentRoom && (
-      sid === studentRoom || 
-      normalizeKey(sid) === normalizeKey(studentRoom) ||
-      sid.toLowerCase() === studentRoom.toLowerCase() ||
-      studentRoom.toLowerCase().includes(sid.toLowerCase()) ||
-      sid.toLowerCase().includes(studentRoom.toLowerCase()) ||
-      (studentRoom.includes('Berçário') && (sid.toLowerCase().includes('sofia') || sid === 'user_cuidador_b1'))
-    )) {
+    // Exact classroom match (e.g. "Berçário I - A")
+    if (studentRoom && keyMatches(sid, studentRoom)) {
       matchingRecords.push({ record: s, time, isDirectStudent: false });
+      return;
     }
   });
 
@@ -2166,7 +2430,7 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
     const isActive = latest.active === true || String(latest.active) === 'true';
 
     if (isActive) {
-      // If cloud says active, student is definitely present! Clear any stale absence flags
+      // If cloud says active, clear any stale absence flags
       localStorage.removeItem(`anjo_is_absent_${realId}`);
       if (studentName) localStorage.removeItem(`anjo_is_absent_${studentName}`);
       if (studentCleanName) localStorage.removeItem(`anjo_is_absent_${studentCleanName}`);
@@ -2190,12 +2454,14 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
   // 3. Fallback: check direct localStorage flags if DB had no records at all
   const localDirectActive = localStorage.getItem(`anjo_shift_active_${realId}`) || 
     (studentName ? localStorage.getItem(`anjo_shift_active_${studentName}`) : null) ||
-    (studentCleanName ? localStorage.getItem(`anjo_shift_active_${studentCleanName}`) : null);
+    (studentCleanName ? localStorage.getItem(`anjo_shift_active_${studentCleanName}`) : null) ||
+    (studentRoom ? localStorage.getItem(`anjo_shift_active_${studentRoom}`) : null);
   
   if (localDirectActive === 'true') {
     const localDirectStartTime = localStorage.getItem(`anjo_shift_start_time_${realId}`) || 
       (studentName ? localStorage.getItem(`anjo_shift_start_time_${studentName}`) : null) ||
-      (studentCleanName ? localStorage.getItem(`anjo_shift_start_time_${studentCleanName}`) : null);
+      (studentCleanName ? localStorage.getItem(`anjo_shift_start_time_${studentCleanName}`) : null) ||
+      (studentRoom ? localStorage.getItem(`anjo_shift_start_time_${studentRoom}`) : null);
     return { active: true, startTime: localDirectStartTime || new Date().toISOString() };
   }
 
@@ -2342,7 +2608,7 @@ export function setShiftActiveStatesBatch(updates: { targetKey: string; active: 
         localStorage.setItem(`anjo_shift_active_${normalizedK}`, 'false');
       }
 
-      const idx = shiftStates.findIndex(s => s.id === normalizedK || (s.id && s.id.toLowerCase() === normalizedK.toLowerCase()));
+      const idx = shiftStates.findIndex(s => s.id === normalizedK || (s.id && s.id.toLowerCase() === normalizedK.toLowerCase()) || keyMatches(s.id, normalizedK));
       const newState: ShiftState = {
         id: normalizedK,
         active,
@@ -2364,8 +2630,9 @@ export function setShiftActiveStatesBatch(updates: { targetKey: string; active: 
     const student = allStudents.find(s => 
       s.id === cleanKey || 
       (s.nome && s.nome.toLowerCase() === cleanKey.toLowerCase()) ||
-      normalizeKey(s.id) === normalizeKey(cleanKey) ||
-      (s.nome && normalizeKey(s.nome) === normalizeKey(cleanKey))
+      keyMatches(s.id, cleanKey) ||
+      (s.nome && keyMatches(s.nome, cleanKey)) ||
+      (s.nome && keyMatches(s.nome.split(' (')[0], cleanKey))
     );
 
     let targetRoom = '';
@@ -2377,26 +2644,15 @@ export function setShiftActiveStatesBatch(updates: { targetKey: string; active: 
       }
       targetRoom = student.salaAula || student.quarto || getStudentRoomName(student) || '';
     } else {
-      targetRoom = cleanKey;
+      targetRoom = getStudentRoomName(cleanKey) || cleanKey;
     }
 
     if (targetRoom) {
       keysToUpdate.add(targetRoom);
-      // Find all students in this room
+      // Find all students in this EXACT room
       const roomStudents = allStudents.filter(s => {
         const sRoom = s.salaAula || s.quarto || getStudentRoomName(s) || '';
-        return (
-          sRoom === targetRoom ||
-          normalizeKey(sRoom) === normalizeKey(targetRoom) ||
-          targetRoom.toLowerCase().includes(sRoom.toLowerCase()) ||
-          sRoom.toLowerCase().includes(targetRoom.toLowerCase()) ||
-          (targetRoom.includes('Berçário I') && sRoom.includes('Berçário I')) ||
-          (targetRoom.includes('Berçário II') && sRoom.includes('Berçário II')) ||
-          (targetRoom.includes('Maternal I') && sRoom.includes('Maternal I')) ||
-          (targetRoom.includes('Maternal II') && sRoom.includes('Maternal II')) ||
-          (targetRoom.includes('Jardim I') && sRoom.includes('Jardim I')) ||
-          (targetRoom.includes('Jardim II') && sRoom.includes('Jardim II'))
-        );
+        return keyMatches(sRoom, targetRoom);
       });
 
       roomStudents.forEach(s => {
@@ -2407,11 +2663,14 @@ export function setShiftActiveStatesBatch(updates: { targetKey: string; active: 
         }
       });
 
-      // Also map known teachers for this room
-      if (targetRoom.includes('Berçário I') || targetRoom.toLowerCase().includes('sofia')) {
-        keysToUpdate.add('user_cuidador_b1');
-        keysToUpdate.add('Sofia Mendes');
-        keysToUpdate.add('Profª Sofia Mendes (Educadora)');
+      // Find teacher assigned to this room
+      const assignedTeacher = getAssignedTeacherForRoom(targetRoom);
+      if (assignedTeacher) {
+        keysToUpdate.add(assignedTeacher.id);
+        if (assignedTeacher.nome) {
+          keysToUpdate.add(assignedTeacher.nome);
+          keysToUpdate.add(assignedTeacher.nome.replace(/\s*\([^)]*\)/g, '').trim());
+        }
       }
     }
 

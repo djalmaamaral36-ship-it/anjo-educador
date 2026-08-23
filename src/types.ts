@@ -6,15 +6,12 @@ export type UserType = 'admin' | 'familiar' | 'familiar_admin' | 'familiar_convi
 
 export const isStaffUser = (user: { tipo?: string; nome?: string; parentesco?: string; id?: string } | null | undefined): boolean => {
   if (!user) return false;
-  if (typeof localStorage !== 'undefined' && localStorage.getItem('anjo_master_demonstracao_ativo') === 'true') {
-    return true;
-  }
   const t = (user.tipo || '').toLowerCase();
   const n = (user.nome || '').toLowerCase();
   const p = (user.parentesco || '').toLowerCase();
   const id = (user.id || '').toLowerCase();
 
-  // Family members / parents / guardians are strictly NON-staff (read-only monitoring, no chronometer controls)
+  // Family members / parents / guardians are STRICTLY NON-staff (monitoring only, no chronometer or school controls)
   if (
     t === 'familiar' ||
     t === 'familiar_admin' ||
@@ -28,11 +25,17 @@ export const isStaffUser = (user: { tipo?: string; nome?: string; parentesco?: s
     p.includes('responsavel') ||
     n.includes('mãe') ||
     n.includes('mae') ||
+    n.includes('pai') ||
     n.includes('clarice') ||
     id.startsWith('user_mae_') ||
-    id.startsWith('user_pai_')
+    id.startsWith('user_pai_') ||
+    id.includes('familiar')
   ) {
     return false;
+  }
+
+  if (typeof localStorage !== 'undefined' && localStorage.getItem('anjo_master_demonstracao_ativo') === 'true') {
+    return true;
   }
 
   return (
@@ -68,19 +71,30 @@ export const isStaffUser = (user: { tipo?: string; nome?: string; parentesco?: s
 
 export const isDirectorOrAdminUser = (user: { tipo?: string; nome?: string; parentesco?: string; id?: string } | null | undefined): boolean => {
   if (!user) return false;
-  if (typeof localStorage !== 'undefined' && localStorage.getItem('anjo_master_demonstracao_ativo') === 'true') {
-    return true;
-  }
   const t = (user.tipo || '').toLowerCase();
   const n = (user.nome || '').toLowerCase();
   const p = (user.parentesco || '').toLowerCase();
+  const id = (user.id || '').toLowerCase();
 
   // If user is explicitly set to family / mother / father / guest, they are NOT director
-  if (t === 'familiar' || t === 'familiar_convidado' || t === 'familiar_admin' || p.includes('mãe') || p.includes('mae') || p.includes('pai') || p.includes('familiar') || p.includes('responsável')) {
+  if (
+    t === 'familiar' || 
+    t === 'familiar_convidado' || 
+    t === 'familiar_admin' || 
+    p.includes('mãe') || 
+    p.includes('mae') || 
+    p.includes('pai') || 
+    p.includes('familiar') || 
+    p.includes('responsável') ||
+    id.startsWith('user_mae_') ||
+    id.startsWith('user_pai_')
+  ) {
     return false;
   }
 
-  const id = (user.id || '').toLowerCase();
+  if (typeof localStorage !== 'undefined' && localStorage.getItem('anjo_master_demonstracao_ativo') === 'true') {
+    return true;
+  }
 
   return (
     t === 'admin' ||
