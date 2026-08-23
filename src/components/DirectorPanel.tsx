@@ -36,7 +36,7 @@ import {
   Mic
 } from 'lucide-react';
 import { VoiceInput } from './VoiceInput';
-import { getFromDB, saveToDB, SALAS_INICIAIS } from '../data';
+import { getFromDB, saveToDB, SALAS_INICIAIS, isPinUnique, generateUniquePin } from '../data';
 import { Idoso, Usuario, Classroom, isStaffUser } from '../types';
 
 interface DirectorPanelProps {
@@ -142,6 +142,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
   const [newStaffRole, setNewStaffRole] = useState<'professor' | 'coordenador' | 'pedagoga' | 'cuidador' | 'admin'>('professor');
   const [newStaffPhone, setNewStaffPhone] = useState('');
   const [newStaffEmail, setNewStaffEmail] = useState('');
+  const [newStaffPin, setNewStaffPin] = useState('');
   const [newStaffClassrooms, setNewStaffClassrooms] = useState<string[]>([]);
   const [newStaffObs, setNewStaffObs] = useState('');
   const [copiedLink, setCopiedLink] = useState(false);
@@ -422,8 +423,16 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
     const newPin = editTeacherPin.trim();
     if (newPin && newPin.length < 4) {
-      alert('O PIN deve conter pelo menos 4 dígitos!');
+      alert('O PIN deve conter pelo menos 4 dígitos numéricos!');
       return;
+    }
+
+    if (newPin) {
+      const pinCheck = isPinUnique(newPin, editingTeacher.id);
+      if (!pinCheck.isUnique) {
+        alert(`⚠️ O PIN "${newPin}" já está em uso na escola por ${pinCheck.conflictingUser?.nome || 'outro colaborador'}.\n\nPor favor, escolha um PIN diferente para evitar conflito de acesso.`);
+        return;
+      }
     }
 
     const updatedUsers = users.map(u => {
@@ -475,6 +484,22 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
     e.preventDefault();
     if (!newStaffName.trim()) return;
 
+    let finalPin = newStaffPin.trim();
+    if (finalPin && finalPin.length < 4) {
+      alert('O PIN deve conter pelo menos 4 dígitos numéricos!');
+      return;
+    }
+
+    if (finalPin) {
+      const pinCheck = isPinUnique(finalPin);
+      if (!pinCheck.isUnique) {
+        alert(`⚠️ O PIN "${finalPin}" já está em uso na escola por ${pinCheck.conflictingUser?.nome || 'outro colaborador'}.\n\nPor favor, escolha um PIN diferente.`);
+        return;
+      }
+    } else {
+      finalPin = generateUniquePin(undefined, newStaffPhone);
+    }
+
     const defaultAvatars: Record<string, string> = {
       professor: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=250",
       coordenador: "https://images.unsplash.com/photo-1580894732444-8ecded7900cd?auto=format&fit=crop&q=80&w=250",
@@ -489,6 +514,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
       tipo: newStaffRole,
       telefone: newStaffPhone.trim() || undefined,
       email: newStaffEmail.trim() || `${newStaffName.toLowerCase().replace(/\s+/g, '.')}@escola.anjinho.app`,
+      pin: finalPin,
       foto: defaultAvatars[newStaffRole] || defaultAvatars.professor,
       salaAula: newStaffClassrooms.length > 0 ? newStaffClassrooms.join(',') : undefined,
       observacoes: newStaffObs.trim() || `${newStaffRole === 'coordenador' ? 'Coordenação Pedagógica' : newStaffRole === 'pedagoga' ? 'Equipe Pedagógica' : newStaffRole === 'admin' ? 'Administração Escolar' : 'Corpo Docente'} credenciado.`
@@ -503,11 +529,12 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
     setNewStaffRole('professor');
     setNewStaffPhone('');
     setNewStaffEmail('');
+    setNewStaffPin('');
     setNewStaffClassrooms([]);
     setNewStaffObs('');
     setShowStaffModal(false);
 
-    setActionSuccessMessage(`✓ Colaborador(a) ${newCollaborator.nome} cadastrado(a) com sucesso!`);
+    setActionSuccessMessage(`✓ Colaborador(a) ${newCollaborator.nome} cadastrado(a) com sucesso! PIN: ${finalPin}`);
     setTimeout(() => setActionSuccessMessage(null), 4000);
     window.dispatchEvent(new Event('anjo_user_updated'));
     window.dispatchEvent(new CustomEvent('anjo_user_updated'));
@@ -4320,8 +4347,8 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 />
               </div>
 
-              {/* Telefone & Email */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Telefone, Email & PIN */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold text-slate-400 uppercase">WhatsApp / Telefone</label>
                   <input
@@ -4343,6 +4370,23 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     onChange={(e) => setNewStaffEmail(e.target.value)}
                     placeholder="Ex: fabiana@escola.com"
                     className={`w-full px-3 py-2.5 text-xs rounded-xl border focus:ring-2 focus:ring-indigo-500/20 outline-none font-medium ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
+                    }`}
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[10px] font-bold text-slate-400 uppercase flex items-center justify-between">
+                    <span>PIN de Acesso</span>
+                    <span className="text-[9px] text-indigo-500 font-normal">4 dígitos</span>
+                  </label>
+                  <input
+                    type="text"
+                    maxLength={6}
+                    value={newStaffPin}
+                    onChange={(e) => setNewStaffPin(e.target.value.replace(/\D/g, ''))}
+                    placeholder="Ex: 5566 (ou auto)"
+                    className={`w-full px-3 py-2.5 text-xs rounded-xl border font-mono font-bold focus:ring-2 focus:ring-indigo-500/20 outline-none ${
                       isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
                     }`}
                   />
