@@ -521,17 +521,113 @@ export default function App() {
     }
 
     // 0. Direct high-priority mapping for mock users to ensure 100% accurate profile sync
+    if (user.id === 'user_pai_thiago') {
+      const enzo = candidates.find(s => s.id === 'aluno_2' || s.nome.toLowerCase().includes('enzo'));
+      if (enzo) return enzo;
+    }
+    if (user.id === 'user_mae_beatriz') {
+      const beatriz = candidates.find(s => s.id === 'aluno_3' || s.nome.toLowerCase().includes('beatriz'));
+      if (beatriz) return beatriz;
+    }
     if (user.id === 'user_pai_bernardo') {
-      const bernardo = candidates.find(s => s.nome.toLowerCase().includes('bernardo'));
+      const bernardo = candidates.find(s => s.id === 'aluno_4' || s.nome.toLowerCase().includes('bernardo'));
       if (bernardo) return bernardo;
     }
     if (user.id === 'user_mae_heitor') {
-      const heitor = candidates.find(s => s.nome.toLowerCase().includes('heitor'));
+      const heitor = candidates.find(s => s.id === 'aluno_5' || s.nome.toLowerCase().includes('heitor'));
       if (heitor) return heitor;
     }
+    if (user.id === 'user_mae_alice') {
+      const alice = candidates.find(s => s.id === 'aluno_6' || s.nome.toLowerCase().includes('alice'));
+      if (alice) return alice;
+    }
+    if (user.id === 'user_mae_sophia') {
+      const sophia = candidates.find(s => s.id === 'aluno_8' || s.nome.toLowerCase().includes('sophia'));
+      if (sophia) return sophia;
+    }
+    if (user.id === 'user_mae_laura') {
+      const laura = candidates.find(s => s.id === 'aluno_9' || s.nome.toLowerCase().includes('laura'));
+      if (laura) return laura;
+    }
+    if (user.id === 'user_pai_livia') {
+      const livia = candidates.find(s => s.id === 'aluno_10' || s.nome.toLowerCase().includes('lívia') || s.nome.toLowerCase().includes('livia'));
+      if (livia) return livia;
+    }
+    if (user.id === 'user_mae_davi') {
+      const davi = candidates.find(s => s.id === 'aluno_11' || s.nome.toLowerCase().includes('davi'));
+      if (davi) return davi;
+    }
+    if (user.id === 'user_mae_gabriel') {
+      const gabriel = candidates.find(s => s.id === 'aluno_12' || s.nome.toLowerCase().includes('gabriel'));
+      if (gabriel) return gabriel;
+    }
     if (user.id === 'user_pai_miguel') {
-      const miguel = candidates.find(s => s.nome.toLowerCase().includes('miguel'));
+      const miguel = candidates.find(s => s.id === 'aluno_13' || s.nome.toLowerCase().includes('miguel'));
       if (miguel) return miguel;
+    }
+    if (user.id === 'user_mae_helena_f') {
+      const helena = candidates.find(s => s.id === 'aluno_14' || s.nome.toLowerCase().includes('helena ferraz'));
+      if (helena) return helena;
+    }
+    if (user.id === 'user_mae_manuela') {
+      const manuela = candidates.find(s => s.id === 'aluno_15' || s.nome.toLowerCase().includes('manuela'));
+      if (manuela) return manuela;
+    }
+    if (user.id === 'user_pai_matheus') {
+      const matheus = candidates.find(s => s.id === 'aluno_16' || s.nome.toLowerCase().includes('matheus'));
+      if (matheus) return matheus;
+    }
+    if (user.id === 'user_mae_lucas') {
+      const lucas = candidates.find(s => s.id === 'aluno_17' || s.nome.toLowerCase().includes('lucas'));
+      if (lucas) return lucas;
+    }
+    if (user.id === 'user_mae_joaquim') {
+      const joaquim = candidates.find(s => s.id === 'aluno_18' || s.nome.toLowerCase().includes('joaquim'));
+      if (joaquim) return joaquim;
+    }
+    if (user.id === 'user_mae_valentina') {
+      const valentina = candidates.find(s => s.id === 'aluno_19' || s.nome.toLowerCase().includes('valentina'));
+      if (valentina) return valentina;
+    }
+    if (user.id === 'user_pai_isabella') {
+      const isabella = candidates.find(s => s.id === 'aluno_20' || s.nome.toLowerCase().includes('isabella'));
+      if (isabella) return isabella;
+    }
+    if (user.id === 'user_mae_samuel') {
+      const samuel = candidates.find(s => s.id === 'aluno_21' || s.nome.toLowerCase().includes('samuel'));
+      if (samuel) return samuel;
+    }
+    if (user.id === 'user_pai_giovanna') {
+      const giovanna = candidates.find(s => s.id === 'aluno_22' || s.nome.toLowerCase().includes('giovanna'));
+      if (giovanna) return giovanna;
+    }
+    if (user.id === 'user_pai_felipe') {
+      const felipe = candidates.find(s => s.id === 'aluno_23' || s.nome.toLowerCase().includes('felipe antunes') || s.nome.toLowerCase().includes('felipe'));
+      if (felipe) return felipe;
+    }
+    if (user.id === 'user_mae_lorena') {
+      const lorena = candidates.find(s => s.id === 'aluno_24' || s.nome.toLowerCase().includes('lorena'));
+      if (lorena) return lorena;
+    }
+    if (user.id === 'user_mae_pedro') {
+      const pedro = candidates.find(s => s.id === 'aluno_25' || s.nome.toLowerCase().includes('pedro henrique'));
+      if (pedro) return pedro;
+    }
+    if (user.id === 'user_pai_theo') {
+      const theo = candidates.find(s => s.id === 'aluno_26' || s.nome.toLowerCase().includes('theo'));
+      if (theo) return theo;
+    }
+    if (user.id === 'user_mae_heloisa') {
+      const heloisa = candidates.find(s => s.id === 'aluno_27' || s.nome.toLowerCase().includes('heloísa') || s.nome.toLowerCase().includes('heloisa'));
+      if (heloisa) return heloisa;
+    }
+    if (user.id === 'user_mae_nicolas') {
+      const nicolas = candidates.find(s => s.id === 'aluno_28' || s.nome.toLowerCase().includes('nicolas'));
+      if (nicolas) return nicolas;
+    }
+    if (user.id === 'user_pai_cecilia') {
+      const cecilia = candidates.find(s => s.id === 'aluno_29' || s.nome.toLowerCase().includes('cecília') || s.nome.toLowerCase().includes('cecilia'));
+      if (cecilia) return cecilia;
     }
     if (user.id === 'user_cuidador_2') {
       const joao = candidates.find(s => s.id === 'idoso_joao');

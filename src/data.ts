@@ -564,7 +564,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     contatoEmergencia: {
       nome: 'Thiago Alencar',
       parentesco: 'Neto',
-      telefone: '(11) 95555-4444'
+      telefone: '(11) 95555-4440'
     },
     planoCuidado: 'Fisioterapia para controle da artrose 2x na semana, aferição de glicemia capilar em jejum e após refeições principais, monitoramento e higienização cuidadosa das pernas devido à má circulação.',
     medicoResponsavel: {
@@ -609,7 +609,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     contatoEmergencia: {
       nome: 'Thiago Alencar',
       parentesco: 'Pai',
-      telefone: '(11) 95555-4444'
+      telefone: '(11) 95555-4440'
     },
     planoCuidado: 'Auxiliar na ida ao banheiro a cada 2h. Administrar bombinha caso haja tosse seca frequente.',
     medicoResponsavel: {
@@ -629,9 +629,9 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     alergias: ['Corante Amarelo Tartrazina'],
     observacoes: 'Beatriz gosta de desenhar princesas. Muito dócil e concentrada nas dinâmicas de roda.',
     contatoEmergencia: {
-      nome: 'Camila Castro',
+      nome: 'Mariana Castro',
       parentesco: 'Mãe',
-      telefone: '(11) 99823-1111'
+      telefone: '(11) 99823-3310'
     },
     planoCuidado: 'Garantir que ela não retire os óculos durante as tarefas de corte e colagem. Cortar frutas em pedaços miúdos.',
     medicoResponsavel: {
@@ -695,9 +695,9 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     alergias: ['Amendoim e Castanhas'],
     observacoes: 'Acalma-se ouvindo cantigas de roda tradicionais. Muito apegada às professoras auxiliares.',
     contatoEmergencia: {
-      nome: 'Renata Santos',
+      nome: 'Simone Santos',
       parentesco: 'Mãe',
-      telefone: '(11) 98877-6655'
+      telefone: '(11) 98877-6610'
     },
     planoCuidado: 'Garantir higiene nasal frequente com soro fisiológico. Evitar qualquer biscoito com traços de oleaginosas.',
     medicoResponsavel: {
@@ -719,7 +719,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     contatoEmergencia: {
       nome: 'Carlos Souza',
       parentesco: 'Pai',
-      telefone: '(11) 95555-4444'
+      telefone: '(11) 95555-9944'
     },
     planoCuidado: 'Supervisão ativa no jardim externo devido a insetos. Estimular foco visual sustentado.',
     medicoResponsavel: {
@@ -741,7 +741,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     contatoEmergencia: {
       nome: 'Débora Gomes',
       parentesco: 'Mãe',
-      telefone: '(11) 96622-1122'
+      telefone: '(11) 99881-1121'
     },
     planoCuidado: 'Passar hidratante neutro trazido na mochila após o banho/higienização dos locais de fralda.',
     medicoResponsavel: {
@@ -763,7 +763,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     contatoEmergencia: {
       nome: 'Marisa Mel',
       parentesco: 'Mãe',
-      telefone: '(11) 99311-2244'
+      telefone: '(11) 98811-2241'
     },
     planoCuidado: 'Oferecer mordedor higienizado resfriado. Substituir ovos/receitas por lanches especiais enviados de casa.',
     medicoResponsavel: {
@@ -785,7 +785,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     contatoEmergencia: {
       nome: 'Felipe Teixeira',
       parentesco: 'Pai',
-      telefone: '(11) 95544-3322'
+      telefone: '(11) 98822-3321'
     },
     planoCuidado: 'Estimular liderança positiva e atividades de pareamento lógico/quebra-cabeças complexos.',
     medicoResponsavel: {
@@ -807,7 +807,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     contatoEmergencia: {
       nome: 'Aline Cardozo',
       parentesco: 'Mãe',
-      telefone: '(11) 99422-5566'
+      telefone: '(11) 99115-5561'
     },
     planoCuidado: 'Secar bem os ouvidos após higienizações. Afastá-lo de som muito alto ou caixas de som no pátio.',
     medicoResponsavel: {
@@ -829,7 +829,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     contatoEmergencia: {
       nome: 'Tatiane Silva',
       parentesco: 'Mãe',
-      telefone: '(11) 99311-6655'
+      telefone: '(11) 99221-6651'
     },
     planoCuidado: 'Auxiliar na fala de forma bem articulada e incentivar que aponte e verbalize as necessidades diárias.',
     medicoResponsavel: {
@@ -871,9 +871,9 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     alergias: ['Nenhuma catalogada'],
     observacoes: 'Helena é risonha e gosta de cantar. Sabe expressar quando quer comer ou ir ao banheiro.',
     contatoEmergencia: {
-      nome: 'Luciana Ferraz',
+      nome: 'Márcia Ferraz',
       parentesco: 'Mãe',
-      telefone: '(11) 99115-5544'
+      telefone: '(11) 98844-5541'
     },
     planoCuidado: 'Garantir colchão macio e escurecimento leve da sala na hora do repouso pós-almoço.',
     medicoResponsavel: {
@@ -893,9 +893,9 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     alergias: ['Aditivos químicos / Conservantes de caixinha'],
     observacoes: 'Manuela chora na chegada por 5 minutos, mas se acalma rapidamente com chocalhos e tapetes emborrachados.',
     contatoEmergencia: {
-      nome: 'Bruna Rocha',
+      nome: 'Vanessa Rocha',
       parentesco: 'Mãe',
-      telefone: '(11) 98811-2244'
+      telefone: '(11) 98811-2242'
     },
     planoCuidado: 'Evitar alimentos industrializados. Servir apenas papinhas e frutas frescas amassadas na escola.',
     medicoResponsavel: {
@@ -917,7 +917,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     contatoEmergencia: {
       nome: 'Ricardo Barbosa',
       parentesco: 'Pai',
-      telefone: '(11) 97722-1100'
+      telefone: '(11) 98711-1101'
     },
     planoCuidado: 'Oferecer inalação preventiva com soro caso respiração fique ofegante no pátio.',
     medicoResponsavel: {
@@ -959,9 +959,9 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     alergias: ['Tecidos sintéticos (vestir apenas algodão)'],
     observacoes: 'Joaquim é alegre e interage batendo palminhas. Prefere dormir no ninho acolchoado.',
     contatoEmergencia: {
-      nome: 'Milena Dias',
+      nome: 'Juliana Dias',
       parentesco: 'Mãe',
-      telefone: '(11) 99211-5544'
+      telefone: '(11) 99877-7788'
     },
     planoCuidado: 'Passar pomada preventiva contra assaduras a cada troca. Confirmar roupas de algodão leve.',
     medicoResponsavel: {
@@ -981,9 +981,9 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     alergias: ['Frutas Cítricas (Laranja/Limão)'],
     observacoes: 'Valentina gosta de criar casinhas com blocos gigantes. Super prestativa na sala.',
     contatoEmergencia: {
-      nome: 'Estela Pinto',
+      nome: 'Patrícia Pinto',
       parentesco: 'Mãe',
-      telefone: '(11) 98711-2244'
+      telefone: '(11) 98711-4412'
     },
     planoCuidado: 'Estimular apoio completo dos pés nas dinâmicas de saltos. Servir mamão/melancia no lanche.',
     medicoResponsavel: {
@@ -1005,7 +1005,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     contatoEmergencia: {
       nome: 'Jorge Cardoso',
       parentesco: 'Pai',
-      telefone: '(11) 99122-3322'
+      telefone: '(11) 99311-3322'
     },
     planoCuidado: 'Higienização das lentes com flanela trazida no estojo. Propor que monte pequenas palavras de madeira.',
     medicoResponsavel: {
@@ -1027,7 +1027,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     contatoEmergencia: {
       nome: 'Fernanda Mendes',
       parentesco: 'Mãe',
-      telefone: '(11) 98211-4433'
+      telefone: '(11) 99311-4431'
     },
     planoCuidado: 'Garantir que descanse em local arejado. Manter produtos de limpeza longe da rodinha.',
     medicoResponsavel: {
@@ -1047,9 +1047,9 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     alergias: ['Corante Amarelo'],
     observacoes: 'Giovanna adora fazer tranças em bonecas de pano. Muito educada e sorridente.',
     contatoEmergencia: {
-      nome: 'Gabriela Ramos / Maurício Fonseca',
-      parentesco: 'Mãe / Pai',
-      telefone: '(11) 99122-8877'
+      nome: 'Maurício Fonseca',
+      parentesco: 'Pai',
+      telefone: '(11) 99122-8871'
     },
     planoCuidado: 'Incentivar mastigação adequada dos alimentos no almoço, mantendo tom relaxado à mesa.',
     medicoResponsavel: {
@@ -1071,7 +1071,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     contatoEmergencia: {
       nome: 'Renato Antunes',
       parentesco: 'Pai',
-      telefone: '(11) 99111-2233'
+      telefone: '(11) 98711-2231'
     },
     planoCuidado: 'Preparar a mamadeira de fórmula às 15h. Aplicar repelente neutro infantil trazido na mochila.',
     medicoResponsavel: {
@@ -1091,9 +1091,9 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     alergias: ['Sabonetes químicos / Produtos com essência'],
     observacoes: 'Lorena fala muitas palavras novas por dia. Adora ajudar a organizar as bonecas.',
     contatoEmergencia: {
-      nome: 'Tatiana Machado',
+      nome: 'Helena Machado',
       parentesco: 'Mãe',
-      telefone: '(11) 99311-4455'
+      telefone: '(11) 99311-4451'
     },
     planoCuidado: 'Checar hidratação da dobra de braços e pernas. Limpar derramamentos de suco rapidamente para evitar coceira.',
     medicoResponsavel: {
@@ -1115,7 +1115,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     contatoEmergencia: {
       nome: 'Fabiana Lima',
       parentesco: 'Mãe',
-      telefone: '(11) 97722-6644'
+      telefone: '(11) 98877-6641'
     },
     planoCuidado: 'Incentivar ingestão constante de água após corridas. Proteger cabeça com boné trazido na mochila.',
     medicoResponsavel: {
@@ -1135,9 +1135,9 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     alergias: ['Nenhuma catalogada'],
     observacoes: 'Theo é muito expressivo e gosta de liderar rodas de história no Maternal II - A.',
     contatoEmergencia: {
-      nome: 'Profª Cláudia Lemos',
-      parentesco: 'Educadora',
-      telefone: '(11) 92222-2222'
+      nome: 'Marcelo Lemos',
+      parentesco: 'Pai',
+      telefone: '(11) 92222-2211'
     },
     planoCuidado: 'Estimular pintura a dedo e atividades de raciocínio lógico.',
     medicoResponsavel: {
@@ -1157,9 +1157,9 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     alergias: ['Nenhuma catalogada'],
     observacoes: 'Heloísa adora cantar cantigas com a professora Márcia Toledo no Maternal II - B.',
     contatoEmergencia: {
-      nome: 'Profª Márcia Toledo',
-      parentesco: 'Educadora',
-      telefone: '(11) 98844-1122'
+      nome: 'Carolina Toledo',
+      parentesco: 'Mãe',
+      telefone: '(11) 98844-1123'
     },
     planoCuidado: 'Incentivar participação em jogos coletivos e brincadeiras de roda.',
     medicoResponsavel: {
@@ -1179,9 +1179,9 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     alergias: ['Nenhuma catalogada'],
     observacoes: 'Nicolas é curioso e carinhoso no Maternal II - C com a professora Luísa Castro.',
     contatoEmergencia: {
-      nome: 'Profª Luísa Castro',
-      parentesco: 'Educadora',
-      telefone: '(11) 99221-1234'
+      nome: 'Fernanda Castro',
+      parentesco: 'Mãe',
+      telefone: '(11) 99221-1231'
     },
     planoCuidado: 'Incentivar exploração sensorial e jogos pedagógicos.',
     medicoResponsavel: {
@@ -1201,9 +1201,9 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     alergias: ['Nenhuma catalogada'],
     observacoes: 'Cecília participa ativamente das aulas da professora Bruna Rocha no Jardim I - A.',
     contatoEmergencia: {
-      nome: 'Profª Bruna Rocha',
-      parentesco: 'Educadora',
-      telefone: '(11) 98811-2244'
+      nome: 'Eduardo Rocha',
+      parentesco: 'Pai',
+      telefone: '(11) 98811-2243'
     },
     planoCuidado: 'Incentivar vocabulário e atividades artísticas.',
     medicoResponsavel: {
@@ -1615,7 +1615,7 @@ export function initializeDB() {
     try {
       const usersList = JSON.parse(storedUsers);
       let updated = false;
-      const cleanUsers = usersList.map((u: any) => {
+      let cleanUsers = usersList.map((u: any) => {
         const matchingInit = USUARIOS_SIMULADOS.find(init => init.id === u.id);
         if (u.id === 'user_admin' || (u.nome && u.nome.includes('Nilva'))) {
           u.nome = 'Nilva Amaral (Diretora)';
@@ -1709,6 +1709,23 @@ export function initializeDB() {
         return u;
       });
       
+      // Ensure the canonical PIN, phone, name and attributes are synchronized for all predefined mock users
+      cleanUsers = cleanUsers.map((u: any) => {
+        const canonical = USUARIOS_SIMULADOS.find(init => init.id === u.id);
+        if (canonical) {
+          return {
+            ...u,
+            pin: canonical.pin,
+            telefone: canonical.telefone,
+            nome: canonical.nome,
+            tipo: canonical.tipo,
+            parentesco: canonical.parentesco,
+            salaAula: canonical.salaAula
+          };
+        }
+        return u;
+      });
+
       // Ensure the default developers, admins, teachers and family users exist in the list
       const missingUsers = USUARIOS_SIMULADOS.filter(u => !cleanUsers.some((existing: any) => existing.id === u.id));
       if (missingUsers.length > 0) {
@@ -1741,7 +1758,7 @@ export function initializeDB() {
         seenPins.add(userPin);
       });
 
-      if (updated) {
+      if (updated || true) {
         localStorage.setItem('anjo_usuarios', JSON.stringify(cleanUsers));
       }
     } catch (e) {
@@ -1771,7 +1788,7 @@ export function initializeDB() {
     console.error('Erro ao sincronizar salas', e);
   }
 
-  // Ensure preschool students exist with accurate room assignments in anjo_idosos
+  // Ensure preschool students exist with accurate room assignments and emergency contacts in anjo_idosos
   const storedIdosos = localStorage.getItem('anjo_idosos');
   const deletedStudentsList = JSON.parse(localStorage.getItem('anjo_deleted_students') || '[]') as string[];
   const deletedStudentsSet = new Set(deletedStudentsList);
@@ -1782,15 +1799,16 @@ export function initializeDB() {
       // Remove any legacy fundamental school students and deleted students
       parsed = parsed.filter(p => !p.id.startsWith('aluno_fun_') && !deletedStudentsSet.has(p.id));
 
-      // Ensure preschool students exist and have their correct classroom assigned (unless deleted)
+      // Ensure preschool students exist and have their correct classroom and emergency contact assigned (unless deleted)
       IDOSOS_INICIAIS.forEach(initStudent => {
         if (!initStudent.id.startsWith('aluno_') || deletedStudentsSet.has(initStudent.id)) return;
         const existingIdx = parsed.findIndex(p => p.id === initStudent.id);
         if (existingIdx >= 0) {
-          // Normalize room assignments
+          // Normalize room assignments & contacts
           parsed[existingIdx].salaAula = initStudent.salaAula || parsed[existingIdx].salaAula;
           parsed[existingIdx].quarto = initStudent.quarto || parsed[existingIdx].quarto;
           if (initStudent.nome) parsed[existingIdx].nome = initStudent.nome;
+          if (initStudent.contatoEmergencia) parsed[existingIdx].contatoEmergencia = initStudent.contatoEmergencia;
         } else {
           parsed.push(initStudent);
         }
