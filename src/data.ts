@@ -18,7 +18,7 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
     id: 'user_admin',
     nome: 'Nilva Amaral (Diretora)',
     email: 'nilva.amaral@escola.com',
-    telefone: '(11) 98765-4321',
+    telefone: '(11) 98765-3031',
     tipo: 'diretor',
     parentesco: 'Diretora Escolar',
     foto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150',
@@ -1615,102 +1615,9 @@ export function initializeDB() {
     try {
       const usersList = JSON.parse(storedUsers);
       let updated = false;
+
+      // 1. Synchronize all canonical predefined users with their official profiles, phones and unique PINs
       let cleanUsers = usersList.map((u: any) => {
-        const matchingInit = USUARIOS_SIMULADOS.find(init => init.id === u.id);
-        if (u.id === 'user_admin' || (u.nome && u.nome.includes('Nilva'))) {
-          u.nome = 'Nilva Amaral (Diretora)';
-          u.tipo = 'diretor';
-          u.email = 'nilva.amaral@escola.com';
-          u.pin = '3031';
-          updated = true;
-        } else if (u.id === 'user_desenvolvedor_djalma' || (u.nome && u.nome.includes('Djalma'))) {
-          u.nome = 'Djalma Amaral (Desenvolvedor Dev)';
-          u.tipo = 'desenvolvedor';
-          u.email = 'djalmaamaral36@gmail.com';
-          u.pin = '9181';
-          updated = true;
-        } else if (matchingInit) {
-          if ((u.pin === '1234' || !u.pin) && matchingInit.pin) {
-            u.pin = matchingInit.pin;
-            updated = true;
-          }
-          // Do NOT overwrite u.salaAula if already set or customized by the Director!
-          if (u.salaAula === undefined && matchingInit.salaAula) {
-            u.salaAula = matchingInit.salaAula;
-            updated = true;
-          }
-        } else if (u.nome && u.nome.includes('Carla')) {
-          u.nome = u.nome.replace(/Carla/g, 'Sofia');
-          updated = true;
-        } else if ((u.pin === '1234' || !u.pin) && u.telefone) {
-          const digits = u.telefone.replace(/\D/g, '');
-          if (digits.length >= 4) {
-            u.pin = digits.slice(-4);
-            updated = true;
-          }
-        }
-
-        // Clean up legacy conflicting classroom assignments if present
-        if (u.nome && u.nome.includes('Renata Santos') && u.salaAula && u.salaAula.includes('Jardim I - B')) {
-          u.salaAula = u.salaAula.split(',').map((r: string) => r.trim()).filter((r: string) => r !== 'Jardim I - B').join(',') || 'Berçário II';
-          updated = true;
-        }
-        if (u.nome && u.nome.includes('Bruna Rocha') && u.salaAula && u.salaAula.includes('Berçário I - B')) {
-          u.salaAula = u.salaAula.split(',').map((r: string) => r.trim()).filter((r: string) => r !== 'Berçário I - B').join(',') || 'Jardim I - A';
-          updated = true;
-        }
-
-        // Auto-fix staff user types if misclassified or saved with wrong role
-        const nameLower = (u.nome || '').toLowerCase();
-        const idLower = (u.id || '').toLowerCase();
-        const parentescoLower = (u.parentesco || '').toLowerCase();
-
-        // Strictly preserve family member roles (Mãe, Pai, Familiar, etc.)
-        if (
-          u.tipo === 'familiar' || 
-          u.tipo === 'familiar_convidado' || 
-          u.tipo === 'familiar_admin' || 
-          parentescoLower.includes('mãe') || 
-          parentescoLower.includes('mae') || 
-          parentescoLower.includes('pai') || 
-          parentescoLower.includes('familiar') ||
-          nameLower.includes('clarice') ||
-          idLower.startsWith('user_mae_') || 
-          idLower.startsWith('user_pai_')
-        ) {
-          return u;
-        }
-
-        if (
-          nameLower.includes('prof') || 
-          nameLower.includes('educad') || 
-          nameLower.includes('diret') || 
-          nameLower.includes('coordenad') || 
-          nameLower.includes('dev') ||
-          nameLower.includes('nilva') ||
-          idLower.includes('cuidador') ||
-          idLower.includes('dev') ||
-          idLower === 'user_cuidador_1' ||
-          (idLower === 'user_admin' && !nameLower.includes('clarice') && !parentescoLower.includes('mãe')) ||
-          idLower === 'user_medico_1'
-        ) {
-          let targetType = u.tipo;
-          if (nameLower.includes('diret') || nameLower.includes('direção') || nameLower.includes('nilva') || idLower === 'user_admin') targetType = 'diretor';
-          else if (nameLower.includes('coordenad') || idLower === 'user_medico_1') targetType = 'coordenador';
-          else if (nameLower.includes('dev') || idLower.includes('dev')) targetType = 'desenvolvedor';
-          else targetType = 'professor';
-
-          if (u.tipo !== targetType) {
-            u.tipo = targetType;
-            updated = true;
-          }
-        }
-
-        return u;
-      });
-      
-      // Ensure the canonical PIN, phone, name and attributes are synchronized for all predefined mock users
-      cleanUsers = cleanUsers.map((u: any) => {
         const canonical = USUARIOS_SIMULADOS.find(init => init.id === u.id);
         if (canonical) {
           return {
@@ -1720,47 +1627,76 @@ export function initializeDB() {
             nome: canonical.nome,
             tipo: canonical.tipo,
             parentesco: canonical.parentesco,
-            salaAula: canonical.salaAula
+            salaAula: u.salaAula !== undefined ? u.salaAula : canonical.salaAula,
+            foto: canonical.foto || u.foto,
+            email: canonical.email || u.email,
+            observacoes: canonical.observacoes || u.observacoes
           };
         }
+
+        // Custom users added by the school management
+        if (u.nome && u.nome.includes('Carla')) {
+          u.nome = u.nome.replace(/Carla/g, 'Sofia');
+          updated = true;
+        }
+
+        if (!u.pin && u.telefone) {
+          const digits = u.telefone.replace(/\D/g, '');
+          if (digits.length >= 4) {
+            u.pin = digits.slice(-4);
+            updated = true;
+          }
+        }
+
         return u;
       });
 
-      // Ensure the default developers, admins, teachers and family users exist in the list
-      const missingUsers = USUARIOS_SIMULADOS.filter(u => !cleanUsers.some((existing: any) => existing.id === u.id));
-      if (missingUsers.length > 0) {
-        cleanUsers.unshift(...missingUsers);
-        updated = true;
-      }
+      // 2. Ensure all canonical mock users exist in the users collection
+      USUARIOS_SIMULADOS.forEach(canon => {
+        const exists = cleanUsers.some((u: any) => u.id === canon.id);
+        if (!exists) {
+          cleanUsers.push(canon);
+          updated = true;
+        }
+      });
 
-      // Enforce absolute uniqueness of PINs across all loaded users
+      // 3. Enforce absolute uniqueness of PINs across custom users
       const seenPins = new Set<string>();
+      // First register canonical PINs
+      USUARIOS_SIMULADOS.forEach(c => {
+        if (c.pin) seenPins.add(c.pin.trim());
+      });
+
       cleanUsers.forEach((u: any) => {
+        const canonical = USUARIOS_SIMULADOS.find(init => init.id === u.id);
+        if (canonical && canonical.pin) {
+          u.pin = canonical.pin;
+          u.telefone = canonical.telefone;
+          u.nome = canonical.nome;
+          return;
+        }
+
         let userPin = u.pin ? u.pin.trim() : '';
         if (!userPin || seenPins.has(userPin)) {
-          const canonical = USUARIOS_SIMULADOS.find(init => init.id === u.id);
-          if (canonical && canonical.pin && !seenPins.has(canonical.pin)) {
-            userPin = canonical.pin;
-          } else {
-            const usedInSet = Array.from(seenPins);
-            let candidate = u.telefone ? u.telefone.replace(/\D/g, '').slice(-4) : '';
-            if (!candidate || candidate.length < 4 || usedInSet.includes(candidate)) {
-              for (let i = 0; i < 1000; i++) {
-                candidate = String(Math.floor(1000 + Math.random() * 9000));
-                if (!usedInSet.includes(candidate)) break;
+          const digits = u.telefone ? u.telefone.replace(/\D/g, '').slice(-4) : '';
+          let candidate = (digits.length === 4 && !seenPins.has(digits)) ? digits : '';
+          if (!candidate) {
+            for (let i = 0; i < 1000; i++) {
+              const testPin = String(Math.floor(1000 + Math.random() * 9000));
+              if (!seenPins.has(testPin)) {
+                candidate = testPin;
+                break;
               }
             }
-            userPin = candidate;
           }
+          userPin = candidate || '7890';
           u.pin = userPin;
           updated = true;
         }
         seenPins.add(userPin);
       });
 
-      if (updated || true) {
-        localStorage.setItem('anjo_usuarios', JSON.stringify(cleanUsers));
-      }
+      localStorage.setItem('anjo_usuarios', JSON.stringify(cleanUsers));
     } catch (e) {
       console.error(e);
     }
@@ -1801,7 +1737,7 @@ export function initializeDB() {
 
       // Ensure preschool students exist and have their correct classroom and emergency contact assigned (unless deleted)
       IDOSOS_INICIAIS.forEach(initStudent => {
-        if (!initStudent.id.startsWith('aluno_') || deletedStudentsSet.has(initStudent.id)) return;
+        if (deletedStudentsSet.has(initStudent.id)) return;
         const existingIdx = parsed.findIndex(p => p.id === initStudent.id);
         if (existingIdx >= 0) {
           // Normalize room assignments & contacts
@@ -1809,6 +1745,7 @@ export function initializeDB() {
           parsed[existingIdx].quarto = initStudent.quarto || parsed[existingIdx].quarto;
           if (initStudent.nome) parsed[existingIdx].nome = initStudent.nome;
           if (initStudent.contatoEmergencia) parsed[existingIdx].contatoEmergencia = initStudent.contatoEmergencia;
+          if (initStudent.foto) parsed[existingIdx].foto = initStudent.foto;
         } else {
           parsed.push(initStudent);
         }
