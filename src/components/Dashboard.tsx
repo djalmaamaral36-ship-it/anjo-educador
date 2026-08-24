@@ -1082,8 +1082,14 @@ Equipe Anjinho Escolar ❤️🕊️`
       if (!activeShift.active) {
         setElapsedShiftTime('00:00:00');
       }
-      const absentVal = localStorage.getItem(`anjo_is_absent_${targetId}`) === 'true' || localStorage.getItem(`anjo_is_absent_${idoso.id}`) === 'true';
-      setIsAbsent(prevAbs => prevAbs !== absentVal ? absentVal : prevAbs);
+      if (activeShift.active) {
+        localStorage.removeItem(`anjo_is_absent_${targetId}`);
+        localStorage.removeItem(`anjo_is_absent_${idoso.id}`);
+        setIsAbsent(false);
+      } else {
+        const absentVal = localStorage.getItem(`anjo_is_absent_${targetId}`) === 'true' || localStorage.getItem(`anjo_is_absent_${idoso.id}`) === 'true';
+        setIsAbsent(prevAbs => prevAbs !== absentVal ? absentVal : prevAbs);
+      }
     };
 
     const handleVitalsChange = () => {
@@ -3118,7 +3124,15 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
     const dataStr = new Date().toLocaleDateString('pt-BR');
     const cleanName = (idoso.nome || '').split(' (')[0].trim();
 
-    const wasAbsentToday = isAbsent || localStorage.getItem(`anjo_is_absent_${idoso.id}`) === 'true';
+    const hasTodayData = () => {
+      const alim = getFromDB<any[]>('anjo_alimentacao', []).some(a => a.idosoId === idoso.id && isTodayOrDemoDate(a.data));
+      const hid = getFromDB<any[]>('anjo_hidratacao', []).some(h => h.idosoId === idoso.id && isTodayOrDemoDate(h.data));
+      const occ = getFromDB<any[]>(`anjo_ocorrencias_${idoso.id}`, []).length > 0;
+      const shiftState = getShiftActiveState(idoso.id);
+      return alim || hid || occ || Boolean(shiftState.lastResetTime);
+    };
+
+    const wasAbsentToday = isAbsent || localStorage.getItem(`anjo_is_absent_${idoso.id}`) === 'true' || hasTodayData();
 
     // If student was marked absent or turned off earlier today, treat this as a RETURN (Religar cronômetro without wiping activities)
     if (wasAbsentToday) {

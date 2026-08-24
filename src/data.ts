@@ -2349,8 +2349,9 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
     ? customShiftStates 
     : getFromDB<ShiftState[]>('anjo_shift_states', []);
 
-  // Find all records that match this student directly or via exact classroom
-  const matchingRecords: { record: ShiftState; time: number; isDirectStudent: boolean }[] = [];
+  // Find direct student records and classroom records
+  const directRecords: { record: ShiftState; time: number }[] = [];
+  const classroomRecords: { record: ShiftState; time: number }[] = [];
 
   shiftStates.forEach(s => {
     if (!s || !s.id) return;
@@ -2375,60 +2376,56 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
       (studentName && keyMatches(sid, studentName)) ||
       (studentCleanName && keyMatches(sid, studentCleanName))
     ) {
-      matchingRecords.push({ record: s, time, isDirectStudent: true });
+      directRecords.push({ record: s, time });
       return;
     }
 
     // Exact classroom match (e.g. "Berçário I - A")
     if (studentRoom && keyMatches(sid, studentRoom)) {
-      matchingRecords.push({ record: s, time, isDirectStudent: false });
+      classroomRecords.push({ record: s, time });
       return;
     }
   });
 
-  if (matchingRecords.length > 0) {
-    // Check if ANY matching record is active (fail-safe for cross-device sync)
-    const activeRecords = matchingRecords.filter(m => m.record.active === true || String(m.record.active) === 'true');
-    if (activeRecords.length > 0) {
-      activeRecords.sort((a, b) => b.time - a.time);
-      const latestActive = activeRecords[0].record;
-
-      // If cloud says active, clear any stale absence flags
-      localStorage.removeItem(`anjo_is_absent_${realId}`);
-      if (studentName) localStorage.removeItem(`anjo_is_absent_${studentName}`);
-      if (studentCleanName) localStorage.removeItem(`anjo_is_absent_${studentCleanName}`);
-
-      const localDirectStartTime = localStorage.getItem(`anjo_shift_start_time_${realId}`) || 
-        (studentName ? localStorage.getItem(`anjo_shift_start_time_${studentName}`) : null);
-      const startTime = latestActive.startTime || localDirectStartTime || new Date().toISOString();
-      const lastResetTime = latestActive.lastResetTime || startTime;
-      return { active: true, startTime, lastResetTime };
-    }
-
-    // Sort by timestamp descending (newest first). If timestamps are equal, prefer direct student record over classroom record
-    matchingRecords.sort((a, b) => {
-      if (b.time !== a.time) return b.time - a.time;
-      if (a.isDirectStudent && !b.isDirectStudent) return -1;
-      if (!a.isDirectStudent && b.isDirectStudent) return 1;
-      return 0;
-    });
-
-    const latest = matchingRecords[0].record;
-    const isActive = latest.active === true || String(latest.active) === 'true';
+  // PRIORITY 1: Direct Student Records ALWAYS override generic classroom records
+  if (directRecords.length > 0) {
+    directRecords.sort((a, b) => b.time - a.time);
+    const latestDirect = directRecords[0].record;
+    const isActive = latestDirect.active === true || String(latestDirect.active) === 'true';
 
     if (isActive) {
-      // If cloud says active, clear any stale absence flags
       localStorage.removeItem(`anjo_is_absent_${realId}`);
       if (studentName) localStorage.removeItem(`anjo_is_absent_${studentName}`);
       if (studentCleanName) localStorage.removeItem(`anjo_is_absent_${studentCleanName}`);
 
       const localDirectStartTime = localStorage.getItem(`anjo_shift_start_time_${realId}`) || 
         (studentName ? localStorage.getItem(`anjo_shift_start_time_${studentName}`) : null);
-      const startTime = latest.startTime || localDirectStartTime || new Date().toISOString();
-      const lastResetTime = latest.lastResetTime || startTime;
+      const startTime = latestDirect.startTime || localDirectStartTime || new Date().toISOString();
+      const lastResetTime = latestDirect.lastResetTime || startTime;
       return { active: true, startTime, lastResetTime };
     } else {
-      return { active: false, startTime: null, lastResetTime: latest.lastResetTime || null };
+      return { active: false, startTime: null, lastResetTime: latestDirect.lastResetTime || null };
+    }
+  }
+
+  // PRIORITY 2: Classroom Records if no direct student record exists yet
+  if (classroomRecords.length > 0) {
+    classroomRecords.sort((a, b) => b.time - a.time);
+    const latestClassroom = classroomRecords[0].record;
+    const isActive = latestClassroom.active === true || String(latestClassroom.active) === 'true';
+
+    if (isActive) {
+      localStorage.removeItem(`anjo_is_absent_${realId}`);
+      if (studentName) localStorage.removeItem(`anjo_is_absent_${studentName}`);
+      if (studentCleanName) localStorage.removeItem(`anjo_is_absent_${studentCleanName}`);
+
+      const localDirectStartTime = localStorage.getItem(`anjo_shift_start_time_${realId}`) || 
+        (studentName ? localStorage.getItem(`anjo_shift_start_time_${studentName}`) : null);
+      const startTime = latestClassroom.startTime || localDirectStartTime || new Date().toISOString();
+      const lastResetTime = latestClassroom.lastResetTime || startTime;
+      return { active: true, startTime, lastResetTime };
+    } else {
+      return { active: false, startTime: null, lastResetTime: latestClassroom.lastResetTime || null };
     }
   }
 
@@ -2933,41 +2930,40 @@ export function setShiftActiveStatesBatch(updates: { targetKey: string; active: 
       (s.nome && keyMatches(s.nome.split(' (')[0], cleanKey))
     );
 
-    let targetRoom = '';
     if (student) {
+      // Individual student update - ONLY update student keys
       keysToUpdate.add(student.id);
       if (student.nome) {
         keysToUpdate.add(student.nome);
         keysToUpdate.add(student.nome.split(' (')[0].trim());
       }
-      targetRoom = student.salaAula || student.quarto || getStudentRoomName(student) || '';
     } else {
-      targetRoom = getStudentRoomName(cleanKey) || cleanKey;
-    }
+      // Classroom or Group update - update classroom and all room students
+      const targetRoom = getStudentRoomName(cleanKey) || cleanKey;
+      if (targetRoom) {
+        keysToUpdate.add(targetRoom);
+        // Find all students in this EXACT room
+        const roomStudents = allStudents.filter(s => {
+          const sRoom = s.salaAula || s.quarto || getStudentRoomName(s) || '';
+          return keyMatches(sRoom, targetRoom);
+        });
 
-    if (targetRoom) {
-      keysToUpdate.add(targetRoom);
-      // Find all students in this EXACT room
-      const roomStudents = allStudents.filter(s => {
-        const sRoom = s.salaAula || s.quarto || getStudentRoomName(s) || '';
-        return keyMatches(sRoom, targetRoom);
-      });
+        roomStudents.forEach(s => {
+          keysToUpdate.add(s.id);
+          if (s.nome) {
+            keysToUpdate.add(s.nome);
+            keysToUpdate.add(s.nome.split(' (')[0].trim());
+          }
+        });
 
-      roomStudents.forEach(s => {
-        keysToUpdate.add(s.id);
-        if (s.nome) {
-          keysToUpdate.add(s.nome);
-          keysToUpdate.add(s.nome.split(' (')[0].trim());
-        }
-      });
-
-      // Find teacher assigned to this room
-      const assignedTeacher = getAssignedTeacherForRoom(targetRoom);
-      if (assignedTeacher) {
-        keysToUpdate.add(assignedTeacher.id);
-        if (assignedTeacher.nome) {
-          keysToUpdate.add(assignedTeacher.nome);
-          keysToUpdate.add(assignedTeacher.nome.replace(/\s*\([^)]*\)/g, '').trim());
+        // Find teacher assigned to this room
+        const assignedTeacher = getAssignedTeacherForRoom(targetRoom);
+        if (assignedTeacher) {
+          keysToUpdate.add(assignedTeacher.id);
+          if (assignedTeacher.nome) {
+            keysToUpdate.add(assignedTeacher.nome);
+            keysToUpdate.add(assignedTeacher.nome.replace(/\s*\([^)]*\)/g, '').trim());
+          }
         }
       }
     }
