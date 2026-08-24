@@ -309,9 +309,11 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
       // 1. Main anjo_alimentacao store
       const mealKey = 'anjo_alimentacao';
       const meals = getFromDB<any[]>(mealKey, []);
-      const refKey = refeicaoNome.toLowerCase().includes('almoço') ? 'almoco' 
-        : refeicaoNome.toLowerCase().includes('fruta') || refeicaoNome.toLowerCase().includes('lanche') ? 'lanche' 
-        : refeicaoNome.toLowerCase().includes('mamad') ? 'mamadeira' : 'jantar';
+      const refKey = (refeicaoNome.toLowerCase().includes('mamad') || refeicaoNome.toLowerCase().includes('leite') || refeicaoNome.toLowerCase().includes('formula')) ? 'mamadeira'
+        : (refeicaoNome.toLowerCase().includes('almoço') || refeicaoNome.toLowerCase().includes('almoco') || refeicaoNome.toLowerCase().includes('papinha')) ? 'almoco' 
+        : (refeicaoNome.toLowerCase().includes('café') || refeicaoNome.toLowerCase().includes('cafe') || refeicaoNome.toLowerCase().includes('desjejum') || refeicaoNome.toLowerCase().includes('colação')) ? 'cafe_manha'
+        : (refeicaoNome.toLowerCase().includes('fruta') || refeicaoNome.toLowerCase().includes('lanche')) ? 'lanche' 
+        : 'jantar';
       meals.unshift({
         id: `meal_${Date.now()}`,
         idosoId: idoso.id,
@@ -330,13 +332,28 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
       const allTasks = getFromDB<any[]>(tasksKey, []);
       const updatedTasks = allTasks.map(t => {
         if (t.idosoId === idoso.id && t.tipo === 'alimentacao' && t.status !== 'concluido') {
-          return {
-            ...t,
-            status: (aceitacao === 'recusou' ? 'recusado' : 'concluido') as any,
-            concluidaEm: now,
-            completadaPor: usuarioAtual.nome,
-            observacao: `Refeição (${refeicaoNome}): ${aceitacaoText}. ${quickMeal.obs}`
-          };
+          const titleLower = (t.titulo || '').toLowerCase();
+          let isMatch = false;
+          if (refKey === 'mamadeira') {
+            isMatch = titleLower.includes('mamadeira') || titleLower.includes('leite') || titleLower.includes('fórmula') || titleLower.includes('formula');
+          } else if (refKey === 'cafe_manha') {
+            isMatch = (titleLower.includes('café') || titleLower.includes('cafe') || titleLower.includes('desjejum') || titleLower.includes('lanchinho da manhã') || titleLower.includes('lanche da manhã') || titleLower.includes('lanchinho')) && !titleLower.includes('mamadeira');
+          } else if (refKey === 'lanche') {
+            isMatch = (titleLower.includes('frutinha') || titleLower.includes('lanche da tarde') || titleLower.includes('lanchinho tarde')) && !titleLower.includes('mamadeira') && !titleLower.includes('manhã') && !titleLower.includes('manha');
+          } else if (refKey === 'almoco') {
+            isMatch = titleLower.includes('almoço') || titleLower.includes('almoco') || titleLower.includes('papinha') || titleLower.includes('almocinho');
+          } else if (refKey === 'jantar') {
+            isMatch = titleLower.includes('jantar') || titleLower.includes('jantinha');
+          }
+          if (isMatch) {
+            return {
+              ...t,
+              status: (aceitacao === 'recusou' ? 'recusado' : 'concluido') as any,
+              concluidaEm: now,
+              completadaPor: usuarioAtual.nome,
+              observacao: `Refeição (${refeicaoNome}): ${aceitacaoText}. ${quickMeal.obs}`
+            };
+          }
         }
         return t;
       });

@@ -14,7 +14,7 @@ import { LgpdConsentModal } from './LgpdConsentModal';
 import { VoiceInput } from './VoiceInput';
 import { QuickStudentSearch } from './QuickStudentSearch';
 import { AuraSmartRegisterModal } from './AuraSmartRegisterModal';
-import { parseAuraRawPlan, formatAuraTaskTitle, inferTaskType, realignPedagogicalActivity, isConversationalChatNoise } from '../utils/auraPlanParser';
+import { parseAuraRawPlan, formatAuraTaskTitle, inferTaskType, realignPedagogicalActivity, isConversationalChatNoise, areTaskTitlesSimilar, mergeSimilarTasks } from '../utils/auraPlanParser';
 import { 
   Heart, 
   Sparkles, 
@@ -2684,7 +2684,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
       });
     });
 
-    const updatedTasks = [...baseTasks, ...newBatch];
+    const updatedTasks = mergeSimilarTasks(baseTasks, newBatch);
     saveToDB('anjo_tarefas_diarias', updatedTasks);
 
     const updatedAtivs = [...baseAtivs, ...newAtivsBatch];
@@ -2811,7 +2811,6 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
       return;
     }
 
-    const seen = new Set<string>();
     const dedupedStudentTasks: TarefaDiaria[] = [];
     let removedCount = 0;
 
@@ -2822,20 +2821,38 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
         return;
       }
 
-      // Create a signature: normalized title + horario
-      const normTitle = t.titulo
-        .toLowerCase()
-        .replace(/troca de fralda[s]?|higiene/g, 'fralda')
-        .replace(/[^a-z0-9]/g, '')
-        .trim();
-      const normTime = (t.horarioPrevisto || '').trim();
-      const key = `${normTitle}_${normTime}`;
+      const existingIndex = dedupedStudentTasks.findIndex(ex =>
+        areTaskTitlesSimilar(ex.titulo, t.titulo, ex.tipo, t.tipo, ex.horarioPrevisto, t.horarioPrevisto)
+      );
 
-      // Check if we already have an identical task at the exact same hour
-      if (seen.has(key)) {
+      if (existingIndex !== -1) {
         removedCount++;
+        const ex = dedupedStudentTasks[existingIndex];
+        const isGeneric = (title: string) => 
+          /^(atividade|atividade dirigida|atividade pedagógica|refeição|lanche|tarefa)$/i.test((title || '').replace(/[^\w\s]/gi, '').trim()) ||
+          (title || '').toLowerCase().includes('temática (bncc)');
+
+        let bestTitle = ex.titulo;
+        if (isGeneric(ex.titulo) && !isGeneric(t.titulo)) {
+          bestTitle = t.titulo;
+        } else if (!isGeneric(t.titulo) && (t.titulo || '').length > (ex.titulo || '').length) {
+          bestTitle = t.titulo;
+        }
+
+        let mergedDesc = t.descricao || ex.descricao || '';
+        if (ex.descricao && t.descricao && !ex.descricao.includes(t.descricao) && !t.descricao.includes(ex.descricao)) {
+          mergedDesc = `${t.descricao}\n\n📝 Detalhes adicionais: ${ex.descricao}`;
+        }
+
+        dedupedStudentTasks[existingIndex] = {
+          ...ex,
+          titulo: bestTitle,
+          descricao: mergedDesc,
+          status: (ex.status === 'concluido' || ex.status === 'recusado') ? ex.status : t.status,
+          concluidaEm: ex.concluidaEm || t.concluidaEm,
+          completadaPor: ex.completadaPor || t.completadaPor
+        };
       } else {
-        seen.add(key);
         dedupedStudentTasks.push(t);
       }
     });
@@ -2850,7 +2867,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     saveToDB('anjo_tarefas_diarias', finalAllTasks);
     setTarefas(dedupedStudentTasks);
 
-    alert(`🧹 Sucesso! ${removedCount} atividade(s) duplicada(s) foram removidas da agenda.`);
+    alert(`🧹 Sucesso! ${removedCount} atividade(s) duplicada(s) foram unificadas da agenda.`);
   };
 
   const handleResetToDefaultTasks = () => {
@@ -4226,7 +4243,8 @@ Acesse o boletim de cuidados completo pelo link seguro:
       const alreadyExists = mealsStoreCheck.some(f => f.idosoId === idoso.id && f.refeicao === quickMeal.refeicao && isTodayOrDemoDate(f.data));
       if (alreadyExists) {
         const mealLabelMap: { [key: string]: string } = {
-          cafe_manha: isEscolar ? '🍼 Mamadeira / Lanchinho Manhã' : '☕ Café da Manhã',
+          mamadeira: '🍼 Mamadeira de Leite / Fórmula',
+          cafe_manha: isEscolar ? '🥐 Lanchinho da Manhã / Café' : '☕ Café da Manhã',
           almoco: isEscolar ? '🍲 Papinha / Almocinho' : '🍛 Almoço',
           lanche: isEscolar ? '🍎 Frutinha / Lanchinho Tarde' : '🍎 Lanche da Tarde',
           jantar: isEscolar ? '🥣 Jantinha Escolar' : '🍲 Jantar',
@@ -4276,20 +4294,36 @@ Acesse o boletim de cuidados completo pelo link seguro:
 
     // Sync tasks
     const labelMap: { [key: string]: string } = {
-      cafe_manha: 'Café',
+      mamadeira: 'Mamadeira',
+      cafe_manha: 'Lanchinho da Manhã / Café',
       almoco: 'Almoço',
-      lanche: 'Lanche',
+      lanche: 'Frutinha / Lanche',
       jantar: 'Jantar'
     };
     const updated = tarefas.map(t => {
-      if (t.tipo === 'alimentacao' && t.status !== 'concluido' && t.titulo.includes(labelMap[quickMeal.refeicao] || '')) {
-        return {
-          ...t,
-          status: 'concluido' as const,
-          concluidaEm: defaultTime,
-          completadaPor: usuarioAtual.nome,
-          observacao: `Aceitação: ${quickMeal.aceitacao}. ${quickMeal.observacao}`
-        };
+      if (t.tipo === 'alimentacao' && t.status !== 'concluido') {
+        const titleLower = (t.titulo || '').toLowerCase();
+        let isMatch = false;
+        if (quickMeal.refeicao === 'mamadeira') {
+          isMatch = titleLower.includes('mamadeira') || titleLower.includes('leite') || titleLower.includes('fórmula') || titleLower.includes('formula');
+        } else if (quickMeal.refeicao === 'cafe_manha') {
+          isMatch = (titleLower.includes('café') || titleLower.includes('cafe') || titleLower.includes('desjejum') || titleLower.includes('lanchinho da manhã') || titleLower.includes('lanche da manhã') || titleLower.includes('lanchinho')) && !titleLower.includes('mamadeira');
+        } else if (quickMeal.refeicao === 'lanche' || quickMeal.refeicao === 'lanche_tarde') {
+          isMatch = (titleLower.includes('frutinha') || titleLower.includes('lanche da tarde') || titleLower.includes('lanchinho tarde')) && !titleLower.includes('mamadeira') && !titleLower.includes('manhã') && !titleLower.includes('manha');
+        } else if (quickMeal.refeicao === 'almoco') {
+          isMatch = titleLower.includes('almoço') || titleLower.includes('almoco') || titleLower.includes('papinha') || titleLower.includes('almocinho');
+        } else if (quickMeal.refeicao === 'jantar') {
+          isMatch = titleLower.includes('jantar') || titleLower.includes('jantinha');
+        }
+        if (isMatch) {
+          return {
+            ...t,
+            status: 'concluido' as const,
+            concluidaEm: defaultTime,
+            completadaPor: usuarioAtual.nome,
+            observacao: `Aceitação: ${quickMeal.aceitacao}. ${quickMeal.observacao}`
+          };
+        }
       }
       return t;
     });

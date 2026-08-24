@@ -1021,7 +1021,7 @@ export default function App() {
 
     if (!isEscolar) {
       if (idosoAtual.id.startsWith('aluno_')) {
-        const allSeniors = getFromDB<Idoso[]>('anjo_idosos', IDOSOS_INICIAIS);
+        const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
         const realSenior = allSeniors.find(s => s.id === 'idoso_maria') || allSeniors.find(s => !s.id.startsWith('aluno_'));
         if (realSenior) return realSenior;
       }
@@ -1033,7 +1033,7 @@ export default function App() {
     }
 
     // Se for modo escolar, redireciona o idoso para o perfil de aluno real correspondente
-    const allSeniors = getFromDB<Idoso[]>('anjo_idosos', IDOSOS_INICIAIS);
+    const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
     if (idosoAtual.id === 'idoso_maria') {
       const mariana = allSeniors.find(s => s.id === 'aluno_1');
       if (mariana) return mariana;

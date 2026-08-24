@@ -354,13 +354,19 @@ export function formatAuraTaskTitle(rawTitle: string, subTitle: string, category
   if (lower.includes('espelho') || lower.includes('identidade') || lower.includes('olhar')) {
     return `${clean} 🪞`;
   }
-  if (lower.includes('desjejum') || lower.includes('café') || lower.includes('cafe') || lower.includes('mamadeira')) {
+  if (lower.includes('mamadeira') || lower.includes('fórmula') || lower.includes('formula')) {
     return `${clean} 🍼`;
   }
-  if (lower.includes('almoço') || lower.includes('almoco') || lower.includes('papinha') || lower.includes('refeição') || lower.includes('jantar')) {
+  if (lower.includes('desjejum') || lower.includes('café') || lower.includes('cafe') || lower.includes('lanchinho da manhã') || lower.includes('lanche da manhã')) {
+    return `${clean} 🥐`;
+  }
+  if (lower.includes('almoço') || lower.includes('almoco') || lower.includes('papinha') || lower.includes('almocinho')) {
     return `${clean} 🍲`;
   }
-  if (lower.includes('lanche') || lower.includes('fruta') || lower.includes('colação') || lower.includes('colacao') || lower.includes('alimentar')) {
+  if (lower.includes('jantar') || lower.includes('jantinha')) {
+    return `${clean} 🥣`;
+  }
+  if (lower.includes('lanche') || lower.includes('fruta') || lower.includes('colação') || lower.includes('colacao') || lower.includes('frutinha')) {
     return `${clean} 🍎`;
   }
   if (lower.includes('fralda') || lower.includes('higiene') || lower.includes('banheiro') || lower.includes('troca') || lower.includes('desfralde')) {
@@ -1176,4 +1182,174 @@ export function parseAuraRawPlan(text: string): {
     },
     activities
   };
+}
+
+// Compara se duas tarefas se referem à mesma atividade/categoria da rotina para evitar duplicidade
+export function areTaskTitlesSimilar(
+  titleA: string,
+  titleB: string,
+  typeA?: string,
+  typeB?: string,
+  timeA?: string,
+  timeB?: string
+): boolean {
+  if (!titleA || !titleB) return false;
+
+  const normalizeStr = (s: string) => s
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^\w\s]/gi, '')
+    .trim();
+
+  const normA = normalizeStr(titleA);
+  const normB = normalizeStr(titleB);
+
+  // Match exato após normalização
+  if (normA === normB) return true;
+
+  // Contenção de substring para títulos descritivos longos
+  if (normA.length > 6 && normB.length > 6) {
+    if (normA.includes(normB) || normB.includes(normA)) return true;
+  }
+
+  // 1. Mamadeira de Leite / Fórmula (Totalmente isolada de refeições/lanches)
+  const isBottleA = normA.includes('mamadeira') || normA.includes('formula') || normA.includes('leite de formula');
+  const isBottleB = normB.includes('mamadeira') || normB.includes('formula') || normB.includes('leite de formula');
+  if (isBottleA || isBottleB) {
+    return isBottleA && isBottleB;
+  }
+
+  // 2. Café da Manhã / Lanchinho da Manhã (Colação)
+  const isMorningSnackA = (normA.includes('cafe') || normA.includes('desjejum') || normA.includes('lanche da manha') || normA.includes('lanchinho da manha') || normA.includes('colacao')) && !isBottleA;
+  const isMorningSnackB = (normB.includes('cafe') || normB.includes('desjejum') || normB.includes('lanche da manha') || normB.includes('lanchinho da manha') || normB.includes('colacao')) && !isBottleB;
+  if (isMorningSnackA || isMorningSnackB) {
+    return isMorningSnackA && isMorningSnackB;
+  }
+
+  // 3. Almoço / Papinha / Almocinho
+  const isLunchA = normA.includes('almoco') || normA.includes('papinha') || normA.includes('almocinho');
+  const isLunchB = normB.includes('almoco') || normB.includes('papinha') || normB.includes('almocinho');
+  if (isLunchA || isLunchB) {
+    return isLunchA && isLunchB;
+  }
+
+  // 4. Frutinha / Lanchinho da Tarde
+  const isAfternoonSnackA = (normA.includes('lanche da tarde') || normA.includes('lanchinho tarde') || normA.includes('frutinha')) && !isBottleA;
+  const isAfternoonSnackB = (normB.includes('lanche da tarde') || normB.includes('lanchinho tarde') || normB.includes('frutinha')) && !isBottleB;
+  if (isAfternoonSnackA || isAfternoonSnackB) {
+    return isAfternoonSnackA && isAfternoonSnackB;
+  }
+
+  // 5. Jantar / Jantinha
+  const isDinnerA = normA.includes('jantar') || normA.includes('jantinha');
+  const isDinnerB = normB.includes('jantar') || normB.includes('jantinha');
+  if (isDinnerA || isDinnerB) {
+    return isDinnerA && isDinnerB;
+  }
+
+  // 6. Sono / Soneca / Repouso
+  const isNapA = normA.includes('soneca') || normA.includes('soninho') || normA.includes('repouso') || normA.includes('sono');
+  const isNapB = normB.includes('soneca') || normB.includes('soninho') || normB.includes('repouso') || normB.includes('sono');
+  if (isNapA || isNapB) {
+    return isNapA && isNapB;
+  }
+
+  // 7. Fraldas / Higiene / Escovação
+  const isHygieneA = normA.includes('fralda') || normA.includes('escovacao') || normA.includes('higiene') || normA.includes('banho');
+  const isHygieneB = normB.includes('fralda') || normB.includes('escovacao') || normB.includes('higiene') || normB.includes('banho');
+  if (isHygieneA || isHygieneB) {
+    return isHygieneA && isHygieneB;
+  }
+
+  // 8. Entrada / Acolhida
+  const isEntryA = normA.includes('acolhida') || normA.includes('entrada') || normA.includes('recepcao');
+  const isEntryB = normB.includes('acolhida') || normB.includes('entrada') || normB.includes('recepcao');
+  if (isEntryA || isEntryB) {
+    return isEntryA && isEntryB;
+  }
+
+  // 9. Recreação / Parque / Pátio
+  const isParkA = normA.includes('parque') || normA.includes('parquinho') || normA.includes('patio');
+  const isParkB = normB.includes('parque') || normB.includes('parquinho') || normB.includes('patio');
+  if (isParkA || isParkB) {
+    return isParkA && isParkB;
+  }
+
+  // 10. Palavras-chave de Atividades Pedagógicas Específicas
+  const keywords = ['horta', 'caixa magica', 'textura', 'pintura', 'massinha', 'musica', 'musicalizacao', 'historia', 'teatro', 'espelho', 'boliche', 'culinaria', 'quebracabeca', 'garrafa sensorial'];
+  for (const kw of keywords) {
+    const hasA = normA.includes(kw);
+    const hasB = normB.includes(kw);
+    if (hasA || hasB) {
+      return hasA && hasB;
+    }
+  }
+
+  // 11. Substituição de Atividade Genérica (ex: Atividade Dirigida BNCC) no mesmo bloco de horário (diferença <= 45 min)
+  const isGenericPedagogicalA = normA.includes('atividade dirigida') || normA.includes('atividade pedagogica') || normA.includes('atividade bncc') || normA.includes('tema do dia');
+  const isGenericPedagogicalB = normB.includes('atividade dirigida') || normB.includes('atividade pedagogica') || normB.includes('atividade bncc') || normB.includes('tema do dia');
+  
+  if ((isGenericPedagogicalA || isGenericPedagogicalB) && (typeA === 'atividade_fisica' || typeB === 'atividade_fisica' || !typeA || !typeB)) {
+    if (timeA && timeB) {
+      const getMins = (tStr: string) => {
+        const parts = tStr.split(':');
+        return parseInt(parts[0] || '0') * 60 + parseInt(parts[1] || '0');
+      };
+      const diff = Math.abs(getMins(timeA) - getMins(timeB));
+      if (diff <= 45) return true;
+    }
+  }
+
+  return false;
+}
+
+// Unifica inteligente uma lista de novas tarefas com as tarefas existentes da rotina, eliminando duplicatas
+export function mergeSimilarTasks(existingTasks: any[], newTasks: any[]): any[] {
+  const result = [...existingTasks];
+
+  for (const newT of newTasks) {
+    const existingIndex = result.findIndex(ex => 
+      ex.idosoId === newT.idosoId &&
+      areTaskTitlesSimilar(ex.titulo, newT.titulo, ex.tipo, newT.tipo, ex.horarioPrevisto, newT.horarioPrevisto)
+    );
+
+    if (existingIndex !== -1) {
+      const ex = result[existingIndex];
+      
+      const isGeneric = (title: string) => 
+        /^(atividade|atividade dirigida|atividade pedagógica|refeição|lanche|tarefa)$/i.test((title || '').replace(/[^\w\s]/gi, '').trim()) ||
+        (title || '').toLowerCase().includes('temática (bncc)');
+      
+      let bestTitle = ex.titulo;
+      if (isGeneric(ex.titulo) && !isGeneric(newT.titulo)) {
+        bestTitle = newT.titulo;
+      } else if (!isGeneric(newT.titulo) && (newT.titulo || '').length > (ex.titulo || '').length) {
+        bestTitle = newT.titulo;
+      }
+
+      let mergedDesc = newT.descricao || ex.descricao || '';
+      if (ex.descricao && newT.descricao && !ex.descricao.includes(newT.descricao) && !newT.descricao.includes(ex.descricao)) {
+        mergedDesc = `${newT.descricao}\n\n📝 Detalhes da rotina: ${ex.descricao}`;
+      }
+
+      const finalStatus = (ex.status === 'concluido' || ex.status === 'recusado') ? ex.status : newT.status;
+
+      result[existingIndex] = {
+        ...ex,
+        titulo: bestTitle,
+        descricao: mergedDesc,
+        horarioPrevisto: newT.horarioPrevisto || ex.horarioPrevisto,
+        tipo: newT.tipo || ex.tipo,
+        status: finalStatus,
+        concluidaEm: ex.concluidaEm || newT.concluidaEm,
+        completadaPor: ex.completadaPor || newT.completadaPor,
+        observacao: ex.observacao || newT.observacao
+      };
+    } else {
+      result.push(newT);
+    }
+  }
+
+  return result;
 }
