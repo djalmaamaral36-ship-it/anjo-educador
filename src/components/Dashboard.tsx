@@ -56,7 +56,8 @@ import {
   Phone,
   X,
   Loader2,
-  RefreshCw
+  RefreshCw,
+  Info
 } from 'lucide-react';
 
 interface DashboardProps {
@@ -843,6 +844,11 @@ Equipe Anjinho Escolar ❤️🕊️`
   const [showOccurrenceModal, setShowOccurrenceModal] = useState(false);
   const [occurrenceForm, setOccurrenceForm] = useState({ tipo: 'queda', criticidade: 'amarelo', descricao: '' });
   const [emergencyMinimized, setEmergencyMinimized] = useState(true);
+
+  // Stop Shift Reason Modal states
+  const [showStopIndividualShiftModal, setShowStopIndividualShiftModal] = useState(false);
+  const [stopShiftReason, setStopShiftReason] = useState('Consulta Médica / Exame');
+  const [stopShiftNote, setStopShiftNote] = useState('');
 
   // Caregiver/Educator access restriction states for family members
   const [showCaregiverPinModal, setShowCaregiverPinModal] = useState(false);
@@ -3108,6 +3114,72 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
 
   const handleStartShift = () => {
     const startTimeStamp = new Date().toISOString();
+    const horaStr = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const dataStr = new Date().toLocaleDateString('pt-BR');
+    const cleanName = (idoso.nome || '').split(' (')[0].trim();
+
+    const wasAbsentToday = isAbsent || localStorage.getItem(`anjo_is_absent_${idoso.id}`) === 'true';
+
+    // If student was marked absent or turned off earlier today, treat this as a RETURN (Religar cronômetro without wiping activities)
+    if (wasAbsentToday) {
+      unlockAndMarkPresent(idoso.id);
+
+      const novaOcorrencia = {
+        id: 'oc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        tipo: 'retorno_aluno',
+        criticidade: 'verde',
+        titulo: 'Retorno do Aluno à Escola',
+        descricao: `Aluno ${cleanName} retornou às ${horaStr} e o cronômetro foi religado.`,
+        horario: horaStr,
+        data: dataStr,
+        responsavel: usuarioAtual?.nome || 'Educador',
+        statusEnvioWhatsApp: 'mensagem_gerada',
+        dataRegistroStatus: new Date().toLocaleString('pt-BR')
+      };
+
+      const currentOccs = getFromDB<any[]>(`anjo_ocorrencias_${idoso.id}`, []);
+      const updatedOccs = [novaOcorrencia, ...currentOccs];
+      setOccurrencesList(updatedOccs);
+      saveToDB(`anjo_ocorrencias_${idoso.id}`, updatedOccs);
+
+      const logs = getFromDB<any[]>(`anjo_lgpd_auditoria_${idoso.id}`, []);
+      logs.unshift({
+        id: 'log_' + Date.now(),
+        autor: usuarioAtual?.nome || 'Educador',
+        acao: 'Retorno do Aluno à Sala Registrado',
+        data: new Date().toLocaleString('pt-BR'),
+        ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
+        detalhes: `Retorno do aluno ${cleanName} às ${horaStr}. Cronômetro religado e atividades preservadas.`
+      });
+      saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
+      setLgpdLogs(logs);
+
+      setIsShiftActive(true);
+      setShiftStartTime(startTimeStamp);
+
+      const startShiftUpdates = [
+        { targetKey: idoso.id, active: true, startTime: startTimeStamp },
+        { targetKey: idoso.nome, active: true, startTime: startTimeStamp },
+        { targetKey: cleanName, active: true, startTime: startTimeStamp }
+      ];
+      setShiftActiveStatesBatch(startShiftUpdates);
+
+      const retMsg = `Anjo Escolar — Aviso de Retorno do Aluno
+  
+Olá. Informamos que o(a) aluno(a) *${cleanName}* retornou às atividades escolares às *${horaStr}*.
+O acompanhamento de rotina foi reativado.`;
+
+      triggerWhatsAppSim('Aviso de Retorno do Aluno', retMsg);
+
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
+        window.dispatchEvent(new CustomEvent('anjo_user_updated'));
+        window.dispatchEvent(new CustomEvent('db-vitals-update'));
+      }
+
+      showToast(`▶️ Retorno de ${cleanName} registrado às ${horaStr}! Cronômetro religado.`, 'success');
+      return;
+    }
 
     // Clear routine databases for today related to this student so they start fresh from 0
     resetStudentDailyRoutine([idoso.id]);
@@ -3187,31 +3259,12 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
     setIsShiftActive(true);
     setShiftStartTime(startTimeStamp);
 
-    const studentRoom = idoso.salaAula || idoso.quarto || getStudentRoomName(idoso) || (usuarioAtual?.salaAula && usuarioAtual.salaAula !== 'Todas' ? usuarioAtual.salaAula : 'Berçário I - A');
-    
-    // Find all classmates in this room to activate collectively in school/teacher mode
-    const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
-    const classmates = allSeniors.filter(s => s && s.id && isStudentInRoom(s, studentRoom));
-    if (!classmates.some(c => c.id === idoso.id)) {
-      classmates.push(idoso);
-    }
-
     const startShiftUpdates: { targetKey: string; active: boolean; startTime?: string }[] = [
-      { targetKey: studentRoom, active: true, startTime: startTimeStamp },
       { targetKey: idoso.id, active: true, startTime: startTimeStamp }
     ];
     if (idoso.nome) startShiftUpdates.push({ targetKey: idoso.nome, active: true, startTime: startTimeStamp });
-    if (usuarioAtual?.id) startShiftUpdates.push({ targetKey: usuarioAtual.id, active: true, startTime: startTimeStamp });
-    if (usuarioAtual?.nome) startShiftUpdates.push({ targetKey: usuarioAtual.nome, active: true, startTime: startTimeStamp });
-
-    classmates.forEach(mate => {
-      if (!mate || !mate.id) return;
-      startShiftUpdates.push({ targetKey: mate.id, active: true, startTime: startTimeStamp });
-      if (mate.nome) startShiftUpdates.push({ targetKey: mate.nome, active: true, startTime: startTimeStamp });
-      const cleanM = (mate.nome || '').split(' (')[0].trim();
-      if (cleanM) startShiftUpdates.push({ targetKey: cleanM, active: true, startTime: startTimeStamp });
-      localStorage.removeItem(`anjo_is_absent_${mate.id}`);
-    });
+    const cleanN = (idoso.nome || '').split(' (')[0].trim();
+    if (cleanN) startShiftUpdates.push({ targetKey: cleanN, active: true, startTime: startTimeStamp });
 
     setShiftActiveStatesBatch(startShiftUpdates);
 
@@ -4022,21 +4075,57 @@ Acesse o boletim de cuidados completo pelo link seguro:
     }
   };
 
-  // Direct 1-Click Stop Shift Handler (immediately turns off shift & syncs cross-device)
+  // Direct 1-Click Stop Shift Handler (opens modal to record reason, preserve activities and log LGPD)
   const handleDirectStopShift = () => {
-    try {
-      const studentRoom = idoso.salaAula || idoso.quarto || getStudentRoomName(idoso);
-      const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
-      const classmates = allSeniors.filter(s => s && s.id && isStudentInRoom(s, studentRoom || ''));
+    setStopShiftReason('Consulta Médica / Exame');
+    setStopShiftNote('');
+    setShowStopIndividualShiftModal(true);
+  };
 
+  const handleConfirmStopIndividualShift = () => {
+    try {
+      const finalReason = (stopShiftReason + (stopShiftNote ? ` - ${stopShiftNote}` : '')).trim() || 'Saída Antecipada / Ausência Temporária';
+      const horaStr = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      const dataStr = new Date().toLocaleDateString('pt-BR');
+      const cleanName = (idoso.nome || '').split(' (')[0].trim();
+
+      // 1. Create Occurrence record
+      const novaOcorrencia = {
+        id: 'oc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
+        tipo: 'saida_ausencia',
+        criticidade: 'amarelo',
+        titulo: 'Saída Antecipada / Ausência Registrada',
+        descricao: `Aluno ${cleanName} se ausentou às ${horaStr}. Motivo: ${finalReason}`,
+        horario: horaStr,
+        data: dataStr,
+        responsavel: usuarioAtual?.nome || 'Educador',
+        statusEnvioWhatsApp: 'mensagem_gerada',
+        dataRegistroStatus: new Date().toLocaleString('pt-BR')
+      };
+
+      const currentOccs = getFromDB<any[]>(`anjo_ocorrencias_${idoso.id}`, []);
+      const updatedOccs = [novaOcorrencia, ...currentOccs];
+      setOccurrencesList(updatedOccs);
+      saveToDB(`anjo_ocorrencias_${idoso.id}`, updatedOccs);
+
+      // 2. Create LGPD Audit Log
+      const logs = getFromDB<any[]>(`anjo_lgpd_auditoria_${idoso.id}`, []);
+      logs.unshift({
+        id: 'log_' + Date.now(),
+        autor: usuarioAtual?.nome || 'Educador',
+        acao: 'Saída / Ausência de Aluno Registrada',
+        data: new Date().toLocaleString('pt-BR'),
+        ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
+        detalhes: `Horário de saída: ${horaStr} | Motivo: ${finalReason}. Atividades preservadas no diário.`
+      });
+      saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
+      setLgpdLogs(logs);
+
+      // 3. Mark shift turned off and student absent
       const candidateKeysToClose = Array.from(new Set([
         idoso.id,
         idoso.nome,
-        idoso.nome ? idoso.nome.split(' (')[0].trim() : '',
-        studentRoom,
-        usuarioAtual?.id,
-        usuarioAtual?.nome,
-        ...classmates.flatMap(m => [m.id, m.nome, (m.nome || '').split(' (')[0].trim()])
+        cleanName
       ].filter(Boolean))) as string[];
 
       setShiftActiveStatesBatch(candidateKeysToClose.map(k => ({ targetKey: k, active: false })));
@@ -4044,8 +4133,20 @@ Acesse o boletim de cuidados completo pelo link seguro:
       setIsShiftActive(false);
       setShiftStartTime(null);
       setElapsedShiftTime('00:00:00');
-      setShowShiftReviewModal(false);
-      setShiftReviewPayload(null);
+      setIsAbsent(true);
+      localStorage.setItem(`anjo_is_absent_${idoso.id}`, 'true');
+
+      setShowStopIndividualShiftModal(false);
+
+      // 4. Simulated WhatsApp notification
+      const abMsg = `Anjo Escolar — Aviso de Saída / Ausência
+  
+Olá. Registramos que o(a) aluno(a) *${cleanName}* teve saída/ausência registrada às *${horaStr}*.
+Motivo: *${finalReason}*
+
+As atividades e registros do dia permanecem salvos no relatório escolar. Qualquer dúvida, estamos à disposição!`;
+
+      triggerWhatsAppSim('Aviso de Saída / Ausência do Aluno', abMsg);
 
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
@@ -4053,9 +4154,9 @@ Acesse o boletim de cuidados completo pelo link seguro:
         window.dispatchEvent(new CustomEvent('db-vitals-update'));
       }
 
-      showToast(`⏹️ Cronômetro desligado com sucesso para ${idoso.nome.split(' (')[0]} e turma! Sincronizado com os pais.`, 'success');
+      showToast(`⏹️ Saída de ${cleanName} registrada às ${horaStr}. Motivo salvo no relatório e LGPD.`, 'success');
     } catch (err) {
-      console.error('Erro ao desligar cronometro diretamente:', err);
+      console.error('Erro ao registrar saída de aluno:', err);
     }
   };
 
@@ -5799,9 +5900,9 @@ Acesse o boletim de cuidados completo pelo link seguro:
                           <button
                             onClick={handleStartShift}
                             className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-1.5 hover:scale-102"
-                            title="Ligar cronômetro para este aluno e zerar todas as atividades do dia"
+                            title={isAbsent ? "Religar cronômetro registrando o retorno do aluno (mantendo atividades salvas)" : "Ligar cronômetro para este aluno"}
                           >
-                            <Play className="w-3.5 h-3.5 fill-current" /> {isEscolar ? '▶️ Ligar Individual' : '▶️ Iniciar Turno Individual'}
+                            <Play className="w-3.5 h-3.5 fill-current" /> {isAbsent ? '▶️ Religar Cronômetro' : (isEscolar ? '▶️ Ligar Individual' : '▶️ Iniciar Turno Individual')}
                           </button>
                           <button
                             onClick={() => handleStartShiftGroup(teacherClassroom)}
@@ -8752,6 +8853,98 @@ Segunda-feira:
 
         </div>
       )}
+      {/* MODAL: REGISTRAR SAÍDA / DESLIGAR CRONÔMETRO INDIVIDUAL */}
+      {showStopIndividualShiftModal && (
+        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
+          <div className="bg-white rounded-3xl max-w-lg w-full p-6 border border-slate-200 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto">
+            <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
+              <div className="p-3 bg-amber-100 text-amber-700 rounded-2xl shrink-0">
+                <Square className="w-6 h-6 fill-current" />
+              </div>
+              <div>
+                <h3 className="text-base sm:text-lg font-black text-slate-800">
+                  ⏹️ Registrar Saída / Ausência de Aluno
+                </h3>
+                <p className="text-xs text-slate-500 font-medium">
+                  Aluno: <strong className="text-slate-800">{(idoso.nome || '').split(' (')[0]}</strong>
+                </p>
+              </div>
+            </div>
+
+            <div className="bg-amber-50/70 border border-amber-200 p-3.5 rounded-2xl text-xs text-amber-900 leading-relaxed font-medium flex items-start gap-2.5">
+              <Info className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+              <div>
+                <strong className="block font-bold mb-0.5">Informação LGPD e Relatórios:</strong>
+                O cronômetro deste aluno será desligado e o registro de saída será salvo no relatório com data, horário e motivo. <span className="underline font-bold">As atividades do dia permanecem salvas e salvas intactas.</span>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 block">
+                Selecione ou digite o motivo da saída:
+              </label>
+
+              {/* Preset Quick Chips */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {[
+                  '🩺 Consulta Médica / Exame',
+                  '🚗 Pais / Responsáveis buscaram mais cedo',
+                  '🤒 Mal-estar / Sintomas de Saúde',
+                  '🏠 Ausência Temporária / Particular',
+                  '📋 Fim das Aulas / Saída Normal'
+                ].map((reasonOption) => {
+                  const isSelected = stopShiftReason === reasonOption;
+                  return (
+                    <button
+                      key={reasonOption}
+                      type="button"
+                      onClick={() => setStopShiftReason(reasonOption)}
+                      className={`text-left p-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                        isSelected
+                          ? 'bg-amber-500 text-white border-amber-600 shadow-xs'
+                          : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                      }`}
+                    >
+                      {reasonOption}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div>
+                <label className="text-[10px] font-black uppercase text-slate-400 block mb-1">
+                  Observação Adicional / Detalhes (Opcional):
+                </label>
+                <textarea
+                  rows={2}
+                  value={stopShiftNote}
+                  onChange={e => setStopShiftNote(e.target.value)}
+                  placeholder="Ex: Mãe veio buscar às 14:30 para ir ao dentista..."
+                  className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setShowStopIndividualShiftModal(false)}
+                className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition-all cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmStopIndividualShift}
+                className="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md flex items-center gap-1.5"
+              >
+                <Square className="w-3.5 h-3.5 fill-current" /> Confirmar Saída e Desligar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {showOccurrenceModal && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 border border-slate-200 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto">
