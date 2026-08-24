@@ -38,6 +38,7 @@ import {
   Wifi,
   WifiOff,
   RotateCw,
+  RotateCcw,
   Play,
   Square,
   Check,
@@ -3236,6 +3237,8 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
       window.dispatchEvent(new CustomEvent('anjo_user_updated'));
       window.dispatchEvent(new CustomEvent('db-vitals-update'));
     }
+
+    showToast(`▶️ Cronômetro e período iniciados para ${idoso.nome.split(' (')[0]}! Todas as atividades do dia anterior foram zeradas para o novo dia.`, 'success');
   };
 
   const handleStartShiftGroup = (className: string) => {
@@ -5775,6 +5778,21 @@ Acesse o boletim de cuidados completo pelo link seguro:
                             title="Registrar ocorrência pedagógica ou de rotina"
                           >
                             <FileText className="w-4 h-4 text-white" /> 📋 Ocorrência do Dia
+                          </button>
+                          <button
+                            onClick={() => {
+                              triggerConfirm(
+                                'Reiniciar Cronômetro (Novo Dia)',
+                                `Deseja reiniciar o cronômetro para iniciar um NOVO DIA com ${idoso.nome.split(' (')[0]}? Todas as atividades e registros do dia anterior serão zerados e as tarefas da rotina retornarão ao estado pendente.`,
+                                () => {
+                                  handleStartShift();
+                                }
+                              );
+                            }}
+                            className="px-4 py-3 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2 border border-emerald-500"
+                            title="Reiniciar cronômetro para iniciar um novo dia do zero (zerar atividades do dia anterior)"
+                          >
+                            <RotateCcw className="w-4 h-4" /> {isEscolar ? 'Reiniciar Cronômetro (Novo Dia)' : 'Reiniciar Turno'}
                           </button>
                           <button
                             onClick={handleDirectStopShift}

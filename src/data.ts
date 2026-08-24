@@ -2468,17 +2468,180 @@ export function syncShiftStateLocalStorageFlags(shiftItems?: ShiftState[]) {
   });
 }
 
+export function generateDefaultTasksForStudent(idosoId: string): any[] {
+  const isEscolarStudent = idosoId.startsWith('aluno_') || idosoId.startsWith('aluno') || idosoId.startsWith('escola_');
+  if (isEscolarStudent) {
+    return [
+      {
+        id: 'task_s_entrada_' + idosoId,
+        idosoId,
+        tipo: 'atividade_fisica',
+        titulo: 'Acolhida & Entrada Afetiva 🏫',
+        descricao: 'Recepção carinhosa dos alunos, acolhimento individual e organização de pertences.',
+        horarioPrevisto: '07:00',
+        status: 'pendente'
+      },
+      {
+        id: 'task_s_roda_' + idosoId,
+        idosoId,
+        tipo: 'atividade_fisica',
+        titulo: 'Roda de Conversa: Tema do Dia 🪞',
+        descricao: 'Apresentação do tema diário, musicalização, chamada divertida e expressão das crianças.',
+        horarioPrevisto: '08:00',
+        status: 'pendente'
+      },
+      {
+        id: 'task_s_lanche_manha_' + idosoId,
+        idosoId,
+        tipo: 'alimentacao',
+        titulo: 'Lanche da Manhã & Frutinhas 🍎',
+        descricao: 'Frutas frescas da estação, biscoito integral e incentivo à hidratação.',
+        horarioPrevisto: '09:00',
+        status: 'pendente'
+      },
+      {
+        id: 'task_s_parque_' + idosoId,
+        idosoId,
+        tipo: 'atividade_fisica',
+        titulo: 'Recreação no Pátio & Parquinho 🧸',
+        descricao: 'Brincadeiras ao ar livre para estímulo motor, socialização e banho de sol adequado.',
+        horarioPrevisto: '09:45',
+        status: 'pendente'
+      },
+      {
+        id: 'task_s_dirigida_' + idosoId,
+        idosoId,
+        tipo: 'atividade_fisica',
+        titulo: 'Atividade Dirigida Temática (BNCC) 🎨',
+        descricao: 'Atividade prática pedagógica com foco no desenvolvimento cognitivo e sensorial.',
+        horarioPrevisto: '10:30',
+        status: 'pendente'
+      },
+      {
+        id: 'task_s_almoco_' + idosoId,
+        idosoId,
+        tipo: 'alimentacao',
+        titulo: 'Almoço Saudável / Papinha 🍲',
+        descricao: 'Pratinho balanceado, introdução de novos sabores, verduras e carninha desfiada.',
+        horarioPrevisto: '11:30',
+        status: 'pendente'
+      },
+      {
+        id: 'task_s_higiene_escovacao_' + idosoId,
+        idosoId,
+        tipo: 'banho',
+        titulo: 'Higiene, Fraldas & Escovação 👶',
+        descricao: 'Troca de fraldas, lavagem das mãos e estímulo à escovação dental com carinho.',
+        horarioPrevisto: '12:15',
+        status: 'pendente'
+      },
+      {
+        id: 'task_s_soneca_' + idosoId,
+        idosoId,
+        tipo: 'sono',
+        titulo: 'Soneca & Repouso Restaurador 💤',
+        descricao: 'Descanso nos colchonetes individuais com ambiente calmo, iluminação suave e música relaxante.',
+        horarioPrevisto: '12:30',
+        status: 'pendente'
+      },
+      {
+        id: 'task_s_lanche_tarde_' + idosoId,
+        idosoId,
+        tipo: 'alimentacao',
+        titulo: 'Lanche da Tarde / Mamadeira 🍼',
+        descricao: 'Mamadeira/fórmula morna ou lanche da tarde equilibrado e hidratação.',
+        horarioPrevisto: '14:15',
+        status: 'pendente'
+      },
+      {
+        id: 'task_s_brincadeira_livre_' + idosoId,
+        idosoId,
+        tipo: 'atividade_fisica',
+        titulo: 'Brincadeira Livre & Socialização 🧸',
+        descricao: 'Cantinhos temáticos com brinquedos educativos, blocos de montar e autonomia.',
+        horarioPrevisto: '14:45',
+        status: 'pendente'
+      },
+      {
+        id: 'task_s_historias_' + idosoId,
+        idosoId,
+        tipo: 'atividade_fisica',
+        titulo: 'Contação de Histórias & Música 📚',
+        descricao: 'Leitura de livros ilustrados, fantoches e cantigas de roda.',
+        horarioPrevisto: '15:30',
+        status: 'pendente'
+      },
+      {
+        id: 'task_s_saida_' + idosoId,
+        idosoId,
+        tipo: 'atividade_fisica',
+        titulo: 'Preparação para Saída & Despedida Afetiva 🎒',
+        descricao: 'Organização das mochilinhas, fechamento da agenda do dia e entrega afetiva aos familiares.',
+        horarioPrevisto: '16:00',
+        status: 'pendente'
+      }
+    ];
+  }
+  return [
+    {
+      id: 'task_m_losartana_' + idosoId,
+      idosoId,
+      tipo: 'medicacao',
+      titulo: 'Losartana Potássica (Pressão)',
+      descricao: 'Dosagem: 50mg - 1 comprimido. Dar com meio copo d\'água.',
+      horarioPrevisto: '08:00',
+      status: 'pendente'
+    },
+    {
+      id: 'task_m_cafe_' + idosoId,
+      idosoId,
+      tipo: 'alimentacao',
+      titulo: 'Café da manhã',
+      descricao: 'Geleia sem açúcar com pão integral + café com leite.',
+      horarioPrevisto: '08:30',
+      status: 'pendente'
+    },
+    {
+      id: 'task_m_banho_' + idosoId,
+      idosoId,
+      tipo: 'banho',
+      titulo: 'Banho & Higiene Geral',
+      descricao: 'Banho morno assistido, hidratação da pele e troca de roupas limpas.',
+      horarioPrevisto: '10:00',
+      status: 'pendente'
+    },
+    {
+      id: 'task_m_almoco_' + idosoId,
+      idosoId,
+      tipo: 'alimentacao',
+      titulo: 'Almoço',
+      descricao: 'Arroz integral, purê de abóbora, filé de frango desfiado e brócolis cozido ao vapor.',
+      horarioPrevisto: '12:30',
+      status: 'pendente'
+    },
+    {
+      id: 'task_m_hidra_tarde_' + idosoId,
+      idosoId,
+      tipo: 'hidratacao',
+      titulo: 'Copos d\'Água da Tarde',
+      descricao: 'Oferecer 250ml de água gelada.',
+      horarioPrevisto: '15:00',
+      status: 'pendente'
+    }
+  ];
+}
+
 export function resetStudentDailyRoutine(studentIds: string[]) {
   if (typeof window === 'undefined' || !studentIds || studentIds.length === 0) return;
 
   const validIds = new Set(studentIds.filter(Boolean));
   if (validIds.size === 0) return;
 
-  // Set explicit cleared flags so listeners and components respect the clean state
+  // Remove cleared flags so tasks remain active and visible in pending state
   validIds.forEach(id => {
     localStorage.setItem(`anjo_tasks_initialized_${id}`, 'true');
-    localStorage.setItem(`anjo_tasks_cleared_${id}`, 'true');
-    localStorage.setItem(`anjo_activities_cleared_${id}`, 'true');
+    localStorage.removeItem(`anjo_tasks_cleared_${id}`);
+    localStorage.removeItem(`anjo_activities_cleared_${id}`);
   });
 
   // 1. Clear routine activity tables for these students so they start at 0
@@ -2499,10 +2662,30 @@ export function resetStudentDailyRoutine(studentIds: string[]) {
   const allSono = getFromDB<any[]>('anjo_sono', []);
   saveToDB('anjo_sono', allSono.filter(s => !validIds.has(s.idosoId)));
 
-  // 2. Clear daily tasks checklist (anjo_tarefas_diarias) for these students
+  // 2. Reset daily tasks checklist (anjo_tarefas_diarias) to 'pendente' for the new day
   const allTasks = getFromDB<any[]>('anjo_tarefas_diarias', []);
-  const remainingTasks = allTasks.filter(t => !validIds.has(t.idosoId));
-  saveToDB('anjo_tarefas_diarias', remainingTasks);
+  const otherTasks = allTasks.filter(t => !validIds.has(t.idosoId));
+  const newOrResetTasks: any[] = [];
+
+  validIds.forEach(id => {
+    const studentTasks = allTasks.filter(t => t.idosoId === id);
+    if (studentTasks.length > 0) {
+      studentTasks.forEach(t => {
+        newOrResetTasks.push({
+          ...t,
+          status: 'pendente' as const,
+          concluidaEm: undefined,
+          completadaPor: undefined,
+          observacao: undefined,
+          detalhes: undefined
+        });
+      });
+    } else {
+      newOrResetTasks.push(...generateDefaultTasksForStudent(id));
+    }
+  });
+
+  saveToDB('anjo_tarefas_diarias', [...otherTasks, ...newOrResetTasks]);
 
   // 3. Clear individual student logs and hygiene checkboxes
   validIds.forEach(id => {
