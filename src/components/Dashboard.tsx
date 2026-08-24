@@ -3132,7 +3132,8 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
       return alim || hid || occ || Boolean(shiftState.lastResetTime);
     };
 
-    const wasAbsentToday = isAbsent || localStorage.getItem(`anjo_is_absent_${idoso.id}`) === 'true' || hasTodayData();
+    const currentShift = getShiftActiveState(idoso.id);
+    const wasAbsentToday = isAbsent || currentShift.isAbsent || localStorage.getItem(`anjo_is_absent_${idoso.id}`) === 'true' || Boolean(currentShift.lastResetTime) || hasTodayData();
 
     // If student was marked absent or turned off earlier today, treat this as a RETURN (Religar cronômetro without wiping activities)
     if (wasAbsentToday) {
@@ -3172,9 +3173,9 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
       setShiftStartTime(startTimeStamp);
 
       const startShiftUpdates = [
-        { targetKey: idoso.id, active: true, startTime: startTimeStamp },
-        { targetKey: idoso.nome, active: true, startTime: startTimeStamp },
-        { targetKey: cleanName, active: true, startTime: startTimeStamp }
+        { targetKey: idoso.id, active: true, isAbsent: false, startTime: startTimeStamp },
+        { targetKey: idoso.nome, active: true, isAbsent: false, startTime: startTimeStamp },
+        { targetKey: cleanName, active: true, isAbsent: false, startTime: startTimeStamp }
       ];
       setShiftActiveStatesBatch(startShiftUpdates);
 
@@ -4142,7 +4143,7 @@ Acesse o boletim de cuidados completo pelo link seguro:
         cleanName
       ].filter(Boolean))) as string[];
 
-      setShiftActiveStatesBatch(candidateKeysToClose.map(k => ({ targetKey: k, active: false })));
+      setShiftActiveStatesBatch(candidateKeysToClose.map(k => ({ targetKey: k, active: false, isAbsent: true, reason: finalReason })));
 
       setIsShiftActive(false);
       setShiftStartTime(null);
