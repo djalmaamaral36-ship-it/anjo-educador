@@ -1739,19 +1739,28 @@ export function initializeDB() {
       // Ensure preschool students exist and have their correct classroom and emergency contact assigned (unless deleted)
       IDOSOS_INICIAIS.forEach(initStudent => {
         if (deletedStudentsSet.has(initStudent.id)) return;
-        const existingIdx = parsed.findIndex(p => p.id === initStudent.id);
+        const existingIdx = parsed.findIndex(p => 
+          p.id === initStudent.id || 
+          (initStudent.id === 'aluno_1' && p.id === 'idoso_maria') ||
+          (initStudent.id === 'idoso_maria' && p.id === 'aluno_1') ||
+          (initStudent.id === 'aluno_2' && p.id === 'idoso_joao') ||
+          (initStudent.id === 'idoso_joao' && p.id === 'aluno_2') ||
+          (p.nome && initStudent.nome && keyMatches(p.nome, initStudent.nome))
+        );
         if (existingIdx >= 0) {
           // Normalize room assignments & contacts without destroying user-edited data
           parsed[existingIdx].salaAula = parsed[existingIdx].salaAula || initStudent.salaAula;
           parsed[existingIdx].quarto = parsed[existingIdx].quarto || initStudent.quarto;
-          if (!parsed[existingIdx].nome) parsed[existingIdx].nome = initStudent.nome;
+          if (!parsed[existingIdx].nome || parsed[existingIdx].nome.length < 5) parsed[existingIdx].nome = initStudent.nome;
           
           // Upgrade legacy 'A cadastrar' contact to canonical contact or preserve user-entered contact
           const currentContact = parsed[existingIdx].contatoEmergencia;
           if (!currentContact || !currentContact.nome || currentContact.nome === 'A cadastrar' || currentContact.nome === 'Responsável a cadastrar') {
             parsed[existingIdx].contatoEmergencia = initStudent.contatoEmergencia;
           }
-          if (!parsed[existingIdx].foto) parsed[existingIdx].foto = initStudent.foto;
+          if (!parsed[existingIdx].foto || parsed[existingIdx].foto.trim() === '' || parsed[existingIdx].foto.includes('placeholder')) {
+            parsed[existingIdx].foto = initStudent.foto;
+          }
         } else {
           parsed.push(initStudent);
         }
