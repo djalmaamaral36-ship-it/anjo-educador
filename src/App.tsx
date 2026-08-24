@@ -245,6 +245,17 @@ export default function App() {
           setUsuarioAtual(match);
         }
       }
+
+      // Also refresh active student/senior object from DB in case contact/profile was updated
+      const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
+      setIdosoAtual(prev => {
+        if (prev) {
+          const fresh = allSeniors.find(s => s.id === prev.id);
+          if (fresh) return fresh;
+        }
+        return prev;
+      });
+
       setKeyTrigger(prev => prev + 1);
     };
     const handleIdososUpdatedEvent = () => {
@@ -254,10 +265,13 @@ export default function App() {
       const isEscolar = currentAppMode.startsWith('escolar');
       
       setIdosoAtual(prev => {
-        if (prev && allSeniors.some(s => s.id === prev.id)) {
-          const isPrevStudent = prev.id.startsWith('aluno_');
-          if (isEscolar && isPrevStudent) return prev;
-          if (!isEscolar && !isPrevStudent) return prev;
+        if (prev) {
+          const freshCurrent = allSeniors.find(s => s.id === prev.id);
+          if (freshCurrent) {
+            const isPrevStudent = freshCurrent.id.startsWith('aluno_');
+            if (isEscolar && isPrevStudent) return freshCurrent;
+            if (!isEscolar && !isPrevStudent) return freshCurrent;
+          }
         }
         const matched = savedId ? allSeniors.find(s => s.id === savedId) : null;
         if (matched) {
@@ -282,6 +296,7 @@ export default function App() {
         }
         return prev;
       });
+      setKeyTrigger(prev => prev + 1);
     };
 
     window.addEventListener('anjo_user_updated', handleUserUpdatedEvent);

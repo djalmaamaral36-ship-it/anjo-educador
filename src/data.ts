@@ -257,14 +257,14 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
   },
   {
     id: 'user_mae_alice',
-    nome: 'Responsável a cadastrar',
-    email: '',
-    telefone: '',
+    nome: 'Juliana Santos (Mãe)',
+    email: 'juliana.santos@gmail.com',
+    telefone: '(11) 98844-3322',
     tipo: 'familiar',
-    parentesco: 'Mãe / Responsável',
+    parentesco: 'Mãe',
     foto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Responsável da Alice Santos (Berçário I - B).',
-    pin: '6610'
+    observacoes: 'Mãe da Alice Santos (Berçário I - B).',
+    pin: '3322'
   },
   {
     id: 'user_cuidador_2',
@@ -695,9 +695,9 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     alergias: ['Amendoim e Castanhas'],
     observacoes: 'Acalma-se ouvindo cantigas de roda tradicionais. Muito apegada às professoras auxiliares.',
     contatoEmergencia: {
-      nome: 'A cadastrar',
-      parentesco: 'Mãe / Responsável',
-      telefone: ''
+      nome: 'Juliana Santos',
+      parentesco: 'Mãe',
+      telefone: '(11) 98844-3322'
     },
     planoCuidado: 'Garantir higiene nasal frequente com soro fisiológico. Evitar qualquer biscoito com traços de oleaginosas.',
     medicoResponsavel: {
@@ -1620,17 +1620,18 @@ export function initializeDB() {
       let cleanUsers = usersList.map((u: any) => {
         const canonical = USUARIOS_SIMULADOS.find(init => init.id === u.id);
         if (canonical) {
+          const isPlaceholderName = !u.nome || u.nome.toLowerCase().includes('a cadastrar') || u.nome === 'Responsável a cadastrar';
           return {
             ...u,
             pin: canonical.pin,
-            telefone: canonical.telefone,
-            nome: canonical.nome,
+            telefone: u.telefone && u.telefone.trim() ? u.telefone : canonical.telefone,
+            nome: isPlaceholderName ? canonical.nome : u.nome,
             tipo: canonical.tipo,
-            parentesco: canonical.parentesco,
+            parentesco: u.parentesco && u.parentesco.trim() ? u.parentesco : canonical.parentesco,
             salaAula: u.salaAula !== undefined ? u.salaAula : canonical.salaAula,
-            foto: canonical.foto || u.foto,
-            email: canonical.email || u.email,
-            observacoes: canonical.observacoes || u.observacoes
+            foto: u.foto || canonical.foto,
+            email: u.email && u.email.trim() ? u.email : canonical.email,
+            observacoes: u.observacoes && u.observacoes.trim() ? u.observacoes : canonical.observacoes
           };
         }
 
@@ -1740,12 +1741,17 @@ export function initializeDB() {
         if (deletedStudentsSet.has(initStudent.id)) return;
         const existingIdx = parsed.findIndex(p => p.id === initStudent.id);
         if (existingIdx >= 0) {
-          // Normalize room assignments & contacts
-          parsed[existingIdx].salaAula = initStudent.salaAula || parsed[existingIdx].salaAula;
-          parsed[existingIdx].quarto = initStudent.quarto || parsed[existingIdx].quarto;
-          if (initStudent.nome) parsed[existingIdx].nome = initStudent.nome;
-          if (initStudent.contatoEmergencia) parsed[existingIdx].contatoEmergencia = initStudent.contatoEmergencia;
-          if (initStudent.foto) parsed[existingIdx].foto = initStudent.foto;
+          // Normalize room assignments & contacts without destroying user-edited data
+          parsed[existingIdx].salaAula = parsed[existingIdx].salaAula || initStudent.salaAula;
+          parsed[existingIdx].quarto = parsed[existingIdx].quarto || initStudent.quarto;
+          if (!parsed[existingIdx].nome) parsed[existingIdx].nome = initStudent.nome;
+          
+          // Upgrade legacy 'A cadastrar' contact to canonical contact or preserve user-entered contact
+          const currentContact = parsed[existingIdx].contatoEmergencia;
+          if (!currentContact || !currentContact.nome || currentContact.nome === 'A cadastrar' || currentContact.nome === 'Responsável a cadastrar') {
+            parsed[existingIdx].contatoEmergencia = initStudent.contatoEmergencia;
+          }
+          if (!parsed[existingIdx].foto) parsed[existingIdx].foto = initStudent.foto;
         } else {
           parsed.push(initStudent);
         }
