@@ -426,6 +426,15 @@ export function startFirebaseSync() {
         remoteItems.push(docSnapshot.data());
       });
 
+      // Preserve any local items that are not yet in remoteItems (optimistic local additions / pending sync)
+      const remoteIds = new Set(remoteItems.map(i => i && i.id).filter(Boolean));
+      const pendingLocalItems = currentLocalItems.filter(localItem => {
+        if (!localItem || !localItem.id) return false;
+        return !remoteIds.has(localItem.id);
+      });
+
+      const combinedRemoteAndLocal = [...pendingLocalItems, ...remoteItems];
+
       const deletedStudentsList = JSON.parse(localStorage.getItem('anjo_deleted_students') || '[]') as string[];
       const deletedStudentsSet = new Set(deletedStudentsList);
 
@@ -458,7 +467,7 @@ export function startFirebaseSync() {
       } catch (e) {}
 
       // Filter out items belonging to deleted students or students whose tasks/activities were explicitly cleared
-      const mergedItems: any[] = remoteItems.filter(item => {
+      const mergedItems: any[] = combinedRemoteAndLocal.filter(item => {
         if (!item) return false;
         const studentId = item.idosoId || item.studentId || item.alunoId;
         if (!studentId) return true;
