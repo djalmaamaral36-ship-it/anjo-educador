@@ -2373,6 +2373,23 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
   });
 
   if (matchingRecords.length > 0) {
+    // Check if ANY matching record is active (fail-safe for cross-device sync)
+    const activeRecords = matchingRecords.filter(m => m.record.active === true || String(m.record.active) === 'true');
+    if (activeRecords.length > 0) {
+      activeRecords.sort((a, b) => b.time - a.time);
+      const latestActive = activeRecords[0].record;
+
+      // If cloud says active, clear any stale absence flags
+      localStorage.removeItem(`anjo_is_absent_${realId}`);
+      if (studentName) localStorage.removeItem(`anjo_is_absent_${studentName}`);
+      if (studentCleanName) localStorage.removeItem(`anjo_is_absent_${studentCleanName}`);
+
+      const localDirectStartTime = localStorage.getItem(`anjo_shift_start_time_${realId}`) || 
+        (studentName ? localStorage.getItem(`anjo_shift_start_time_${studentName}`) : null);
+      const startTime = latestActive.startTime || localDirectStartTime || new Date().toISOString();
+      return { active: true, startTime };
+    }
+
     // Sort by timestamp descending (newest first). If timestamps are equal, prefer direct student record over classroom record
     matchingRecords.sort((a, b) => {
       if (b.time !== a.time) return b.time - a.time;
