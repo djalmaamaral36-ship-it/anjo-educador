@@ -375,6 +375,9 @@ export default function App() {
         const isParentUser = loggedUser.tipo === 'familiar' || loggedUser.tipo === 'familiar_admin' || loggedUser.tipo === 'familiar_convidado';
         const isChildOfParentLocal = (pUser: Usuario, child: Idoso): boolean => {
           if (!pUser || !child) return false;
+          const isEscolarLocal = (localStorage.getItem('anjo_app_mode') || 'escolar_infantil').startsWith('escolar');
+          const isTypeMatch = isEscolarLocal ? child.id.startsWith('aluno_') : !child.id.startsWith('aluno_');
+          if (!isTypeMatch) return false;
           if (pUser.id === 'user_mae_heitor' && (child.id === 'aluno_5' || child.id === 'aluno_22' || child.nome.toLowerCase().includes('heitor') || child.nome.toLowerCase().includes('giovan'))) return true;
           if (child.contatoEmergencia) {
             const cleanUserPhone = pUser.telefone ? pUser.telefone.replace(/\D/g, '') : '';
@@ -969,14 +972,18 @@ export default function App() {
       
       if (!bestIdoso && idosoAtual) {
         if (isParentUser) {
-          // If the user is a parent, ONLY keep idosoAtual if it's genuinely their child!
-          const isChild = (match.id === 'user_mae_heitor' && (idosoAtual.id === 'aluno_5' || idosoAtual.id === 'aluno_22' || idosoAtual.nome.toLowerCase().includes('heitor') || idosoAtual.nome.toLowerCase().includes('giovan'))) ||
-            (match.id === 'user_pai_bernardo' && (idosoAtual.id === 'aluno_2' || idosoAtual.nome.toLowerCase().includes('bernardo'))) ||
-            (match.id === 'user_pai_miguel' && (idosoAtual.id === 'aluno_10' || idosoAtual.nome.toLowerCase().includes('miguel'))) ||
-            (Boolean(match.telefone && idosoAtual.contatoEmergencia?.telefone && match.telefone.replace(/\D/g, '') === idosoAtual.contatoEmergencia.telefone.replace(/\D/g, ''))) ||
-            (Boolean(match.nome && idosoAtual.contatoEmergencia?.nome && (match.nome.toLowerCase().includes(idosoAtual.contatoEmergencia.nome.toLowerCase()) || idosoAtual.contatoEmergencia.nome.toLowerCase().includes(match.nome.toLowerCase()))));
-          if (isChild) {
-            bestIdoso = idosoAtual;
+          // If the user is a parent, ONLY keep idosoAtual if it's genuinely their child AND matches the current app mode type!
+          const isEscolarNow = targetMode.startsWith('escolar');
+          const isTypeMatch = isEscolarNow ? idosoAtual.id.startsWith('aluno_') : !idosoAtual.id.startsWith('aluno_');
+          if (isTypeMatch) {
+            const isChild = (match.id === 'user_mae_heitor' && (idosoAtual.id === 'aluno_5' || idosoAtual.id === 'aluno_22' || idosoAtual.nome.toLowerCase().includes('heitor') || idosoAtual.nome.toLowerCase().includes('giovan'))) ||
+              (match.id === 'user_pai_bernardo' && (idosoAtual.id === 'aluno_2' || idosoAtual.nome.toLowerCase().includes('bernardo'))) ||
+              (match.id === 'user_pai_miguel' && (idosoAtual.id === 'aluno_10' || idosoAtual.nome.toLowerCase().includes('miguel'))) ||
+              (Boolean(match.telefone && idosoAtual.contatoEmergencia?.telefone && match.telefone.replace(/\D/g, '') === idosoAtual.contatoEmergencia.telefone.replace(/\D/g, ''))) ||
+              (Boolean(match.nome && idosoAtual.contatoEmergencia?.nome && (match.nome.toLowerCase().includes(idosoAtual.contatoEmergencia.nome.toLowerCase()) || idosoAtual.contatoEmergencia.nome.toLowerCase().includes(match.nome.toLowerCase()))));
+            if (isChild) {
+              bestIdoso = idosoAtual;
+            }
           }
         } else {
           const isCompatible = (targetMode === 'escolar_fundamental' && idosoAtual.id.startsWith('aluno_fun_')) ||

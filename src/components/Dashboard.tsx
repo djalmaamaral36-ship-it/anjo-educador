@@ -1047,8 +1047,18 @@ Equipe Anjinho Escolar ❤️🕊️`
   // Real-time listener & periodic poll for shift state synchronization across devices (e.g. PC teacher & Mobile parent)
   useEffect(() => {
     const syncShiftState = () => {
-      const activeShift = getShiftActiveState(idoso.id);
-      console.log(`📡 [Dashboard Component] syncShiftState executado para idoso: ${idoso.id} (${idoso.nome}) | Ativo: ${activeShift.active} | Início: ${activeShift.startTime}`);
+      let targetId = idoso.id;
+      const currentMode = (localStorage.getItem('anjo_app_mode') as string) || appMode || 'escolar_infantil';
+      if (currentMode.startsWith('escolar')) {
+        if (targetId === 'idoso_maria') targetId = 'aluno_1';
+        else if (targetId === 'idoso_joao') targetId = 'aluno_2';
+      } else {
+        if (targetId === 'aluno_1') targetId = 'idoso_maria';
+        else if (targetId === 'aluno_2') targetId = 'idoso_joao';
+      }
+
+      const activeShift = getShiftActiveState(targetId);
+      console.log(`📡 [Dashboard Component] syncShiftState executado para idoso/aluno: ${targetId} (${idoso.nome}) | Ativo: ${activeShift.active} | Início: ${activeShift.startTime}`);
       setIsShiftActive(prevActive => {
         if (prevActive !== activeShift.active) {
           console.log(`🔄 [Dashboard State] Alterando isShiftActive de ${prevActive} para ${activeShift.active}`);
@@ -1065,7 +1075,7 @@ Equipe Anjinho Escolar ❤️🕊️`
       if (!activeShift.active) {
         setElapsedShiftTime('00:00:00');
       }
-      const absentVal = localStorage.getItem(`anjo_is_absent_${idoso.id}`) === 'true';
+      const absentVal = localStorage.getItem(`anjo_is_absent_${targetId}`) === 'true' || localStorage.getItem(`anjo_is_absent_${idoso.id}`) === 'true';
       setIsAbsent(prevAbs => prevAbs !== absentVal ? absentVal : prevAbs);
 
       // Trigger re-render so computed vitals, hygiene, and sleep variables reload freshly from DB
@@ -4880,12 +4890,23 @@ Acesse o boletim de cuidados completo pelo link seguro:
     const cleanUserPhone = usuarioAtual.telefone ? usuarioAtual.telefone.replace(/\D/g, '') : '';
     
     return allSeniors.filter(s => {
+      const isStudent = s.id.startsWith('aluno_');
+      const isStudentFun = s.id.startsWith('aluno_fun_');
+      if (isEscolar) {
+        if (!isStudent) return false;
+        if (appMode === 'escolar_fundamental' && !isStudentFun) return false;
+        if (appMode === 'escolar_infantil' && isStudentFun) return false;
+      } else {
+        if (isStudent) return false;
+      }
+
       if (!s.contatoEmergencia) return false;
       const cleanContactPhone = s.contatoEmergencia.telefone ? s.contatoEmergencia.telefone.replace(/\D/g, '') : '';
       
       const phoneMatches = cleanUserPhone && cleanContactPhone && cleanUserPhone === cleanContactPhone;
       const nameMatches = s.contatoEmergencia.nome && usuarioAtual.nome && 
-        s.contatoEmergencia.nome.toLowerCase().trim() === usuarioAtual.nome.toLowerCase().trim();
+        (usuarioAtual.nome.toLowerCase().trim().includes(s.contatoEmergencia.nome.toLowerCase().trim()) ||
+         s.contatoEmergencia.nome.toLowerCase().trim().includes(usuarioAtual.nome.toLowerCase().trim()));
         
       return phoneMatches || nameMatches;
     });

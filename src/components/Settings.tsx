@@ -368,11 +368,18 @@ export default function SettingsPage({
     if (usuarioAtual?.tipo === 'familiar') {
       const cleanUserPhone = usuarioAtual.telefone ? usuarioAtual.telefone.replace(/\D/g, '') : '';
       const myKids = allSeniors.filter(s => {
+        const isStudent = s.id.startsWith('aluno_');
+        if (isEscolar) {
+          if (!isStudent) return false;
+        } else {
+          if (isStudent) return false;
+        }
         if (!s.contatoEmergencia) return false;
         const cleanContactPhone = s.contatoEmergencia.telefone ? s.contatoEmergencia.telefone.replace(/\D/g, '') : '';
         const phoneMatches = cleanUserPhone && cleanContactPhone && cleanUserPhone === cleanContactPhone;
         const nameMatches = s.contatoEmergencia.nome && usuarioAtual.nome && 
-          s.contatoEmergencia.nome.toLowerCase().trim() === usuarioAtual.nome.toLowerCase().trim();
+          (usuarioAtual.nome.toLowerCase().trim().includes(s.contatoEmergencia.nome.toLowerCase().trim()) ||
+           s.contatoEmergencia.nome.toLowerCase().trim().includes(usuarioAtual.nome.toLowerCase().trim()));
         return phoneMatches || nameMatches;
       });
       setIdososMock(myKids);
