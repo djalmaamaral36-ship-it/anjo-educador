@@ -164,7 +164,12 @@ export function notifyCrossTabSync(localKey: string) {
  * Save an item directly to Firestore
  */
 export async function saveToFirestore(localKey: string, item: any) {
-  if (isQuotaExceeded()) return;
+  // Always allow critical turnos_ativos / shift states and student records to attempt cloud sync
+  const isCritical = localKey === 'anjo_shift_states' || localKey === 'anjo_idosos';
+  if (!isCritical && isQuotaExceeded()) return;
+  if (isCritical && isFirestoreQuotaExhausted) {
+    isFirestoreQuotaExhausted = false; // Force retry for critical timer/student updates
+  }
 
   const collectionName = getFirestoreCollectionForKey(localKey);
   if (!collectionName || !item) return;
@@ -175,6 +180,7 @@ export async function saveToFirestore(localKey: string, item: any) {
   try {
     const docRef = doc(db, collectionName, docId);
     await setDoc(docRef, cleanItem);
+    console.log(`✅ [Firebase Sync] Sucesso ao gravar doc ${docId} em ${collectionName}`);
   } catch (err: any) {
     handleFirestoreError(err, `save doc ${docId} to ${collectionName}`);
     if (!isQuotaExceeded() && pendingSyncQueue.length < 50) {
