@@ -303,7 +303,9 @@ export default function App() {
     window.addEventListener('anjo_idosos_updated', handleIdososUpdatedEvent);
     
     // Force restore owner's requested Admin PIN to recover access
-    localStorage.setItem('anjo_admin_pin', '3031');
+    if (!localStorage.getItem('anjo_admin_pin')) {
+      localStorage.setItem('anjo_admin_pin', '9181');
+    }
     
     // Load active settings if saved
     const savedUserId = localStorage.getItem('anjo_simulacao_user_id');

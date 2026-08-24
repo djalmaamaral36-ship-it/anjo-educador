@@ -334,20 +334,20 @@ export default function SettingsPage({
   };
 
   const handleFullFactoryReset = () => {
-    if (!window.confirm('ATENÇÃO: Você está prestes a realizar um reset de fábrica completo. Todos os cadastros, contatos da Clarice, PIN do administrador e dados editados serão redefinidos para os valores padrões de fábrica. Tudo será zerado. Deseja mesmo prosseguir?')) {
+    if (!window.confirm('ATENÇÃO: Você está prestes a realizar um reset de fábrica completo. Todos os cadastros, PIN do administrador e dados editados serão redefinidos para os valores padrões de fábrica. Tudo será zerado. Deseja mesmo prosseguir?')) {
       return;
     }
     
     // Wipe local storage completely
     localStorage.clear();
     
-    // Set the PIN to standard 3031 as requested
-    localStorage.setItem('anjo_admin_pin', '3031');
+    // Set the PIN to standard 9181 as requested
+    localStorage.setItem('anjo_admin_pin', '9181');
     
     // Reinitialize DB standard schemas
     initializeDB();
     
-    setSavingMessage('Sistema restaurado para o padrão original! PIN da administração redefinido para 3031 (Nilva).');
+    setSavingMessage('Sistema restaurado para o padrão original! PIN da administração redefinido para 9181.');
     setTimeout(() => {
       setSavingMessage('');
     }, 4000);
