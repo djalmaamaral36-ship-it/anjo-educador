@@ -2643,38 +2643,41 @@ export function resetStudentDailyRoutine(studentIds: string[]) {
   const validIds = new Set(studentIds.filter(Boolean));
   if (validIds.size === 0) return;
 
-  // Remove cleared flags so tasks remain active and visible in pending state
+  const resetNowIso = new Date().toISOString();
+
+  // Set reset timestamp & flags so old records from previous days are zeroed out completely
   validIds.forEach(id => {
     localStorage.setItem(`anjo_tasks_initialized_${id}`, 'true');
+    localStorage.setItem(`anjo_routine_reset_${id}`, resetNowIso);
     localStorage.removeItem(`anjo_tasks_cleared_${id}`);
     localStorage.removeItem(`anjo_activities_cleared_${id}`);
+    localStorage.removeItem(`anjo_routine_cleared_${id}`);
   });
 
   // 1. Clear routine activity tables for these students so they start at 0
   const allMeals = getFromDB<any[]>('anjo_alimentacao', []);
-  saveToDB('anjo_alimentacao', allMeals.filter(m => !validIds.has(m.idosoId)));
+  saveToDB('anjo_alimentacao', allMeals.filter(m => !m || !m.idosoId || !validIds.has(m.idosoId)));
 
   const allHids = getFromDB<any[]>('anjo_hidratacao', []);
-  saveToDB('anjo_hidratacao', allHids.filter(h => !validIds.has(h.idosoId)));
+  saveToDB('anjo_hidratacao', allHids.filter(h => !h || !h.idosoId || !validIds.has(h.idosoId)));
 
   const allHumor = getFromDB<any[]>('anjo_humor', []);
-  saveToDB('anjo_humor', allHumor.filter(h => !validIds.has(h.idosoId)));
+  saveToDB('anjo_humor', allHumor.filter(h => !h || !h.idosoId || !validIds.has(h.idosoId)));
 
   // Clear ALL activities for these students completely
   const allAtivs = getFromDB<any[]>('anjo_atividades', []);
-  const remainingAtivs = allAtivs.filter(a => !validIds.has(a.idosoId));
-  saveToDB('anjo_atividades', remainingAtivs);
+  saveToDB('anjo_atividades', allAtivs.filter(a => !a || !a.idosoId || !validIds.has(a.idosoId)));
 
   const allSono = getFromDB<any[]>('anjo_sono', []);
-  saveToDB('anjo_sono', allSono.filter(s => !validIds.has(s.idosoId)));
+  saveToDB('anjo_sono', allSono.filter(s => !s || !s.idosoId || !validIds.has(s.idosoId)));
 
   // 2. Reset daily tasks checklist (anjo_tarefas_diarias) to 'pendente' for the new day
   const allTasks = getFromDB<any[]>('anjo_tarefas_diarias', []);
-  const otherTasks = allTasks.filter(t => !validIds.has(t.idosoId));
+  const otherTasks = allTasks.filter(t => !t || !t.idosoId || !validIds.has(t.idosoId));
   const newOrResetTasks: any[] = [];
 
   validIds.forEach(id => {
-    const studentTasks = allTasks.filter(t => t.idosoId === id);
+    const studentTasks = allTasks.filter(t => t && t.idosoId === id);
     if (studentTasks.length > 0) {
       studentTasks.forEach(t => {
         newOrResetTasks.push({
@@ -2693,17 +2696,25 @@ export function resetStudentDailyRoutine(studentIds: string[]) {
 
   saveToDB('anjo_tarefas_diarias', [...otherTasks, ...newOrResetTasks]);
 
-  // 3. Clear individual student logs and hygiene checkboxes
+  // 3. Clear individual per-student logs and hygiene checkboxes
   validIds.forEach(id => {
     localStorage.removeItem(`anjo_almoço_pct_${id}`);
     localStorage.removeItem(`anjo_sleep_hr_${id}`);
     localStorage.removeItem(`anjo_registro_agua_${id}`);
     localStorage.removeItem(`anjo_hidratacao_${id}`);
     localStorage.removeItem(`anjo_alimentacao_${id}`);
+    localStorage.removeItem(`anjo_humor_${id}`);
+    localStorage.removeItem(`anjo_atividades_${id}`);
+    localStorage.removeItem(`anjo_sono_${id}`);
+    localStorage.removeItem(`anjo_sinais_vitais_${id}`);
     localStorage.removeItem(`anjo_is_absent_${id}`);
+
     saveToDB(`anjo_registro_agua_${id}`, []);
     saveToDB(`anjo_hidratacao_${id}`, []);
     saveToDB(`anjo_alimentacao_${id}`, []);
+    saveToDB(`anjo_humor_${id}`, []);
+    saveToDB(`anjo_atividades_${id}`, []);
+    saveToDB(`anjo_sono_${id}`, []);
     saveToDB(`anjo_ocorrencias_${id}`, []);
 
     saveToDB(`anjo_higiene_log_${id}`, {
@@ -2734,6 +2745,7 @@ export function resetStudentDailyRoutine(studentIds: string[]) {
   window.dispatchEvent(new CustomEvent('db-tasks-update'));
   window.dispatchEvent(new CustomEvent('db-routine-update'));
   window.dispatchEvent(new CustomEvent('db-jornada-update'));
+  window.dispatchEvent(new CustomEvent('db-activities-update'));
 }
 
 export function setShiftActiveStatesBatch(updates: { targetKey: string; active: boolean; startTime?: string }[]) {

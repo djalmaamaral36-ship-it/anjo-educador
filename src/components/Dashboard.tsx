@@ -5774,14 +5774,21 @@ Acesse o boletim de cuidados completo pelo link seguro:
                           </button>
                           <button
                             onClick={handleDirectStopShift}
-                            className="px-5 py-3 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-bold text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2"
-                            title="Desligar cronômetro e encerrar o período letivo"
+                            className="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 hover:scale-102"
+                            title="Desligar cronômetro deste aluno individualmente"
                           >
-                            <Square className="w-4 h-4 fill-current" /> {isEscolar ? 'Desligar Cronômetro' : 'Desligar Turno'}
+                            <Square className="w-3.5 h-3.5 fill-current" /> {isEscolar ? '⏹️ Desligar Individual' : '⏹️ Desligar Turno'}
+                          </button>
+                          <button
+                            onClick={() => handleEndShiftGroup(teacherClassroom)}
+                            className="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 hover:scale-102"
+                            title={`Desligar cronômetro de todos os alunos da turma ${teacherClassroom} ao mesmo tempo`}
+                          >
+                            <Users className="w-3.5 h-3.5" /> 👥 Desligar Coletivo ({teacherClassroom})
                           </button>
                           <button
                             onClick={handleToggleAbsence}
-                            className="px-4 py-3 bg-white hover:bg-rose-50/50 hover:border-rose-250 hover:text-rose-700 active:scale-95 active:bg-rose-100/30 border border-slate-300 text-slate-700 font-bold text-sm rounded-xl transition-all duration-200 cursor-pointer shadow-xs flex items-center justify-center gap-2"
+                            className="px-3.5 py-2.5 bg-white hover:bg-rose-50/50 hover:border-rose-250 hover:text-rose-700 active:scale-95 border border-slate-300 text-slate-700 font-bold text-xs sm:text-sm rounded-xl transition-all duration-200 cursor-pointer shadow-xs flex items-center justify-center gap-1.5"
                             title={isEscolar ? 'Sinalizar ausência do aluno hoje' : 'Registrar não comparecimento'}
                           >
                             <UserX className="w-4 h-4 text-rose-500" /> {isEscolar ? 'Sinalizar Ausência' : 'Registrar Não Comparecimento'}
@@ -5791,14 +5798,21 @@ Acesse o boletim de cuidados completo pelo link seguro:
                         <>
                           <button
                             onClick={handleStartShift}
-                            className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-2 hover:scale-102"
-                            title="Iniciar período letivo / cronômetro"
+                            className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-1.5 hover:scale-102"
+                            title="Ligar cronômetro para este aluno e zerar todas as atividades do dia"
                           >
-                            <Play className="w-4 h-4 fill-current" /> {isEscolar ? 'Ligar Cronômetro / Iniciar Período' : 'Iniciar Meu Turno de Cuidados'}
+                            <Play className="w-3.5 h-3.5 fill-current" /> {isEscolar ? '▶️ Ligar Individual' : '▶️ Iniciar Turno Individual'}
+                          </button>
+                          <button
+                            onClick={() => handleStartShiftGroup(teacherClassroom)}
+                            className="px-4 py-2.5 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-1.5 hover:scale-102"
+                            title={`Ligar cronômetro de todos os alunos da turma ${teacherClassroom} e zerar as atividades de todos`}
+                          >
+                            <Users className="w-3.5 h-3.5" /> 👥 Ligar Coletivo ({teacherClassroom})
                           </button>
                           <button
                             onClick={handleToggleAbsence}
-                            className="px-4 py-3 bg-white hover:bg-rose-50/50 hover:border-rose-250 hover:text-rose-700 active:scale-95 active:bg-rose-100/30 border border-slate-300 text-slate-700 font-bold text-sm rounded-xl transition-all duration-200 cursor-pointer shadow-xs flex items-center justify-center gap-2"
+                            className="px-3.5 py-2.5 bg-white hover:bg-rose-50/50 hover:border-rose-250 hover:text-rose-700 active:scale-95 border border-slate-300 text-slate-700 font-bold text-xs sm:text-sm rounded-xl transition-all duration-200 cursor-pointer shadow-xs flex items-center justify-center gap-1.5"
                             title={isEscolar ? 'Sinalizar ausência do aluno hoje' : 'Registrar não comparecimento'}
                           >
                             <UserX className="w-4 h-4 text-rose-500" /> {isEscolar ? 'Sinalizar Ausência' : 'Registrar Não Comparecimento'}

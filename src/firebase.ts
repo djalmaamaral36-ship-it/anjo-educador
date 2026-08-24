@@ -487,10 +487,33 @@ export function startFirebaseSync() {
           return false;
         }
         
-        if (localKey === 'anjo_tarefas_diarias' || localKey === 'anjo_atividades') {
+        if (localKey === 'anjo_tarefas_diarias' || localKey === 'anjo_atividades' || localKey === 'anjo_alimentacao' || localKey === 'anjo_hidratacao' || localKey === 'anjo_humor' || localKey === 'anjo_sono' || localKey === 'anjo_ocorrencias') {
           const isCleared = localStorage.getItem(`anjo_tasks_cleared_${studentId}`) === 'true' ||
-                            localStorage.getItem(`anjo_activities_cleared_${studentId}`) === 'true';
-          if (isCleared) {
+                            localStorage.getItem(`anjo_activities_cleared_${studentId}`) === 'true' ||
+                            localStorage.getItem(`anjo_routine_cleared_${studentId}`) === 'true';
+          const resetTimeStr = localStorage.getItem(`anjo_routine_reset_${studentId}`);
+          let isBeforeReset = false;
+          if (resetTimeStr) {
+            const resetTime = new Date(resetTimeStr).getTime();
+            if (!isNaN(resetTime)) {
+              if (item.createdAt) {
+                const t = new Date(item.createdAt).getTime();
+                if (!isNaN(t)) isBeforeReset = t < resetTime;
+              } else if (item.id) {
+                const parts = String(item.id).split('_');
+                const lastPart = Number(parts[parts.length - 1]);
+                if (!isNaN(lastPart) && lastPart > 1600000000000) {
+                  isBeforeReset = lastPart < resetTime;
+                }
+              }
+              if (!isBeforeReset && item.data) {
+                const resetDateStr = resetTimeStr.split('T')[0];
+                if (item.data < resetDateStr) isBeforeReset = true;
+              }
+            }
+          }
+
+          if (isCleared || isBeforeReset) {
             // Asynchronously delete stale document in Firestore
             if (item.id) {
               const docId = String(item.id).replace(/\//g, '_');
