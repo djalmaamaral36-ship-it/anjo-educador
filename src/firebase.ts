@@ -458,6 +458,40 @@ export function startFirebaseSync() {
       const deletedStudentsList = JSON.parse(localStorage.getItem('anjo_deleted_students') || '[]') as string[];
       const deletedStudentsSet = new Set(deletedStudentsList);
 
+      // If syncing shift states (anjo_shift_states), deduplicate and merge
+      if (localKey === 'anjo_shift_states') {
+        const shiftMap = new Map<string, any>();
+        combinedRemoteAndLocal.forEach(item => {
+          if (!item || !item.id) return;
+          const k = String(item.id).trim();
+          const existing = shiftMap.get(k);
+          if (!existing) {
+            shiftMap.set(k, item);
+          } else {
+            const existingActive = existing.active === true || String(existing.active) === 'true';
+            const itemActive = item.active === true || String(item.active) === 'true';
+            if (itemActive && !existingActive) {
+              shiftMap.set(k, item);
+            } else {
+              const t1 = new Date(existing.updatedAt || existing.startTime || 0).getTime();
+              const t2 = new Date(item.updatedAt || item.startTime || 0).getTime();
+              if (t2 >= t1) {
+                shiftMap.set(k, item);
+              }
+            }
+          }
+        });
+
+        const mergedShiftItems = Array.from(shiftMap.values());
+        localStorage.setItem(localKey, JSON.stringify(mergedShiftItems));
+        syncShiftStateLocalStorageFlags(mergedShiftItems);
+        window.dispatchEvent(new CustomEvent('anjo_shift_updated', { detail: { items: mergedShiftItems } }));
+        window.dispatchEvent(new Event('storage'));
+        window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: { localKey, items: mergedShiftItems } }));
+        window.dispatchEvent(new CustomEvent('db-vitals-update', { detail: { localKey, items: mergedShiftItems } }));
+        return;
+      }
+
       // If syncing students (anjo_idosos), merge remote and local, filter out deleted students, and sync to Firestore
       if (localKey === 'anjo_idosos') {
         const studentMap = new Map<string, any>();
