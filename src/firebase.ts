@@ -393,11 +393,11 @@ export function startFirebaseSync() {
       // Check if collection has already been initialized / seeded in this environment
       const isAlreadySeeded = localStorage.getItem(`anjo_seeded_${collectionName}`) === 'true';
 
-      // If snapshot is empty, only seed on first application launch. If already seeded/synced, respect intentional deletion/empty state.
+      // If snapshot is empty, seed local items to cloud if present, preserving shift states & user data
       if (snapshot.empty) {
-        if (!isAlreadySeeded && currentLocalItems.length > 0) {
+        if (currentLocalItems.length > 0) {
           localStorage.setItem(`anjo_seeded_${collectionName}`, 'true');
-          console.log(`[Firebase Seeding] Collection "${collectionName}" is empty in Cloud. Seeding once with ${currentLocalItems.length} local items...`);
+          console.log(`[Firebase Seeding] Collection "${collectionName}" is empty in Cloud. Preserving ${currentLocalItems.length} local items and uploading to Firestore...`);
           currentLocalItems.forEach(async (item) => {
             if (item && item.id) {
               try {
@@ -411,7 +411,7 @@ export function startFirebaseSync() {
           });
           return;
         } else {
-          // Cloud collection is empty (e.g. user cleared all items). Keep local state empty and do not resurrect deleted items!
+          // Cloud collection is empty and local items are empty.
           localStorage.setItem(`anjo_seeded_${collectionName}`, 'true');
           localStorage.setItem(localKey, JSON.stringify([]));
           if (localKey === 'anjo_shift_states') {

@@ -5768,89 +5768,40 @@ Acesse o boletim de cuidados completo pelo link seguro:
                               setShowOccurrenceModal(true);
                             }}
                             className="px-3.5 py-2.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-black text-xs rounded-xl transition-all cursor-pointer shadow-md flex items-center justify-center gap-1.5 border border-red-500 hover:scale-102"
-                            title="Registrar intercorrência médica urgente (Febre, Queda, Alergia)"
+                            title="Registrar intercorrência médica ou ocorrência do dia"
                           >
-                            <ShieldAlert className="w-4 h-4 text-white animate-pulse" /> 🚨 Intercorrência Urgente
-                          </button>
-                          <button
-                            onClick={() => {
-                              setOccurrenceForm({ tipo: 'comportamento', criticidade: 'amarelo', descricao: '' });
-                              setShowOccurrenceModal(true);
-                            }}
-                            className="px-3.5 py-2.5 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-extrabold text-xs rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 border border-amber-400 hover:scale-102"
-                            title="Registrar ocorrência pedagógica ou de rotina"
-                          >
-                            <FileText className="w-4 h-4 text-white" /> 📋 Ocorrência do Dia
-                          </button>
-                          <button
-                            onClick={() => {
-                              triggerConfirm(
-                                'Reiniciar Cronômetro (Novo Dia)',
-                                `Deseja reiniciar o cronômetro para iniciar um NOVO DIA com ${idoso.nome.split(' (')[0]}? Todas as atividades e registros do dia anterior serão zerados e as tarefas da rotina retornarão ao estado pendente.`,
-                                () => {
-                                  handleStartShift();
-                                }
-                              );
-                            }}
-                            className="px-4 py-3 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2 border border-emerald-500"
-                            title="Reiniciar cronômetro para iniciar um novo dia do zero (zerar atividades do dia anterior)"
-                          >
-                            <RotateCcw className="w-4 h-4" /> {isEscolar ? 'Reiniciar Cronômetro (Novo Dia)' : 'Reiniciar Turno'}
+                            <ShieldAlert className="w-4 h-4 text-white animate-pulse" /> 🚨 Registrar Ocorrência
                           </button>
                           <button
                             onClick={handleDirectStopShift}
-                            className="px-4 py-3 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-bold text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2"
-                            title="Desligar cronômetro imediatamente e sincronizar com o painel dos pais"
+                            className="px-5 py-3 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-bold text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2"
+                            title="Desligar cronômetro e encerrar o período letivo"
                           >
                             <Square className="w-4 h-4 fill-current" /> {isEscolar ? 'Desligar Cronômetro' : 'Desligar Turno'}
                           </button>
                           <button
-                            onClick={handleTriggerEndShiftReview}
-                            className="px-4 py-3 bg-slate-700 hover:bg-slate-800 active:bg-slate-900 text-white font-bold text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2 border border-slate-600"
-                            title="Encerrar período letivo e abrir resumo completo para WhatsApp"
-                          >
-                            <FileText className="w-4 h-4" /> {isEscolar ? 'Encerrar e Mandar Resumo' : 'Encerrar (Resumo WhatsApp)'}
-                          </button>
-                          {isEscolar && teacherClassroom && (
-                            <button
-                              onClick={() => handleEndShiftGroup(teacherClassroom)}
-                              className="px-5 py-3 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2 border border-amber-500"
-                              title={`Encerrar aula de todos os alunos da classe ${teacherClassroom} simultaneamente`}
-                            >
-                              <Users className="w-4 h-4" /> Encerrar Coletivo ({teacherClassroom})
-                            </button>
-                          )}
-                          <button
                             onClick={handleToggleAbsence}
-                            className="px-5 py-3 bg-white hover:bg-rose-50/50 hover:border-rose-250 hover:text-rose-700 active:scale-95 active:bg-rose-100/30 border border-slate-300 text-slate-700 font-bold text-sm rounded-xl transition-all duration-200 cursor-pointer shadow-xs flex items-center justify-center gap-2"
-                            title={isEscolar ? 'Sinalizar ausência do aluno hoje' : 'Registrar que o cliente não compareceu hoje'}
+                            className="px-4 py-3 bg-white hover:bg-rose-50/50 hover:border-rose-250 hover:text-rose-700 active:scale-95 active:bg-rose-100/30 border border-slate-300 text-slate-700 font-bold text-sm rounded-xl transition-all duration-200 cursor-pointer shadow-xs flex items-center justify-center gap-2"
+                            title={isEscolar ? 'Sinalizar ausência do aluno hoje' : 'Registrar não comparecimento'}
                           >
-                            <UserX className="w-4 h-4 text-rose-500" /> {isEscolar ? 'Sinalizar Ausência do Aluno' : 'Registrar Não Comparecimento'}
+                            <UserX className="w-4 h-4 text-rose-500" /> {isEscolar ? 'Sinalizar Ausência' : 'Registrar Não Comparecimento'}
                           </button>
                         </>
                       ) : (
                         <>
                           <button
                             onClick={handleStartShift}
-                            className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-2"
+                            className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-2 hover:scale-102"
+                            title="Iniciar período letivo / cronômetro"
                           >
-                            <Play className="w-4 h-4 fill-current" /> {isEscolar ? 'Iniciar Período Individual' : 'Iniciar Meu Turno de Cuidados'}
+                            <Play className="w-4 h-4 fill-current" /> {isEscolar ? 'Ligar Cronômetro / Iniciar Período' : 'Iniciar Meu Turno de Cuidados'}
                           </button>
-                          {isEscolar && teacherClassroom && (
-                            <button
-                              onClick={() => handleStartShiftGroup(teacherClassroom)}
-                              className="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-2 border border-indigo-500"
-                              title={`Iniciar período letivo de todos os alunos da classe ${teacherClassroom} sincronizadamente`}
-                            >
-                              <Users className="w-4 h-4" /> Iniciar Coletivo ({teacherClassroom})
-                            </button>
-                          )}
                           <button
                             onClick={handleToggleAbsence}
-                            className="px-5 py-3 bg-white hover:bg-rose-50/50 hover:border-rose-250 hover:text-rose-700 active:scale-95 active:bg-rose-100/30 border border-slate-300 text-slate-700 font-bold text-sm rounded-xl transition-all duration-200 cursor-pointer shadow-xs flex items-center justify-center gap-2"
-                            title={isEscolar ? 'Sinalizar ausência do aluno hoje' : 'Registrar que o cliente não compareceu hoje'}
+                            className="px-4 py-3 bg-white hover:bg-rose-50/50 hover:border-rose-250 hover:text-rose-700 active:scale-95 active:bg-rose-100/30 border border-slate-300 text-slate-700 font-bold text-sm rounded-xl transition-all duration-200 cursor-pointer shadow-xs flex items-center justify-center gap-2"
+                            title={isEscolar ? 'Sinalizar ausência do aluno hoje' : 'Registrar não comparecimento'}
                           >
-                            <UserX className="w-4 h-4 text-rose-500" /> {isEscolar ? 'Sinalizar Ausência do Aluno' : 'Registrar Não Comparecimento'}
+                            <UserX className="w-4 h-4 text-rose-500" /> {isEscolar ? 'Sinalizar Ausência' : 'Registrar Não Comparecimento'}
                           </button>
                         </>
                       )
