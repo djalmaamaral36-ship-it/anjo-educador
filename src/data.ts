@@ -2245,6 +2245,7 @@ export interface ShiftState {
   id: string; // student or senior ID (e.g. 'aluno_heitor')
   active: boolean;
   startTime?: string | null;
+  lastResetTime?: string | null;
   updatedAt?: string;
 }
 
@@ -2400,7 +2401,8 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
       const localDirectStartTime = localStorage.getItem(`anjo_shift_start_time_${realId}`) || 
         (studentName ? localStorage.getItem(`anjo_shift_start_time_${studentName}`) : null);
       const startTime = latestActive.startTime || localDirectStartTime || new Date().toISOString();
-      return { active: true, startTime };
+      const lastResetTime = latestActive.lastResetTime || startTime;
+      return { active: true, startTime, lastResetTime };
     }
 
     // Sort by timestamp descending (newest first). If timestamps are equal, prefer direct student record over classroom record
@@ -2423,9 +2425,10 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
       const localDirectStartTime = localStorage.getItem(`anjo_shift_start_time_${realId}`) || 
         (studentName ? localStorage.getItem(`anjo_shift_start_time_${studentName}`) : null);
       const startTime = latest.startTime || localDirectStartTime || new Date().toISOString();
-      return { active: true, startTime };
+      const lastResetTime = latest.lastResetTime || startTime;
+      return { active: true, startTime, lastResetTime };
     } else {
-      return { active: false, startTime: null };
+      return { active: false, startTime: null, lastResetTime: latest.lastResetTime || null };
     }
   }
 
@@ -2433,7 +2436,7 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
   if (localStorage.getItem(`anjo_is_absent_${realId}`) === 'true' || 
       (studentName && localStorage.getItem(`anjo_is_absent_${studentName}`) === 'true') ||
       (studentCleanName && localStorage.getItem(`anjo_is_absent_${studentCleanName}`) === 'true')) {
-    return { active: false, startTime: null };
+    return { active: false, startTime: null, lastResetTime: null };
   }
 
   // 3. Fallback: check direct localStorage flags if DB had no records at all
@@ -2447,10 +2450,113 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
       (studentName ? localStorage.getItem(`anjo_shift_start_time_${studentName}`) : null) ||
       (studentCleanName ? localStorage.getItem(`anjo_shift_start_time_${studentCleanName}`) : null) ||
       (studentRoom ? localStorage.getItem(`anjo_shift_start_time_${studentRoom}`) : null);
-    return { active: true, startTime: localDirectStartTime || new Date().toISOString() };
+    const localResetTime = localStorage.getItem(`anjo_routine_reset_${realId}`) || localDirectStartTime;
+    return { active: true, startTime: localDirectStartTime || new Date().toISOString(), lastResetTime: localResetTime };
   }
 
-  return { active: false, startTime: null };
+  return { active: false, startTime: null, lastResetTime: null };
+}
+
+export function isRecordBeforeResetTimestamp(item: any, resetTimeStr: string | null | undefined): boolean {
+  if (!item || !resetTimeStr) return false;
+  const resetTime = new Date(resetTimeStr).getTime();
+  if (isNaN(resetTime)) return false;
+
+  // Check item.createdAt
+  if (item.createdAt) {
+    const t = new Date(item.createdAt).getTime();
+    if (!isNaN(t)) return t < resetTime;
+  }
+
+  // Check item.id timestamp suffix (e.g. ati_aluno_1_1724500000000)
+  if (item.id) {
+    const parts = String(item.id).split('_');
+    const lastPart = Number(parts[parts.length - 1]);
+    if (!isNaN(lastPart) && lastPart > 1600000000000) {
+      return lastPart < resetTime;
+    }
+  }
+
+  // Check item.data (YYYY-MM-DD string comparison)
+  const resetDateStr = resetTimeStr.split('T')[0];
+  if (item.data && typeof item.data === 'string') {
+    if (item.data < resetDateStr) return true;
+  }
+
+  return false;
+}
+
+export function purgeStaleStudentRoutineLocalRecords(studentId: string, resetTimeStr: string) {
+  if (typeof window === 'undefined' || !studentId || !resetTimeStr) return;
+
+  const collectionsToClean = [
+    'anjo_alimentacao',
+    'anjo_hidratacao',
+    'anjo_humor',
+    'anjo_atividades',
+    'anjo_sono',
+    'anjo_ocorrencias'
+  ];
+
+  collectionsToClean.forEach(colKey => {
+    const items = getFromDB<any[]>(colKey, []);
+    if (items && items.length > 0) {
+      const freshItems = items.filter(item => {
+        if (!item) return false;
+        const sId = item.idosoId || item.studentId || item.alunoId;
+        if (sId !== studentId) return true;
+        return !isRecordBeforeResetTimestamp(item, resetTimeStr);
+      });
+      if (freshItems.length !== items.length) {
+        saveToDB(colKey, freshItems);
+      }
+    }
+  });
+
+  const perStudentKeys = [
+    `anjo_registro_agua_${studentId}`,
+    `anjo_hidratacao_${studentId}`,
+    `anjo_alimentacao_${studentId}`,
+    `anjo_humor_${studentId}`,
+    `anjo_atividades_${studentId}`,
+    `anjo_sono_${studentId}`,
+    `anjo_ocorrencias_${studentId}`
+  ];
+  perStudentKeys.forEach(pKey => {
+    const items = getFromDB<any[]>(pKey, []);
+    if (items && items.length > 0) {
+      const freshItems = items.filter(item => !isRecordBeforeResetTimestamp(item, resetTimeStr));
+      saveToDB(pKey, freshItems);
+    }
+  });
+
+  const allTasks = getFromDB<any[]>('anjo_tarefas_diarias', []);
+  if (allTasks && allTasks.length > 0) {
+    let taskChanged = false;
+    const updatedTasks = allTasks.map(task => {
+      if (task && task.idosoId === studentId && task.status === 'concluido') {
+        const isStale = isRecordBeforeResetTimestamp(
+          { ...task, createdAt: task.concluidaEm || task.createdAt },
+          resetTimeStr
+        );
+        if (isStale) {
+          taskChanged = true;
+          return {
+            ...task,
+            status: 'pendente' as const,
+            concluidaEm: undefined,
+            completadaPor: undefined,
+            observacao: undefined,
+            detalhes: undefined
+          };
+        }
+      }
+      return task;
+    });
+    if (taskChanged) {
+      saveToDB('anjo_tarefas_diarias', updatedTasks);
+    }
+  }
 }
 
 export function syncShiftStateLocalStorageFlags(shiftItems?: ShiftState[]) {
@@ -2461,16 +2567,24 @@ export function syncShiftStateLocalStorageFlags(shiftItems?: ShiftState[]) {
   allStudents.forEach(s => {
     const shiftInfo = getShiftActiveState(s.id, shiftItems);
     const keys = [s.id, s.nome, s.nome.split(' (')[0].trim()].filter(Boolean);
+    const effectiveResetTime = shiftInfo.lastResetTime || shiftInfo.startTime;
+
     keys.forEach(k => {
       if (shiftInfo.active) {
         localStorage.setItem(`anjo_shift_active_${k}`, 'true');
         if (shiftInfo.startTime) localStorage.setItem(`anjo_shift_start_time_${k}`, shiftInfo.startTime);
+        if (effectiveResetTime) localStorage.setItem(`anjo_routine_reset_${k}`, effectiveResetTime);
         localStorage.removeItem(`anjo_is_absent_${k}`);
       } else {
         localStorage.removeItem(`anjo_shift_start_time_${k}`);
         localStorage.setItem(`anjo_shift_active_${k}`, 'false');
       }
     });
+
+    if (effectiveResetTime) {
+      localStorage.setItem(`anjo_routine_reset_${s.id}`, effectiveResetTime);
+      purgeStaleStudentRoutineLocalRecords(s.id, effectiveResetTime);
+    }
   });
 }
 
@@ -2781,7 +2895,10 @@ export function setShiftActiveStatesBatch(updates: { targetKey: string; active: 
 
       if (active) {
         localStorage.setItem(`anjo_shift_active_${normalizedK}`, 'true');
-        if (effectiveStartTime) localStorage.setItem(`anjo_shift_start_time_${normalizedK}`, effectiveStartTime);
+        if (effectiveStartTime) {
+          localStorage.setItem(`anjo_shift_start_time_${normalizedK}`, effectiveStartTime);
+          localStorage.setItem(`anjo_routine_reset_${normalizedK}`, effectiveStartTime);
+        }
         localStorage.removeItem(`anjo_is_absent_${normalizedK}`);
       } else {
         localStorage.removeItem(`anjo_shift_start_time_${normalizedK}`);
@@ -2793,6 +2910,7 @@ export function setShiftActiveStatesBatch(updates: { targetKey: string; active: 
         id: normalizedK,
         active,
         startTime: active ? effectiveStartTime : null,
+        lastResetTime: active ? effectiveStartTime : (shiftStates[idx]?.lastResetTime || nowStr),
         updatedAt: nowStr
       };
       if (idx >= 0) {

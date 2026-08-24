@@ -13,7 +13,7 @@ import {
 } from 'firebase/firestore';
 import firebaseConfig from '../firebase-applet-config.json';
 
-import { syncShiftStateLocalStorageFlags } from './data';
+import { syncShiftStateLocalStorageFlags, isRecordBeforeResetTimestamp } from './data';
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -395,7 +395,7 @@ export function startFirebaseSync() {
 
       // If snapshot is empty, seed local items to cloud if present, preserving shift states & user data
       if (snapshot.empty) {
-        if (currentLocalItems.length > 0) {
+        if (currentLocalItems.length > 0 && !isAlreadySeeded) {
           localStorage.setItem(`anjo_seeded_${collectionName}`, 'true');
           console.log(`[Firebase Seeding] Collection "${collectionName}" is empty in Cloud. Preserving ${currentLocalItems.length} local items and uploading to Firestore...`);
           currentLocalItems.forEach(async (item) => {
@@ -411,7 +411,7 @@ export function startFirebaseSync() {
           });
           return;
         } else {
-          // Cloud collection is empty and local items are empty.
+          // Cloud collection is empty and local items are empty or collection was reset.
           localStorage.setItem(`anjo_seeded_${collectionName}`, 'true');
           localStorage.setItem(localKey, JSON.stringify([]));
           if (localKey === 'anjo_shift_states') {
@@ -436,7 +436,21 @@ export function startFirebaseSync() {
       const remoteIds = new Set(remoteItems.map(i => i && i.id).filter(Boolean));
       const pendingLocalItems = currentLocalItems.filter(localItem => {
         if (!localItem || !localItem.id) return false;
-        return !remoteIds.has(localItem.id);
+        if (remoteIds.has(localItem.id)) return false;
+
+        const studentId = localItem.idosoId || localItem.studentId || localItem.alunoId;
+        if (studentId) {
+          const isCleared = localStorage.getItem(`anjo_tasks_cleared_${studentId}`) === 'true' ||
+                            localStorage.getItem(`anjo_activities_cleared_${studentId}`) === 'true' ||
+                            localStorage.getItem(`anjo_routine_cleared_${studentId}`) === 'true';
+          if (isCleared) return false;
+
+          const resetTimeStr = localStorage.getItem(`anjo_routine_reset_${studentId}`) || localStorage.getItem(`anjo_shift_start_time_${studentId}`);
+          if (resetTimeStr && isRecordBeforeResetTimestamp(localItem, resetTimeStr)) {
+            return false;
+          }
+        }
+        return true;
       });
 
       const combinedRemoteAndLocal = [...pendingLocalItems, ...remoteItems];
@@ -491,27 +505,8 @@ export function startFirebaseSync() {
           const isCleared = localStorage.getItem(`anjo_tasks_cleared_${studentId}`) === 'true' ||
                             localStorage.getItem(`anjo_activities_cleared_${studentId}`) === 'true' ||
                             localStorage.getItem(`anjo_routine_cleared_${studentId}`) === 'true';
-          const resetTimeStr = localStorage.getItem(`anjo_routine_reset_${studentId}`);
-          let isBeforeReset = false;
-          if (resetTimeStr) {
-            const resetTime = new Date(resetTimeStr).getTime();
-            if (!isNaN(resetTime)) {
-              if (item.createdAt) {
-                const t = new Date(item.createdAt).getTime();
-                if (!isNaN(t)) isBeforeReset = t < resetTime;
-              } else if (item.id) {
-                const parts = String(item.id).split('_');
-                const lastPart = Number(parts[parts.length - 1]);
-                if (!isNaN(lastPart) && lastPart > 1600000000000) {
-                  isBeforeReset = lastPart < resetTime;
-                }
-              }
-              if (!isBeforeReset && item.data) {
-                const resetDateStr = resetTimeStr.split('T')[0];
-                if (item.data < resetDateStr) isBeforeReset = true;
-              }
-            }
-          }
+          const resetTimeStr = localStorage.getItem(`anjo_routine_reset_${studentId}`) || localStorage.getItem(`anjo_shift_start_time_${studentId}`);
+          const isBeforeReset = resetTimeStr ? isRecordBeforeResetTimestamp(item, resetTimeStr) : false;
 
           if (isCleared || isBeforeReset) {
             // Asynchronously delete stale document in Firestore
