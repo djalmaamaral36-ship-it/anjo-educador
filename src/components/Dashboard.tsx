@@ -1078,8 +1078,9 @@ Equipe Anjinho Escolar ❤️🕊️`
       }
       const absentVal = localStorage.getItem(`anjo_is_absent_${targetId}`) === 'true' || localStorage.getItem(`anjo_is_absent_${idoso.id}`) === 'true';
       setIsAbsent(prevAbs => prevAbs !== absentVal ? absentVal : prevAbs);
+    };
 
-      // Trigger re-render so computed vitals, hygiene, and sleep variables reload freshly from DB
+    const handleVitalsChange = () => {
       setVitalsUpdateTrigger(prev => prev + 1);
     };
 
@@ -1087,6 +1088,7 @@ Equipe Anjinho Escolar ❤️🕊️`
     window.addEventListener('anjo_user_updated', syncShiftState);
     window.addEventListener('storage', syncShiftState);
     window.addEventListener('db-vitals-update', syncShiftState);
+    window.addEventListener('db-vitals-update', handleVitalsChange);
     document.addEventListener('visibilitychange', syncShiftState);
 
     // Run sync immediately on mount or student ID change
@@ -1099,6 +1101,7 @@ Equipe Anjinho Escolar ❤️🕊️`
       window.removeEventListener('anjo_user_updated', syncShiftState);
       window.removeEventListener('storage', syncShiftState);
       window.removeEventListener('db-vitals-update', syncShiftState);
+      window.removeEventListener('db-vitals-update', handleVitalsChange);
       document.removeEventListener('visibilitychange', syncShiftState);
       clearInterval(intervalId);
     };

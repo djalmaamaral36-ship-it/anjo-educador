@@ -369,7 +369,8 @@ export default function App() {
           setIdosoAtual(bestIdosoForUser);
           localStorage.setItem('anjo_simulacao_idoso_id', bestIdosoForUser.id);
         } else if (allSeniors.length > 0) {
-          setIdosoAtual(allSeniors[0]);
+          const modeFallback = allSeniors.find(s => autoTargetMode.startsWith('escolar') ? s.id.startsWith('aluno_') : !s.id.startsWith('aluno_')) || allSeniors[0];
+          setIdosoAtual(modeFallback);
         }
       } else {
         const isParentUser = loggedUser.tipo === 'familiar' || loggedUser.tipo === 'familiar_admin' || loggedUser.tipo === 'familiar_convidado';
@@ -402,13 +403,15 @@ export default function App() {
           setIdosoAtual(bestIdosoForUser);
           localStorage.setItem('anjo_simulacao_idoso_id', bestIdosoForUser.id);
         } else if (allSeniors.length > 0) {
-          setIdosoAtual(allSeniors[0]);
+          const modeFallback = allSeniors.find(s => autoTargetMode.startsWith('escolar') ? s.id.startsWith('aluno_') : !s.id.startsWith('aluno_')) || allSeniors[0];
+          setIdosoAtual(modeFallback);
         }
       }
     } else if (matchedSaved) {
       setIdosoAtual(matchedSaved);
     } else if (allSeniors.length > 0) {
-      setIdosoAtual(allSeniors[0]);
+      const modeFallback = allSeniors.find(s => storedAppMode.startsWith('escolar') ? s.id.startsWith('aluno_') : !s.id.startsWith('aluno_')) || allSeniors[0];
+      setIdosoAtual(modeFallback);
     }
 
     // Load saved accessibility
@@ -503,27 +506,17 @@ export default function App() {
     }
   }, [appMode]);
 
-  // Auto-sync appMode and active student/senior based on active student or user role
+  // Auto-sync appMode based on logged user role on user change
   useEffect(() => {
-    if (idosoAtual) {
-      const isStudent = idosoAtual.id.startsWith('aluno_');
-      const expectedMode: 'idoso' | 'escolar_infantil' | 'escolar_fundamental' = isStudent ? 'escolar_infantil' : 'idoso';
-
-      if (appMode !== expectedMode) {
-        setAppMode(expectedMode);
-        localStorage.setItem('anjo_app_mode', expectedMode);
-        setKeyTrigger(prev => prev + 1);
-      }
-    } else if (usuarioAtual) {
+    if (usuarioAtual) {
       const targetMode = determineAppModeForUser(usuarioAtual, appMode);
-      const safeMode = targetMode === 'escolar_fundamental' ? 'escolar_infantil' : targetMode;
-      if (appMode !== safeMode) {
-        setAppMode(safeMode);
-        localStorage.setItem('anjo_app_mode', safeMode);
+      if (appMode !== targetMode) {
+        setAppMode(targetMode);
+        localStorage.setItem('anjo_app_mode', targetMode);
         setKeyTrigger(prev => prev + 1);
       }
     }
-  }, [usuarioAtual, idosoAtual, appMode]);
+  }, [usuarioAtual?.id]);
 
   // Update co-branding parameters whenever mode or keyTrigger increments
   useEffect(() => {
