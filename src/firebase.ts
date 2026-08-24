@@ -458,21 +458,60 @@ export function startFirebaseSync() {
       const deletedStudentsList = JSON.parse(localStorage.getItem('anjo_deleted_students') || '[]') as string[];
       const deletedStudentsSet = new Set(deletedStudentsList);
 
-      // If syncing students (anjo_idosos), filter out deleted students and wipe their Firestore doc
+      // If syncing students (anjo_idosos), merge remote and local, filter out deleted students, and sync to Firestore
       if (localKey === 'anjo_idosos') {
-        const filteredStudents = remoteItems.filter(p => {
-          if (!p || !p.id) return false;
+        const studentMap = new Map<string, any>();
+
+        remoteItems.forEach(p => {
+          if (!p || !p.id) return;
           if (deletedStudentsSet.has(p.id)) {
             const docId = String(p.id).replace(/\//g, '_');
             deleteDoc(doc(db, collectionName, docId)).catch(() => {});
-            return false;
+            return;
           }
-          return true;
+          let key = p.id;
+          if (key === 'idoso_maria') key = 'aluno_1';
+          else if (key === 'idoso_joao') key = 'aluno_2';
+          studentMap.set(key, { ...p });
         });
 
-        localStorage.setItem(localKey, JSON.stringify(filteredStudents));
-        window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: { localKey, items: filteredStudents } }));
-        window.dispatchEvent(new CustomEvent('anjo_idosos_updated', { detail: { items: filteredStudents } }));
+        currentLocalItems.forEach(p => {
+          if (!p || !p.id) return;
+          if (deletedStudentsSet.has(p.id)) return;
+          let key = p.id;
+          if (key === 'idoso_maria') key = 'aluno_1';
+          else if (key === 'idoso_joao') key = 'aluno_2';
+
+          const existing = studentMap.get(key);
+          if (!existing) {
+            studentMap.set(key, { ...p });
+          } else {
+            studentMap.set(key, {
+              ...existing,
+              ...p,
+              foto: (p.foto && !p.foto.includes('placeholder')) ? p.foto : (existing.foto || p.foto),
+              nome: (p.nome && p.nome.length >= (existing.nome?.length || 0)) ? p.nome : (existing.nome || p.nome),
+              salaAula: p.salaAula || existing.salaAula,
+              contatoEmergencia: p.contatoEmergencia || existing.contatoEmergencia
+            });
+          }
+        });
+
+        const mergedStudents = Array.from(studentMap.values());
+        localStorage.setItem(localKey, JSON.stringify(mergedStudents));
+
+        mergedStudents.forEach(async (student) => {
+          if (student && student.id) {
+            try {
+              const docId = String(student.id).replace(/\//g, '_');
+              const cleanItem = sanitizeForFirestore(student);
+              await setDoc(doc(db, collectionName, docId), cleanItem, { merge: true });
+            } catch (err) {}
+          }
+        });
+
+        window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: { localKey, items: mergedStudents } }));
+        window.dispatchEvent(new CustomEvent('anjo_idosos_updated', { detail: { items: mergedStudents } }));
         return;
       }
 
