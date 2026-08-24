@@ -1259,6 +1259,24 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
 
         const key = `anjo_registro_sono_${idoso.id}`;
         saveToDB(key, { duracaoMinutos: mins, horarioRegistro: now, registradoPor: usuarioAtual.nome, observacao: parsedData.sono.observacao || sonecaTextStr });
+
+        // Update tasks in anjo_tarefas_diarias
+        const tasksKey = 'anjo_tarefas_diarias';
+        const allTasks = getFromDB<any[]>(tasksKey, []);
+        const updatedTasks = allTasks.map(t => {
+          if (t.idosoId === idoso.id && (t.tipo === 'sono' || t.tipo === 'soneca' || t.titulo?.toLowerCase().includes('sono') || t.titulo?.toLowerCase().includes('soninho')) && t.status !== 'concluido') {
+            return {
+              ...t,
+              status: 'concluido' as const,
+              concluidaEm: now,
+              completadaPor: usuarioAtual.nome,
+              observacao: `Aura Voz: ${sonecaTextStr}. ${parsedData.sono.observacao || ''}`
+            };
+          }
+          return t;
+        });
+        saveToDB(tasksKey, updatedTasks);
+
         summaryParts.push(`😴 Soneca: ${sonecaTextStr}`);
       }
 
@@ -1355,7 +1373,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         const tasksKey = 'anjo_tarefas_diarias';
         const allTasks = getFromDB<any[]>(tasksKey, []);
         const updatedTasks = allTasks.map(t => {
-          if (t.idosoId === idoso.id && t.tipo === 'alimentacao' && t.status !== 'concluido') {
+          if (t.idosoId === idoso.id && (t.tipo === 'alimentacao' || t.tipo === refKey || t.tipo === rawRef || t.titulo?.toLowerCase().includes(rawRef) || t.titulo?.toLowerCase().includes(refKey) || t.titulo?.toLowerCase().includes('lanche') || t.titulo?.toLowerCase().includes('almoço') || t.titulo?.toLowerCase().includes('café') || t.titulo?.toLowerCase().includes('jantar') || t.titulo?.toLowerCase().includes('mamadeira')) && t.status !== 'concluido') {
             return {
               ...t,
               status: 'concluido' as const,
@@ -1374,32 +1392,53 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
       if (parsedData.atividades && voiceSelected.atividades) {
         const ativKey = 'anjo_atividades';
         const ativs = getFromDB<any[]>(ativKey, []);
+        let activTitle = 'Atividade Pedagógica / Recreativa';
         if (Array.isArray(parsedData.atividades) && parsedData.atividades.length > 0) {
           parsedData.atividades.forEach((a: any, idx: number) => {
+            activTitle = a.titulo || a.tipo || activTitle;
             ativs.unshift({
               id: `ati_${Date.now()}_${idx}`,
               idosoId: idoso.id,
-              tipo: a.titulo || a.tipo || 'Atividade Pedagógica / Recreativa',
+              tipo: activTitle,
               duracaoMinutos: 30,
               horario: now,
               data: todayIso,
               observacoes: a.observacao || 'Registrado por voz via Aura'
             });
           });
-          summaryParts.push(`🎨 Atividade: ${parsedData.atividades[0].titulo || 'Atividade Pedagógica'}`);
+          summaryParts.push(`🎨 Atividade: ${activTitle}`);
         } else if (typeof parsedData.atividades === 'object') {
+          activTitle = (parsedData.atividades as any).titulo || (parsedData.atividades as any).tipo || activTitle;
           ativs.unshift({
             id: `ati_${Date.now()}`,
             idosoId: idoso.id,
-            tipo: (parsedData.atividades as any).titulo || (parsedData.atividades as any).tipo || 'Atividade Pedagógica / Recreativa',
+            tipo: activTitle,
             duracaoMinutos: 30,
             horario: now,
             data: todayIso,
             observacoes: (parsedData.atividades as any).observacao || 'Registrado por voz via Aura'
           });
-          summaryParts.push(`🎨 Atividade: ${(parsedData.atividades as any).titulo || 'Atividade Pedagógica'}`);
+          summaryParts.push(`🎨 Atividade: ${activTitle}`);
         }
         saveToDB(ativKey, ativs);
+
+        // Update tasks for activities
+        const tasksKey = 'anjo_tarefas_diarias';
+        const allTasks = getFromDB<any[]>(tasksKey, []);
+        const updatedTasks = allTasks.map(t => {
+          if (t.idosoId === idoso.id && (t.tipo === 'atividade' || t.tipo === 'pedagogica' || t.titulo?.toLowerCase().includes('atividade') || t.titulo?.toLowerCase().includes('pedagógica')) && t.status !== 'concluido') {
+            return {
+              ...t,
+              status: 'concluido' as const,
+              concluidaEm: now,
+              completadaPor: usuarioAtual.nome,
+              observacao: `Aura Voz: ${activTitle}`
+            };
+          }
+          return t;
+        });
+        saveToDB(tasksKey, updatedTasks);
+
         localStorage.removeItem(`anjo_activities_cleared_${idoso.id}`);
         localStorage.removeItem(`anjo_tasks_cleared_${idoso.id}`);
       }

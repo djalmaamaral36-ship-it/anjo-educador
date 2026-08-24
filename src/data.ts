@@ -257,13 +257,13 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
   },
   {
     id: 'user_mae_alice',
-    nome: 'Simone Santos (Mãe)',
-    email: 'simone.santos@gmail.com',
-    telefone: '(11) 98877-6610',
+    nome: 'Responsável a cadastrar',
+    email: '',
+    telefone: '',
     tipo: 'familiar',
-    parentesco: 'Mãe',
+    parentesco: 'Mãe / Responsável',
     foto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Mãe da Alice Santos (Berçário I - B).',
+    observacoes: 'Responsável da Alice Santos (Berçário I - B).',
     pin: '6610'
   },
   {
@@ -695,9 +695,9 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     alergias: ['Amendoim e Castanhas'],
     observacoes: 'Acalma-se ouvindo cantigas de roda tradicionais. Muito apegada às professoras auxiliares.',
     contatoEmergencia: {
-      nome: 'Simone Santos',
-      parentesco: 'Mãe',
-      telefone: '(11) 98877-6610'
+      nome: 'A cadastrar',
+      parentesco: 'Mãe / Responsável',
+      telefone: ''
     },
     planoCuidado: 'Garantir higiene nasal frequente com soro fisiológico. Evitar qualquer biscoito com traços de oleaginosas.',
     medicoResponsavel: {
