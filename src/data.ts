@@ -208,7 +208,7 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
     tipo: 'familiar',
     parentesco: 'Mãe (Responsável)',
     foto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Mãe e responsável legal da aluna Mariana Souza (Berçário I - A) e familiar de Dona Maria de Souza.',
+    observacoes: 'Mãe e responsável legal da aluna Mariana Souza (Berçário I - A).',
     pin: '4321'
   },
   {
@@ -1525,22 +1525,22 @@ export const HISTORICO_ATIVIDADE_INICIAL: RegistroAtividade[] = [];
 export const HISTORICO_NOTIFICACOES_INICIAIS: NotificacaoSimulada[] = [
   {
     id: 'notif_1',
-    idosoId: 'idoso_maria',
-    familiarNome: 'Clarice Souza (Filha)',
+    idosoId: 'aluno_1',
+    familiarNome: 'Clarice Souza (Mãe)',
     telefoneDestino: '(11) 98765-4321',
-    tipoCompromisso: 'Medicação 08:00 Concluída',
-    mensagem: 'Anjo Cuidador: A medicação de Dona Maria de Souza (Losartana Potássica) das 08:00 foi marcada como concluída por Ana Silva (Cuidadora).',
+    tipoCompromisso: 'Rotina de Lanche Concluída',
+    mensagem: 'Anjinho Escolar: O lanche da manhã de Mariana Souza foi registrado. Comeu muito bem a frutinha fatiada com cereal.',
     status: 'enviada_whatsapp',
     dataEnvio: '2026-05-30T08:06:00Z',
     canal: 'WhatsApp'
   },
   {
     id: 'notif_2',
-    idosoId: 'idoso_maria',
-    familiarNome: 'Clarice Souza (Filha)',
+    idosoId: 'aluno_1',
+    familiarNome: 'Clarice Souza (Mãe)',
     telefoneDestino: '(11) 98765-4321',
-    tipoCompromisso: 'Alimentação Café Concluída',
-    mensagem: 'Anjo Cuidador: Café da manhã de Dona Maria de Souza registrado. Comeu muito bem. Relato: "Geleia sem açúcar com pão integral...", registrado por Ana Silva.',
+    tipoCompromisso: 'Troca de Fralda Registrada',
+    mensagem: 'Anjinho Escolar: Troca de fralda de Mariana Souza realizada por Profª Sofia Mendes. Fralda limpa e pomada aplicada.',
     status: 'enviada_whatsapp',
     dataEnvio: '2026-05-30T08:20:00Z',
     canal: 'WhatsApp'
@@ -1852,7 +1852,9 @@ export function initializeDB() {
     localStorage.setItem('anjo_simulacao_user_id', 'user_cuidador_1'); // default to Caregiver Ana
   }
   if (!localStorage.getItem('anjo_simulacao_idoso_id')) {
-    localStorage.setItem('anjo_simulacao_idoso_id', 'idoso_maria'); // default to Dona Maria
+    const currentMode = localStorage.getItem('anjo_app_mode') || 'escolar_infantil';
+    const defaultId = currentMode.startsWith('escolar') ? 'aluno_1' : 'idoso_maria';
+    localStorage.setItem('anjo_simulacao_idoso_id', defaultId);
   }
 
   // Purge any orphaned data left over from students that no longer exist in the system
@@ -2315,7 +2317,12 @@ export function isStudentInRoom(student: Idoso | null | undefined, roomName: str
 export function getShiftActiveState(studentId: string, customShiftStates?: ShiftState[]): { active: boolean; startTime: string | null } {
   if (typeof window === 'undefined' || !studentId) return { active: false, startTime: null };
   
-  const targetStudentId = String(studentId).trim();
+  let targetStudentId = String(studentId).trim();
+  const appMode = (localStorage.getItem('anjo_app_mode') as 'idoso' | 'escolar_infantil' | 'escolar_fundamental') || 'escolar_infantil';
+  if (appMode.startsWith('escolar')) {
+    if (targetStudentId === 'idoso_maria') targetStudentId = 'aluno_1';
+    else if (targetStudentId === 'idoso_joao') targetStudentId = 'aluno_2';
+  }
   const allStudents = getFromDB<Idoso[]>('anjo_idosos', IDOSOS_INICIAIS);
   const studentObj = allStudents.find(s => 
     s.id === targetStudentId || 

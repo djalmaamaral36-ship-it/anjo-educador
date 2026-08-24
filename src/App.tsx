@@ -250,21 +250,35 @@ export default function App() {
     const handleIdososUpdatedEvent = () => {
       const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
       const savedId = localStorage.getItem('anjo_simulacao_idoso_id');
-      const validStudents = allSeniors.filter(s => s.id.startsWith('aluno_'));
+      const currentAppMode = (localStorage.getItem('anjo_app_mode') as 'idoso' | 'escolar_infantil' | 'escolar_fundamental') || 'escolar_infantil';
+      const isEscolar = currentAppMode.startsWith('escolar');
       
       setIdosoAtual(prev => {
         if (prev && allSeniors.some(s => s.id === prev.id)) {
-          return prev;
+          const isPrevStudent = prev.id.startsWith('aluno_');
+          if (isEscolar && isPrevStudent) return prev;
+          if (!isEscolar && !isPrevStudent) return prev;
         }
         const matched = savedId ? allSeniors.find(s => s.id === savedId) : null;
-        if (matched) return matched;
-        if (validStudents.length > 0) {
-          localStorage.setItem('anjo_simulacao_idoso_id', validStudents[0].id);
-          return validStudents[0];
+        if (matched) {
+          const isMatchedStudent = matched.id.startsWith('aluno_');
+          if (isEscolar && isMatchedStudent) return matched;
+          if (!isEscolar && !isMatchedStudent) return matched;
         }
-        if (allSeniors.length > 0) {
-          localStorage.setItem('anjo_simulacao_idoso_id', allSeniors[0].id);
-          return allSeniors[0];
+        if (isEscolar) {
+          const validStudents = allSeniors.filter(s => s.id.startsWith('aluno_'));
+          const fallbackStudent = validStudents.find(s => s.id === 'aluno_1') || validStudents[0];
+          if (fallbackStudent) {
+            localStorage.setItem('anjo_simulacao_idoso_id', fallbackStudent.id);
+            return fallbackStudent;
+          }
+        } else {
+          const validSeniors = allSeniors.filter(s => !s.id.startsWith('aluno_'));
+          const fallbackSenior = validSeniors.find(s => s.id === 'idoso_maria') || validSeniors[0];
+          if (fallbackSenior) {
+            localStorage.setItem('anjo_simulacao_idoso_id', fallbackSenior.id);
+            return fallbackSenior;
+          }
         }
         return prev;
       });
@@ -443,18 +457,46 @@ export default function App() {
     const isParentUser = activeUser && (activeUser.tipo === 'familiar' || activeUser.tipo === 'familiar_admin' || activeUser.tipo === 'familiar_convidado');
     const bestIdosoForActiveUser = activeUser ? findBestMatchingIdoso(activeUser, appMode) : null;
 
+    const isEscolarMode = appMode === 'escolar_infantil' || appMode === 'escolar_fundamental';
     if (idosoAtual && allSeniors.some(s => s.id === idosoAtual.id)) {
-      // Keep currently active student intact
+      const isStudent = idosoAtual.id.startsWith('aluno_');
+      if (isEscolarMode && !isStudent) {
+        // Elderly record in school mode, switch to student
+        const bestStudent = bestIdosoForActiveUser || allSeniors.find(s => s.id.startsWith('aluno_')) || allSeniors[0];
+        if (bestStudent) {
+          setIdosoAtual(bestStudent);
+          localStorage.setItem('anjo_simulacao_idoso_id', bestStudent.id);
+        }
+        return;
+      }
+      if (!isEscolarMode && isStudent) {
+        // Student record in senior mode, switch to senior
+        const bestSenior = bestIdosoForActiveUser || allSeniors.find(s => !s.id.startsWith('aluno_')) || allSeniors[0];
+        if (bestSenior) {
+          setIdosoAtual(bestSenior);
+          localStorage.setItem('anjo_simulacao_idoso_id', bestSenior.id);
+        }
+        return;
+      }
       return;
     }
 
-    if (matchedSaved) {
+    // Check if matchedSaved matches mode
+    const isSavedValidForMode = matchedSaved && (
+      isEscolarMode ? matchedSaved.id.startsWith('aluno_') : !matchedSaved.id.startsWith('aluno_')
+    );
+
+    if (isSavedValidForMode && matchedSaved) {
       setIdosoAtual(matchedSaved);
     } else if (isParentUser && bestIdosoForActiveUser) {
       setIdosoAtual(bestIdosoForActiveUser);
       localStorage.setItem('anjo_simulacao_idoso_id', bestIdosoForActiveUser.id);
-    } else if (allSeniors.length > 0) {
-      setIdosoAtual(allSeniors[0]);
+    } else {
+      const fallback = allSeniors.find(s => isEscolarMode ? s.id.startsWith('aluno_') : !s.id.startsWith('aluno_')) || allSeniors[0];
+      if (fallback) {
+        setIdosoAtual(fallback);
+        localStorage.setItem('anjo_simulacao_idoso_id', fallback.id);
+      }
     }
   }, [appMode]);
 
@@ -968,57 +1010,34 @@ export default function App() {
   // Adaptação dos dados de Idoso / Aluno com base no modo ativo
   const getActiveIdoso = (): Idoso | null => {
     if (!idosoAtual) return null;
-    if (appMode !== 'escolar_infantil') return idosoAtual;
+    const isEscolar = appMode === 'escolar_infantil' || appMode === 'escolar_fundamental';
 
-    // Se for um dos novos 25 perfis de alunos reais, usa de forma direta e persistente!
+    if (!isEscolar) {
+      if (idosoAtual.id.startsWith('aluno_')) {
+        const allSeniors = getFromDB<Idoso[]>('anjo_idosos', IDOSOS_INICIAIS);
+        const realSenior = allSeniors.find(s => s.id === 'idoso_maria') || allSeniors.find(s => !s.id.startsWith('aluno_'));
+        if (realSenior) return realSenior;
+      }
+      return idosoAtual;
+    }
+
     if (idosoAtual.id.startsWith('aluno_')) {
       return idosoAtual;
     }
 
-    // Se for modo escolar infantil, transforma os idosos em Alunos da Pré-escola!
+    // Se for modo escolar, redireciona o idoso para o perfil de aluno real correspondente
+    const allSeniors = getFromDB<Idoso[]>('anjo_idosos', IDOSOS_INICIAIS);
     if (idosoAtual.id === 'idoso_maria') {
-      return {
-        ...idosoAtual,
-        nome: 'Mariana Souza (Berçário I - A - 8 Meses)',
-        foto: 'https://images.unsplash.com/photo-1519689680058-324335c77ebd?auto=format&fit=crop&q=80&w=200',
-        dataNascimento: '12/10/2023',
-        condicoesMedicas: ['Soneca após o almoço (requer chupeta)', 'Sensibilidade à lactose'],
-        alergias: ['Leite Integral', 'Picada de Pernilongo'],
-        observacoes: 'Mariana gosta de dormir with seu ursinho de pelúcia azul. Toma água na canequinha térmica após as refeições. É muito comunicativa, mas chora um pouco na hora da despedida.',
-        contatoEmergencia: {
-          nome: 'Clarice Souza',
-          parentesco: 'Mãe (Responsável)',
-          telefone: '(11) 98765-4321'
-        },
-        planoCuidado: 'Oferecer água na canequinha a cada 1h. Verificar troca de fralda antes e depois de dormir. Estimular atividades lúdicas de pintura de dedo.',
-        medicoResponsavel: {
-          nome: 'Dra. Luana Peixoto',
-          especialidade: 'Pediatra Assistencial',
-          telefone: '(11) 98888-7777'
-        }
-      };
-    } else {
-      return {
-        ...idosoAtual,
-        nome: 'Enzo Alencar (Berçário I - A - 10 Meses)',
-        foto: 'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&q=80&w=200',
-        dataNascimento: '15/03/2022',
-        condicoesMedicas: ['Subindo degraus com apoio', 'Asma Alérgica de Mudança de Tempo'],
-        alergias: ['Frutos Vermelhas', 'Pó e Ácaros'],
-        observacoes: 'Enzo é super criativo! Adora brinquedos de montar, dinossauros e historinhas. Precisa de acompanhamento na hora de ir ao banheiro para desfraldar.',
-        contatoEmergencia: {
-          nome: 'Thiago Alencar',
-          parentesco: 'Pai (Responsável)',
-          telefone: '(11) 95555-4444'
-        },
-        planoCuidado: 'Incentivar uso de frases completas. Checar preenchimento da garrafinha de água. Administrar bombinha preventiva na mala caso haja tosse seca frequente.',
-        medicoResponsavel: {
-          nome: 'Dr. Lucas Mendes',
-          especialidade: 'Alergista & Pediatra',
-          telefone: '(11) 97777-6666'
-        }
-      };
+      const mariana = allSeniors.find(s => s.id === 'aluno_1');
+      if (mariana) return mariana;
     }
+    if (idosoAtual.id === 'idoso_joao') {
+      const enzo = allSeniors.find(s => s.id === 'aluno_2');
+      if (enzo) return enzo;
+    }
+
+    const fallbackStudent = allSeniors.find(s => s.id.startsWith('aluno_'));
+    return fallbackStudent || idosoAtual;
   };
 
   const getActiveUsuario = (): Usuario | null => {

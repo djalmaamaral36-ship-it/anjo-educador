@@ -7693,7 +7693,7 @@ Segunda-feira:
                         {isDelayed && (
                           <button 
                             onClick={() => {
-                              const alertMsg = `Aviso Crítico: O remédio de Dona Maria (${task.titulo}) previsto para ${task.horarioPrevisto} está vencido! Por favor verifique imediato.`;
+                              const alertMsg = `Aviso Crítico: ${isEscolar ? 'O item de rotina de' : 'O remédio de'} ${idoso.nome.split(' (')[0]} (${task.titulo}) previsto para ${task.horarioPrevisto} está pendente! Por favor verifique imediato.`;
                               triggerWhatsAppSim('ALERTA ATRAZADO', alertMsg);
                             }}
                             className="text-[9px] font-extrabold text-rose-600 uppercase tracking-wider bg-rose-50 border border-rose-200 px-2 py-1 rounded-lg hover:bg-rose-100 shrink-0"

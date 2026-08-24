@@ -79,7 +79,12 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
 
   const loadLogs = () => {
     const allLogs = getFromDB<NotificacaoSimulada[]>('anjo_notificacoes', []);
-    const filtered = allLogs.filter(l => l.idosoId === idoso.id || l.idosoId === 'todos');
+    const filtered = allLogs.filter(l => {
+      const isLogStudent = l.idosoId && l.idosoId.startsWith('aluno_');
+      if (isEscolar && !isLogStudent && l.idosoId !== 'todos') return false;
+      if (!isEscolar && isLogStudent) return false;
+      return l.idosoId === idoso.id || l.idosoId === 'todos';
+    });
     
     if (isEscolar) {
       const adapted = filtered.map(l => {
