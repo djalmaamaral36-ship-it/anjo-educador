@@ -571,29 +571,36 @@ export function startFirebaseSync(force = false) {
         const shiftMap = new Map<string, any>();
 
         // 1. Cloud Remote items take top priority
-        remoteItems.forEach(item => {
-          if (!item || !item.id) return;
-          shiftMap.set(String(item.id).trim(), item);
-        });
+        if (remoteItems.length > 0) {
+          remoteItems.forEach(item => {
+            if (!item || !item.id) return;
+            shiftMap.set(String(item.id).trim(), item);
+          });
 
-        // 2. Only keep local shift items for IDs not in remote IF created/updated in the last 15 seconds
-        currentLocalItems.forEach(item => {
-          if (!item || !item.id) return;
-          const k = String(item.id).trim();
-          if (!shiftMap.has(k)) {
-            const timeVal = item.updatedAt || item.startTime;
-            let isRecent = false;
-            if (timeVal) {
-              try {
-                const ms = new Date(timeVal).getTime();
-                if (!isNaN(ms) && (Date.now() - ms < 15000)) isRecent = true;
-              } catch (e) {}
+          // 2. Only keep local shift items for IDs not in remote IF created/updated in the last 15 seconds
+          currentLocalItems.forEach(item => {
+            if (!item || !item.id) return;
+            const k = String(item.id).trim();
+            if (!shiftMap.has(k)) {
+              const timeVal = item.updatedAt || item.startTime;
+              let isRecent = false;
+              if (timeVal) {
+                try {
+                  const ms = new Date(timeVal).getTime();
+                  if (!isNaN(ms) && (Date.now() - ms < 15000)) isRecent = true;
+                } catch (e) {}
+              }
+              if (isRecent) {
+                shiftMap.set(k, item);
+              }
             }
-            if (isRecent) {
-              shiftMap.set(k, item);
-            }
-          }
-        });
+          });
+        } else {
+          // If remote is empty, keep all local items to prevent wiping on sync delay
+          currentLocalItems.forEach(item => {
+            if (item && item.id) shiftMap.set(String(item.id).trim(), item);
+          });
+        }
 
         const mergedShiftItems = Array.from(shiftMap.values());
         localStorage.setItem(localKey, JSON.stringify(mergedShiftItems));
