@@ -3129,7 +3129,10 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
 
   const handleStartShift = () => {
     const startTimeStamp = new Date().toISOString();
+    setIsShiftActive(true);
+    setShiftStartTime(startTimeStamp);
     setShiftActiveState(idoso.id, true, startTimeStamp);
+    unlockAndMarkPresent();
     window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
   };
 
