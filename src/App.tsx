@@ -1670,39 +1670,36 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
     return await generateAuraJwtAsync(payload, secret);
   };
 
-  const handleOpenAura = (e?: React.MouseEvent) => {
+  const handleOpenAura = async (e?: React.MouseEvent) => {
     if (e) e.preventDefault();
     try {
-      const cleanName = usuarioAdaptado?.nome
-        .replace(/ \((Educadora|Cuidadora|Mãe|Pai|Familiar|Médico|Pediatra|Profissional|Responsável|Diretor|Diretora|Direção|Administrador|Coordenador|Coordenadora|Desenvolvedor|Dev)\)/gi, '')
-        .replace(/Profª /g, '')
-        .replace(/Prof\. /g, '')
-        .trim() || 'Ana';
+      const jwtToken = await getAuraTokenAsync();
 
-      const userId = usuarioAdaptado?.id || 'user_cuidador_1';
-      const tipo = usuarioAdaptado?.tipo || 'professor';
-      const escola = instName || 'Escola Pequeno Anjo';
-      const turma = idosoAdaptado?.salaAula || (usuarioAdaptado as any)?.salaAula || 'Maternal';
-      const studentId = idosoAdaptado?.id || '';
-      const studentName = idosoAdaptado ? idosoAdaptado.nome.replace(/\s*\(.*?\)$/, '').trim() : '';
+      // Formulário POST dinâmico enviado para https://anjinha-aura.lovable.app/api/sso
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = 'https://anjinha-aura.lovable.app/api/sso';
+      form.target = '_blank';
 
-      const currentUrl = window.location.href || 'https://anjinha-aura.lovable.app';
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'token';
+      input.value = jwtToken;
+      form.appendChild(input);
 
-      const params = new URLSearchParams({
-        userId,
-        userName: cleanName,
-        tipo,
-        escola,
-        turma,
-        ...(studentId ? { studentId } : {}),
-        ...(studentName ? { studentName } : {}),
-        returnUrl: currentUrl
-      });
-
-      const auraUrl = `https://anjinha-aura.lovable.app/app?${params.toString()}`;
-      window.open(auraUrl, '_blank');
+      document.body.appendChild(form);
+      form.submit();
+      setTimeout(() => {
+        try {
+          if (document.body.contains(form)) {
+            document.body.removeChild(form);
+          }
+        } catch (err) {
+          // ignora
+        }
+      }, 500);
     } catch (err) {
-      console.error('Erro ao abrir Anjinha Aura:', err);
+      console.error('Erro ao abrir Anjinha Aura via POST:', err);
     }
   };
 
