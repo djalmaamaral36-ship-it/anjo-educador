@@ -2397,20 +2397,20 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
 
   const possibleKeys = getAllPossibleStudentKeys(realId);
 
-  // TTL-based local cache resolution
-  const LOCAL_FLAG_TTL_MS = 8000;
-  function getLocalShiftFlag(key: string): { active: boolean; isFresh: boolean; exists: boolean } {
-    const flag = localStorage.getItem(`anjo_shift_active_${key}`);
-    const timestamp = localStorage.getItem(`anjo_shift_active_${key}_ts`);
-    if (flag === null) return { active: false, isFresh: false, exists: false };
-    const elapsed = timestamp ? Date.now() - Number(timestamp) : Infinity;
-    return { active: flag === 'true', isFresh: elapsed < LOCAL_FLAG_TTL_MS, exists: true };
-  }
-  function setLocalShiftFlag(key: string, active: boolean): void {
-    localStorage.setItem(`anjo_shift_active_${key}`, String(active));
-    localStorage.setItem(`anjo_shift_active_${key}_ts`, String(Date.now()));
-  }
 
+// TTL-based local cache resolution utility
+const LOCAL_FLAG_TTL_MS = 8000;
+function getLocalShiftFlag(key: string): { active: boolean; isFresh: boolean; exists: boolean } {
+  const flag = localStorage.getItem(`anjo_shift_active_${key}`);
+  const timestamp = localStorage.getItem(`anjo_shift_active_${key}_ts`);
+  if (flag === null) return { active: false, isFresh: false, exists: false };
+  const elapsed = timestamp ? Date.now() - Number(timestamp) : Infinity;
+  return { active: flag === 'true', isFresh: elapsed < LOCAL_FLAG_TTL_MS, exists: true };
+}
+function setLocalShiftFlag(key: string, active: boolean): void {
+  localStorage.setItem(`anjo_shift_active_${key}`, String(active));
+  localStorage.setItem(`anjo_shift_active_${key}_ts`, String(Date.now()));
+}
   let localActiveFlag = false;
   let localActiveKey = '';
   let localAbsentFlag = false;
