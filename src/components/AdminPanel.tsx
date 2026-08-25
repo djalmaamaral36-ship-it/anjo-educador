@@ -577,7 +577,45 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
     
     // Seed dry-run logs so the table isn't blank on first boot!
     if (allConsents.length === 0) {
-      const mockConsents: ConsentRecord[] = [
+      const isEscolarCurrent = (localStorage.getItem('anjo_app_mode') || 'escolar_infantil').startsWith('escolar');
+      const mockConsents: ConsentRecord[] = isEscolarCurrent ? [
+        {
+          id: 'mock_1',
+          usuarioNome: 'Clarice Souza (Mãe)',
+          usuarioEmail: 'clarice.souza@gmail.com',
+          usuarioTelefone: '(11) 98765-4321',
+          usuarioTipo: 'familiar',
+          idosoNome: 'Mariana Souza',
+          dataConsentimento: new Date(Date.now() - 3600000 * 24).toLocaleString('pt-BR'),
+          modoApp: '🧸 Anjinho Escolar',
+          deviceFingerprint: 'IP 189.14.88.221 (SSL • Android 14)',
+          statusFinanceiro: 'pago'
+        },
+        {
+          id: 'mock_2',
+          usuarioNome: 'Ana Silva (Educadora)',
+          usuarioEmail: 'ana.silva@escola.com',
+          usuarioTelefone: '(11) 91234-5678',
+          usuarioTipo: 'cuidador',
+          idosoNome: 'Berçário I - A',
+          dataConsentimento: new Date(Date.now() - 3600000 * 48).toLocaleString('pt-BR'),
+          modoApp: '🧸 Anjinho Escolar',
+          deviceFingerprint: 'IP 177.33.102.13 (SSL • iOS 17)',
+          statusFinanceiro: 'pago'
+        },
+        {
+          id: 'mock_3',
+          usuarioNome: 'Juliana Santos (Mãe)',
+          usuarioEmail: 'juliana.santos@gmail.com',
+          usuarioTelefone: '(11) 98844-3322',
+          usuarioTipo: 'familiar',
+          idosoNome: 'Alice Santos',
+          dataConsentimento: new Date(Date.now() - 3600000 * 12).toLocaleString('pt-BR'),
+          modoApp: '🧸 Anjinho Escolar',
+          deviceFingerprint: 'IP 200.180.2.49 (SSL • Windows 11)',
+          statusFinanceiro: 'pago'
+        }
+      ] : [
         {
           id: 'mock_1',
           usuarioNome: 'Clarice Souza (Filha)',

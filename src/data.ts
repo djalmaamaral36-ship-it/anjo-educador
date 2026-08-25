@@ -371,7 +371,7 @@ export function generateUniquePin(excludeUserId?: string, preferredDigits?: stri
 export function initializeDB() {
   if (typeof window === 'undefined') return;
 
-  const DB_SCHEMA_VERSION = 'v4_clean_schema_reset';
+  const DB_SCHEMA_VERSION = 'v5_clean_schema_reset';
   const currentDbVersion = localStorage.getItem('anjo_db_version');
 
   // Hard reset/seed to canonical dataset on version upgrade

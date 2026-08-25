@@ -117,13 +117,13 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
   },
   {
     id: 'user_pai_felipe',
-    nome: 'Felipe Lima (Pai)',
-    email: 'felipe.lima@gmail.com',
+    nome: 'Felipe Teixeira (Pai)',
+    email: 'felipe.teixeira@gmail.com',
     telefone: '(11) 97123-4567',
     tipo: 'familiar',
     parentesco: 'Pai',
     foto: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Pai do aluno Bernardo Lima.',
+    observacoes: 'Pai do aluno Bernardo Teixeira.',
     pin: '4567'
   },
   {
@@ -266,7 +266,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
   },
   {
     id: 'aluno_4',
-    nome: 'Bernardo Lima',
+    nome: 'Bernardo Teixeira',
     salaAula: 'Berçário I - A',
     quarto: 'Berçário I - A',
     foto: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150',
@@ -275,7 +275,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     alergias: ['Nenhuma catalogada'],
     observacoes: 'Manter elevado 20 minutos após mamadas.',
     contatoEmergencia: {
-      nome: 'Felipe Lima',
+      nome: 'Felipe Teixeira',
       parentesco: 'Pai',
       telefone: '(11) 97123-4567'
     },
