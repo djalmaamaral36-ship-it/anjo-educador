@@ -3120,44 +3120,9 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
 
   const handleStartShift = () => {
     const startTimeStamp = new Date().toISOString();
-    const horaStr = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    const dataStr = new Date().toLocaleDateString('pt-BR');
-    const cleanName = (idoso.nome || '').split(' (')[0].trim();
-
-    const hasTodayData = () => {
-      const alim = getFromDB<any[]>('anjo_alimentacao', []).some(a => a.idosoId === idoso.id && isTodayOrDemoDate(a.data));
-      const hid = getFromDB<any[]>('anjo_hidratacao', []).some(h => h.idosoId === idoso.id && isTodayOrDemoDate(h.data));
-      const occ = getFromDB<any[]>(`anjo_ocorrencias_${idoso.id}`, []).length > 0;
-      const shiftState = getShiftActiveState(idoso.id);
-      return alim || hid || occ || Boolean(shiftState.lastResetTime);
-    };
-
-    const currentShift = getShiftActiveState(idoso.id);
-    const wasAbsentToday = isAbsent || currentShift.isAbsent || localStorage.getItem(`anjo_is_absent_${idoso.id}`) === 'true' || Boolean(currentShift.lastResetTime) || hasTodayData();
-
-    // If student was marked absent or turned off earlier today, treat this as a RETURN (Religar cronômetro without wiping activities)
-    if (wasAbsentToday) {
-      unlockAndMarkPresent(idoso.id);
-
-      const novaOcorrencia = {
-        id: 'oc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
-        tipo: 'retorno_aluno',
-        criticidade: 'verde',
-        titulo: 'Retorno do Aluno à Escola',
-        descricao: `Aluno ${cleanName} retornou às ${horaStr} e o cronômetro foi religado.`,
-        horario: horaStr,
-        data: dataStr,
-        responsavel: usuarioAtual?.nome || 'Educador',
-        statusEnvioWhatsApp: 'mensagem_gerada',
-        dataRegistroStatus: new Date().toLocaleString('pt-BR')
-      };
-
-      const currentOccs = getFromDB<any[]>(`anjo_ocorrencias_${idoso.id}`, []);
-      const updatedOccs = [novaOcorrencia, ...currentOccs];
-      setOccurrencesList(updatedOccs);
-      saveToDB(`anjo_ocorrencias_${idoso.id}`, updatedOccs);
-
-      const logs = getFromDB<any[]>(`anjo_lgpd_auditoria_${idoso.id}`, []);
+    setShiftActiveState(idoso.id, true, startTimeStamp);
+    window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
+  };
       logs.unshift({
         id: 'log_' + Date.now(),
         autor: usuarioAtual?.nome || 'Educador',
