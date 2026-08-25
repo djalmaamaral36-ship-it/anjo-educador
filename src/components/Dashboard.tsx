@@ -3131,6 +3131,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
   };
 
   const handleStartShiftWithPreservation = () => {
+    const startTimeStamp = new Date().toISOString();
     // Preserve peso, temperatura and saturacao in vitals
     const allVitals = getFromDB<any[]>('anjo_sinais', []);
     const studentVitals = allVitals.filter(v => v.idosoId === idoso.id);
