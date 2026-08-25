@@ -948,7 +948,7 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
 
 
 // TTL-based local cache resolution utility
-const LOCAL_FLAG_TTL_MS = 8000;
+const LOCAL_FLAG_TTL_MS = 15000;
 function getLocalShiftFlag(key: string): { active: boolean; isFresh: boolean; exists: boolean } {
   const flag = localStorage.getItem(`anjo_shift_active_${key}`);
   const timestamp = localStorage.getItem(`anjo_shift_active_${key}_ts`);
@@ -968,31 +968,42 @@ function setLocalShiftFlag(key: string, active: boolean): void {
   let localActiveFlag = false;
   let localActiveKey = '';
   let localAbsentFlag = false;
+  let hasFreshLocalOverride = false;
+  let freshLocalActiveValue = false;
 
   for (const k of possibleKeys) {
     const remoteState = shiftStates.find(s => s && (s.id === k || keyMatches(s.id, k) || keyMatches(k, s.id)));
     const local = getLocalShiftFlag(k);
 
-    if (remoteState) {
-      if (local.isFresh && local.exists && local.active !== remoteState.active) {
-        if (local.active) {
-          localActiveFlag = true;
-          localActiveKey = k;
-        }
-      } else {
-        setLocalShiftFlag(k, remoteState.active);
-        if (remoteState.active) {
-          localActiveFlag = true;
-          localActiveKey = k;
-        }
+    if (local.isFresh && local.exists) {
+      hasFreshLocalOverride = true;
+      if (local.active) {
+        freshLocalActiveValue = true;
+        localActiveFlag = true;
+        localActiveKey = k;
       }
-    } else if (local.isFresh && local.active) {
-      localActiveFlag = true;
-      localActiveKey = k;
+    } else if (remoteState) {
+      setLocalShiftFlag(k, remoteState.active);
+      if (remoteState.active) {
+        localActiveFlag = true;
+        localActiveKey = k;
+      }
     }
     
     if (localStorage.getItem(`anjo_is_absent_${k}`) === 'true') {
       localAbsentFlag = true;
+    }
+  }
+
+  // PRIORITY 0: FRESH LOCAL ACTION OVERRIDE (User clicked button within last 15s)
+  if (hasFreshLocalOverride) {
+    const localDirectStartTime = possibleKeys.reduce((acc, k) => acc || localStorage.getItem(`anjo_shift_start_time_${k}`), null as string | null) ||
+      (studentRoom ? localStorage.getItem(`anjo_shift_start_time_${studentRoom}`) : null);
+    const startTime = localDirectStartTime || new Date().toISOString();
+    if (freshLocalActiveValue) {
+      return { active: true, isAbsent: false, reason: null, startTime, lastResetTime: startTime };
+    } else {
+      return { active: false, isAbsent: localAbsentFlag, reason: null, startTime: null, lastResetTime: null };
     }
   }
 
@@ -1562,6 +1573,7 @@ export function setShiftActiveStatesBatch(updates: { targetKey: string; active: 
 
       if (active) {
         localStorage.setItem(`anjo_shift_active_${normalizedK}`, 'true');
+        localStorage.setItem(`anjo_shift_active_${normalizedK}_ts`, String(Date.now()));
         if (effectiveStartTime) {
           localStorage.setItem(`anjo_shift_start_time_${normalizedK}`, effectiveStartTime);
           localStorage.setItem(`anjo_routine_reset_${normalizedK}`, effectiveStartTime);
@@ -1571,6 +1583,7 @@ export function setShiftActiveStatesBatch(updates: { targetKey: string; active: 
       } else {
         localStorage.removeItem(`anjo_shift_start_time_${normalizedK}`);
         localStorage.setItem(`anjo_shift_active_${normalizedK}`, 'false');
+        localStorage.setItem(`anjo_shift_active_${normalizedK}_ts`, String(Date.now()));
         if (isAbsent || reason) {
           localStorage.setItem(`anjo_is_absent_${normalizedK}`, 'true');
         } else {
