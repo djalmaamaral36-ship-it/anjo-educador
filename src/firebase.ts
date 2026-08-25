@@ -430,10 +430,16 @@ export function startFirebaseSync(force = false) {
 
   isSyncStarted = true;
 
-  console.log('🔥 [DIAGNOSTIC] startFirebaseSync() chamado. Coleções:', Object.keys(SYNC_COLLECTIONS_MAP));
-  console.log('🚀 [Firebase Sync] Iniciando serviço de sincronização global do Firestore (1 única conexão)...');
+  console.log('🔥 [DIAGNOSTIC] startFirebaseSync() chamado.');
+  console.log('🚀 [Firebase Sync] Iniciando serviço de sincronização prioritária (turnos_ativos)...');
 
-  Object.entries(SYNC_COLLECTIONS_MAP).forEach(([localKey, collectionName]) => {
+  // PRIORITIZE only 'anjo_shift_states' (turnos_ativos)
+  const criticalKeys = ['anjo_shift_states'];
+  
+  criticalKeys.forEach((localKey) => {
+    const collectionName = SYNC_COLLECTIONS_MAP[localKey];
+    if (!collectionName) return;
+    
     // 1. Check if we need to seed Firestore with existing LocalStorage data
     const localDataRaw = localStorage.getItem(localKey);
     let localItems: any[] = [];
@@ -739,9 +745,11 @@ export function startFirebaseSync(force = false) {
     activeUnsubscribes.push(unsubscribe);
   });
 
-  // 3. Setup listeners for dynamic collections containing individual per-student documents (e.g. hygiene logs, occurrences)
-  const DYNAMIC_SYNC_COLLECTIONS = [
-    'higiene_logs',
+  // Setup listeners AFTER app has had a chance to authenticate (5s delay)
+  setTimeout(() => {
+    // 3. Setup listeners for dynamic collections
+    const DYNAMIC_SYNC_COLLECTIONS = [
+      'higiene_logs',
     'ocorrencias',
     'auditoria_lgpd',
     'resumos_turnos',
@@ -847,6 +855,7 @@ export function startFirebaseSync(force = false) {
 
     activeUnsubscribes.push(unsubscribe);
   });
+  }, 5000);
 
   // Flush any pending queue
   setTimeout(flushPendingQueue, 3000);
