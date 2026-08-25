@@ -2411,12 +2411,17 @@ function setLocalShiftFlag(key: string, active: boolean): void {
   localStorage.setItem(`anjo_shift_active_${key}`, String(active));
   localStorage.setItem(`anjo_shift_active_${key}_ts`, String(Date.now()));
 }
+  // 1. Check shift states in DB (PRIMARY SOURCE OF TRUTH)
+  const shiftStates = customShiftStates && Array.isArray(customShiftStates) 
+    ? customShiftStates 
+    : getFromDB<ShiftState[]>('anjo_shift_states', []);
+
   let localActiveFlag = false;
   let localActiveKey = '';
   let localAbsentFlag = false;
 
   for (const k of possibleKeys) {
-    const remoteState = shiftStates.find(s => s.targetKey === k); // Adjusted to find in shiftStates array
+    const remoteState = shiftStates.find(s => s.targetKey === k);
     const local = getLocalShiftFlag(k);
 
     if (remoteState) {
@@ -2441,11 +2446,6 @@ function setLocalShiftFlag(key: string, active: boolean): void {
       localAbsentFlag = true;
     }
   }
-
-  // 1. Check shift states in DB (PRIMARY SOURCE OF TRUTH)
-  const shiftStates = customShiftStates && Array.isArray(customShiftStates) 
-    ? customShiftStates 
-    : getFromDB<ShiftState[]>('anjo_shift_states', []);
 
   const directRecords: { record: ShiftState; time: number }[] = [];
   const classroomRecords: { record: ShiftState; time: number }[] = [];
