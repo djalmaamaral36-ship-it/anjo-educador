@@ -583,7 +583,7 @@ export function startFirebaseSync() {
           return false;
         }
         
-        if (localKey === 'anjo_tarefas_diarias' || localKey === 'anjo_atividades' || localKey === 'anjo_alimentacao' || localKey === 'anjo_hidratacao' || localKey === 'anjo_humor' || localKey === 'anjo_sono' || localKey === 'anjo_ocorrencias') {
+        if (localKey === 'anjo_tarefas_diarias' || localKey === 'anjo_atividades' || localKey === 'anjo_alimentacao' || localKey === 'anjo_hidratacao' || localKey === 'anjo_humor' || localKey === 'anjo_sono' || localKey === 'anjo_ocorrencias' || localKey === 'anjo_sinais' || localKey === 'anjo_jornada_events') {
           const isCleared = localStorage.getItem(`anjo_tasks_cleared_${studentId}`) === 'true' ||
                             localStorage.getItem(`anjo_activities_cleared_${studentId}`) === 'true' ||
                             localStorage.getItem(`anjo_routine_cleared_${studentId}`) === 'true';

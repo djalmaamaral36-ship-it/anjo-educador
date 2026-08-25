@@ -114,7 +114,7 @@ export const AGENDA_INICIAL: CompromissoMedico[] = [
 ];
 
 // Seed Historical Data (last 5 days) for Charts
-export const HISTORICO_SINAIS_INICAIS: RegistroSinaisVitais[] = [];
+export const HISTORICO_SINAIS_INICAIS: SinalVital[] = [];
 export const HISTORICO_HIDRATACAO_INICIAL: RegistroHidratacao[] = [];
 export const HISTORICO_SONO_INICIAL: RegistroSono[] = [];
 export const HISTORICO_HUMOR_INICIAL: RegistroHumor[] = [];
@@ -935,10 +935,20 @@ export function isRecordBeforeResetTimestamp(item: any, resetTimeStr: string | n
     }
   }
 
-  // Check item.data (YYYY-MM-DD string comparison)
+  // Check item.data (YYYY-MM-DD string comparison) and item.horario
   const resetDateStr = resetTimeStr.split('T')[0];
   if (item.data && typeof item.data === 'string') {
-    if (item.data < resetDateStr) return true;
+    const cleanData = item.data.split('T')[0].split(' ')[0];
+    if (cleanData < resetDateStr) return true;
+    if (cleanData === resetDateStr && item.horario) {
+      try {
+        const itemTimeStr = `${cleanData}T${item.horario.length === 5 ? item.horario : item.horario + ':00'}`;
+        const itemMs = new Date(itemTimeStr).getTime();
+        if (!isNaN(itemMs) && itemMs < resetTime) {
+          return true;
+        }
+      } catch (e) {}
+    }
   }
 
   return false;
@@ -1608,12 +1618,41 @@ export function getTodayBr(): string {
   return new Date().toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
 }
 
-export function isTodayOrDemoDate(d?: string): boolean {
+export function isTodayOrDemoDate(d?: string, studentId?: string): boolean {
   if (!d) return true;
   const todayIso = new Date().toISOString().split('T')[0];
   const todayBr = new Date().toLocaleDateString('pt-BR');
   const cleanD = d.split(' ')[0].split('T')[0];
-  return cleanD === todayIso || cleanD === todayBr || cleanD === '2026-05-30' || d === '2026-05-30';
+
+  if (studentId) {
+    const isCleared = localStorage.getItem(`anjo_routine_cleared_${studentId}`) === 'true' ||
+                      localStorage.getItem(`anjo_activities_cleared_${studentId}`) === 'true' ||
+                      localStorage.getItem(`anjo_tasks_cleared_${studentId}`) === 'true';
+    if (isCleared) return false;
+
+    const resetTimeStr = localStorage.getItem(`anjo_routine_reset_${studentId}`) || localStorage.getItem(`anjo_shift_start_time_${studentId}`);
+    if (resetTimeStr) {
+      if (isRecordBeforeResetTimestamp({ data: d }, resetTimeStr)) {
+        return false;
+      }
+      if (cleanD === '2026-05-30' || d === '2026-05-30') {
+        const resetDateStr = resetTimeStr.split('T')[0];
+        if ('2026-05-30' < resetDateStr || resetDateStr > '2026-05-30') {
+          return false;
+        }
+      }
+    }
+  }
+
+  const isDateMatch = cleanD === todayIso || cleanD === todayBr;
+  if (isDateMatch) return true;
+
+  if (studentId) {
+    const hasReset = localStorage.getItem(`anjo_routine_reset_${studentId}`) || localStorage.getItem(`anjo_shift_start_time_${studentId}`);
+    if (hasReset) return false;
+  }
+
+  return cleanD === '2026-05-30' || d === '2026-05-30';
 }
 
 export interface BottleIntervalCheckResult {

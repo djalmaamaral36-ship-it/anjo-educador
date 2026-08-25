@@ -3128,16 +3128,15 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
   };
 
   const handleStartShift = () => {
-    const startTimeStamp = new Date().toISOString();
-    setIsShiftActive(true);
-    setShiftStartTime(startTimeStamp);
-    setShiftActiveState(idoso.id, true, startTimeStamp);
-    unlockAndMarkPresent();
-    window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
+    handleStartShiftWithPreservation();
   };
 
   const handleStartShiftWithPreservation = () => {
     const startTimeStamp = new Date().toISOString();
+
+    // 1. Wipe daily routine records for current student to guarantee clean slate
+    resetStudentDailyRoutine([idoso.id]);
+
     // Preserve peso, temperatura and saturacao in vitals
     const allVitals = getFromDB<any[]>('anjo_sinais', []);
     const studentVitals = allVitals.filter(v => v.idosoId === idoso.id);
@@ -3234,8 +3233,13 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
     triggerWhatsAppSim('Turno Iniciado', msg);
 
     if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
       window.dispatchEvent(new CustomEvent('anjo_user_updated'));
       window.dispatchEvent(new CustomEvent('db-vitals-update'));
+      window.dispatchEvent(new CustomEvent('db-tasks-update'));
+      window.dispatchEvent(new CustomEvent('db-routine-update'));
+      window.dispatchEvent(new CustomEvent('db-jornada-update'));
+      window.dispatchEvent(new CustomEvent('db-activities-update'));
     }
 
     showToast(`▶️ Cronômetro e período iniciados para ${idoso.nome.split(' (')[0]}! Todas as atividades do dia anterior foram zeradas para o novo dia.`, 'success');
