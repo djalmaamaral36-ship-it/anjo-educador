@@ -1053,7 +1053,13 @@ Equipe Anjinho Escolar ❤️🕊️`
 
   // Real-time listener & periodic poll for shift state synchronization across devices (e.g. PC teacher & Mobile parent)
   useEffect(() => {
-    const syncShiftState = () => {
+    const syncShiftState = (event?: Event) => {
+      let remoteItems: any[] | undefined;
+      
+      if (event instanceof CustomEvent && event.detail?.items) {
+        remoteItems = event.detail.items;
+      }
+      
       let targetId = idoso.id;
       const currentMode = (localStorage.getItem('anjo_app_mode') as string) || appMode || 'escolar_infantil';
       if (currentMode.startsWith('escolar')) {
@@ -1064,7 +1070,7 @@ Equipe Anjinho Escolar ❤️🕊️`
         else if (targetId === 'aluno_2') targetId = 'idoso_joao';
       }
 
-      const activeShift = getShiftActiveState(targetId);
+      const activeShift = getShiftActiveState(targetId, remoteItems);
       console.log(`📡 [Dashboard Component] syncShiftState executado para idoso/aluno: ${targetId} (${idoso.nome}) | Ativo: ${activeShift.active} | Início: ${activeShift.startTime}`);
       setIsShiftActive(prevActive => {
         if (prevActive !== activeShift.active) {

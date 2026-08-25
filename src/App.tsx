@@ -231,6 +231,7 @@ export default function App() {
 
   // Initialize DB once on boot
   useEffect(() => {
+    console.log('✅ App JS carregado no dispositivo:', new Date().toISOString());
     initializeDB();
     startFirebaseSync();
     
