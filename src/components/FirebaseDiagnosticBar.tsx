@@ -39,12 +39,22 @@ export default function FirebaseDiagnosticBar() {
       addLog(`📡 [onSnapshot (Teste 2)] Recebido de "${collectionName}" (${docCount} docs) às ${timestamp}`);
     };
 
+    const handleSyncError = (e: any) => {
+      const { collectionName, code, message } = e.detail || {};
+      addLog(`❌ [ERRO SYNC] ${collectionName || ''}: ${code || ''} - ${message || ''}`);
+      if (code === 'permission-denied') {
+        setTestResult(`❌ Permissão Negada em ${collectionName || ''}. Verifique firestore.rules`);
+      }
+    };
+
     window.addEventListener('firestore-connection-status', handleConnectionStatus);
     window.addEventListener('firestore-snapshot-event', handleSnapshotEvent);
+    window.addEventListener('anjo_sync_error', handleSyncError);
 
     return () => {
       window.removeEventListener('firestore-connection-status', handleConnectionStatus);
       window.removeEventListener('firestore-snapshot-event', handleSnapshotEvent);
+      window.removeEventListener('anjo_sync_error', handleSyncError);
     };
   }, []);
 

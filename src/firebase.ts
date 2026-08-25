@@ -421,6 +421,7 @@ export function startFirebaseSync() {
   }
   isSyncStarted = true;
 
+  console.log('🔥 [DIAGNOSTIC] startFirebaseSync() chamado. Coleções:', Object.keys(SYNC_COLLECTIONS_MAP));
   console.log('🚀 [Firebase Sync] Iniciando serviço de sincronização global do Firestore (1 única conexão)...');
 
   Object.entries(SYNC_COLLECTIONS_MAP).forEach(([localKey, collectionName]) => {
@@ -504,12 +505,13 @@ export function startFirebaseSync() {
       // Mark collection as initialized once docs exist
       localStorage.setItem(`anjo_seeded_${collectionName}`, 'true');
 
-      // Read all items from Firestore snapshot (always attach docSnapshot.id as item.id)
+      // Read all items from Firestore snapshot (always guarantee id fallback)
       const remoteItems: any[] = [];
       snapshot.forEach((docSnapshot) => {
+        const data = docSnapshot.data();
         remoteItems.push({
-          id: docSnapshot.id,
-          ...docSnapshot.data()
+          ...data,
+          id: data?.id ?? docSnapshot.id
         });
       });
 
@@ -709,7 +711,10 @@ export function startFirebaseSync() {
       
       console.log(`[Firebase Sync] Synced ${mergedItems.length} items for collection "${collectionName}"`);
     }, (error: any) => {
-      console.warn(`[Firebase Sync Warning] Listener em "${collectionName}" reportou erro:`, error?.code, error?.message || error);
+      console.error(`❌ [DIAGNOSTIC] Erro no listener de ${collectionName}:`, error?.code, error?.message || error);
+      window.dispatchEvent(
+        new CustomEvent('anjo_sync_error', { detail: { localKey, collectionName, code: error?.code, message: error?.message } })
+      );
       if (error?.code === 'permission-denied' || error?.code === 'unavailable') {
         isSyncStarted = false;
       }
