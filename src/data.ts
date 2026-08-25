@@ -2417,7 +2417,7 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
     }
   }
 
-  // 1. Check shift states in DB
+  // 1. Check shift states in DB (PRIMARY SOURCE OF TRUTH)
   const shiftStates = customShiftStates && Array.isArray(customShiftStates) 
     ? customShiftStates 
     : getFromDB<ShiftState[]>('anjo_shift_states', []);
@@ -2453,27 +2453,33 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
     }
   });
 
-  // PRIORITY 1: Direct Student Records
+  // PRIORITY 1: Direct Student Records (from Firestore)
   if (directRecords.length > 0) {
     directRecords.sort((a, b) => b.time - a.time);
     const latestDirect = directRecords[0].record;
     const isActive = latestDirect.active === true || String(latestDirect.active) === 'true';
 
-    if (isActive || (localActiveFlag && latestDirect.active !== false)) {
+    if (isActive) {
+      // Sync local to remote state
       possibleKeys.forEach(k => {
         localStorage.removeItem(`anjo_is_absent_${k}`);
         localStorage.setItem(`anjo_is_absent_${k}`, 'false');
+        localStorage.removeItem(`anjo_shift_active_${k}`);
+        localStorage.setItem(`anjo_shift_active_${k}`, 'true');
       });
 
-      const localDirectStartTime = possibleKeys.reduce((acc, k) => acc || localStorage.getItem(`anjo_shift_start_time_${k}`), null as string | null);
-      const startTime = latestDirect.startTime || localDirectStartTime || new Date().toISOString();
+      const startTime = latestDirect.startTime || new Date().toISOString();
       const lastResetTime = latestDirect.lastResetTime || startTime;
       return { active: true, isAbsent: false, reason: null, startTime, lastResetTime };
     } else {
-      const isAbsentBool = Boolean(latestDirect.isAbsent || latestDirect.reason || localAbsentFlag);
+      // Not active in Firestore
+      const isAbsentBool = Boolean(latestDirect.isAbsent || latestDirect.reason);
       if (isAbsentBool) {
         possibleKeys.forEach(k => localStorage.setItem(`anjo_is_absent_${k}`, 'true'));
       }
+      possibleKeys.forEach(k => {
+        localStorage.setItem(`anjo_shift_active_${k}`, 'false');
+      });
       return { 
         active: false, 
         isAbsent: isAbsentBool, 
@@ -2484,14 +2490,7 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
     }
   }
 
-  // If no direct DB record, but localActiveFlag is true
-  if (localActiveFlag) {
-    const localDirectStartTime = possibleKeys.reduce((acc, k) => acc || localStorage.getItem(`anjo_shift_start_time_${k}`), null as string | null);
-    const startTime = localDirectStartTime || new Date().toISOString();
-    return { active: true, isAbsent: false, reason: null, startTime, lastResetTime: startTime };
-  }
-
-  // PRIORITY 2: Classroom Records (ONLY if active)
+  // PRIORITY 2: Classroom Records (Firestore)
   if (classroomRecords.length > 0) {
     classroomRecords.sort((a, b) => b.time - a.time);
     const latestClassroom = classroomRecords[0].record;
@@ -2499,15 +2498,20 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
 
     if (isActive) {
       possibleKeys.forEach(k => {
-        localStorage.removeItem(`anjo_is_absent_${k}`);
-        localStorage.setItem(`anjo_is_absent_${k}`, 'false');
+        localStorage.setItem(`anjo_shift_active_${k}`, 'true');
       });
 
-      const localDirectStartTime = possibleKeys.reduce((acc, k) => acc || localStorage.getItem(`anjo_shift_start_time_${k}`), null as string | null);
-      const startTime = latestClassroom.startTime || localDirectStartTime || new Date().toISOString();
+      const startTime = latestClassroom.startTime || new Date().toISOString();
       const lastResetTime = latestClassroom.lastResetTime || startTime;
       return { active: true, isAbsent: false, reason: null, startTime, lastResetTime };
     }
+  }
+
+  // FALLBACK: If no direct DB record, use local storage
+  if (localActiveFlag) {
+    const localDirectStartTime = possibleKeys.reduce((acc, k) => acc || localStorage.getItem(`anjo_shift_start_time_${k}`), null as string | null);
+    const startTime = localDirectStartTime || new Date().toISOString();
+    return { active: true, isAbsent: false, reason: null, startTime, lastResetTime: startTime };
   }
 
   // 2. Absence check fallback
