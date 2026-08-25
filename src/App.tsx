@@ -1672,37 +1672,9 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
     return await generateAuraJwtAsync(payload, secret);
   };
 
-  const handleOpenAura = async (e?: React.MouseEvent) => {
+  const handleOpenAura = (e?: React.MouseEvent) => {
     if (e) e.preventDefault();
-    try {
-      const jwtToken = await getAuraTokenAsync();
-
-      // Formulário POST dinâmico enviado para https://anjinha-aura.lovable.app/api/sso
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = 'https://anjinha-aura.lovable.app/api/sso';
-      form.target = '_blank';
-
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'token';
-      input.value = jwtToken;
-      form.appendChild(input);
-
-      document.body.appendChild(form);
-      form.submit();
-      setTimeout(() => {
-        try {
-          if (document.body.contains(form)) {
-            document.body.removeChild(form);
-          }
-        } catch (err) {
-          // ignora
-        }
-      }, 500);
-    } catch (err) {
-      console.error('Erro ao abrir Anjinha Aura via POST:', err);
-    }
+    setIsAuraHubOpen(true);
   };
 
   const isFamiliarConvidado = usuarioAdaptado?.tipo === 'familiar_convidado' || 

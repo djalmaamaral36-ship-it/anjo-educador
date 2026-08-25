@@ -28,7 +28,7 @@ export const AuraAiHubModal: React.FC<AuraAiHubModalProps> = ({
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: `Olá, ${usuarioAtual?.nome.split(' ')[0] || 'Educadora'}! ✨ Eu sou a **Aura**, sua assistente pedagógica e de cuidados integrada ao Anjinho Escolar. Como posso te ajudar hoje no planejamento, nos relatórios ou na criação de atividades para a turminha? 🧸💖`,
+      content: `Olá, ${usuarioAtual?.nome.split(' ')[0] || 'Ana'}!\nProfessora · Escola Pequeno Anjo${idosoAtual ? ` · aluno(a): ${idosoAtual.nome}` : ''}\n\nQue bom te ver por aqui! Comece uma nova conversa na barra lateral — posso conversar, analisar câmera/tela, ler arquivos e digitalizar documentos. ✨`,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     }
   ]);
