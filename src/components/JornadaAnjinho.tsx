@@ -555,6 +555,76 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
     });
   });
 
+  const hygLog = getFromDB<any>(`anjo_higiene_log_${studentId}`, null);
+  if (hygLog && typeof hygLog === 'object') {
+    const time = hygLog.time || '11:00';
+    const bath = hygLog.bath || hygLog.banho;
+    const teeth = hygLog.teeth || hygLog.higieneBucal;
+    const clothes = hygLog.clothes || hygLog.trocaRoupa;
+    const diaper = hygLog.diaper || hygLog.trocaFralda;
+    const hands = hygLog.hands;
+    const cream = hygLog.cream || hygLog.pele;
+    const obs = hygLog.observations || hygLog.obs || '';
+
+    const details: string[] = [];
+    if (bath) details.push('Banho revigorante tomado com carinho');
+    if (diaper) details.push('Troca de fralda realizada com higienização completa');
+    if (hands) details.push('Mãozinhas higienizadas');
+    if (teeth) details.push('Higiene bucal realizada');
+    if (clothes) details.push('Troca de roupinhas limpas');
+    if (cream) details.push('Aplicação de creme/hidratante protetor');
+
+    if (details.length > 0) {
+      synchronizedRoutineEvents.push({
+        id: `sync_hyg_${studentId}_${hygLog.date || 'today'}`,
+        idosoId: studentId,
+        tipo: 'rotina',
+        titulo: `🛁 Higiene, Banho & Cuidados às ${time}`,
+        data: hygLog.date || '2026-05-30',
+        descricao: `${details.join('. ')}. ${obs ? `Obs: ${obs}` : ''}`,
+        imagemUrl: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=600',
+        dimensoesDesenvolvimento: ['Saúde e Bem-Estar'],
+        likes: 1,
+        reagido: false,
+        registradoPor: hygLog.registradoPor || 'Equipe Escolar'
+      });
+    }
+  }
+
+  const humores = getFromDB<any[]>('anjo_humor', []).filter(h => h && h.idosoId === studentId);
+  humores.forEach((h, idx) => {
+    synchronizedRoutineEvents.push({
+      id: `sync_hum_${h.id || idx}`,
+      idosoId: studentId,
+      tipo: 'rotina',
+      titulo: `😊 Estado de Humor & Disposição (${h.horario || 'Horário Escolar'})`,
+      data: h.data || '2026-05-30',
+      descricao: `Apresentou humor ${h.humor || 'alegre e receptivo(a)'} durante as atividades e interações do período. ${h.observacoes ? `Obs: ${h.observacoes}` : ''}`,
+      imagemUrl: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=600',
+      dimensoesDesenvolvimento: ['Social/Afetivo'],
+      likes: 1,
+      reagido: false,
+      registradoPor: h.registradoPor || 'Equipe Escolar'
+    });
+  });
+
+  const occs = getFromDB<any[]>(`anjo_ocorrencias_${studentId}`, []);
+  occs.forEach((o, idx) => {
+    synchronizedRoutineEvents.push({
+      id: `sync_occ_${o.id || idx}`,
+      idosoId: studentId,
+      tipo: 'recado',
+      titulo: `🚨 Ocorrência Escolar: ${(o.tipo || 'Atenção').toUpperCase()}`,
+      data: o.data || '2026-05-30',
+      descricao: `${o.descricao || o.titulo || 'Registro de ocorrência realizado pela equipe.'}`,
+      imagemUrl: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=600',
+      dimensoesDesenvolvimento: ['Saúde e Bem-Estar'],
+      likes: 1,
+      reagido: false,
+      registradoPor: o.registradoPor || 'Equipe Escolar'
+    });
+  });
+
   const reactionsMap = getFromDB<Record<string, { meuGestoAfeto?: GestoAfetoTipo; gestosAfeto?: Record<string, number>; likes?: number }>>('anjo_jornada_reactions', {});
   const combinedMap = new Map<string, JornadaEvent>();
   
