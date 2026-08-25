@@ -349,6 +349,20 @@ export function pruneLocalStorageToFreeSpace() {
 export function saveToDB(key: string, data: any) {
   if (typeof window === 'undefined') return;
 
+  // 0. Auto-remove stale '_cleared_' flags when new data is saved for a student
+  if (Array.isArray(data) && data.length > 0) {
+    data.forEach(item => {
+      if (item) {
+        const studentId = item.idosoId || item.studentId || item.alunoId;
+        if (studentId) {
+          localStorage.removeItem(`anjo_activities_cleared_${studentId}`);
+          localStorage.removeItem(`anjo_routine_cleared_${studentId}`);
+          localStorage.removeItem(`anjo_tasks_cleared_${studentId}`);
+        }
+      }
+    });
+  }
+
   const colName = getFirestoreCollectionForKey(key);
   let itemsToUpload: any[] = [];
 
@@ -418,7 +432,7 @@ export function saveToDB(key: string, data: any) {
     }
   }
 
-  // 3. Write ONLY modified or new items to Firestore immediately (not deferred in broken setTimeout)
+  // 3. Write ONLY modified or new items to Firestore immediately
   try {
     if (colName && itemsToUpload.length > 0) {
       itemsToUpload.forEach(item => {
@@ -1254,8 +1268,8 @@ export function wipeAllParentsPanelActivities() {
   studentIds.forEach(id => {
     localStorage.setItem(`anjo_tasks_initialized_${id}`, 'true');
     localStorage.setItem(`anjo_routine_reset_${id}`, resetNowIso);
-    localStorage.setItem(`anjo_activities_cleared_${id}`, 'true');
-    localStorage.setItem(`anjo_routine_cleared_${id}`, 'true');
+    localStorage.removeItem(`anjo_activities_cleared_${id}`);
+    localStorage.removeItem(`anjo_routine_cleared_${id}`);
     localStorage.removeItem(`anjo_tasks_cleared_${id}`);
     localStorage.removeItem(`anjo_almoço_pct_${id}`);
     localStorage.removeItem(`anjo_sleep_hr_${id}`);
@@ -1317,12 +1331,12 @@ export function resetStudentDailyRoutine(studentIds: string[]) {
 
   const resetNowIso = new Date().toISOString();
 
-  // Set reset timestamp & flags so old records from previous days are zeroed out completely
+  // Set reset timestamp & remove cleared flags so newly logged activities during active shift are displayed
   validIds.forEach(id => {
     localStorage.setItem(`anjo_tasks_initialized_${id}`, 'true');
     localStorage.setItem(`anjo_routine_reset_${id}`, resetNowIso);
-    localStorage.setItem(`anjo_activities_cleared_${id}`, 'true');
-    localStorage.setItem(`anjo_routine_cleared_${id}`, 'true');
+    localStorage.removeItem(`anjo_activities_cleared_${id}`);
+    localStorage.removeItem(`anjo_routine_cleared_${id}`);
     localStorage.removeItem(`anjo_tasks_cleared_${id}`);
   });
 
