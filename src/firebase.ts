@@ -7,9 +7,12 @@ import {
   deleteDoc, 
   onSnapshot,
   getDocs,
+  getDoc,
   query,
   where,
-  writeBatch
+  writeBatch,
+  enableNetwork,
+  disableNetwork
 } from 'firebase/firestore';
 import firebaseConfig from '../firebase-applet-config.json';
 
@@ -20,6 +23,53 @@ const app = initializeApp(firebaseConfig);
 export const db = (firebaseConfig as any).firestoreDatabaseId 
   ? getFirestore(app, (firebaseConfig as any).firestoreDatabaseId) 
   : getFirestore(app);
+
+// Connectivity state tracking
+export let isFirestoreConnected = true;
+export let lastSnapshotTime: string | null = null;
+export let snapshotCountTotal = 0;
+
+// Reconnect function (Teste 3)
+export async function forceReconnectFirestore(): Promise<boolean> {
+  try {
+    console.log('🔄 [Firebase Test 3] Forçando reconexão da rede do Firestore...');
+    await disableNetwork(db);
+    await new Promise(resolve => setTimeout(resolve, 500));
+    await enableNetwork(db);
+    isFirestoreConnected = true;
+    window.dispatchEvent(new CustomEvent('firestore-connection-status', { detail: { connected: true, reconnected: true } }));
+    console.log('✅ [Firebase Test 3] Rede do Firestore reiniciada com sucesso!');
+    return true;
+  } catch (err) {
+    console.error('❌ [Firebase Test 3] Erro ao reconectar Firestore:', err);
+    return false;
+  }
+}
+
+// Keep-Alive & Mobile Visibility Handler (Teste 5)
+if (typeof window !== 'undefined') {
+  // Mobile keep-alive ping every 25 seconds
+  setInterval(() => {
+    if (document.visibilityState === 'visible') {
+      const pingRef = doc(db, 'turnos_ativos', '_keep_alive_ping');
+      getDoc(pingRef).then(() => {
+        isFirestoreConnected = true;
+        window.dispatchEvent(new CustomEvent('firestore-connection-status', { detail: { connected: true } }));
+      }).catch((err) => {
+        console.warn('📡 [Firebase Keep-alive Warning]', err?.message || err);
+      });
+    }
+  }, 25000);
+
+  // Auto-wake on tab visibility change (Mobile Safari/Chrome tab focus recovery)
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      console.log('📱 [Mobile Auto-Wake] Aba reativada no celular. Verificando/reconectando Firestore...');
+      enableNetwork(db).catch(() => {});
+      window.dispatchEvent(new CustomEvent('firestore-connection-status', { detail: { connected: true } }));
+    }
+  });
+}
 
 // Map local database keys to Firestore collection names
 export const SYNC_COLLECTIONS_MAP: { [key: string]: string } = {
@@ -358,6 +408,13 @@ let activeUnsubscribes: (() => void)[] = [];
  */
 export function startFirebaseSync() {
   if (typeof window === 'undefined') return;
+
+  if (!db) {
+    console.warn('[Firebase Sync] DB não inicializado, tentando novamente em 1s...');
+    setTimeout(startFirebaseSync, 1000);
+    return;
+  }
+
   if (isSyncStarted) {
     console.log('⚡ [Firebase Sync] Já está rodando globalmente (Singleton Guard Ativo).');
     return;
@@ -382,7 +439,19 @@ export function startFirebaseSync() {
     // 2. Setup Real-time listener for Firestore collection
     const colRef = collection(db, collectionName);
     const unsubscribe = onSnapshot(colRef, (snapshot) => {
+      isFirestoreConnected = true;
+      lastSnapshotTime = new Date().toLocaleTimeString('pt-BR');
+      snapshotCountTotal++;
+      
       console.log(`🔥 [DIAGNOSTIC] onSnapshot disparou para ${collectionName}. Docs count:`, snapshot.size);
+      window.dispatchEvent(new CustomEvent('firestore-snapshot-event', {
+        detail: {
+          collectionName,
+          localKey,
+          docCount: snapshot.size,
+          timestamp: lastSnapshotTime
+        }
+      }));
       if (snapshot.size > 0) {
         console.log('🔥 [DIAGNOSTIC] Amostra de dado (primeiro doc):', snapshot.docs[0].data());
       }
@@ -435,10 +504,13 @@ export function startFirebaseSync() {
       // Mark collection as initialized once docs exist
       localStorage.setItem(`anjo_seeded_${collectionName}`, 'true');
 
-      // Read all items from Firestore snapshot
+      // Read all items from Firestore snapshot (always attach docSnapshot.id as item.id)
       const remoteItems: any[] = [];
       snapshot.forEach((docSnapshot) => {
-        remoteItems.push(docSnapshot.data());
+        remoteItems.push({
+          id: docSnapshot.id,
+          ...docSnapshot.data()
+        });
       });
 
       // Preserve ONLY very recent local writes (< 15s) that are not yet in remoteItems
@@ -649,8 +721,11 @@ export function startFirebaseSync() {
       window.dispatchEvent(new CustomEvent('db-vitals-update', { detail: { localKey, items: mergedItems } }));
       
       console.log(`[Firebase Sync] Synced ${mergedItems.length} items for collection "${collectionName}"`);
-    }, (error) => {
-      console.warn(`[Firebase Sync Warning] Listener em "${collectionName}" reportou erro ou cota atingida:`, error?.message || error);
+    }, (error: any) => {
+      console.warn(`[Firebase Sync Warning] Listener em "${collectionName}" reportou erro:`, error?.code, error?.message || error);
+      if (error?.code === 'permission-denied' || error?.code === 'unavailable') {
+        isSyncStarted = false;
+      }
     });
 
     activeUnsubscribes.push(unsubscribe);
@@ -670,7 +745,7 @@ export function startFirebaseSync() {
     const unsubscribe = onSnapshot(colRef, (snapshot) => {
       // Use docChanges() to process changed documents and assemble student arrays
       snapshot.docChanges().forEach((change) => {
-        const docData = change.doc.data();
+        const docData: any = { id: change.doc.id, ...change.doc.data() };
         const docId = change.doc.id;
 
         if (change.type === 'added' || change.type === 'modified') {

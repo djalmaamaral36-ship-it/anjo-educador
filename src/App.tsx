@@ -22,6 +22,7 @@ import JornadaAnjinho from './components/JornadaAnjinho';
 import BrandBook from './components/BrandBook';
 import { QuickStudentSearch } from './components/QuickStudentSearch';
 import EditProfileModal from './components/EditProfileModal';
+import FirebaseDiagnosticBar from './components/FirebaseDiagnosticBar';
 
 
 import { 
@@ -2719,6 +2720,9 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
         usuarioAtual={usuarioAdaptado}
         onSaveUsuario={handleSaveProfile}
       />
+
+      {/* Floating Realtime Firebase Diagnostic Toolbar (Tests 1, 2, 3, 4, 5) */}
+      <FirebaseDiagnosticBar />
     </div>
   );
 }
