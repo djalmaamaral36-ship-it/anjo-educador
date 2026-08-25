@@ -139,11 +139,16 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
     const handleShiftUpdate = () => {
       setIsShiftActive(getShiftActiveState(idoso.id).active);
     };
+    const handleOpenModalEvent = () => {
+      setIsOpen(true);
+    };
     window.addEventListener('anjo_shift_updated', handleShiftUpdate);
     window.addEventListener('db-vitals-update', handleShiftUpdate);
+    window.addEventListener('open-aura-smart-modal', handleOpenModalEvent);
     return () => {
       window.removeEventListener('anjo_shift_updated', handleShiftUpdate);
       window.removeEventListener('db-vitals-update', handleShiftUpdate);
+      window.removeEventListener('open-aura-smart-modal', handleOpenModalEvent);
     };
   }, [idoso.id]);
 

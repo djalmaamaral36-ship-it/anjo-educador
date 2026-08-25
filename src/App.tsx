@@ -1673,33 +1673,9 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
   const handleOpenAura = async (e?: React.MouseEvent) => {
     if (e) e.preventDefault();
     try {
-      const jwtToken = await getAuraTokenAsync();
-
-      // Formulário POST dinâmico enviado para https://anjinha-aura.lovable.app/api/sso
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = 'https://anjinha-aura.lovable.app/api/sso';
-      form.target = '_blank';
-
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'token';
-      input.value = jwtToken;
-      form.appendChild(input);
-
-      document.body.appendChild(form);
-      form.submit();
-      setTimeout(() => {
-        try {
-          if (document.body.contains(form)) {
-            document.body.removeChild(form);
-          }
-        } catch (err) {
-          // ignora
-        }
-      }, 500);
+      window.dispatchEvent(new CustomEvent('open-aura-smart-modal'));
     } catch (err) {
-      console.error('Erro ao abrir Anjinha Aura via POST:', err);
+      console.error('Erro ao abrir Anjinha Aura:', err);
     }
   };
 
