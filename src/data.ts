@@ -2421,7 +2421,7 @@ function setLocalShiftFlag(key: string, active: boolean): void {
   let localAbsentFlag = false;
 
   for (const k of possibleKeys) {
-    const remoteState = shiftStates.find(s => s.targetKey === k);
+    const remoteState = shiftStates.find(s => s && (s.id === k || keyMatches(s.id, k) || keyMatches(k, s.id)));
     const local = getLocalShiftFlag(k);
 
     if (remoteState) {
