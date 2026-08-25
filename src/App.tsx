@@ -234,7 +234,7 @@ export default function App() {
   useEffect(() => {
     console.log('✅ App JS carregado no dispositivo:', new Date().toISOString());
     initializeDB();
-    startFirebaseSync();
+    // startFirebaseSync(); // Temporarily disabled to rescue login
     
     const handleUserUpdatedEvent = (e: any) => {
       const savedUserId = localStorage.getItem('anjo_simulacao_user_id');
@@ -849,6 +849,11 @@ export default function App() {
     localStorage.setItem('anjo_simulacao_user_id', user.id);
     setActiveScreen('dashboard');
     
+    // Explicitly start firebase sync after login, but wait for render first
+    setTimeout(() => {
+      import('./firebase').then(f => f.startFirebaseSync(true));
+    }, 100);
+
     // Read the app mode selected on the login page and align it with the user role
     const savedMode = (localStorage.getItem('anjo_app_mode') as 'idoso' | 'escolar_infantil') || 'idoso';
     const targetMode = determineAppModeForUser(user, savedMode);

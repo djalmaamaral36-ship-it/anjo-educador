@@ -493,32 +493,11 @@ export function startFirebaseSync(force = false) {
 
       // If snapshot is empty, seed local items to cloud if present, preserving shift states & user data
       if (snapshot.empty) {
-        if (currentLocalItems.length > 0 && !isAlreadySeeded) {
-          localStorage.setItem(`anjo_seeded_${collectionName}`, 'true');
-          console.log(`[Firebase Seeding] Collection "${collectionName}" is empty in Cloud. Preserving ${currentLocalItems.length} local items and uploading to Firestore...`);
-          currentLocalItems.forEach(async (item) => {
-            if (item && item.id) {
-              try {
-                const docId = String(item.id).replace(/\//g, '_');
-                const cleanItem = sanitizeForFirestore(item);
-                await setDoc(doc(db, collectionName, docId), cleanItem);
-              } catch (err) {
-                console.error(`Error seeding ${item.id}`, err);
-              }
-            }
-          });
-          return;
-        } else {
-          // Cloud collection is empty and local items are empty or collection was reset.
-          localStorage.setItem(`anjo_seeded_${collectionName}`, 'true');
-          localStorage.setItem(localKey, JSON.stringify([]));
-          if (localKey === 'anjo_shift_states') {
-            syncShiftStateLocalStorageFlags([]);
-          }
-          window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: { localKey, items: [] } }));
-          window.dispatchEvent(new CustomEvent('db-vitals-update', { detail: { localKey, items: [] } }));
-          return;
-        }
+        localStorage.setItem(`anjo_seeded_${collectionName}`, 'true');
+        // Do not automatically upload local storage to cloud here as it causes infinite sync loops.
+        // Seeding should be handled by an explicit user action if the cloud is empty.
+        console.log(`[Firebase Sync] Collection "${collectionName}" is empty in Cloud.`);
+        return;
       }
 
       // Mark collection as initialized once docs exist
