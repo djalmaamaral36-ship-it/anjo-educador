@@ -22,7 +22,6 @@ import JornadaAnjinho from './components/JornadaAnjinho';
 import BrandBook from './components/BrandBook';
 import { QuickStudentSearch } from './components/QuickStudentSearch';
 import EditProfileModal from './components/EditProfileModal';
-import { AuraAiHubModal } from './components/AuraAiHubModal';
 
 
 import { 
@@ -197,7 +196,6 @@ export default function App() {
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [keyTrigger, setKeyTrigger] = useState(0); // triggering force refreshes
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
-  const [isAuraHubOpen, setIsAuraHubOpen] = useState(false);
 
   const handleSaveProfile = (updatedUser: Usuario) => {
     setUsuarioAtual(updatedUser);
@@ -1674,7 +1672,38 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
 
   const handleOpenAura = (e?: React.MouseEvent) => {
     if (e) e.preventDefault();
-    setIsAuraHubOpen(true);
+    try {
+      const cleanName = usuarioAdaptado?.nome
+        .replace(/ \((Educadora|Cuidadora|Mãe|Pai|Familiar|Médico|Pediatra|Profissional|Responsável|Diretor|Diretora|Direção|Administrador|Coordenador|Coordenadora|Desenvolvedor|Dev)\)/gi, '')
+        .replace(/Profª /g, '')
+        .replace(/Prof\. /g, '')
+        .trim() || 'Ana';
+
+      const userId = usuarioAdaptado?.id || 'user_cuidador_1';
+      const tipo = usuarioAdaptado?.tipo || 'professor';
+      const escola = instName || 'Escola Pequeno Anjo';
+      const turma = idosoAdaptado?.salaAula || (usuarioAdaptado as any)?.salaAula || 'Maternal';
+      const studentId = idosoAdaptado?.id || '';
+      const studentName = idosoAdaptado ? idosoAdaptado.nome.replace(/\s*\(.*?\)$/, '').trim() : '';
+
+      const currentUrl = window.location.href || 'https://anjinha-aura.lovable.app';
+
+      const params = new URLSearchParams({
+        userId,
+        userName: cleanName,
+        tipo,
+        escola,
+        turma,
+        ...(studentId ? { studentId } : {}),
+        ...(studentName ? { studentName } : {}),
+        returnUrl: currentUrl
+      });
+
+      const auraUrl = `https://anjinha-aura.lovable.app/app?${params.toString()}`;
+      window.open(auraUrl, '_blank');
+    } catch (err) {
+      console.error('Erro ao abrir Anjinha Aura:', err);
+    }
   };
 
   const isFamiliarConvidado = usuarioAdaptado?.tipo === 'familiar_convidado' || 
@@ -2692,15 +2721,6 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
         onClose={() => setIsEditProfileModalOpen(false)}
         usuarioAtual={usuarioAdaptado}
         onSaveUsuario={handleSaveProfile}
-      />
-
-      {/* Aura AI Hub Modal (Chat & Image Studio) */}
-      <AuraAiHubModal
-        isOpen={isAuraHubOpen}
-        onClose={() => setIsAuraHubOpen(false)}
-        usuarioAtual={usuarioAdaptado}
-        idosoAtual={idosoAdaptado}
-        appMode={appMode}
       />
     </div>
   );
