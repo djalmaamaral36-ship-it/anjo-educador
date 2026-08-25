@@ -378,6 +378,11 @@ export function startFirebaseSync() {
     // 2. Setup Real-time listener for Firestore collection
     const colRef = collection(db, collectionName);
     const unsubscribe = onSnapshot(colRef, (snapshot) => {
+      console.log(`🔥 [DIAGNOSTIC] onSnapshot disparou para ${collectionName}. Docs count:`, snapshot.size);
+      if (snapshot.size > 0) {
+        console.log('🔥 [DIAGNOSTIC] Amostra de dado (primeiro doc):', snapshot.docs[0].data());
+      }
+      
       // Re-read latest localItems on snapshot update to avoid stale closure state
       const currentLocalRaw = localStorage.getItem(localKey);
       let currentLocalItems: any[] = [];
