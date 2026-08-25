@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Idoso, Usuario } from '../types';
-import { getFromDB, saveToDB, initializeDB, compressImage } from '../data';
+import { getFromDB, saveToDB, initializeDB, compressImage, wipeAllParentsPanelActivities } from '../data';
 import { VoiceInput } from './VoiceInput';
 import { 
   Settings, 
@@ -308,20 +308,8 @@ export default function SettingsPage({
       return;
     }
     
-    // Clear logs
-    localStorage.setItem('anjo_sinais', JSON.stringify([]));
-    localStorage.setItem('anjo_hidratacao', JSON.stringify([]));
-    localStorage.setItem('anjo_sono', JSON.stringify([]));
-    localStorage.setItem('anjo_humor', JSON.stringify([]));
-    localStorage.setItem('anjo_alimentacao', JSON.stringify([]));
-    localStorage.setItem('anjo_atividades', JSON.stringify([]));
-    localStorage.setItem('anjo_notificacoes', JSON.stringify([]));
-    
-    // Remove temporary agenda state
-    localStorage.removeItem('anjo_agenda');
-    localStorage.removeItem('anjo_medicamentos');
-    
-    // Reinitialize default empty schemas securely
+    // Execute total wipe across local storage and remote Firestore
+    wipeAllParentsPanelActivities();
     initializeDB();
     
     setSavingMessage('Limpeza concluída! Histórico de testes zerado. Agora todos os gráficos e relatórios iniciam vazios.');

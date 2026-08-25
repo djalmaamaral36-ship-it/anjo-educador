@@ -257,7 +257,11 @@ export async function deleteStudentDataFromFirestore(studentIds: string | string
     'humor',
     'sono',
     'higiene_logs',
-    'ocorrencias'
+    'ocorrencias',
+    'sinais_vitais',
+    'encaminhamentos_pedagogicos',
+    'alertas_desenvolvimento',
+    'mediacao_conflitos'
   ];
 
   for (const studentId of ids) {

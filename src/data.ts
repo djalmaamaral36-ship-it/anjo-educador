@@ -114,227 +114,13 @@ export const AGENDA_INICIAL: CompromissoMedico[] = [
 ];
 
 // Seed Historical Data (last 5 days) for Charts
-export const HISTORICO_SINAIS_INICAIS: SinalVital[] = [
-  {
-    id: 'sinal_m_1',
-    idosoId: 'idoso_maria',
-    pressaoArterial: '135/85',
-    glicemia: 98,
-    tipoGlicemia: 'jejum',
-    temperatura: 36.3,
-    frequenciaCardiaca: 82,
-    saturacao: 97,
-    peso: 62.4,
-    data: '2026-05-26',
-    horario: '08:15',
-    registradoPor: 'Ana Silva (Cuidadora)',
-    observacoes: 'Aferição normal em jejum.'
-  },
-  {
-    id: 'sinal_m_2',
-    idosoId: 'idoso_maria',
-    pressaoArterial: '128/80',
-    glicemia: 110,
-    tipoGlicemia: 'pos-prandial',
-    temperatura: 36.6,
-    frequenciaCardiaca: 78,
-    saturacao: 98,
-    peso: 62.4,
-    data: '2026-05-27',
-    horario: '08:20',
-    registradoPor: 'Ana Silva (Cuidadora)',
-    observacoes: 'Pressão excelente hoje.'
-  },
-  {
-    id: 'sinal_m_3',
-    idosoId: 'idoso_maria',
-    pressaoArterial: '142/90',
-    glicemia: 104,
-    tipoGlicemia: 'jejum',
-    temperatura: 36.8,
-    frequenciaCardiaca: 88,
-    saturacao: 96,
-    peso: 62.5,
-    data: '2026-05-28',
-    horario: '08:10',
-    registradoPor: 'Clarice Souza (Filha)',
-    observacoes: 'Acordou um pouco irritada, pressão levemente alterada.'
-  },
-  {
-    id: 'sinal_m_4',
-    idosoId: 'idoso_maria',
-    pressaoArterial: '130/82',
-    glicemia: 99,
-    tipoGlicemia: 'jejum',
-    temperatura: 36.4,
-    frequenciaCardiaca: 75,
-    saturacao: 98,
-    peso: 62.3,
-    data: '2026-05-29',
-    horario: '08:12',
-    registradoPor: 'Ana Silva (Cuidadora)',
-    observacoes: 'Tudo dentro do esperado.'
-  },
-  {
-    id: 'sinal_m_5',
-    idosoId: 'idoso_maria',
-    pressaoArterial: '124/78',
-    glicemia: 102,
-    tipoGlicemia: 'jejum',
-    temperatura: 36.2,
-    frequenciaCardiaca: 72,
-    saturacao: 99,
-    peso: 62.2,
-    data: '2026-05-30', // Hoje de manhã
-    horario: '08:05',
-    registradoPor: 'Ana Silva (Cuidadora)',
-    observacoes: 'Medição em repouso absoluto. Ótimo estado geral.'
-  },
-
-  // Seu João
-  {
-    id: 'sinal_j_1',
-    idosoId: 'idoso_joao',
-    pressaoArterial: '130/82',
-    glicemia: 135,
-    tipoGlicemia: 'jejum',
-    temperatura: 36.4,
-    frequenciaCardiaca: 70,
-    saturacao: 96,
-    peso: 81.3,
-    data: '2026-05-28',
-    horario: '07:45',
-    registradoPor: 'Carlos Souza (Familiar)',
-    observacoes: 'Glicemia um pouco acima da meta matinal.'
-  },
-  {
-    id: 'sinal_j_2',
-    idosoId: 'idoso_joao',
-    pressaoArterial: '125/80',
-    glicemia: 112,
-    tipoGlicemia: 'jejum',
-    temperatura: 36.3,
-    frequenciaCardiaca: 72,
-    saturacao: 97,
-    peso: 81.2,
-    data: '2026-05-29',
-    horario: '07:50',
-    registradoPor: 'Ana Silva (Cuidadora)',
-    observacoes: 'Glicemia bem controlada com medicação regular.'
-  },
-  {
-    id: 'sinal_j_3',
-    idosoId: 'idoso_joao',
-    pressaoArterial: '128/80',
-    glicemia: 119,
-    tipoGlicemia: 'jejum',
-    temperatura: 36.5,
-    frequenciaCardiaca: 68,
-    saturacao: 97,
-    peso: 81.0,
-    data: '2026-05-30', // Hoje de manhã
-    horario: '07:40',
-    registradoPor: 'Ana Silva (Cuidadora)',
-    observacoes: 'Tudo normal.'
-  },
-  // --- HISTÓRICO ESCOLAR DE SINAIS (FRALDA E DESCANSO) ---
-  { id: 'sinal_e_a1_1', idosoId: 'aluno_1', pressaoArterial: 'Dormiu 1h30', glicemia: 0, tipoGlicemia: 'jejum', temperatura: 36.4, frequenciaCardiaca: 98, saturacao: 99, peso: 8.5, data: '2026-05-30', horario: '14:30', registradoPor: 'Profª Ana Silva', observacoes: 'Fralda seca na sesta.', fralda: 'Fralda Seca / Limpa', soneca: 'Dormiu das 13h às 14h30' },
-  { id: 'sinal_e_a2_1', idosoId: 'aluno_2', pressaoArterial: 'Dormiu 1h00', glicemia: 0, tipoGlicemia: 'jejum', temperatura: 36.6, frequenciaCardiaca: 92, saturacao: 98, peso: 9.8, data: '2026-05-30', horario: '14:15', registradoPor: 'Profª Ana Silva', observacoes: 'Fralda trocada + pomada.', fralda: 'Fralda trocada + pomada', soneca: 'Dormiu das 13h15 às 14h15' },
-  { id: 'sinal_e_a3_1', idosoId: 'aluno_3', pressaoArterial: 'Dormiu 1h45', glicemia: 0, tipoGlicemia: 'jejum', temperatura: 36.2, frequenciaCardiaca: 90, saturacao: 99, peso: 10.4, data: '2026-05-30', horario: '14:45', registradoPor: 'Profª Ana Silva', observacoes: 'Óculos guardados na sesta.', fralda: 'Fez Xixi', soneca: 'Dormiu das 13h às 14h45' },
-  { id: 'sinal_e_a4_1', idosoId: 'aluno_4', pressaoArterial: 'Dormiu 1h30', glicemia: 0, tipoGlicemia: 'jejum', temperatura: 36.5, frequenciaCardiaca: 96, saturacao: 99, peso: 10.2, data: '2026-05-30', horario: '14:15', registradoPor: 'Profª Ana Silva', observacoes: 'Fralda com troca completa + pomada.', fralda: 'Xixi e Cocô (Passou pomada)', soneca: 'Dormiu das 12h45 às 14h15' },
-  { id: 'sinal_e_a5_1', idosoId: 'aluno_5', pressaoArterial: 'Dormiu 1h00', glicemia: 0, tipoGlicemia: 'jejum', temperatura: 36.5, frequenciaCardiaca: 94, saturacao: 99, peso: 11.1, data: '2026-05-30', horario: '14:30', registradoPor: 'Profª Ana Silva', observacoes: 'Desfralde completo correu super bem no vaso.', fralda: 'Fralda Seca / Limpa', soneca: 'Dormiu das 13h30 às 14h30' }
-];
-
-export const HISTORICO_HIDRATACAO_INICIAL: RegistroHidratacao[] = [
-  // Dona Maria - Hoje 30/05/2026
-  { id: 'hid_m_1', idosoId: 'idoso_maria', quantidadeMl: 250, horario: '08:30', data: '2026-05-30', registradoPor: 'Ana Silva (Cuidadora)' },
-  { id: 'hid_m_2', idosoId: 'idoso_maria', quantidadeMl: 250, horario: '10:00', data: '2026-05-30', registradoPor: 'Ana Silva (Cuidadora)' },
-  { id: 'hid_m_3', idosoId: 'idoso_maria', quantidadeMl: 200, horario: '11:45', data: '2026-05-30', registradoPor: 'Ana Silva (Cuidadora)' },
-  // Seu João - Hoje 30/05/2026
-  { id: 'hid_j_1', idosoId: 'idoso_joao', quantidadeMl: 300, horario: '08:15', data: '2026-05-30', registradoPor: 'Ana Silva (Cuidadora)' },
-  { id: 'hid_j_2', idosoId: 'idoso_joao', quantidadeMl: 300, horario: '11:00', data: '2026-05-30', registradoPor: 'Ana Silva (Cuidadora)' }
-];
-
-export const HISTORICO_SONO_INICIAL: RegistroSono[] = [
-  // Dona Maria
-  { id: 'sono_m_1', idosoId: 'idoso_maria', dormiuEm: '22:00', acordouEm: '06:30', horasTotais: 8.5, qualidade: 'boa', interrupcoes: 1, data: '2026-05-28', observacoes: 'Acordou uma vez para ir ao banheiro, mas dormiu em seguida.' },
-  { id: 'sono_m_2', idosoId: 'idoso_maria', dormiuEm: '22:15', acordouEm: '07:00', horasTotais: 8.75, qualidade: 'excelente', interrupcoes: 0, data: '2026-05-29', observacoes: 'Dormiu a noite inteira. Demonstrou ótima disposição ao acordar.' },
-  { id: 'sono_m_3', idosoId: 'idoso_maria', dormiuEm: '22:30', acordouEm: '06:00', horasTotais: 7.5, qualidade: 'regular', interrupcoes: 2, data: '2026-05-30', observacoes: 'Um pouco agitada por volta das 03:00. Careceu de auxílio para se acalmar.' },
-  // Seu João
-  { id: 'sono_j_1', idosoId: 'idoso_joao', dormiuEm: '23:00', acordouEm: '06:30', horasTotais: 7.5, qualidade: 'boa', interrupcoes: 1, data: '2026-05-29', observacoes: 'Artrose incomodou um pouco à noite.' },
-  { id: 'sono_j_2', idosoId: 'idoso_joao', dormiuEm: '22:45', acordouEm: '07:00', horasTotais: 8.25, qualidade: 'excelente', interrupcoes: 0, data: '2026-05-30', observacoes: 'Almofada de apoio entre os joelhos ajudou muito.' },
-  // Alunos
-  { id: 'sono_e_a1_1', idosoId: 'aluno_1', dormiuEm: '13:00', acordouEm: '14:30', horasTotais: 1.5, qualidade: 'boa', interrupcoes: 0, data: '2026-05-30', observacoes: 'Soneca tranquila no tatame com seu ursinho azul.' },
-  { id: 'sono_e_a2_1', idosoId: 'aluno_2', dormiuEm: '13:15', acordouEm: '14:15', horasTotais: 1.0, qualidade: 'boa', interrupcoes: 1, data: '2026-05-30', observacoes: 'Acordou tossindo de leve, mas voltou a dormir logo.' },
-  { id: 'sono_e_a3_1', idosoId: 'aluno_3', dormiuEm: '13:00', acordouEm: '14:45', horasTotais: 1.75, qualidade: 'excelente', interrupcoes: 0, data: '2026-05-30', observacoes: 'Dormiu profundamente com óculos guardados na caixinha.' },
-  { id: 'sono_e_a4_1', idosoId: 'aluno_4', dormiuEm: '12:45', acordouEm: '14:15', horasTotais: 1.5, qualidade: 'boa', interrupcoes: 0, data: '2026-05-30', observacoes: 'Dormiu bem, mantido em cabeceira elevada.' },
-  { id: 'sono_e_a5_1', idosoId: 'aluno_5', dormiuEm: '13:30', acordouEm: '14:30', horasTotais: 1.0, qualidade: 'regular', interrupcoes: 0, data: '2026-05-30', observacoes: 'Precisou de historinha calma e carinho para pegar no sono.' }
-];
-
-export const HISTORICO_HUMOR_INICIAL: RegistroHumor[] = [
-  { id: 'hum_m_1', idosoId: 'idoso_maria', data: '2026-05-29', horario: '09:00', estado: 'feliz', observacoes: 'Adorou assistir ao programa de receitas e comer biscoito integral.', registradoPor: 'Ana Silva (Cuidadora)' },
-  { id: 'hum_m_2', idosoId: 'idoso_maria', data: '2026-05-29', horario: '17:00', estado: 'calmo', observacoes: 'Bastante sossegada no entardecer.', registradoPor: 'Ana Silva (Cuidadora)' },
-  { id: 'hum_m_3', idosoId: 'idoso_maria', data: '2026-05-30', horario: '08:30', estado: 'com_sono_calmo', registradoPor: 'Ana Silva (Cuidadora)' } as any as RegistroHumor,
-  { id: 'hum_m_4', idosoId: 'idoso_maria', data: '2026-05-30', horario: '11:00', estado: 'feliz', observacoes: 'Fez pintura e rascunhos em papel com giz de cera.', registradoPor: 'Ana Silva (Cuidadora)' },
-  // Seu João
-  { id: 'hum_j_1', idosoId: 'idoso_joao', data: '2026-05-29', horario: '09:30', estado: 'calmo', observacoes: 'Muito concentrado em sua leitura.', registradoPor: 'Ana Silva (Cuidadora)' },
-  { id: 'hum_j_2', idosoId: 'idoso_joao', data: '2026-05-30', horario: '09:00', estado: 'feliz', observacoes: 'Disconforme com o frio, mas feliz em receber notícias do neto.', registradoPor: 'Ana Silva (Cuidadora)' },
-  // Alunos
-  { id: 'hum_e_a1_1', idosoId: 'aluno_1', data: '2026-05-30', horario: '09:00', estado: 'feliz', observacoes: 'Chegou sorridente na escola e bateu palminhas ao ver os amigos.', registradoPor: 'Profª Ana Silva' },
-  { id: 'hum_e_a1_2', idosoId: 'aluno_1', data: '2026-05-30', horario: '11:00', estado: 'feliz', observacoes: 'Adorou brincar com chocalhos coloridos de estimulação.', registradoPor: 'Profª Ana Silva' },
-  { id: 'hum_e_a2_1', idosoId: 'aluno_2', data: '2026-05-30', horario: '09:30', estado: 'calmo', observacoes: 'Super focado encaixando blocos lógicos gigantes.', registradoPor: 'Profª Ana Silva' },
-  { id: 'hum_e_a3_1', idosoId: 'aluno_3', data: '2026-05-30', horario: '09:15', estado: 'feliz', observacoes: 'Cantou e dançou com a turminha na roda de música.', registradoPor: 'Profª Ana Silva' },
-  { id: 'hum_e_a4_1', idosoId: 'aluno_4', data: '2026-05-30', horario: '09:30', estado: 'feliz', observacoes: 'Deu muitas gargalhadas imitando barulho de gatinho e vaquinha.', registradoPor: 'Profª Ana Silva' },
-  { id: 'hum_e_a5_1', idosoId: 'aluno_5', data: '2026-05-30', horario: '10:00', estado: 'agitado', observacoes: 'Muito ativo correndo na sala de estimulação corporal.', registradoPor: 'Profª Ana Silva' }
-];
-
-export const HISTORICO_ALIMENTACAO_INICIAL: RegistroAlimentacao[] = [
-  { id: 'ali_m_1', idosoId: 'idoso_maria', refeicao: 'cafe_manha', aceitacao: 'muito_bem', horario: '08:15', data: '2026-05-30', observacoes: 'Geleia sem açúcar com pão integral, e uma xícara pequena de café com leite.', registradoPor: 'Ana Silva (Cuidadora)' },
-  { id: 'ali_m_2', idosoId: 'idoso_maria', refeicao: 'lanche', aceitacao: 'muito_bem', horario: '10:30', data: '2026-05-30', observacoes: 'Meia banana amassada com aveia em flocos e mel.', registradoPor: 'Ana Silva (Cuidadora)' },
-  { id: 'ali_j_1', idosoId: 'idoso_joao', refeicao: 'cafe_manha', aceitacao: 'muito_bem', horario: '08:00', data: '2026-05-30', observacoes: 'Ovos mexidos sem óleo, torrada e café preto adoçado com sucralose.', registradoPor: 'Ana Silva (Cuidadora)' },
-  // Alunos
-  { id: 'ali_e_a1_1', idosoId: 'aluno_1', refeicao: 'mamadeira', aceitacao: 'muito_bem', horario: '08:30', data: '2026-05-30', observacoes: 'Tomou toda a mamadeira de leite com aveia.', registradoPor: 'Profª Ana Silva' },
-  { id: 'ali_e_a1_2', idosoId: 'aluno_1', refeicao: 'lanche', aceitacao: 'muito_bem', horario: '10:15', data: '2026-05-30', observacoes: 'Comeu purê de maçã integral cozida.', registradoPor: 'Profª Ana Silva' },
-  { id: 'ali_e_a1_3', idosoId: 'aluno_1', refeicao: 'almoco', aceitacao: 'muito_bem', horario: '11:45', data: '2026-05-30', observacoes: 'Sopa de legumes amassada com frango desfiado.', registradoPor: 'Profª Ana Silva' },
-  { id: 'ali_e_a2_1', idosoId: 'aluno_2', refeicao: 'mamadeira', aceitacao: 'muito_bem', horario: '08:30', data: '2026-05-30', observacoes: 'Mamadeira e biscoito de polvilho.', registradoPor: 'Profª Ana Silva' },
-  { id: 'ali_e_a2_2', idosoId: 'aluno_2', refeicao: 'lanche', aceitacao: 'recusou', horario: '10:15', data: '2026-05-30', observacoes: 'Recusou a pera, preferiu tomar água.', registradoPor: 'Profª Ana Silva' },
-  { id: 'ali_e_a2_3', idosoId: 'aluno_2', refeicao: 'almoco', aceitacao: 'muito_bem', horario: '11:45', data: '2026-05-30', observacoes: 'Arroz, feijão amassado e purê de abóbora. Comeu tudo.', registradoPor: 'Profª Ana Silva' },
-  { id: 'ali_e_a3_1', idosoId: 'aluno_3', refeicao: 'cafe_manha', aceitacao: 'muito_bem', horario: '08:30', data: '2026-05-30', observacoes: 'Copo de leite com bisnaguinha com requeijão.', registradoPor: 'Profª Ana Silva' },
-  { id: 'ali_e_a3_2', idosoId: 'aluno_3', refeicao: 'lanche', aceitacao: 'muito_bem', horario: '10:15', data: '2026-05-30', observacoes: 'Mamão picadinho sem caroço.', registradoPor: 'Profª Ana Silva' },
-  { id: 'ali_e_a4_1', idosoId: 'aluno_4', refeicao: 'mamadeira', aceitacao: 'muito_bem', horario: '08:30', data: '2026-05-30', observacoes: 'Mamadeira com fórmula sem glúten.', registradoPor: 'Profª Ana Silva' },
-  { id: 'ali_e_a4_2', idosoId: 'aluno_4', refeicao: 'lanche', aceitacao: 'muito_bem', horario: '10:15', data: '2026-05-30', observacoes: 'Banana amassada simples.', registradoPor: 'Profª Ana Silva' },
-  { id: 'ali_e_a4_3', idosoId: 'aluno_4', refeicao: 'almoco', aceitacao: 'muito_bem', horario: '11:45', data: '2026-05-30', observacoes: 'Almoço especial sem glúten (arroz, caldinho de feijão e carne moída super úmida).', registradoPor: 'Profª Ana Silva' },
-  { id: 'ali_e_a5_1', idosoId: 'aluno_5', refeicao: 'cafe_manha', aceitacao: 'muito_bem', horario: '08:30', data: '2026-05-30', observacoes: 'Iogurte natural batido com morango.', registradoPor: 'Profª Ana Silva' },
-  { id: 'ali_e_a5_2', idosoId: 'aluno_5', refeicao: 'lanche', aceitacao: 'muito_bem', horario: '10:15', data: '2026-05-30', observacoes: 'Melão cortado em tiras finas.', registradoPor: 'Profª Ana Silva' },
-  { id: 'ali_e_a5_3', idosoId: 'aluno_5', refeicao: 'almoco', aceitacao: 'muito_bem', horario: '11:45', data: '2026-05-30', observacoes: 'Arroz integral, sopa de lentilhas e purê de batata doce.', registradoPor: 'Profª Ana Silva' }
-];
-
+export const HISTORICO_SINAIS_INICAIS: RegistroSinaisVitais[] = [];
+export const HISTORICO_HIDRATACAO_INICIAL: RegistroHidratacao[] = [];
+export const HISTORICO_SONO_INICIAL: RegistroSono[] = [];
+export const HISTORICO_HUMOR_INICIAL: RegistroHumor[] = [];
+export const HISTORICO_ALIMENTACAO_INICIAL: RegistroAlimentacao[] = [];
 export const HISTORICO_ATIVIDADE_INICIAL: RegistroAtividade[] = [];
-
-export const HISTORICO_NOTIFICACOES_INICIAIS: NotificacaoSimulada[] = [
-  {
-    id: 'notif_1',
-    idosoId: 'aluno_1',
-    familiarNome: 'Clarice Souza (Mãe)',
-    telefoneDestino: '(11) 98765-4321',
-    tipoCompromisso: 'Rotina de Lanche Concluída',
-    mensagem: 'Anjinho Escolar: O lanche da manhã de Mariana Souza foi registrado. Comeu muito bem a frutinha fatiada com cereal.',
-    status: 'enviada_whatsapp',
-    dataEnvio: '2026-05-30T08:06:00Z',
-    canal: 'WhatsApp'
-  },
-  {
-    id: 'notif_2',
-    idosoId: 'aluno_1',
-    familiarNome: 'Clarice Souza (Mãe)',
-    telefoneDestino: '(11) 98765-4321',
-    tipoCompromisso: 'Troca de Fralda Registrada',
-    mensagem: 'Anjinho Escolar: Troca de fralda de Mariana Souza realizada por Profª Sofia Mendes. Fralda limpa e pomada aplicada.',
-    status: 'enviada_whatsapp',
-    dataEnvio: '2026-05-30T08:20:00Z',
-    canal: 'WhatsApp'
-  }
-];
+export const HISTORICO_NOTIFICACOES_INICIAIS: NotificacaoSimulada[] = [];
 
 // Helper functions for PIN validation and uniqueness
 export function isPinUnique(pin: string, excludeUserId?: string): { isUnique: boolean; conflictingUser?: Usuario } {
@@ -371,7 +157,7 @@ export function generateUniquePin(excludeUserId?: string, preferredDigits?: stri
 export function initializeDB() {
   if (typeof window === 'undefined') return;
 
-  const DB_SCHEMA_VERSION = 'v7_clean_schema_reset';
+  const DB_SCHEMA_VERSION = 'v8_zeroed_parents_activities_v1';
   const currentDbVersion = localStorage.getItem('anjo_db_version');
 
   // Hard reset/seed to canonical dataset on version upgrade
@@ -392,6 +178,7 @@ export function initializeDB() {
     localStorage.setItem('anjo_simulacao_idoso_id', 'aluno_6');
     localStorage.setItem('anjo_app_mode', 'escolar_infantil');
     localStorage.setItem('anjo_db_version', DB_SCHEMA_VERSION);
+    wipeAllParentsPanelActivities();
     purgeOrphanedStudentData();
     return;
   }
@@ -1429,6 +1216,87 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
   ];
 }
 
+export function wipeAllParentsPanelActivities() {
+  if (typeof window === 'undefined') return;
+
+  const resetNowIso = new Date().toISOString();
+  const allStudents = getFromDB<Idoso[]>('anjo_idosos', IDOSOS_INICIAIS);
+  const studentIds = allStudents.map(s => s.id);
+
+  // 1. Wipe all global activity/routine tables completely
+  saveToDB('anjo_alimentacao', []);
+  saveToDB('anjo_hidratacao', []);
+  saveToDB('anjo_humor', []);
+  saveToDB('anjo_atividades', []);
+  saveToDB('anjo_sono', []);
+  saveToDB('anjo_sinais', []);
+  saveToDB('anjo_notificacoes', []);
+  saveToDB('anjo_mural_recados', []);
+  saveToDB('anjo_jornada_events', []);
+  saveToDB('anjo_ocorrencias', []);
+  saveToDB('anjo_encaminhamentos_pedagogicos', []);
+  saveToDB('anjo_alertas_desenvolvimento', []);
+  saveToDB('anjo_mediacao_conflitos', []);
+
+  // 2. Wipe per-student keys and set reset timestamps for all students
+  studentIds.forEach(id => {
+    localStorage.setItem(`anjo_tasks_initialized_${id}`, 'true');
+    localStorage.setItem(`anjo_routine_reset_${id}`, resetNowIso);
+    localStorage.setItem(`anjo_activities_cleared_${id}`, 'true');
+    localStorage.setItem(`anjo_routine_cleared_${id}`, 'true');
+    localStorage.removeItem(`anjo_tasks_cleared_${id}`);
+    localStorage.removeItem(`anjo_almoço_pct_${id}`);
+    localStorage.removeItem(`anjo_sleep_hr_${id}`);
+    localStorage.removeItem(`anjo_registro_agua_${id}`);
+    localStorage.removeItem(`anjo_hidratacao_${id}`);
+    localStorage.removeItem(`anjo_alimentacao_${id}`);
+    localStorage.removeItem(`anjo_humor_${id}`);
+    localStorage.removeItem(`anjo_atividades_${id}`);
+    localStorage.removeItem(`anjo_sono_${id}`);
+    localStorage.removeItem(`anjo_sinais_vitais_${id}`);
+    localStorage.removeItem(`anjo_is_absent_${id}`);
+
+    saveToDB(`anjo_registro_agua_${id}`, []);
+    saveToDB(`anjo_hidratacao_${id}`, []);
+    saveToDB(`anjo_alimentacao_${id}`, []);
+    saveToDB(`anjo_humor_${id}`, []);
+    saveToDB(`anjo_atividades_${id}`, []);
+    saveToDB(`anjo_sono_${id}`, []);
+    saveToDB(`anjo_ocorrencias_${id}`, []);
+
+    saveToDB(`anjo_higiene_log_${id}`, {
+      bath: false, teeth: false, clothes: false, diaper: false, hands: false, cream: false,
+      banho: false, higieneBucal: false, trocaRoupa: false, trocaFralda: false, pele: false,
+      time: '', observations: ''
+    });
+  });
+
+  // 3. Reset daily tasks to pendente
+  const allTasks = getFromDB<any[]>('anjo_tarefas_diarias', []);
+  const resetTasks = allTasks.map(t => ({
+    ...t,
+    status: 'pendente' as const,
+    concluidaEm: undefined,
+    completadaPor: undefined,
+    observacao: undefined,
+    detalhes: undefined
+  }));
+  saveToDB('anjo_tarefas_diarias', resetTasks);
+
+  // 4. Purge remote Firestore
+  deleteStudentDataFromFirestore(studentIds).catch(err => {
+    console.warn('[wipeAllParentsPanelActivities] Remote Firestore cleanup warning:', err);
+  });
+
+  // 5. Broadcast updates
+  window.dispatchEvent(new CustomEvent('anjo_user_updated'));
+  window.dispatchEvent(new CustomEvent('db-vitals-update'));
+  window.dispatchEvent(new CustomEvent('db-tasks-update'));
+  window.dispatchEvent(new CustomEvent('db-routine-update'));
+  window.dispatchEvent(new CustomEvent('db-jornada-update'));
+  window.dispatchEvent(new CustomEvent('db-activities-update'));
+}
+
 export function resetStudentDailyRoutine(studentIds: string[]) {
   if (typeof window === 'undefined' || !studentIds || studentIds.length === 0) return;
 
@@ -1441,9 +1309,9 @@ export function resetStudentDailyRoutine(studentIds: string[]) {
   validIds.forEach(id => {
     localStorage.setItem(`anjo_tasks_initialized_${id}`, 'true');
     localStorage.setItem(`anjo_routine_reset_${id}`, resetNowIso);
+    localStorage.setItem(`anjo_activities_cleared_${id}`, 'true');
+    localStorage.setItem(`anjo_routine_cleared_${id}`, 'true');
     localStorage.removeItem(`anjo_tasks_cleared_${id}`);
-    localStorage.removeItem(`anjo_activities_cleared_${id}`);
-    localStorage.removeItem(`anjo_routine_cleared_${id}`);
   });
 
   // 1. Clear routine activity tables for these students so they start at 0
@@ -1456,12 +1324,20 @@ export function resetStudentDailyRoutine(studentIds: string[]) {
   const allHumor = getFromDB<any[]>('anjo_humor', []);
   saveToDB('anjo_humor', allHumor.filter(h => !h || !h.idosoId || !validIds.has(h.idosoId)));
 
-  // Clear ALL activities for these students completely
   const allAtivs = getFromDB<any[]>('anjo_atividades', []);
   saveToDB('anjo_atividades', allAtivs.filter(a => !a || !a.idosoId || !validIds.has(a.idosoId)));
 
   const allSono = getFromDB<any[]>('anjo_sono', []);
   saveToDB('anjo_sono', allSono.filter(s => !s || !s.idosoId || !validIds.has(s.idosoId)));
+
+  const allSinais = getFromDB<any[]>('anjo_sinais', []);
+  saveToDB('anjo_sinais', allSinais.filter(s => !s || !s.idosoId || !validIds.has(s.idosoId)));
+
+  const allRecados = getFromDB<any[]>('anjo_mural_recados', []);
+  saveToDB('anjo_mural_recados', allRecados.filter(r => !r || !r.idosoId || !validIds.has(r.idosoId)));
+
+  const allEvents = getFromDB<any[]>('anjo_jornada_events', []);
+  saveToDB('anjo_jornada_events', allEvents.filter(e => !e || !e.idosoId || !validIds.has(e.idosoId)));
 
   // 2. Reset daily tasks checklist (anjo_tarefas_diarias) to 'pendente' for the new day
   const allTasks = getFromDB<any[]>('anjo_tarefas_diarias', []);
