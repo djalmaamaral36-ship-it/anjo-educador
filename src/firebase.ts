@@ -433,10 +433,13 @@ export function startFirebaseSync(force = false) {
   console.log('🔥 [DIAGNOSTIC] startFirebaseSync() chamado.');
   console.log('🚀 [Firebase Sync] Iniciando serviço de sincronização prioritária (turnos_ativos)...');
 
-  // PRIORITIZE only 'anjo_shift_states' (turnos_ativos)
+  // PRIORITIZE 'anjo_shift_states' (turnos_ativos)
   const criticalKeys = ['anjo_shift_states'];
+  const allKeys = Object.keys(SYNC_COLLECTIONS_MAP);
+  const otherKeys = allKeys.filter(k => !criticalKeys.includes(k));
   
-  criticalKeys.forEach((localKey) => {
+  // Sync everything
+  [...criticalKeys, ...otherKeys].forEach((localKey) => {
     const collectionName = SYNC_COLLECTIONS_MAP[localKey];
     if (!collectionName) return;
     
@@ -458,6 +461,7 @@ export function startFirebaseSync(force = false) {
       isFirestoreConnected = true;
       lastSnapshotTime = new Date().toLocaleTimeString('pt-BR');
       snapshotCountTotal++;
+      // ... (rest of the logic remains same, but this loop covers all)
       
       console.log(`🔥 [DIAGNOSTIC] onSnapshot disparou para ${collectionName}. Docs count:`, snapshot.size);
       window.dispatchEvent(new CustomEvent('firestore-snapshot-event', {
