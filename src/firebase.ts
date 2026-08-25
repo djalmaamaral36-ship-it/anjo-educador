@@ -441,11 +441,27 @@ export function startFirebaseSync() {
         remoteItems.push(docSnapshot.data());
       });
 
-      // Preserve any local items that are not yet in remoteItems (optimistic local additions / pending sync)
+      // Preserve ONLY very recent local writes (< 15s) that are not yet in remoteItems
       const remoteIds = new Set(remoteItems.map(i => i && i.id).filter(Boolean));
       const pendingLocalItems = currentLocalItems.filter(localItem => {
         if (!localItem || !localItem.id) return false;
         if (remoteIds.has(localItem.id)) return false;
+
+        // If collection was already seeded, any local item NOT in remoteItems that is >15s old was deleted in Firestore
+        const timeVal = localItem.updatedAt || localItem.createdAt || localItem.timestamp || localItem.data;
+        let isVeryRecentLocal = false;
+        if (timeVal) {
+          try {
+            const ms = new Date(timeVal).getTime();
+            if (!isNaN(ms) && (Date.now() - ms < 15000)) {
+              isVeryRecentLocal = true;
+            }
+          } catch (e) {}
+        }
+
+        if (!isVeryRecentLocal && isAlreadySeeded) {
+          return false; // Stale item deleted in Cloud or from prior session -> discard
+        }
 
         const studentId = localItem.idosoId || localItem.studentId || localItem.alunoId;
         if (studentId) {
@@ -467,26 +483,31 @@ export function startFirebaseSync() {
       const deletedStudentsList = JSON.parse(localStorage.getItem('anjo_deleted_students') || '[]') as string[];
       const deletedStudentsSet = new Set(deletedStudentsList);
 
-      // If syncing shift states (anjo_shift_states), deduplicate and merge
+      // If syncing shift states (anjo_shift_states), REMOTE Firestore is 100% Authoritative
       if (localKey === 'anjo_shift_states') {
         const shiftMap = new Map<string, any>();
-        combinedRemoteAndLocal.forEach(item => {
+
+        // 1. Cloud Remote items take top priority
+        remoteItems.forEach(item => {
+          if (!item || !item.id) return;
+          shiftMap.set(String(item.id).trim(), item);
+        });
+
+        // 2. Only keep local shift items for IDs not in remote IF created/updated in the last 15 seconds
+        currentLocalItems.forEach(item => {
           if (!item || !item.id) return;
           const k = String(item.id).trim();
-          const existing = shiftMap.get(k);
-          if (!existing) {
-            shiftMap.set(k, item);
-          } else {
-            const existingActive = existing.active === true || String(existing.active) === 'true';
-            const itemActive = item.active === true || String(item.active) === 'true';
-            if (itemActive && !existingActive) {
+          if (!shiftMap.has(k)) {
+            const timeVal = item.updatedAt || item.startTime;
+            let isRecent = false;
+            if (timeVal) {
+              try {
+                const ms = new Date(timeVal).getTime();
+                if (!isNaN(ms) && (Date.now() - ms < 15000)) isRecent = true;
+              } catch (e) {}
+            }
+            if (isRecent) {
               shiftMap.set(k, item);
-            } else {
-              const t1 = new Date(existing.updatedAt || existing.startTime || 0).getTime();
-              const t2 = new Date(item.updatedAt || item.startTime || 0).getTime();
-              if (t2 >= t1) {
-                shiftMap.set(k, item);
-              }
             }
           }
         });

@@ -748,6 +748,7 @@ function setLocalShiftFlag(key: string, active: boolean): void {
   localStorage.setItem(`anjo_shift_active_${key}_ts`, String(Date.now()));
 }
   // 1. Check shift states in DB (PRIMARY SOURCE OF TRUTH)
+  const isFromFirestoreListener = Boolean(customShiftStates && Array.isArray(customShiftStates));
   const shiftStates = customShiftStates && Array.isArray(customShiftStates) 
     ? customShiftStates 
     : getFromDB<ShiftState[]>('anjo_shift_states', []);
@@ -762,7 +763,8 @@ function setLocalShiftFlag(key: string, active: boolean): void {
     const remoteState = shiftStates.find(s => s && (s.id === k || keyMatches(s.id, k) || keyMatches(k, s.id)));
     const local = getLocalShiftFlag(k);
 
-    if (local.isFresh && local.exists) {
+    // Only allow local override if NOT receiving explicit Firestore listener update AND local flag is very fresh (<15s)
+    if (!isFromFirestoreListener && local.isFresh && local.exists) {
       hasFreshLocalOverride = true;
       if (local.active) {
         freshLocalActiveValue = true;
@@ -782,8 +784,8 @@ function setLocalShiftFlag(key: string, active: boolean): void {
     }
   }
 
-  // PRIORITY 0: FRESH LOCAL ACTION OVERRIDE (User clicked button within last 15s)
-  if (hasFreshLocalOverride) {
+  // PRIORITY 0: FRESH LOCAL ACTION OVERRIDE (Only when not processing direct Firestore snapshot)
+  if (hasFreshLocalOverride && !isFromFirestoreListener) {
     const localDirectStartTime = possibleKeys.reduce((acc, k) => acc || localStorage.getItem(`anjo_shift_start_time_${k}`), null as string | null) ||
       (studentRoom ? localStorage.getItem(`anjo_shift_start_time_${studentRoom}`) : null);
     const startTime = localDirectStartTime || new Date().toISOString();
