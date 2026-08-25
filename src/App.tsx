@@ -22,6 +22,7 @@ import JornadaAnjinho from './components/JornadaAnjinho';
 import BrandBook from './components/BrandBook';
 import { QuickStudentSearch } from './components/QuickStudentSearch';
 import EditProfileModal from './components/EditProfileModal';
+import { AuraAiHubModal } from './components/AuraAiHubModal';
 
 
 import { 
@@ -196,6 +197,7 @@ export default function App() {
   const [moreMenuOpen, setMoreMenuOpen] = useState(false);
   const [keyTrigger, setKeyTrigger] = useState(0); // triggering force refreshes
   const [isEditProfileModalOpen, setIsEditProfileModalOpen] = useState(false);
+  const [isAuraHubOpen, setIsAuraHubOpen] = useState(false);
 
   const handleSaveProfile = (updatedUser: Usuario) => {
     setUsuarioAtual(updatedUser);
@@ -1670,37 +1672,9 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
     return await generateAuraJwtAsync(payload, secret);
   };
 
-  const handleOpenAura = async (e?: React.MouseEvent) => {
+  const handleOpenAura = (e?: React.MouseEvent) => {
     if (e) e.preventDefault();
-    try {
-      const jwtToken = await getAuraTokenAsync();
-
-      // Formulário POST dinâmico enviado para https://anjinha-aura.lovable.app/api/sso
-      const form = document.createElement('form');
-      form.method = 'POST';
-      form.action = 'https://anjinha-aura.lovable.app/api/sso';
-      form.target = '_blank';
-
-      const input = document.createElement('input');
-      input.type = 'hidden';
-      input.name = 'token';
-      input.value = jwtToken;
-      form.appendChild(input);
-
-      document.body.appendChild(form);
-      form.submit();
-      setTimeout(() => {
-        try {
-          if (document.body.contains(form)) {
-            document.body.removeChild(form);
-          }
-        } catch (err) {
-          // ignora
-        }
-      }, 500);
-    } catch (err) {
-      console.error('Erro ao abrir Anjinha Aura via POST:', err);
-    }
+    setIsAuraHubOpen(true);
   };
 
   const isFamiliarConvidado = usuarioAdaptado?.tipo === 'familiar_convidado' || 
@@ -2718,6 +2692,15 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
         onClose={() => setIsEditProfileModalOpen(false)}
         usuarioAtual={usuarioAdaptado}
         onSaveUsuario={handleSaveProfile}
+      />
+
+      {/* Aura AI Hub Modal (Chat & Image Studio) */}
+      <AuraAiHubModal
+        isOpen={isAuraHubOpen}
+        onClose={() => setIsAuraHubOpen(false)}
+        usuarioAtual={usuarioAdaptado}
+        idosoAtual={idosoAdaptado}
+        appMode={appMode}
       />
     </div>
   );
