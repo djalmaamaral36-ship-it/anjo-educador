@@ -3123,57 +3123,8 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
     setShiftActiveState(idoso.id, true, startTimeStamp);
     window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
   };
-      logs.unshift({
-        id: 'log_' + Date.now(),
-        autor: usuarioAtual?.nome || 'Educador',
-        acao: 'Retorno do Aluno à Sala Registrado',
-        data: new Date().toLocaleString('pt-BR'),
-        ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-        detalhes: `Retorno do aluno ${cleanName} às ${horaStr}. Cronômetro religado e atividades preservadas.`
-      });
-      saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
-      setLgpdLogs(logs);
 
-      setIsShiftActive(true);
-      setShiftStartTime(startTimeStamp);
-
-      const startShiftUpdates = [
-        { targetKey: idoso.id, active: true, isAbsent: false, startTime: startTimeStamp },
-        { targetKey: idoso.nome, active: true, isAbsent: false, startTime: startTimeStamp },
-        { targetKey: cleanName, active: true, isAbsent: false, startTime: startTimeStamp }
-      ];
-      setShiftActiveStatesBatch(startShiftUpdates);
-
-      const retMsg = `Anjo Escolar — Aviso de Retorno do Aluno
-  
-Olá. Informamos que o(a) aluno(a) *${cleanName}* retornou às atividades escolares às *${horaStr}*.
-O acompanhamento de rotina foi reativado.`;
-
-      triggerWhatsAppSim('Aviso de Retorno do Aluno', retMsg);
-
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
-        window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-        window.dispatchEvent(new CustomEvent('db-vitals-update'));
-      }
-
-      showToast(`▶️ Retorno de ${cleanName} registrado às ${horaStr}! Cronômetro religado.`, 'success');
-      return;
-    }
-
-    // Clear routine databases for today related to this student so they start fresh from 0
-    resetStudentDailyRoutine([idoso.id]);
-
-    setQuickHygiene({
-      bath: false,
-      teeth: false,
-      clothes: false,
-      diaper: false,
-      hands: false,
-      cream: false,
-      observations: ''
-    });
-
+  const handleStartShiftWithPreservation = () => {
     // Preserve peso, temperatura and saturacao in vitals
     const allVitals = getFromDB<any[]>('anjo_sinais', []);
     const studentVitals = allVitals.filter(v => v.idosoId === idoso.id);
