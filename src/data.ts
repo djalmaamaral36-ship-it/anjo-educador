@@ -1655,6 +1655,30 @@ export function setShiftActiveStatesBatch(updates: { targetKey: string; active: 
     keysToUpdate.forEach(k => {
       if (k) upsertState(k);
     });
+
+    if (active) {
+      const studentIdsToReset: string[] = [];
+      if (student) {
+        studentIdsToReset.push(student.id);
+      } else {
+        const targetRoom = getStudentRoomName(cleanKey) || cleanKey;
+        if (targetRoom) {
+          const roomStudents = allStudents.filter(s => {
+            const sRoom = s.salaAula || s.quarto || getStudentRoomName(s) || '';
+            return keyMatches(sRoom, targetRoom);
+          });
+          roomStudents.forEach(s => studentIdsToReset.push(s.id));
+        }
+        allStudents.forEach(s => {
+          if (s.id === cleanKey || (s.nome && (s.nome === cleanKey || s.nome.split(' (')[0].trim() === cleanKey))) {
+            studentIdsToReset.push(s.id);
+          }
+        });
+      }
+      if (studentIdsToReset.length > 0) {
+        resetStudentDailyRoutine(studentIdsToReset);
+      }
+    }
   });
 
   saveToDB('anjo_shift_states', shiftStates);
