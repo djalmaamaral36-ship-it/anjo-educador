@@ -661,7 +661,19 @@ export function startFirebaseSync() {
         }
       } catch (e) {}
 
-      // Filter out items belonging to deleted students or students whose tasks/activities were explicitly cleared
+      // Auto-clear local cleared flags when remote items exist for students
+      remoteItems.forEach(item => {
+        if (item) {
+          const studentId = item.idosoId || item.studentId || item.alunoId;
+          if (studentId) {
+            localStorage.removeItem(`anjo_activities_cleared_${studentId}`);
+            localStorage.removeItem(`anjo_routine_cleared_${studentId}`);
+            localStorage.removeItem(`anjo_tasks_cleared_${studentId}`);
+          }
+        }
+      });
+
+      // Filter out items belonging to deleted students or non-existent student IDs
       const mergedItems: any[] = combinedRemoteAndLocal.filter(item => {
         if (!item) return false;
         const studentId = item.idosoId || item.studentId || item.alunoId;
@@ -669,36 +681,11 @@ export function startFirebaseSync() {
 
         // If belongs to a deleted student or a non-existent student ID, purge
         if (deletedStudentsSet.has(studentId) || (studentId.startsWith('aluno_') && validStudentIds.size > 0 && !validStudentIds.has(studentId))) {
-          if (item.id) {
-            const docId = String(item.id).replace(/\//g, '_');
-            deleteDoc(doc(db, collectionName, docId)).catch(() => {});
-          }
           return false;
         }
-        
-        if (localKey === 'anjo_tarefas_diarias' || localKey === 'anjo_atividades' || localKey === 'anjo_alimentacao' || localKey === 'anjo_hidratacao' || localKey === 'anjo_humor' || localKey === 'anjo_sono' || localKey === 'anjo_ocorrencias' || localKey === 'anjo_sinais' || localKey === 'anjo_jornada_events') {
-          const isCleared = localStorage.getItem(`anjo_tasks_cleared_${studentId}`) === 'true' ||
-                            localStorage.getItem(`anjo_activities_cleared_${studentId}`) === 'true' ||
-                            localStorage.getItem(`anjo_routine_cleared_${studentId}`) === 'true';
-          const resetTimeStr = localStorage.getItem(`anjo_routine_reset_${studentId}`) || localStorage.getItem(`anjo_shift_start_time_${studentId}`);
-          const isBeforeReset = resetTimeStr ? isRecordBeforeResetTimestamp(item, resetTimeStr) : false;
 
-          if (isCleared || isBeforeReset) {
-            // Asynchronously delete stale document in Firestore
-            if (item.id) {
-              const docId = String(item.id).replace(/\//g, '_');
-              deleteDoc(doc(db, collectionName, docId)).catch(() => {});
-            }
-            return false;
-          }
-        }
         if (localKey === 'anjo_mural_recados') {
-          const isCleared = localStorage.getItem(`anjo_mural_cleared_${studentId}`) === 'true';
-          if (isCleared || item.id === 'rec_seed_1' || item.id === 'rec_seed_2') {
-            if (item.id) {
-              const docId = String(item.id).replace(/\//g, '_');
-              deleteDoc(doc(db, collectionName, docId)).catch(() => {});
-            }
+          if (item.id === 'rec_seed_1' || item.id === 'rec_seed_2') {
             return false;
           }
         }

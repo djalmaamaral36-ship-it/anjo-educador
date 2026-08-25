@@ -933,37 +933,21 @@ function setLocalShiftFlag(key: string, active: boolean): void {
 
 export function isRecordBeforeResetTimestamp(item: any, resetTimeStr: string | null | undefined): boolean {
   if (!item || !resetTimeStr) return false;
-  const resetTime = new Date(resetTimeStr).getTime();
-  if (isNaN(resetTime)) return false;
-
-  // Check item.createdAt
-  if (item.createdAt) {
-    const t = new Date(item.createdAt).getTime();
-    if (!isNaN(t)) return t < resetTime;
-  }
-
-  // Check item.id timestamp suffix (e.g. ati_aluno_1_1724500000000)
-  if (item.id) {
-    const parts = String(item.id).split('_');
-    const lastPart = Number(parts[parts.length - 1]);
-    if (!isNaN(lastPart) && lastPart > 1600000000000) {
-      return lastPart < resetTime;
-    }
-  }
-
-  // Check item.data (YYYY-MM-DD string comparison) and item.horario
+  
   const resetDateStr = resetTimeStr.split('T')[0];
   if (item.data && typeof item.data === 'string') {
     const cleanData = item.data.split('T')[0].split(' ')[0];
-    if (cleanData < resetDateStr) return true;
-    if (cleanData === resetDateStr && item.horario) {
-      try {
-        const itemTimeStr = `${cleanData}T${item.horario.length === 5 ? item.horario : item.horario + ':00'}`;
-        const itemMs = new Date(itemTimeStr).getTime();
-        if (!isNaN(itemMs) && itemMs < resetTime) {
-          return true;
-        }
-      } catch (e) {}
+    if (cleanData < resetDateStr) return true; // From a previous day -> stale
+    if (cleanData === resetDateStr) return false; // From today -> valid for today's routine
+  }
+
+  // Check item.createdAt timestamp if present
+  if (item.createdAt) {
+    const resetTime = new Date(resetTimeStr).getTime();
+    const t = new Date(item.createdAt).getTime();
+    if (!isNaN(t) && !isNaN(resetTime)) {
+      // 12-hour grace margin to ensure items logged for the active shift are retained
+      return t < (resetTime - 12 * 3600 * 1000);
     }
   }
 
