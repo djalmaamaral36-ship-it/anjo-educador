@@ -3,7 +3,7 @@ import { Idoso, Usuario, TarefaDiaria, RegistroAlimentacao, RegistroHidratacao, 
 import { getFromDB, saveToDB, checkFeedingCareAuthorization, compressImage, SALAS_INICIAIS, getShiftActiveState, setShiftActiveState, getNowTimeBr, checkBottleFeedingInterval, registerBottleAttemptNotice, isTodayOrDemoDate, purgeOrphanedStudentData } from '../data';
 import { deleteStudentDataFromFirestore, deleteBatchFromFirestore } from '../firebase';
 import { VoiceInput } from './VoiceInput';
-import { parseAuraRawPlan, formatAuraTaskTitle, inferTaskType, realignPedagogicalActivity, isConversationalChatNoise } from '../utils/auraPlanParser';
+import { parseAuraRawPlan, formatAuraTaskTitle, inferTaskType, realignPedagogicalActivity, isConversationalChatNoise, findMatchingMealTask } from '../utils/auraPlanParser';
 import { 
   Coffee, 
   Droplets, 
@@ -638,35 +638,24 @@ export default function DailyRoutine({
     };
     
     const allTasks = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
-    const labelToMatch = mealLabelMap[mealForm.refeicao] || '';
-    const updatedTasks = allTasks.map(t => {
-      if (t.idosoId === idoso.id && t.tipo === 'alimentacao' && t.status !== 'concluido') {
-        const titleLower = (t.titulo || '').toLowerCase();
-        let isMatch = false;
-        if (mealForm.refeicao === 'mamadeira') {
-          isMatch = titleLower.includes('mamadeira') || titleLower.includes('leite') || titleLower.includes('fórmula') || titleLower.includes('formula');
-        } else if (mealForm.refeicao === 'cafe_manha') {
-          isMatch = (titleLower.includes('café') || titleLower.includes('cafe') || titleLower.includes('desjejum') || titleLower.includes('lanchinho da manhã') || titleLower.includes('lanche da manhã') || titleLower.includes('lanchinho')) && !titleLower.includes('mamadeira');
-        } else if (mealForm.refeicao === 'lanche' || mealForm.refeicao === 'lanche_tarde') {
-          isMatch = (titleLower.includes('frutinha') || titleLower.includes('lanche da tarde') || titleLower.includes('lanchinho tarde')) && !titleLower.includes('mamadeira') && !titleLower.includes('manhã') && !titleLower.includes('manha');
-        } else if (mealForm.refeicao === 'almoco') {
-          isMatch = titleLower.includes('almoço') || titleLower.includes('almoco') || titleLower.includes('papinha') || titleLower.includes('almocinho');
-        } else if (mealForm.refeicao === 'jantar') {
-          isMatch = titleLower.includes('jantar') || titleLower.includes('jantinha');
-        }
-        if (isMatch) {
+    const seniorTasks = allTasks.filter(t => t.idosoId === idoso.id);
+    const matchedTask = findMatchingMealTask(seniorTasks, mealForm.refeicao, novoFeed.horario);
+    
+    if (matchedTask) {
+      const updatedTasks = allTasks.map(t => {
+        if (t.id === matchedTask.id) {
           return {
             ...t,
             status: 'concluido' as const,
             concluidaEm: novoFeed.horario,
             completadaPor: usuarioAtual.nome,
-            observacao: `Aceitação: ${mealForm.aceitacao.replace('_', ' ')}. Obs: ${novoFeed.observacoes}`
+            observacao: `Aceitação: ${mealForm.aceitacao.replace('_', ' ')}. Obs: ${novoFeed.observacoes || ''}`
           };
         }
-      }
-      return t;
-    });
-    saveToDB('anjo_tarefas_diarias', updatedTasks);
+        return t;
+      });
+      saveToDB('anjo_tarefas_diarias', updatedTasks);
+    }
 
     // Compute total bottles today
     const totalBottlesToday = feeds.filter(f => f.idosoId === idoso.id && f.refeicao === 'mamadeira' && isTodayOrDemoDate(f.data)).length;

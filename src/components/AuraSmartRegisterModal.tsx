@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { Idoso, Usuario, SinalVital, isStaffUser } from '../types';
 import { getFromDB, saveToDB, getShiftActiveState, setShiftActiveStatesBatch, getNowTimeBr, resetStudentDailyRoutine } from '../data';
+import { findMatchingMealTask } from '../utils/auraPlanParser';
 import { VoiceInput } from './VoiceInput';
 
 interface AuraSmartRegisterModalProps {
@@ -327,37 +328,27 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
       });
       saveToDB(mealKey, meals);
 
-      // 2. Update daily tasks
+      // 2. Update daily tasks vinculando estritamente palavra E horário
       const tasksKey = 'anjo_tarefas_diarias';
       const allTasks = getFromDB<any[]>(tasksKey, []);
-      const updatedTasks = allTasks.map(t => {
-        if (t.idosoId === idoso.id && t.tipo === 'alimentacao' && t.status !== 'concluido') {
-          const titleLower = (t.titulo || '').toLowerCase();
-          let isMatch = false;
-          if (refKey === 'mamadeira') {
-            isMatch = titleLower.includes('mamadeira') || titleLower.includes('leite') || titleLower.includes('fórmula') || titleLower.includes('formula');
-          } else if (refKey === 'cafe_manha') {
-            isMatch = (titleLower.includes('café') || titleLower.includes('cafe') || titleLower.includes('desjejum') || titleLower.includes('lanchinho da manhã') || titleLower.includes('lanche da manhã') || titleLower.includes('lanchinho')) && !titleLower.includes('mamadeira');
-          } else if (refKey === 'lanche') {
-            isMatch = (titleLower.includes('frutinha') || titleLower.includes('lanche da tarde') || titleLower.includes('lanchinho tarde')) && !titleLower.includes('mamadeira') && !titleLower.includes('manhã') && !titleLower.includes('manha');
-          } else if (refKey === 'almoco') {
-            isMatch = titleLower.includes('almoço') || titleLower.includes('almoco') || titleLower.includes('papinha') || titleLower.includes('almocinho');
-          } else if (refKey === 'jantar') {
-            isMatch = titleLower.includes('jantar') || titleLower.includes('jantinha');
-          }
-          if (isMatch) {
+      const seniorTasks = allTasks.filter(t => t.idosoId === idoso.id);
+      const matchedTask = findMatchingMealTask(seniorTasks, refKey, now);
+
+      if (matchedTask) {
+        const updatedTasks = allTasks.map(t => {
+          if (t.id === matchedTask.id) {
             return {
               ...t,
               status: (aceitacao === 'recusou' ? 'recusado' : 'concluido') as any,
               concluidaEm: now,
               completadaPor: usuarioAtual.nome,
-              observacao: `Refeição (${refeicaoNome}): ${aceitacaoText}. ${quickMeal.obs}`
+              observacao: `Refeição (${refeicaoNome}): ${aceitacaoText}. ${quickMeal.obs || ''}`
             };
           }
-        }
-        return t;
-      });
-      saveToDB(tasksKey, updatedTasks);
+          return t;
+        });
+        saveToDB(tasksKey, updatedTasks);
+      }
 
       // 3. Main anjo_sinais store
       const vitalsStore = getFromDB<SinalVital[]>('anjo_sinais', []);
@@ -1389,19 +1380,24 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
 
         const tasksKey = 'anjo_tarefas_diarias';
         const allTasks = getFromDB<any[]>(tasksKey, []);
-        const updatedTasks = allTasks.map(t => {
-          if (t.idosoId === idoso.id && (t.tipo === 'alimentacao' || t.tipo === refKey || t.tipo === rawRef || t.titulo?.toLowerCase().includes(rawRef) || t.titulo?.toLowerCase().includes(refKey) || t.titulo?.toLowerCase().includes('lanche') || t.titulo?.toLowerCase().includes('almoço') || t.titulo?.toLowerCase().includes('café') || t.titulo?.toLowerCase().includes('jantar') || t.titulo?.toLowerCase().includes('mamadeira')) && t.status !== 'concluido') {
-            return {
-              ...t,
-              status: 'concluido' as const,
-              concluidaEm: now,
-              completadaPor: usuarioAtual.nome,
-              observacao: `Aura Voz: ${parsedData.alimentacao.refeicao || 'Refeição'} (${parsedData.alimentacao.aceitacao}). ${parsedData.alimentacao.observacao || ''}`
-            };
-          }
-          return t;
-        });
-        saveToDB(tasksKey, updatedTasks);
+        const seniorTasks = allTasks.filter(t => t.idosoId === idoso.id);
+        const matchedTask = findMatchingMealTask(seniorTasks, refKey, now);
+
+        if (matchedTask) {
+          const updatedTasks = allTasks.map(t => {
+            if (t.id === matchedTask.id) {
+              return {
+                ...t,
+                status: 'concluido' as const,
+                concluidaEm: now,
+                completadaPor: usuarioAtual.nome,
+                observacao: `Aura Voz: ${parsedData.alimentacao.refeicao || 'Refeição'} (${parsedData.alimentacao.aceitacao}). ${parsedData.alimentacao.observacao || ''}`
+              };
+            }
+            return t;
+          });
+          saveToDB(tasksKey, updatedTasks);
+        }
         summaryParts.push(refKey === 'mamadeira' ? '🍼 Mamadeira: 1 mamadeira' : `🍽️ Refeição: ${parsedData.alimentacao.refeicao || 'Refeição'} (${parsedData.alimentacao.aceitacao})`);
       }
 

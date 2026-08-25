@@ -397,7 +397,6 @@ export default function App() {
           const isEscolarLocal = (localStorage.getItem('anjo_app_mode') || 'escolar_infantil').startsWith('escolar');
           const isTypeMatch = isEscolarLocal ? child.id.startsWith('aluno_') : !child.id.startsWith('aluno_');
           if (!isTypeMatch) return false;
-          if (pUser.id === 'user_mae_heitor' && (child.id === 'aluno_5' || child.id === 'aluno_22' || child.nome.toLowerCase().includes('heitor') || child.nome.toLowerCase().includes('giovan'))) return true;
           if (child.contatoEmergencia) {
             const cleanUserPhone = pUser.telefone ? pUser.telefone.replace(/\D/g, '') : '';
             const cleanContactPhone = child.contatoEmergencia.telefone ? child.contatoEmergencia.telefone.replace(/\D/g, '') : '';
@@ -577,6 +576,11 @@ export default function App() {
     }
 
     // 0. Direct high-priority mapping for mock users to ensure 100% accurate profile sync
+    // Berçário I - A (5 Alunos & Pais)
+    if (user.id === 'user_mae_clarice') {
+      const mariana = candidates.find(s => s.id === 'aluno_1' || s.nome.toLowerCase().includes('mariana'));
+      if (mariana) return mariana;
+    }
     if (user.id === 'user_pai_thiago') {
       const enzo = candidates.find(s => s.id === 'aluno_2' || s.nome.toLowerCase().includes('enzo'));
       if (enzo) return enzo;
@@ -585,133 +589,52 @@ export default function App() {
       const beatriz = candidates.find(s => s.id === 'aluno_3' || s.nome.toLowerCase().includes('beatriz'));
       if (beatriz) return beatriz;
     }
-    if (user.id === 'user_pai_bernardo') {
+    if (user.id === 'user_pai_felipe') {
       const bernardo = candidates.find(s => s.id === 'aluno_4' || s.nome.toLowerCase().includes('bernardo'));
       if (bernardo) return bernardo;
     }
-    if (user.id === 'user_mae_heitor') {
-      const heitor = candidates.find(s => s.id === 'aluno_5' || s.nome.toLowerCase().includes('heitor'));
-      if (heitor) return heitor;
+    if (user.id === 'user_mae_camila') {
+      const cecilia = candidates.find(s => s.id === 'aluno_5' || s.nome.toLowerCase().includes('cecília') || s.nome.toLowerCase().includes('cecilia'));
+      if (cecilia) return cecilia;
     }
-    if (user.id === 'user_mae_alice') {
+    // Maternal I - A (5 Alunos & Pais)
+    if (user.id === 'user_mae_juliana') {
       const alice = candidates.find(s => s.id === 'aluno_6' || s.nome.toLowerCase().includes('alice'));
       if (alice) return alice;
     }
-    if (user.id === 'user_mae_sophia') {
-      const sophia = candidates.find(s => s.id === 'aluno_8' || s.nome.toLowerCase().includes('sophia'));
-      if (sophia) return sophia;
-    }
-    if (user.id === 'user_mae_laura') {
-      const laura = candidates.find(s => s.id === 'aluno_9' || s.nome.toLowerCase().includes('laura'));
-      if (laura) return laura;
-    }
-    if (user.id === 'user_pai_livia') {
-      const livia = candidates.find(s => s.id === 'aluno_10' || s.nome.toLowerCase().includes('lívia') || s.nome.toLowerCase().includes('livia'));
-      if (livia) return livia;
-    }
-    if (user.id === 'user_mae_davi') {
-      const davi = candidates.find(s => s.id === 'aluno_11' || s.nome.toLowerCase().includes('davi'));
-      if (davi) return davi;
-    }
-    if (user.id === 'user_mae_gabriel') {
-      const gabriel = candidates.find(s => s.id === 'aluno_12' || s.nome.toLowerCase().includes('gabriel'));
-      if (gabriel) return gabriel;
-    }
-    if (user.id === 'user_pai_miguel') {
-      const miguel = candidates.find(s => s.id === 'aluno_13' || s.nome.toLowerCase().includes('miguel'));
-      if (miguel) return miguel;
-    }
-    if (user.id === 'user_mae_helena_f') {
-      const helena = candidates.find(s => s.id === 'aluno_14' || s.nome.toLowerCase().includes('helena ferraz'));
-      if (helena) return helena;
-    }
-    if (user.id === 'user_mae_manuela') {
-      const manuela = candidates.find(s => s.id === 'aluno_15' || s.nome.toLowerCase().includes('manuela'));
-      if (manuela) return manuela;
-    }
-    if (user.id === 'user_pai_matheus') {
-      const matheus = candidates.find(s => s.id === 'aluno_16' || s.nome.toLowerCase().includes('matheus'));
-      if (matheus) return matheus;
-    }
-    if (user.id === 'user_mae_lucas') {
-      const lucas = candidates.find(s => s.id === 'aluno_17' || s.nome.toLowerCase().includes('lucas'));
+    if (user.id === 'user_pai_marcelo') {
+      const lucas = candidates.find(s => s.id === 'aluno_7' || s.nome.toLowerCase().includes('lucas'));
       if (lucas) return lucas;
     }
-    if (user.id === 'user_mae_joaquim') {
-      const joaquim = candidates.find(s => s.id === 'aluno_18' || s.nome.toLowerCase().includes('joaquim'));
-      if (joaquim) return joaquim;
+    if (user.id === 'user_mae_patricia') {
+      const helena = candidates.find(s => s.id === 'aluno_8' || s.nome.toLowerCase().includes('helena'));
+      if (helena) return helena;
     }
-    if (user.id === 'user_mae_valentina') {
-      const valentina = candidates.find(s => s.id === 'aluno_19' || s.nome.toLowerCase().includes('valentina'));
-      if (valentina) return valentina;
+    if (user.id === 'user_pai_rodrigo') {
+      const gabriel = candidates.find(s => s.id === 'aluno_9' || s.nome.toLowerCase().includes('gabriel'));
+      if (gabriel) return gabriel;
     }
-    if (user.id === 'user_pai_isabella') {
-      const isabella = candidates.find(s => s.id === 'aluno_20' || s.nome.toLowerCase().includes('isabella'));
-      if (isabella) return isabella;
+    if (user.id === 'user_mae_larissa') {
+      const laura = candidates.find(s => s.id === 'aluno_10' || s.nome.toLowerCase().includes('laura'));
+      if (laura) return laura;
     }
-    if (user.id === 'user_mae_samuel') {
-      const samuel = candidates.find(s => s.id === 'aluno_21' || s.nome.toLowerCase().includes('samuel'));
-      if (samuel) return samuel;
-    }
-    if (user.id === 'user_pai_giovanna') {
-      const giovanna = candidates.find(s => s.id === 'aluno_22' || s.nome.toLowerCase().includes('giovanna'));
-      if (giovanna) return giovanna;
-    }
-    if (user.id === 'user_pai_felipe') {
-      const felipe = candidates.find(s => s.id === 'aluno_23' || s.nome.toLowerCase().includes('felipe antunes') || s.nome.toLowerCase().includes('felipe'));
-      if (felipe) return felipe;
-    }
-    if (user.id === 'user_mae_lorena') {
-      const lorena = candidates.find(s => s.id === 'aluno_24' || s.nome.toLowerCase().includes('lorena'));
-      if (lorena) return lorena;
-    }
-    if (user.id === 'user_mae_pedro') {
-      const pedro = candidates.find(s => s.id === 'aluno_25' || s.nome.toLowerCase().includes('pedro henrique'));
-      if (pedro) return pedro;
-    }
-    if (user.id === 'user_pai_theo') {
-      const theo = candidates.find(s => s.id === 'aluno_26' || s.nome.toLowerCase().includes('theo'));
-      if (theo) return theo;
-    }
-    if (user.id === 'user_mae_heloisa') {
-      const heloisa = candidates.find(s => s.id === 'aluno_27' || s.nome.toLowerCase().includes('heloísa') || s.nome.toLowerCase().includes('heloisa'));
-      if (heloisa) return heloisa;
-    }
-    if (user.id === 'user_mae_nicolas') {
-      const nicolas = candidates.find(s => s.id === 'aluno_28' || s.nome.toLowerCase().includes('nicolas'));
-      if (nicolas) return nicolas;
-    }
-    if (user.id === 'user_pai_cecilia') {
-      const cecilia = candidates.find(s => s.id === 'aluno_29' || s.nome.toLowerCase().includes('cecília') || s.nome.toLowerCase().includes('cecilia'));
-      if (cecilia) return cecilia;
+    // Educadoras
+    if (user.id === 'user_cuidador_1') {
+      const ber1 = candidates.find(s => s.salaAula === 'Berçário I - A' || s.id === 'aluno_1');
+      if (ber1) return ber1;
     }
     if (user.id === 'user_cuidador_2') {
-      const joao = candidates.find(s => s.id === 'idoso_joao');
-      if (joao) return joao;
+      const mat1 = candidates.find(s => s.salaAula === 'Maternal I - A' || s.id === 'aluno_6');
+      if (mat1) return mat1;
     }
-    if (user.id === 'user_cuidador_1') {
-      const alice = candidates.find(s => s.id === 'aluno_6' || s.nome.toLowerCase().includes('alice') || s.salaAula === 'Berçário I - B');
-      if (alice) return alice;
-    }
-    if (user.id === 'user_mae_clarice') {
-      const mariana = candidates.find(s => s.id === 'aluno_1' || s.nome.toLowerCase().includes('mariana') || s.salaAula === 'Berçário I - A');
-      if (mariana) return mariana;
-    }
-    if (user.id === 'user_cuidador_b1') {
-      const mariana = candidates.find(s => s.id === 'aluno_1' || s.nome.toLowerCase().includes('mariana') || s.salaAula === 'Berçário I - A');
-      if (mariana) return mariana;
-    }
-    if (user.id === 'user_cuidador_j2') {
-      const samuel = candidates.find(s => s.id === 'aluno_21' || s.nome.toLowerCase().includes('samuel') || s.salaAula === 'Maternal I - B');
-      if (samuel) return samuel;
-    }
-    if (user.id === 'user_admin') {
+    // Gestão e Direção
+    if (user.id === 'user_admin' || user.id === 'user_coordenador' || user.id === 'user_desenvolvedor_djalma') {
       if (!isEscolarMode) {
         const maria = candidates.find(s => s.id === 'idoso_maria');
         if (maria) return maria;
       } else {
-        const mariana = candidates.find(s => s.nome.toLowerCase().includes('mariana'));
-        if (mariana) return mariana;
+        const firstStudent = candidates.find(s => s.id.startsWith('aluno_'));
+        if (firstStudent) return firstStudent;
       }
     }
 
@@ -987,10 +910,7 @@ export default function App() {
           const isEscolarNow = targetMode.startsWith('escolar');
           const isTypeMatch = isEscolarNow ? idosoAtual.id.startsWith('aluno_') : !idosoAtual.id.startsWith('aluno_');
           if (isTypeMatch) {
-            const isChild = (match.id === 'user_mae_heitor' && (idosoAtual.id === 'aluno_5' || idosoAtual.id === 'aluno_22' || idosoAtual.nome.toLowerCase().includes('heitor') || idosoAtual.nome.toLowerCase().includes('giovan'))) ||
-              (match.id === 'user_pai_bernardo' && (idosoAtual.id === 'aluno_2' || idosoAtual.nome.toLowerCase().includes('bernardo'))) ||
-              (match.id === 'user_pai_miguel' && (idosoAtual.id === 'aluno_10' || idosoAtual.nome.toLowerCase().includes('miguel'))) ||
-              (Boolean(match.telefone && idosoAtual.contatoEmergencia?.telefone && match.telefone.replace(/\D/g, '') === idosoAtual.contatoEmergencia.telefone.replace(/\D/g, ''))) ||
+            const isChild = (Boolean(match.telefone && idosoAtual.contatoEmergencia?.telefone && match.telefone.replace(/\D/g, '') === idosoAtual.contatoEmergencia.telefone.replace(/\D/g, ''))) ||
               (Boolean(match.nome && idosoAtual.contatoEmergencia?.nome && (match.nome.toLowerCase().includes(idosoAtual.contatoEmergencia.nome.toLowerCase()) || idosoAtual.contatoEmergencia.nome.toLowerCase().includes(match.nome.toLowerCase()))));
             if (isChild) {
               bestIdoso = idosoAtual;

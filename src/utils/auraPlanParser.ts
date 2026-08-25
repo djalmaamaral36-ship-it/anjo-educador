@@ -219,6 +219,16 @@ export function realignPedagogicalActivity(
     }
   }
 
+  // Caso 4B: Se o título misturava "Lanche da Tarde / Mamadeira", separa para ser puramente "Lanche da Tarde & Frutinhas 🍎"
+  if ((titleLower.includes('lanche da tarde') || titleLower.includes('lanchinho da tarde') || titleLower.includes('lanche tarde') || titleLower.includes('lanchinho tarde')) && titleLower.includes('mamadeira')) {
+    return { title: 'Lanche da Tarde & Frutinhas 🍎', tipo: 'alimentacao' };
+  }
+
+  // Caso 4C: Se o título dizia "Mamadeira do Berçário / Café da Manhã", separa para "Lanche da Manhã & Frutinhas 🍎"
+  if (titleLower.includes('mamadeira') && (titleLower.includes('café') || titleLower.includes('cafe') || titleLower.includes('lanche da manhã') || titleLower.includes('lanchinho da manhã'))) {
+    return { title: 'Lanche da Manhã & Frutinhas 🍎', tipo: 'alimentacao' };
+  }
+
   // Caso 5: Se o horário for claramente 11:30 e a descrição falar de almoço/refeição:
   if ((t === '11:30' || t === '11:00' || t === '12:00') && (descLower.includes('refeição') || descLower.includes('refeicao') || descLower.includes('alimentação') || descLower.includes('alimentacao') || descLower.includes('almoço') || descLower.includes('almoco') || descLower.includes('alimento'))) {
     return { title: 'Almoço 🍲', tipo: 'alimentacao' };
@@ -1208,12 +1218,7 @@ export function areTaskTitlesSimilar(
   // Match exato após normalização
   if (normA === normB) return true;
 
-  // Contenção de substring para títulos descritivos longos
-  if (normA.length > 6 && normB.length > 6) {
-    if (normA.includes(normB) || normB.includes(normA)) return true;
-  }
-
-  // 1. Mamadeira de Leite / Fórmula (Totalmente isolada de refeições/lanches)
+  // 1. Mamadeira de Leite / Fórmula (Totalmente isolada de qualquer outra refeição/lanche)
   const isBottleA = normA.includes('mamadeira') || normA.includes('formula') || normA.includes('leite de formula');
   const isBottleB = normB.includes('mamadeira') || normB.includes('formula') || normB.includes('leite de formula');
   if (isBottleA || isBottleB) {
@@ -1253,6 +1258,11 @@ export function areTaskTitlesSimilar(
   const isNapB = normB.includes('soneca') || normB.includes('soninho') || normB.includes('repouso') || normB.includes('sono');
   if (isNapA || isNapB) {
     return isNapA && isNapB;
+  }
+
+  // Contenção de substring para títulos descritivos longos residuais
+  if (normA.length > 6 && normB.length > 6) {
+    if (normA.includes(normB) || normB.includes(normA)) return true;
   }
 
   // 7. Fraldas / Higiene / Escovação
@@ -1353,3 +1363,95 @@ export function mergeSimilarTasks(existingTasks: any[], newTasks: any[]): any[] 
 
   return result;
 }
+
+// Localiza de forma estrita e inteligente a tarefa diária correspondente a uma refeição registrada,
+// vinculando OBRIGATORIAMENTE palavra-chave E faixa de horário/período do dia (manhã vs tarde vs noite)
+export function findMatchingMealTask(
+  tasks: any[],
+  refeicao: string, // 'mamadeira' | 'cafe_manha' | 'almoco' | 'lanche' | 'lanche_tarde' | 'jantar' | 'ceia'
+  recordTime: string // e.g. '08:30' ou '14:15'
+): any | null {
+  if (!tasks || !Array.isArray(tasks) || tasks.length === 0) return null;
+
+  const [rh, rm] = (recordTime || '12:00').split(':').map(Number);
+  const regHour = !isNaN(rh) ? rh : new Date().getHours();
+  const regMin = !isNaN(rm) ? rm : 0;
+  const regTotalMinutes = regHour * 60 + regMin;
+
+  // Filtra apenas tarefas pendentes do tipo alimentação
+  const candidateTasks = tasks.filter(t => t.tipo === 'alimentacao' && t.status !== 'concluido');
+
+  interface ScoredTask {
+    task: any;
+    timeDiffMinutes: number;
+  }
+
+  const validMatches: ScoredTask[] = [];
+
+  for (const t of candidateTasks) {
+    const titleLower = (t.titulo || '').toLowerCase();
+    const [th, tm] = (t.horarioPrevisto || '12:00').split(':').map(Number);
+    const taskHour = !isNaN(th) ? th : 12;
+    const taskMin = !isNaN(tm) ? tm : 0;
+    const taskTotalMinutes = taskHour * 60 + taskMin;
+    const timeDiffMinutes = Math.abs(regTotalMinutes - taskTotalMinutes);
+
+    let keywordMatches = false;
+    let timeWindowMatches = false;
+
+    if (refeicao === 'mamadeira') {
+      // 1. Palavra: deve conter explicitamente mamadeira ou fórmula e NÃO ser lanche/frutinha/almoço/jantar
+      keywordMatches = (titleLower.includes('mamadeira') || titleLower.includes('fórmula') || titleLower.includes('formula')) &&
+        !titleLower.includes('lanche') && !titleLower.includes('frut') && !titleLower.includes('almoço') && !titleLower.includes('jantar');
+
+      // 2. Horário: Manhã (antes das 12:00) só dá match em tarefas da manhã (< 12:00).
+      // Tarde (12:00 em diante) só dá match em tarefas da tarde (>= 12:00).
+      if (regHour < 12) {
+        timeWindowMatches = taskHour < 12;
+      } else {
+        timeWindowMatches = taskHour >= 12;
+      }
+    } else if (refeicao === 'cafe_manha') {
+      // 1. Palavra: café, desjejum, lanchinho da manhã, lanche da manhã, colação
+      keywordMatches = (titleLower.includes('café') || titleLower.includes('cafe') || titleLower.includes('desjejum') || 
+        titleLower.includes('lanche da manhã') || titleLower.includes('lanchinho da manhã') || titleLower.includes('lanchinho') || titleLower.includes('colação') || titleLower.includes('colacao')) &&
+        !titleLower.includes('mamadeira') && !titleLower.includes('lanche da tarde') && !titleLower.includes('almoço');
+
+      // 2. Horário: apenas manhã (< 12:00)
+      timeWindowMatches = taskHour < 12;
+    } else if (refeicao === 'almoco') {
+      // 1. Palavra: almoço, papinha, almocinho, sopinha
+      keywordMatches = (titleLower.includes('almoço') || titleLower.includes('almoco') || titleLower.includes('papinha') || titleLower.includes('almocinho') || titleLower.includes('sopinha')) &&
+        !titleLower.includes('jantar') && !titleLower.includes('mamadeira');
+
+      // 2. Horário: janela do almoço (10:30 às 14:00)
+      timeWindowMatches = taskHour >= 10 && taskHour <= 14;
+    } else if (refeicao === 'lanche' || refeicao === 'lanche_tarde') {
+      // 1. Palavra: lanche da tarde, lanchinho da tarde, frutinha, lanche
+      keywordMatches = (titleLower.includes('lanche da tarde') || titleLower.includes('lanchinho tarde') || titleLower.includes('frutinha') || titleLower.includes('lanche') || titleLower.includes('fruta')) &&
+        !titleLower.includes('manhã') && !titleLower.includes('manha') && !titleLower.includes('mamadeira') && !titleLower.includes('café') && !titleLower.includes('cafe');
+
+      // 2. Horário: apenas período da tarde (12:00 às 18:00)
+      timeWindowMatches = taskHour >= 12 && taskHour <= 18;
+    } else if (refeicao === 'jantar' || refeicao === 'ceia') {
+      // 1. Palavra: jantar, ceia
+      keywordMatches = (titleLower.includes('jantar') || titleLower.includes('jantinha') || titleLower.includes('ceia')) &&
+        !titleLower.includes('mamadeira');
+
+      // 2. Horário: apenas final de tarde/noite (>= 16:30)
+      timeWindowMatches = taskHour >= 16;
+    }
+
+    // Ambos PALAVRA e HORÁRIO devem ser compatíveis
+    if (keywordMatches && timeWindowMatches) {
+      validMatches.push({ task: t, timeDiffMinutes });
+    }
+  }
+
+  if (validMatches.length === 0) return null;
+
+  // Seleciona a tarefa mais próxima em horário
+  validMatches.sort((a, b) => a.timeDiffMinutes - b.timeDiffMinutes);
+  return validMatches[0].task;
+}
+

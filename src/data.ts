@@ -371,7 +371,7 @@ export function generateUniquePin(excludeUserId?: string, preferredDigits?: stri
 export function initializeDB() {
   if (typeof window === 'undefined') return;
 
-  const DB_SCHEMA_VERSION = 'v5_clean_schema_reset';
+  const DB_SCHEMA_VERSION = 'v7_clean_schema_reset';
   const currentDbVersion = localStorage.getItem('anjo_db_version');
 
   // Hard reset/seed to canonical dataset on version upgrade
@@ -1335,8 +1335,8 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
         id: 'task_s_lanche_tarde_' + idosoId,
         idosoId,
         tipo: 'alimentacao',
-        titulo: 'Lanche da Tarde / Mamadeira 🍼',
-        descricao: 'Mamadeira/fórmula morna ou lanche da tarde equilibrado e hidratação.',
+        titulo: 'Lanche da Tarde & Frutinhas 🍎',
+        descricao: 'Frutas frescas da época fatiadas, biscoito integral e hidratação da tarde.',
         horarioPrevisto: '14:15',
         status: 'pendente'
       },
@@ -1876,11 +1876,27 @@ export function purgeOrphanedStudentData() {
       }
     }
 
-    // 2. Purge anjo_tarefas_diarias
+    // 2. Purge and sanitize anjo_tarefas_diarias
     const allTasks = getFromDB<any[]>('anjo_tarefas_diarias', []);
-    const validTasks = allTasks.filter(t => t && isValidOwner(t.idosoId));
-    if (validTasks.length !== allTasks.length) {
-      saveToDB('anjo_tarefas_diarias', validTasks);
+    let tasksChanged = false;
+    const sanitizedTasks = allTasks.filter(t => t && isValidOwner(t.idosoId)).map(t => {
+      let mod = { ...t };
+      const titleLower = (mod.titulo || '').toLowerCase();
+      if ((titleLower.includes('lanche da tarde') || titleLower.includes('lanchinho da tarde') || titleLower.includes('lanche tarde')) && titleLower.includes('mamadeira')) {
+        mod.titulo = 'Lanche da Tarde & Frutinhas 🍎';
+        mod.descricao = 'Frutas frescas da época fatiadas, biscoito integral e hidratação da tarde.';
+        tasksChanged = true;
+      }
+      if (titleLower.includes('mamadeira') && (titleLower.includes('café') || titleLower.includes('cafe'))) {
+        mod.titulo = 'Lanche da Manhã & Frutinhas 🍎';
+        mod.descricao = 'Frutas frescas da estação, biscoito integral e incentivo à hidratação.';
+        tasksChanged = true;
+      }
+      return mod;
+    });
+
+    if (sanitizedTasks.length !== allTasks.length || tasksChanged) {
+      saveToDB('anjo_tarefas_diarias', sanitizedTasks);
       const orphanedIds = allTasks.filter(t => t && !isValidOwner(t.idosoId)).map(t => t.id).filter(Boolean);
       if (orphanedIds.length > 0) {
         deleteBatchFromFirestore('anjo_tarefas_diarias', orphanedIds);

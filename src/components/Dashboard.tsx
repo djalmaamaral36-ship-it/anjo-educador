@@ -14,7 +14,7 @@ import { LgpdConsentModal } from './LgpdConsentModal';
 import { VoiceInput } from './VoiceInput';
 import { QuickStudentSearch } from './QuickStudentSearch';
 import { AuraSmartRegisterModal } from './AuraSmartRegisterModal';
-import { parseAuraRawPlan, formatAuraTaskTitle, inferTaskType, realignPedagogicalActivity, isConversationalChatNoise, areTaskTitlesSimilar, mergeSimilarTasks } from '../utils/auraPlanParser';
+import { parseAuraRawPlan, formatAuraTaskTitle, inferTaskType, realignPedagogicalActivity, isConversationalChatNoise, areTaskTitlesSimilar, mergeSimilarTasks, findMatchingMealTask } from '../utils/auraPlanParser';
 import { 
   Heart, 
   Sparkles, 
@@ -310,8 +310,8 @@ export default function Dashboard({
       titulo = 'Alergika Preventivo / Gotas 💧';
       descricao = 'Dar 5 gotinhas do antialérgico preventivo antes da soneca da classe.';
     } else if (titulo.includes('Café da manhã') || titulo.includes('Café')) {
-      titulo = 'Mamadeira do Berçário / Café da Manhã 🍼';
-      descricao = 'Mamadeira com fórmula morna ou leite conforme recomendação da família.';
+      titulo = 'Lanche da Manhã & Frutinhas 🍎';
+      descricao = 'Frutas frescas da estação, biscoito integral e incentivo à hidratação.';
     } else if (titulo.includes('Almoço')) {
       titulo = 'Almoço Saudável / Papinha 🍲';
       descricao = 'Pratinho balanceado, introdução de novos sabores, verduras e carninha desfiada.';
@@ -1412,8 +1412,8 @@ Equipe Anjinho Escolar ❤️🕊️`
           id: 'task_s_lanche_tarde_' + idosoId,
           idosoId,
           tipo: 'alimentacao',
-          titulo: 'Lanche da Tarde / Mamadeira 🍼',
-          descricao: 'Mamadeira/fórmula morna ou lanche da tarde equilibrado e hidratação.',
+          titulo: 'Lanche da Tarde & Frutinhas 🍎',
+          descricao: 'Frutas frescas da época fatiadas, biscoito integral e hidratação da tarde.',
           horarioPrevisto: '14:15',
           status: 'pendente'
         },
@@ -1690,13 +1690,15 @@ Equipe Anjinho Escolar ❤️🕊️`
     return { formatted: dateStr, age: 80 }; // safe fallback
   };
 
-  const getRefeicaoFromTitle = (title: string): 'cafe_manha' | 'almoco' | 'lanche' | 'lanche_tarde' | 'jantar' | 'ceia' => {
-    const lower = title.toLowerCase();
-    if (lower.includes('café') || lower.includes('cafe') || lower.includes('desjejum')) return 'cafe_manha';
-    if (lower.includes('almoço') || lower.includes('almoco')) return 'almoco';
-    if (lower.includes('tarde') || lower.includes('merenda')) return 'lanche_tarde';
+  const getRefeicaoFromTitle = (title: string): 'cafe_manha' | 'almoco' | 'lanche' | 'lanche_tarde' | 'jantar' | 'ceia' | 'mamadeira' => {
+    const lower = (title || '').toLowerCase();
+    if (lower.includes('mamadeira') || lower.includes('fórmula') || lower.includes('formula')) return 'mamadeira';
+    if (lower.includes('café') || lower.includes('cafe') || lower.includes('desjejum') || lower.includes('manhã') || lower.includes('manha')) return 'cafe_manha';
+    if (lower.includes('almoço') || lower.includes('almoco') || lower.includes('papinha')) return 'almoco';
+    if (lower.includes('tarde') || lower.includes('merenda') || lower.includes('lanche da tarde') || lower.includes('lanchinho')) return 'lanche_tarde';
     if (lower.includes('jantar') || lower.includes('janta')) return 'jantar';
     if (lower.includes('ceia')) return 'ceia';
+    if (lower.includes('frutinha') || lower.includes('fruta')) return 'lanche';
     return 'lanche'; // fallback
   };
 
@@ -2210,7 +2212,8 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
         else if (item.titulo.includes('jantar')) parsedRefeicao = 'jantar';
         else if (item.titulo.includes('ceia')) parsedRefeicao = 'ceia';
         
-        if (item.titulo.toLowerCase().includes('café') || item.titulo.toLowerCase().includes('mamadeira')) parsedRefeicao = 'cafe_manha';
+        if (item.titulo.toLowerCase().includes('mamadeira')) parsedRefeicao = 'mamadeira';
+        else if (item.titulo.toLowerCase().includes('café') || item.titulo.toLowerCase().includes('cafe') || item.titulo.toLowerCase().includes('desjejum') || item.titulo.toLowerCase().includes('lanchinho')) parsedRefeicao = 'cafe_manha';
         else if (item.titulo.toLowerCase().includes('almoço') || item.titulo.toLowerCase().includes('papinha') || item.titulo.toLowerCase().includes('almocinho')) parsedRefeicao = 'almoco';
         else if (item.titulo.toLowerCase().includes('lanche') || item.titulo.toLowerCase().includes('frutinha')) parsedRefeicao = 'lanche';
         else if (item.titulo.toLowerCase().includes('jantar') || item.titulo.toLowerCase().includes('jantinha')) parsedRefeicao = 'jantar';
@@ -4337,7 +4340,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     });
     saveToDB('anjo_alimentacao', mealsStore);
 
-    // Sync tasks
+    // Sync tasks - vincula estritamente por palavra E horário do registro
     const labelMap: { [key: string]: string } = {
       mamadeira: 'Mamadeira',
       cafe_manha: 'Lanchinho da Manhã / Café',
@@ -4345,37 +4348,28 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
       lanche: 'Frutinha / Lanche',
       jantar: 'Jantar'
     };
-    const updated = tarefas.map(t => {
-      if (t.tipo === 'alimentacao' && t.status !== 'concluido') {
-        const titleLower = (t.titulo || '').toLowerCase();
-        let isMatch = false;
-        if (quickMeal.refeicao === 'mamadeira') {
-          isMatch = titleLower.includes('mamadeira') || titleLower.includes('leite') || titleLower.includes('fórmula') || titleLower.includes('formula');
-        } else if (quickMeal.refeicao === 'cafe_manha') {
-          isMatch = (titleLower.includes('café') || titleLower.includes('cafe') || titleLower.includes('desjejum') || titleLower.includes('lanchinho da manhã') || titleLower.includes('lanche da manhã') || titleLower.includes('lanchinho')) && !titleLower.includes('mamadeira');
-        } else if (quickMeal.refeicao === 'lanche' || quickMeal.refeicao === 'lanche_tarde') {
-          isMatch = (titleLower.includes('frutinha') || titleLower.includes('lanche da tarde') || titleLower.includes('lanchinho tarde')) && !titleLower.includes('mamadeira') && !titleLower.includes('manhã') && !titleLower.includes('manha');
-        } else if (quickMeal.refeicao === 'almoco') {
-          isMatch = titleLower.includes('almoço') || titleLower.includes('almoco') || titleLower.includes('papinha') || titleLower.includes('almocinho');
-        } else if (quickMeal.refeicao === 'jantar') {
-          isMatch = titleLower.includes('jantar') || titleLower.includes('jantinha');
-        }
-        if (isMatch) {
+    
+    const matchedTask = findMatchingMealTask(tarefas, quickMeal.refeicao, defaultTime);
+    let updated = tarefas;
+
+    if (matchedTask) {
+      updated = tarefas.map(t => {
+        if (t.id === matchedTask.id) {
           return {
             ...t,
             status: 'concluido' as const,
             concluidaEm: defaultTime,
             completadaPor: usuarioAtual.nome,
-            observacao: `Aceitação: ${quickMeal.aceitacao}. ${quickMeal.observacao}`
+            observacao: `Aceitação: ${quickMeal.aceitacao === 'muito_bem' ? 'Comeu tudo' : quickMeal.aceitacao === 'pouco' ? 'Comeu pouco' : 'Recusou'}. ${quickMeal.observacao || ''}`
           };
         }
-      }
-      return t;
-    });
-    setTarefas(updated);
-    const allTasksInDB = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
-    const otherSeniorsTasks = allTasksInDB.filter(t => t.idosoId !== idoso.id);
-    saveToDB('anjo_tarefas_diarias', [...otherSeniorsTasks, ...updated]);
+        return t;
+      });
+      setTarefas(updated);
+      const allTasksInDB = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
+      const otherSeniorsTasks = allTasksInDB.filter(t => t.idosoId !== idoso.id);
+      saveToDB('anjo_tarefas_diarias', [...otherSeniorsTasks, ...updated]);
+    }
 
     triggerWhatsAppSim('Refeição Registrada', `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: ${idoso.nome} realizou a refeição ${labelMap[quickMeal.refeicao] || quickMeal.refeicao}. Grau de Aceitação: ${quickMeal.aceitacao === 'muito_bem' ? (isEscolar ? 'Comeu/Tomou tudo' : 'Comeu muito bem') : 'Comeu pouco'}. Por: ${usuarioAtual.nome}`);
     alert('Refeição registrada com sucesso via canal on-line!');
@@ -8173,15 +8167,18 @@ Segunda-feira:
                   const verified = [...todaysMealsList].reverse().find(m => {
                     if (!m || !m.refeicao) return false;
                     const ref = String(m.refeicao).toLowerCase().trim();
+                    // Mamadeiras são refeições lácteas separadas e gerenciadas no bloco de mamadeiras acima
+                    if (ref === 'mamadeira' || ref.includes('mamad')) return false;
+
                     if (ref === itemMeal.key) return true;
                     if (itemMeal.key === 'cafe_manha') {
-                      return ref.includes('cafe') || ref.includes('café') || ref.includes('mamad') || ref.includes('desjejum') || ref.includes('leite');
+                      return (ref.includes('cafe') || ref.includes('café') || ref.includes('desjejum')) && !ref.includes('mamad') && !ref.includes('lanche da tarde');
                     }
                     if (itemMeal.key === 'almoco') {
                       return ref.includes('almoc') || ref.includes('almoç') || ref.includes('papi') || ref.includes('principal');
                     }
                     if (itemMeal.key === 'lanche') {
-                      return ref.includes('lanche') || ref.includes('frut') || ref.includes('tarde') || ref.includes('snack');
+                      return (ref.includes('lanche') || ref.includes('frut') || ref.includes('tarde') || ref.includes('snack')) && !ref.includes('manhã') && !ref.includes('manha');
                     }
                     if (itemMeal.key === 'jantar') {
                       return ref.includes('jantar') || ref.includes('ceia') || ref.includes('noturn');

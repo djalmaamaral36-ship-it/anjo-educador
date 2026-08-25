@@ -95,11 +95,6 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
       
       // If user is a family member:
       if (uType === 'familiar' || uType === 'familiar_admin' || uType === 'familiar_convidado') {
-        const isKnownChild = (usuarioAtual.id === 'user_mae_heitor' && (student.id === 'aluno_5' || student.id === 'aluno_22' || norm(student.nome).includes('heitor') || norm(student.nome).includes('giovan'))) ||
-          (usuarioAtual.id === 'user_pai_bernardo' && (student.id === 'aluno_2' || norm(student.nome).includes('bernardo'))) ||
-          (usuarioAtual.id === 'user_pai_miguel' && (student.id === 'aluno_10' || norm(student.nome).includes('miguel'))) ||
-          (usuarioAtual.id === 'user_mae_alice' && (student.id === 'aluno_6' || norm(student.nome).includes('alice')));
-
         const cleanUserPhone = usuarioAtual.telefone ? usuarioAtual.telefone.replace(/\D/g, '') : '';
         const cleanContactPhone = student.contatoEmergencia?.telefone ? student.contatoEmergencia.telefone.replace(/\D/g, '') : '';
         const phoneMatches = Boolean(cleanUserPhone && cleanContactPhone && (cleanUserPhone.includes(cleanContactPhone) || cleanContactPhone.includes(cleanUserPhone)));
@@ -112,7 +107,7 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
         );
         const isActiveChild = activeIdoso && activeIdoso.id === student.id;
 
-        if (!isKnownChild && !phoneMatches && !nameMatches && !isActiveChild) {
+        if (!phoneMatches && !nameMatches && !isActiveChild) {
           return false;
         }
       } else {
