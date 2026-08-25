@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { db, forceReconnectFirestore, isFirestoreConnected, lastSnapshotTime, snapshotCountTotal } from '../firebase';
+import { db, forceReconnectFirestore, startFirebaseSync, isFirestoreConnected, lastSnapshotTime, snapshotCountTotal } from '../firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { Wifi, WifiOff, RefreshCw, Radio, CheckCircle2, AlertTriangle, ShieldCheck, ChevronUp, ChevronDown, Activity, Terminal } from 'lucide-react';
 
@@ -21,6 +21,7 @@ export default function FirebaseDiagnosticBar() {
 
   useEffect(() => {
     addLog('🔬 Painel de Diagnóstico do Firestore ativado.');
+    startFirebaseSync();
 
     const handleConnectionStatus = (e: any) => {
       const conn = e.detail?.connected ?? true;

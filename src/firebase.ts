@@ -37,6 +37,7 @@ export async function forceReconnectFirestore(): Promise<boolean> {
     await new Promise(resolve => setTimeout(resolve, 500));
     await enableNetwork(db);
     isFirestoreConnected = true;
+    startFirebaseSync(true);
     window.dispatchEvent(new CustomEvent('firestore-connection-status', { detail: { connected: true, reconnected: true } }));
     console.log('✅ [Firebase Test 3] Rede do Firestore reiniciada com sucesso!');
     return true;
@@ -406,19 +407,28 @@ let activeUnsubscribes: (() => void)[] = [];
  * and pushes initial LocalStorage data to Firestore if Firestore is empty.
  * Enforces a strict singleton to avoid multiple active listeners / excessive reads.
  */
-export function startFirebaseSync() {
+export function startFirebaseSync(force = false) {
   if (typeof window === 'undefined') return;
 
   if (!db) {
     console.warn('[Firebase Sync] DB não inicializado, tentando novamente em 1s...');
-    setTimeout(startFirebaseSync, 1000);
+    setTimeout(() => startFirebaseSync(force), 1000);
     return;
   }
 
-  if (isSyncStarted) {
+  if (isSyncStarted && !force && activeUnsubscribes.length > 0) {
     console.log('⚡ [Firebase Sync] Já está rodando globalmente (Singleton Guard Ativo).');
     return;
   }
+
+  // Clear previous unsubscribes if forced or resetting
+  if (activeUnsubscribes.length > 0) {
+    activeUnsubscribes.forEach(unsub => {
+      try { unsub(); } catch (e) {}
+    });
+    activeUnsubscribes = [];
+  }
+
   isSyncStarted = true;
 
   console.log('🔥 [DIAGNOSTIC] startFirebaseSync() chamado. Coleções:', Object.keys(SYNC_COLLECTIONS_MAP));
@@ -843,4 +853,10 @@ export function stopFirebaseSync() {
   activeUnsubscribes = [];
   isSyncStarted = false;
   console.log('🛑 [Firebase Sync] Conexões globais encerradas.');
+}
+
+if (typeof window !== 'undefined') {
+  setTimeout(() => {
+    startFirebaseSync();
+  }, 100);
 }
