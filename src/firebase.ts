@@ -20,8 +20,9 @@ import { syncShiftStateLocalStorageFlags, isRecordBeforeResetTimestamp } from '.
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-// Default to standard (default) Firestore instance to guarantee connection to project database
-export const db = getFirestore(app);
+
+// Initialize Firestore with the named database ID
+export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 
 // Connectivity state tracking
 export let isFirestoreConnected = true;
