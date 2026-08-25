@@ -854,8 +854,10 @@ export function stopFirebaseSync() {
   console.log('🛑 [Firebase Sync] Conexões globais encerradas.');
 }
 
+// Expose global debug helpers on window for mobile console debugging
 if (typeof window !== 'undefined') {
-  setTimeout(() => {
-    startFirebaseSync();
-  }, 100);
+  (window as any).db = db;
+  (window as any).startFirebaseSync = startFirebaseSync;
+  (window as any).forceReconnectFirestore = forceReconnectFirestore;
+  (window as any).firebaseConfig = firebaseConfig;
 }
