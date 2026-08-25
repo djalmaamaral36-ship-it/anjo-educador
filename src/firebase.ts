@@ -592,6 +592,7 @@ export function startFirebaseSync(force = false) {
         }
 
         const mergedShiftItems = Array.from(shiftMap.values());
+        console.log('📡 [Firebase Sync] Turnos ativos (anjo_shift_states) merged:', mergedShiftItems);
         localStorage.setItem(localKey, JSON.stringify(mergedShiftItems));
         syncShiftStateLocalStorageFlags(mergedShiftItems);
         window.dispatchEvent(new CustomEvent('anjo_shift_updated', { detail: { items: mergedShiftItems } }));
