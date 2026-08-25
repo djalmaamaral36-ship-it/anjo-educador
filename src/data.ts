@@ -2397,23 +2397,48 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
 
   const possibleKeys = getAllPossibleStudentKeys(realId);
 
-  // Check if any local storage active flag is true across possible keys
-  let localActiveFlag = false;
-  let localActiveKey = '';
-  for (const k of possibleKeys) {
-    if (localStorage.getItem(`anjo_shift_active_${k}`) === 'true') {
-      localActiveFlag = true;
-      localActiveKey = k;
-      break;
-    }
+  // TTL-based local cache resolution
+  const LOCAL_FLAG_TTL_MS = 8000;
+  function getLocalShiftFlag(key: string): { active: boolean; isFresh: boolean; exists: boolean } {
+    const flag = localStorage.getItem(`anjo_shift_active_${key}`);
+    const timestamp = localStorage.getItem(`anjo_shift_active_${key}_ts`);
+    if (flag === null) return { active: false, isFresh: false, exists: false };
+    const elapsed = timestamp ? Date.now() - Number(timestamp) : Infinity;
+    return { active: flag === 'true', isFresh: elapsed < LOCAL_FLAG_TTL_MS, exists: true };
+  }
+  function setLocalShiftFlag(key: string, active: boolean): void {
+    localStorage.setItem(`anjo_shift_active_${key}`, String(active));
+    localStorage.setItem(`anjo_shift_active_${key}_ts`, String(Date.now()));
   }
 
-  // Check if any local storage absent flag is true
+  let localActiveFlag = false;
+  let localActiveKey = '';
   let localAbsentFlag = false;
+
   for (const k of possibleKeys) {
+    const remoteState = shiftStates.find(s => s.targetKey === k); // Adjusted to find in shiftStates array
+    const local = getLocalShiftFlag(k);
+
+    if (remoteState) {
+      if (local.isFresh && local.exists && local.active !== remoteState.active) {
+        if (local.active) {
+          localActiveFlag = true;
+          localActiveKey = k;
+        }
+      } else {
+        setLocalShiftFlag(k, remoteState.active);
+        if (remoteState.active) {
+          localActiveFlag = true;
+          localActiveKey = k;
+        }
+      }
+    } else if (local.isFresh && local.active) {
+      localActiveFlag = true;
+      localActiveKey = k;
+    }
+    
     if (localStorage.getItem(`anjo_is_absent_${k}`) === 'true') {
       localAbsentFlag = true;
-      break;
     }
   }
 
