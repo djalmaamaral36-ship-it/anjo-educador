@@ -182,95 +182,102 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
     const inputPin = passcode.trim();
     if (!inputPin) return;
 
-    // 1. Check if inputPin matches selectedUser's PIN or master PINs (9181, 8191, 3031, 1234, 0000, 1010, 2020, 2222, 5678)
-    const selectedPhoneDigits = selectedUser?.telefone ? selectedUser.telefone.replace(/\D/g, '') : '';
-    const selectedPin = selectedUser?.pin || (selectedPhoneDigits.length >= 4 ? selectedPhoneDigits.slice(-4) : '1234');
-    const universalPins = ['9181', '8191', '3031', '1234', '0000', '1010', '2020', '2222', '5678'];
+    try {
+      // 1. Check if inputPin matches selectedUser's PIN or master PINs (9181, 8191, 3031, 1234, 0000, 1010, 2020, 2222, 5678)
+      const selectedPhoneDigits = selectedUser?.telefone ? selectedUser.telefone.replace(/\D/g, '') : '';
+      const selectedPin = selectedUser?.pin || (selectedPhoneDigits.length >= 4 ? selectedPhoneDigits.slice(-4) : '1234');
+      const universalPins = ['9181', '8191', '3031', '1234', '0000', '1010', '2020', '2222', '5678'];
 
-    if (inputPin === selectedPin || universalPins.includes(inputPin)) {
-      if (inputPin === '9181' || inputPin === '8191' || inputPin === '3031' || selectedUser?.id === 'user_desenvolvedor_djalma' || selectedUser?.tipo === 'desenvolvedor') {
-        localStorage.setItem('anjo_master_demonstracao_ativo', 'true');
-      } else {
-        localStorage.removeItem('anjo_master_demonstracao_ativo');
-      }
-
-      let effectiveMode = selectedMode;
-      const uType = (selectedUser?.tipo || '').toLowerCase();
-      const uName = (selectedUser?.nome || '').toLowerCase();
-      const isDirector = uType === 'diretor' || uType === 'diretora' || uType === 'admin' || uName.includes('nilva') || selectedUser?.id === 'user_admin';
-      const isSchoolStaff = isDirector || uType === 'coordenador' || uType === 'coordenadora' || uType === 'professor' || uType === 'professora' || uType === 'educador' || uType === 'educadora' || selectedUser?.id?.startsWith('user_pai_') || selectedUser?.id?.startsWith('user_mae_') || selectedUser?.id?.startsWith('aluno_');
-
-      if (isDirector || isSchoolStaff || (selectedUser?.salaAula && selectedUser.salaAula !== 'Todas') || selectedUser?.id === 'user_cuidador_1') {
-        effectiveMode = 'escolar_infantil';
-      } else if (selectedUser?.id === 'user_cuidador_2') {
-        effectiveMode = 'idoso';
-      }
-      localStorage.setItem('anjo_app_mode', effectiveMode);
-
-      if (pendingClassroom && selectedUser) {
-        // Assign selected user's classroom in DB
-        const allUsers = getFromDB<Usuario[]>('anjo_usuarios', []);
-        const updatedUsers = allUsers.map(u => {
-          if (u.id === selectedUser.id) {
-            return { ...u, salaAula: pendingClassroom };
-          }
-          return u;
-        });
-        saveToDB('anjo_usuarios', updatedUsers);
-
-        // Activate a student in this classroom
-        const allStudents = getFromDB<Idoso[]>('anjo_idosos', []);
-        const targetRoomLower = pendingClassroom.toLowerCase();
-        const baseRoomLower = pendingClassroom.split(' - ')[0].toLowerCase();
-        
-        const matchingStudent = allStudents.find(s => {
-          if (!s.id.startsWith('aluno_')) return false;
-          const sName = s.nome.toLowerCase();
-          return sName.includes(targetRoomLower) || sName.includes(baseRoomLower);
-        });
-
-        if (matchingStudent) {
-          localStorage.setItem('anjo_simulacao_idoso_id', matchingStudent.id);
+      if (inputPin === selectedPin || universalPins.includes(inputPin)) {
+        if (inputPin === '9181' || inputPin === '8191' || inputPin === '3031' || selectedUser?.id === 'user_desenvolvedor_djalma' || selectedUser?.tipo === 'desenvolvedor') {
+          try { localStorage.setItem('anjo_master_demonstracao_ativo', 'true'); } catch (e) {}
+        } else {
+          try { localStorage.removeItem('anjo_master_demonstracao_ativo'); } catch (e) {}
         }
 
-        localStorage.removeItem('anjo_pending_classroom');
-        localStorage.removeItem('anjo_pending_teacher_id');
+        let effectiveMode = selectedMode;
+        const uType = (selectedUser?.tipo || '').toLowerCase();
+        const uName = (selectedUser?.nome || '').toLowerCase();
+        const isDirector = uType === 'diretor' || uType === 'diretora' || uType === 'admin' || uName.includes('nilva') || selectedUser?.id === 'user_admin';
+        const isSchoolStaff = isDirector || uType === 'coordenador' || uType === 'coordenadora' || uType === 'professor' || uType === 'professora' || uType === 'educador' || uType === 'educadora' || selectedUser?.id?.startsWith('user_pai_') || selectedUser?.id?.startsWith('user_mae_') || selectedUser?.id?.startsWith('aluno_');
+
+        if (isDirector || isSchoolStaff || (selectedUser?.salaAula && selectedUser.salaAula !== 'Todas') || selectedUser?.id === 'user_cuidador_1') {
+          effectiveMode = 'escolar_infantil';
+        } else if (selectedUser?.id === 'user_cuidador_2') {
+          effectiveMode = 'idoso';
+        }
+        try { localStorage.setItem('anjo_app_mode', effectiveMode); } catch (e) {}
+
+        if (pendingClassroom && selectedUser) {
+          // Assign selected user's classroom in DB
+          const allUsers = getFromDB<Usuario[]>('anjo_usuarios', []);
+          const updatedUsers = allUsers.map(u => {
+            if (u.id === selectedUser.id) {
+              return { ...u, salaAula: pendingClassroom };
+            }
+            return u;
+          });
+          saveToDB('anjo_usuarios', updatedUsers);
+
+          // Activate a student in this classroom
+          const allStudents = getFromDB<Idoso[]>('anjo_idosos', []);
+          const targetRoomLower = pendingClassroom.toLowerCase();
+          const baseRoomLower = pendingClassroom.split(' - ')[0].toLowerCase();
+            
+          const matchingStudent = allStudents.find(s => {
+            if (!s.id.startsWith('aluno_')) return false;
+            const sName = s.nome.toLowerCase();
+            return sName.includes(targetRoomLower) || sName.includes(baseRoomLower);
+          });
+
+          if (matchingStudent) {
+            try { localStorage.setItem('anjo_simulacao_idoso_id', matchingStudent.id); } catch (e) {}
+          }
+
+          try {
+            localStorage.removeItem('anjo_pending_classroom');
+            localStorage.removeItem('anjo_pending_teacher_id');
+          } catch (e) {}
+        }
+
+        setErrorMessage('');
+        if (selectedUser) onLoginSuccess(selectedUser);
+        return;
       }
 
-      setErrorMessage('');
-      if (selectedUser) onLoginSuccess(selectedUser);
+      // 2. If typed a PIN that belongs to another user in DB, switch to that user
+      const matchingUser = dbUsers.find(u => {
+        const digits = u.telefone ? u.telefone.replace(/\D/g, '') : '';
+        const uPin = u.pin || (digits.length >= 4 ? digits.slice(-4) : '1234');
+        return uPin === inputPin;
+      });
+
+      if (matchingUser) {
+        try { localStorage.removeItem('anjo_master_demonstracao_ativo'); } catch (e) {}
+          
+        let matchingMode = selectedMode;
+        const muType = (matchingUser.tipo || '').toLowerCase();
+        const muName = matchingUser.nome.toLowerCase();
+        const isDirectorM = muType === 'diretor' || muType === 'diretora' || muType === 'admin' || muName.includes('nilva') || matchingUser.id === 'user_admin';
+        const isSchoolStaffM = isDirectorM || muType === 'coordenador' || muType === 'coordenadora' || muType === 'professor' || muType === 'professora' || muType === 'educador' || muType === 'educadora' || matchingUser.id.startsWith('user_pai_') || matchingUser.id.startsWith('user_mae_') || matchingUser.id.startsWith('aluno_');
+
+        if (isDirectorM || isSchoolStaffM || (matchingUser.salaAula && matchingUser.salaAula !== 'Todas') || matchingUser.id === 'user_cuidador_1') {
+          matchingMode = 'escolar_infantil';
+        } else if (matchingUser.id === 'user_cuidador_2') {
+          matchingMode = 'idoso';
+        }
+        try { localStorage.setItem('anjo_app_mode', matchingMode); } catch (e) {}
+
+        setErrorMessage('');
+        onLoginSuccess(matchingUser);
+        return;
+      }
+    } catch (err: any) {
+      setErrorMessage('Erro interno: ' + (err.message || 'Falha no navegador'));
       return;
     }
 
-    // 2. If typed a PIN that belongs to another user in DB, switch to that user
-    const matchingUser = dbUsers.find(u => {
-      const digits = u.telefone ? u.telefone.replace(/\D/g, '') : '';
-      const uPin = u.pin || (digits.length >= 4 ? digits.slice(-4) : '1234');
-      return uPin === inputPin;
-    });
-
-    if (matchingUser) {
-      localStorage.removeItem('anjo_master_demonstracao_ativo');
-      
-      let matchingMode = selectedMode;
-      const muType = (matchingUser.tipo || '').toLowerCase();
-      const muName = matchingUser.nome.toLowerCase();
-      const isDirectorM = muType === 'diretor' || muType === 'diretora' || muType === 'admin' || muName.includes('nilva') || matchingUser.id === 'user_admin';
-      const isSchoolStaffM = isDirectorM || muType === 'coordenador' || muType === 'coordenadora' || muType === 'professor' || muType === 'professora' || muType === 'educador' || muType === 'educadora' || matchingUser.id.startsWith('user_pai_') || matchingUser.id.startsWith('user_mae_') || matchingUser.id.startsWith('aluno_');
-
-      if (isDirectorM || isSchoolStaffM || (matchingUser.salaAula && matchingUser.salaAula !== 'Todas') || matchingUser.id === 'user_cuidador_1') {
-        matchingMode = 'escolar_infantil';
-      } else if (matchingUser.id === 'user_cuidador_2') {
-        matchingMode = 'idoso';
-      }
-      localStorage.setItem('anjo_app_mode', matchingMode);
-
-      setErrorMessage('');
-      onLoginSuccess(matchingUser);
-      return;
-    }
-
-    setErrorMessage(`Código de acesso inválido! Tente "9181", "3031" ou o PIN de 4 dígitos do seu perfil (${selectedPin}).`);
+    setErrorMessage(`Código de acesso inválido! Tente "9181", "3031" ou o PIN de 4 dígitos do seu perfil.`);
   };
 
   const handlePhoneChange = (val: string) => {

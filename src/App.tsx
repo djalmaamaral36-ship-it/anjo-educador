@@ -845,30 +845,36 @@ export default function App() {
   };
 
   const handleLogin = (user: Usuario) => {
-    setUsuarioAtual(user);
-    localStorage.setItem('anjo_simulacao_user_id', user.id);
-    setActiveScreen('dashboard');
-    
-    // Explicitly start firebase sync after login, but wait for render first
-    setTimeout(() => {
-      import('./firebase').then(f => f.startFirebaseSync(true));
-    }, 100);
+    try {
+      setUsuarioAtual(user);
+      localStorage.setItem('anjo_simulacao_user_id', user.id);
+      setActiveScreen('dashboard');
+      
+      // Explicitly start firebase sync after login, but wait for render first
+      setTimeout(() => {
+        try {
+          import('./firebase').then(f => f.startFirebaseSync(true));
+        } catch (e) {}
+      }, 100);
 
-    // Read the app mode selected on the login page and align it with the user role
-    const savedMode = (localStorage.getItem('anjo_app_mode') as 'idoso' | 'escolar_infantil') || 'idoso';
-    const targetMode = determineAppModeForUser(user, savedMode);
-    setAppMode(targetMode);
-    localStorage.setItem('anjo_app_mode', targetMode);
+      // Read the app mode selected on the login page and align it with the user role
+      const savedMode = (localStorage.getItem('anjo_app_mode') as 'idoso' | 'escolar_infantil') || 'idoso';
+      const targetMode = determineAppModeForUser(user, savedMode);
+      setAppMode(targetMode);
+      localStorage.setItem('anjo_app_mode', targetMode);
 
-    const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
-    // Update active elderly/child to the one matching this specific user
-    const bestIdoso = findBestMatchingIdoso(user, targetMode) || (allSeniors.length > 0 ? allSeniors[0] : null);
-    if (bestIdoso) {
-      setIdosoAtual(bestIdoso);
-      localStorage.setItem('anjo_simulacao_idoso_id', bestIdoso.id);
+      const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
+      // Update active elderly/child to the one matching this specific user
+      const bestIdoso = findBestMatchingIdoso(user, targetMode) || (allSeniors.length > 0 ? allSeniors[0] : null);
+      if (bestIdoso) {
+        setIdosoAtual(bestIdoso);
+        localStorage.setItem('anjo_simulacao_idoso_id', bestIdoso.id);
+      }
+
+      setKeyTrigger(prev => prev + 1);
+    } catch (err: any) {
+      alert('Erro inesperado ao iniciar a sessão: ' + err.message);
     }
-
-    setKeyTrigger(prev => prev + 1);
   };
 
   const handleLogout = () => {
