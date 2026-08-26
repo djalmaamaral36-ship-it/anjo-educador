@@ -408,13 +408,23 @@ let activeUnsubscribes: (() => void)[] = [];
  * Enforces a strict singleton to avoid multiple active listeners / excessive reads.
  */
 export function startFirebaseSync(force = false) {
-  // Synchronization completely disabled to ensure app stability
-  console.warn('🛑 [Firebase Sync] Sincronização desativada para estabilidade.');
-  return;
-  /*
-  if (typeof window === 'undefined') return;
-  // ... rest of the original code ...
-  */
+  console.log("🚀 [Firebase] Conectando para escutar turnos_ativos...");
+  
+  const colRef = collection(db, "turnos_ativos");
+  
+  onSnapshot(colRef, (snapshot) => {
+    console.log(`📡 [Firebase] Snapshot recebido: ${snapshot.size} docs.`);
+    
+    // Convert snapshot data to simple array
+    const turnos = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    
+    // Dispatch event with data, absolutely NO localStorage manipulation here
+    window.dispatchEvent(new CustomEvent('anjo_shift_updated', { 
+      detail: { items: turnos } 
+    }));
+  }, (error) => {
+    console.error("❌ [Firebase] Erro de conexão/permissão:", error);
+  });
 }
 
 export function stopFirebaseSync() {
