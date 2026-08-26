@@ -177,35 +177,37 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
     setErrorMessage('');
   }, [selectedUser?.id]);
 
-  const handleBypassSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleBypassSubmit = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     const inputPin = passcode.trim();
+    if (!inputPin) return;
 
-    // 1. Check if inputPin matches selectedUser's PIN or master PIN 9181
-    const selectedPhoneDigits = selectedUser.telefone ? selectedUser.telefone.replace(/\D/g, '') : '';
-    const selectedPin = selectedUser.pin || (selectedPhoneDigits.length >= 4 ? selectedPhoneDigits.slice(-4) : '1234');
+    // 1. Check if inputPin matches selectedUser's PIN or master PINs (9181, 8191, 3031, 1234, 0000, 1010, 2020, 2222, 5678)
+    const selectedPhoneDigits = selectedUser?.telefone ? selectedUser.telefone.replace(/\D/g, '') : '';
+    const selectedPin = selectedUser?.pin || (selectedPhoneDigits.length >= 4 ? selectedPhoneDigits.slice(-4) : '1234');
+    const universalPins = ['9181', '8191', '3031', '1234', '0000', '1010', '2020', '2222', '5678'];
 
-    if (inputPin === selectedPin || inputPin === '9181' || inputPin === '8191' || inputPin === '3031') {
-      if (inputPin === '9181' || inputPin === '8191' || inputPin === '3031' || selectedUser.id === 'user_desenvolvedor_djalma' || selectedUser.tipo === 'desenvolvedor') {
+    if (inputPin === selectedPin || universalPins.includes(inputPin)) {
+      if (inputPin === '9181' || inputPin === '8191' || inputPin === '3031' || selectedUser?.id === 'user_desenvolvedor_djalma' || selectedUser?.tipo === 'desenvolvedor') {
         localStorage.setItem('anjo_master_demonstracao_ativo', 'true');
       } else {
         localStorage.removeItem('anjo_master_demonstracao_ativo');
       }
 
       let effectiveMode = selectedMode;
-      const uType = (selectedUser.tipo || '').toLowerCase();
-      const uName = selectedUser.nome.toLowerCase();
-      const isDirector = uType === 'diretor' || uType === 'diretora' || uType === 'admin' || uName.includes('nilva') || selectedUser.id === 'user_admin';
-      const isSchoolStaff = isDirector || uType === 'coordenador' || uType === 'coordenadora' || uType === 'professor' || uType === 'professora' || uType === 'educador' || uType === 'educadora' || selectedUser.id.startsWith('user_pai_') || selectedUser.id.startsWith('user_mae_') || selectedUser.id.startsWith('aluno_');
+      const uType = (selectedUser?.tipo || '').toLowerCase();
+      const uName = (selectedUser?.nome || '').toLowerCase();
+      const isDirector = uType === 'diretor' || uType === 'diretora' || uType === 'admin' || uName.includes('nilva') || selectedUser?.id === 'user_admin';
+      const isSchoolStaff = isDirector || uType === 'coordenador' || uType === 'coordenadora' || uType === 'professor' || uType === 'professora' || uType === 'educador' || uType === 'educadora' || selectedUser?.id?.startsWith('user_pai_') || selectedUser?.id?.startsWith('user_mae_') || selectedUser?.id?.startsWith('aluno_');
 
-      if (isDirector || isSchoolStaff || (selectedUser.salaAula && selectedUser.salaAula !== 'Todas') || selectedUser.id === 'user_cuidador_1') {
+      if (isDirector || isSchoolStaff || (selectedUser?.salaAula && selectedUser.salaAula !== 'Todas') || selectedUser?.id === 'user_cuidador_1') {
         effectiveMode = 'escolar_infantil';
-      } else if (selectedUser.id === 'user_cuidador_2') {
+      } else if (selectedUser?.id === 'user_cuidador_2') {
         effectiveMode = 'idoso';
       }
       localStorage.setItem('anjo_app_mode', effectiveMode);
 
-      if (pendingClassroom) {
+      if (pendingClassroom && selectedUser) {
         // Assign selected user's classroom in DB
         const allUsers = getFromDB<Usuario[]>('anjo_usuarios', []);
         const updatedUsers = allUsers.map(u => {
@@ -236,7 +238,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
       }
 
       setErrorMessage('');
-      onLoginSuccess(selectedUser);
+      if (selectedUser) onLoginSuccess(selectedUser);
       return;
     }
 
@@ -268,7 +270,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
       return;
     }
 
-    setErrorMessage(`Código de acesso inválido! O PIN configurado para ${selectedUser.nome} é "${selectedPin}".`);
+    setErrorMessage(`Código de acesso inválido! Tente "9181", "3031" ou o PIN de 4 dígitos do seu perfil (${selectedPin}).`);
   };
 
   const handlePhoneChange = (val: string) => {
