@@ -3,7 +3,15 @@ import { getFirestore, collection, onSnapshot, doc, setDoc, getDocs } from 'fire
 import firebaseConfig from '../firebase-applet-config.json';
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+let dbInstance;
+try {
+  console.log("🚀 [Firebase] Initializing Firestore with DB ID:", firebaseConfig.firestoreDatabaseId);
+  dbInstance = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+} catch (e) {
+  console.warn("⚠️ [Firebase] Failed to init custom DB, falling back to (default).", e);
+  dbInstance = getFirestore(app);
+}
+export const db = dbInstance;
 
 export let isFirestoreConnected = false;
 export let lastSnapshotTime = 'Nunca';
