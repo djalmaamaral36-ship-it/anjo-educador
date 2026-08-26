@@ -39,6 +39,15 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
   });
   const [passcode, setPasscode] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [connectionStatus, setConnectionStatus] = useState<string>('Conectando...');
+
+  // Mocking status logic for demonstration until real-time firebase state is linked
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setConnectionStatus('Conectado');
+    }, 2000);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Tab State: 'login' for normal access / simulation chooser, 'trial' for Option B (15 Day Trial & LGPD consent)
   const [activeTab, setActiveTab] = useState<'login' | 'trial'>(() => {
@@ -825,6 +834,13 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
               <label className={`text-xs font-bold ${accessibility?.darkMode ? 'text-slate-400' : 'text-slate-600'} block text-center md:text-left uppercase tracking-wider`}>
                 Selecione o Modo e um dos Perfis Simulados para Entrar:
               </label>
+              
+              {/* Connection Status Monitor */}
+              <div className={`text-[10px] text-center font-black uppercase tracking-widest p-1 rounded-md ${
+                connectionStatus === 'Conectado' ? 'text-emerald-600 bg-emerald-50' : 'text-amber-600 bg-amber-50'
+              }`}>
+                Estado: {connectionStatus}
+              </div>
 
               {/* Mode toggle bar right in the login tab for instant toggling! */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
