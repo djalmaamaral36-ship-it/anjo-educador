@@ -777,6 +777,17 @@ function setLocalShiftFlag(key: string, active: boolean): void {
     const remoteState = shiftStates.find(s => s && (s.id === k || keyMatches(s.id, k) || keyMatches(k, s.id)));
     const local = getLocalShiftFlag(k);
 
+    // --- TRAVA DE SEGURANÇA ---
+    // Se o Firebase diz que o turno está inativo, MAS o cache local diz que está ativo
+    // e é um registro "fresco" (< 15s), nós forçamos a manutenção do estado ativo.
+    // Isso ignora dados remotos incompletos ou transitórios, preservando o turno atual.
+    let efetivamenteAtivo = remoteState?.active;
+    if (remoteState && !remoteState.active && local.active && local.isFresh) {
+        console.warn(`⚠️ [Data Trava] Ignorando Firebase (inativo) para ${k} pois o Local cache está fresco (ativo).`);
+        efetivamenteAtivo = true; 
+    }
+    // --------------------------
+
     // Only allow local override if NOT receiving explicit Firestore listener update AND local flag is very fresh (<15s)
     if (!isFromFirestoreListener && local.isFresh && local.exists) {
       hasFreshLocalOverride = true;
@@ -786,8 +797,8 @@ function setLocalShiftFlag(key: string, active: boolean): void {
         localActiveKey = k;
       }
     } else if (remoteState) {
-      setLocalShiftFlag(k, remoteState.active);
-      if (remoteState.active) {
+      setLocalShiftFlag(k, efetivamenteAtivo || false);
+      if (efetivamenteAtivo) {
         localActiveFlag = true;
         localActiveKey = k;
       }
