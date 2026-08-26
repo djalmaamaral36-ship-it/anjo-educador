@@ -5,6 +5,23 @@ import firebaseConfig from '../firebase-applet-config.json';
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 
+export let isFirestoreConnected = false;
+export let lastSnapshotTime = 'Nunca';
+export let snapshotCountTotal = 0;
+
+export const SYNC_COLLECTIONS_MAP = {
+  'anjo_shift_states': 'anjo_shift_states',
+  'turnos_ativos': 'turnos_ativos'
+};
+
+export async function saveToFirestore(collectionName: string, data: any) {}
+export async function deleteFromFirestore(collectionName: string, id: string) {}
+export async function deleteBatchFromFirestore(collectionName: string, ids: string[]) {}
+export function getFirestoreCollectionForKey(key: string) { return key; }
+export function notifyCrossTabSync() {}
+export async function deleteStudentDataFromFirestore(studentId: string) {}
+export function forceReconnectFirestore() {}
+
 // Simplest sync: Just seed if empty, and listen for updates.
 export async function seedDatabase(collectionName: string, localItems: any[]) {
   const colRef = collection(db, collectionName);
