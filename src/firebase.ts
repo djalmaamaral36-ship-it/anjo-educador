@@ -60,9 +60,9 @@ export function startFirebaseSync() {
       }
       
       // Dispatch event matching the format expected by Dashboard.tsx
-      window.dispatchEvent(new CustomEvent('anjo_shift_updated', { 
-        detail: { items: data } 
-      }));
+      // window.dispatchEvent(new CustomEvent('anjo_shift_updated', { 
+      //   detail: { items: data } 
+      // }));
     }, (error) => {
       console.error(`❌ [Firebase] Error in ${colName}:`, error);
     });
