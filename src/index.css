@@ -172,7 +172,7 @@ h1, h2, h3, h4, h5, h6 {
   color: #fbbf24 !important;
 }
 
-.dark-mode .bg-[#EAF3FF] {
+.dark-mode .bg-\[\#EAF3FF\] {
   background-color: rgba(37, 99, 235, 0.15) !important;
   border-color: #3b82f6 !important;
 }
