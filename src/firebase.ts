@@ -54,6 +54,11 @@ export function startFirebaseSync() {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       console.log(`📡 [Firebase] Sync ${colName}: ${data.length} docs`);
       
+      // Update localStorage for turnos_ativos as it contains the 194 docs
+      if (colName === 'turnos_ativos') {
+          localStorage.setItem('anjo_shift_states', JSON.stringify(data));
+      }
+      
       // Dispatch event matching the format expected by Dashboard.tsx
       window.dispatchEvent(new CustomEvent('anjo_shift_updated', { 
         detail: { items: data } 
