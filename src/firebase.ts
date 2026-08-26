@@ -39,16 +39,16 @@ export async function seedDatabase(collectionName: string, localItems: any[]) {
 
 export function startFirebaseSync() {
   console.log("🚀 [Firebase] Sync initialized...");
-  const collectionsToListen = ['turnos_ativos'];
+  const collectionsToListen = ['turnos_ativos', 'anjo_shift_states'];
   
   collectionsToListen.forEach(colName => {
     onSnapshot(collection(db, colName), (snapshot) => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       console.log(`📡 [Firebase] Sync ${colName}: ${data.length} docs`);
       
-      // Masquerade as anjo_shift_states
+      // Dispatch event matching the format expected by Dashboard.tsx
       window.dispatchEvent(new CustomEvent('anjo_shift_updated', { 
-        detail: { collection: 'anjo_shift_states', items: data } 
+        detail: { items: data } 
       }));
     }, (error) => {
       console.error(`❌ [Firebase] Error in ${colName}:`, error);
