@@ -1,0 +1,23 @@
+{
+  "entities": {
+    "Shift": {
+      "title": "Shift",
+      "description": "Shift data",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "studentId": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "/turnos_ativos/{shiftId}": {
+      "schema": "Shift",
+      "description": "Shift collection"
+    },
+    "/anjo_shift_states/{shiftId}": {
+      "schema": "Shift",
+      "description": "Shift states collection"
+    }
+  }
+}
