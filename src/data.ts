@@ -157,7 +157,7 @@ export function generateUniquePin(excludeUserId?: string, preferredDigits?: stri
 export function initializeDB() {
   if (typeof window === 'undefined') return;
 
-  const DB_SCHEMA_VERSION = 'v8_zeroed_parents_activities_v1';
+  const DB_SCHEMA_VERSION = 'v10_school_team_10students_2teachers_2coords_1director_v1';
   const currentDbVersion = localStorage.getItem('anjo_db_version');
 
   // Hard reset/seed to canonical dataset on version upgrade

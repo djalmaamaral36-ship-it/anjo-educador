@@ -32,55 +32,72 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
     observacoes: 'Desenvolvedor e Criador da Plataforma. Acesso total.',
     pin: '9181'
   },
-  // 2. Diretora (1)
+
+  // 2. Diretor (1)
   {
     id: 'user_admin',
     nome: 'Nilva Amaral (Diretora)',
     email: 'nilva.amaral@escola.com',
     telefone: '(11) 98765-3031',
     tipo: 'diretor',
-    parentesco: 'Diretora Escolar',
+    parentesco: 'Diretora Geral',
     foto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Diretora Geral da Escola.',
+    observacoes: 'Diretora Geral da Escola. Gestão executiva e administrativa.',
     pin: '3031'
   },
-  // 3. Coordenadora (1)
+
+  // 3. Coordenadoras (2)
   {
-    id: 'user_coordenador',
-    nome: 'Renata Vasconcelos (Coordenadora)',
+    id: 'user_coordenador_1',
+    nome: 'Renata Vasconcelos (Coordenadora Pedagógica)',
     email: 'renata.coord@escola.com',
     telefone: '(11) 98765-1010',
     tipo: 'coordenador',
     parentesco: 'Coordenação Pedagógica',
     foto: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Coordenadora pedagógica geral.',
+    observacoes: 'Coordenadora Pedagógica da Educação Infantil.',
     pin: '1010'
   },
-  // 4. Educadoras / Cuidadoras (2)
+  {
+    id: 'user_coordenador_2',
+    nome: 'Fabiana Moreira (Coordenadora de Cuidados e Rotina)',
+    email: 'fabiana.coord@escola.com',
+    telefone: '(11) 98765-2020',
+    tipo: 'coordenador',
+    parentesco: 'Coordenação de Cuidados',
+    foto: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=150',
+    observacoes: 'Coordenadora de Saúde, Nutrição e Acolhimento Infantil.',
+    pin: '2020'
+  },
+
+  // 4. Professores (2 Professores - 1 para cada classe)
+  // Professora da Sala 1: Berçário I - A
   {
     id: 'user_cuidador_1',
-    nome: 'Ana Silva (Educadora)',
+    nome: 'Ana Silva (Professora Titular)',
     email: 'ana.silva@escola.com',
     telefone: '(11) 91234-5678',
     tipo: 'cuidador',
     foto: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Professora titular do Berçário I - A.',
+    observacoes: 'Professora titular responsável pelo Berçário I - A.',
     pin: '5678',
     salaAula: 'Berçário I - A'
   },
+
+  // Professora da Sala 2: Maternal I - A
   {
     id: 'user_cuidador_2',
-    nome: 'Carla Dias (Educadora)',
+    nome: 'Carla Dias (Professora Titular)',
     email: 'carla.dias@escola.com',
     telefone: '(11) 92222-2222',
     tipo: 'cuidador',
     foto: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Professora titular do Maternal I - A.',
+    observacoes: 'Professora titular responsável pelo Maternal I - A.',
     pin: '2222',
     salaAula: 'Maternal I - A'
   },
 
-  // 5. Pais / Mães (10) - 1 para cada um dos 10 alunos
+  // 5. Pais / Mães / Responsáveis (10) - 1 para cada um dos 10 alunos
   // Pais da Sala 1: Berçário I - A (5 Alunos)
   {
     id: 'user_mae_clarice',
