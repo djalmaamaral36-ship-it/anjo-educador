@@ -45,6 +45,9 @@ export async function seedDatabase(collectionName: string, localItems: any[]) {
   }
 }
 
+// Store the previous data to compare and debounce
+let lastData: Record<string, any[]> = {};
+
 export function startFirebaseSync() {
   console.log("🚀 [Firebase] Sync initialized...");
   const collectionsToListen = ['turnos_ativos', 'anjo_shift_states'];
@@ -52,17 +55,19 @@ export function startFirebaseSync() {
   collectionsToListen.forEach(colName => {
     onSnapshot(collection(db, colName), (snapshot) => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      console.log(`📡 [Firebase] Sync ${colName}: ${data.length} docs`);
       
-      // Update localStorage for turnos_ativos as it contains the 194 docs
-      if (colName === 'turnos_ativos') {
-          localStorage.setItem('anjo_shift_states', JSON.stringify(data));
+      // Debounce logic: only dispatch if data has changed
+      if (JSON.stringify(data) !== JSON.stringify(lastData[colName])) {
+        console.log(`📡 [Firebase] Sync ${colName}: ${data.length} docs (Data changed)`);
+        lastData[colName] = data;
+        
+        // Dispatch event matching the format expected by Dashboard.tsx
+        window.dispatchEvent(new CustomEvent('anjo_shift_updated', { 
+          detail: { items: data } 
+        }));
+      } else {
+        console.log(`📡 [Firebase] Sync ${colName}: ${data.length} docs (No change, debouncing)`);
       }
-      
-      // Dispatch event matching the format expected by Dashboard.tsx
-      // window.dispatchEvent(new CustomEvent('anjo_shift_updated', { 
-      //   detail: { items: data } 
-      // }));
     }, (error) => {
       console.error(`❌ [Firebase] Error in ${colName}:`, error);
     });

@@ -9793,430 +9793,23 @@ Segunda-feira:
               <button
                 type="button"
                 onClick={confirmDialog.onConfirm}
-                className="px-4 py-2 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-extrabold text-xs rounded-xl shadow-xs cursor-pointer"
-                id="confirm-ok-btn"
-              >
-                Confirmar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* MODAL DE RESTRIÃ‡ÃƒO ELEGANTE E EDUCADA DE ACESSO AO PAINEL OPERACIONAL */}
-      {showCaregiverPinModal && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 z-[60] animate-fade-in" id="caregiver-access-modal">
-          <div className="bg-white rounded-3xl max-w-md w-full border border-slate-200 p-6 space-y-4 shadow-2xl text-slate-800 animate-scale-up">
-            <div className="flex items-start gap-3">
-              <div className="p-3 bg-amber-50 rounded-2xl text-amber-600 shrink-0">
-                <Lock className="w-5 h-5" />
-              </div>
-              <div className="space-y-1">
-                <h3 className="text-base font-black text-slate-900 flex items-center gap-1.5 leading-tight">
-                  {isEscolar ? 'Acesso Restrito a Educadores' : 'Acesso Restrito a Cuidadores'}
-                </h3>
-                <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest block">
-                  SeguranÃ§a, Privacidade e Conformidade
-                </p>
-              </div>
-            </div>
-
-            <p className="text-xs text-slate-500 leading-relaxed font-semibold">
-              Prezada FamÃ­lia, vocÃª estÃ¡ conectada no perfil de acompanhamento de <strong className="text-slate-800">{usuarioAtual?.nome}</strong>.
-            </p>
-
-            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl space-y-1.5">
-              <strong className="text-[11px] block font-extrabold text-slate-700">Por que o painel de registro Ã© restrito?</strong>
-              <p className="text-[10px] text-slate-500 leading-relaxed">
-                {isEscolar 
-                  ? 'O Painel da Professora Ã© um ambiente tÃ©cnico exclusivo de trabalho escolar de plantÃ£o, utilizado para controle pedagÃ³gico, sesta e trocas de fraldas. Restringir este acesso previne divergÃªncias de dados e garante total conformidade com os regulamentos de integridade.'
-                  : 'O Painel do Cuidador Ã© um espaÃ§o de trabalho operacional reservado aos profissionais de enfermagem e assistÃªncia para aferiÃ§Ã£o de sinais vitais, anotaÃ§Ãµes clÃ­nicas e administraÃ§Ã£o de remÃ©dios, assegurando conformidade de escala e rastreabilidade.'
-                }
-              </p>
-            </div>
-
-            <form onSubmit={handleVerifyCaregiverPin} className="space-y-3.5">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-650 block">Digite o PIN do Profissional para Liberar:</label>
-                <input 
-                  type="password"
-                  maxLength={4}
-                  pattern="[0-9]*"
-                  inputMode="numeric"
-                  placeholder="â€¢â€¢â€¢â€¢"
-                  value={caregiverPinValue}
-                  onChange={e => {
-                    setCaregiverPinValue(e.target.value.replace(/\D/g, ''));
-                    setCaregiverPinError('');
-                  }}
-                  className="w-full text-center py-2 px-4 tracking-widest text-lg font-black border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500/50 bg-slate-50 text-slate-800"
-                  required
-                  autoFocus
-                />
-                
-                {caregiverPinError ? (
-                  <p className="text-[11px] text-rose-600 font-extrabold text-center">
-                    âŒ {caregiverPinError}
-                  </p>
-                ) : (
-                  <p className="text-[10px] text-slate-400 font-semibold text-center leading-normal">
-                    ğŸ”’ Digite os 4 dÃ­gitos do PIN de qualquer cuidador credenciado ou administrador para alternar visualizaÃ§Ã£o.
-                  </p>
-                )}
-              </div>
-
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowCaregiverPinModal(false);
-                    setCaregiverPinValue('');
-                    setCaregiverPinError('');
-                  }}
-                  className="flex-1 py-2 px-3 border border-slate-200 text-slate-550 hover:bg-slate-50 hover:text-slate-700 font-bold text-xs rounded-xl transition-all cursor-pointer"
-                >
-                  Voltar para Ãrea Familiar
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 py-2 px-3 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-extrabold text-xs rounded-xl shadow-xs transition-all cursor-pointer flex items-center justify-center gap-1"
-                >
-                  Liberar Painel
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Custom Toast Banner */}
-      {toast && (
-        <div className="fixed top-4 right-4 z-[9999] max-w-sm bg-white shadow-xl rounded-xl p-4 flex items-center gap-3 border border-slate-100 border-l-4 border-l-emerald-500 transition-all duration-300 transform translate-y-0">
-          <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
-            <Check className="w-4 h-4 text-emerald-600" />
-          </div>
-          <div className="text-xs font-bold text-slate-800">
-            {toast.message}
-          </div>
-        </div>
-      )}
-
-      {/* Medication Packaging Photo Preview Modal */}
-      {previewMedPhotoModal && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4 animate-scale-up text-left relative">
-            <button
-              type="button"
-              onClick={() => setPreviewMedPhotoModal(null)}
-              className="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors cursor-pointer"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center gap-3 pr-8">
-              <div className="p-2.5 bg-rose-100 text-rose-700 rounded-2xl">
-                <Activity className="w-6 h-6" />
-              </div>
-              <div>
-                <span className="text-[10px] font-extrabold uppercase tracking-wider text-rose-600 block">
-                  Foto do Medicamento Cadastrado
-                </span>
-                <h3 className="text-lg font-bold text-slate-800 leading-tight">
-                  {previewMedPhotoModal.title}
-                </h3>
-              </div>
-            </div>
-
-            <div className="rounded-2xl border-2 border-rose-100 bg-slate-50 overflow-hidden flex items-center justify-center p-2 min-h-48 max-h-80">
-              <img
-                referrerPolicy="no-referrer"
-                src={previewMedPhotoModal.url}
-                alt={previewMedPhotoModal.title}
-                className="max-h-72 w-auto object-contain rounded-xl shadow-xs"
-              />
-            </div>
-
-            <div className="bg-rose-50/70 border border-rose-200 rounded-2xl p-3.5 space-y-1 text-xs text-rose-950">
-              <p><strong>Dosagem:</strong> {previewMedPhotoModal.dosagem || 'Conforme orientaÃ§Ã£o'}</p>
-              {previewMedPhotoModal.frequencia && <p><strong>FrequÃªncia:</strong> {previewMedPhotoModal.frequencia}</p>}
-              {previewMedPhotoModal.horarios && previewMedPhotoModal.horarios.length > 0 && (
-                <p><strong>HorÃ¡rios:</strong> {previewMedPhotoModal.horarios.join(', ')}</p>
-              )}
-              {previewMedPhotoModal.obs && (
-                <p className="pt-1.5 text-[11px] text-rose-800 border-t border-rose-200/60 italic">
-                  Obs da famÃ­lia: "{previewMedPhotoModal.obs}"
-                </p>
-              )}
-            </div>
-
-            <button
-              type="button"
-              onClick={() => setPreviewMedPhotoModal(null)}
-              className="w-full py-3 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-2xl text-xs transition-colors cursor-pointer"
-            >
-              Fechar VisualizaÃ§Ã£o
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ğŸŒ MODAL INTERATIVO DO DIÃRIO / BOLETIM DIGITAL COMPLETO (LINK ATIVO) */}
-      {selectedReportModal && (
-        <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full border border-slate-200 dark:border-slate-800 p-6 space-y-5 shadow-2xl text-left max-h-[90vh] overflow-y-auto">
-            
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-2xl bg-indigo-600 flex items-center justify-center text-white text-xl font-black shadow-md">
-                  ğŸ“„
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
-                      {isEscolar ? 'DiÃ¡rio de Rotina Escolar Digital 360Âº' : 'Boletim de Cuidados Digital'}
-                    </h3>
-                    <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase">
-                      âœ“ Link Seguro Verificado
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-500 font-medium">
-                    {selectedReportModal.cuidador} â€¢ {selectedReportModal.data || 'Hoje'} â€¢ PerÃ­odo: {selectedReportModal.inicio || '07:30'} Ã s {selectedReportModal.fim || '17:30'}
-                  </p>
-                </div>
-              </div>
-
-              <button 
-                type="button"
-                onClick={() => setSelectedReportModal(null)}
-                className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-slate-400 hover:text-slate-600 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {/* Audit & Compliance Card */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <div className="p-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200/60 dark:border-indigo-800 text-center space-y-0.5">
-                <span className="text-[10px] font-black text-indigo-500 uppercase block">AUDITORIA E CONFORMIDADE</span>
-                <strong className="text-xl font-black text-indigo-700 dark:text-indigo-300">{selectedReportModal.taxaConformidade || 100}% OK</strong>
-                <span className="text-[10px] text-indigo-600/80 block">Rotinas Auditadas</span>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800 text-center space-y-0.5">
-                <span className="text-[10px] font-black text-emerald-500 uppercase block">QUALIDADE DE REGISTRO</span>
-                <strong className="text-xl font-black text-emerald-700 dark:text-emerald-300">{selectedReportModal.taxaQualidade || 100}%</strong>
-                <span className="text-[10px] text-emerald-600/80 block">Carimbo Temporal</span>
-              </div>
-
-              <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800 text-center space-y-0.5">
-                <span className="text-[10px] font-black text-amber-500 uppercase block">DURAÃ‡ÃƒO DO PERÃODO</span>
-                <strong className="text-xl font-black text-amber-700 dark:text-amber-300">{selectedReportModal.duracao || 'PerÃ­odo Completo'}</strong>
-                <span className="text-[10px] text-amber-600/80 block">Registro Sincronizado</span>
-              </div>
-            </div>
-
-            {/* Complete Report Message Display */}
-            <div className="space-y-1.5">
-              <h5 className="text-xs font-black uppercase tracking-wider text-slate-400">
-                ğŸ“ ConteÃºdo do DiÃ¡rio / Boletim Transmitido
-              </h5>
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 font-mono text-xs text-slate-800 dark:text-slate-200 whitespace-pre-wrap leading-relaxed max-h-60 overflow-y-auto">
-                {selectedReportModal.mensagemCompleta}
-              </div>
-            </div>
-
-            {/* Direct Active Link Copy Bar */}
-            <div className="p-3.5 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-              <div className="min-w-0 text-left">
-                <span className="font-extrabold block text-slate-800 dark:text-slate-200">
-                  ğŸ”— Link Seguro para Compartilhamento Exclusivo:
-                </span>
-                <span className="font-mono text-[11px] text-indigo-600 dark:text-indigo-400 underline truncate block">
-                  {window.location.origin}/?relatorio={selectedReportModal.id}
-                </span>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => {
-                  const link = `${window.location.origin}/?relatorio=${selectedReportModal.id}`;
-                  navigator.clipboard.writeText(link);
-                  showToast('âœ“ Link do diÃ¡rio copiado com sucesso!');
-                }}
-                className="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs shrink-0 flex items-center gap-1.5 cursor-pointer shadow-xs"
-              >
-                ğŸ“‹ Copiar Link Direto
-              </button>
-            </div>
-
-            {/* Modal Footer Action */}
-            <div className="flex gap-2 justify-end pt-2 border-t border-slate-100 dark:border-slate-800">
-              <button
-                type="button"
-                onClick={() => setSelectedReportModal(null)}
-                className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-black rounded-xl cursor-pointer"
-              >
-                Fechar VisualizaÃ§Ã£o
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
-
-      {/* Floating Action Button & Fast Register Modal for Teachers, Caregivers, Coordinators & Directors */}
-      {isStaffUser(usuarioAtual) && (
-        <AuraSmartRegisterModal
-          idoso={idoso}
-          usuarioAtual={usuarioAtual}
-          appMode={appMode}
-          triggerWhatsAppSim={triggerWhatsAppSim}
-        />
-      )}
-
-      {/* ğŸ“ Strategic Compact Floating Toggle Pill for "Painel dos Professores" & "Painel dos Pais" */}
-      {isStaffUser(usuarioAtual) && (
-        <div className="fixed bottom-6 left-4 sm:left-6 z-40 select-none animate-fade-in">
-          <div className="bg-slate-900/90 hover:bg-slate-900 text-white backdrop-blur-md p-1 sm:p-1.5 rounded-full border border-slate-700/80 shadow-xl flex items-center gap-1 transition-all">
-            <button
-              type="button"
-              onClick={() => handleSetVisualMode('cuidador')}
-              className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-[11px] font-black transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap ${
-                visualMode === 'cuidador'
-                  ? 'bg-indigo-600 text-white shadow-sm scale-102 ring-1 ring-indigo-400/50'
-                  : 'text-slate-300 hover:text-white hover:bg-white/10'
-              }`}
-              title={isEscolar ? "Alternar para o Painel da Professora / Educador" : "Alternar para o Painel do Cuidador"}
-            >
-              <span className="text-xs sm:text-xs">{isEscolar ? 'ğŸ‘©â€ğŸ«' : 'ğŸ§‘â€âš•ï¸'}</span>
-              <span>{isEscolar ? 'Painel Professores' : 'Painel Cuidador'}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleSetVisualMode('familia')}
-              className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-[10px] sm:text-[11px] font-black transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap ${
-                visualMode === 'familia'
-                  ? 'bg-emerald-600 text-white shadow-sm scale-102 ring-1 ring-emerald-400/50'
-                  : 'text-slate-300 hover:text-white hover:bg-white/10'
-              }`}
-              title="Alternar para o Portal de Tranquilidade (VisÃ£o dos Pais e Familiares)"
-            >
-              <span className="text-xs sm:text-xs">ğŸŒ¿</span>
-              <span>Portal de Tranquilidade</span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* ğŸ”‘ Security PIN Modal for Releasing Room Access */}
-      {showRoomPinModal && pendingRoomToSwitch && (
-        <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-indigo-100 space-y-4 animate-scale-up">
-            <div className="flex items-start justify-between">
-              <div className="flex items-center gap-3">
-                <div className="p-3 bg-indigo-100 text-indigo-700 rounded-2xl">
-                  <Lock className="w-6 h-6" />
-                </div>
-                <div>
-                  <h3 className="text-base font-black text-slate-900 leading-tight">
-                    Acesso Restrito por PIN
-                  </h3>
-                  <p className="text-xs font-bold text-indigo-600">
-                    Liberar Sala: {pendingRoomToSwitch}
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowRoomPinModal(false);
-                  setPendingRoomToSwitch(null);
-                }}
-                className="p-1.5 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            {(() => {
-              const assignedTeacher = getAssignedTeacherForRoom(pendingRoomToSwitch, usuarioAtual);
-              return (
-                <div className="bg-indigo-50/70 border border-indigo-100 rounded-2xl p-3 flex items-center gap-3 text-xs">
-                  {assignedTeacher?.foto ? (
-                    <img src={assignedTeacher.foto} alt={assignedTeacher.nome} className="w-10 h-10 rounded-full object-cover border border-indigo-200" referrerPolicy="no-referrer" />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-indigo-200 text-indigo-800 flex items-center justify-center font-black">
-                      ğŸ‘©â€ğŸ«
-                    </div>
-                  )}
-                  <div>
-                    <p className="text-[10px] font-extrabold text-indigo-600 uppercase tracking-wider">Educadora ResponsÃ¡vel</p>
-                    <p className="font-extrabold text-slate-800">{assignedTeacher ? assignedTeacher.nome : 'Educadora da Turma'}</p>
-                  </div>
-                </div>
-              );
-            })()}
-
-            <form onSubmit={handleVerifyRoomPin} className="space-y-4">
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-slate-700 block text-center">
-                  Digite o PIN de SeguranÃ§a (4 dÃ­gitos) para liberar a sala:
-                </label>
-                <input
-                  type="password"
-                  maxLength={4}
-                  pattern="[0-9]*"
-                  inputMode="numeric"
-                  placeholder="â€¢â€¢â€¢â€¢"
-                  value={roomPinInput}
-                  onChange={e => {
-                    setRoomPinInput(e.target.value.replace(/\D/g, ''));
-                    setRoomPinError('');
-                  }}
-                  className="w-full text-center py-2.5 px-4 tracking-widest text-2xl font-black border border-slate-300 rounded-2xl focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 bg-slate-50 text-slate-900 shadow-inner"
-                  required
-                  autoFocus
-                />
-
-                {roomPinError ? (
-                  <p className="text-[11px] text-rose-600 font-extrabold text-center">
-                    {roomPinError}
-                  </p>
-                ) : (
-                  <p className="text-[10px] text-slate-500 font-semibold text-center leading-normal">
-                    ğŸ”’ ProteÃ§Ã£o de SeguranÃ§a: Insira o PIN da educadora para ter acesso a esta sala. <br />
-                    <span className="text-indigo-600 font-black">
-                      Dica de SimulaÃ§Ã£o: Digite "3031" (Diretora Nilva), "9181" (Dev Djalma) ou o PIN da educadora.
-                    </span>
-                  </p>
-                )}
-              </div>
-
-              <div className="flex gap-2 pt-1">
-                <button
-                  type="button"
-                  onClick={() => {
-                    setShowRoomPinModal(false);
-                    setPendingRoomToSwitch(null);
-                  }}
-                  className="flex-1 py-2.5 px-3 border border-slate-200 text-slate-600 hover:bg-slate-50 font-extrabold text-xs rounded-xl transition-all cursor-pointer"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 py-2.5 px-3 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-extrabold text-xs rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
-                >
-                  <Lock className="w-3.5 h-3.5" /> Confirmar PIN
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-    </div>
-  );
-}
+       xœÜ\[oGv~÷¯¨qh¨‡Ãû%	#^lb)‘KRJ E€kºkfJêîjW÷ğb./`ÖÆÆY»P¼y0¼Ÿ‚ Á¾Èüıè'äœª¾wõÌP¢l$òEÓÕÕu9uêœï\ª‰ÿØ.ÃÇÔcFpa­àÒZ"½%™c­µÛd(Î˜ÜŠÖ¡€Ú?cIÉ”Dì"²Î‡<b¤/üÈ‚GI{Âuô›‹H1ò¨}á’pHq…öH†BZà~ÄdãRúÃNÃ~ŸKÏ/­^ä—ëÜ¯|³­ëSYzso¡7Š"á¿¸·àğ³|Q© ğ8ıAüëjá#òèp§{@vvÉñîÉéñşøWã¿;$»»wŸîøgçÉvw§‹5ºÛ»''‡¤{HºûwÈáÑîqw{ÿğ1´ğÑÂuÒj8çÛT²Wqÿ‘p¨KîÜ!Íl@0üŠõùs÷CYm\µĞ¥³6WÛğLí—ÕsG)ŞwÙeòBËfHtòbF¼™<À Ÿ[ÏÖÚÏ	õ¹‡mõ©Ã,î7ôr$Ã³¨m³0´<c£@ÂÒaPš5X&ğè…uny9·ú#×%=!è^ÿOb	8+°ÖHP›Y—0²˜u– ÅXºr`2ØĞ¦.³FA£´Îe²et#*#2 µÜ(³Sù3¨ƒ4¦^¹ÚNg”H¿Á]%÷_ZíJ›Ğê°_æ›=·VÉĞZm…Ê ÊüiUBŸES_Ãå|U5Èã}ÚsAò¤Ü„‘Wy‰³ØZ%.£÷VÄÃÈĞ°0wC[¸T’d®‹"È1#É#A(ÙuF6,¡dáÙ2UØq'®p]ÌÂpÙ0Å 2Ãg‹íàâyeÙêŒ‚€Ié ‚Ê~‰“:çƒô\XãÜNØ`$©?şŞ%G’ŸQ‡ÊS2GHO=Ì°ªqQ±¬:1ØÂ¹ÕZ…™$k"™KQ¨9‡Ìã(~+ó8’ìsêP²G½ñ.‡™œ	{ü'3K@Ö2;Â÷¾ @ >w	LÚÂ¨?„aø°HPrÖKøƒÊğÒıØ¸5
+GTrÑFÔ}Ğò…Ç®ï-èïî·JsÊ37ï»dÖµÒ"¯e’MÑZ­nëšá?[\D¶Q,`Tdº§uœß‘ä³#@(Ê}¦…¢›&ãïá·æéé¤Ëƒ¨eÛÉ+làÍÜ®3ğ-lDP<ñ )°€èã®“‡9òì
+ûœDãïmŸÛ‚°Û…üL­5€ºC(»€²À¥~4şWq—Œ"îr`)$´“u¡sè`üïhî.	”`Sö6Ğ—ÔuhØŠ·¾?àyyMI„@²30qPÕÆòm®?DáBSèMYD "íÜ„@XŒ‘«YV}‰c U•ÖœL[y2‰TÅDbÀOãïŠ°E@F ËÍäÒBwĞ˜‡!¾âªsæ÷€’ƒ–,:°‰”&…·|üP+‡\}vÆ#øë.¨6˜#¼üˆÉÿ KD‘Ôñ¸üFÓ/%óÆß;\àWa¨å©@jI\IásF{°†5t)áŠ43
+.ìÿdÔóxÔ¹Â(\öæØ¿Ìã›k“[6mØ:g¨µ]ÚƒE4ÈN­JÛyŠ–ú;|€@E£ıÇÈGÙ:ºz¥8¨*·î-¨Ns?E¦}](Ê`Pç ·ªh— (:`ş v®VªÚÀ"PÇ~§ñ¬mm>ÿÈÔ„êp#ôä< ¸mªû×fC “Æë/ş˜şkª|Fİë\Ù¹…{ŠE¦
+{ ÕéÜ'W†*ÄA´]n¬ÉZ€Ã,j©îZ’©16şvgap—ÌÍÍÏÿÕ,íJ)dª›j_›†\Àa
+‹*ŞHğ0CÊ,*UËäA†I--ÕR_Ø£p%´›{à¾ÃåıÂR;~·“{µÚ.¨Á’Î5LN²ÏF¬4Ã+:ŠÄöSyWA¡¤ÊÎvPD=Ó4tcTs‹©š“"d
+‘™Ô­^##äõ¾4ŒÂ´ÂÆü™Ç[VË+É€ Uà™Daû K¶QöçÍ«oş‘$ò&$+Äÿ ¨«bñÃ _P0†C9VF6¬%C½•Ä(§ğ¥V%.ŠPÓg êf¥Z3Ó¥*ñ«¾Æ B;aÉ$µé]+õkÿ‚<q¹ı²sÕœŸ(ONL–s³OİÍ&7´ª‘·+eTÖb*Y–kÑl®æü0éş×%EdZÖqEßpŠòšEAÒMsÀ˜X÷©pARkfÿĞ  *—:Ÿ‹z3…#B…L1‘ƒœ‰—’KWºì\W	9İÍ¢,êÙè#šÎLc£‰¸ìí¼]Û0~ÀÕ§#yH}&‘ó\Eª|OU$ĞÃ$Ñ =M›ğçyì
+=’:‹R»yúã·f÷„y-¶[ÑráÓô'dˆ2¯J+é fVËÉ;fÕ/ÕæeÉ§Sç¹µA†ğ_2líŞäúœÎ5Î£{ÛCVö­@g+šW“€ûK®¤ª›³4è‰ YÙó…èõny`«MsıVõˆ9`È ©µí—t *“E„°¬?vN´ÿ3Çf~ŸªŠïà0µfğ~>Óò –½£ïìUÎÌ¿YÇÎ™3´ìòŒ)ëG](êÊüc”º“tpIÿKĞôaà# í…Â)s=¿ı-”Q•Q¥¥Ë¶Ø®¨Á¼ÛG£÷l?ÛÂrr˜¡"6ÿfÇl&tgõ2DU ªg_óRkUÅa"/&ªJ=­·¾gäê¢®ãÑeq:k0µ›ø™-ú=®™
+­q³Êö¯÷¹î¡8 ¬«……ö?nS‡jÈkP†8¸Ù¼à©éV•v³8ºM¢¨ñÈ5ØÅ&¿õ¬>àWä#±lXJ~¤Œ’Çˆ¸[ú.•!wÀt˜E¸-°*,P+JH2«F1îqoP™§d}&% dBã²Óğ…•U±N(í™Š#éVivMMõ¢çˆ¦g±¾¢­^"z/˜æ,?€*#À+·" ¦/U²uWÛëe—µz±TÜÅ@ùeØñ©o+ ÙfÙ\5¬Dp?ögßß¨½­Ôå\Ã¦®G~ñ2Ç.À•èÖÖâÜµÁ64·ÕGƒ2IQç³‡/´“sê€²FTÇåÅ44!ö;±BËUN5rŸ´‹`Á@ÂO„‹MsÚúĞ+Í¹»dnŞDµŠZ4·&zaİØ
+J!R8³e#C»Q™ÑíğˆÂ¾4Š³CèŞ¡¤‡…¶H£v˜×Õ­<}ÚÆıòS¡‘p]æ£JUh±i0•¶¨„}‹á[À=fÁÆ{ZğÙÔ@
+UE°ıæÕ—ÿg,ì?>İ=îî?=$;ğïşø—Çû‡d<<<Ø=İ%ïŸB½íÃGGPrHšûFÔó…læ‚eÎ1„ŒŞ-WaıísVÛo‡Å*_×ºŠÎq§$(èfò¥¥´…ÕJÚ‚ÂèZ)=ÛlŸŸgZúRi¨Ò-Ú^°œŸ >)à5¯¥`EçĞ@<ğ^ÕÎ¨™WÏZ™Š\k`¯	¥VlçÅ%@¨ğ¿ÎIİãkÆô„[ä¶¬ŞœnŞG¯…gŠ£¢Wö·oof l,•&?©úº.a#ô¶!‡Rî†ZµŒ 5}”ó4v¸Òyèr>÷)I^*5ìëåµöÿY¥l<.‹¸‡uãi˜Ô2dlhò™²6Ô›²)\(£$sşªó ¤¶PRúñªy©RKŠ×¿ÿ-9àşKß!ˆ
+SrÛd^èÙ˜MŒZ6™1CÙ3gäÕÕ$p[Idàš¼şâæ*¨‚zŸˆlNW<brüƒpÄ–ùîsø?j¯o-·á«ñ¿„æº}®ä¢®8kœÁlqšcZóUƒP“£U´pR¾,’!^F©€,•oƒ}Ó|kE÷£ÆÓSgóQLIy¬è”îÈá¹C¶… ômØàT:S•æTü?³Uö¸<{f]nÇ¥şj;UÖq	B†•²M¿‹Án^ÅoR1‘xYcİ6gLõsä$p£Íù<b·F÷ÉÎşéáñ~—ì¨z¼wxüh§»³[ë¬¨ÉN*ê±|·ëÉ.«,,ÓèÍ§¬áö¾şKrø³ºl¥)ôÈw\­rOõìµB	5{¡çÆ<íÙ¢ŒF.É9Ö6IŠŒ|’¼40JE¡Ü>§äCVùù“îâWüñşÉéñá-ğIÒi‘Q’ÒÉœòs´H
+lò.<’‹Qä˜÷z‚œ2:§î­óHš±›pˆ.0ò‡~eàRĞğöy#¥3vwuŠ9mG»Çã¯wnƒ3²àhÆº¬+0DfS ¡Õ‹”ëèíÙ#ßæ%H’UyÂ}Vé†9dÓ¨€¦/ ^53òHÇ² Ë†K/§ª½‰ù¥ÃÕúàZ–ã)d00X(À„ãˆÿì(ßx‚ŞÁ„±ù)b
+@EÃ_®ŠWÊÛ'õ&æxf6ÓüOø‚ğF³¦”5£IHfKT2ŸµA½ÖbL+0±µÇ|å9ƒÖ$ÂÌÂ\;\BóDÅ`˜¶.¶EpIÒéF»Q~•íò<à¼!ùÑU™€Ï«©ßRœOvèÀU¼bSÑÆÎ­væí˜E2–bG:{:oÔØñßüsÁªSé*¸²TFÜMRÙw“Dç­ÙCIÆagüœ÷Êæ¼x†.±t1Ï9’#ß†	M…]Ã—â¼TÔ¼%$˜İşõÂí…'Ñ1s)"u[“«s#ëË”¹e?Œˆ‹«Ô!Ÿ~8Ë?¬›á§¦L,Ÿñ~Ù²]ô˜3­s	|~
+ÑÄ	\xK%º4çRç ŠÚXÎÚ"Pùw˜gT¾ú_˜2Áy`EWÇ²vu,åMÆ¢¯+5/s@¿â‘Î”9ÈÒ$sdÂ)R®RmÈË¨{~‚ŒƒSTA9UuÌMÌNí7ŞÇ‚ı™üšÊ‰–Ê)æ;$ˆ²Xh4£G³*ÊnƒÛßŞ×paiĞ¡ÿ‰YUM`rI¤,3YÁ0J+'ç	Vez8cv6™=È±ç
+€{c6z¨İFwÈ&§i	L¦9¬_07¨=d2¼KÒäNü-€GÀf0ˆs'Öåø;ûàáIDûı'!“ÍüA§ùR¤PùÄ“ô®:ÏÍ Zr[ı•çŒ|£ÂYª|-*×ÿ*ş‘ô0ù×C…İ 8á^çªZ–}±`&*ìù¯È	(åf`k
+Ğ&¥õ©\F¸«iÚHĞ„ÙQ#6€’…W”CÙ[PÔSê	XiÏZ#ˆ5ğœ¨·¥~­‘ÏAÑ­3,_€¦½a¬(KÛœ,°<GÚ¦¥nÑ™m€lëLgy5¼”°xÛ)^ú¬Î	‹ôæE®jÎ%^æ¹	aÕ«Ocï=N³qƒËxş—Uä¿$°#§¼R+¦fÖ¤¤Ğr¶‚/”¥ğa}œ¥³#N‡d34àd®¨–s‹/WP@¥á-¶A£U²Hòç:VÔášcg9Q¼\të>R¶S‹•v®?-/‹Ê‰é¢<nr2@aaa>¸ÑmÀĞj¿ÉÎÇ5Š]WZšL~*ñª£5QŒF½yõõ÷¯¿øêÍ«ßü›Š8½yõİ×ğüúwÿô?ÿùå^0AWUXl(lN
+©öââdæë2üŞËöêëúÿ¿»+™`íæÊ¹o²»’Ï~šíUİ€ô¨:	Œ˜ÏFñ±JÒ„ÅV'4cÅGXzf‚…óSRgÙ@o^}ù_“öEÍÀ&3~¾lö<“o¾“xSOñS†¶AÓ1Ã± Ó©«î(_¯ò7_ ìá,>'ç<²‡·šdò#&|cNH9é»6á;Ö“3¾ozÉEÉ©ó9âû¹Y”ãU“Ó—‰é’Œºäå›ghÜüRŒéÁ„”o³ Ã·€1"nN‰0g
+”Ò”3 R3äÄĞ	ué¹2l¡[‰Ò—
+ß——(>İ—öaN`u¾Úò¾±‹&ËµœÄÏ™Ê†L›ZÏï!¾ß4ÓW{àğ>‚ÏœØ&2`Q·X¸'$´i`¦»cµBeÉ¢‘ôM™­U¡™†Ñ«Ó9QRÊ™®=Vç­V)MúA«GÌg˜uº»ÎX/}§>»ÖÙéåWêÎ“Rz[ÓÛJ'VÒtô³tºÕœ†ÆÄìz“P¬?ãlL¼3,[’¥’ß˜%/§µÙW9°oh]R•ÁV/ğ’Õ|d¥ì¸¯‹Ô5î'†E‰ÀN{Æ\£­ şv}{NyO>(ïRÅ]o³a€%w:’5fïO ¦±¸´¯ç›Ò‹?›pËG,­|LO ½Õë=Ö“FSï(ŞşÁr>‘fv>^£}7V²”„¨fDxAˆ¡ûÿã÷ƒH½äûØÁ»\rœkç]n‰Ûy‚`Ü¦öJ¥b–Å´;A–ŞõRºA6Û©3‘ãqíÛ¼¤R–¬şOrH¡óç4c÷/ 9’"béõM™ÀÙ"û~ÈµS…%,óJü`7ñ]Y”¨ëµPµ †K3¨ó$ä3ë§«ënS5Rî\ÖÙJäfc¹½¼Ø M„1>æî¿K›‹ê;#;/¨ëÑy¼¼¤:5Ó%%“3®ßÇ&G4^¥ø£Üb2£sSKçF×’hù6ÓÅ$kÕØäªyßúE$Û˜£ìş¤×¤„šµÏ®)'#ßğîÏ¹•»G YÍDdƒÓ†êš64Ù}»FWÇ{¿$-¿şà  ÿÿ r»„
