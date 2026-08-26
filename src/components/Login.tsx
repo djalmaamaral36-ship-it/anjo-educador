@@ -1205,6 +1205,12 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                             placeholder="Insira o seu PIN" 
                             value={passcode}
                             onChange={e => setPasscode(e.target.value.replace(/\D/g, ''))}
+                            onKeyDown={e => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleBypassSubmit();
+                              }
+                            }}
                             className={`w-full px-3 py-2.5 ${accessibility?.darkMode ? 'bg-slate-900 border-slate-700 text-slate-100 focus:ring-indigo-500' : 'bg-white border-slate-300 text-slate-800 focus:ring-indigo-500'} rounded-xl focus:ring-2 tracking-widest font-mono text-center font-black text-base shadow-inner`}
                             maxLength={8}
                             autoFocus
@@ -1282,7 +1288,12 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                           )}
 
                           <button
-                            type="submit"
+                            type="button"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              handleBypassSubmit();
+                            }}
                             className="w-full py-2.5 px-3 bg-serene-blue hover:bg-blue-600 active:scale-98 text-white font-black text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer shadow-md flex items-center justify-center gap-1.5"
                           >
                             Confirmar & Entrar <Check className="w-4 h-4 stroke-[3px]" />
