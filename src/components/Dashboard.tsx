@@ -1,3 +1,4 @@
+// Vercel build fix update: 514140926665909969
 import React, { useState, useEffect, useRef } from 'react';
 import { Idoso, TarefaDiaria, Usuario, TaskType, TaskStatus, RegistroAlimentacao, RegistroHidratacao, RegistroHumor, RegistroSono, RegistroAtividade, SinalVital, Medicamento, formatWhatsAppNumber, NotificacaoSimulada, Classroom, isStaffUser, isDirectorOrAdminUser, getRoleLabel } from '../types';
 import { getFromDB, saveToDB, checkFeedingCareAuthorization, SALAS_INICIAIS, getShiftActiveState, setShiftActiveState, setShiftActiveStatesBatch, getAssignedTeacherForRoom, getStudentRoomName, resetStudentDailyRoutine, checkBottleFeedingInterval, registerBottleAttemptNotice, purgeOrphanedStudentData } from '../data';
@@ -9828,9 +9829,5 @@ Segunda-feira:
 
       {/* COMPLIANCE / LGPD STRICT CONSENT VIEW MODAL */}
       {!lgpdAccepted && (
-        <LgpdConsentModal onAccept={handleLgpdAcceptComplete} seniorName={idoso.nome} />
-      )}
-
-      xœ”TÑnÚ0}ïW\ñP•I&)´¨İ(*ÕÄÔÑ©jÕgƒÄ«cG¶SÒU|Ì¾e?¶›(‰»Uã!pË=ç{®_‚0½ÿ~=»œÜ]ÁíÍıİl~“Ûùlş¾İL'×ğ!X@õyay&Å’:ş@*şÜ³‰^Áá!mR FL<ÁRRkç4åHœP–;ÂOrÂ"&Vbr†Ácº|dFgd!sC
-‘äÇSK–\9nàGnˆ·aFN:ã¤Š«€Ñ¹bœ‘A!ñOCHiAV$e°"Q.%Ø„2½"}|½Ğ†aéúkCğ8ÁftÉÉ39Ç·e@•HËŒˆ2N„j°ñù¬Èq’òÌhº@€²tU°‡nÉVÌŞÕ -Ín!#öDrãîŒ *–¼Ébˆ$†Zl¤ûï¶"ûpÉ`?±jIÆiåp8ÙºËZÏ³Ó°3<	«q¸å±°Îh˜Ö¾bz$ óê£EöŠ–ÒUp)g"OArÊĞœÄpIÑ{c€¯¿/›æ›-Ã+i!£†Â¨<RñØ3}Ïºœa^Ég=
-6i½6ë kãú•*øc¦"İÜ¢¿Í!#ƒW•«Ô0m}Üß³úº4´«sÏ[Ú¥ôßì=òkŸ¸ï)€îú}WmAL3ÒßÙŸ+Ù[4G‹Ü9­<*Z]"óÇ‹—£.\Œ/¢i«—#…×õ›hìNµ•Ù3é÷N_o°3Ô/ÑOÜ|Ü¿Ôj…ë¨RCCZ²İö´ÌÕ†dZ”{İi±ğ‡q…iŠ	¦=ËÕ¼³Ü­ƒF¸Ñ`wÖıt°>ø  ÿÿ †ÏÈ2
+        <LgpdConsentModal onAccept={handleLgpdAcceptComplexœ„TÑnÚ0}ç+®x¨J%“ZÔn”	•jbêèTµê³ÁNğêØ‘í”t³oÙí&Jânğ ¹ææãsÏ½¯Ár%´™Ñ„_½	¦­î*ày0jAùé¬[›§·à&?n§×ã‡¸¿{|˜Înài|?›Î¾Â÷»ÉøN‚õ6›e©êø5J¨øK×.õ
+àx“0dâ’Z[2hG"ç„²Ü‘~‘óæ1±«Ë0ÓÅ33:%s™’[ˆ$ÏA8X²àÊq?3ëDôºSrÖí }PDX-± )Æéç_@Bs²"	ƒ‰2)Á.)Ó+ÒÃ¿çÚ0,]ıl†!Ø”.8y%gàxî¶¨I‘QÆ‰P56>Ÿ9íÁ²øBf4™#@Qº,X…·dKf5HrB3§Èˆ=–Ü¸#¨Š%¯³ ‰Aûİ	›7¤ûÿlE8õá–ııÄòJ2†H+‡ıÄÎV·¬ô¼8Û£ñ‹°‡{ëŒ†Iå+¦‡Á²ï¤^}´È^ÑBº.áLd	HNš“.)zÏcğíÏoà9bsÀ|³¥ax)-¤ÔPG*y¦ïZ—1Ì+ø¬‡Á&­Ûd¤M\¿RÉ¦*Òõ)úWRÒ·P1J5ÓVÇ½=+¡¯«ğÈAM»*÷²¡]âHïÁ‘_ûÄ}O•‹ç@·=Š)ˆiJz;ûsÅ ıˆæp9§•GE«kdş|õvÜ«®G7iÜåXáÄuüKÔf§œÊô•ôºçïìõ[ên>í/µJáj•êbhè\K¶ëÁ^ƒ™±ÚT‹b®Û~3n0M1Üìå*wã n4Øu>·Ö­¿   ÿÿ 9ñÕº
