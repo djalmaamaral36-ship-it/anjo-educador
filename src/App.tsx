@@ -1,3 +1,4 @@
+// Vercel Production Build Commit: 1787865194
 // Sync trigger: 2026-06-21 20:37 - Anjo Cuidador high-fidelity PNG logo update using bulletproof asset loading
 import React, { useState, useEffect } from 'react';
 import { Usuario, Idoso, NotificacaoSimulada, formatWhatsAppNumber, isStaffUser, getRoleLabel, isDirectorOrAdminUser } from './types';

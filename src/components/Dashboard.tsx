@@ -1,4 +1,4 @@
-// Vercel Clean Build Sync: 1787864655
+// Vercel Production Build Commit: 1787865194
 // AI Studio Sync Version: 1787862757
 // Vercel build fix update: 514140926665909969
 import React, { useState, useEffect, useRef } from 'react';
@@ -9834,8 +9834,8 @@ Segunda-feira:
         <LgpdConsentModal onAccept={handleLgpdAcceptComplete} seniorName={idoso.nome} />
       )}
 
-      {/* DUPLICATxœ”TÑnÚ0}ïW\ñP•I&)ÔnÀ„Öjê´Q©êÔgƒÄ«cG¶SÂ*>fß²ÛM”ÄİĞx ®ssÏ¹çë¸¿ûşp;¿ÇÙıüvş¾İ]Ï¾Â»`sÕç…å™Kêø#5J¨øcÏ&z§§p¶M3ñKI­Ó”O:‘(8¡,w$„ŸdÂ"&Vbr†Ácº|bFgd!sC
-‘äÇSK–\9nàGnˆÖ»0#éÒE„U‚Àè\1ÎÈ øÒRZI¬H”K	6¡L¯H/´aXºşÙ<C°]r²&àxáv¨i™QÆ‰P6>Ÿ9ïCR~!3š. ,]¬Ã†;²³£¤¡¹Ó-dÄInÜƒTÅ’7YŒÄ¨A‹m€tÿİÀN„s.&V-É"­Î'[wYëy9;ÓÙ³°‡{ëŒ†ëÚWLƒdàd^}´ÈAÑRº
-.åLä)HNš“.)zÏcğå÷/àbsÀ|³£ax%-dÔP—G*z¦ïY—3Ì+ùlÆÁ6­×fdm\¿RÅÿÜªH7·èosÈÈàÕBå*5L[÷¬„¾®'Â#íêÜ«–v©#ı7;F~ã÷=Ğİü¯ïª-ˆiFú{ûsÅ {‹æx‘;§•GÅ­³òJ¨v¼§Z}Â¾&/g]˜L¯©ëV§g
-÷±ë·ØØ¬jg³5é÷†¯÷Û%ª›ègnŞ^yµşõıTi¡¡-Ù~Bã[æÆjC2-Ê­oó÷GuƒiŠ	¦=CÖ
-YıÖA#Üj°?ë~8Ùœü  ÿÿ ‘eËÑ
+      {/* Dxœ”TÑnÚ0}ïW\ñP•I&)´¨İ(j«‰©£SÕªÏ;‰WÇl§„U|Ì¾e?¶›(‰»Uã¸ÎÍ=ç{®¾ßL/'÷×pwûp?]Ããän6}o·W“ø¬ ú¼°<“bA¤F	îÙD/áğ6) #&a!©µ3šò‹N$
+Î@(Ë	á'9a+±
+9Ã`ˆ1]<1£32—¹!……Hò„ã©%®7ğ#·ND«m˜‘“Îxéƒ"Â2Á`t®gdPH|i)-È’¤–$Ê¥›P¦—¤çÚ0,]ÿl‡!ØŒ.8Y‘p¼p[T‰´Ìˆ(ãD¨ŸÏ’÷!)¿MçP–®
+ÖáÃ-ÙŠÙ»¤¡¹Ó-dÄHnÜ½TÅ’7Y‘Ä°A‹m€tÿİÀV„c.ì'V-É"­Î'[wYëyvvÆ“ga50w<ÖWµ¯˜ÉÀÈ¼úh‘½¢¥t\Ê™ÈSœ24'1\RôÇàëï_ÀÄæ€ùfKÃğJZÈ¨¡0*T<öLß³.g˜WòY‚MZ¯Í:ÈÚ¸~¥Šş™ªH7·èosÈÈàÕBå*5L[÷÷¬„¾®'Â#íêÜó–v©#ı7{üÚ'î{
+ »ş_ßU[ÓŒôwöçŠAöÍÑ<wN+Š[eå•P=ìxOµºÄ¾.^ºp1¼¦®Z)ÜÇ®ßbc³ªÍV¤ß;}½ßÎPİD?sóqÿÊ«õ¯ï§J{kÉvÚß"7V’iQn}›¿?ªkLSL0í²VàÕo4Â»³î§ƒõÁ   ÿÿ xÍã
