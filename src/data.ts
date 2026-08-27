@@ -778,6 +778,19 @@ function setLocalShiftFlag(key: string, active: boolean): void {
   localStorage.setItem(`anjo_shift_active_${key}`, String(active));
   localStorage.setItem(`anjo_shift_active_${key}_ts`, String(Date.now()));
 }
+  // Helper to find existing saved start time across possible keys
+  const findExistingStartTime = (): string | null => {
+    for (const k of possibleKeys) {
+      const saved = localStorage.getItem(`anjo_shift_start_time_${k}`);
+      if (saved) return saved;
+    }
+    if (studentRoom) {
+      const savedRoom = localStorage.getItem(`anjo_shift_start_time_${studentRoom}`);
+      if (savedRoom) return savedRoom;
+    }
+    return null;
+  };
+
   // 1. Check shift states in DB (PRIMARY SOURCE OF TRUTH)
   const isFromFirestoreListener = Boolean(customShiftStates && Array.isArray(customShiftStates));
   const shiftStates = customShiftStates && Array.isArray(customShiftStates) 
@@ -828,10 +841,9 @@ function setLocalShiftFlag(key: string, active: boolean): void {
 
   // PRIORITY 0: FRESH LOCAL ACTION OVERRIDE (Only when not processing direct Firestore snapshot)
   if (hasFreshLocalOverride && !isFromFirestoreListener) {
-    const localDirectStartTime = possibleKeys.reduce((acc, k) => acc || localStorage.getItem(`anjo_shift_start_time_${k}`), null as string | null) ||
-      (studentRoom ? localStorage.getItem(`anjo_shift_start_time_${studentRoom}`) : null);
-    const startTime = localDirectStartTime || new Date().toISOString();
     if (freshLocalActiveValue) {
+      const startTime = findExistingStartTime() || new Date().toISOString();
+      possibleKeys.forEach(k => localStorage.setItem(`anjo_shift_start_time_${k}`, startTime));
       return { active: true, isAbsent: false, reason: null, startTime, lastResetTime: startTime };
     } else {
       return { active: false, isAbsent: localAbsentFlag, reason: null, startTime: null, lastResetTime: null };
@@ -876,15 +888,15 @@ function setLocalShiftFlag(key: string, active: boolean): void {
     const isActive = latestDirect.active === true || String(latestDirect.active) === 'true';
 
     if (isActive) {
+      const startTime = latestDirect.startTime || findExistingStartTime() || new Date().toISOString();
       // Sync local to remote state
       possibleKeys.forEach(k => {
         localStorage.removeItem(`anjo_is_absent_${k}`);
         localStorage.setItem(`anjo_is_absent_${k}`, 'false');
-        localStorage.removeItem(`anjo_shift_active_${k}`);
         localStorage.setItem(`anjo_shift_active_${k}`, 'true');
+        localStorage.setItem(`anjo_shift_start_time_${k}`, startTime);
       });
 
-      const startTime = latestDirect.startTime || new Date().toISOString();
       const lastResetTime = latestDirect.lastResetTime || startTime;
       return { active: true, isAbsent: false, reason: null, startTime, lastResetTime };
     } else {
@@ -913,11 +925,12 @@ function setLocalShiftFlag(key: string, active: boolean): void {
     const isActive = latestClassroom.active === true || String(latestClassroom.active) === 'true';
 
     if (isActive) {
+      const startTime = latestClassroom.startTime || findExistingStartTime() || new Date().toISOString();
       possibleKeys.forEach(k => {
         localStorage.setItem(`anjo_shift_active_${k}`, 'true');
+        localStorage.setItem(`anjo_shift_start_time_${k}`, startTime);
       });
 
-      const startTime = latestClassroom.startTime || new Date().toISOString();
       const lastResetTime = latestClassroom.lastResetTime || startTime;
       return { active: true, isAbsent: false, reason: null, startTime, lastResetTime };
     }
@@ -925,8 +938,11 @@ function setLocalShiftFlag(key: string, active: boolean): void {
 
   // FALLBACK: If no direct DB record, use local storage
   if (localActiveFlag) {
-    const localDirectStartTime = possibleKeys.reduce((acc, k) => acc || localStorage.getItem(`anjo_shift_start_time_${k}`), null as string | null);
-    const startTime = localDirectStartTime || new Date().toISOString();
+    const startTime = findExistingStartTime() || new Date().toISOString();
+    possibleKeys.forEach(k => {
+      localStorage.setItem(`anjo_shift_active_${k}`, 'true');
+      localStorage.setItem(`anjo_shift_start_time_${k}`, startTime);
+    });
     return { active: true, isAbsent: false, reason: null, startTime, lastResetTime: startTime };
   }
 
@@ -948,10 +964,13 @@ function setLocalShiftFlag(key: string, active: boolean): void {
   }
   
   if (localDirectActive) {
-    const localDirectStartTime = possibleKeys.reduce((acc, k) => acc || localStorage.getItem(`anjo_shift_start_time_${k}`), null as string | null) ||
-      (studentRoom ? localStorage.getItem(`anjo_shift_start_time_${studentRoom}`) : null);
-    const localResetTime = possibleKeys.reduce((acc, k) => acc || localStorage.getItem(`anjo_routine_reset_${k}`), null as string | null) || localDirectStartTime;
-    return { active: true, isAbsent: false, reason: null, startTime: localDirectStartTime || new Date().toISOString(), lastResetTime: localResetTime };
+    const startTime = findExistingStartTime() || new Date().toISOString();
+    possibleKeys.forEach(k => {
+      localStorage.setItem(`anjo_shift_active_${k}`, 'true');
+      localStorage.setItem(`anjo_shift_start_time_${k}`, startTime);
+    });
+    const localResetTime = possibleKeys.reduce((acc, k) => acc || localStorage.getItem(`anjo_routine_reset_${k}`), null as string | null) || startTime;
+    return { active: true, isAbsent: false, reason: null, startTime, lastResetTime: localResetTime };
   }
 
   return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };

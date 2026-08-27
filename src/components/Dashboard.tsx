@@ -1134,32 +1134,37 @@ Equipe Anjinho Escolar`
   // Live timer for active caregiver shift duration
   useEffect(() => {
     let intervalId: any;
-    if (isShiftActive && shiftStartTime) {
+    if (isShiftActive) {
       const updateTimer = () => {
         let startMs = 0;
-        const parsed = new Date(shiftStartTime).getTime();
-        if (!isNaN(parsed)) {
-          startMs = parsed;
-        } else if (typeof shiftStartTime === 'string' && shiftStartTime.includes(':')) {
-          const parts = shiftStartTime.split(':');
-          const d = new Date();
-          d.setHours(parseInt(parts[0], 10) || 0, parseInt(parts[1], 10) || 0, 0, 0);
-          startMs = d.getTime();
+        const activeStartTime = shiftStartTime || localStorage.getItem(`anjo_shift_start_time_${idoso.id}`) || localStorage.getItem(`anjo_routine_reset_${idoso.id}`);
+        
+        if (activeStartTime) {
+          const parsed = new Date(activeStartTime).getTime();
+          if (!isNaN(parsed)) {
+            startMs = parsed;
+          } else if (typeof activeStartTime === 'string' && activeStartTime.includes(':')) {
+            const parts = activeStartTime.split(':');
+            const d = new Date();
+            d.setHours(parseInt(parts[0], 10) || 0, parseInt(parts[1], 10) || 0, 0, 0);
+            startMs = d.getTime();
+          }
+        }
+
+        if (startMs === 0 || isNaN(startMs)) {
+          startMs = Date.now() - 1000;
         }
 
         const now = Date.now();
-        const diffMs = startMs > 0 ? now - startMs : 0;
+        const diffMs = Math.max(0, now - startMs);
 
-        if (diffMs > 0) {
-          const secs = Math.floor((diffMs / 1000) % 60);
-          const mins = Math.floor((diffMs / (1000 * 60)) % 60);
-          const hours = Math.floor(diffMs / (1000 * 60 * 60));
+        const totalSecs = Math.floor(diffMs / 1000);
+        const secs = totalSecs % 60;
+        const mins = Math.floor(totalSecs / 60) % 60;
+        const hours = Math.floor(totalSecs / 3600);
 
-          const pad = (n: number) => String(n).padStart(2, '0');
-          setElapsedShiftTime(`${pad(hours)}:${pad(mins)}:${pad(secs)}`);
-        } else {
-          setElapsedShiftTime('00:00:00');
-        }
+        const pad = (n: number) => String(n).padStart(2, '0');
+        setElapsedShiftTime(`${pad(hours)}:${pad(mins)}:${pad(secs)}`);
       };
       
       updateTimer();
@@ -1173,7 +1178,7 @@ Equipe Anjinho Escolar`
     } else {
       setElapsedShiftTime('00:00:00');
     }
-  }, [isShiftActive, shiftStartTime]);
+  }, [isShiftActive, shiftStartTime, idoso.id]);
 
   const loadTasks = () => {
     let allTasks = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
@@ -7823,6 +7828,32 @@ Segunda-feira:
         // =====================================================================
         <div className="space-y-6 max-w-full overflow-x-hidden">
 
+          {/* Perspective / Mode Toggle Switch for Family View */}
+          <div className="bg-white rounded-2xl border border-[#cbd5e1] p-1.5 shadow-sm max-w-md mx-auto flex items-center justify-between gap-1.5">
+            <button
+              onClick={() => handleSetVisualMode('cuidador')}
+              className={`flex-1 text-center py-2.5 px-3 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                visualMode === 'cuidador' 
+                  ? 'bg-serene-blue text-white shadow-md ring-2 ring-indigo-400/30' 
+                  : 'text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              <span>{isEscolar ? 'ğŸ‘©â€ğŸ«' : 'ğŸ©º'}</span>
+              <span>{isEscolar ? 'Painel da Professora' : 'Painel do Cuidador'}</span>
+            </button>
+            <button
+              onClick={() => handleSetVisualMode('familia')}
+              className={`flex-1 text-center py-2.5 px-3 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                visualMode === 'familia' 
+                  ? 'bg-emerald-600 text-white shadow-md ring-2 ring-emerald-400/30' 
+                  : 'text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              <span>ğŸŒ¿</span>
+              <span>{isEscolar ? 'Portal de Tranquilidade' : 'Portal de Tranquilidade'}</span>
+            </button>
+          </div>
+
           {/*  INDICADOR DE TESTE GRATUITO (PAINEL DOS PAIS / FAMÃLIA) */}
           {!isStaffUser(usuarioAtual) && localStorage.getItem(`anjo_sub_status_${idoso.id}`) !== 'atrasado' && (
             <div className={`p-4 rounded-3xl border text-left flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs relative overflow-hidden transition-all ${
@@ -9802,36 +9833,5 @@ Segunda-feira:
           </div>
         </div>
       )}
-      {/* FLOATING ACTION PILL: Quick Toggle between Professora / Cuidador and Portal de Tranquilidade */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-1.5 bg-slate-900/95 text-white backdrop-blur-md p-1.5 rounded-full shadow-2xl border border-white/20 transition-all max-w-[90vw] whitespace-nowrap">
-        <button
-          type="button"
-          onClick={() => handleSetVisualMode('cuidador')}
-          className={`px-3.5 py-2 rounded-full text-xs font-black transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer select-none ${
-            visualMode === 'cuidador'
-              ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-md ring-2 ring-white/40'
-              : 'text-slate-300 hover:text-white hover:bg-white/10'
-          }`}
-          title={isEscolar ? "Alternar para Painel da Professora" : "Alternar para Painel do Cuidador"}
-        >
-          <span>{isEscolar ? 'ğŸ‘©â€ğŸ«' : 'ğŸ©º'}</span>
-          <span>{isEscolar ? 'Professora' : 'Cuidador'}</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => handleSetVisualMode('familia')}
-          className={`px-3.5 py-2 rounded-full text-xs font-black transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer select-none ${
-            visualMode === 'familia'
-              ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md ring-2 ring-white/40'
-              : 'text-slate-300 hover:text-white hover:bg-white/10'
-          }`}
-          title="Alternar para Portal de Tranquilidade (VisÃ£o dos Pais / FamÃ­lia)"
-        >
-          <span>ğŸŒ¿</span>
-          <span>Tranquilidade</span>
-        </button>
-      </div>
-
-    </div>
-  );
-}
+      {/* FLOATING ACTION PILL: Quick Toggle between Professora / Cuidador and Portal de TranquxœÔUMnÓ@ŞçO’¤Ánú#µ$A¨‚	Ä!õÅ3NFÏ˜™qâEâ  Ä	²`U!.À†EoÂ	r^ì¤qŠJÙ 73~zßl©$G.àn4kAõt¹C¢Ğ¹§˜‰^ÊRpïMÆA‰Ô³İ¨Ì[ÔN¡¬¬oÙ~©%H/2Ç¡½°0ÄœíŞ;€ÁÕÙGq€¥g“åÂ “3nMÎª°,ãPWXSh.8K¥À›	ë”Šv±œ×Gİ"êÄPí#½4š!dX²	{u'¯¡Jr9&‚i3±˜ı\<(›¾zğç9¯ÃA#nô‰’ÉYoºÓ†^F¨¹Ï…)]ê‰áb'LŠ%¡Æ†íY£rÃçô4/Ù¡ËÏYgbÅHé 5ÚDÊuL7³‹‰—cqìTÄğ$…uÆ²ÜÈ*Í	%OØµ€;ÓÆb ã«å¡×ëÁÀVÀIÂ¡E.i4ó†YH-yBj.‡†Æ$YJ(êûFß•v$¬•z¸„½<jáöãëƒ!¬jk·ìQ«‘{ÜhXë»[=f§Mæ½ôŠX—î‘KŒBK8‚‡Š8ÑtÏÑ"<C©…N7kRáˆ7h‹Òœ¬
+6sú‰]ò™îoMóO?Ş}XÌ?~	— ó‹oá¬U©·Ôn¶ªJ×Ó-ïFµeÿ–µSÌ¤’øß:{½ÿŸ[dÂ¢âkg{êßsöu—ë‘\*àü¦«ïû	yùÙ}İÒÉ"xŒÙåWâ£üÆÆ‹ùûï7ÙtkÂmfìFô_é·Z;@û~kÖú	  ÿÿ 8ï<
