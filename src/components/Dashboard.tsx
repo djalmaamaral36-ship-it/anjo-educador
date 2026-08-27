@@ -233,7 +233,7 @@ export default function Dashboard({
     if (!auth.isAuthorized) {
       return (
         <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-start gap-3 shadow-xs mb-3">
-          <div className="text-xl">⚠️</div>
+          <div className="text-xl"> ⚠️ </div>
           <div className="space-y-1">
             <h4 className="font-extrabold text-sm text-rose-950">
               {isEscolar ? 'Alimentação e Cuidados Não Autorizados' : 'Sem Autorização de Cuidados'}
@@ -250,7 +250,7 @@ export default function Dashboard({
 
     return (
       <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-2.5 shadow-3xs mb-3">
-        <div className="text-emerald-600 bg-white p-1 rounded-full text-xs font-black shadow-3xs">✓</div>
+        <div className="text-emerald-600 bg-white p-1 rounded-full text-xs font-black shadow-3xs"></div>
         <div className="text-xs font-semibold text-emerald-950">
           {isEscolar ? 'Autorização Ativa dos Pais: ' : 'Autorização Ativa da Família: '}
           <span className="font-extrabold text-emerald-800">
@@ -298,31 +298,31 @@ export default function Dashboard({
 
     // Legacy Elderly Title adaptations (apenas para tarefas legadas do modo idoso sem descrição prévia)
     if (titulo.includes('Losartana')) {
-      titulo = 'Soro / Inalação de Rotina 👃';
+      titulo = 'Soro / Inalação de Rotina ';
       descricao = 'Fazer inalação com 3ml de soro fisiológico mandado na mala (prevenção de tempo seco)';
     } else if (titulo.includes('Cálcio + Vitamina D') || titulo.includes('Cálcio')) {
-      titulo = 'Vitaminas / Suplemento da Tarde 🍏';
+      titulo = 'Vitaminas / Suplemento da Tarde ';
       descricao = 'Dar 1 sachet de gostinho de laranja (mandado na mochila para o lanche)';
     } else if (titulo.includes('Metformina')) {
-      titulo = 'Remédio da Gripe / Amoxicilina 💊';
+      titulo = 'Remédio da Gripe / Amoxicilina ';
       descricao = 'Dar 5ml da Amoxicilina de acordo com a autorização assinada na mochila.';
     } else if (titulo.includes('Donepezila') || titulo.includes('Aricept')) {
-      titulo = 'Alergika Preventivo / Gotas 💧';
+      titulo = 'Alergika Preventivo / Gotas ';
       descricao = 'Dar 5 gotinhas do antialérgico preventivo antes da soneca da classe.';
     } else if (titulo.includes('Café da manhã') || titulo.includes('Café')) {
-      titulo = 'Lanche da Manhã & Frutinhas 🍎';
-      descricao = 'Frutas frescas da estação, biscoito integral e incentivo à hidratação.';
+      titulo = 'Lanche da Manhã & Frutinhas ';
+      descricao = 'Frutas frescas da estação, biscoito integral e incentivo À hidratação.';
     } else if (titulo.includes('Almoço')) {
-      titulo = 'Almoço Saudável / Papinha 🍲';
+      titulo = 'Almoço Saudável / Papinha ';
       descricao = 'Pratinho balanceado, introdução de novos sabores, verduras e carninha desfiada.';
     } else if (titulo.includes('Banho de Sol') || titulo.includes('Alongamento') || titulo.includes('Exercício') || titulo.includes('Fisioterapia')) {
-      titulo = 'Recreação no Pátio & Parquinho 🧸';
+      titulo = 'Recreação no Pátio & Parquinho ';
       descricao = 'Brincadeiras ao ar livre, estimulação física e interação na rodinha pedagógica.';
     } else if (titulo.includes('Banho &') || titulo.includes('Higiene')) {
-      titulo = 'Fralda & Higiene Geral 👶';
+      titulo = 'Fralda & Higiene Geral ';
       descricao = 'Acompanhar no banheiro, verificar fralda e trocar se necessário. Lavar mãos.';
     } else if (titulo.includes('Copos d\'Água') || titulo.includes('Hidratação')) {
-      titulo = 'Hora da Garrafinha de Água 🥤';
+      titulo = 'Hora da Garrafinha de Água ';
       descricao = 'Estimular o aluno a beber água na sua garrafinha com canudo.';
     }
 
@@ -414,7 +414,7 @@ export default function Dashboard({
       window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: usuarioAtual }));
     }
 
-    showToast(`✓ Sala alterada para ${classroomName}!`, 'success');
+    showToast(` Sala alterada para ${classroomName}!`, 'success');
   };
 
   const handleSwitchClassroom = (classroomName: string) => {
@@ -472,9 +472,9 @@ export default function Dashboard({
       setShowRoomPinModal(false);
       setPendingRoomToSwitch(null);
       executeSwitchClassroom(roomToOpen);
-      showToast(`✓ PIN correto! Acesso liberado para a sala ${roomToOpen}.`, 'success');
+      showToast(` PIN correto! Acesso liberado para a sala ${roomToOpen}.`, 'success');
     } else {
-      setRoomPinError('❌ PIN incorreto! Digite o PIN da educadora, o PIN da Diretora Nilva (3031) ou o PIN Dev (9181).');
+      setRoomPinError(' PIN incorreto! Digite o PIN da educadora, o PIN da Diretora Nilva (3031) ou o PIN Dev (9181).');
     }
   };
 
@@ -533,8 +533,8 @@ export default function Dashboard({
     setTurnSummaries(list);
     setOccurrencesList(getFromDB<any[]>(`anjo_ocorrencias_${idoso.id}`, []));
     setLgpdLogs(getFromDB<any[]>(`anjo_lgpd_auditoria_${idoso.id}`, [
-      { id: '1', autor: 'Ana Silva (Cuidadora)', acao: 'Consulta do Histórico de Rotina', data: 'Hoje às 18:10', ip: '192.168.1.13', detalhes: 'Carimbo de conformidade de escala' },
-      { id: '2', autor: 'Djalma (Familiar)', acao: 'Visualização do Painel de Tranquilidade', data: 'Hoje às 18:15', ip: '200.41.52.12', detalhes: 'Acesso seguro ponta a ponta' }
+      { id: '1', autor: 'Ana Silva (Cuidadora)', acao: 'Consulta do Histórico de Rotina', data: 'Hoje Às 18:10', ip: '192.168.1.13', detalhes: 'Carimbo de conformidade de escala' },
+      { id: '2', autor: 'Djalma (Familiar)', acao: 'Visualização do Painel de Tranquilidade', data: 'Hoje Às 18:15', ip: '200.41.52.12', detalhes: 'Acesso seguro ponta a ponta' }
     ]));
     if (typeof loadTasks === 'function') {
       loadTasks();
@@ -554,24 +554,24 @@ export default function Dashboard({
           fim: '17:30',
           taxaConformidade: 98,
           taxaQualidade: 100,
-          mensagemCompleta: `🌳 A ÁRVORE DA INFÂNCIA HOJE:
+          mensagemCompleta: ` A ÁRVORE DA INFÂNCIA HOJE:
 Hoje a árvore do(a) *${idoso.nome.split(' (')[0]}* floresceu no Anjinho Escolar:
-• 🍃 *Folhas verdes:* Nutrição balanceada e hidratação regular (100ml);
-• 🌸 *Flores e borboletas:* Momento acolhedor de soneca e descanso (45min);
-• 🍎 *Frutos e passarinhos:* Atividades pedagógicas e trabalhinhos manuais;
-• 🪵 *Tronco forte:* Cuidados diários, higiene e saúde acompanhados de perto (36.5°C).
+  *Folhas verdes:* Nutrição balanceada e hidratação regular (100ml);
+  *Flores e borboletas:* Momento acolhedor de soneca e descanso (45min);
+  *Frutos e passarinhos:* Atividades pedagógicas e trabalhinhos manuais;
+  *Tronco forte:* Cuidados diários, higiene e saúde acompanhados de perto (36.5°C).
 
-☀️💧 *PARTICIPE DA JORNADA DO(A) ${idoso.nome.split(' (')[0].toUpperCase()}!*
+ *PARTICIPE DA JORNADA DO(A) ${idoso.nome.split(' (')[0].toUpperCase()}!*
 Abra as fotos no aplicativo e regue a árvore do seu filho enviando uma das manifestações de afeto:
-✨ *Que encanto!* • ❤️ *Feito com amor* • 🌟 *Puro brilho!* • 🤝 *Orgulho da gente* • 💎 *Um tesouro!*
+ *Que encanto!*   *Feito com amor*   *Puro brilho!*   *Orgulho da gente*   *Um tesouro!*
 
 _(Cada manifestação sua ilumina e rega a árvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
 
 Acesse o diário de rotina escolar completo pelo link seguro:
-🔗 ${window.location.origin}/?relatorio=${relatorioId}
+ ${window.location.origin}/?relatorio=${relatorioId}
 
 Com carinho,
-Equipe Anjinho Escolar ❤️🕊️`
+Equipe Anjinho Escolar`
         };
         setSelectedReportModal(foundReport);
       }
@@ -598,7 +598,7 @@ Equipe Anjinho Escolar ❤️🕊️`
       e.stopPropagation();
     }
     if (!isStaffUser(usuarioAtual)) {
-      alert("⚠️ Operação Bloqueada: Familiares não têm permissão para excluir informações!");
+      alert(" ⚠️  Operação Bloqueada: Familiares não têm permissão para excluir informações!");
       return;
     }
     const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
@@ -613,7 +613,7 @@ Equipe Anjinho Escolar ❤️🕊️`
     });
     saveToDB('anjo_idosos', updated);
     window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-    showToast('✓ Rotina/condição removida com sucesso!', 'success');
+    showToast(' Rotina/condição removida com sucesso!', 'success');
   };
 
   const handleDeleteAlergia = (alergToRemove: string, e?: React.MouseEvent) => {
@@ -622,7 +622,7 @@ Equipe Anjinho Escolar ❤️🕊️`
       e.stopPropagation();
     }
     if (!isStaffUser(usuarioAtual)) {
-      alert("⚠️ Operação Bloqueada: Familiares não têm permissão para excluir informações!");
+      alert(" ⚠️  Operação Bloqueada: Familiares não têm permissão para excluir informações!");
       return;
     }
     const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
@@ -637,7 +637,7 @@ Equipe Anjinho Escolar ❤️🕊️`
     });
     saveToDB('anjo_idosos', updated);
     window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-    showToast('✓ Alergia removida com sucesso!', 'success');
+    showToast(' Alergia removida com sucesso!', 'success');
   };
 
   const handleDeleteHygieneObservation = (e?: React.MouseEvent) => {
@@ -646,7 +646,7 @@ Equipe Anjinho Escolar ❤️🕊️`
       e.stopPropagation();
     }
     if (!isStaffUser(usuarioAtual)) {
-      alert("⚠️ Operação Bloqueada: Familiares não têm permissão para excluir observações!");
+      alert(" ⚠️  Operação Bloqueada: Familiares não têm permissão para excluir observações!");
       return;
     }
     triggerConfirm(
@@ -666,7 +666,7 @@ Equipe Anjinho Escolar ❤️🕊️`
           window.dispatchEvent(new CustomEvent('db-vitals-update', { detail: { localKey: `anjo_higiene_log_${idoso.id}` } }));
         }
         setVitalsUpdateTrigger(prev => prev + 1);
-        showToast('✓ Observação de higiene apagada com sucesso!', 'success');
+        showToast(' Observação de higiene apagada com sucesso!', 'success');
       }
     );
   };
@@ -677,7 +677,7 @@ Equipe Anjinho Escolar ❤️🕊️`
       e.stopPropagation();
     }
     if (!isStaffUser(usuarioAtual)) {
-      alert("⚠️ Operação Bloqueada: Familiares não têm permissão para limpar ou excluir registros!");
+      alert(" ⚠️  Operação Bloqueada: Familiares não têm permissão para limpar ou excluir registros!");
       return;
     }
     triggerConfirm(
@@ -701,7 +701,7 @@ Equipe Anjinho Escolar ❤️🕊️`
           window.dispatchEvent(new CustomEvent('db-vitals-update', { detail: { localKey: `anjo_higiene_log_${idoso.id}` } }));
         }
         setVitalsUpdateTrigger(prev => prev + 1);
-        showToast('✓ Registros de higiene limpos com sucesso!', 'success');
+        showToast(' Registros de higiene limpos com sucesso!', 'success');
       }
     );
   };
@@ -712,7 +712,7 @@ Equipe Anjinho Escolar ❤️🕊️`
       e.stopPropagation();
     }
     if (!isStaffUser(usuarioAtual)) {
-      alert("⚠️ Operação Bloqueada: Familiares não têm permissão para excluir ocorrências!");
+      alert(" ⚠️  Operação Bloqueada: Familiares não têm permissão para excluir ocorrências!");
       return;
     }
     triggerConfirm(
@@ -725,7 +725,7 @@ Equipe Anjinho Escolar ❤️🕊️`
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: { localKey: `anjo_ocorrencias_${idoso.id}` } }));
         }
-        showToast('✓ Ocorrência/Registro de cuidado removido com sucesso!', 'success');
+        showToast(' Ocorrência/Registro de cuidado removido com sucesso!', 'success');
       }
     );
   };
@@ -763,7 +763,7 @@ Equipe Anjinho Escolar ❤️🕊️`
 
   useEffect(() => {
     const handleUpdate = (e: any) => {
-      console.log('📡 [Dashboard Component] Evento db-vitals-update / anjo_user_updated recebido na tela do Responsável/Família!', { timestamp: new Date().toISOString(), detail: e?.detail });
+      console.log(' [Dashboard Component] Evento db-vitals-update / anjo_user_updated recebido na tela do Responsável/Família!', { timestamp: new Date().toISOString(), detail: e?.detail });
       setVitalsUpdateTrigger(prev => prev + 1);
     };
     window.addEventListener('db-vitals-update', handleUpdate);
@@ -786,8 +786,8 @@ Equipe Anjinho Escolar ❤️🕊️`
   // LGPD Auditoria e Governança de acessos
   const [lgpdLogs, setLgpdLogs] = useState<any[]>(() => {
     return getFromDB<any[]>(`anjo_lgpd_auditoria_${idoso.id}`, [
-      { id: '1', autor: 'Ana Silva (Cuidadora)', acao: 'Consulta do Histórico de Rotina', data: 'Hoje às 18:10', ip: '192.168.1.13', detalhes: 'Carimbo de conformidade de escala' },
-      { id: '2', autor: 'Djalma (Familiar)', acao: 'Visualização do Painel de Tranquilidade', data: 'Hoje às 18:15', ip: '200.41.52.12', detalhes: 'Acesso seguro ponta a ponta' }
+      { id: '1', autor: 'Ana Silva (Cuidadora)', acao: 'Consulta do Histórico de Rotina', data: 'Hoje Às 18:10', ip: '192.168.1.13', detalhes: 'Carimbo de conformidade de escala' },
+      { id: '2', autor: 'Djalma (Familiar)', acao: 'Visualização do Painel de Tranquilidade', data: 'Hoje Às 18:15', ip: '200.41.52.12', detalhes: 'Acesso seguro ponta a ponta' }
     ]);
   });
 
@@ -1026,7 +1026,7 @@ Equipe Anjinho Escolar ❤️🕊️`
       if (lastSono.dormiuEm && lastSono.acordouEm) {
         setSleepStart(lastSono.dormiuEm);
         setSleepEnd(lastSono.acordouEm);
-        setQuickVitals(prev => (prev.pressao ? prev : { ...prev, pressao: `Dormiu das ${lastSono.dormiuEm} às ${lastSono.acordouEm}` }));
+        setQuickVitals(prev => (prev.pressao ? prev : { ...prev, pressao: `Dormiu das ${lastSono.dormiuEm} Às ${lastSono.acordouEm}` }));
       }
     }
   }, [idoso, keyTrigger, appMode, vitalsUpdateTrigger]);
@@ -1071,10 +1071,10 @@ Equipe Anjinho Escolar ❤️🕊️`
       }
 
       const activeShift = getShiftActiveState(targetId, remoteItems);
-      console.log(`📡 [Dashboard Component] syncShiftState executado para idoso/aluno: ${targetId} (${idoso.nome}) | Ativo: ${activeShift.active} | Início: ${activeShift.startTime}`);
+      console.log(` [Dashboard Component] syncShiftState executado para idoso/aluno: ${targetId} (${idoso.nome}) | Ativo: ${activeShift.active} | Início: ${activeShift.startTime}`);
       setIsShiftActive(prevActive => {
         if (prevActive !== activeShift.active) {
-          console.log(`🔄 [Dashboard State] Alterando isShiftActive de ${prevActive} para ${activeShift.active}`);
+          console.log(` [Dashboard State] Alterando isShiftActive de ${prevActive} para ${activeShift.active}`);
           return activeShift.active;
         }
         return prevActive;
@@ -1273,7 +1273,7 @@ Equipe Anjinho Escolar ❤️🕊️`
       }
     }
 
-    // Realinha automaticamente tarefas que possuem conflito semântico ou deslocamento de horário
+    // Realinha automaticamente tarefas que possuem conflito sem ou deslocamento de horário
     let hasRealigned = false;
     const realignedSeniorTasks = seniorTasks.map(t => {
       const { title: alignedTitle, tipo: alignedType } = realignPedagogicalActivity(t.titulo, t.descricao || '', t.horarioPrevisto || '', t.tipo);
@@ -1340,7 +1340,7 @@ Equipe Anjinho Escolar ❤️🕊️`
           id: 'task_s_entrada_' + idosoId,
           idosoId,
           tipo: 'atividade_fisica',
-          titulo: 'Acolhida & Entrada Afetiva 🏫',
+          titulo: 'Acolhida & Entrada Afetiva ',
           descricao: 'Recepção carinhosa dos alunos, acolhimento individual e organização de pertences.',
           horarioPrevisto: '07:00',
           status: 'pendente'
@@ -1349,7 +1349,7 @@ Equipe Anjinho Escolar ❤️🕊️`
           id: 'task_s_roda_' + idosoId,
           idosoId,
           tipo: 'atividade_fisica',
-          titulo: 'Roda de Conversa: Tema do Dia 🪞',
+          titulo: 'Roda de Conversa: Tema do Dia ',
           descricao: 'Apresentação do tema diário, musicalização, chamada divertida e expressão das crianças.',
           horarioPrevisto: '08:00',
           status: 'pendente'
@@ -1358,8 +1358,8 @@ Equipe Anjinho Escolar ❤️🕊️`
           id: 'task_s_lanche_manha_' + idosoId,
           idosoId,
           tipo: 'alimentacao',
-          titulo: 'Lanche da Manhã & Frutinhas 🍎',
-          descricao: 'Frutas frescas da estação, biscoito integral e incentivo à hidratação.',
+          titulo: 'Lanche da Manhã & Frutinhas ',
+          descricao: 'Frutas frescas da estação, biscoito integral e incentivo À hidratação.',
           horarioPrevisto: '09:00',
           status: 'pendente'
         },
@@ -1367,7 +1367,7 @@ Equipe Anjinho Escolar ❤️🕊️`
           id: 'task_s_parque_' + idosoId,
           idosoId,
           tipo: 'atividade_fisica',
-          titulo: 'Recreação no Pátio & Parquinho 🧸',
+          titulo: 'Recreação no Pátio & Parquinho ',
           descricao: 'Brincadeiras ao ar livre para estímulo motor, socialização e banho de sol adequado.',
           horarioPrevisto: '09:45',
           status: 'pendente'
@@ -1376,7 +1376,7 @@ Equipe Anjinho Escolar ❤️🕊️`
           id: 'task_s_dirigida_' + idosoId,
           idosoId,
           tipo: 'atividade_fisica',
-          titulo: 'Atividade Dirigida Temática (BNCC) 🎨',
+          titulo: 'Atividade Dirigida Temática (BNCC) ',
           descricao: 'Atividade prática pedagógica com foco no desenvolvimento cognitivo e sensorial.',
           horarioPrevisto: '10:30',
           status: 'pendente'
@@ -1385,7 +1385,7 @@ Equipe Anjinho Escolar ❤️🕊️`
           id: 'task_s_almoco_' + idosoId,
           idosoId,
           tipo: 'alimentacao',
-          titulo: 'Almoço Saudável / Papinha 🍲',
+          titulo: 'Almoço Saudável / Papinha ',
           descricao: 'Pratinho balanceado, introdução de novos sabores, verduras e carninha desfiada.',
           horarioPrevisto: '11:30',
           status: 'pendente'
@@ -1394,8 +1394,8 @@ Equipe Anjinho Escolar ❤️🕊️`
           id: 'task_s_higiene_escovacao_' + idosoId,
           idosoId,
           tipo: 'banho',
-          titulo: 'Higiene, Fraldas & Escovação 👶',
-          descricao: 'Troca de fraldas, lavagem das mãos e estímulo à escovação dental com carinho.',
+          titulo: 'Higiene, Fraldas & Escovação ',
+          descricao: 'Troca de fraldas, lavagem das mãos e estímulo À escovação dental com carinho.',
           horarioPrevisto: '12:15',
           status: 'pendente'
         },
@@ -1403,7 +1403,7 @@ Equipe Anjinho Escolar ❤️🕊️`
           id: 'task_s_soneca_' + idosoId,
           idosoId,
           tipo: 'sono',
-          titulo: 'Soneca & Repouso Restaurador 💤',
+          titulo: 'Soneca & Repouso Restaurador ',
           descricao: 'Descanso nos colchonetes individuais com ambiente calmo, iluminação suave e música relaxante.',
           horarioPrevisto: '12:30',
           status: 'pendente'
@@ -1412,7 +1412,7 @@ Equipe Anjinho Escolar ❤️🕊️`
           id: 'task_s_lanche_tarde_' + idosoId,
           idosoId,
           tipo: 'alimentacao',
-          titulo: 'Lanche da Tarde & Frutinhas 🍎',
+          titulo: 'Lanche da Tarde & Frutinhas ',
           descricao: 'Frutas frescas da época fatiadas, biscoito integral e hidratação da tarde.',
           horarioPrevisto: '14:15',
           status: 'pendente'
@@ -1421,7 +1421,7 @@ Equipe Anjinho Escolar ❤️🕊️`
           id: 'task_s_brincadeira_livre_' + idosoId,
           idosoId,
           tipo: 'atividade_fisica',
-          titulo: 'Brincadeira Livre & Socialização 🧸',
+          titulo: 'Brincadeira Livre & Socialização ',
           descricao: 'Cantinhos temáticos com brinquedos educativos, blocos de montar e autonomia.',
           horarioPrevisto: '14:45',
           status: 'pendente'
@@ -1430,7 +1430,7 @@ Equipe Anjinho Escolar ❤️🕊️`
           id: 'task_s_historias_' + idosoId,
           idosoId,
           tipo: 'atividade_fisica',
-          titulo: 'Contação de Histórias & Música 📚',
+          titulo: 'Contação de Histórias & Música ',
           descricao: 'Leitura de livros ilustrados, fantoches e cantigas de roda.',
           horarioPrevisto: '15:30',
           status: 'pendente'
@@ -1439,7 +1439,7 @@ Equipe Anjinho Escolar ❤️🕊️`
           id: 'task_s_saida_' + idosoId,
           idosoId,
           tipo: 'atividade_fisica',
-          titulo: 'Preparação para Saída & Despedida Afetiva 🎒',
+          titulo: 'Preparação para Saída & Despedida Afetiva ',
           descricao: 'Organização das mochilinhas, fechamento da agenda do dia e entrega afetiva aos familiares.',
           horarioPrevisto: '16:00',
           status: 'pendente'
@@ -1787,7 +1787,7 @@ Equipe Anjinho Escolar ❤️🕊️`
     if (['alimentacao', 'banho', 'medicacao', 'hidratacao'].includes(task.tipo)) {
       const auth = checkFeedingCareAuthorization();
       if (!auth.isAuthorized) {
-        alert(`⚠️ Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não tem permissão para registrar ou realizar esta atividade.`);
+        alert(` ⚠️  Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não tem permissão para registrar ou realizar esta atividade.`);
         return;
       }
     }
@@ -1799,12 +1799,12 @@ Equipe Anjinho Escolar ❤️🕊️`
 
     // Check if refusal and comment is blank
     if (targetStatus === 'recusado' && !comment.trim()) {
-      alert("⚠️ Atenção: Por favor, preencha o campo de observações com a justificativa técnica para a recusa ou não-administração do cuidado!");
+      alert(" ⚠️  Atenção: Por favor, preencha o campo de observações com a justificativa técnica para a recusa ou não-administração do cuidado!");
       return;
     }
 
     if (!simulatedOnline) {
-      // 📶 REGISTRO OFFLINE: Salvar na Fila com segurança
+      //  REGISTRO OFFLINE: Salvar na Fila com segurança
       const novoItemOffline: ItemFilaOffline = {
         id_local: 'offline_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
         idoso_id: idoso.id,
@@ -1829,7 +1829,7 @@ Equipe Anjinho Escolar ❤️🕊️`
           return {
             ...t,
             status: targetStatus,
-            concluidaEm: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' (Aparelho Offline 📶)',
+            concluidaEm: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' (Aparelho Offline )',
             completadaPor: usuarioAtual.nome,
             observacao: comment
           };
@@ -1862,11 +1862,11 @@ Equipe Anjinho Escolar ❤️🕊️`
       return;
     }
 
-    // 🌐 REGISTRO EM TEMPO REAL ON-LINE
+    //  REGISTRO EM TEMPO REAL ON-LINE
     const updated = tarefas.map(t => {
       if (t.id === taskId) {
         const detailStr = comment ? ` Relato: "${comment}".` : '';
-        const actionText = targetStatus === 'concluido' ? 'concluída' : '⚠️ RECUSADA (Registrado com Justificativa)';
+        const actionText = targetStatus === 'concluido' ? 'concluída' : ' ⚠️  RECUSADA (Registrado com Justificativa)';
         const msg = `Anjo Cuidador: A atividade "${t.titulo}" de ${idoso.nome} foi registrada como ${actionText} por ${usuarioAtual.nome}.${detailStr}`;
         
         triggerWhatsAppSim(t.titulo + ' ' + (targetStatus === 'concluido' ? 'Concluído' : 'Recusado'), msg);
@@ -1973,7 +1973,7 @@ Equipe Anjinho Escolar ❤️🕊️`
     setLgpdLogs(logs);
 
     // Custom High-Fidelity message design layout requested by the user
-    const msg = `🚨 *Anjo Cuidador — Intercorrência registrada* 🚨
+    const msg = ` *Anjo Cuidador  Intercorrência registrada* 
 
 Olá, família.
 Foi registrada uma intercorrência com *${idoso.nome}*.
@@ -2072,7 +2072,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
           idosoId: idoso.id,
           familiarNome: usuarioAtual.nome,
           telefoneDestino: '(Familiares)',
-          mensagem: `[✓ ENVIADO] Alerta confirmado pelo cuidador no painel de controle:\n\n${manualShareOccurrenceMessage}`,
+          mensagem: `[ ENVIADO] Alerta confirmado pelo cuidador no painel de controle:\n\n${manualShareOccurrenceMessage}`,
           dataEnvio: new Date().toISOString()
         });
         saveToDB('anjo_notificacoes', allNotif);
@@ -2114,7 +2114,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
   // Reset task execution back to pending
   const handleResetTask = async (taskId: string) => {
     if (!isStaffUser(usuarioAtual)) {
-      alert("⚠️ Operação Bloqueada: Familiares não têm permissão para desfazer ou alterar atividades!");
+      alert(" ⚠️  Operação Bloqueada: Familiares não têm permissão para desfazer ou alterar atividades!");
       return;
     }
     if (!isShiftActive) {
@@ -2191,7 +2191,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
           status: item.status as any,
           concluidaEm: new Date(item.horario_registrado_dispositivo).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
           completadaPor: usuarioAtual.nome,
-          observacao: `${item.observacao} (Sincronizado via Fila 📶)`,
+          observacao: `${item.observacao} (Sincronizado via Fila )`,
           detalhes: {
             horario_planejado: item.horario_planejado,
             horario_registrado_dispositivo: item.horario_registrado_dispositivo,
@@ -2300,7 +2300,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
   const handleAddCustomTask = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isStaffUser(usuarioAtual)) {
-      alert("⚠️ Operação Bloqueada: Familiares não têm permissão para criar atividades ou alterar a rotina!");
+      alert(" ⚠️  Operação Bloqueada: Familiares não têm permissão para criar atividades ou alterar a rotina!");
       return;
     }
     if (!isShiftActive) {
@@ -2349,7 +2349,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
           acao: `Atividade Coletiva adicionada por ${usuarioAtual.nome}: ${newTaskForm.titulo}`,
           data: new Date().toLocaleString('pt-BR'),
           ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-          detalhes: `Atividade coletiva de tipo ${newTaskForm.tipo} para toda a classe (${currentClassroom}) agendada para às ${newTaskForm.horarioPrevisto}.`
+          detalhes: `Atividade coletiva de tipo ${newTaskForm.tipo} para toda a classe (${currentClassroom}) agendada para Às ${newTaskForm.horarioPrevisto}.`
         });
         saveToDB(`anjo_lgpd_auditoria_${student.id}`, studentLogs);
       });
@@ -2372,7 +2372,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
       logs.unshift({
         id: 'log_' + Date.now(),
         autor: usuarioAtual.nome,
-        acao: isEscolar ? `Adicionou atividade à agenda escolar: ${newTask.titulo}` : `Adicionou nova tarefa de cuidado: ${newTask.titulo}`,
+        acao: isEscolar ? `Adicionou atividade À agenda escolar: ${newTask.titulo}` : `Adicionou nova tarefa de cuidado: ${newTask.titulo}`,
         data: new Date().toLocaleString('pt-BR'),
         ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
         detalhes: `Atividade de tipo ${newTask.tipo} agendada para ${newTask.horarioPrevisto}`
@@ -2401,9 +2401,9 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     setTaskScope('individual');
     
     if (isEscolar && taskScope === 'coletivo') {
-      alert(`🎉 Atividade coletiva adicionada com sucesso para todos os ${createdCount} alunos da sala!`);
+      alert(` Atividade coletiva adicionada com sucesso para todos os ${createdCount} alunos da sala!`);
     } else {
-      alert("Atividade adicionada à agenda do turno com sucesso!");
+      alert("Atividade adicionada À agenda do turno com sucesso!");
     }
   };
 
@@ -2539,9 +2539,9 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     if (count > 0) {
       saveToDB('anjo_tarefas_diarias', fixed);
       setTarefas(fixed.filter(t => t.idosoId === idoso.id));
-      alert(`🪄 Perfeito! ${count} atividade(s) foram corrigidas e realinhadas automaticamente com seus horários e nomes pedagógicos corretos!`);
+      alert(` Perfeito! ${count} atividade(s) foram corrigidas e realinhadas automaticamente com seus horários e nomes pedagógicos corretos!`);
     } else {
-      alert('✅ Todas as atividades já estão 100% alinhadas com seus nomes e horários corretos!');
+      alert(' Todas as atividades já estão 100% alinhadas com seus nomes e horários corretos!');
     }
   };
 
@@ -2581,14 +2581,14 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     window.dispatchEvent(new CustomEvent('anjo_user_updated'));
     window.dispatchEvent(new CustomEvent('db-routine-update'));
     window.dispatchEvent(new CustomEvent('db-jornada-update'));
-    alert('🧹 Todas as atividades e tarefas anteriores foram limpas com sucesso!');
+    alert(' Todas as atividades e tarefas anteriores foram limpas com sucesso!');
   };
 
   const handleSaveAuraWeeklyPlan = (dayFilterOnly?: string) => {
     if (parsedAuraTasks.length === 0) return;
 
     if (!isStaffUser(usuarioAtual)) {
-      alert("⚠️ Operação Bloqueada: Familiares não têm permissão para criar atividades!");
+      alert(" ⚠️  Operação Bloqueada: Familiares não têm permissão para criar atividades!");
       return;
     }
 
@@ -2651,10 +2651,10 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
       targetStudents.forEach((st, stIdx) => {
         let enrichedDesc = pItem.descricao || '';
         if (pItem.objetivoBNCC && !enrichedDesc.includes(pItem.objetivoBNCC)) {
-          enrichedDesc += `\n🎯 Campo BNCC: ${pItem.objetivoBNCC}`;
+          enrichedDesc += `\n Campo BNCC: ${pItem.objetivoBNCC}`;
         }
         if (pItem.materiais && pItem.materiais.length > 0) {
-          enrichedDesc += `\n📦 Materiais: ${pItem.materiais.join(', ')}`;
+          enrichedDesc += `\n Materiais: ${pItem.materiais.join(', ')}`;
         }
 
         newAtivsBatch.push({
@@ -2677,10 +2677,10 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     dailyTasksToApply.forEach((pItem, pIdx) => {
       let enrichedDesc = pItem.descricao || '';
       if (pItem.objetivoBNCC && !enrichedDesc.includes(pItem.objetivoBNCC)) {
-        enrichedDesc += `\n🎯 Campo BNCC: ${pItem.objetivoBNCC}`;
+        enrichedDesc += `\n Campo BNCC: ${pItem.objetivoBNCC}`;
       }
       if (pItem.materiais && pItem.materiais.length > 0) {
-        enrichedDesc += `\n📦 Materiais: ${pItem.materiais.join(', ')}`;
+        enrichedDesc += `\n Materiais: ${pItem.materiais.join(', ')}`;
       }
 
       const normTime = (pItem.horario || '09:00').trim();
@@ -2727,13 +2727,13 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     setIsAddingTask(false);
 
     const dayLabel = dayFilterOnly && dayFilterOnly !== 'todos' ? `do dia "${dayFilterOnly}"` : 'do Planejamento Semanal';
-    alert(`🎉 Sucesso! ${tasksToApply.length} atividade(s) ${dayLabel} foram agendadas com todas as informações completas (data, horário, título, descrição detalhada, BNCC e materiais) para ${targetStudents.length} aluno(s)!`);
+    alert(` Sucesso! ${tasksToApply.length} atividade(s) ${dayLabel} foram agendadas com todas as informações completas (data, horário, título, descrição detalhada, BNCC e materiais) para ${targetStudents.length} aluno(s)!`);
   };
 
   const handleEditTaskSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isStaffUser(usuarioAtual)) {
-      alert("⚠️ Operação Bloqueada: Familiares não têm permissão para editar atividades!");
+      alert(" ⚠️  Operação Bloqueada: Familiares não têm permissão para editar atividades!");
       return;
     }
     if (!editingTaskForm.titulo.trim() || !editingTaskForm.horarioPrevisto.trim()) {
@@ -2781,7 +2781,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
       e.stopPropagation();
     }
     if (!isStaffUser(usuarioAtual)) {
-      alert("⚠️ Operação Bloqueada: Familiares não têm permissão para excluir atividades!");
+      alert(" ⚠️  Operação Bloqueada: Familiares não têm permissão para excluir atividades!");
       return;
     }
     const description = isEscolar 
@@ -2866,7 +2866,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
 
         let mergedDesc = t.descricao || ex.descricao || '';
         if (ex.descricao && t.descricao && !ex.descricao.includes(t.descricao) && !t.descricao.includes(ex.descricao)) {
-          mergedDesc = `${t.descricao}\n\n📝 Detalhes adicionais: ${ex.descricao}`;
+          mergedDesc = `${t.descricao}\n\n Detalhes adicionais: ${ex.descricao}`;
         }
 
         dedupedStudentTasks[existingIndex] = {
@@ -2883,7 +2883,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     });
 
     if (removedCount === 0) {
-      alert("✅ Nenhuma tarefa duplicada encontrada! Todas as atividades possuem horários ou títulos distintos.");
+      alert(" Nenhuma tarefa duplicada encontrada! Todas as atividades possuem horários ou títulos distintos.");
       return;
     }
 
@@ -2892,7 +2892,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     saveToDB('anjo_tarefas_diarias', finalAllTasks);
     setTarefas(dedupedStudentTasks);
 
-    alert(`🧹 Sucesso! ${removedCount} atividade(s) duplicada(s) foram unificadas da agenda.`);
+    alert(` Sucesso! ${removedCount} atividade(s) duplicada(s) foram unificadas da agenda.`);
   };
 
   const handleResetToDefaultTasks = () => {
@@ -2908,7 +2908,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     setTarefas(generated);
     window.dispatchEvent(new CustomEvent('anjo_user_updated'));
     window.dispatchEvent(new CustomEvent('db-routine-update'));
-    alert('🔄 Rotina padrão restaurada com sucesso!');
+    alert(' Rotina padrão restaurada com sucesso!');
   };
 
   const handleClearAllTasks = () => {
@@ -2956,7 +2956,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     window.dispatchEvent(new CustomEvent('db-tasks-update'));
     window.dispatchEvent(new CustomEvent('db-vitals-update'));
     window.dispatchEvent(new CustomEvent('db-jornada-update'));
-    alert(`🗑️ Agenda e atividades anteriores limpas com sucesso para ${targetStudents.length} ${targetStudents.length === 1 ? 'aluno' : 'alunos'}!`);
+    alert(`  Agenda e atividades anteriores limpas com sucesso para ${targetStudents.length} ${targetStudents.length === 1 ? 'aluno' : 'alunos'}!`);
   };
 
   // Turn active status functions
@@ -3005,7 +3005,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
 
   const handleToggleAbsence = () => {
     if (!isStaffUser(usuarioAtual)) {
-      alert("⚠️ Operação Bloqueada: Apenas educadores/cuidadores autorizados podem registrar ou alterar faltas/ausências de alunos!");
+      alert(" ⚠️  Operação Bloqueada: Apenas educadores/cuidadores autorizados podem registrar ou alterar faltas/ausências de alunos!");
       return;
     }
     const nextAbsent = !isAbsent;
@@ -3081,11 +3081,11 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
 
           // Trigger simulated WhatsApp message to parents
           const cleanName = idoso.nome.includes(' (') ? idoso.nome.split(' (')[0] : idoso.nome;
-          const abMsg = `Anjo Escolar — Aviso de Ausência
+          const abMsg = `Anjo Escolar  Aviso de Ausência
           
-Olá. Registramos que o(a) aluno(a) *${cleanName}* não compareceu hoje às atividades / aulas (Falta Justificada). 
+Olá. Registramos que o(a) aluno(a) *${cleanName}* não compareceu hoje Às atividades / aulas (Falta Justificada). 
 
-Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dúvida, estamos à disposição.`;
+Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dúvida, estamos À disposição.`;
           
           triggerWhatsAppSim('Aviso de Ausência e Falta Corrente', abMsg);
           showToast(`Falta hoje registrada para ${cleanName}!`);
@@ -3121,8 +3121,8 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
       e.preventDefault();
       e.stopPropagation();
       alert(isEscolar 
-        ? "⚠️ Período Letivo Não Iniciado!\n\nPor favor, clique no botão 'Iniciar Período' ou 'Iniciar Coletivo' no topo da página antes de lançar qualquer refeição, higiene, comportamento, medicamento ou saúde do aluno!" 
-        : "⚠️ Turno de Cuidados Não Iniciado!\n\nPor favor, clique no botão 'Iniciar Meu Turno de Cuidados' no topo da página antes de lançar qualquer controle de rotina, refeição, higiene ou saúde!"
+        ? " ⚠️  Período Letivo Não Iniciado!\n\nPor favor, clique no botão 'Iniciar Período' ou 'Iniciar Coletivo' no topo da página antes de lançar qualquer refeição, higiene, comportamento, medicamento ou saúde do aluno!" 
+        : " ⚠️  Turno de Cuidados Não Iniciado!\n\nPor favor, clique no botão 'Iniciar Meu Turno de Cuidados' no topo da página antes de lançar qualquer controle de rotina, refeição, higiene ou saúde!"
       );
     }
   };
@@ -3229,7 +3229,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
     setLgpdLogs(logs);
 
     // Simulated notify
-    const msg = `Anjo Cuidador: O Turno de cuidados para ${idoso.nome} foi INICIADO por ${usuarioAtual.nome} às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}. Acompanhando em tempo real.`;
+    const msg = `Anjo Cuidador: O Turno de cuidados para ${idoso.nome} foi INICIADO por ${usuarioAtual.nome} Às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}. Acompanhando em tempo real.`;
     triggerWhatsAppSim('Turno Iniciado', msg);
 
     if (typeof window !== 'undefined') {
@@ -3242,7 +3242,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
       window.dispatchEvent(new CustomEvent('db-activities-update'));
     }
 
-    showToast(`▶️ Cronômetro e período iniciados para ${idoso.nome.split(' (')[0]}! Todas as atividades do dia anterior foram zeradas para o novo dia.`, 'success');
+    showToast(` Cronômetro e período iniciados para ${idoso.nome.split(' (')[0]}! Todas as atividades do dia anterior foram zeradas para o novo dia.`, 'success');
   };
 
   const handleStartShiftGroup = (className: string) => {
@@ -3417,7 +3417,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
       setLgpdLogs(logs);
 
       // Simulated notify for active student
-      const msg = `Anjo Escolar: O Período Letivo para todos os alunos presentes da classe ${targetClass} foi INICIADO por ${usuarioAtual?.nome || 'Educador(a)'} às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} de forma coletiva.`;
+      const msg = `Anjo Escolar: O Período Letivo para todos os alunos presentes da classe ${targetClass} foi INICIADO por ${usuarioAtual?.nome || 'Educador(a)'} Às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} de forma coletiva.`;
       triggerWhatsAppSim('Aulas Iniciadas em Grupo', msg);
       
       showToast(`Aulas iniciadas com sucesso para todos os ${classmates.length} alunos presentes da classe ${targetClass}! Atividades do dia anterior foram zeradas, mantendo peso, temperatura e saturação.`, 'success');
@@ -3433,7 +3433,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
 
   const handleEndShiftGroup = (className: string) => {
     if (!isStaffUser(usuarioAtual)) {
-      alert("⚠️ Operação Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o período letivo coletivo!");
+      alert(" ⚠️  Operação Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o período letivo coletivo!");
       return;
     }
     try {
@@ -3490,24 +3490,24 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
               const startHourStr = formatShiftTime(shiftStartTime, new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
               const endHourStr = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
-              const mateMsg = `🌳 A ÁRVORE DA INFÂNCIA HOJE:
+              const mateMsg = ` A ÁRVORE DA INFÂNCIA HOJE:
 Hoje a árvore do(a) *${mateNameClean}* floresceu no Anjinho Escolar:
-• 🍃 *Folhas verdes:* Nutrição balanceada e hidratação regular (${mateTotalMl}ml);
-• 🌸 *Flores e borboletas:* Momento acolhedor de sono e descanso tranquilo;
-• 🍎 *Frutos e passarinhos:* Atividades pedagógicas, trabalhinhos e aprendizados;
-• 🪵 *Tronco forte:* Cuidados diários, higiene completa e saúde acompanhada de perto (36.5°C).
+  *Folhas verdes:* Nutrição balanceada e hidratação regular (${mateTotalMl}ml);
+  *Flores e borboletas:* Momento acolhedor de sono e descanso tranquilo;
+  *Frutos e passarinhos:* Atividades pedagógicas, trabalhinhos e aprendizados;
+  *Tronco forte:* Cuidados diários, higiene completa e saúde acompanhada de perto (36.5°C).
 
-☀️💧 *PARTICIPE DA JORNADA DO(A) ${mateNameClean.toUpperCase()}!*
+ *PARTICIPE DA JORNADA DO(A) ${mateNameClean.toUpperCase()}!*
 Abra as fotos no aplicativo e regue a árvore do seu filho enviando uma das manifestações de afeto:
-✨ *Que encanto!* • ❤️ *Feito com amor* • 🌟 *Puro brilho!* • 🤝 *Orgulho da gente* • 💎 *Um tesouro!*
+ *Que encanto!*   *Feito com amor*   *Puro brilho!*   *Orgulho da gente*   *Um tesouro!*
 
 _(Cada manifestação sua ilumina e rega a árvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
 
 Acesse o diário de rotina escolar completo de hoje pelo link seguro:
-🔗 ${window.location.origin}/?relatorio=${summaryId}
+ ${window.location.origin}/?relatorio=${summaryId}
 
 Com carinho,
-Equipe Anjinho Escolar ❤️🕊️`;
+Equipe Anjinho Escolar`;
      
               // Ingest simulated WhatsApp log for this child individually
               const primaryContact = mate.contatoEmergencia || { nome: 'Responsáveis', telefone: '11999999999' };
@@ -3593,7 +3593,7 @@ Equipe Anjinho Escolar ❤️🕊️`;
             setTarefas(updatedTasksCollective.filter(t => t.idosoId === idoso.id));
             
             // Simulated notify for active student
-            const endMsg = `Anjo Escolar: O Período Letivo para todos os alunos da classe ${targetClass} foi ENCERRADO por ${usuarioAtual?.nome || 'Educador(a)'} às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} de forma coletiva. Relatórios de rotina, sono e fraldas enviados para o WhatsApp dos responsáveis!`;
+            const endMsg = `Anjo Escolar: O Período Letivo para todos os alunos da classe ${targetClass} foi ENCERRADO por ${usuarioAtual?.nome || 'Educador(a)'} Às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} de forma coletiva. Relatórios de rotina, sono e fraldas enviados para o WhatsApp dos responsáveis!`;
             triggerWhatsAppSim('Aulas Encerradas em Grupo', endMsg);
 
             // Populate states to trigger the custom high-fidelity collective confirmation notification panel
@@ -3636,7 +3636,7 @@ Equipe Anjinho Escolar ❤️🕊️`;
   // 1. Double-Step Review Trigger
   const handleTriggerEndShiftReview = () => {
     if (!isStaffUser(usuarioAtual)) {
-      alert("⚠️ Operação Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o período letivo!");
+      alert(" ⚠️  Operação Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o período letivo!");
       return;
     }
     const currentStartTime = shiftStartTime || new Date().toISOString();
@@ -3764,38 +3764,38 @@ Equipe Anjinho Escolar ❤️🕊️`;
 
     // A. Compilation of complete pre-formatted dashboard report (Available securely in Family history logs)
     let fullReportMsg = isEscolar 
-      ? `✨ Anjo Escolar: Registro de ${idoso.nome} confirmed por ${profName}:
-📅 Data: ${todayBr}  •  ⏰ Horário: ${nowTimeBr}
+      ? ` Anjo Escolar: Registro de ${idoso.nome} confirmed por ${profName}:
+ Data: ${todayBr}     Horário: ${nowTimeBr}
 
-💧 Água: ${totalMl}ml
-🍽️ Refeição: ${mealSummaryStr}
-😴 Sono: ${sleepSummaryStr}
-🚾 Higiene: ${hygieneSummaryStr}
-😊 Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}
-🌡️ Saúde: ${healthTempStr}
-⚖️ Peso: ${idoso.peso || '15.5'} kg
+ Água: ${totalMl}ml
+  Refeição: ${mealSummaryStr}
+ Sono: ${sleepSummaryStr}
+ Higiene: ${hygieneSummaryStr}
+ Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}
+  Saúde: ${healthTempStr}
+ Peso: ${idoso.peso || '15.5'} kg
 
 `
-      : `✨ Anjo Cuidador: Registro de ${idoso.nome} confirmado por ${profName}:
-📅 Data: ${todayBr}  •  ⏰ Horário: ${nowTimeBr}
+      : ` Anjo Cuidador: Registro de ${idoso.nome} confirmado por ${profName}:
+ Data: ${todayBr}     Horário: ${nowTimeBr}
 
-💧 Água / Hidratação: ${totalMl}ml
-🍽️ Alimentação: ${mealSummaryStr}
-😴 Repouso: ${sleepSummaryStr}
-🚾 Higiene / Cuidados: ${hygieneSummaryStr}
-😊 Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}
-🌡️ Saúde / Sinais: ${healthTempStr}
-⚖️ Peso: ${idoso.peso || '65'} kg
+ Água / Hidratação: ${totalMl}ml
+  Alimentação: ${mealSummaryStr}
+ Repouso: ${sleepSummaryStr}
+ Higiene / Cuidados: ${hygieneSummaryStr}
+ Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}
+  Saúde / Sinais: ${healthTempStr}
+ Peso: ${idoso.peso || '65'} kg
 
 `;
 
-    fullReportMsg += `⏱️ *Período:* das ${startHour} às ${endHour} (Duração: ${elapsedShiftTime})\n`;
-    fullReportMsg += `📈 *Taxa de Conformidade hoje:* ${taxaC}%  •  *Qualidade de Registro:* ${taxaQ}%\n\n`;
+    fullReportMsg += ` *Período:* das ${startHour} Às ${endHour} (Duração: ${elapsedShiftTime})\n`;
+    fullReportMsg += ` *Taxa de Conformidade hoje:* ${taxaC}%    *Qualidade de Registro:* ${taxaQ}%\n\n`;
 
-    fullReportMsg += isEscolar ? `🎒 *ATIVIDADES & ROTINAS CONCLUÍDAS:*\n` : `💊 *MEDICAÇÕES & CUIDADOS CONCLUÍDOS:*\n`;
+    fullReportMsg += isEscolar ? ` *ATIVIDADES & ROTINAS CONCLUÍDAS:*\n` : ` *MEDICAÇÕES & CUIDADOS CONCLUÍDOS:*\n`;
     if (concluidas.length > 0) {
       concluidas.forEach((m: any) => {
-        fullReportMsg += `  ✓ ${m.titulo} às ${m.concluidaEm || m.horarioPrevisto}${m.observacao ? ` ("${m.observacao}")` : ''}\n`;
+        fullReportMsg += `   ${m.titulo} Às ${m.concluidaEm || m.horarioPrevisto}${m.observacao ? ` ("${m.observacao}")` : ''}\n`;
       });
     } else {
       fullReportMsg += isEscolar 
@@ -3804,82 +3804,82 @@ Equipe Anjinho Escolar ❤️🕊️`;
     }
 
     if (recusadas.length > 0) {
-      fullReportMsg += isEscolar ? `\n❌ *RECUSAS / JUSTIFICATIVAS:*\n` : `\n❌ *RECUSAS JUSTIFICADAS:*\n`;
+      fullReportMsg += isEscolar ? `\n *RECUSAS / JUSTIFICATIVAS:*\n` : `\n *RECUSAS JUSTIFICADAS:*\n`;
       recusadas.forEach((r: any) => {
-        fullReportMsg += `  × ${r.titulo} às ${r.concluidaEm || r.horarioPrevisto}. Justificativa: "${r.observacao || 'Recusa geral'}"\n`;
+        fullReportMsg += `  Á ${r.titulo} Às ${r.concluidaEm || r.horarioPrevisto}. Justificativa: "${r.observacao || 'Recusa geral'}"\n`;
       });
     }
 
     if (atrasadas.length > 0 || pendentes.length > 0) {
-      fullReportMsg += isEscolar ? `\n⚠️ *PENDÊNCIAS / NÃO CONCLUÍDOS:*\n` : `\n⚠️ *PENDÊNCIAS / NÃO ADMINISTRADOS:*\n`;
+      fullReportMsg += isEscolar ? `\n ⚠️  *PENDÊNCIAS / NÁO CONCLUÍDOS:*\n` : `\n ⚠️  *PENDÊNCIAS / NÁO ADMINISTRADOS:*\n`;
       if (atrasadas.length > 0) {
         atrasadas.forEach((a: any) => {
-          fullReportMsg += `  • [ATRASADO] ${a.titulo} prevista para ${a.horarioPrevisto}\n`;
+          fullReportMsg += `   [ATRASADO] ${a.titulo} prevista para ${a.horarioPrevisto}\n`;
         });
       }
       if (pendentes.length > 0) {
         pendentes.forEach((p: any) => {
-          fullReportMsg += `  • [PENDENTE] ${p.titulo} prevista para ${p.horarioPrevisto}\n`;
+          fullReportMsg += `   [PENDENTE] ${p.titulo} prevista para ${p.horarioPrevisto}\n`;
         });
       }
     }
 
-    fullReportMsg += `\n🍽 *ALIMENTAÇÃO:*\n`;
+    fullReportMsg += `\n *ALIMENTAÇÁO:*\n`;
     if (meals.length > 0) {
       meals.forEach((meal: any) => {
         const mealTitle = meal.refeicao === 'cafe_manha' ? 'Café da manhã' : meal.refeicao === 'almoco' ? 'Almoço' : meal.refeicao === 'lanche' ? 'Lanche da Tarde' : meal.refeicao === 'jantar' ? 'Jantar' : 'Ceia';
         const accepts = meal.aceitacao === 'muito_bem' ? (isEscolar ? 'Comeu/Tomou tudo' : 'Aceitou muito bem') : meal.aceitacao === 'pouco' ? 'Comeu pouco' : 'Recusou';
-        fullReportMsg += `  • ${mealTitle} (${meal.horario}): ${accepts}.${meal.observacoes ? ` Obs: "${meal.observacoes}"` : ''}\n`;
+        fullReportMsg += `   ${mealTitle} (${meal.horario}): ${accepts}.${meal.observacoes ? ` Obs: "${meal.observacoes}"` : ''}\n`;
       });
     } else {
       fullReportMsg += isEscolar ? `  - Sem refeições cadastradas neste período.\n` : `  - Sem refeições cadastradas neste turno.\n`;
     }
 
     const actualWaterCount = waterCount;
-    fullReportMsg += `\n💧 *HIDRATAÇÃO:*\n`;
+    fullReportMsg += `\n *HIDRATAÇÁO:*\n`;
     if (isEscolar) {
-      fullReportMsg += `  • Copos de Água Ingeridos: ${actualWaterCount > 0 ? actualWaterCount : Math.max(1, Math.round(totalMl/250))} copo(s) (${totalMl}ml de água)\n`;
+      fullReportMsg += `   Copos de Água Ingeridos: ${actualWaterCount > 0 ? actualWaterCount : Math.max(1, Math.round(totalMl/250))} copo(s) (${totalMl}ml de água)\n`;
     } else {
-      fullReportMsg += `  • Copos d'água registrados: ${actualWaterCount > 0 ? actualWaterCount : Math.max(1, Math.round(totalMl/250))} copo(s) (totalizado: ${totalMl}ml de água ingerida)\n`;
+      fullReportMsg += `   Copos d'água registrados: ${actualWaterCount > 0 ? actualWaterCount : Math.max(1, Math.round(totalMl/250))} copo(s) (totalizado: ${totalMl}ml de água ingerida)\n`;
     }
 
-    fullReportMsg += isEscolar ? `\n🧠 *HUMOR & COMPORTAMENTO:*\n` : `\n🧠 *HUMOR & BEM ESTAR:*\n`;
-    fullReportMsg += `  • Estado observado: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}\n`;
+    fullReportMsg += isEscolar ? `\n  *HUMOR & COMPORTAMENTO:*\n` : `\n  *HUMOR & BEM ESTAR:*\n`;
+    fullReportMsg += `   Estado observado: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}\n`;
 
     if (ultimoSinal) {
       if (isEscolar) {
-        fullReportMsg += `\n💓 *SAÚDE & SONECA RECENTES:*\n`;
-        fullReportMsg += `  • Período de Sono/Soneca: ${ultimoSinal.pressaoArterial}\n`;
-        fullReportMsg += `  • Fraldas e Trocas: ${ultimoSinal.fralda || 'Verificada e limpa'}\n`;
-        fullReportMsg += `  • Temperatura Corporal: ${ultimoSinal.temperatura}°C\n`;
+        fullReportMsg += `\n *SAÚDE & SONECA RECENTES:*\n`;
+        fullReportMsg += `   Período de Sono/Soneca: ${ultimoSinal.pressaoArterial}\n`;
+        fullReportMsg += `   Fraldas e Trocas: ${ultimoSinal.fralda || 'Verificada e limpa'}\n`;
+        fullReportMsg += `   Temperatura Corporal: ${ultimoSinal.temperatura}°C\n`;
       } else {
-        fullReportMsg += `\n💓 *ÚLTIMOS SINAIS VITAIS AFERIDOS:*\n`;
-        fullReportMsg += `  • Pressão Arterial: ${ultimoSinal.pressaoArterial}\n`;
-        fullReportMsg += `  • Glicemia: ${ultimoSinal.glicemia} mg/dL\n`;
-        fullReportMsg += `  • Oxigenação O2: ${ultimoSinal.saturacao}%\n`;
-        fullReportMsg += `  • Temperatura: ${ultimoSinal.temperatura}°C\n`;
+        fullReportMsg += `\n *ÚLTIMOS SINAIS VITAIS AFERIDOS:*\n`;
+        fullReportMsg += `   Pressão Arterial: ${ultimoSinal.pressaoArterial}\n`;
+        fullReportMsg += `   Glicemia: ${ultimoSinal.glicemia} mg/dL\n`;
+        fullReportMsg += `   Oxigenação O2: ${ultimoSinal.saturacao}%\n`;
+        fullReportMsg += `   Temperatura: ${ultimoSinal.temperatura}°C\n`;
       }
     }
 
     if (ocorrencias.length > 0) {
-      fullReportMsg += isEscolar ? `\n🚨 *OCORRÊNCIAS / OBSERVAÇÕES ATÍPICAS NO PERÍODO:*\n` : `\n🚨 *OCORRÊNCIAS / ANOTAÇÕES ATÍPICAS NO PLANTONISMO:*\n`;
+      fullReportMsg += isEscolar ? `\n *OCORRÊNCIAS / OBSERVAÇÕES ATÍPICAS NO PERÍODO:*\n` : `\n *OCORRÊNCIAS / ANOTAÇÕES ATÍPICAS NO PLANTONISMO:*\n`;
       ocorrencias.forEach((o: any) => {
-        fullReportMsg += `  • [${(o.criticidade || 'informacao').toUpperCase()}] ${(o.tipo || 'ocorrencia').toUpperCase()} às ${o.horario || ''}: ${o.descricao || ''}\n`;
+        fullReportMsg += `   [${(o.criticidade || 'informacao').toUpperCase()}] ${(o.tipo || 'ocorrencia').toUpperCase()} Às ${o.horario || ''}: ${o.descricao || ''}\n`;
       });
     }
 
     // Include modifications of medications during the shift
-    fullReportMsg += isEscolar ? `\n📦 *ALTERAÇÕES DE ROTINA/AGENDA (Inclusões / Exclusões):*\n` : `\n📦 *ALTERAÇÕES DE MEDICAMENTOS (Inclusões / Exclusões):*\n`;
+    fullReportMsg += isEscolar ? `\n *ALTERAÇÕES DE ROTINA/AGENDA (Inclusões / Exclusões):*\n` : `\n *ALTERAÇÕES DE MEDICAMENTOS (Inclusões / Exclusões):*\n`;
     if (medChanges && medChanges.length > 0) {
       medChanges.forEach((ch: any) => {
         const actionLabel = ch.tipo === 'cadastro' ? 'NOVO CADASTRADO' : ch.tipo === 'exclusao' ? 'EXCLUÍDO' : ch.tipo === 'suspensao' ? 'SUSPENSO' : 'REATIVADO';
-        fullReportMsg += `  • [${actionLabel}] ${ch.nome}: ${ch.detalhes} (por ${ch.autor || 'Educador(a)'})\n`;
+        fullReportMsg += `   [${actionLabel}] ${ch.nome}: ${ch.detalhes} (por ${ch.autor || 'Educador(a)'})\n`;
       });
     } else {
       fullReportMsg += `  - Nenhuma alteração feita neste período.\n`;
     }
 
-    fullReportMsg += `\n\n✓ *Relatório processado de maneira segura e em conformidade estrita com LGPD.*`;
+    fullReportMsg += `\n\n *Relatório processado de maneira segura e em conformidade estrita com LGPD.*`;
 
     // B. Generate unique report key
     const summaryId = 'summary_id_' + Date.now();
@@ -3887,36 +3887,36 @@ Equipe Anjinho Escolar ❤️🕊️`;
     // C. Composition of the revised SHORT WhatsApp direct alert
     const studentCleanName = (idoso.nome || '').split(' (')[0];
     const shortWaMsg = isEscolar
-      ? `🌳 A ÁRVORE DA INFÂNCIA HOJE:
+      ? ` A ÁRVORE DA INFÂNCIA HOJE:
 Hoje a árvore do(a) *${studentCleanName}* floresceu no Anjinho Escolar:
-• 🍃 *Folhas verdes:* Nutrição (${mealSummaryStr}) e hidratação regular (${totalMl}ml);
-• 🌸 *Flores e borboletas:* Momento acolhedor de soneca e descanso (${sleepSummaryStr});
-• 🍎 *Frutos e passarinhos:* Atividades pedagógicas e trabalhinhos manuais;
-• 🪵 *Tronco forte:* Cuidados diários, higiene (${hygieneSummaryStr}) e saúde (${healthTempStr}).
+  *Folhas verdes:* Nutrição (${mealSummaryStr}) e hidratação regular (${totalMl}ml);
+  *Flores e borboletas:* Momento acolhedor de soneca e descanso (${sleepSummaryStr});
+  *Frutos e passarinhos:* Atividades pedagógicas e trabalhinhos manuais;
+  *Tronco forte:* Cuidados diários, higiene (${hygieneSummaryStr}) e saúde (${healthTempStr}).
 
-☀️💧 *PARTICIPE DA JORNADA DO(A) ${studentCleanName.toUpperCase()}!*
+ *PARTICIPE DA JORNADA DO(A) ${studentCleanName.toUpperCase()}!*
 Abra as fotos no aplicativo e regue a árvore do seu filho enviando uma das manifestações de afeto:
-✨ *Que encanto!* • ❤️ *Feito com amor* • 🌟 *Puro brilho!* • 🤝 *Orgulho da gente* • 💎 *Um tesouro!*
+ *Que encanto!*   *Feito com amor*   *Puro brilho!*   *Orgulho da gente*   *Um tesouro!*
 
 _(Cada manifestação sua ilumina e rega a árvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
 
 Acesse o diário de rotina escolar completo pelo link seguro:
-🔗 ${window.location.origin}/?relatorio=${summaryId}
+ ${window.location.origin}/?relatorio=${summaryId}
 
 Com carinho,
-Equipe Anjinho Escolar ❤️🕊️`
-      : `✨ Anjo Cuidador: Registro de ${idoso.nome} confirmado por ${profName}:
-📅 Data: ${todayBr}  •  ⏰ Horário: ${nowTimeBr}
-💧 Água: ${totalMl}ml
-🍽️ Alimentação: ${mealSummaryStr}
-😴 Repouso: ${sleepSummaryStr}
-🚾 Higiene: ${hygieneSummaryStr}
-😊 Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}
-🌡️ Saúde: ${healthTempStr}
-⚖️ Peso: ${idoso.peso || '65'} kg
+Equipe Anjinho Escolar`
+      : ` Anjo Cuidador: Registro de ${idoso.nome} confirmado por ${profName}:
+ Data: ${todayBr}     Horário: ${nowTimeBr}
+ Água: ${totalMl}ml
+  Alimentação: ${mealSummaryStr}
+ Repouso: ${sleepSummaryStr}
+ Higiene: ${hygieneSummaryStr}
+ Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}
+  Saúde: ${healthTempStr}
+ Peso: ${idoso.peso || '65'} kg
 
 Acesse o boletim de cuidados completo pelo link seguro:
-🔗 ${window.location.origin}/?relatorio=${summaryId}`;
+ ${window.location.origin}/?relatorio=${summaryId}`;
 
     // Dispatch concise WA alarm
     triggerWhatsAppSim(isEscolar ? 'Encerramento de Período Letivo Curto para Pais' : 'Encerramento de Turno Curto para Família', shortWaMsg);
@@ -4043,7 +4043,7 @@ Acesse o boletim de cuidados completo pelo link seguro:
         tipo: 'saida_ausencia',
         criticidade: 'amarelo',
         titulo: 'Saída Antecipada / Ausência Registrada',
-        descricao: `Aluno ${cleanName} se ausentou às ${horaStr}. Motivo: ${finalReason}`,
+        descricao: `Aluno ${cleanName} se ausentou Às ${horaStr}. Motivo: ${finalReason}`,
         horario: horaStr,
         data: dataStr,
         responsavel: usuarioAtual?.nome || 'Educador',
@@ -4087,12 +4087,12 @@ Acesse o boletim de cuidados completo pelo link seguro:
       setShowStopIndividualShiftModal(false);
 
       // 4. Simulated WhatsApp notification
-      const abMsg = `Anjo Escolar — Aviso de Saída / Ausência
+      const abMsg = `Anjo Escolar  Aviso de Saída / Ausência
   
-Olá. Registramos que o(a) aluno(a) *${cleanName}* teve saída/ausência registrada às *${horaStr}*.
+Olá. Registramos que o(a) aluno(a) *${cleanName}* teve saída/ausência registrada Às *${horaStr}*.
 Motivo: *${finalReason}*
 
-As atividades e registros do dia permanecem salvos no relatório escolar. Qualquer dúvida, estamos à disposição!`;
+As atividades e registros do dia permanecem salvos no relatório escolar. Qualquer dúvida, estamos À disposição!`;
 
       triggerWhatsAppSim('Aviso de Saída / Ausência do Aluno', abMsg);
 
@@ -4102,7 +4102,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
         window.dispatchEvent(new CustomEvent('db-vitals-update'));
       }
 
-      showToast(`⏹️ Saída de ${cleanName} registrada às ${horaStr}. Motivo salvo no relatório e LGPD.`, 'success');
+      showToast(` Saída de ${cleanName} registrada Às ${horaStr}. Motivo salvo no relatório e LGPD.`, 'success');
     } catch (err) {
       console.error('Erro ao registrar saída de aluno:', err);
     }
@@ -4129,7 +4129,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
       }
     } catch (e) {}
 
-    showToast('✓ Diário/relatório de rotina excluído permanentemente!');
+    showToast(' Diário/relatório de rotina excluído permanentemente!');
   };
 
   // Reusable helper to check role permissions and activate shift automatically if needed
@@ -4173,7 +4173,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     }
     const auth = checkFeedingCareAuthorization();
     if (!auth.isAuthorized) {
-      alert(`⚠️ Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar hidratação.`);
+      alert(` ⚠️  Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar hidratação.`);
       return;
     }
     const defaultTime = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -4267,7 +4267,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     }
     const auth = checkFeedingCareAuthorization();
     if (!auth.isAuthorized) {
-      alert(`⚠️ Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar refeições.`);
+      alert(` ⚠️  Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar refeições.`);
       return;
     }
 
@@ -4286,11 +4286,11 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
         );
 
         triggerWhatsAppSim(
-          '🍼 Comunicado: Mamadeira Já Servida',
-          `Anjinho Escolar: ${idoso.nome} já tomou mamadeira às ${check.lastHorario}. A tentativa de novo registro foi feita às ${defaultTime}. Por questões de segurança alimentar e intervalo mínimo de 2h, a próxima mamadeira estará liberada a partir das ${check.nextAllowedHorario}.`
+          ' Comunicado: Mamadeira Já Servida',
+          `Anjinho Escolar: ${idoso.nome} já tomou mamadeira Às ${check.lastHorario}. A tentativa de novo registro foi feita Às ${defaultTime}. Por questões de segurança alimentar e intervalo mínimo de 2h, a próxima mamadeira estará liberada a partir das ${check.nextAllowedHorario}.`
         );
 
-        alert(`${check.message}\n\n📢 Um comunicado oficial foi gerado no mural e enviado aos responsáveis informando que a criança já tomou mamadeira recentemente.`);
+        alert(`${check.message}\n\n Um comunicado oficial foi gerado no mural e enviado aos responsáveis informando que a criança já tomou mamadeira recentemente.`);
         return;
       }
     } else {
@@ -4298,15 +4298,15 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
       const alreadyExists = mealsStoreCheck.some(f => f.idosoId === idoso.id && f.refeicao === quickMeal.refeicao && isTodayOrDemoDate(f.data));
       if (alreadyExists) {
         const mealLabelMap: { [key: string]: string } = {
-          mamadeira: '🍼 Mamadeira de Leite / Fórmula',
-          cafe_manha: isEscolar ? '🥐 Lanchinho da Manhã / Café' : '☕ Café da Manhã',
-          almoco: isEscolar ? '🍲 Papinha / Almocinho' : '🍛 Almoço',
-          lanche: isEscolar ? '🍎 Frutinha / Lanchinho Tarde' : '🍎 Lanche da Tarde',
-          jantar: isEscolar ? '🥣 Jantinha Escolar' : '🍲 Jantar',
-          ceia: isEscolar ? '🥛 Chá ou Suco Pós-Soneca' : '🥛 Ceia / Repouso'
+          mamadeira: ' Mamadeira de Leite / Fórmula',
+          cafe_manha: isEscolar ? ' Lanchinho da Manhã / Café' : ' Café da Manhã',
+          almoco: isEscolar ? ' Papinha / Almocinho' : ' Almoço',
+          lanche: isEscolar ? ' Frutinha / Lanchinho Tarde' : ' Lanche da Tarde',
+          jantar: isEscolar ? ' Jantinha Escolar' : ' Jantar',
+          ceia: isEscolar ? ' Chá ou Suco Pós-Soneca' : ' Ceia / Repouso'
         };
         const label = mealLabelMap[quickMeal.refeicao] || quickMeal.refeicao;
-        const confirmSave = window.confirm(`⚠️ Atenção: Você já registrou a refeição "${label}" para ${idoso.nome} hoje!\n\nDeseja realmente salvar um NOVO registro para essa mesma refeição?`);
+        const confirmSave = window.confirm(` ⚠️  Atenção: Você já registrou a refeição "${label}" para ${idoso.nome} hoje!\n\nDeseja realmente salvar um NOVO registro para essa mesma refeição?`);
         if (!confirmSave) return;
       }
     }
@@ -4400,13 +4400,13 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     }
     const auth = checkFeedingCareAuthorization();
     if (!auth.isAuthorized) {
-      alert(`⚠️ Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar cuidados de higiene.`);
+      alert(` ⚠️  Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar cuidados de higiene.`);
       return;
     }
 
     const alreadyCompleted = tarefas.some(t => t.tipo === 'banho' && t.status === 'concluido');
     if (alreadyCompleted) {
-      const confirmSave = window.confirm(`⚠️ Atenção: O registro de Higiene para ${idoso.nome} já foi marcado como concluído hoje!\n\nDeseja realmente salvar um NOVO registro de higiene?`);
+      const confirmSave = window.confirm(` ⚠️  Atenção: O registro de Higiene para ${idoso.nome} já foi marcado como concluído hoje!\n\nDeseja realmente salvar um NOVO registro de higiene?`);
       if (!confirmSave) return;
     }
 
@@ -4476,7 +4476,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     const otherSeniorsTasks = allTasksInDB.filter(t => t.idosoId !== idoso.id);
     saveToDB('anjo_tarefas_diarias', [...otherSeniorsTasks, ...updated]);
 
-    triggerWhatsAppSim('Cuidados de Higiene Concluídos', `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Serviços de Higiene e Conforto concluídos para ${idoso.nome} às ${defaultTime}: Banho/Fralda: ${quickHygiene.bath ? 'Sim' : 'Não'}, Troca de Roupa: ${quickHygiene.clothes ? 'Sim' : 'Não'}, Escovação Bucal: ${quickHygiene.teeth ? 'Sim' : 'Não'}.`);
+    triggerWhatsAppSim('Cuidados de Higiene Concluídos', `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Serviços de Higiene e Conforto concluídos para ${idoso.nome} Às ${defaultTime}: Banho/Fralda: ${quickHygiene.bath ? 'Sim' : 'Não'}, Troca de Roupa: ${quickHygiene.clothes ? 'Sim' : 'Não'}, Escovação Bucal: ${quickHygiene.teeth ? 'Sim' : 'Não'}.`);
     alert('Higiene registrada com sucesso!');
   };
 
@@ -4562,8 +4562,8 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
       const newFralda = quickVitals.glicemia || 'Sem trocas';
       const newTemp = quickVitals.temp ? `${quickVitals.temp}°C` : 'Normal / Não medida';
 
-      // 1. Cross-module duplicate check for sleep (Sono/Soneca) between Diário da Infância and Frequência
-      const timeMatch = newSono.match(/(\d{1,2}:\d{2})\s*(?:às|as|-|até)\s*(\d{1,2}:\d{2})/i) || 
+      // 1. Cross-module duplicate check for sleep (Sono/Soneca) between Diário da Inf and Frequência
+      const timeMatch = newSono.match(/(\d{1,2}:\d{2})\s*(?:Às|as|-|até)\s*(\d{1,2}:\d{2})/i) || 
                         (sleepStart && sleepEnd && newSono.toLowerCase().includes('dormiu') ? [null, sleepStart, sleepEnd] : null);
 
       let isDuplicateSleepWithSono = false;
@@ -4584,7 +4584,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                  (sStart.replace(/^0/, '') === startShort && sEnd.replace(/^0/, '') === endShort);
         });
 
-        // Check against Diário da Infância (anjo_sinais)
+        // Check against Diário da Inf (anjo_sinais)
         isDuplicateSleepWithSinais = vitalsStore.some(v => {
           if (v.idosoId !== idoso.id || !isTodayOrDemoDate(v.data)) return false;
           const old = (v.soneca || v.pressaoArterial || '').toLowerCase();
@@ -4594,8 +4594,8 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
       }
 
       if (isDuplicateSleepWithSono || isDuplicateSleepWithSinais) {
-        const sourceName = isDuplicateSleepWithSono ? 'Frequência (Rotina)' : 'Diário da Infância';
-        alert(`⚠️ Registro Duplicado Bloqueado: Já existe um registro de soneca/sono para ${idoso.nome} no mesmo horário (${timeMatch ? `${timeMatch[1]} às ${timeMatch[2]}` : newSono}) lançado hoje no ${sourceName}!\n\nNão é permitido salvar mensagens/registros duplicados para el mesmo horário.`);
+        const sourceName = isDuplicateSleepWithSono ? 'Frequência (Rotina)' : 'Diário da Inf';
+        alert(` ⚠️  Registro Duplicado Bloqueado: Já existe um registro de soneca/sono para ${idoso.nome} no mesmo horário (${timeMatch ? `${timeMatch[1]} Às ${timeMatch[2]}` : newSono}) lançado hoje no ${sourceName}!\n\nNão é permitido salvar mensagens/registros duplicados para el mesmo horário.`);
         return;
       }
 
@@ -4610,7 +4610,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                             ((Number(quickVitals.temp) || 36.5) === lastRecord.temperatura);
         
         if (isIdentical) {
-          alert(`⚠️ Registro Idêntico Bloqueado: Você já salvou exatamente essas informações no Diário da Infância para ${idoso.nome} hoje!\n\nNão é permitido enviar duas mensagens idênticas.`);
+          alert(` ⚠️  Registro Idêntico Bloqueado: Você já salvou exatamente essas informações no Diário da Inf para ${idoso.nome} hoje!\n\nNão é permitido enviar duas mensagens idênticas.`);
           return;
         }
 
@@ -4725,7 +4725,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     }
 
     if ((isEscolar || quickVitals.pressao) && quickVitals.pressao && quickVitals.pressao !== 'Sem registros') {
-      const timeMatch = quickVitals.pressao.match(/(\d{1,2}(?::\d{2}|h\d{0,2}))\s*(?:às|as|-|até)\s*(\d{1,2}(?::\d{2}|h\d{0,2}))/i);
+      const timeMatch = quickVitals.pressao.match(/(\d{1,2}(?::\d{2}|h\d{0,2}))\s*(?:Às|as|-|até)\s*(\d{1,2}(?::\d{2}|h\d{0,2}))/i);
       const extractedStart = timeMatch ? timeMatch[1] : (sleepStart || '13:00');
       const extractedEnd = timeMatch ? timeMatch[2] : (sleepEnd || '14:30');
 
@@ -4767,27 +4767,27 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     // Save WhatsApp notification log
     const whatsMsg = isFundamental
       ? `Anjinho Fundamental: Relatório de Acompanhamento Escolar aferido para o(a) aluno(a) ${idoso.nome} pela Profª ${usuarioAtual.nome}:
-• Dever de Casa / Lição: ${quickVitals.pressao || 'Sem tarefas registradas'}
-• Foco / Comportamento: ${quickVitals.glicemia || 'Focado e excelente comportamento'}
-• Temperatura: ${quickVitals.temp ? `${quickVitals.temp}°C` : 'Normal / Não medida'}
-• Material / Cadernos: ${quickVitals.sat || 'Cadernos e estojo completos'}
-• Hidratação / Garrafinha: ${quickVitals.fCard ? `${quickVitals.fCard} copos` : 'Normal'}
-• Peso: ${quickVitals.peso ? `${quickVitals.peso} kg` : 'Não aferido'}`
+ Dever de Casa / Lição: ${quickVitals.pressao || 'Sem tarefas registradas'}
+ Foco / Comportamento: ${quickVitals.glicemia || 'Focado e excelente comportamento'}
+ Temperatura: ${quickVitals.temp ? `${quickVitals.temp}°C` : 'Normal / Não medida'}
+ Material / Cadernos: ${quickVitals.sat || 'Cadernos e estojo completos'}
+ Hidratação / Garrafinha: ${quickVitals.fCard ? `${quickVitals.fCard} copos` : 'Normal'}
+ Peso: ${quickVitals.peso ? `${quickVitals.peso} kg` : 'Não aferido'}`
       : isEscolar
         ? `Anjinho Escolar: Relatório de Saúde aferido para o(a) aluno(a) ${idoso.nome} pela Profª ${usuarioAtual.nome}:
-• Período de Sono: ${quickVitals.pressao || 'Não dormiu / Não se aplica'}
-• Fralda (Xixi/Cocô): ${quickVitals.glicemia || 'Verificada e sem assaduras'}
-• Temperatura: ${quickVitals.temp ? `${quickVitals.temp}°C` : 'Normal / Não medida'}
-• 🍼 Mamadeiras: ${quickVitals.sat ? `${quickVitals.sat} mamadeira(s)` : 'Nenhuma no momento'}
-• 💧 Copos d'Água: ${quickVitals.fCard ? `${quickVitals.fCard} copo(s)` : 'Normal'}
-• Peso: ${quickVitals.peso ? `${quickVitals.peso} kg` : 'Não aferido'}`
+ Período de Sono: ${quickVitals.pressao || 'Não dormiu / Não se aplica'}
+ Fralda (Xixi/Cocô): ${quickVitals.glicemia || 'Verificada e sem assaduras'}
+ Temperatura: ${quickVitals.temp ? `${quickVitals.temp}°C` : 'Normal / Não medida'}
+  Mamadeiras: ${quickVitals.sat ? `${quickVitals.sat} mamadeira(s)` : 'Nenhuma no momento'}
+  Copos d'Água: ${quickVitals.fCard ? `${quickVitals.fCard} copo(s)` : 'Normal'}
+ Peso: ${quickVitals.peso ? `${quickVitals.peso} kg` : 'Não aferido'}`
         : `Anjo Cuidador: Sinais vitais aferidos para ${idoso.nome} por ${usuarioAtual.nome}:
-• Pressão: ${novoSinal.pressaoArterial} mmHg
-• Glicemia: ${novoSinal.glicemia} mg/dL
-• Temp: ${novoSinal.temperatura}°C
-• Sat. O2: ${novoSinal.saturacao}%
-• Freq. Cardíaca: ${novoSinal.frequenciaCardiaca} bpm
-• Peso: ${novoSinal.peso ? `${novoSinal.peso} kg` : 'Não aferido'}`;
+ Pressão: ${novoSinal.pressaoArterial} mmHg
+ Glicemia: ${novoSinal.glicemia} mg/dL
+ Temp: ${novoSinal.temperatura}°C
+ Sat. O2: ${novoSinal.saturacao}%
+ Freq. Cardíaca: ${novoSinal.frequenciaCardiaca} bpm
+ Peso: ${novoSinal.peso ? `${novoSinal.peso} kg` : 'Não aferido'}`;
 
     triggerWhatsAppSim(isEscolar ? 'Saúde e Sono do Aluno Registrados' : 'Sinais Vitais e Peso Registrados', whatsMsg);
     alert(isEscolar ? 'Situação de saúde e rotina do aluno registradas com sucesso!' : 'Sinais vitais e controle de Peso registrados com sucesso!');
@@ -4823,7 +4823,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
         usuarioTipo: usuarioAtual?.tipo || 'familiar',
         idosoNome: idoso?.nome || 'Paciente não especificado',
         dataConsentimento: new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR'),
-        modoApp: appMode === 'escolar_infantil' ? '🧸 Anjinho Escolar' : '👵 Anjo Cuidador',
+        modoApp: appMode === 'escolar_infantil' ? ' Anjinho Escolar' : ' Anjo Cuidador',
         deviceFingerprint: `IP 177.104.${Math.floor(Math.random() * 200 + 40)}.${Math.floor(Math.random() * 254)} (HTTPS Secured - Chrome Mobile)`,
         statusFinanceiro: localStorage.getItem(`anjo_sub_status_${idoso.id}`) || 'pago'
       };
@@ -4938,7 +4938,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     : (latestSono 
         ? (latestSono.observacoes && latestSono.observacoes.length > 0 
             ? latestSono.observacoes 
-            : (latestSono.dormiuEm && latestSono.acordouEm ? `Dormiu das ${latestSono.dormiuEm} às ${latestSono.acordouEm}` : 'Soneca registrada'))
+            : (latestSono.dormiuEm && latestSono.acordouEm ? `Dormiu das ${latestSono.dormiuEm} Às ${latestSono.acordouEm}` : 'Soneca registrada'))
         : (latestVitals?.pressaoArterial && (latestVitals.pressaoArterial.includes(':') || latestVitals.pressaoArterial.toLowerCase().includes('dormiu') || latestVitals.pressaoArterial.toLowerCase().includes('soneca')) ? latestVitals.pressaoArterial : null));
 
   const weightedVitals = allVitalsList.filter(s => s.peso && s.peso > 0);
@@ -4997,7 +4997,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
   return (
     <div className="space-y-6">
       
-      {/* 👶 SELETOR DE FILHOS MATRICULADOS (Para Pais com múltiplos filhos) */}
+      {/*  SELETOR DE FILHOS MATRICULADOS (Para Pais com múltiplos filhos) */}
       {usuarioAtual?.tipo === 'familiar' && myChildren.length > 1 && (
         <div className={`p-5 rounded-3xl border transition-all shadow-sm ${
           accessibilitySettings?.darkMode
@@ -5007,7 +5007,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="space-y-1 text-left">
               <span className="text-[9px] font-black uppercase text-amber-600 bg-amber-50 dark:bg-amber-950/40 px-2.5 py-0.5 rounded-md tracking-wider">
-                👨‍👩‍👧‍👦 Seus Filhos Matriculados
+                 Seus Filhos Matriculados
               </span>
               <h4 className="text-xs font-black text-slate-800 dark:text-white flex items-center gap-1.5 leading-tight pt-1">
                 Boletins de Acompanhamento Familiar
@@ -5045,7 +5045,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
         </div>
       )}
       
-      {/* 🏫 INSTITUTION SPONSOR & LOGO BRANDING BANNER (FIRST TAB ACCESSIBILITY) */}
+      {/*  INSTITUTION SPONSOR & LOGO BRANDING BANNER (FIRST TAB ACCESSIBILITY) */}
       <div className={`p-4 rounded-3xl border text-left flex items-center justify-between gap-4 shadow-xs relative overflow-hidden ${
         accessibilitySettings?.darkMode 
           ? 'bg-slate-900 border-slate-800 text-white' 
@@ -5058,18 +5058,18 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
             {instLogo ? (
               <img src={instLogo} alt={instName} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
             ) : (
-              <span className="text-xl">{isEscolar ? '🏫' : '👵'}</span>
+              <span className="text-xl">{isEscolar ? '' : ''}</span>
             )}
           </div>
           <div className="space-y-0.5">
             <span className="text-[9px] font-black uppercase text-indigo-600 tracking-wider flex items-center gap-1">
-              ⭐ Instituição Credenciada & Patrocinadora
+               Instituição Credenciada & Patrocinadora
             </span>
             <h4 className="text-sm font-black text-slate-900 tracking-tight leading-none">
               {instName}
             </h4>
             <p className="text-[11px] text-slate-600 dark:text-slate-300 font-semibold leading-snug">
-              {instSlogan || (isEscolar ? 'Onde a infância é registrada para sempre — Transparência e segurança diária.' : 'Acompanhamento Sênior Inteligente — Cuidado e transparência em tempo real.')}
+              {instSlogan || (isEscolar ? 'Onde a inf é registrada para sempre  Transparência e segurança diária.' : 'Acompanhamento Sênior Inteligente  Cuidado e transparência em tempo real.')}
             </p>
           </div>
         </div>
@@ -5083,7 +5083,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
         </div>
       </div>
 
-      {/* 🔍 BUSCA RÁPIDA DE ALUNO POR NOME */}
+      {/*  BUSCA RÁPIDA DE ALUNO POR NOME */}
       {onSwitchIdoso && (
         <div className={`p-5 rounded-3xl border transition-all shadow-sm ${
           accessibilitySettings?.darkMode
@@ -5093,10 +5093,10 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="space-y-1 text-left min-w-0">
               <span className="text-[9px] font-black uppercase text-indigo-600 bg-indigo-50 dark:bg-indigo-950/50 px-2.5 py-0.5 rounded-md tracking-wider">
-                ⚡ Busca Direta por Nome
+                 Busca Direta por Nome
               </span>
               <h3 className="text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
-                <span>🔍</span> Busca Rápida de {isEscolar ? 'Alunos & Crianças' : 'Assistidos'}
+                <span></span> Busca Rápida de {isEscolar ? 'Alunos & Crianças' : 'Assistidos'}
               </h3>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold leading-relaxed">
                 Digite o nome de qualquer {isEscolar ? 'aluno, turma ou responsável' : 'assistido'} para alternar o diário e boletim em 1 clique:
@@ -5118,7 +5118,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
         </div>
       )}
 
-      {/* 🏫 CENTRAL DE SALAS E PROFESSORAS - SELETOR RÁPIDO PARA SIMULAÇÃO */}
+      {/*  CENTRAL DE SALAS E PROFESSORAS - SELETOR RÁPIDO PARA SIMULAÇÁO */}
       {appMode === 'escolar_infantil' && usuarioAtual?.tipo !== 'familiar' && (
         <div className={`p-5 rounded-3xl border transition-all shadow-md ${
           accessibilitySettings?.darkMode
@@ -5128,7 +5128,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100/60 pb-3 mb-4">
             <div className="space-y-1 text-left">
               <h3 className="text-sm font-black flex items-center gap-2">
-                <span>🏫</span> Central de Salas & Professoras <span className="bg-amber-100 text-amber-800 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">Ambiente de Testes</span>
+                <span></span> Central de Salas & Professoras <span className="bg-amber-100 text-amber-800 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">Ambiente de Testes</span>
               </h3>
               <p className="text-[11px] text-slate-500 font-semibold leading-relaxed">
                 Mude de sala e professora com 1 clique. O painel se adaptará por completo para carregar as informações e diários da sala selecionada.
@@ -5138,7 +5138,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
               <div className="flex items-center gap-2 bg-indigo-50 border border-indigo-100/80 px-3 py-1.5 rounded-2xl shrink-0 self-start sm:self-auto">
                 <span className="text-[10px] text-indigo-800 font-extrabold uppercase">Professora Ativa:</span>
                 <span className="text-[11px] font-black text-indigo-950 flex items-center gap-1">
-                  👩‍🏫 {usuarioAtual.nome.replace(' (Educadora)', '')} 
+                   {usuarioAtual.nome.replace(' (Educadora)', '')} 
                   <span className="bg-indigo-600 text-white text-[9px] px-1.5 py-0.2 rounded-md font-extrabold">{usuarioAtual.salaAula}</span>
                 </span>
               </div>
@@ -5189,9 +5189,9 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                       <h4 className="font-extrabold text-xs text-slate-900 group-hover:text-indigo-900 transition-colors truncate">{room.name}</h4>
                       <span className="text-[9px] font-black text-slate-400 shrink-0 bg-slate-100 px-1 py-0.2 rounded">{room.ageGroup}</span>
                     </div>
-                    <p className="text-[10px] text-slate-500 font-extrabold truncate">👩‍🏫 {teacherName}</p>
+                    <p className="text-[10px] text-slate-500 font-extrabold truncate"> {teacherName}</p>
                     <div className="flex items-center justify-between text-[9px] text-slate-400 font-bold pt-0.5">
-                      <span>👶 {activeStudentsInClass} Aluno{activeStudentsInClass !== 1 ? 's' : ''}</span>
+                      <span> {activeStudentsInClass} Aluno{activeStudentsInClass !== 1 ? 's' : ''}</span>
                       <span>Cap: {room.capacity || 15}</span>
                     </div>
                   </div>
@@ -5221,7 +5221,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                 <img src="/logo.png?v=15" alt="Anjinho Logo" className="w-full h-full object-contain transform scale-[1.45]" referrerPolicy="no-referrer" />
               </div>
             ) : (
-              <span className="text-3xl shrink-0">👵</span>
+              <span className="text-3xl shrink-0"></span>
             )}
             <div className="space-y-1">
               <h3 className={`text-sm font-extrabold ${accessibilitySettings?.darkMode ? 'text-white' : 'text-slate-850'}`}>
@@ -5231,7 +5231,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
               </h3>
               <p className={`text-xs leading-relaxed ${accessibilitySettings?.darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
                 {appMode === 'escolar_infantil'
-                  ? 'Você está simulando o aplicativo voltado para creches e berçários. As abas do Diário foram configuradas para o bem-estar lúdico, higiene e rotina da primeira infância:'
+                  ? 'Você está simulando o aplicativo voltado para creches e berçários. As abas do Diário foram configuradas para o bem-estar lúdico, higiene e rotina da primeira inf'
                   : 'Nossa tecnologia de cuidado integrado oferece duas versões super otimizadas: Anjo Cuidador (Acompanhamento Sênior) e Anjinho Escolar (Educação Infantil). Conheça as abas correspondentes:'}
               </p>
 
@@ -5239,21 +5239,21 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2">
                 {appMode === 'escolar_infantil' ? (
                   <>
-                    <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg">☕ Papa & Mamadeira</div>
-                    <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg">🚿 Trocas & Higiene</div>
-                    <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg">💧 Copos de Água</div>
-                    <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg">🌙 Sono / Soneca</div>
-                    <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg">😊 Humor & Social</div>
-                    <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg">📈 Atividade Pedagógica</div>
+                    <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg"> Papa & Mamadeira</div>
+                    <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg"> Trocas & Higiene</div>
+                    <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg"> Copos de Água</div>
+                    <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg"> Sono / Soneca</div>
+                    <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg"> Humor & Social</div>
+                    <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg"> Atividade Pedagógica</div>
                   </>
                 ) : (
                   <>
-                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg">☕ Alimentação</div>
-                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg">🚿 Banho e Higiene</div>
-                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg">💧 Hidratação</div>
-                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg">🌙 Diário de Sono</div>
-                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg">😊 Humor/Comportamento</div>
-                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg">📈 Exercícios/Atividades</div>
+                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg"> Alimentação</div>
+                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg"> Banho e Higiene</div>
+                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg"> Hidratação</div>
+                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg"> Diário de Sono</div>
+                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg"> Humor/Comportamento</div>
+                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg"> Exercícios/Atividades</div>
                   </>
                 )}
               </div>
@@ -5269,37 +5269,37 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                   : 'bg-amber-500 hover:bg-amber-600 text-slate-900 border-amber-400'
               }`}
             >
-              {appMode !== 'idoso' ? '🔄 Ativar Modo Idoso (Lar)' : isApresentacao ? '✨ Ativar Agenda Escolar' : '✨ Ativar Agenda Escolar (Simular)'}
+              {appMode !== 'idoso' ? ' Ativar Modo Idoso (Lar)' : isApresentacao ? ' Ativar Agenda Escolar' : ' Ativar Agenda Escolar (Simular)'}
             </button>
           )}
         </div>
       </div>
 
       {/* Perspective / Mode Toggle Switch (Visually stunning toggle banner) */}
-      {usuarioAtual?.tipo !== 'familiar' && usuarioAtual?.tipo !== 'admin' && (
-        <div className="bg-white rounded-2xl border border-[#cbd5e1] p-1.5 shadow-sm max-w-sm mx-auto flex items-center justify-between">
-          <button
-            onClick={() => handleSetVisualMode('cuidador')}
-            className={`flex-1 text-center py-2 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              visualMode === 'cuidador' 
-                ? 'bg-serene-blue text-white shadow-xs' 
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            {isEscolar ? '👩‍🏫 Painel da Professora' : '🧑‍⚕️ Painel do Cuidador'}
-          </button>
-          <button
-            onClick={() => handleSetVisualMode('familia')}
-            className={`flex-1 text-center py-2 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              visualMode === 'familia' 
-                ? 'bg-emerald-600 text-white shadow-xs' 
-                : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            {isEscolar ? '🌿 Portal de Tranquilidade' : '🌿 Portal de Tranquilidade'}
-          </button>
-        </div>
-      )}
+      <div className="bg-white rounded-2xl border border-[#cbd5e1] p-1.5 shadow-sm max-w-md mx-auto flex items-center justify-between gap-1.5">
+        <button
+          onClick={() => handleSetVisualMode('cuidador')}
+          className={`flex-1 text-center py-2.5 px-3 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+            visualMode === 'cuidador' 
+              ? 'bg-serene-blue text-white shadow-md ring-2 ring-indigo-400/30' 
+              : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          <span>{isEscolar ? '👩‍🏫' : '🩺'}</span>
+          <span>{isEscolar ? 'Painel da Professora' : 'Painel do Cuidador'}</span>
+        </button>
+        <button
+          onClick={() => handleSetVisualMode('familia')}
+          className={`flex-1 text-center py-2.5 px-3 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+            visualMode === 'familia' 
+              ? 'bg-emerald-600 text-white shadow-md ring-2 ring-emerald-400/30' 
+              : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          <span>🌿</span>
+          <span>{isEscolar ? 'Portal de Tranquilidade' : 'Portal de Tranquilidade'}</span>
+        </button>
+      </div>
 
       {/* Dynamic connection indicator with optional simulation details */}
       <div className="bg-slate-50 border border-[#cbd5e1] p-3 rounded-2xl flex flex-col gap-3 shadow-xs">
@@ -5310,11 +5310,11 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
               <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${simulatedOnline ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
             </span>
             <span className="text-xs font-bold text-slate-700">
-              Dispositivo {simulatedOnline ? 'Conectado à Nuvem (Servidor)' : 'Operando em Fila Local (IndexedDB)'}
+              Dispositivo {simulatedOnline ? 'Conectado À Nuvem (Servidor)' : 'Operando em Fila Local (IndexedDB)'}
             </span>
             {filaOffline.length > 0 && (
               <span className="text-[10px] font-black uppercase text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
-                ⚡ {filaOffline.length} Registro(s) Pendente(s)
+                 {filaOffline.length} Registro(s) Pendente(s)
               </span>
             )}
           </div>
@@ -5334,7 +5334,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                 onClick={() => setShowSimulationTools(!showSimulationTools)}
                 className="text-[10px] font-black text-slate-500 hover:text-slate-800 transition-colors uppercase tracking-widest bg-slate-200/60 px-2.5 py-1 rounded-md cursor-pointer flex items-center gap-1 select-none"
               >
-                🛠️ {showSimulationTools ? 'Ocultar Simulador' : 'Simular Redes / Testes'}
+                 ⚠️  {showSimulationTools ? 'Ocultar Simulador' : 'Simular Redes / Testes'}
               </button>
             )}
           </div>
@@ -5362,7 +5362,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     : 'bg-emerald-50 text-emerald-600 border-emerald-200'
                 }`}
               >
-                {simulatedOnline ? '🔌 Forçar Queda de Internet (Simular Offline)' : '⚡ Restaurar Conexão de Internet (Simular Online)'}
+                {simulatedOnline ? ' Forçar Queda de Internet (Simular Offline)' : ' Restaurar Conexão de Internet (Simular Online)'}
               </button>
             </div>
           </div>
@@ -5387,7 +5387,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
           <div>
             <div className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Perfil Ativo do Sistema</div>
             <div className="text-sm font-bold text-slate-800">
-              {usuarioAtual.nome} — <span className="text-blue-600 capitalize font-bold">{getRoleLabel(usuarioAtual, isEscolar)}</span>
+              {usuarioAtual.nome}  <span className="text-blue-600 capitalize font-bold">{getRoleLabel(usuarioAtual, isEscolar)}</span>
             </div>
           </div>
         </div>
@@ -5437,7 +5437,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
             <h1 className={`${titleClass} text-slate-800`}>{idoso.nome}</h1>
             {idoso.contatoEmergencia?.nome && (
               <div className="flex items-center justify-center md:justify-start gap-1.5 text-xs text-indigo-900 bg-indigo-50 border border-indigo-200/80 px-3 py-1 rounded-xl font-bold w-fit mx-auto md:mx-0 shadow-2xs">
-                <span>👨‍👩‍👧</span>
+                <span></span>
                 <span>Resp: <strong className="font-extrabold text-indigo-950">{idoso.contatoEmergencia.nome}</strong> ({idoso.contatoEmergencia.parentesco || 'Mãe/Pai'})</span>
                 {idoso.contatoEmergencia.telefone && (
                   <span className="text-[11px] font-mono font-semibold text-indigo-600">({idoso.contatoEmergencia.telefone})</span>
@@ -5450,7 +5450,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
 
             {isEscolar ? (
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 mt-1 bg-indigo-50/70 dark:bg-indigo-950/40 border border-indigo-100/50 dark:border-indigo-900/30 px-3 py-1.5 rounded-xl w-fit mx-auto md:mx-0">
-                <span className="text-sm">👩‍🏫</span>
+                <span className="text-sm"></span>
                 <span className="text-xs text-indigo-800 dark:text-indigo-300 font-extrabold">Professora Titular:</span>
                 <span className="text-xs font-black text-indigo-950 dark:text-white">
                   {(() => {
@@ -5465,7 +5465,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
               </div>
             ) : (
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 mt-1 bg-amber-50/70 dark:bg-amber-950/40 border border-amber-100/50 dark:border-amber-900/30 px-3 py-1.5 rounded-xl w-fit mx-auto md:mx-0">
-                <span className="text-sm">👵</span>
+                <span className="text-sm"></span>
                 <span className="text-xs text-amber-800 dark:text-amber-300 font-extrabold">Cuidador Responsável:</span>
                 <span className="text-xs font-black text-amber-950 dark:text-white">
                   {usuarioAtual ? usuarioAtual.nome.replace(' (Cuidadora)', '') : 'Sem Cuidador'}
@@ -5587,7 +5587,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
         </div>
       </div>
 
-      {/* 🎁 TRIAL MILESTONE TRACKER: JORNADA COMERCIAL DE 30 DIAS (EXCLUSIVO PARA A VISÃO DA FAMÍLIA / PAIS) */}
+      {/*  TRIAL MILESTONE TRACKER: JORNADA COMERCIAL DE 30 DIAS (EXCLUSIVO PARA A VISÁO DA FAMÍLIA / PAIS) */}
       {!isStaffUser(usuarioAtual) && visualMode === 'familia' && localStorage.getItem(`anjo_sub_status_${idoso.id}`) !== 'atrasado' && (
         <div className={`p-6 rounded-3xl border text-left space-y-4 shadow-xs relative overflow-hidden transition-all ${
           accessibilitySettings?.darkMode 
@@ -5595,7 +5595,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
             : 'bg-linear-to-r from-emerald-50/50 to-teal-50/50 border-emerald-200'
         }`}>
           {/* Subtle decoration */}
-          <div className="absolute top-0 right-0 p-3 text-3xl opacity-20 pointer-events-none">🎁</div>
+          <div className="absolute top-0 right-0 p-3 text-3xl opacity-20 pointer-events-none"></div>
           
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="space-y-1">
@@ -5607,8 +5607,8 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
               </div>
               <h4 className={`text-base font-black ${accessibilitySettings?.darkMode ? 'text-white' : 'text-slate-950'}`}>
                 {isEscolar 
-                  ? '🎁 Seu Período de Testes Gratuitos (30 Dias) está Ativo!' 
-                  : '🎁 Período de Experiência Grátis (30 Dias) Ativo!'
+                  ? ' Seu Período de Testes Gratuitos (30 Dias) está Ativo!' 
+                  : ' Período de Experiência Grátis (30 Dias) Ativo!'
                 }
               </h4>
               <p className={`text-xs max-w-2xl font-semibold leading-relaxed ${accessibilitySettings?.darkMode ? 'text-slate-300' : 'text-slate-500'}`}>
@@ -5639,7 +5639,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     ? parseFloat(localStorage.getItem(`anjo_sub_valor_${idoso.id}`) || '29.90')
                     : parseFloat(localStorage.getItem('anjo_sub_valor_default') || '29.90');
                   return price.toFixed(2).replace('.', ',');
-                })()} 💳
+                })()} 
               </button>
               {!isApresentacao && (
                 <span className={`block text-[9px] font-semibold mt-1 text-center ${accessibilitySettings?.darkMode ? 'text-slate-400' : 'text-slate-400'}`}>
@@ -5662,7 +5662,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                 {/* Step 1: Dia 1 */}
                 <div className="flex flex-col items-center space-y-1">
                   <div className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-black border-2 border-white shadow-xs">
-                    ✓
+                    
                   </div>
                   <span className={`text-[10px] font-black ${accessibilitySettings?.darkMode ? 'text-slate-300' : 'text-slate-700'}`}>Dia 1</span>
                   <span className={`text-[9px] font-bold block ${accessibilitySettings?.darkMode ? 'text-slate-400' : 'text-slate-400'}`}>Boas-vindas</span>
@@ -5671,7 +5671,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                 {/* Step 2: Dia 15 */}
                 <div className="flex flex-col items-center space-y-1">
                   <div className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-black border-2 border-white shadow-xs animate-pulse">
-                    ★
+                    
                   </div>
                   <span className={`text-[10px] font-black ${accessibilitySettings?.darkMode ? 'text-emerald-400' : 'text-emerald-600'}`}>Dia 15</span>
                   <span className={`text-[9px] font-extrabold ${accessibilitySettings?.darkMode ? 'text-emerald-400' : 'text-emerald-500'}`}>Você está aqui</span>
@@ -5717,7 +5717,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                 <div>
                   <span className="text-[10px] font-black uppercase tracking-widest text-rose-600 font-sans">{isEscolar ? 'Controle de Presença Escolar' : 'Acompanhamento de Cuidados'}</span>
                   <h2 className="text-xl font-bold text-rose-950">
-                    {isEscolar ? '🚫 Aluno Ausente Hoje (Falta)' : '🚫 Cliente Ausente'}
+                    {isEscolar ? ' Aluno Ausente Hoje (Falta)' : ' Cliente Ausente'}
                   </h2>
                   <p className="text-xs text-rose-700 mt-1 leading-normal">
                     {isEscolar 
@@ -5737,7 +5737,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     </button>
                   ) : (
                     <span className="text-xs font-semibold text-rose-700 bg-rose-100/50 px-3 py-2 rounded-xl border border-rose-200">
-                      🔒 Apenas educadores/cuidadores autorizados podem alterar a presença do aluno.
+                       Apenas educadores/cuidadores autorizados podem alterar a presença do aluno.
                     </span>
                   )}
                 </div>
@@ -5761,7 +5761,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                   </div>
                   <h2 className="text-xl font-bold text-slate-800">
                     {isShiftActive 
-                      ? (isEscolar ? `✓ Período Letivo em Andamento (${idoso.nome.split(' (')[0]})` : `✓ Turno Ativo no Celular!`) 
+                      ? (isEscolar ? ` Período Letivo em Andamento (${idoso.nome.split(' (')[0]})` : ` Turno Ativo no Celular!`) 
                       : (isEscolar ? `Aulas Não Iniciadas (${idoso.nome.split(' (')[0]})` : 'Seu Turno Não Está Ativo')}
                   </h2>
                   <p className="text-xs text-slate-500 mt-1 leading-normal">
@@ -5769,7 +5769,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                       ? (isStaffUser(usuarioAtual)
                           ? 'Inicie o diário de classe do aluno para registrar sonecas, xixi/cocô, mamadeiras e saúde. No final do período, termine a aula para disparar o relatório automático via WhatsApp para os pais!'
                           : (isShiftActive 
-                              ? `👶 ${idoso.nome.split(' (')[0]} está presente na escola e o diário de classe está aberto em tempo real pela equipe pedagógica.` 
+                              ? ` ${idoso.nome.split(' (')[0]} está presente na escola e o diário de classe está aberto em tempo real pela equipe pedagógica.` 
                               : `Aguardando a professora/educadora iniciar o período letivo para ${idoso.nome.split(' (')[0]}. Assim que a entrada for confirmada, o cronômetro iniciará aqui automaticamente.`))
                       : 'Inicie seu turno para acompanhar a rotina e as atividades. Ao final, clique em Encerrar para compilar o resumo e enviar os disparos de auditoria aos familiares interessados.'
                     }
@@ -5781,7 +5781,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                   <div className={`px-4 py-2.5 rounded-xl border leading-none transition-all duration-300 ${isShiftActive ? 'bg-white border-emerald-300 shadow-xs' : 'bg-slate-100 border-slate-200'}`}>
                     <div className="flex items-center justify-between gap-3 mb-1">
                       <span className="text-[9px] font-bold text-slate-400 block uppercase tracking-wider">
-                        {isEscolar ? 'TEMPO EM AULA' : 'DURAÇÃO DO TURNO'}
+                        {isEscolar ? 'TEMPO EM AULA' : 'DURAÇÁO DO TURNO'}
                       </span>
                       {isShiftActive && isStaffUser(usuarioAtual) && (
                         <button
@@ -5789,7 +5789,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                           className="text-[10px] font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-1.5 py-0.5 rounded cursor-pointer transition-all"
                           title="Desligar cronômetro imediatamente"
                         >
-                          ⏹️ Desligar
+                           Desligar
                         </button>
                       )}
                     </div>
@@ -5810,21 +5810,21 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                             className="px-3.5 py-2.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-black text-xs rounded-xl transition-all cursor-pointer shadow-md flex items-center justify-center gap-1.5 border border-red-500 hover:scale-102"
                             title="Registrar intercorrência médica ou ocorrência do dia"
                           >
-                            <ShieldAlert className="w-4 h-4 text-white animate-pulse" /> 🚨 Registrar Ocorrência
+                            <ShieldAlert className="w-4 h-4 text-white animate-pulse" />  Registrar Ocorrência
                           </button>
                           <button
                             onClick={handleDirectStopShift}
                             className="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 hover:scale-102"
                             title="Desligar cronômetro deste aluno individualmente"
                           >
-                            <Square className="w-3.5 h-3.5 fill-current" /> {isEscolar ? '⏹️ Desligar Individual' : '⏹️ Desligar Turno'}
+                            <Square className="w-3.5 h-3.5 fill-current" /> {isEscolar ? ' Desligar Individual' : ' Desligar Turno'}
                           </button>
                           <button
                             onClick={() => handleEndShiftGroup(teacherClassroom)}
                             className="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 hover:scale-102"
                             title={`Desligar cronômetro de todos os alunos da turma ${teacherClassroom} ao mesmo tempo`}
                           >
-                            <Users className="w-3.5 h-3.5" /> 👥 Desligar Coletivo ({teacherClassroom})
+                            <Users className="w-3.5 h-3.5" />  Desligar Coletivo ({teacherClassroom})
                           </button>
                           <button
                             onClick={handleToggleAbsence}
@@ -5841,14 +5841,14 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                             className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-1.5 hover:scale-102"
                             title={isAbsent ? "Religar cronômetro registrando o retorno do aluno (mantendo atividades salvas)" : "Ligar cronômetro para este aluno"}
                           >
-                            <Play className="w-3.5 h-3.5 fill-current" /> {isAbsent ? '▶️ Religar Cronômetro' : (isEscolar ? '▶️ Ligar Individual' : '▶️ Iniciar Turno Individual')}
+                            <Play className="w-3.5 h-3.5 fill-current" /> {isAbsent ? ' Religar Cronômetro' : (isEscolar ? ' Ligar Individual' : ' Iniciar Turno Individual')}
                           </button>
                           <button
                             onClick={() => handleStartShiftGroup(teacherClassroom)}
                             className="px-4 py-2.5 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-1.5 hover:scale-102"
                             title={`Ligar cronômetro de todos os alunos da turma ${teacherClassroom} e zerar as atividades de todos`}
                           >
-                            <Users className="w-3.5 h-3.5" /> 👥 Ligar Coletivo ({teacherClassroom})
+                            <Users className="w-3.5 h-3.5" />  Ligar Coletivo ({teacherClassroom})
                           </button>
                           <button
                             onClick={handleToggleAbsence}
@@ -5864,7 +5864,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
                         {isShiftActive 
                           ? 'Sincronizado com a escola via nuvem em tempo real.'
-                          : '🔒 Visualização dos responsáveis. Controles exclusivos dos educadores.'}
+                          : ' Visualização dos responsáveis. Controles exclusivos dos educadores.'}
                       </span>
                     )}
                   </div>
@@ -5891,7 +5891,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                       <strong className="text-slate-800">{oItem.titulo}</strong>
                     </div>
                     <div className="text-right font-mono text-[10px] text-slate-500">
-                      Dispositivo: {new Date(oItem.horario_registrado_dispositivo).toLocaleTimeString('pt-BR')}  •  <span className="text-rose-500 font-bold uppercase tracking-wide">Pendente</span>
+                      Dispositivo: {new Date(oItem.horario_registrado_dispositivo).toLocaleTimeString('pt-BR')}    <span className="text-rose-500 font-bold uppercase tracking-wide">Pendente</span>
                     </div>
                   </div>
                 ))}
@@ -5949,12 +5949,12 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         onChange={e => setQuickMeal({...quickMeal, refeicao: e.target.value})}
                         className="w-full text-xs font-semibold px-2 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1"
                       >
-                        {isEscolar && <option value="mamadeira">🍼 Mamadeira de Leite / Fórmula</option>}
-                        <option value="cafe_manha">{isEscolar ? '🥐 Lanchinho da Manhã' : '☕ Café da Manhã'}</option>
-                        <option value="almoco">{isEscolar ? '🍲 Papinha / Almocinho' : '🍛 Almoço'}</option>
-                        <option value="lanche">{isEscolar ? '🍎 Frutinha / Lanchinho Tarde' : '🍎 Lanche da Tarde'}</option>
-                        <option value="jantar">{isEscolar ? '🥣 Jantinha Escolar' : '🍲 Jantar'}</option>
-                        <option value="ceia">{isEscolar ? '🥛 Chá ou Suco Pós-Soneca' : '🥛 Ceia / Repouso'}</option>
+                        {isEscolar && <option value="mamadeira"> Mamadeira de Leite / Fórmula</option>}
+                        <option value="cafe_manha">{isEscolar ? ' Lanchinho da Manhã' : ' Café da Manhã'}</option>
+                        <option value="almoco">{isEscolar ? ' Papinha / Almocinho' : ' Almoço'}</option>
+                        <option value="lanche">{isEscolar ? ' Frutinha / Lanchinho Tarde' : ' Lanche da Tarde'}</option>
+                        <option value="jantar">{isEscolar ? ' Jantinha Escolar' : ' Jantar'}</option>
+                        <option value="ceia">{isEscolar ? ' Chá ou Suco Pós-Soneca' : ' Ceia / Repouso'}</option>
                       </select>
                     </div>
                     <div className="space-y-1">
@@ -5964,9 +5964,9 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         onChange={e => setQuickMeal({...quickMeal, aceitacao: e.target.value})}
                         className="w-full text-xs font-semibold px-2 py-2 border border-slate-300 rounded-xl bg-slate-50"
                       >
-                        <option value="muito_bem">😋 Comeu Super Bem</option>
-                        <option value="pouco">😐 Comeu Pouquinho</option>
-                        <option value="recusou">❌ Recusou / Sem Fome</option>
+                        <option value="muito_bem"> Comeu Super Bem</option>
+                        <option value="pouco"> Comeu Pouquinho</option>
+                        <option value="recusou"> Recusou / Sem Fome</option>
                       </select>
                     </div>
                   </div>
@@ -5975,7 +5975,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     <div className="p-3 bg-gradient-to-r from-indigo-50 to-amber-50/40 rounded-xl border border-indigo-200 space-y-2">
                       <div className="flex items-center justify-between text-xs font-bold text-indigo-900">
                         <span className="flex items-center gap-1.5">
-                          <span className="text-base">🍼</span>
+                          <span className="text-base"></span>
                           <span>Volume da Mamadeira:</span>
                         </span>
                         <span className="font-mono font-black bg-indigo-600 text-white px-2.5 py-0.5 rounded-md text-xs shadow-3xs">
@@ -6053,7 +6053,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     type="submit" 
                     className="w-full py-2 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer"
                   >
-                    Salvar Refeição Instantânea
+                    Salvar Refeição Instant
                   </button>
                 </form>
               </div>
@@ -6065,7 +6065,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     <div className="flex items-center justify-between">
                       <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2 mb-1">
                         <Droplets className="text-cyan-500 w-4.5 h-4.5 animate-pulse" /> 
-                        {isEscolar ? 'Hidratação Rápida (Água)' : 'Hidratação Instantânea'}
+                        {isEscolar ? 'Hidratação Rápida (Água)' : 'Hidratação Instant'}
                       </h4>
                       <span className="text-[10px] font-black bg-cyan-100 text-cyan-800 px-2 py-0.5 rounded-md">
                         {quickHydrationAmount} ml
@@ -6127,7 +6127,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     </div>
                   </div>
 
-                  {/* 🫖 Jarrinha Animada no card de Hidratação Instantânea */}
+                  {/*  Jarrinha Animada no card de Hidratação Instant */}
                   {(() => {
                     const targetGoal = isEscolar ? 600 : 1500;
                     const percentJug = Math.min(100, Math.round((totalWaterMl / targetGoal) * 100));
@@ -6167,7 +6167,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                   onClick={handleQuickHydrate}
                   className="w-full py-2 bg-cyan-500 hover:bg-cyan-600 active:bg-cyan-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer mt-3 flex items-center justify-center gap-2"
                 >
-                  <span>🥤 Oferecer Copo (+{quickHydrationAmount}ml)</span>
+                  <span> Oferecer Copo (+{quickHydrationAmount}ml)</span>
                   <span className="text-[10px] bg-cyan-700/40 px-2 py-0.5 rounded-md">Jarrinha Sobe!</span>
                 </button>
               </div>
@@ -6175,7 +6175,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
               {/* Quick Hygiene checklist */}
               <div className="bg-white p-5 rounded-2xl border border-soft-gray space-y-4">
                 <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                  <Heart className="text-rose-500 w-4.5 h-4.5" /> {isEscolar ? 'Higiene & Cuidados da Criança 👶' : 'Higiene & Cuidados de Conforto'}
+                  <Heart className="text-rose-500 w-4.5 h-4.5" /> {isEscolar ? 'Higiene & Cuidados da Criança ' : 'Higiene & Cuidados de Conforto'}
                 </h4>
                 <form onSubmit={handleQuickHygieneSubmit} className="space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
@@ -6187,7 +6187,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         className="w-4 h-4 text-serene-blue rounded focus:ring-serene-blue mt-0.5"
                       />
                       <div>
-                        <span className="block font-bold text-slate-800">{isEscolar ? '👶 Troca de Fralda / Cuidado de Toalete' : '👶 Troca de Fralda / Absorvente'}</span>
+                        <span className="block font-bold text-slate-800">{isEscolar ? ' Troca de Fralda / Cuidado de Toalete' : ' Troca de Fralda / Absorvente'}</span>
                         <span className="text-[10px] text-slate-500 font-normal block leading-tight">{isEscolar ? 'Fralda descartável checada/trocada ou incentivo de uso do toalete.' : 'Se aplicável, ou verificação de vazamento urinário.'}</span>
                       </div>
                     </label>
@@ -6200,7 +6200,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         className="w-4 h-4 text-serene-blue rounded focus:ring-serene-blue mt-0.5"
                       />
                       <div>
-                        <span className="block font-bold text-slate-800">{isEscolar ? '🪥 Escovação de Dentes Orientada' : '🪥 Higiene Bucal Completa'}</span>
+                        <span className="block font-bold text-slate-800">{isEscolar ? ' Escovação de Dentes Orientada' : ' Higiene Bucal Completa'}</span>
                         <span className="text-[10px] text-slate-500 font-normal block leading-tight">{isEscolar ? 'Com escovinha individual e creme dental infantil de forma lúdica.' : 'Uso de escova macia, higienizador de língua ou solução protética.'}</span>
                       </div>
                     </label>
@@ -6213,7 +6213,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         className="w-4 h-4 text-serene-blue rounded focus:ring-serene-blue mt-0.5"
                       />
                       <div>
-                        <span className="block font-bold text-slate-800">{isEscolar ? '👚 Troca de Roupa (Mochila)' : '👚 Troca de Roupa por Limpas'}</span>
+                        <span className="block font-bold text-slate-800">{isEscolar ? ' Troca de Roupa (Mochila)' : ' Troca de Roupa por Limpas'}</span>
                         <span className="text-[10px] text-slate-500 font-normal block leading-tight">{isEscolar ? 'Criança vestida com roupas limpas enviadas pelos pais após sujar ou banho.' : 'Roupas frescas, fáceis de vestir e adequadas ao clima.'}</span>
                       </div>
                     </label>
@@ -6226,7 +6226,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         className="w-4 h-4 text-serene-blue rounded focus:ring-serene-blue mt-0.5"
                       />
                       <div>
-                        <span className="block font-bold text-slate-800">{isEscolar ? '🧼 Lavagem das Mãos e Rosto' : '🚿 Banho de Chuveiro Realizado'}</span>
+                        <span className="block font-bold text-slate-800">{isEscolar ? ' Lavagem das Mãos e Rosto' : ' Banho de Chuveiro Realizado'}</span>
                         <span className="text-[10px] text-slate-500 font-normal block leading-tight">{isEscolar ? 'Praticado antes e após refeições e depois das brincadeiras de artes/pátio.' : 'Controle de temperatura de água e piso antiderrapante.'}</span>
                       </div>
                     </label>
@@ -6239,7 +6239,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         className="w-4 h-4 text-serene-blue rounded focus:ring-serene-blue mt-0.5"
                       />
                       <div>
-                        <span className="block font-bold text-slate-800">{isEscolar ? '🧴 Pomada Antiassadura / Protetor' : '🧴 Hidratação e Proteção da Pele'}</span>
+                        <span className="block font-bold text-slate-800">{isEscolar ? ' Pomada Antiassadura / Protetor' : ' Hidratação e Proteção da Pele'}</span>
                         <span className="text-[10px] text-slate-500 font-normal block leading-tight">{isEscolar ? 'Aplicação de pomada nas dobrinhas para prevenção de brotoejas ou assadura.' : 'Uso de cremes sênior preventivos para escaras e ressecamento.'}</span>
                       </div>
                     </label>
@@ -6285,12 +6285,12 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                       onChange={e => setQuickHumor({...quickHumor, estado: e.target.value})}
                       className="w-full text-xs font-semibold px-2 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1"
                     >
-                      <option value="calmo">😊 Calmo / Sereno</option>
-                      <option value="feliz">😄 Feliz / Comunicativo</option>
-                      <option value="sonolento">💤 Sonolento / Repousando</option>
-                      <option value="agitado">⚠️ Agitado / Inquieto</option>
-                      <option value="confuso">❓ Desorientado / Confuso</option>
-                      <option value="recusando">❌ Resiste às Intervenções</option>
+                      <option value="calmo"> Calmo / Sereno</option>
+                      <option value="feliz"> Feliz / Comunicativo</option>
+                      <option value="sonolento"> Sonolento / Repousando</option>
+                      <option value="agitado"> ⚠️  Agitado / Inquieto</option>
+                      <option value="confuso"> Desorientado / Confuso</option>
+                      <option value="recusando"> Resiste Às Intervenções</option>
                     </select>
                   </div>
                   <div className="space-y-1">
@@ -6312,7 +6312,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     <textarea 
                       id="quick-humor-observacao"
                       rows={2}
-                      placeholder="Nota rápida (ex: Dormiu bem à tarde, descansou no soninho e acordou bem disposto)"
+                      placeholder="Nota rápida (ex: Dormiu bem À tarde, descansou no soninho e acordou bem disposto)"
                       value={quickHumor.observacao}
                       onChange={e => setQuickHumor({...quickHumor, observacao: e.target.value})}
                       className="w-full text-xs px-3 py-2 border border-[#cbd5e1] rounded-xl focus:ring-1 focus:outline-hidden resize-none bg-slate-50 text-slate-800"
@@ -6328,19 +6328,19 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                 </form>
               </div>
 
-              {/* Quick Vitals & Weight Track Card ⚖️ */}
+              {/* Quick Vitals & Weight Track Card  */}
               <div className="bg-white p-5 rounded-2xl border border-soft-gray space-y-4">
                 <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                  <Activity className="text-rose-500 w-4.5 h-4.5 animate-pulse" /> {isEscolar ? 'Saúde, Sono & Fralda do Aluno ⚖️' : 'Sinais Vitais & Peso do Idoso ⚖️'}
+                  <Activity className="text-rose-500 w-4.5 h-4.5 animate-pulse" /> {isEscolar ? 'Saúde, Sono & Fralda do Aluno ' : 'Sinais Vitais & Peso do Idoso '}
                 </h4>
                 <form id="quick-vitals-form" onSubmit={handleQuickVitalsSubmit} className="space-y-3">
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div className={`space-y-1 ${isEscolar ? 'col-span-2 md:col-span-1' : ''}`}>
-                      <label htmlFor="vital-pressao" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{isEscolar ? '💤 Soneca / Descanso' : 'PA (Pressão)'}</label>
+                      <label htmlFor="vital-pressao" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{isEscolar ? ' Soneca / Descanso' : 'PA (Pressão)'}</label>
                       <input 
                         id="vital-pressao"
                         type="text" 
-                        placeholder={isEscolar ? 'Ex: Dormiu das 13:00 às 14:30' : 'Ex: 120/80'}
+                        placeholder={isEscolar ? 'Ex: Dormiu das 13:00 Às 14:30' : 'Ex: 120/80'}
                         value={quickVitals.pressao}
                         onChange={e => setQuickVitals({...quickVitals, pressao: e.target.value})}
                         className="w-full text-xs px-2.5 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1 focus:outline-hidden text-slate-800 font-bold"
@@ -6348,7 +6348,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                       {isEscolar && (
                         <div className="mt-1.5 space-y-1.5 bg-indigo-50/50 p-2 rounded-xl border border-indigo-100/80">
                           <div className="flex items-center justify-between">
-                            <span className="text-[9px] font-extrabold text-indigo-700 flex items-center gap-1 uppercase tracking-wider">⏱️ Toque Rápido (Soneca):</span>
+                            <span className="text-[9px] font-extrabold text-indigo-700 flex items-center gap-1 uppercase tracking-wider"> Toque Rápido (Soneca):</span>
                           </div>
                           <div className="flex flex-wrap gap-1">
                             <button
@@ -6389,7 +6389,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                           </div>
 
                           <div className="pt-1.5 border-t border-indigo-100/60 flex items-center justify-between gap-1">
-                            <span className="text-[9px] font-bold text-slate-500 flex items-center gap-1 shrink-0">🕒 Reloginho:</span>
+                            <span className="text-[9px] font-bold text-slate-500 flex items-center gap-1 shrink-0"> Reloginho:</span>
                             <div className="flex items-center gap-1">
                               <input 
                                 type="time" 
@@ -6398,10 +6398,10 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                                 onChange={e => {
                                   const val = e.target.value;
                                   setSleepStart(val);
-                                  setQuickVitals(prev => ({ ...prev, pressao: `Dormiu das ${val} às ${sleepEnd}` }));
+                                  setQuickVitals(prev => ({ ...prev, pressao: `Dormiu das ${val} Às ${sleepEnd}` }));
                                 }}
                               />
-                              <span className="text-[9px] font-bold text-slate-400">às</span>
+                              <span className="text-[9px] font-bold text-slate-400">Às</span>
                               <input 
                                 type="time" 
                                 value={sleepEnd}
@@ -6409,7 +6409,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                                 onChange={e => {
                                   const val = e.target.value;
                                   setSleepEnd(val);
-                                  setQuickVitals(prev => ({ ...prev, pressao: `Dormiu das ${sleepStart} às ${val}` }));
+                                  setQuickVitals(prev => ({ ...prev, pressao: `Dormiu das ${sleepStart} Às ${val}` }));
                                 }}
                               />
                             </div>
@@ -6419,7 +6419,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     </div>
                     <div className={`space-y-1 ${isEscolar ? 'col-span-2 md:col-span-1' : ''}`}>
                       <div className="flex items-center justify-between">
-                        <label htmlFor="vital-glicemia" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{isEscolar ? '🧻 Fralda (Xixi ou Cocô)' : 'Glicemia (mg/dL)'}</label>
+                        <label htmlFor="vital-glicemia" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{isEscolar ? ' Fralda (Xixi ou Cocô)' : 'Glicemia (mg/dL)'}</label>
                         {isEscolar && (
                           <div className="flex items-center gap-1.5">
                             <span className="text-[9px] font-extrabold text-slate-400 uppercase">Falar:</span>
@@ -6440,28 +6440,28 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                       />
                       {isEscolar && (
                         <div className="mt-1.5 space-y-1.5 bg-emerald-50/50 p-2 rounded-xl border border-emerald-100/80">
-                          <span className="text-[9px] font-extrabold text-emerald-700 block uppercase tracking-wider">🧻 Toque Rápido (Fralda):</span>
+                          <span className="text-[9px] font-extrabold text-emerald-700 block uppercase tracking-wider"> Toque Rápido (Fralda):</span>
                           <div className="flex flex-wrap gap-1">
                             <button
                               type="button"
                               onClick={() => setQuickVitals(prev => ({ ...prev, glicemia: 'Fez Xixi' }))}
                               className="px-2 py-1 bg-white hover:bg-sky-50 border border-sky-100 active:scale-95 text-sky-700 rounded-lg text-[9px] font-extrabold transition-all cursor-pointer shadow-2xs flex items-center gap-0.5"
                             >
-                              💦 Xixi
+                               Xixi
                             </button>
                             <button
                               type="button"
                               onClick={() => setQuickVitals(prev => ({ ...prev, glicemia: 'Fez Cocô' }))}
                               className="px-2 py-1 bg-white hover:bg-amber-50 border border-amber-100 active:scale-95 text-amber-800 rounded-lg text-[9px] font-extrabold transition-all cursor-pointer shadow-2xs flex items-center gap-0.5"
                             >
-                              💩 Cocô
+                               Cocô
                             </button>
                             <button
                               type="button"
                               onClick={() => setQuickVitals(prev => ({ ...prev, glicemia: 'Xixi e Cocô' }))}
                               className="px-2 py-1 bg-white hover:bg-purple-50 border border-purple-100 active:scale-95 text-purple-700 rounded-lg text-[9px] font-extrabold transition-all cursor-pointer shadow-2xs flex items-center gap-0.5"
                             >
-                              ✨ Ambos
+                               Ambos
                             </button>
                             <button
                               type="button"
@@ -6471,21 +6471,21 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                               })}
                               className="px-2 py-1 bg-white hover:bg-teal-50 border border-teal-100 active:scale-95 text-teal-700 rounded-lg text-[9px] font-extrabold transition-all cursor-pointer shadow-2xs flex items-center gap-0.5"
                             >
-                              🧴 +Pomada
+                               +Pomada
                             </button>
                             <button
                               type="button"
                               onClick={() => setQuickVitals(prev => ({ ...prev, glicemia: 'Fralda Seca / Limpa' }))}
                               className="px-2 py-1 bg-emerald-50 hover:bg-emerald-100/50 border border-emerald-100 active:scale-95 text-emerald-800 rounded-lg text-[9px] font-extrabold transition-all cursor-pointer shadow-2xs flex items-center gap-0.5"
                             >
-                              ✅ Seca
+                               Seca
                             </button>
                           </div>
                         </div>
                       )}
                     </div>
                     <div className="space-y-1">
-                      <label htmlFor="vital-temperatura" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block font-bold text-orange-650">{isEscolar ? '🌡️ Febre / Temp (°C)' : 'Temp (°C)'}</label>
+                      <label htmlFor="vital-temperatura" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block font-bold text-orange-650">{isEscolar ? '  Febre / Temp (°C)' : 'Temp (°C)'}</label>
                       <input 
                         id="vital-temperatura"
                         type="number" 
@@ -6523,7 +6523,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                             onClick={() => setQuickVitals(prev => ({ ...prev, temp: '38.0' }))}
                             className="px-1.5 py-0.5 bg-rose-50 hover:bg-rose-100 border border-rose-100 text-rose-800 rounded text-[9px] font-extrabold transition-all cursor-pointer"
                           >
-                            38,0°C ⚠️
+                            38,0°C  ⚠️ 
                           </button>
                         </div>
                       )}
@@ -6559,7 +6559,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                       </>
                     ) : null}
                     <div className={`space-y-1 ${isEscolar ? 'col-span-2' : ''}`}>
-                      <label htmlFor="vital-peso" className="text-[10px] font-black text-indigo-650 uppercase tracking-wider block font-black">{isEscolar ? '⚖️ Peso Corporal (Kg)' : '⚖️ Peso Corporal (Recomendado Semanal)'}</label>
+                      <label htmlFor="vital-peso" className="text-[10px] font-black text-indigo-650 uppercase tracking-wider block font-black">{isEscolar ? ' Peso Corporal (Kg)' : ' Peso Corporal (Recomendado Semanal)'}</label>
                       <input 
                         id="vital-peso"
                         type="number" 
@@ -6584,17 +6584,17 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                       <div className="p-2.5 bg-gradient-to-r from-amber-50/80 via-slate-50 to-cyan-50/80 rounded-xl border border-slate-200 text-xs flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center gap-2.5 text-[11px] font-bold text-slate-700">
                           <span className="flex items-center gap-1">
-                            <span>🍼 Mamadeiras Hoje:</span>
+                            <span> Mamadeiras Hoje:</span>
                             <strong className="text-amber-800 font-black">{studentBottlesToday.length} {studentBottlesToday.length === 1 ? 'servida' : 'servidas'} ({totalBottlesMl} ml)</strong>
                           </span>
-                          <span className="text-slate-300">•</span>
+                          <span className="text-slate-300"></span>
                           <span className="flex items-center gap-1">
-                            <span>💧 Hidratação Total:</span>
+                            <span> Hidratação Total:</span>
                             <strong className="text-cyan-800 font-black">{totalWaterMl} ml</strong>
                           </span>
                         </div>
                         <span className="text-[9px] font-extrabold uppercase px-2 py-0.5 bg-white text-slate-600 rounded-md border border-slate-200">
-                          ✓ Sincronizado
+                           Sincronizado
                         </span>
                       </div>
                     );
@@ -6642,7 +6642,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                   title="Registrar Intercorrência Médica Urgente"
                 >
                   <ShieldAlert className="w-4 h-4 text-white shrink-0" />
-                  <span>🚨 Intercorrência Urgente</span>
+                  <span> Intercorrência Urgente</span>
                 </button>
 
                 <button
@@ -6654,7 +6654,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                   title="Registrar Ocorrência do Dia / Rotina"
                 >
                   <FileText className="w-4 h-4 text-white shrink-0" />
-                  <span>📋 Ocorrência do Dia</span>
+                  <span> Ocorrência do Dia</span>
                 </button>
 
                 <button
@@ -6696,7 +6696,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                   >
                     <span className="flex items-center gap-1.5">
                       <ShieldAlert className="w-4 h-4 text-white animate-bounce shrink-0" />
-                      <span>🚨 Intercorrência Urgente</span>
+                      <span> Intercorrência Urgente</span>
                     </span>
                     <span className="text-[10px] bg-red-700 px-2 py-0.5 rounded-md font-bold">Febre/Queda</span>
                   </button>
@@ -6710,7 +6710,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                   >
                     <span className="flex items-center gap-1.5">
                       <FileText className="w-4 h-4 text-white shrink-0" />
-                      <span>📋 Ocorrência do Dia</span>
+                      <span> Ocorrência do Dia</span>
                     </span>
                     <span className="text-[10px] bg-amber-600 px-2 py-0.5 rounded-md font-bold">Mordida/Choro</span>
                   </button>
@@ -6719,7 +6719,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                 {idoso.contatoEmergencia && (
                   <div className="pt-3 border-t border-red-200/60 lg:border-slate-200/80 space-y-2">
                     <span className="text-[10px] font-black uppercase text-red-900 lg:text-slate-500 block tracking-wider">
-                      📞 Contato de Emergência Rápido:
+                       Contato de Emergência Rápido:
                     </span>
                     <div className="flex items-center justify-between bg-white/80 dark:bg-slate-900/40 p-2.5 rounded-xl border border-red-100 lg:border-slate-200 shadow-3xs">
                       <div className="min-w-0 flex-1 pr-2">
@@ -6727,7 +6727,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                           {idoso.contatoEmergencia.nome}
                         </strong>
                         <span className="text-[10px] text-red-700 dark:text-slate-400 font-bold block truncate">
-                          {idoso.contatoEmergencia.parentesco} • {idoso.contatoEmergencia.telefone}
+                          {idoso.contatoEmergencia.parentesco}  {idoso.contatoEmergencia.telefone}
                         </span>
                       </div>
                       
@@ -6813,7 +6813,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         className="px-2.5 py-1.5 text-[11px] font-bold text-slate-700 hover:text-indigo-700 hover:bg-white rounded-lg transition-all cursor-pointer flex items-center gap-1"
                         title="Remove tarefas com o mesmo título ou horário repetido"
                       >
-                        🧹 <span>Repetidas</span>
+                         <span>Repetidas</span>
                       </button>
                       <button
                         type="button"
@@ -6821,7 +6821,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         className="px-2.5 py-1.5 text-[11px] font-bold text-rose-600 hover:text-rose-700 hover:bg-white rounded-lg transition-all cursor-pointer flex items-center gap-1"
                         title="Limpar todas as atividades da agenda hoje"
                       >
-                        🗑️ <span>Limpar Atividades</span>
+                          <span>Limpar Atividades</span>
                       </button>
                     </div>
                   )}
@@ -6837,7 +6837,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                       title="Clique aqui para abrir a caixa e colar o planejamento de aulas gerado pela Aura"
                     >
                       <Sparkles className="w-4 h-4 text-amber-300 fill-amber-300/40" />
-                      <span>🧠 Importar Aura</span>
+                      <span>  Importar Aura</span>
                     </button>
                   )}
 
@@ -6868,7 +6868,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
               <div className="bg-blue-50/50 p-5 rounded-2xl border border-blue-200 mb-5 animate-fade-in space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-blue-100 pb-3">
                   <h3 className="text-xs font-bold text-blue-900 flex items-center gap-1.5 uppercase tracking-wider">
-                    ✨ {isEscolar ? 'Agendar Nova Atividade Escolar' : 'Agendar Nova Tarefa de Cuidado'}
+                     {isEscolar ? 'Agendar Nova Atividade Escolar' : 'Agendar Nova Tarefa de Cuidado'}
                   </h3>
 
                   {isEscolar && (
@@ -6882,7 +6882,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                             : 'text-slate-600 hover:bg-slate-100'
                         }`}
                       >
-                        📌 Cadastro Direto
+                         Cadastro Direto
                       </button>
                       <button
                         type="button"
@@ -6893,7 +6893,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                             : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'
                         }`}
                       >
-                        🧠 Importar Planejamento Aura
+                          Importar Planejamento Aura
                       </button>
                     </div>
                   )}
@@ -6907,21 +6907,21 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         <span>PASSO A PASSO: COMO ADICIONAR ATIVIDADES COM A AURA</span>
                       </div>
                       <p className="text-xs text-white/95 leading-relaxed font-medium">
-                        1. Abra a <strong>Anjinha Aura ✨</strong> no topo da tela, peça a ela para criar a rotina/planejamento de aulas da semana e <strong>copie o texto gerado</strong>.<br/>
+                        1. Abra a <strong>Anjinha Aura </strong> no topo da tela, peça a ela para criar a rotina/planejamento de aulas da semana e <strong>copie o texto gerado</strong>.<br/>
                         2. <strong>Cole todo o texto</strong> da Aura na caixa branca abaixo.<br/>
-                        3. Clique no botão <strong>"🧠 Extrair e Processar Atividades"</strong> para agendar tudo de uma vez!
+                        3. Clique no botão <strong>"  Extrair e Processar Atividades"</strong> para agendar tudo de uma vez!
                       </p>
                       <div className="pt-1 flex flex-wrap items-center gap-2">
                         <button
                           type="button"
                           onClick={() => {
-                            const promptText = `Por favor, crie o planejamento de rotina pedagógica escolar começando com a Acolhida das Crianças às 07:00 e finalizando com a Saída às 16:00.\n\nUse o formato por linha:\nHH:MM: [Título da Atividade] - [Descrição pedagógica detalhada]\n\nExemplo:\n- 07:00: Acolhida e Entrada Afetiva - Recepção carinhosa dos alunos e cantigas de bom dia.\n- 08:00: Roda de Conversa - Apresentação do tema diário e musicalização.\n- 09:00: Lanche da Manhã - Frutas da estação e hidratação.\n- 09:45: Recreação e Banho de Sol - Brincadeiras ao ar livre no pátio sombreado.\n- 10:30: Atividade Dirigida BNCC - Exploração sensorial com tintas e texturas.\n- 11:30: Almoço Saudável - Papinha balanceada e legumes.\n- 12:15: Higiene e Fraldas - Troca de fraldas e escovação dental.\n- 12:30: Soneca Restauradora - Descanso em colchonetes com som suave.\n- 14:15: Lanche da Tarde - Mamadeira ou fruta fresca.\n- 14:45: Brincadeira Livre - Blocos pedagógicos e autonomia.\n- 15:30: Contação de Histórias - Livros ilustrados e fantoches.\n- 16:00: Preparação para Saída - Entrega afetiva aos familiares.`;
+                            const promptText = `Por favor, crie o planejamento de rotina pedagógica escolar começando com a Acolhida das Crianças Às 07:00 e finalizando com a Saída Às 16:00.\n\nUse o formato por linha:\nHH:MM: [Título da Atividade] - [Descrição pedagógica detalhada]\n\nExemplo:\n- 07:00: Acolhida e Entrada Afetiva - Recepção carinhosa dos alunos e cantigas de bom dia.\n- 08:00: Roda de Conversa - Apresentação do tema diário e musicalização.\n- 09:00: Lanche da Manhã - Frutas da estação e hidratação.\n- 09:45: Recreação e Banho de Sol - Brincadeiras ao ar livre no pátio sombreado.\n- 10:30: Atividade Dirigida BNCC - Exploração sensorial com tintas e texturas.\n- 11:30: Almoço Saudável - Papinha balanceada e legumes.\n- 12:15: Higiene e Fraldas - Troca de fraldas e escovação dental.\n- 12:30: Soneca Restauradora - Descanso em colchonetes com som suave.\n- 14:15: Lanche da Tarde - Mamadeira ou fruta fresca.\n- 14:45: Brincadeira Livre - Blocos pedagógicos e autonomia.\n- 15:30: Contação de Histórias - Livros ilustrados e fantoches.\n- 16:00: Preparação para Saída - Entrega afetiva aos familiares.`;
                             navigator.clipboard.writeText(promptText);
-                            alert('📋 Comando copiado com sucesso! Agora é só colar no chat da Aura.');
+                            alert(' Comando copiado com sucesso! Agora é só colar no chat da Aura.');
                           }}
                           className="px-3 py-1.5 bg-amber-400 hover:bg-amber-300 text-indigo-950 font-black text-[11px] rounded-lg shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
                         >
-                          📋 Copiar Modelo de Comando para a Aura (07:00 às 16:00)
+                           Copiar Modelo de Comando para a Aura (07:00 Às 16:00)
                         </button>
                       </div>
                     </div>
@@ -6929,7 +6929,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     <div className="space-y-1.5">
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <label className="text-xs font-black text-indigo-950 uppercase tracking-wider flex items-center gap-2">
-                          <span>👇</span> COLE O SEU TEXTO DA AURA AQUI ABAIXO:
+                          <span></span> COLE O SEU TEXTO DA AURA AQUI ABAIXO:
                         </label>
                         <div className="flex flex-wrap items-center gap-2">
                           <button
@@ -6938,7 +6938,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                             className="text-[11px] text-indigo-700 hover:text-indigo-800 font-bold flex items-center gap-1 cursor-pointer bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded-lg transition-colors border border-indigo-200 shadow-2xs"
                             title="Auto-corrige nomes e horários de atividades que possam ter ficado deslocados"
                           >
-                            🪄 Auto-Realinhar Atividades
+                             Auto-Realinhar Atividades
                           </button>
                           {auraWeeklyText && (
                             <button
@@ -6946,7 +6946,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                               onClick={() => { setAuraWeeklyText(''); setParsedAuraTasks([]); setAuraDetectedMeta(null); }}
                               className="text-[11px] text-rose-600 hover:text-rose-700 font-bold flex items-center gap-1 cursor-pointer bg-rose-50 hover:bg-rose-100 px-2 py-1 rounded-lg transition-colors"
                             >
-                              🗑️ Limpar Texto
+                                Limpar Texto
                             </button>
                           )}
                           <button
@@ -6955,7 +6955,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                             className="text-[11px] text-amber-700 hover:text-amber-800 font-bold flex items-center gap-1 cursor-pointer bg-amber-50 hover:bg-amber-100 px-2 py-1 rounded-lg transition-colors border border-amber-200"
                             title="Limpar tarefas pendentes antigas que foram importadas com erro ou desalinhadas"
                           >
-                            🧹 Limpar com Erro
+                             Limpar com Erro
                           </button>
                         </div>
                       </div>
@@ -7022,7 +7022,7 @@ Segunda-feira:
                           </>
                         ) : (
                           <>
-                            <span>🧠 Extrair & Padronizar com Aura</span>
+                            <span>  Extrair & Padronizar com Aura</span>
                           </>
                         )}
                       </button>
@@ -7046,7 +7046,7 @@ Segunda-feira:
                           <div className="bg-white p-4 rounded-xl border-2 border-indigo-200 shadow-xs space-y-2">
                             <div className="flex items-center justify-between border-b border-indigo-100 pb-2">
                               <h4 className="text-sm font-black text-indigo-950 flex items-center gap-1.5">
-                                <span>📋</span> Planejamento Extraído: {auraDetectedMeta?.tema || 'Rotina Escolar Padronizada'}
+                                <span></span> Planejamento Extraído: {auraDetectedMeta?.tema || 'Rotina Escolar Padronizada'}
                               </h4>
                               <span className="text-[10px] font-bold px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-200">
                                 {parsedAuraTasks.length} Atividades no Total
@@ -7055,17 +7055,17 @@ Segunda-feira:
 
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
                               <div className="bg-slate-50 p-2 rounded-lg border border-slate-200">
-                                <span className="text-[10px] font-bold text-slate-500 block uppercase">📅 Período / Dias Detectados</span>
+                                <span className="text-[10px] font-bold text-slate-500 block uppercase"> Período / Dias Detectados</span>
                                 <span className="font-extrabold text-slate-800">
                                   {distinctDays.length > 1 ? `${distinctDays.length} Dias (${distinctDays[0]} a ${distinctDays[distinctDays.length - 1]})` : (auraDetectedMeta?.dataStr || auraDetectedMeta?.dia || 'Segunda-feira')}
                                 </span>
                               </div>
                               <div className="bg-slate-50 p-2 rounded-lg border border-slate-200">
-                                <span className="text-[10px] font-bold text-slate-500 block uppercase">🎨 Tema do Planejamento</span>
+                                <span className="text-[10px] font-bold text-slate-500 block uppercase"> Tema do Planejamento</span>
                                 <span className="font-extrabold text-indigo-900">{auraDetectedMeta?.tema || 'Desenvolvimento e Rotina Pedagógica'}</span>
                               </div>
                               <div className="bg-slate-50 p-2 rounded-lg border border-slate-200">
-                                <span className="text-[10px] font-bold text-slate-500 block uppercase">👶 Turma de Aplicação</span>
+                                <span className="text-[10px] font-bold text-slate-500 block uppercase"> Turma de Aplicação</span>
                                 <span className="font-extrabold text-purple-900">{auraDetectedMeta?.turma || getStudentClassroomLocal(idoso.nome)}</span>
                               </div>
                             </div>
@@ -7076,7 +7076,7 @@ Segunda-feira:
                             <div className="bg-indigo-50/70 p-2 rounded-xl border border-indigo-200 space-y-1.5">
                               <div className="flex items-center justify-between">
                                 <span className="text-[11px] font-bold text-indigo-950 flex items-center gap-1">
-                                  <span>🗓️</span> Visualizar & Separar por Dia:
+                                  <span> </span> Visualizar & Separar por Dia:
                                 </span>
                                 <span className="text-[10px] text-indigo-700 font-semibold">
                                   Mostrando {filteredTasks.length} de {parsedAuraTasks.length} atividades
@@ -7108,7 +7108,7 @@ Segunda-feira:
                                           : 'bg-white text-slate-700 hover:bg-indigo-50 border border-slate-200'
                                       }`}
                                     >
-                                      <span>📅</span> {dayName} <span className="text-[10px] opacity-80">({countForDay})</span>
+                                      <span></span> {dayName} <span className="text-[10px] opacity-80">({countForDay})</span>
                                     </button>
                                   );
                                 })}
@@ -7120,7 +7120,7 @@ Segunda-feira:
                           <div className="bg-amber-50/80 p-3 rounded-xl border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
                             <div className="space-y-0.5">
                               <span className="font-bold text-amber-950 flex items-center gap-1">
-                                <span>⚙️</span> Modo de Aplicação na Agenda:
+                                <span></span> Modo de Aplicação na Agenda:
                               </span>
                               <p className="text-[11px] text-amber-800">
                                 {auraMergeMode === 'substituir' 
@@ -7138,7 +7138,7 @@ Segunda-feira:
                                     : 'text-slate-600 hover:text-slate-900'
                                 }`}
                               >
-                                🔄 Substituir Rotina
+                                 Substituir Rotina
                               </button>
                               <button
                                 type="button"
@@ -7149,7 +7149,7 @@ Segunda-feira:
                                     : 'text-slate-600 hover:text-slate-900'
                                 }`}
                               >
-                                ➕ Mesclar / Adicionar
+                                 Mesclar / Adicionar
                               </button>
                             </div>
                           </div>
@@ -7180,13 +7180,13 @@ Segunda-feira:
                                         <span>{String(act.titulo || 'Atividade')}</span>
                                       </div>
                                       {act.objetivoBNCC && (
-                                        <span className="text-[10px] font-normal text-indigo-600 block mt-0.5">🎯 {act.objetivoBNCC}</span>
+                                        <span className="text-[10px] font-normal text-indigo-600 block mt-0.5"> {act.objetivoBNCC}</span>
                                       )}
                                     </td>
                                     <td className="p-2.5 text-slate-600 text-[11px] leading-relaxed">
                                       <p>{String(act.descricao || '')}</p>
                                       {act.materiais && act.materiais.length > 0 && (
-                                        <p className="text-[10px] text-amber-800 font-medium mt-1">📦 {act.materiais.join(', ')}</p>
+                                        <p className="text-[10px] text-amber-800 font-medium mt-1"> {act.materiais.join(', ')}</p>
                                       )}
                                     </td>
                                   </tr>
@@ -7211,7 +7211,7 @@ Segunda-feira:
                                 className="text-xs text-slate-600 font-bold hover:text-rose-600 cursor-pointer"
                                 title="Limpa tarefas antigas que foram importadas com erro"
                               >
-                                🧹 Limpar Tarefas com Erro Antigas
+                                 Limpar Tarefas com Erro Antigas
                               </button>
                             </div>
                             <div className="flex flex-wrap gap-2">
@@ -7228,7 +7228,7 @@ Segunda-feira:
                                   onClick={() => handleSaveAuraWeeklyPlan(selectedAuraDayTab)}
                                   className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold rounded-xl text-xs transition-all cursor-pointer shadow-md flex items-center gap-1.5"
                                 >
-                                  📅 Salvar Apenas {selectedAuraDayTab} ({filteredTasks.length})
+                                   Salvar Apenas {selectedAuraDayTab} ({filteredTasks.length})
                                 </button>
                               )}
                               <button
@@ -7236,7 +7236,7 @@ Segunda-feira:
                                 onClick={() => handleSaveAuraWeeklyPlan('todos')}
                                 className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl text-xs transition-all cursor-pointer shadow-md flex items-center gap-1.5"
                               >
-                                💾 Confirmar e Cadastrar Todas ({parsedAuraTasks.length} Atividades)
+                                 Confirmar e Cadastrar Todas ({parsedAuraTasks.length} Atividades)
                               </button>
                             </div>
                           </div>
@@ -7249,23 +7249,23 @@ Segunda-feira:
                 {/* Quick Task Templates Selector */}
                 <div className="space-y-2 border-b border-blue-150/60 pb-3" id="quick-task-templates-container">
                   <span className="text-[10px] font-black text-blue-800 uppercase tracking-wider block">
-                    ⚡ {isEscolar ? 'Modelos Rápidos de Atividades Escolares' : 'Modelos Rápidos de Cuidados Sênior'}
+                     {isEscolar ? 'Modelos Rápidos de Atividades Escolares' : 'Modelos Rápidos de Cuidados Sênior'}
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {(isEscolar 
                       ? [
-                          { tipo: 'atividade_fisica', titulo: 'Aula de Artes & Pintura 🎨', horarioPrevisto: '14:00', descricao: 'Atividade pedagógica de desenho com guache, lápis de cor e colagens.' },
-                          { tipo: 'humor', titulo: 'Hora do Conto & Leitura 📖', horarioPrevisto: '16:00', descricao: 'Contação de história lúdica em círculo com fantoches e livros ilustrados.' },
-                          { tipo: 'atividade_fisica', titulo: 'Brincadeiras no Parquinho 🏃', horarioPrevisto: '10:30', descricao: 'Circuito de coordenação motora ampla com túneis, bambolês e corrida leve.' },
-                          { tipo: 'alimentacao', titulo: 'Hora da Frutinha & Hidratação 🍎', horarioPrevisto: '15:00', descricao: 'Oferecer melancia, maçã picada ou mamadeira de suco natural.' },
-                          { tipo: 'sono', titulo: 'Soneca Pós-Almoço 💤', horarioPrevisto: '13:00', descricao: 'Preparar colchonete, iluminação suave e música instrumental relaxante.' },
-                          { tipo: 'banho', titulo: 'Higiene Oral & Escovar Dentes 🪥', horarioPrevisto: '12:00', descricao: 'Escovação de dentes assistida e lavagem das mãos pós-alimentação.' }
+                          { tipo: 'atividade_fisica', titulo: 'Aula de Artes & Pintura ', horarioPrevisto: '14:00', descricao: 'Atividade pedagógica de desenho com guache, lápis de cor e colagens.' },
+                          { tipo: 'humor', titulo: 'Hora do Conto & Leitura ', horarioPrevisto: '16:00', descricao: 'Contação de história lúdica em círculo com fantoches e livros ilustrados.' },
+                          { tipo: 'atividade_fisica', titulo: 'Brincadeiras no Parquinho ', horarioPrevisto: '10:30', descricao: 'Circuito de coordenação motora ampla com túneis, bambolês e corrida leve.' },
+                          { tipo: 'alimentacao', titulo: 'Hora da Frutinha & Hidratação ', horarioPrevisto: '15:00', descricao: 'Oferecer melancia, mação picada ou mamadeira de suco natural.' },
+                          { tipo: 'sono', titulo: 'Soneca Pós-Almoço ', horarioPrevisto: '13:00', descricao: 'Preparar colchonete, iluminação suave e música instrumental relaxante.' },
+                          { tipo: 'banho', titulo: 'Higiene Oral & Escovar Dentes ', horarioPrevisto: '12:00', descricao: 'Escovação de dentes assistida e lavagem das mãos pós-alimentação.' }
                         ]
                       : [
-                          { tipo: 'sinais_vitais', titulo: 'Verificar Sinais Vitais 🩺', horarioPrevisto: '09:00', descricao: 'Aferir pressão arterial, saturação e batimentos cardíacos.' },
-                          { tipo: 'medicacao', titulo: 'Medicação de Uso Contínuo 💊', horarioPrevisto: '08:00', descricao: 'Administrar medicamentos prescritos da manhã com água.' },
-                          { tipo: 'atividade_fisica', titulo: 'Alongamento Leve & Caminhada 🚶', horarioPrevisto: '17:00', descricao: 'Caminhada leve de 15 minutos e exercícios de mobilidade.' },
-                          { tipo: 'alimentacao', titulo: 'Chá da Tarde & Biscoitos 🍵', horarioPrevisto: '16:30', descricao: 'Oferecer chá morno com duas torradas e garantir ingestão de líquidos.' }
+                          { tipo: 'sinais_vitais', titulo: 'Verificar Sinais Vitais ', horarioPrevisto: '09:00', descricao: 'Aferir pressão arterial, saturação e batimentos cardíacos.' },
+                          { tipo: 'medicacao', titulo: 'Medicação de Uso Contínuo ', horarioPrevisto: '08:00', descricao: 'Administrar medicamentos prescritos da manhã com água.' },
+                          { tipo: 'atividade_fisica', titulo: 'Alongamento Leve & Caminhada ', horarioPrevisto: '17:00', descricao: 'Caminhada leve de 15 minutos e exercícios de mobilidade.' },
+                          { tipo: 'alimentacao', titulo: 'Chá da Tarde & Biscoitos ', horarioPrevisto: '16:30', descricao: 'Oferecer chá morno com duas torradas e garantir ingestão de líquidos.' }
                         ]
                     ).map((model, idx) => (
                       <button
@@ -7294,14 +7294,14 @@ Segunda-feira:
                       onChange={e => setNewTaskForm({ ...newTaskForm, tipo: e.target.value as TaskType })}
                       className="w-full text-xs font-semibold px-2 py-2 border border-slate-300 rounded-xl bg-white focus:ring-1 text-slate-800"
                     >
-                      <option value="alimentacao">{isEscolar ? '🍲 Alimentação / Lanche' : '🍛 Alimentação'}</option>
-                      <option value="medicacao">{isEscolar ? '💊 Medicamento Autorizado' : '💊 Medicamento'}</option>
-                      <option value="banho">{isEscolar ? '🧼 Banho / Higiene / Fralda' : '🧼 Banho / Higiene'}</option>
-                      <option value="hidratacao">💧 Hidratação / Líquidos</option>
-                      <option value="sono">{isEscolar ? '💤 Soneca / Descanso' : '💤 Sono / Repouso'}</option>
-                      <option value="humor">{isEscolar ? '🎒 Humor / Socialização' : '❤️ Humor / Estado Interno'}</option>
-                      <option value="atividade_fisica">{isEscolar ? '🎨 Recreação / Aula de Física' : '🚶 Atividade Física / Passeio'}</option>
-                      <option value="sinais_vitais">{isEscolar ? '🌡️ Sinais de Saúde / Febre' : '🌡️ Sinais Vitais / Triagem'}</option>
+                      <option value="alimentacao">{isEscolar ? ' Alimentação / Lanche' : ' Alimentação'}</option>
+                      <option value="medicacao">{isEscolar ? ' Medicamento Autorizado' : ' Medicamento'}</option>
+                      <option value="banho">{isEscolar ? ' Banho / Higiene / Fralda' : ' Banho / Higiene'}</option>
+                      <option value="hidratacao"> Hidratação / Líquidos</option>
+                      <option value="sono">{isEscolar ? ' Soneca / Descanso' : ' Sono / Repouso'}</option>
+                      <option value="humor">{isEscolar ? ' Humor / Socialização' : ' Humor / Estado Interno'}</option>
+                      <option value="atividade_fisica">{isEscolar ? ' Recreação / Aula de Física' : ' Atividade Física / Passeio'}</option>
+                      <option value="sinais_vitais">{isEscolar ? '  Sinais de Saúde / Febre' : '  Sinais Vitais / Triagem'}</option>
                     </select>
                   </div>
                   
@@ -7325,7 +7325,7 @@ Segunda-feira:
                   <div className="space-y-1">
                     <div className="flex items-center justify-between">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block flex items-center gap-1">
-                        ⏰ Horário
+                         Horário
                       </label>
                       <span className="text-[9px] text-amber-600 font-extrabold uppercase bg-amber-50 px-1.5 py-0.5 rounded flex items-center gap-0.5">
                         <Clock className="w-2.5 h-2.5" /> Reloginho
@@ -7375,7 +7375,7 @@ Segunda-feira:
                     <div className="space-y-1 md:col-span-4 bg-white/70 p-3 rounded-xl border border-blue-100 flex flex-col md:flex-row md:items-center justify-between gap-3">
                       <div>
                         <span className="text-[10px] font-black text-blue-900 uppercase tracking-wider block flex items-center gap-1">
-                          👥 Alcance da Atividade
+                           Alcance da Atividade
                         </span>
                         <p className="text-[10px] text-slate-500 font-semibold leading-relaxed">
                           Escolha se a atividade é individual para <strong>{idoso.nome}</strong> ou coletiva para toda a sala de aula <strong>{getStudentClassroomLocal(idoso.nome)}</strong>.
@@ -7413,7 +7413,7 @@ Segunda-feira:
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Instrução / Descrição Detalhada</label>
                       <div className="flex items-center gap-1">
                         <span className="text-[9px] text-indigo-600 font-bold uppercase bg-indigo-50 px-1 py-0.5 rounded flex items-center gap-0.5">
-                          🎙️ Voz
+                            Voz
                         </span>
                         <VoiceInput 
                           onTranscript={text => setNewTaskForm(prev => ({ ...prev, descricao: prev.descricao ? prev.descricao + ' ' + text : text }))} 
@@ -7482,7 +7482,7 @@ Segunda-feira:
                   return (
                     <div key={task.id} className="flex flex-col border border-blue-400 bg-blue-50/20 rounded-2xl p-5 shadow-xs animate-fade-in space-y-3">
                       <h4 className="text-xs font-bold text-blue-900 border-b border-blue-100 pb-1 flex items-center gap-1 uppercase tracking-wider">
-                        ✏️ {isEscolar ? 'Editar Atividade Escolar' : 'Editar Tarefa de Cuidado'}
+                         {isEscolar ? 'Editar Atividade Escolar' : 'Editar Tarefa de Cuidado'}
                       </h4>
                       <form onSubmit={handleEditTaskSubmit} className="space-y-3">
                         <div className="grid grid-cols-2 gap-2">
@@ -7670,7 +7670,7 @@ Segunda-feira:
                                 className="w-14 h-14 object-cover rounded-2xl border-2 border-rose-300 bg-rose-50 shadow-xs group-hover:border-rose-500 transition-all"
                               />
                               <span className="absolute -bottom-1 -right-1 bg-rose-600 text-white text-[8px] font-black px-1.5 py-0.2 rounded-md uppercase shadow-xs flex items-center gap-0.5">
-                                📷 Foto
+                                 Foto
                               </span>
                             </button>
                           ) : (
@@ -7685,7 +7685,7 @@ Segunda-feira:
                                 {task.horarioPrevisto}
                               </span>
                               <span className="text-[10px] font-black uppercase text-slate-400">
-                                {isCompleted ? '✓ Concluído' : isRefused ? '❌ Recusado' : isDelayed ? '🚨 Atrasado' : '⏳ Pendente'}
+                                {isCompleted ? ' Concluído' : isRefused ? ' Recusado' : isDelayed ? ' Atrasado' : ' Pendente'}
                               </span>
                             </div>
                             <h4 className={`text-sm font-bold text-slate-800 ${textCol}`}>{task.titulo}</h4>
@@ -7696,7 +7696,7 @@ Segunda-feira:
                             {isMedTask && (
                               <div className="mt-2 p-2.5 bg-rose-50/80 border border-rose-200 rounded-xl flex items-center justify-between gap-3 text-xs">
                                 <div className="flex items-center gap-2">
-                                  <span className="text-base shrink-0">💊</span>
+                                  <span className="text-base shrink-0"></span>
                                   <div className="leading-tight">
                                     <span className="font-bold text-rose-950 block">
                                       Dosagem: {matchingMed?.dosagem || 'Conforme instrução'}
@@ -7729,14 +7729,14 @@ Segunda-feira:
 
                             {isCompleted && (
                               <div className="text-[10px] font-semibold bg-emerald-100 text-emerald-800 p-2 rounded-xl mt-2 flex flex-col gap-0.5">
-                                <span className="flex items-center gap-1"><Check className="w-3.5 h-3.5" /> Concluído às {task.concluidaEm} por {task.completadaPor}</span>
+                                <span className="flex items-center gap-1"><Check className="w-3.5 h-3.5" /> Concluído Às {task.concluidaEm} por {task.completadaPor}</span>
                                 {task.observacao && <span>Relato cuidador: "{task.observacao}"</span>}
                               </div>
                             )}
 
                             {isRefused && (
                               <div className="text-[10px] font-semibold bg-amber-100 text-amber-800 p-2 rounded-xl mt-2 flex flex-col gap-0.5 border border-amber-200">
-                                <span className="flex items-center gap-1">⚠️ RECUSADO / NÃO-ADMINISTRADO às {task.concluidaEm || task.horarioPrevisto} por {task.completadaPor}</span>
+                                <span className="flex items-center gap-1"> ⚠️  RECUSADO / NÁO-ADMINISTRADO Às {task.concluidaEm || task.horarioPrevisto} por {task.completadaPor}</span>
                                 {task.observacao && <span>Justificativa: "{task.observacao}"</span>}
                               </div>
                             )}
@@ -7779,7 +7779,7 @@ Segunda-feira:
                             }}
                             className="text-[9px] font-extrabold text-rose-600 uppercase tracking-wider bg-rose-50 border border-rose-200 px-2 py-1 rounded-lg hover:bg-rose-100 shrink-0"
                           >
-                            ⚠️ Alerta Crítico
+                             ⚠️  Alerta Crítico
                           </button>
                         )}
                         
@@ -7788,7 +7788,7 @@ Segunda-feira:
                             onClick={() => handleResetTask(task.id)}
                             className="ml-auto px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-500 font-extrabold text-xs rounded-xl transition-all cursor-pointer border border-slate-200 flex items-center gap-1 shrink-0"
                           >
-                            ↩ Corrigir / Desfazer
+                             Corrigir / Desfazer
                           </button>
                         ) : (
                           <div className="flex items-center gap-2 ml-auto w-full justify-end">
@@ -7796,13 +7796,13 @@ Segunda-feira:
                               onClick={() => handleRegisterTaskAction(task.id, 'recusado')}
                               className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 active:bg-amber-200 text-amber-700 border border-amber-300 font-extrabold text-xs rounded-xl transition-all cursor-pointer flex items-center gap-1 shrink-0"
                             >
-                              ❌ Recusou
+                               Recusou
                             </button>
                             <button 
                               onClick={() => handleRegisterTaskAction(task.id, 'concluido')}
                               className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-extrabold text-xs rounded-xl transition-all cursor-pointer flex items-center gap-1 shadow-xs shrink-0"
                             >
-                              ✓ Entregue
+                               Entregue
                             </button>
                           </div>
                         )}
@@ -7823,7 +7823,7 @@ Segunda-feira:
         // =====================================================================
         <div className="space-y-6 max-w-full overflow-x-hidden">
 
-          {/* 🎁 INDICADOR DE TESTE GRATUITO (PAINEL DOS PAIS / FAMÍLIA) */}
+          {/*  INDICADOR DE TESTE GRATUITO (PAINEL DOS PAIS / FAMÍLIA) */}
           {!isStaffUser(usuarioAtual) && localStorage.getItem(`anjo_sub_status_${idoso.id}`) !== 'atrasado' && (
             <div className={`p-4 rounded-3xl border text-left flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs relative overflow-hidden transition-all ${
               accessibilitySettings?.darkMode 
@@ -7831,7 +7831,7 @@ Segunda-feira:
                 : 'bg-emerald-50/60 border-emerald-200 text-slate-850'
             }`}>
               <div className="flex items-start gap-3">
-                <span className="text-2xl shrink-0 mt-0.5">🎁</span>
+                <span className="text-2xl shrink-0 mt-0.5"></span>
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 rounded-full text-[9px] font-black uppercase tracking-wider">
@@ -7862,7 +7862,7 @@ Segunda-feira:
                 className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-black rounded-xl shadow-xs transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer whitespace-nowrap shrink-0 self-end sm:self-auto"
                 title="Testar simulador de tela de pagamento"
               >
-                Ativar Plano Mensal 💳
+                Ativar Plano Mensal 
               </button>
             </div>
           )}
@@ -7879,7 +7879,7 @@ Segunda-feira:
                   {isEscolar ? 'Controle de Presença Escolar' : 'Acompanhamento de Cuidados'}
                 </span>
                 <h2 className="text-xl font-bold text-rose-950">
-                  {isEscolar ? '🚫 Aluno Ausente Hoje (Falta)' : '🚫 Cliente Ausente'}
+                  {isEscolar ? ' Aluno Ausente Hoje (Falta)' : ' Cliente Ausente'}
                 </h2>
                 <p className="text-xs text-rose-700 leading-normal">
                   {isEscolar 
@@ -7889,7 +7889,7 @@ Segunda-feira:
                 </p>
                 <div className="pt-2">
                   <span className="text-[10px] font-bold text-rose-800 bg-white/70 border border-rose-200 px-3 py-1.5 rounded-xl">
-                    🔒 Modo Família: Acesso apenas para leitura e acompanhamento.
+                     Modo Família: Acesso apenas para leitura e acompanhamento.
                   </span>
                 </div>
               </div>
@@ -7907,7 +7907,7 @@ Segunda-feira:
                   </span>
                   <h2 className="text-xl font-bold text-slate-800">
                     {isShiftActive 
-                      ? (isEscolar ? '✓ Período Letivo em Andamento!' : '✓ Cuidador em Turno Ativo!') 
+                      ? (isEscolar ? ' Período Letivo em Andamento!' : ' Cuidador em Turno Ativo!') 
                       : (isEscolar ? 'Sem Aula no Momento' : 'Sem Turno de Cuidados Ativo')
                     }
                   </h2>
@@ -7928,7 +7928,7 @@ Segunda-feira:
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                   <div className="bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs leading-none">
                     <span className="text-[9px] font-black text-slate-400 block uppercase tracking-wider mb-1">
-                      {isEscolar ? 'TEMPO EM AULA' : 'DECIDIDO / DURAÇÃO DO TURNO'}
+                      {isEscolar ? 'TEMPO EM AULA' : 'DECIDIDO / DURAÇÁO DO TURNO'}
                     </span>
                     <strong className={`text-2xl font-mono tracking-tight ${isShiftActive ? 'text-emerald-700' : 'text-slate-400'}`}>
                       {isShiftActive ? elapsedShiftTime : '00:00:00'}
@@ -7936,7 +7936,7 @@ Segunda-feira:
                   </div>
                   
                   <span className="text-xs font-semibold text-slate-500 bg-white/60 px-3 py-2 rounded-xl border border-slate-200/80">
-                    🔒 Modo Família: Acesso de acompanhamento configurado (botões de controle de turno, término e faltas desabilitados).
+                     Modo Família: Acesso de acompanhamento configurado (botões de controle de turno, término e faltas desabilitados).
                   </span>
                 </div>
               </div>
@@ -8014,10 +8014,10 @@ Segunda-feira:
                 <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block">SEGURANÇA DA ROTINA hoje</strong>
                 <h3 className="text-lg font-black text-slate-850">
                   {farol.status === 'verde' 
-                    ? (isEscolar ? '🎉 Tudo Sob Controle na Escola' : '🎉 Tudo Sob Controle na Residência') 
+                    ? (isEscolar ? ' Tudo Sob Controle na Escola' : ' Tudo Sob Controle na Residência') 
                     : farol.status === 'amarelo' 
-                      ? (isEscolar ? '⚠️ Atividades e Pendências Ativas' : '⚠️ Cuidados e Pendências Ativas') 
-                      : '🚨 Atenção Necessária Para Atrasos!'}
+                      ? (isEscolar ? ' ⚠️  Atividades e Pendências Ativas' : ' ⚠️  Cuidados e Pendências Ativas') 
+                      : ' Atenção Necessária Para Atrasos!'}
                 </h3>
                 <p className="text-xs text-slate-600 leading-relaxed max-w-md">
                   {farol.details} {isEscolar ? 'O Anjinho Escolar' : 'O Anjo Cuidador'} audita e monitora cada ação. Fique despreocupado: qualquer falha séria gerará um alerta imediato de urgência para o seu celular.
@@ -8038,9 +8038,9 @@ Segunda-feira:
             {/* Water hydration container state with visual water cups and animated jug */}
             <div className="bg-white p-5 rounded-2xl border border-[#cbd5e1] space-y-4 shadow-sm relative overflow-hidden">
               <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block">💧 CONSUMO DE ÁGUA HOJE</strong>
+                <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block"> CONSUMO DE ÁGUA HOJE</strong>
                 <span className="text-[10px] font-black bg-cyan-100 text-cyan-800 px-2 py-0.5 rounded-full flex items-center gap-1">
-                  🫖 Jarrinha Animada
+                   Jarrinha Animada
                 </span>
               </div>
 
@@ -8057,12 +8057,12 @@ Segunda-feira:
                   </span>
                 </div>
 
-                {/* 🫖 Animated Water Jug Graphic */}
+                {/*  Animated Water Jug Graphic */}
                 {(() => {
                   const targetGoal = isEscolar ? 600 : 1500;
                   const percentJug = Math.min(100, Math.round((totalWaterMl / targetGoal) * 100));
                   return (
-                    <div className="flex items-center gap-2 bg-gradient-to-b from-cyan-50 to-sky-50/60 p-2.5 rounded-2xl border border-cyan-200 shrink-0 shadow-3xs" title="Jarrinha de hidratação: sobe à medida que a água é servida!">
+                    <div className="flex items-center gap-2 bg-gradient-to-b from-cyan-50 to-sky-50/60 p-2.5 rounded-2xl border border-cyan-200 shrink-0 shadow-3xs" title="Jarrinha de hidratação: sobe À medida que a água é servida!">
                       <div className="relative my-0.5">
                         {/* Glass Jug Body */}
                         <div className="relative w-11 h-16 border-2 border-cyan-600 rounded-b-xl rounded-t-xs bg-white/80 overflow-hidden shadow-inner flex flex-col justify-end">
@@ -8107,7 +8107,7 @@ Segunda-feira:
                     }`}
                   >
                     <div className="absolute inset-0 flex items-center justify-center text-[10px] font-black text-white select-none">
-                      {totalWaterMl >= stepWater ? '✓' : ''}
+                      {totalWaterMl >= stepWater ? '' : ''}
                     </div>
                   </div>
                 ))}
@@ -8122,7 +8122,7 @@ Segunda-feira:
             {/* Food checklist state today */}
             <div className="bg-white p-5 rounded-2xl border border-[#cbd5e1] space-y-4 shadow-sm">
               <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block">🍽️ NUTRIÇÃO / ALIMENTAÇÃO</strong>
+                <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block">  NUTRIÇÁO / ALIMENTAÇÁO</strong>
                 {isEscolar && (() => {
                   const studentBottlesToday = todaysMealsList.filter(m => {
                     if (!m || !m.refeicao) return false;
@@ -8131,7 +8131,7 @@ Segunda-feira:
                   });
                   return (
                     <span className="text-[10px] font-black bg-amber-100 text-amber-900 px-2 py-0.5 rounded-full flex items-center gap-1">
-                      🍼 {studentBottlesToday.length} {studentBottlesToday.length === 1 ? 'Mamadeira' : 'Mamadeiras'}
+                       {studentBottlesToday.length} {studentBottlesToday.length === 1 ? 'Mamadeira' : 'Mamadeiras'}
                     </span>
                   );
                 })()}
@@ -8150,11 +8150,11 @@ Segunda-feira:
                   return (
                     <div className="p-2.5 rounded-xl border border-amber-200 bg-amber-50/70 flex items-center justify-between text-xs font-bold text-amber-950 mb-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-base">🍼</span>
+                        <span className="text-base"></span>
                         <div>
                           <span className="block text-xs font-extrabold">Mamadeiras de Leite / Fórmula</span>
                           <span className="text-[10px] text-amber-800 font-normal block">
-                            {lastBottle?.horario ? `Última servida às ${lastBottle.horario}` : 'Controle de mamadeiras diárias'}
+                            {lastBottle?.horario ? `Última servida Às ${lastBottle.horario}` : 'Controle de mamadeiras diárias'}
                           </span>
                         </div>
                       </div>
@@ -8166,10 +8166,10 @@ Segunda-feira:
                 })()}
 
                 {[
-                  { key: 'cafe_manha', label: isEscolar ? '🥐 Lanchinho da Manhã' : 'Café da Manhã' },
-                  { key: 'almoco', label: isEscolar ? '🍲 Papinha / Almocinho' : 'Almoço Principal' },
-                  { key: 'lanche', label: isEscolar ? '🍎 Frutinha / Lanchinho' : 'Lanche / Tarde' },
-                  { key: 'jantar', label: isEscolar ? '🥣 Jantinha Escolar' : 'Jantar Sênior' }
+                  { key: 'cafe_manha', label: isEscolar ? ' Lanchinho da Manhã' : 'Café da Manhã' },
+                  { key: 'almoco', label: isEscolar ? ' Papinha / Almocinho' : 'Almoço Principal' },
+                  { key: 'lanche', label: isEscolar ? ' Frutinha / Lanchinho' : 'Lanche / Tarde' },
+                  { key: 'jantar', label: isEscolar ? ' Jantinha Escolar' : 'Jantar Sênior' }
                 ].map(itemMeal => {
                   const verified = [...todaysMealsList].reverse().find(m => {
                     if (!m || !m.refeicao) return false;
@@ -8197,7 +8197,7 @@ Segunda-feira:
                       <span className="text-slate-600">{itemMeal.label}</span>
                       {verified ? (
                         <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-100 uppercase text-[9px] flex items-center gap-1">
-                          ✓ {verified.aceitacao === 'muito_bem' ? 'Comeu Super Bem' : verified.aceitacao === 'pouco' ? 'Comeu Pouco' : 'Recusou'}
+                           {verified.aceitacao === 'muito_bem' ? 'Comeu Super Bem' : verified.aceitacao === 'pouco' ? 'Comeu Pouco' : 'Recusou'}
                         </span>
                       ) : (
                         <span className="px-2 py-0.5 bg-slate-50 text-slate-400 rounded-md uppercase text-[9px]">
@@ -8214,7 +8214,7 @@ Segunda-feira:
             <div className="bg-white p-5 rounded-2xl border border-[#cbd5e1] space-y-4 shadow-sm flex flex-col justify-between">
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block">🧼 HIGIENE & BEM ESTAR</strong>
+                  <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block"> HIGIENE & BEM ESTAR</strong>
                   <p className="text-xs text-slate-500 leading-normal mt-1 font-sans">
                     {isEscolar 
                       ? 'Acompanhamento diário de conforto e asseio do aluno. Frequência de trocas de fralda, dentes, roupas e higiene.' 
@@ -8242,7 +8242,7 @@ Segunda-feira:
                     ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
                     : 'bg-slate-50 border-slate-100 text-slate-400'
                 }`}>
-                  <span className="text-xs block font-bold">{isEscolar ? '👶 Fralda / Toalete' : '👶 Fralda / Absorvente'}</span>
+                  <span className="text-xs block font-bold">{isEscolar ? ' Fralda / Toalete' : ' Fralda / Absorvente'}</span>
                   <span className="text-[10px] font-black uppercase">
                     {todayHygieneLog?.diaper ? 'Trocada / Cuidada' : 'Pendente'}
                   </span>
@@ -8254,7 +8254,7 @@ Segunda-feira:
                     ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
                     : 'bg-slate-50 border-slate-100 text-slate-400'
                 }`}>
-                  <span className="text-xs block font-bold">{isEscolar ? '🪥 Escovação Dentes' : '🪥 Higiene Bucal'}</span>
+                  <span className="text-xs block font-bold">{isEscolar ? ' Escovação Dentes' : ' Higiene Bucal'}</span>
                   <span className="text-[10px] font-black uppercase">
                     {todayHygieneLog?.teeth ? 'Realizada' : 'Pendente'}
                   </span>
@@ -8266,7 +8266,7 @@ Segunda-feira:
                     ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
                     : 'bg-slate-50 border-slate-100 text-slate-400'
                 }`}>
-                  <span className="text-xs block font-bold">{isEscolar ? '👚 Troca de Roupa' : '👚 Roupa Limpa'}</span>
+                  <span className="text-xs block font-bold">{isEscolar ? ' Troca de Roupa' : ' Roupa Limpa'}</span>
                   <span className="text-[10px] font-black uppercase">
                     {todayHygieneLog?.clothes ? 'Trocada' : 'Pendente'}
                   </span>
@@ -8278,7 +8278,7 @@ Segunda-feira:
                     ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
                     : 'bg-slate-50 border-slate-100 text-slate-400'
                 }`}>
-                  <span className="text-xs block font-bold">{isEscolar ? '🧼 Mãos e Rosto' : '🚿 Banho Chuveiro'}</span>
+                  <span className="text-xs block font-bold">{isEscolar ? ' Mãos e Rosto' : ' Banho Chuveiro'}</span>
                   <span className="text-[10px] font-black uppercase">
                     {(todayHygieneLog?.hands || todayHygieneLog?.bath) ? (isEscolar ? 'Lavados' : 'Concluído') : 'Pendente'}
                   </span>
@@ -8290,7 +8290,7 @@ Segunda-feira:
                     ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
                     : 'bg-slate-50 border-slate-100 text-slate-400'
                 }`}>
-                  <span className="text-xs block font-bold">{isEscolar ? '🧴 Pomada Antiassadura' : '🧴 Hidratação Pele'}</span>
+                  <span className="text-xs block font-bold">{isEscolar ? ' Pomada Antiassadura' : ' Hidratação Pele'}</span>
                   <span className="text-[10px] font-black uppercase">
                     {todayHygieneLog?.cream ? 'Aplicada' : 'Pendente'}
                   </span>
@@ -8320,7 +8320,7 @@ Segunda-feira:
               {occurrencesList && occurrencesList.length > 0 && (
                 <div className="pt-2 border-t border-slate-100 space-y-2">
                   <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider block">
-                    🚨 Ocorrências / Registros de Cuidados do Dia ({occurrencesList.length})
+                     Ocorrências / Registros de Cuidados do Dia ({occurrencesList.length})
                   </span>
                   <div className="space-y-1.5">
                     {occurrencesList.map(occ => (
@@ -8351,7 +8351,7 @@ Segunda-feira:
               )}
             </div>
 
-            {/* Mood & Caregiver / Teacher Note card state 😊 */}
+            {/* Mood & Caregiver / Teacher Note card state  */}
             {(() => {
               const humsToday = getFromDB<RegistroHumor[]>('anjo_humor', []).filter(h => h && h.idosoId === idoso.id && isTodayOrDemoDate(h.data));
               const currentHum = humsToday.length > 0 ? humsToday[humsToday.length - 1] : null;
@@ -8359,19 +8359,19 @@ Segunda-feira:
               const getMoodInfo = (estado?: string) => {
                 switch (estado) {
                   case 'calmo':
-                    return { label: 'Calmo / Sereno', emoji: '😊', bg: 'bg-emerald-50 text-emerald-800 border-emerald-200' };
+                    return { label: 'Calmo / Sereno', emoji: '', bg: 'bg-emerald-50 text-emerald-800 border-emerald-200' };
                   case 'feliz':
-                    return { label: 'Feliz / Comunicativo', emoji: '😄', bg: 'bg-amber-50 text-amber-900 border-amber-200' };
+                    return { label: 'Feliz / Comunicativo', emoji: '', bg: 'bg-amber-50 text-amber-900 border-amber-200' };
                   case 'sonolento':
-                    return { label: 'Sonolento / Repousando', emoji: '💤', bg: 'bg-indigo-50 text-indigo-800 border-indigo-200' };
+                    return { label: 'Sonolento / Repousando', emoji: '', bg: 'bg-indigo-50 text-indigo-800 border-indigo-200' };
                   case 'agitado':
-                    return { label: 'Agitado / Inquieto', emoji: '⚠️', bg: 'bg-rose-50 text-rose-800 border-rose-200' };
+                    return { label: 'Agitado / Inquieto', emoji: ' ⚠️ ', bg: 'bg-rose-50 text-rose-800 border-rose-200' };
                   case 'confuso':
-                    return { label: 'Desorientado / Confuso', emoji: '❓', bg: 'bg-orange-50 text-orange-800 border-orange-200' };
+                    return { label: 'Desorientado / Confuso', emoji: '', bg: 'bg-orange-50 text-orange-800 border-orange-200' };
                   case 'recusando':
-                    return { label: 'Resiste às Intervenções', emoji: '❌', bg: 'bg-red-50 text-red-800 border-red-200' };
+                    return { label: 'Resiste Às Intervenções', emoji: '', bg: 'bg-red-50 text-red-800 border-red-200' };
                   default:
-                    return { label: estado ? estado.toUpperCase() : 'Calmo / Sereno', emoji: '😊', bg: 'bg-emerald-50 text-emerald-800 border-emerald-200' };
+                    return { label: estado ? estado.toUpperCase() : 'Calmo / Sereno', emoji: '', bg: 'bg-emerald-50 text-emerald-800 border-emerald-200' };
                 }
               };
 
@@ -8382,7 +8382,7 @@ Segunda-feira:
                   <div className="space-y-2.5">
                     <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                       <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block">
-                        😊 {isEscolar ? 'HUMOR & NOTA DA EDUCADORA' : 'ESTADO DE HUMOR / NOTA'}
+                         {isEscolar ? 'HUMOR & NOTA DA EDUCADORA' : 'ESTADO DE HUMOR / NOTA'}
                       </strong>
                       <span className="text-[10px] font-black bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full flex items-center gap-1">
                         Sócio-Emocional
@@ -8398,7 +8398,7 @@ Segunda-feira:
                         <div>
                           <strong className="text-xs block leading-tight">{moodInfo.label}</strong>
                           <span className="text-[9px] opacity-80 block font-semibold">
-                            {currentHum?.horario ? `Registrado às ${currentHum.horario}` : 'Registrado no Turno'}
+                            {currentHum?.horario ? `Registrado Às ${currentHum.horario}` : 'Registrado no Turno'}
                           </span>
                         </div>
                       </div>
@@ -8435,7 +8435,7 @@ Segunda-feira:
           {/* VITAL SIGNS AUDIT BLOCK WITH COMPACT SPARK CARDS */}
           <div className="space-y-3">
             <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block">
-              {isFundamental ? '📝 DIÁRIO DE ACOMPANHAMENTO PEDAGÓGICO & FOCO' : (isEscolar ? '📝 DIÁRIO DE SAÚDE, SONO & FRALDA' : '💓 MONITORAMENTO DE SINAIS VITAIS')}
+              {isFundamental ? ' DIÁRIO DE ACOMPANHAMENTO PEDAGÓGICO & FOCO' : (isEscolar ? ' DIÁRIO DE SAÚDE, SONO & FRALDA' : ' MONITORAMENTO DE SINAIS VITAIS')}
             </strong>
             
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
@@ -8443,7 +8443,7 @@ Segunda-feira:
               <div className="bg-white p-4 rounded-xl border border-soft-gray flex flex-col justify-between">
                 <div>
                   <span className="text-[10px] font-bold text-slate-400 block uppercase">
-                    {isFundamental ? '✏️ Dever de Casa' : (isEscolar ? '💤 Soneca / Sono' : 'P. Arterial')}
+                    {isFundamental ? ' Dever de Casa' : (isEscolar ? ' Soneca / Sono' : 'P. Arterial')}
                   </span>
                   <strong className="text-sm font-bold text-slate-800 line-clamp-2 mt-1">
                     {isFundamental 
@@ -8465,7 +8465,7 @@ Segunda-feira:
               <div className="bg-white p-4 rounded-xl border border-soft-gray flex flex-col justify-between">
                 <div>
                   <span className="text-[10px] font-bold text-slate-400 block uppercase">
-                    {isFundamental ? '🎯 Foco / Conduta' : (isEscolar ? '🧻 Fraldas (Trocas)' : 'Glicemia Capilar')}
+                    {isFundamental ? ' Foco / Conduta' : (isEscolar ? ' Fraldas (Trocas)' : 'Glicemia Capilar')}
                   </span>
                   <strong className="text-sm font-bold text-slate-800 line-clamp-2 mt-1">
                     {isFundamental 
@@ -8486,12 +8486,12 @@ Segunda-feira:
                 </span>
               </div>
 
-              {/* COMPACT BOTTLE / MAMADEIRA CARD 🍼 (Infantil / Maternal / Berçário / Pré) */}
+              {/* COMPACT BOTTLE / MAMADEIRA CARD  (Infantil / Maternal / Berçário / Pré) */}
               {isEscolar && !isFundamental && (
                 <div className="bg-white p-4 rounded-xl border border-soft-gray flex flex-col justify-between">
                   <div>
                     <span className="text-[10px] font-bold text-slate-400 block uppercase">
-                      🍼 Mamadeiras Servidas
+                       Mamadeiras Servidas
                     </span>
                     <strong className="text-xl font-bold text-slate-800 flex items-center gap-1 mt-0.5">
                       <span>{studentBottlesToday.length}</span>
@@ -8503,19 +8503,19 @@ Segunda-feira:
                   <span className="text-[10px] text-amber-700 font-bold bg-amber-50 px-1.5 py-0.5 rounded-sm self-start mt-2 border border-amber-150">
                     {studentBottlesToday.length > 0 
                       ? (studentBottlesToday[studentBottlesToday.length - 1]?.horario 
-                          ? `Última às ${studentBottlesToday[studentBottlesToday.length - 1].horario} (${totalBottlesMl} ml total)` 
+                          ? `Última Às ${studentBottlesToday[studentBottlesToday.length - 1].horario} (${totalBottlesMl} ml total)` 
                           : `${totalBottlesMl} ml total`) 
                       : 'Nenhuma hoje'}
                   </span>
                 </div>
               )}
 
-              {/* COMPACT MATERIAL / CADERNOS CARD 📚 (Fundamental) */}
+              {/* COMPACT MATERIAL / CADERNOS CARD  (Fundamental) */}
               {isFundamental && (
                 <div className="bg-white p-4 rounded-xl border border-soft-gray flex flex-col justify-between">
                   <div>
                     <span className="text-[10px] font-bold text-slate-400 block uppercase">
-                      📚 Material / Cadernos
+                       Material / Cadernos
                     </span>
                     <strong className="text-sm font-bold text-slate-800 line-clamp-2 mt-1">
                       {latestVitals?.saturacao ? `${latestVitals.saturacao}` : 'Cadernos e estojo completos'}
@@ -8531,7 +8531,7 @@ Segunda-feira:
                 <div className="flex flex-col justify-between h-full">
                   <div>
                     <span className="text-[10px] font-bold text-slate-400 block uppercase">
-                      {isFundamental ? '💧 Hidratação / Copos' : (isEscolar ? '💧 Hidratação (Água)' : 'Oxigenação (SpO2)')}
+                      {isFundamental ? ' Hidratação / Copos' : (isEscolar ? ' Hidratação (Água)' : 'Oxigenação (SpO2)')}
                     </span>
                     <strong className="text-xl font-bold text-slate-800">
                       {isEscolar 
@@ -8544,7 +8544,7 @@ Segunda-feira:
                   </span>
                 </div>
 
-                {/* 🫖 Mini Jarrinha Animada em Tempo Real */}
+                {/*  Mini Jarrinha Animada em Tempo Real */}
                 {(() => {
                   const targetGoal = isEscolar ? 600 : 1500;
                   const percentJug = Math.min(100, Math.round((totalWaterMl / targetGoal) * 100));
@@ -8579,11 +8579,11 @@ Segunda-feira:
                   </strong>
                 </div>
                 <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded-sm self-start mt-2">
-                  {latestVitals ? (latestVitals.temperatura >= 37.8 ? 'Febre ⚠️' : 'Afebril') : 'Afebril'}
+                  {latestVitals ? (latestVitals.temperatura >= 37.8 ? 'Febre  ⚠️ ' : 'Afebril') : 'Afebril'}
                 </span>
               </div>
 
-              {/* INTERACTIVE WEIGHT CARD ⚖️ */}
+              {/* INTERACTIVE WEIGHT CARD  */}
               <div 
                 id="clinical-weight-card"
                 onClick={() => onNavigate('reports')} 
@@ -8592,7 +8592,7 @@ Segunda-feira:
               >
                 <div>
                   <span className="text-[10px] font-black text-indigo-500 block uppercase flex items-center justify-between">
-                    <span>{isEscolar ? '⚖️ Peso Escolar' : '⚖️ Peso (Controle Semanal)'}</span>
+                    <span>{isEscolar ? ' Peso Escolar' : ' Peso (Controle Semanal)'}</span>
                     <span className="text-indigo-600 bg-white border border-indigo-150 px-1 py-0.2 text-[8px] rounded-xs group-hover:scale-105 transition-transform">Ver Histórico</span>
                   </span>
                   <strong className="text-xl font-bold text-slate-800">
@@ -8614,19 +8614,19 @@ Segunda-feira:
                 </div>
               </div>
 
-              {/* COMPACT HUMOR & BEHAVIOR CARD 🧠 */}
+              {/* COMPACT HUMOR & BEHAVIOR CARD   */}
               {(() => {
                 const humsToday = getFromDB<RegistroHumor[]>('anjo_humor', []).filter(h => h && h.idosoId === idoso.id && isTodayOrDemoDate(h.data));
                 const currentHum = humsToday.length > 0 ? humsToday[humsToday.length - 1] : null;
                 const stateDisplay = currentHum?.estado || quickHumor.estado || 'calmo';
-                const emoji = stateDisplay === 'feliz' ? '😄' : stateDisplay === 'sonolento' ? '💤' : stateDisplay === 'agitado' ? '⚠️' : stateDisplay === 'confuso' ? '❓' : stateDisplay === 'recusando' ? '❌' : '😊';
+                const emoji = stateDisplay === 'feliz' ? '' : stateDisplay === 'sonolento' ? '' : stateDisplay === 'agitado' ? ' ⚠️ ' : stateDisplay === 'confuso' ? '' : stateDisplay === 'recusando' ? '' : '';
                 const label = stateDisplay === 'feliz' ? 'Feliz' : stateDisplay === 'sonolento' ? 'Sonolento' : stateDisplay === 'agitado' ? 'Agitado' : stateDisplay === 'confuso' ? 'Confuso' : stateDisplay === 'recusando' ? 'Recusando' : 'Calmo / Sereno';
 
                 return (
                   <div className="bg-white p-4 rounded-xl border border-soft-gray flex flex-col justify-between">
                     <div>
                       <span className="text-[10px] font-bold text-slate-400 block uppercase">
-                        {isEscolar ? '😊 Humor / Conduta' : '😊 Estado de Humor'}
+                        {isEscolar ? ' Humor / Conduta' : ' Estado de Humor'}
                       </span>
                       <strong className="text-sm font-bold text-slate-800 line-clamp-2 mt-1 flex items-center gap-1.5">
                         <span>{emoji}</span> <span>{label}</span>
@@ -8666,12 +8666,12 @@ Segunda-feira:
                       <div className="bg-white p-4 rounded-2xl border border-[#cbd5e1] space-y-1.5 shadow-2xs leading-normal">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
                           <span className="text-[10px] font-black uppercase text-emerald-600 bg-emerald-50/70 border border-emerald-100 px-2 py-0.5 rounded-full">
-                            🕒 Horário Registrado: {tItem.horario}
+                             Horário Registrado: {tItem.horario}
                           </span>
                           
                           {tieneDobleTiempo && (
                             <span className="text-[9px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
-                              📶 Registrado Offline no Celular às {new Date(tItem.meta.horario_registrado_dispositivo).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}  |  Servidor: {new Date(tItem.meta.horario_sincronizado_servidor).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                               Registrado Offline no Celular Às {new Date(tItem.meta.horario_registrado_dispositivo).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}  |  Servidor: {new Date(tItem.meta.horario_sincronizado_servidor).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                             </span>
                           )}
                         </div>
@@ -8712,7 +8712,7 @@ Segunda-feira:
                           {isEscolar ? `Diário Escolar de ${report.cuidador}` : `Resumo do Turno de ${report.cuidador}`}
                         </strong>
                         <span className="text-[10px] text-slate-400 font-bold uppercase">
-                          {report.timestamp ? new Date(report.timestamp).toLocaleDateString('pt-BR') : (report.data || getTodayBr())}  •  Período: {formatShiftTime(report.inicio, '07:30')} às {formatShiftTime(report.fim, '17:30')}
+                          {report.timestamp ? new Date(report.timestamp).toLocaleDateString('pt-BR') : (report.data || getTodayBr())}    Período: {formatShiftTime(report.inicio, '07:30')} Às {formatShiftTime(report.fim, '17:30')}
                         </span>
                       </div>
                       <div className="text-right leading-none">
@@ -8728,7 +8728,7 @@ Segunda-feira:
                     {/* Interactive Direct Report Link & Action Bar */}
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 bg-indigo-50/80 dark:bg-indigo-950/40 rounded-xl border border-indigo-200/60 dark:border-indigo-800 text-xs font-bold text-indigo-900 dark:text-indigo-200">
                       <div className="flex items-center gap-2 min-w-0">
-                        <span className="text-base shrink-0">🔗</span>
+                        <span className="text-base shrink-0"></span>
                         <div className="min-w-0">
                           <span className="block font-black text-[11px] text-indigo-900 dark:text-indigo-100">
                             Link Seguro do Diário Digital:
@@ -8745,7 +8745,7 @@ Segunda-feira:
                           onClick={() => setSelectedReportModal(report)}
                           className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold flex items-center gap-1 shadow-xs transition-all cursor-pointer"
                         >
-                          <span>👁️</span> Abrir Diário Digital 360º
+                          <span> </span> Abrir Diário Digital 360º
                         </button>
                         
                         <button
@@ -8753,11 +8753,11 @@ Segunda-feira:
                           onClick={() => {
                             const link = `${window.location.origin}/?relatorio=${report.id}`;
                             navigator.clipboard.writeText(link);
-                            showToast('✓ Link do diário escolar copiado para a área de transferência!');
+                            showToast(' Link do diário escolar copiado para a área de transferência!');
                           }}
                           className="px-2.5 py-1.5 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-bold flex items-center gap-1 cursor-pointer"
                         >
-                          <span>📋</span> Copiar Link
+                          <span></span> Copiar Link
                         </button>
 
                         <button
@@ -8772,7 +8772,7 @@ Segunda-feira:
                     </div>
 
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-[10px] font-bold text-slate-400 pt-2 border-t border-slate-100">
-                      <span className="flex items-center gap-1">✓ Controle de auditoria de acessos</span>
+                      <span className="flex items-center gap-1"> Controle de auditoria de acessos</span>
                       <div className="flex items-center gap-2.5">
                         <button
                           type="button"
@@ -8782,7 +8782,7 @@ Segunda-feira:
                           }}
                           className="bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-[10px] px-2.5 py-1 text-white font-black rounded-lg transition-colors flex items-center gap-1 cursor-pointer hover:text-white"
                         >
-                          <span>💬</span> Compartilhar WhatsApp
+                          <span></span> Compartilhar WhatsApp
                         </button>
                         <span>Duração: {report.duracao}</span>
                       </div>
@@ -8805,7 +8805,7 @@ Segunda-feira:
               </div>
               <div>
                 <h3 className="text-base sm:text-lg font-black text-slate-800">
-                  ⏹️ Registrar Saída / Ausência de Aluno
+                   Registrar Saída / Ausência de Aluno
                 </h3>
                 <p className="text-xs text-slate-500 font-medium">
                   Aluno: <strong className="text-slate-800">{(idoso.nome || '').split(' (')[0]}</strong>
@@ -8829,11 +8829,11 @@ Segunda-feira:
               {/* Preset Quick Chips */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {[
-                  '🩺 Consulta Médica / Exame',
-                  '🚗 Pais / Responsáveis buscaram mais cedo',
-                  '🤒 Mal-estar / Sintomas de Saúde',
-                  '🏠 Ausência Temporária / Particular',
-                  '📋 Fim das Aulas / Saída Normal'
+                  ' Consulta Médica / Exame',
+                  ' Pais / Responsáveis buscaram mais cedo',
+                  ' Mal-estar / Sintomas de Saúde',
+                  '  Ausência Temporária / Particular',
+                  ' Fim das Aulas / Saída Normal'
                 ].map((reasonOption) => {
                   const isSelected = stopShiftReason === reasonOption;
                   return (
@@ -8861,7 +8861,7 @@ Segunda-feira:
                   rows={2}
                   value={stopShiftNote}
                   onChange={e => setStopShiftNote(e.target.value)}
-                  placeholder="Ex: Mãe veio buscar às 14:30 para ir ao dentista..."
+                  placeholder="Ex: Mãe veio buscar Às 14:30 para ir ao dentista..."
                   className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
               </div>
@@ -8898,7 +8898,7 @@ Segunda-feira:
               )}
               <div>
                 <h3 className="text-base sm:text-lg font-black text-slate-800">
-                  {occurrenceForm.criticidade === 'vermelho' ? '🚨 Registrar Intercorrência Urgente' : '📋 Registrar Ocorrência do Dia'}
+                  {occurrenceForm.criticidade === 'vermelho' ? ' Registrar Intercorrência Urgente' : ' Registrar Ocorrência do Dia'}
                 </h3>
                 <p className="text-xs text-slate-500">
                   {occurrenceForm.criticidade === 'vermelho'
@@ -8916,14 +8916,14 @@ Segunda-feira:
                   onChange={e => setOccurrenceForm({ ...occurrenceForm, tipo: e.target.value })}
                   className="w-full px-3 py-2 border border-[#cbd5e1] rounded-xl text-xs bg-slate-50 font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
                 >
-                  <option value="queda">Queda 🚨</option>
-                  <option value="febre">Febre 🌡️</option>
-                  <option value="dor">Dor 🤕</option>
-                  <option value="recusa_medicacao">Recusa de medicação 💊</option>
-                  <option value="recusa_alimentar">Recusa alimentar 🍽️</option>
-                  <option value="comportamento">Alteração de comportamento 🧠</option>
-                  <option value="pressao">Pressão alterada 💓</option>
-                  <option value="outro">Outro (Relatar) 🔍</option>
+                  <option value="queda">Queda </option>
+                  <option value="febre">Febre  </option>
+                  <option value="dor">Dor </option>
+                  <option value="recusa_medicacao">Recusa de medicação </option>
+                  <option value="recusa_alimentar">Recusa alimentar  </option>
+                  <option value="comportamento">Alteração de comportamento  </option>
+                  <option value="pressao">Pressão alterada </option>
+                  <option value="outro">Outro (Relatar) </option>
                 </select>
               </div>
 
@@ -8939,7 +8939,7 @@ Segunda-feira:
                         : 'border-slate-200 bg-slate-50 text-slate-500 text-xs font-semibold'
                     }`}
                   >
-                    🟡 Atenção recomendável
+                     Atenção recomendável
                   </button>
                   <button
                     type="button"
@@ -8950,7 +8950,7 @@ Segunda-feira:
                         : 'border-slate-200 bg-slate-50 text-slate-500 text-xs font-semibold'
                     }`}
                   >
-                    🔴 Urgência Crítica
+                     Urgência Crítica
                   </button>
                 </div>
               </div>
@@ -9076,7 +9076,7 @@ Segunda-feira:
                   <div className="grid grid-cols-3 gap-2">
                     <div className="text-center space-y-1">
                       <div className="mx-auto w-6 h-6 flex items-center justify-center rounded-full bg-emerald-100 text-emerald-700 text-xs font-black">
-                        ✓
+                        
                       </div>
                       <span className="text-[9px] font-bold text-slate-700 block">Mensagem gerada</span>
                       <span className="text-[7px] text-slate-400 font-medium block">Pelo app</span>
@@ -9088,7 +9088,7 @@ Segunda-feira:
                           ? 'bg-amber-100 text-amber-700'
                           : 'bg-slate-200 text-slate-400'
                       }`}>
-                        {auditStatus === 'whatsapp_aberto' || auditStatus === 'envio_confirmado' ? '✓' : '2'}
+                        {auditStatus === 'whatsapp_aberto' || auditStatus === 'envio_confirmado' ? '' : '2'}
                       </div>
                       <span className={`text-[9px] font-bold block ${
                         auditStatus === 'whatsapp_aberto' || auditStatus === 'envio_confirmado' ? 'text-slate-700' : 'text-slate-400'
@@ -9102,7 +9102,7 @@ Segunda-feira:
                           ? 'bg-emerald-100 text-emerald-700'
                           : 'bg-slate-200 text-slate-400'
                       }`}>
-                        {auditStatus === 'envio_confirmado' ? '✓' : '3'}
+                        {auditStatus === 'envio_confirmado' ? '' : '3'}
                       </div>
                       <span className={`text-[9px] font-bold block ${
                         auditStatus === 'envio_confirmado' ? 'text-slate-700' : 'text-slate-400'
@@ -9125,7 +9125,7 @@ Segunda-feira:
                         : 'border-slate-200 hover:border-slate-350 bg-slate-50 text-slate-600'
                     }`}
                   >
-                    {isCopied ? '✓ Copiado!' : '📋 Copiar Mensagem'}
+                    {isCopied ? ' Copiado!' : ' Copiar Mensagem'}
                   </button>
                 </div>
                 <div 
@@ -9150,7 +9150,7 @@ Segunda-feira:
                   <div className="space-y-2.5 bg-emerald-50/60 border border-emerald-200/80 rounded-2xl p-3.5">
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-[11px] font-black uppercase text-emerald-900 tracking-wider">
-                        ⚡ Ação Rápida de Envio Direto
+                         Ação Rápida de Envio Direto
                       </span>
                       <span className="text-[10px] text-emerald-700 font-bold">
                         Para: {primaryRecipient.nome} ({primaryRecipient.telefone})
@@ -9166,7 +9166,7 @@ Segunda-feira:
                       }}
                       className="w-full py-3 px-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-black text-xs md:text-sm rounded-xl shadow-sm transition-all cursor-pointer flex items-center justify-center gap-2 border border-emerald-500/20 hover:text-white"
                     >
-                      <span className="text-base">📲</span> ABRIR NO WHATSAPP REAL AGORA
+                      <span className="text-base"></span> ABRIR NO WHATSAPP REAL AGORA
                     </a>
 
                     {typeof navigator !== 'undefined' && (navigator as any).share && (
@@ -9184,7 +9184,7 @@ Segunda-feira:
                         }}
                         className="w-full py-2 px-3 bg-white hover:bg-emerald-100/60 text-emerald-800 font-extrabold text-xs rounded-xl border border-emerald-200 transition-all cursor-pointer flex items-center justify-center gap-1.5"
                       >
-                        <span>📤</span> Compartilhar pelo Celular (WhatsApp / Outros Apps)
+                        <span></span> Compartilhar pelo Celular (WhatsApp / Outros Apps)
                       </button>
                     )}
                   </div>
@@ -9222,7 +9222,7 @@ Segunda-feira:
                         customPhoneInput ? 'bg-emerald-600 hover:bg-emerald-700 cursor-pointer hover:text-white' : 'bg-slate-300 cursor-not-allowed'
                       }`}
                     >
-                      <span>💬</span> Enviar
+                      <span></span> Enviar
                     </a>
                   </div>
                 </div>
@@ -9257,7 +9257,7 @@ Segunda-feira:
                               }}
                               className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-black text-[10px] rounded-lg shadow-xs transition-all cursor-pointer flex items-center gap-1 shrink-0 border border-emerald-500/10 hover:text-white"
                             >
-                              <span>💬</span> Abrir WhatsApp
+                              <span></span> Abrir WhatsApp
                             </a>
                           </div>
                           
@@ -9272,7 +9272,7 @@ Segunda-feira:
                                   status === 'pendente' ? 'bg-slate-200 text-slate-700 font-bold border border-slate-300' : 'bg-slate-100/50 text-slate-400 hover:bg-slate-100'
                                 }`}
                               >
-                                Ainda não enviado ⏳
+                                Ainda não enviado 
                               </button>
                               <button
                                 type="button"
@@ -9281,7 +9281,7 @@ Segunda-feira:
                                   status === 'aberto' ? 'bg-amber-100 text-amber-800 font-bold border border-amber-300' : 'bg-slate-100/50 text-slate-400 hover:bg-slate-100'
                                 }`}
                               >
-                                WhatsApp aberto 💬
+                                WhatsApp aberto 
                               </button>
                               <button
                                 type="button"
@@ -9290,7 +9290,7 @@ Segunda-feira:
                                   status === 'confirmado' ? 'bg-emerald-100 text-emerald-800 font-bold border border-emerald-300' : 'bg-slate-100/50 text-slate-400 hover:bg-slate-100'
                                 }`}
                               >
-                                Confirmado ✓
+                                Confirmado 
                               </button>
                             </div>
                           </div>
@@ -9322,7 +9322,7 @@ Segunda-feira:
                             }}
                             className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-black text-[10px] rounded-lg shadow-xs transition-all cursor-pointer flex items-center gap-1 shrink-0 border border-emerald-500/10 hover:text-white"
                           >
-                            <span>💬</span> Abrir WhatsApp
+                            <span></span> Abrir WhatsApp
                           </a>
                         </div>
 
@@ -9337,7 +9337,7 @@ Segunda-feira:
                                 status === 'pendente' ? 'bg-slate-200 text-slate-700 font-bold border border-slate-350' : 'bg-slate-100/50 text-slate-400 hover:bg-slate-100'
                               }`}
                             >
-                              Ainda não enviado ⏳
+                              Ainda não enviado 
                             </button>
                             <button
                               type="button"
@@ -9346,7 +9346,7 @@ Segunda-feira:
                                 status === 'aberto' ? 'bg-amber-100 text-amber-800 font-bold border border-amber-300' : 'bg-slate-100/50 text-slate-400 hover:bg-slate-100'
                               }`}
                             >
-                              WhatsApp aberto 💬
+                              WhatsApp aberto 
                             </button>
                             <button
                               type="button"
@@ -9355,7 +9355,7 @@ Segunda-feira:
                                 status === 'confirmado' ? 'bg-emerald-100 text-emerald-800 font-bold border border-emerald-300' : 'bg-slate-100/50 text-slate-400 hover:bg-slate-100'
                               }`}
                             >
-                              Confirmado ✓
+                              Confirmado 
                             </button>
                           </div>
                         </div>
@@ -9378,7 +9378,7 @@ Segunda-feira:
                       onClick={() => handleConfirmWhatsAppSent(activeSharingOccurrenceId)}
                       className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl cursor-pointer shadow-xs active:scale-95 transition-all text-center leading-normal"
                     >
-                      Sim, enviei no WhatsApp ✓
+                      Sim, enviei no WhatsApp 
                     </button>
                     
                     <button
@@ -9449,7 +9449,7 @@ Segunda-feira:
                               : 'border-slate-200 bg-white text-slate-600 hover:border-slate-350'
                           }`}
                         >
-                          {copiedCollectiveIndex === index ? '✓ Copiado' : '📋 Copiar'}
+                          {copiedCollectiveIndex === index ? ' Copiado' : ' Copiar'}
                         </button>
 
                         {/* WhatsApp Button */}
@@ -9462,7 +9462,7 @@ Segunda-feira:
                           }}
                           className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-black text-[10px] rounded-lg shadow-xs transition-all cursor-pointer flex items-center gap-1 shrink-0 border border-emerald-500/10 hover:text-white"
                         >
-                          <span>💬</span> Enviar WA
+                          <span></span> Enviar WA
                         </a>
                       </div>
                     </div>
@@ -9485,7 +9485,7 @@ Segunda-feira:
                               : 'bg-white text-slate-400 border border-slate-150 hover:bg-slate-50'
                           }`}
                         >
-                          Pendente ⏳
+                          Pendente 
                         </button>
                         <button
                           type="button"
@@ -9496,7 +9496,7 @@ Segunda-feira:
                               : 'bg-white text-slate-400 border border-slate-150 hover:bg-slate-50'
                           }`}
                         >
-                          WA Aberto 💬
+                          WA Aberto 
                         </button>
                         <button
                           type="button"
@@ -9507,7 +9507,7 @@ Segunda-feira:
                               : 'bg-white text-slate-400 border border-slate-150 hover:bg-slate-50'
                           }`}
                         >
-                          Confirmado ✓
+                          Confirmado 
                         </button>
                       </div>
                     </div>
@@ -9519,7 +9519,7 @@ Segunda-feira:
             {/* Footer buttons */}
             <div className="border-t border-slate-100 pt-4 flex justify-between items-center">
               <p className="text-[10px] text-slate-400 font-medium">
-                Marque cada diário como enviado à medida que concluir as transmissões.
+                Marque cada diário como enviado À medida que concluir as transmissões.
               </p>
               <button
                 type="button"
@@ -9529,7 +9529,7 @@ Segunda-feira:
                 }}
                 className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer hover:scale-101"
               >
-                Concluir Tudo ✓
+                Concluir Tudo 
               </button>
             </div>
 
@@ -9566,14 +9566,14 @@ Segunda-feira:
 
               {/* Routines Summary */}
               <div className="space-y-2">
-                <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1.5">💊 Status das medicações & Rotinas de Cuidado</h4>
+                <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1.5"> Status das medicações & Rotinas de Cuidado</h4>
                 <div className="space-y-1.5">
                   {shiftReviewPayload.concluidas.length > 0 && (
                     <div className="bg-emerald-50/50 border border-emerald-200/50 p-3 rounded-xl space-y-1">
-                      <span className="text-[10px] font-extrabold text-emerald-800 flex items-center gap-1">✓ CONCLUÍDOS ({shiftReviewPayload.concluidas.length})</span>
+                      <span className="text-[10px] font-extrabold text-emerald-800 flex items-center gap-1"> CONCLUÍDOS ({shiftReviewPayload.concluidas.length})</span>
                       <ul className="text-xs text-emerald-950 space-y-1 pl-1.5 list-disc leading-normal">
                         {shiftReviewPayload.concluidas.map((m: any) => (
-                          <li key={m.id}>{m.titulo} às {m.concluidaEm || m.horarioPrevisto}</li>
+                          <li key={m.id}>{m.titulo} Às {m.concluidaEm || m.horarioPrevisto}</li>
                         ))}
                       </ul>
                     </div>
@@ -9581,7 +9581,7 @@ Segunda-feira:
 
                   {shiftReviewPayload.recusadas.length > 0 && (
                     <div className="bg-amber-50/50 border border-amber-200 p-3 rounded-xl space-y-1">
-                      <span className="text-[10px] font-extrabold text-amber-800 flex items-center gap-1">⚠️ RECUSAS REGISTRADAS ({shiftReviewPayload.recusadas.length})</span>
+                      <span className="text-[10px] font-extrabold text-amber-800 flex items-center gap-1"> ⚠️  RECUSAS REGISTRADAS ({shiftReviewPayload.recusadas.length})</span>
                       <ul className="text-xs text-amber-950 space-y-1 pl-1.5 list-disc leading-normal">
                         {shiftReviewPayload.recusadas.map((r: any) => (
                           <li key={r.id}>*${r.titulo}* - Recusado: "{r.observacao || 'Recusa geral'}"</li>
@@ -9591,10 +9591,10 @@ Segunda-feira:
                   )}
 
                   {shiftReviewPayload.atrasadas.length === 0 && shiftReviewPayload.pendentes.length === 0 ? (
-                    <p className="text-xs text-slate-500">✓ Não há pendências na escala neste turno.</p>
+                    <p className="text-xs text-slate-500"> Não há pendências na escala neste turno.</p>
                   ) : (
                     <div className="bg-rose-50/50 border border-rose-200 p-3 rounded-xl space-y-1">
-                      <span className="text-[10px] font-extrabold text-rose-800 flex items-center gap-1">⚠️ PENDÊNCIAS EM ABERTO ({shiftReviewPayload.atrasadas.length + shiftReviewPayload.pendentes.length})</span>
+                      <span className="text-[10px] font-extrabold text-rose-800 flex items-center gap-1"> ⚠️  PENDÊNCIAS EM ABERTO ({shiftReviewPayload.atrasadas.length + shiftReviewPayload.pendentes.length})</span>
                       <ul className="text-xs text-rose-950 space-y-1 pl-1.5 list-disc leading-normal">
                         {shiftReviewPayload.atrasadas.map((a: any) => (
                           <li key={a.id}>*${a.titulo}* - Atrasada (Prevista: ${a.horarioPrevisto})</li>
@@ -9611,12 +9611,12 @@ Segunda-feira:
               {/* nutrition/hydration quick logs summary */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="border border-slate-150 p-3.5 rounded-xl">
-                  <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">🥛 Líquidos Consumidos</h5>
+                  <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1"> Líquidos Consumidos</h5>
                   <strong className="text-sm font-bold text-slate-800">{shiftReviewPayload.totalMl}ml de água</strong>
                   <p className="text-[10px] text-slate-500 mt-1">{Math.round(shiftReviewPayload.totalMl/250)} copos oferecidos.</p>
                 </div>
                 <div className="border border-slate-150 p-3.5 rounded-xl">
-                  <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">🧠 Estado de Humor</h5>
+                  <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">  Estado de Humor</h5>
                   <strong className="text-sm font-bold text-slate-800">{shiftReviewPayload.ultimoHumorText.toUpperCase()}</strong>
                   <p className="text-[10px] text-slate-500 mt-1">Último humor reportado na escala.</p>
                 </div>
@@ -9625,7 +9625,7 @@ Segunda-feira:
               {/* Vitals information */}
               {shiftReviewPayload.ultimoSinal && (
                 <div className="border border-slate-150 p-3.5 rounded-xl">
-                  <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">💓 Sinais Vitais aferidos</h5>
+                  <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1"> Sinais Vitais aferidos</h5>
                   <div className="grid grid-cols-4 gap-2 text-center text-xs font-semibold *:bg-slate-50 *:p-1.5 *:rounded-lg">
                     <div>PA: {shiftReviewPayload.ultimoSinal.pressaoArterial}</div>
                     <div>Glicemia: {shiftReviewPayload.ultimoSinal.glicemia}</div>
@@ -9637,7 +9637,7 @@ Segunda-feira:
 
               {/* Occurrences logged within active shift */}
               <div className="space-y-1.5">
-                <h5 className="text-xs font-black text-slate-400 uppercase tracking-wider">🚨 Ocorrências registradas ({shiftReviewPayload.ocorrencias.length})</h5>
+                <h5 className="text-xs font-black text-slate-400 uppercase tracking-wider"> Ocorrências registradas ({shiftReviewPayload.ocorrencias.length})</h5>
                 {shiftReviewPayload.ocorrencias.length > 0 ? (
                   <div className="space-y-1.5">
                     {shiftReviewPayload.ocorrencias.map((o: any) => (
@@ -9648,13 +9648,13 @@ Segunda-feira:
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-500">✓ Nenhuma intercorrência física registrada neste turno.</p>
+                  <p className="text-xs text-slate-500"> Nenhuma intercorrência física registrada neste turno.</p>
                 )}
               </div>
 
               {/* Medication Adjustments logged within active shift */}
               <div className="space-y-1.5 pt-1.5 border-t border-slate-100">
-                <h5 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1">📦 Alterações de Medicamentos ({shiftReviewPayload.medChanges?.length || 0})</h5>
+                <h5 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1"> Alterações de Medicamentos ({shiftReviewPayload.medChanges?.length || 0})</h5>
                 {shiftReviewPayload.medChanges && shiftReviewPayload.medChanges.length > 0 ? (
                   <div className="space-y-1.5">
                     {shiftReviewPayload.medChanges.map((ch: any) => (
@@ -9669,13 +9669,13 @@ Segunda-feira:
                           </span>
                           <span className="text-[10px] text-slate-405 font-semibold">por {ch.autor}</span>
                         </div>
-                        <div className="font-semibold text-slate-800">💊 {ch.nome}</div>
+                        <div className="font-semibold text-slate-800"> {ch.nome}</div>
                         <div className="text-[11px] text-slate-500 leading-normal">{ch.detalhes}</div>
                       </div>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-500">✓ Nenhuma alteração (Inclusão ou Exclusão) feita neste turno.</p>
+                  <p className="text-xs text-slate-500"> Nenhuma alteração (Inclusão ou Exclusão) feita neste turno.</p>
                 )}
               </div>
 
@@ -9719,7 +9719,7 @@ Segunda-feira:
               </div>
               <div className="space-y-1">
                 <h3 className="text-base font-bold text-slate-950 leading-snug">
-                  {duplicateWarning.isIdentical ? '⚠️ Registro Idêntico Detectado!' : '⚠️ Registro Existente para Hoje!'}
+                  {duplicateWarning.isIdentical ? ' ⚠️  Registro Idêntico Detectado!' : ' ⚠️  Registro Existente para Hoje!'}
                 </h3>
                 <p className="text-xs text-slate-500 leading-relaxed">
                   Você já salvou informações de rotina para o(a) aluno(a) <strong className="text-slate-800">{duplicateWarning.studentName}</strong> hoje.
@@ -9729,18 +9729,18 @@ Segunda-feira:
 
             <div className="p-3 bg-slate-50 border border-slate-150 rounded-xl space-y-2 text-xs">
               <div>
-                <span className="font-extrabold text-[10px] text-slate-400 block uppercase tracking-wider">💾 REGISTRO JÁ EXISTENTE:</span>
+                <span className="font-extrabold text-[10px] text-slate-400 block uppercase tracking-wider"> REGISTRO JÁ EXISTENTE:</span>
                 <span className="font-semibold text-slate-700">{duplicateWarning.existingInfo}</span>
               </div>
               <div className="border-t border-slate-200 pt-2">
-                <span className="font-extrabold text-[10px] text-indigo-500 block uppercase tracking-wider">🆕 NOVO REGISTRO TENTADO:</span>
+                <span className="font-extrabold text-[10px] text-indigo-500 block uppercase tracking-wider"> NOVO REGISTRO TENTADO:</span>
                 <span className="font-semibold text-indigo-950">{duplicateWarning.newInfo}</span>
               </div>
             </div>
 
             <div className={duplicateWarning.isIdentical ? "bg-rose-50 border border-rose-200 p-3 rounded-xl text-[11px] text-rose-800 font-bold leading-relaxed" : "bg-amber-50 border border-amber-100 p-3 rounded-xl text-[11px] text-amber-800 font-semibold leading-relaxed"}>
               {duplicateWarning.isIdentical 
-                ? '🚫 As informações digitadas são exatamente iguais às que já foram salvas hoje. O salvamento foi bloqueado para evitar mensagens duplicadas enviadas à família.'
+                ? ' As informações digitadas são exatamente iguais Às que já foram salvas hoje. O salvamento foi bloqueado para evitar mensagens duplicadas enviadas À família.'
                 : 'Você está salvando informações complementares diferentes para o mesmo dia. Se for isso mesmo, confirme abaixo para salvar!'
               }
             </div>
@@ -9793,4 +9793,45 @@ Segunda-feira:
               <button
                 type="button"
                 onClick={confirmDialog.onConfirm}
-       x�d���0�}�b�b|$*n���i����H��937�NQK�o��YԎ��������kܥ)T�kw��~Y����3��ʰ��,cN�Zp�ਲ਼J+k(:��aKƲv�+�h@�D��E�Ҹ_�b�6�����KG�`sN��qN��)��Obe�IL�	  �� ��V5
+                className="px-4 py-2 bg-rose-500 hover:bg-rose-600 active:bg-rose-700 text-white font-bold text-xs rounded-xl cursor-pointer shadow-sm"
+                id="confirm-action-btn"
+              >
+                Confirmar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* FLOATING ACTION PILL: Quick Toggle between Professora / Cuidador and Portal de Tranquilidade */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex items-center gap-1.5 bg-slate-900/95 text-white backdrop-blur-md p-1.5 rounded-full shadow-2xl border border-white/20 transition-all max-w-[90vw] whitespace-nowrap">
+        <button
+          type="button"
+          onClick={() => handleSetVisualMode('cuidador')}
+          className={`px-3.5 py-2 rounded-full text-xs font-black transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer select-none ${
+            visualMode === 'cuidador'
+              ? 'bg-gradient-to-r from-indigo-600 to-blue-600 text-white shadow-md ring-2 ring-white/40'
+              : 'text-slate-300 hover:text-white hover:bg-white/10'
+          }`}
+          title={isEscolar ? "Alternar para Painel da Professora" : "Alternar para Painel do Cuidador"}
+        >
+          <span>{isEscolar ? '👩‍🏫' : '🩺'}</span>
+          <span>{isEscolar ? 'Professora' : 'Cuidador'}</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => handleSetVisualMode('familia')}
+          className={`px-3.5 py-2 rounded-full text-xs font-black transition-all flex items-center gap-1.5 active:scale-95 cursor-pointer select-none ${
+            visualMode === 'familia'
+              ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md ring-2 ring-white/40'
+              : 'text-slate-300 hover:text-white hover:bg-white/10'
+          }`}
+          title="Alternar para Portal de Tranquilidade (Visão dos Pais / Família)"
+        >
+          <span>🌿</span>
+          <span>Tranquilidade</span>
+        </button>
+      </div>
+
+    </div>
+  );
+}

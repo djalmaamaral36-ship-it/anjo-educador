@@ -16,7 +16,7 @@ export default function FirebaseDiagnosticBar() {
   
   // Custom position state (top vs bottom) & visibility state
   const [position, setPosition] = useState<'top' | 'bottom'>('bottom');
-  const [isHidden, setIsHidden] = useState<boolean>(false);
+  const [isHidden, setIsHidden] = useState<boolean>(true); // Start collapsed/hidden by default to never block UI
 
   const addLog = (msg: string) => {
     const time = new Date().toLocaleTimeString('pt-BR');
@@ -104,8 +104,8 @@ export default function FirebaseDiagnosticBar() {
     return (
       <button
         onClick={() => setIsHidden(false)}
-        title="Mostrar Indicador do Firestore"
-        className="fixed bottom-2 right-2 z-[9999] p-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 shadow-md backdrop-blur-xs text-[10px] flex items-center gap-1 active:scale-95"
+        title="Mostrar Diagnóstico do Firestore"
+        className="hidden sm:flex fixed bottom-2 right-2 z-[9999] p-1.5 rounded-full bg-emerald-950/70 hover:bg-emerald-900 border border-emerald-500/40 text-emerald-300 shadow-md backdrop-blur-xs text-[10px] items-center gap-1 active:scale-95 cursor-pointer opacity-40 hover:opacity-100 transition-opacity"
       >
         <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
         <Wifi className="w-3 h-3" />
