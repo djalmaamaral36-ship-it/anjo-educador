@@ -8338,15 +8338,35 @@ Segunda-feira:
                     return false;
                   });
                   return (
-                    <div key={itemMeal.key} className="flex items-center justify-between text-xs font-bold">
-                      <span className="text-slate-600">{itemMeal.label}</span>
+                    <div 
+                      key={itemMeal.key} 
+                      onClick={() => {
+                        const nextAceitacao = !verified ? 'muito_bem' : verified.aceitacao === 'muito_bem' ? 'pouco' : verified.aceitacao === 'pouco' ? 'recusou' : 'muito_bem';
+                        const newMealObj: RegistroAlimentacao = {
+                          id: verified?.id || ('ali_' + Date.now()),
+                          idosoId: idoso.id,
+                          refeicao: itemMeal.key as any,
+                          aceitacao: nextAceitacao as any,
+                          horario: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+                          data: getTodayIso(),
+                          observacoes: verified?.observacoes || 'Atualizado via painel',
+                          registradoPor: usuarioAtual?.nome || 'Responsável / Educador'
+                        };
+                        saveMealRecord(newMealObj);
+                        setVitalsUpdateTrigger(p => p + 1);
+                        alert(`Refeição (${itemMeal.label}) atualizada com sucesso!`);
+                      }}
+                      className="flex items-center justify-between text-xs font-bold p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer border border-transparent hover:border-slate-200"
+                      title="Clique para registrar ou alternar aceitação desta refeição"
+                    >
+                      <span className="text-slate-600 dark:text-slate-300">{itemMeal.label}</span>
                       {verified ? (
-                        <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-100 uppercase text-[9px] flex items-center gap-1">
+                        <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-100 uppercase text-[9px] flex items-center gap-1 font-black">
                            {verified.aceitacao === 'muito_bem' ? 'Comeu Super Bem' : verified.aceitacao === 'pouco' ? 'Comeu Pouco' : 'Recusou'}
                         </span>
                       ) : (
-                        <span className="px-2 py-0.5 bg-slate-50 text-slate-400 rounded-md uppercase text-[9px]">
-                          Pendente
+                        <span className="px-2 py-0.5 bg-slate-100 text-slate-500 rounded-md uppercase text-[9px] font-black">
+                          Clique para Registrar
                         </span>
                       )}
                     </div>

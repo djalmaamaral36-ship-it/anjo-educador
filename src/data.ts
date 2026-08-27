@@ -1701,6 +1701,22 @@ export function setShiftActiveStatesBatch(updates: { targetKey: string; active: 
       if (k) upsertState(k);
     });
 
+    if (!active) {
+      shiftStates = shiftStates.map(s => {
+        if (s && s.id && keysToUpdate.has(s.id)) {
+          return {
+            ...s,
+            active: false,
+            isAbsent: isAbsent ?? s.isAbsent,
+            reason: reason || s.reason,
+            startTime: null,
+            updatedAt: nowStr
+          };
+        }
+        return s;
+      });
+    }
+
     if (active) {
       const studentIdsToReset: string[] = [];
       if (student) {
