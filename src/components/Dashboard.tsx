@@ -4432,14 +4432,28 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     }
 
     triggerWhatsAppSim('Refeição Registrada', `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: ${idoso.nome} realizou a refeição ${labelMap[quickMeal.refeicao] || quickMeal.refeicao}. Grau de Aceitação: ${quickMeal.aceitacao === 'muito_bem' ? (isEscolar ? 'Comeu/Tomou tudo' : 'Comeu muito bem') : 'Comeu pouco'}. Por: ${usuarioAtual.nome}`);
+    
+    const allNotifs = getFromDB<any[]>('anjo_notificacoes', []);
+    allNotifs.push({
+      id: 'notif_meal_' + Date.now(),
+      idosoId: idoso.id,
+      titulo: 'Refeição Registrada',
+      mensagem: `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: ${idoso.nome} realizou a refeição ${labelMap[quickMeal.refeicao] || quickMeal.refeicao}.`,
+      dataEnvio: new Date().toISOString()
+    });
+    saveToDB('anjo_notificacoes', allNotifs);
+
     alert('Refeição registrada com sucesso via canal on-line!');
     setQuickMeal({ refeicao: 'cafe_manha', aceitacao: 'muito_bem', observacao: '' });
 
     // Dispatch global events to sync other screens (including Reports & dashboard)
     if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-      window.dispatchEvent(new CustomEvent('db-vitals-update'));
+      window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: { localKey: `anjo_alimentacao_${idoso.id}` } }));
+      window.dispatchEvent(new CustomEvent('db-vitals-update', { detail: { localKey: 'anjo_alimentacao' } }));
+      window.dispatchEvent(new CustomEvent('db-routine-update'));
+      window.dispatchEvent(new Event('storage'));
     }
+    setVitalsUpdateTrigger(prev => prev + 1);
   };
 
   const handleQuickHygieneSubmit = (e: React.FormEvent) => {

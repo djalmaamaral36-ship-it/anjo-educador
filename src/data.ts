@@ -863,12 +863,18 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
 
   const possibleKeys = getAllPossibleStudentKeys(realId);
 
-  // Check if any possible key has an explicit local stop flag ('false')
+  // Check if any possible key or classroom has an explicit local stop flag ('false')
   for (const k of possibleKeys) {
     const flag = localStorage.getItem(`anjo_shift_active_${k}`);
     if (flag === 'false') {
       const isAbsentVal = localStorage.getItem(`anjo_is_absent_${k}`) === 'true';
       return { active: false, isAbsent: isAbsentVal, reason: null, startTime: null, lastResetTime: null };
+    }
+  }
+  if (studentRoom) {
+    const roomFlag = localStorage.getItem(`anjo_shift_active_${studentRoom}`);
+    if (roomFlag === 'false') {
+      return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
     }
   }
 
@@ -958,8 +964,7 @@ function setLocalShiftFlag(key: string, active: boolean): void {
     }
   }
 
-  const directRecords: { record: ShiftState; time: number }[] = [];
-  const classroomRecords: { record: ShiftState; time: number }[] = [];
+  const allRecords: { record: ShiftState; time: number }[] = [];
 
   shiftStates.forEach(s => {
     if (!s || !s.id) return;
@@ -975,72 +980,53 @@ function setLocalShiftFlag(key: string, active: boolean): void {
       if (!isNaN(p)) time = p;
     }
 
-    // Direct student match across possible keys
     const isDirectMatch = possibleKeys.some(pk => pk === sid || keyMatches(pk, sid) || keyMatches(sid, pk));
-    if (isDirectMatch) {
-      directRecords.push({ record: s, time });
-      return;
-    }
+    const isClassroomMatch = studentRoom && keyMatches(sid, studentRoom);
 
-    // Exact classroom match
-    if (studentRoom && keyMatches(sid, studentRoom)) {
-      classroomRecords.push({ record: s, time });
-      return;
+    if (isDirectMatch || isClassroomMatch) {
+      allRecords.push({ record: s, time });
     }
   });
 
-  // PRIORITY 1: Direct Student Records (from Firestore)
-  if (directRecords.length > 0) {
-    directRecords.sort((a, b) => b.time - a.time);
-    const latestDirect = directRecords[0].record;
-    const isActive = latestDirect.active === true || String(latestDirect.active) === 'true';
+  if (allRecords.length > 0) {
+    allRecords.sort((a, b) => b.time - a.time);
+    const latest = allRecords[0].record;
+    const isActive = latest.active === true || String(latest.active) === 'true';
 
     if (isActive) {
-      const startTime = latestDirect.startTime || findExistingStartTime() || new Date().toISOString();
-      // Sync local to remote state
+      const startTime = latest.startTime || findExistingStartTime() || new Date().toISOString();
       possibleKeys.forEach(k => {
         localStorage.removeItem(`anjo_is_absent_${k}`);
         localStorage.setItem(`anjo_is_absent_${k}`, 'false');
         localStorage.setItem(`anjo_shift_active_${k}`, 'true');
         localStorage.setItem(`anjo_shift_start_time_${k}`, startTime);
       });
-
-      const lastResetTime = latestDirect.lastResetTime || startTime;
+      if (studentRoom) {
+        localStorage.setItem(`anjo_shift_active_${studentRoom}`, 'true');
+        localStorage.setItem(`anjo_shift_start_time_${studentRoom}`, startTime);
+      }
+      const lastResetTime = latest.lastResetTime || startTime;
       return { active: true, isAbsent: false, reason: null, startTime, lastResetTime };
     } else {
-      // Not active in Firestore
-      const isAbsentBool = Boolean(latestDirect.isAbsent || latestDirect.reason);
+      const isAbsentBool = Boolean(latest.isAbsent || latest.reason);
       if (isAbsentBool) {
         possibleKeys.forEach(k => localStorage.setItem(`anjo_is_absent_${k}`, 'true'));
       }
       possibleKeys.forEach(k => {
         localStorage.setItem(`anjo_shift_active_${k}`, 'false');
+        localStorage.removeItem(`anjo_shift_start_time_${k}`);
       });
+      if (studentRoom) {
+        localStorage.setItem(`anjo_shift_active_${studentRoom}`, 'false');
+        localStorage.removeItem(`anjo_shift_start_time_${studentRoom}`);
+      }
       return { 
         active: false, 
         isAbsent: isAbsentBool, 
-        reason: latestDirect.reason || null, 
+        reason: latest.reason || null, 
         startTime: null, 
-        lastResetTime: latestDirect.lastResetTime || null 
+        lastResetTime: latest.lastResetTime || null 
       };
-    }
-  }
-
-  // PRIORITY 2: Classroom Records (Firestore)
-  if (classroomRecords.length > 0) {
-    classroomRecords.sort((a, b) => b.time - a.time);
-    const latestClassroom = classroomRecords[0].record;
-    const isActive = latestClassroom.active === true || String(latestClassroom.active) === 'true';
-
-    if (isActive) {
-      const startTime = latestClassroom.startTime || findExistingStartTime() || new Date().toISOString();
-      possibleKeys.forEach(k => {
-        localStorage.setItem(`anjo_shift_active_${k}`, 'true');
-        localStorage.setItem(`anjo_shift_start_time_${k}`, startTime);
-      });
-
-      const lastResetTime = latestClassroom.lastResetTime || startTime;
-      return { active: true, isAbsent: false, reason: null, startTime, lastResetTime };
     }
   }
 
