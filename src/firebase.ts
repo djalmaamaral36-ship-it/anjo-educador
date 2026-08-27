@@ -45,7 +45,8 @@ export const SYNC_COLLECTIONS_MAP: Record<string, string> = {
   'anjo_atividades': 'anjo_atividades',
   'anjo_ocorrencias': 'anjo_ocorrencias',
   'anjo_notificacoes': 'anjo_notificacoes',
-  'anjo_sinais': 'anjo_sinais'
+  'anjo_sinais': 'anjo_sinais',
+  'anjo_higiene_global': 'anjo_higiene_global'
 };
 
 export function getFirestoreCollectionForKey(key: string): string {
@@ -254,6 +255,21 @@ export function startFirebaseSync(force?: boolean) {
         if (serialized !== lastDataSerialized[colName]) {
           lastDataSerialized[colName] = serialized;
           console.log(`📡 [Firebase Sync] ${colName}: ${data.length} docs atualizados`);
+
+          if (Array.isArray(data) && data.length > 0) {
+            data.forEach((item: any) => {
+              if (item) {
+                const studentId = item.idosoId || item.studentId || item.alunoId;
+                if (studentId) {
+                  if (typeof window !== 'undefined') {
+                    localStorage.removeItem(`anjo_activities_cleared_${studentId}`);
+                    localStorage.removeItem(`anjo_routine_cleared_${studentId}`);
+                    localStorage.removeItem(`anjo_tasks_cleared_${studentId}`);
+                  }
+                }
+              }
+            });
+          }
 
           if (typeof window !== 'undefined') {
             try {

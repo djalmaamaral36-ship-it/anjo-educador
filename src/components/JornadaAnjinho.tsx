@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Idoso, Usuario, JornadaEvent, GestoAfetoTipo } from '../types';
-import { getFromDB, saveToDB, isRecordBeforeResetTimestamp } from '../data';
+import { getFromDB, saveToDB, isRecordBeforeResetTimestamp, getHygieneLog } from '../data';
 import { motion, AnimatePresence } from 'motion/react';
 import { SocialShareModal } from './SocialShareModal';
 import { 
@@ -557,7 +557,7 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
     });
   });
 
-  const hygLog = isRoutineClearedInJornada ? null : getFromDB<any>(`anjo_higiene_log_${studentId}`, null);
+  const hygLog = isRoutineClearedInJornada ? null : getHygieneLog(studentId);
   if (hygLog && typeof hygLog === 'object' && !isRecordBeforeResetTimestamp(hygLog, resetTimeStrInJornada)) {
     const time = hygLog.time || '11:00';
     const bath = hygLog.bath || hygLog.banho;

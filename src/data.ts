@@ -747,20 +747,49 @@ export function isStudentIdMatch(idA: string | undefined | null, idB: string | u
 }
 
 export function saveHygieneLog(idosoId: string, hygieneLog: any) {
-  if (typeof window === 'undefined' || !idosoId) return;
+  if (typeof window === 'undefined' || !idosoId || !hygieneLog) return;
   const keys = getAllPossibleStudentKeys(idosoId);
   keys.forEach(k => {
     saveToDB(`anjo_higiene_log_${k}`, hygieneLog);
   });
+  
+  const globalLogs = getFromDB<any[]>('anjo_higiene_global', []);
+  const newLog = { ...hygieneLog, idosoId: idosoId, id: hygieneLog.id || `hyg_${Date.now()}` };
+  
+  // Find existing log by ID or replace the latest one for this student for today
+  const existingIdx = globalLogs.findIndex(l => l.id === newLog.id);
+  if (existingIdx >= 0) {
+    globalLogs[existingIdx] = newLog;
+  } else {
+    // Optionally remove older logs for the same student to avoid growing too much, or keep them for history.
+    globalLogs.push(newLog);
+  }
+  saveToDB('anjo_higiene_global', globalLogs);
+
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: { localKey: `anjo_higiene_log_${idosoId}` } }));
-    window.dispatchEvent(new CustomEvent('db-vitals-update', { detail: { localKey: `anjo_higiene_log_${idosoId}` } }));
+    window.dispatchEvent(new CustomEvent('db-vitals-update', { detail: { localKey: `anjo_higiene_global` } }));
     window.dispatchEvent(new CustomEvent('db-routine-update'));
   }
 }
 
 export function getHygieneLog(idosoId: string): any {
   if (typeof window === 'undefined' || !idosoId) return null;
+  
+  const globalLogs = getFromDB<any[]>('anjo_higiene_global', []);
+  if (globalLogs && globalLogs.length > 0) {
+    const studentLogs = globalLogs.filter(l => l.idosoId === idosoId);
+    if (studentLogs.length > 0) {
+      // Return the most recent one based on time
+      studentLogs.sort((a, b) => {
+        const timeA = new Date(a.date + 'T' + (a.time || '00:00') + ':00').getTime();
+        const timeB = new Date(b.date + 'T' + (b.time || '00:00') + ':00').getTime();
+        return timeB - timeA;
+      });
+      return studentLogs[0];
+    }
+  }
+
   const keys = getAllPossibleStudentKeys(idosoId);
   for (const k of keys) {
     const h = getFromDB<any>(`anjo_higiene_log_${k}`, null);
@@ -863,20 +892,7 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
 
   const possibleKeys = getAllPossibleStudentKeys(realId);
 
-  // Check if any possible key or classroom has an explicit local stop flag ('false')
-  for (const k of possibleKeys) {
-    const flag = localStorage.getItem(`anjo_shift_active_${k}`);
-    if (flag === 'false') {
-      const isAbsentVal = localStorage.getItem(`anjo_is_absent_${k}`) === 'true';
-      return { active: false, isAbsent: isAbsentVal, reason: null, startTime: null, lastResetTime: null };
-    }
-  }
-  if (studentRoom) {
-    const roomFlag = localStorage.getItem(`anjo_shift_active_${studentRoom}`);
-    if (roomFlag === 'false') {
-      return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
-    }
-  }
+
 
 
 // TTL-based local cache resolution utility

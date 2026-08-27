@@ -662,12 +662,8 @@ Equipe Anjinho Escolar`
           observations: '',
           obs: ''
         };
-        saveToDB(`anjo_higiene_log_${idoso.id}`, updatedHyg);
+        saveHygieneLog(idoso.id, updatedHyg);
         setQuickHygiene(prev => ({ ...prev, observations: '' }));
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: { localKey: `anjo_higiene_log_${idoso.id}` } }));
-          window.dispatchEvent(new CustomEvent('db-vitals-update', { detail: { localKey: `anjo_higiene_log_${idoso.id}` } }));
-        }
         setVitalsUpdateTrigger(prev => prev + 1);
         showToast(' Observação de higiene apagada com sucesso!', 'success');
       }
@@ -697,12 +693,8 @@ Equipe Anjinho Escolar`
           observations: '',
           obs: ''
         };
-        saveToDB(`anjo_higiene_log_${idoso.id}`, resetHyg);
+        saveHygieneLog(idoso.id, resetHyg);
         setQuickHygiene(resetHyg);
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: { localKey: `anjo_higiene_log_${idoso.id}` } }));
-          window.dispatchEvent(new CustomEvent('db-vitals-update', { detail: { localKey: `anjo_higiene_log_${idoso.id}` } }));
-        }
         setVitalsUpdateTrigger(prev => prev + 1);
         showToast(' Registros de higiene limpos com sucesso!', 'success');
       }

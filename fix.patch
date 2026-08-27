@@ -1,0 +1,16 @@
+--- src/components/Dashboard.tsx
++++ src/components/Dashboard.tsx
+@@ -660,11 +660,9 @@
+           observations: '',
+           obs: ''
+         };
+-        saveHygieneLog(idoso.id, resetHyg);
+-        setQuickHygiene(resetHyg);
+-        setVitalsUpdateTrigger(prev => prev + 1);
+-        showToast(' Observação de higiene apagada com sucesso!', 'success');
++        saveHygieneLog(idoso.id, updatedHyg);
++        setQuickHygiene(prev => ({ ...prev, observations: '' }));
++        showToast('Observação de higiene excluída!', 'success');
+       }
+     );
+   };

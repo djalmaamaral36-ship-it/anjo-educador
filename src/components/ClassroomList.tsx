@@ -39,7 +39,7 @@ import {
   UserPlus
 } from 'lucide-react';
 import { Idoso, Usuario, Classroom, isStaffUser, isDirectorOrAdminUser, getRoleLabel } from '../types';
-import { getFromDB, saveToDB, SALAS_INICIAIS, compressImage, compressBase64Image, setShiftActiveState, getShiftActiveState, getAssignedTeacherForRoom, getStudentRoomName, checkBottleFeedingInterval, registerBottleAttemptNotice, getNowTimeBr, getTodayIsoBr, deleteStudentEverywhere } from '../data';
+import { getFromDB, getHygieneLog, saveToDB, saveHygieneLog, SALAS_INICIAIS, compressImage, compressBase64Image, setShiftActiveState, getShiftActiveState, getAssignedTeacherForRoom, getStudentRoomName, checkBottleFeedingInterval, registerBottleAttemptNotice, getNowTimeBr, getTodayIsoBr, deleteStudentEverywhere } from '../data';
 import { VoiceInput } from './VoiceInput';
 
 const AVATAR_OPTIONS = [
