@@ -5288,7 +5288,7 @@ As atividades e registros do dia permanecem salvos no relatÃ³rio escolar. Qualqu
         <button
           onClick={() => handleSetVisualMode('cuidador')}
           className={`flex-1 text-center py-2.5 px-3 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-            visualMode === 'cuidador' 
+            (visualMode as string) === 'cuidador' 
               ? 'bg-serene-blue text-white shadow-md ring-2 ring-indigo-400/30' 
               : 'text-slate-600 hover:bg-slate-100'
           }`}
@@ -5709,7 +5709,7 @@ As atividades e registros do dia permanecem salvos no relatÃ³rio escolar. Qualqu
         </div>
       )}
 
-      {visualMode === 'cuidador' ? (
+      {(visualMode as string) === 'cuidador' ? (
         // =====================================================================
         // SECTION A: CAREGIVER VIEW (PORTAL DO CUIDADOR)
         // =====================================================================
@@ -7838,7 +7838,7 @@ Segunda-feira:
             <button
               onClick={() => handleSetVisualMode('cuidador')}
               className={`flex-1 text-center py-2.5 px-3 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
-                visualMode === 'cuidador' 
+                (visualMode as string) === 'cuidador' 
                   ? 'bg-serene-blue text-white shadow-md ring-2 ring-indigo-400/30' 
                   : 'text-slate-600 hover:bg-slate-100'
               }`}
@@ -8128,7 +8128,7 @@ Segunda-feira:
                       >
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                        className={isSuspended ? "p-3.5 rounded-2xl border transition-all bg-amber-50/70 border-amber-200 opacity-80" : "p-3.5 rounded-2xl border transition-all bg-emerald-50/50 border-emerald-200"}
+                        <span className={isSuspended ? "px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-200 text-amber-900" : "px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-200 text-emerald-900"}>
                               {isSuspended ? 'â¸ï¸ Suspenso' : 'âœ… Ativo (Autorizado)'}
                             </span>
                             <h4 className="font-extrabold text-sm text-slate-850 mt-1">ğŸ’Š {m.nome}</h4>
@@ -8144,7 +8144,7 @@ Segunda-feira:
                         </div>
                         <div className="mt-2 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px] text-slate-500 font-semibold">
                           <span>â° {Array.isArray(m.horarios) ? m.horarios.join(', ') : m.horarios}</span>
-                          <span>{m.via || 'Via oral'}</span>
+                          <span>{(m as any).via || 'Via oral'}</span>
                         </div>
                       </div>
                     );
@@ -9831,14 +9831,6 @@ Segunda-feira:
         <LgpdConsentModal onAccept={handleLgpdAcceptComplete} seniorName={idoso.nome} />
       )}
 
-      {/* DUPLICATE ROUTINE WARNING MODAL */}
-      {duplicateWarning?.show && (
-        <div classNamexœìWÁN#G½ó…¬hÛÀYD›„(‹@d¥ÕÚ3m»—îIwm‚,m¾ ÷œåi¥#åî?ÉäR=3Øã™íjµ‡ 3ÕÓ]U¯ª^UT:|È|àÒ0KêĞî#¨eäy½^ÛÁwê]ûZ…¤-"M†:‚[â1i™†7‘±¼ss÷’gğ#yõ^•<p§u¨Ï—àşAÅBÁ='P-¹ì’@ùTT—`ò³ïó>x‚sFvPA»=TZEÒg>Ù
-èHàÃ€t"!Põ´•öÑŠä_êËf½¦G}5 ›¸Í„Ôcä†lOÌ3±}YŠFd|7–j]’­Ü¦â¶lV·'†Ç–¢;4h£Ûu°lhÓ·ØPÍå5©ÅƒÓöRs*»‚eUĞóşŞ9FÂ°
-Ô
-¦ÕĞ¶yöŞá³QfBo+ûil{›%ñI	?ñ'M"tO0ê»uK¸äÃ÷I:T¹9õ1™P&àX~ùõß¿8g]n¬Vpêß¹uf™g1´Ë+°Wöisˆÿ]fBH5…¯Õ¶¼2*úUëm•xœÅÈ8¸]Ÿ:¨™ XJ¥>^)oüŞŒCE_EXo¥:şcü3à»¼¶\ÒÄHµJ×€ŠHÆûÎÙ-X’XğY3¥¡±‘ƒĞ}>Ú¯%'B½¯–ø.'©èÁÁj˜2Æ¾¬7P~W™bÜ„ŞÒr*	n”3ÅéĞtš…¯6êáğu6`Ï0`m¡¼kˆÂiÏ¥.nñ®]Í¬Âyó«Ó‹Ëó|3ş	š/ñ¹yvÙÜCQç¢¦ğ|=ì–‹¹Å‡SLŠQ¹–…
-7ÅÙÙ/´d³¬š"—>ïª8íç¢xÖºjM¡t5ZïbªY¥EÉpŒÇM®/ieJ’=–ÆĞcMdò=…tciü!Vq†AóŒ‚ÌVÉvŒYM‰xcUÉ—]póúFyğ†¡KÇÙG&Ïq¼Ë‘¨©3ş]R‹;bæİˆrã·~ˆXÌ’¸‘1Wâ÷1kA+yu[®s—€ø9RBš¬ÇkÀuC»øR›F&û<~¿…Æ
-N«+»±$DÍŒM©šJ<ÖO¡`Îªc¿:L;?LJŞh‚	Êi.\cÔÀIÅë¸]v¸Ğ6åÃÔøX•^Î›4*Ë×¬hş¸âF”ÍÉŒÆ¤_ÎûíÈZ%Ø›ĞK¼X)¬*yŒ_Ü®®ÁÁ!àÙÈ%ÊªÄqg­Øo³Mcˆcè:À¤u¸dî©>Ó{‘+%êYŞgSÙV½c×ü‚İ:S^¤Ò$T<T‘±¤á–+I¨yïŠ5wPiâ±HQ>FùJ	L•$¥Ü#08¦ÒÃ
-Ó…ñc¿– \(»å5>y«E½'óB™	fA)®$I[Œãı‘œN´“H&¢İ™HN9)X2ä—µ¡ÙP¦ã<
-Ô²°\ğ`.ât£ØwÈ,N\Õ—ŒKåÑZ›S­9ÁÌ+îMŸnkOáâè¤‰Î_¶^6pÜ:;9=qtyÚ:ƒ­ÆÑ·ğ´v§ì6å“§B¹üh…LÎ¦F>úÏÃ* ©©ÿ_÷>ĞuïS¼àåòÑr+ÜäÃİ®r
-|f<ÍCWğ£G]d²¢O®g}\5ë»…Õ[¨V«îm’BßÃqoú0ZûH=vçq=¶èkL)xqC$m[À¤˜,wÍsÁÖù˜Í±úß}§—‚Ä±dgáX´[Òú`R’3ÁÃ0;…Øƒ9Ù³ ÎíqÉCÒê&kkŸ/–ş  ÿÿ &Ö
+      xœ”TÑnÚ0}ïW\ñP•I&)´¨İ(*ÕÄÔÑ©jÕgƒÄ«cG¶SÒU|Ì¾e?¶›(‰»Uã!pË=ç{®_‚0½ÿ~=»œÜ]ÁíÍıİl~“Ûùlş¾İL'×ğ!X@õyay&Å’:ş@*şÜ³‰^Áá!mR FL<ÁRRkç4åHœP–;ÂOrÂ"&Vbr†Ácº|dFgd!sC
+‘äÇSK–\9nàGnˆ·aFN:ã¤Š«€Ñ¹bœ‘A!ñOCHiAV$e°"Q.%Ø„2½"}|½Ğ†aéúkCğ8ÁftÉÉ39Ç·e@•HËŒˆ2N„j°ñù¬Èq’òÌhº@€²tU°‡nÉVÌŞÕ -Ín!#öDrãîŒ *–¼Ébˆ$†Zl¤ûï¶"ûpÉ`?±jIÆiåp8ÙºËZÏ³Ó°3<	«q¸å±°Îh˜Ö¾bz$ óê£EöŠ–ÒUp)g"OArÊĞœÄpIÑ{c€¯¿/›æ›-Ã+i!£†Â¨<RñØ3}Ïºœa^Ég=
+6i½6ë kãú•*øc¦"İÜ¢¿Í!#ƒW•«Ô0m}Üß³úº4´«sÏ[Ú¥ôßì=òkŸ¸ï)€îú}WmAL3ÒßÙŸ+Ù[4G‹Ü9­<*Z]"óÇ‹—£.\Œ/¢i«—#…×õ›hìNµ•Ù3é÷N_o°3Ô/ÑOÜ|Ü¿Ôj…ë¨RCCZ²İö´ÌÕ†dZ”{İi±ğ‡q…iŠ	¦=ËÕ¼³Ü­ƒF¸Ñ`wÖıt°>ø  ÿÿ †ÏÈ2
