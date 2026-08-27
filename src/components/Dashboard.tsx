@@ -1,3 +1,4 @@
+// AI Studio Sync Version: 1787862757
 // Vercel build fix update: 514140926665909969
 import React, { useState, useEffect, useRef } from 'react';
 import { Idoso, TarefaDiaria, Usuario, TaskType, TaskStatus, RegistroAlimentacao, RegistroHidratacao, RegistroHumor, RegistroSono, RegistroAtividade, SinalVital, Medicamento, formatWhatsAppNumber, NotificacaoSimulada, Classroom, isStaffUser, isDirectorOrAdminUser, getRoleLabel } from '../types';
@@ -9829,5 +9830,6 @@ Segunda-feira:
 
       {/* COMPLIANCE / LGPD STRICT CONSENT VIEW MODAL */}
       {!lgpdAccepted && (
-        <LgpdConsentModal onAccept={handleLgpdAcceptComplexœ„TÑnÚ0}ç+®x¨J%“ZÔn”	•jbêèTµê³ÁNğêØ‘í”t³oÙí&Jânğ ¹ææãsÏ½¯Ár%´™Ñ„_½	¦­î*ày0jAùé¬[›§·à&?n§×ã‡¸¿{|˜Înài|?›Î¾Â÷»ÉøN‚õ6›e©êø5J¨øK×.õ
-àx“0dâ’Z[2hG"ç„²Ü‘~‘óæ1±«Ë0ÓÅ33:%s™’[ˆ$ÏA8X²àÊq?3ëDôºSrÖí }PDX-± )Æéç_@Bs²"	ƒ‰2)Á.)Ó+ÒÃ¿çÚ0,]ıl†!Ø”.8y%gàxî¶¨I‘QÆ‰P56>Ÿ9íÁ²øBf4™#@Qº,X…·dKf5HrB3§Èˆ=–Ü¸#¨Š%¯³ ‰Aûİ	›7¤ûÿlE8õá–ııÄòJ2†H+‡ıÄÎV·¬ô¼8Û£ñ‹°‡{ëŒ†Iå+¦‡Á²ï¤^}´È^ÑBº.áLd	HNš“.)zÏcğíÏoà9bsÀ|³¥ax)-¤ÔPG*y¦ïZ—1Ì+ø¬‡Á&­Ûd¤M\¿RÉ¦*Òõ)úWRÒ·P1J5ÓVÇ½=+¡¯«ğÈAM»*÷²¡]âHïÁ‘_ûÄ}O•‹ç@·=Š)ˆiJz;ûsÅ ıˆæp9§•GE«kdş|õvÜ«®G7iÜåXáÄuüKÔf§œÊô•ôºçïìõ[ên>í/µJáj•êbhè\K¶ëÁ^ƒ™±ÚT‹b®Û~3n0M1Üìå*wã n4Øu>·Ö­¿   ÿÿ 9ñÕº
+        <LgpdConsentxœ„TQoÚ0~çWœx¨Ê$
+-j7`B¥š˜Z:U­úlb'ñêØ‘í”tˆ³ß²?¶Kp7x€Üq¹ûî»ïîN3*A«qòÌ—	ULòÛ8cµçZ§™ä¯Àr%´™Ñ”—‚i«ÛJ§èF¨>­Ucı´>ÁäéÇíôzüx÷OÓÙ<fÓÙ7¸»ŸŒoáS°ÚD³<“"¤?S£„Š¿¶m¢pr§ë€¯Jjm… ‰‚3ÊrG:ğ‹\t`+1¹êt‚>Ú4|aFgd.sC
+‘äÇSKB®7ğ3·NDo3#çÍÑ¶¤_+,L FçŠqFz…Ä—úÒ‚,HÊ`A¢\J°	ezAºø÷\†©ëŸ5À³NlFCNŞÈ98^¸ªDZFD”q"ÔÏ‚œu!)¿MçX L]%¬Í>š°²£¤¡¹Ó•±öXrã *–|EAô›ïJX¿ Üÿ7°!áÌ/—ôv«–d‘Vç‰“­»¬ù¼¼è4GãWa50<Ö“ZWL‚¤çÈ¼ü(‘¤%uU¹”3‘§ 9e(Nb¸¤¨=1À÷?¿X›Æ›Ã+j!£†Â t©xä‰¾m]Î0®Ä³ë°ö!ê ;¬ëgª0àÃTEz‹ş5‡ŒôŞ%T®ÒhkwwGJ¨ëz"<r°Ç]{uÀ]êH÷Â_ùÀ}MU‡çHŒw=Ê-ˆiFº[ùsÅ ûæ`;§•E«kDş2\¶`8Âóè&½œ*Ü¸–ßÄŞîT[™½‘nûâı‚]"‰~åæóîQ«®/PÅ.š†ÎµdÛì(ÌÕ†dZ”{İ<@áãÃÃËîI®&àÈr8öÌ5[_ëKcÕø  ÿÿ BäO
