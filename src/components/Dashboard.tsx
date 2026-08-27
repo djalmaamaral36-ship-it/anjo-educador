@@ -905,6 +905,10 @@ Equipe Anjinho Escolar`
   };
 
   const handleSetVisualMode = (mode: 'cuidador' | 'familia') => {
+    if (!isStaffUser(usuarioAtual) && mode === 'cuidador') {
+      setVisualMode('familia');
+      return;
+    }
     setVisualMode(mode);
   };
 
@@ -1044,10 +1048,8 @@ Equipe Anjinho Escolar`
 
   // Synchronize visualMode when current user profile changes
   useEffect(() => {
-    if (!isStaffUser(usuarioAtual)) {
+    if (usuarioAtual && !isStaffUser(usuarioAtual)) {
       setVisualMode('familia');
-    } else {
-      setVisualMode('cuidador');
     }
   }, [usuarioAtual]);
 
@@ -5280,8 +5282,9 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
         </div>
       </div>
 
-      {/* Perspective / Mode Toggle Switch (Visually stunning toggle banner) */}
-      <div className="bg-white rounded-2xl border border-[#cbd5e1] p-1.5 shadow-sm max-w-md mx-auto flex items-center justify-between gap-1.5">
+      {/* Perspective / Mode Toggle Switch (Visually stunning toggle banner - ONLY FOR STAFF) */}
+      {isStaffUser(usuarioAtual) && (
+<div className="bg-white rounded-2xl border border-[#cbd5e1] p-1.5 shadow-sm max-w-md mx-auto flex items-center justify-between gap-1.5">
         <button
           onClick={() => handleSetVisualMode('cuidador')}
           className={`flex-1 text-center py-2.5 px-3 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
@@ -5305,6 +5308,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
           <span>{isEscolar ? 'Portal de Tranquilidade' : 'Portal de Tranquilidade'}</span>
         </button>
       </div>
+      )}
 
       {/* Dynamic connection indicator with optional simulation details */}
       <div className="bg-slate-50 border border-[#cbd5e1] p-3 rounded-2xl flex flex-col gap-3 shadow-xs">
@@ -7828,8 +7832,9 @@ Segunda-feira:
         // =====================================================================
         <div className="space-y-6 max-w-full overflow-x-hidden">
 
-          {/* Perspective / Mode Toggle Switch for Family View */}
-          <div className="bg-white rounded-2xl border border-[#cbd5e1] p-1.5 shadow-sm max-w-md mx-auto flex items-center justify-between gap-1.5">
+          {/* Perspective / Mode Toggle Switch for Family View (Only visible to teachers/staff) */}
+          {isStaffUser(usuarioAtual) && (
+<div className="bg-white rounded-2xl border border-[#cbd5e1] p-1.5 shadow-sm max-w-md mx-auto flex items-center justify-between gap-1.5">
             <button
               onClick={() => handleSetVisualMode('cuidador')}
               className={`flex-1 text-center py-2.5 px-3 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
@@ -7853,6 +7858,7 @@ Segunda-feira:
               <span>{isEscolar ? 'Portal de Tranquilidade' : 'Portal de Tranquilidade'}</span>
             </button>
           </div>
+          )}
 
           {/*  INDICADOR DE TESTE GRATUITO (PAINEL DOS PAIS / FAM√çLIA) */}
           {!isStaffUser(usuarioAtual) && localStorage.getItem(`anjo_sub_status_${idoso.id}`) !== 'atrasado' && (
@@ -8061,6 +8067,91 @@ Segunda-feira:
               </div>
             </div>
 
+          </div>
+
+                    {/* PARENT MEDICATION AUTHORIZATIONS MANAGEMENT CARD */}
+          <div className="bg-white p-6 rounded-3xl border border-indigo-200 shadow-sm space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2.5 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-2xl">
+                  <Heart className="w-5 h-5 fill-indigo-500/20" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-slate-850 flex items-center gap-2">
+                    {isEscolar ? 'Medica√ß√µes & Autoriza√ß√µes do Aluno' : 'Medicamentos & Autoriza√ß√µes da Fam√≠lia'}
+                    <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-extrabold rounded-full">
+                      Exclusivo dos Pais
+                    </span>
+                  </h3>
+                  <p className="text-xs text-slate-500 font-medium">
+                    {isEscolar 
+                      ? 'Cadastre, suspenda ou exclua os medicamentos e autoriza√ß√µes que a professora deve ministrar.'
+                      : 'Cadastre, suspenda ou exclua os medicamentos que o cuidador de escala deve ministrar.'}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => onNavigate && onNavigate('medicacoes')}
+                className="px-4 py-2.5 bg-serene-blue hover:bg-blue-600 text-white font-black text-xs rounded-xl shadow-xs transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer shrink-0"
+              >
+                <Plus className="w-4 h-4" /> Cadastrar / Gerenciar Autoriza√ß√µes
+              </button>
+            </div>
+
+            {/* List of current medications for this senior/student */}
+            {(() => {
+              const studentMeds = getFromDB<Medicamento[]>('anjo_medicamentos', []).filter(m => m.idosoId === idoso.id);
+              if (studentMeds.length === 0) {
+                return (
+                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-center space-y-2">
+                    <p className="text-xs font-semibold text-slate-600">
+                      Nenhum medicamento registrado para {idoso.nome}.
+                    </p>
+                    <button
+                      onClick={() => onNavigate && onNavigate('medicacoes')}
+                      className="px-3.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-bold rounded-xl cursor-pointer"
+                    >
+                      + Cadastrar Primeiro Medicamento
+                    </button>
+                  </div>
+                );
+              }
+
+              return (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 pt-1">
+                  {studentMeds.map(m => {
+                    const isSuspended = m.status === 'suspenso';
+                    return (
+                      <div 
+                        key={m.id} 
+                        className={isSuspended ? "p-3.5 rounded-2xl border transition-all bg-amber-50/70 border-amber-200 opacity-80" : "p-3.5 rounded-2xl border transition-all bg-emerald-50/50 border-emerald-200"}
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div>
+                        className={isSuspended ? "p-3.5 rounded-2xl border transition-all bg-amber-50/70 border-amber-200 opacity-80" : "p-3.5 rounded-2xl border transition-all bg-emerald-50/50 border-emerald-200"}
+                              {isSuspended ? '‚è∏Ô∏è Suspenso' : '‚úÖ Ativo (Autorizado)'}
+                            </span>
+                            <h4 className="font-extrabold text-sm text-slate-850 mt-1">üíä {m.nome}</h4>
+                            <p className="text-xs text-slate-600 font-medium">{m.dosagem}</p>
+                          </div>
+                          <button
+                            onClick={() => onNavigate && onNavigate('medicacoes')}
+                            className="p-1.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-slate-600 text-[10px] font-bold cursor-pointer shrink-0"
+                            title="Gerenciar medicamento na p√°gina dedicada"
+                          >
+                            Editar
+                          </button>
+                        </div>
+                        <div className="mt-2 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px] text-slate-500 font-semibold">
+                          <span>‚è∞ {Array.isArray(m.horarios) ? m.horarios.join(', ') : m.horarios}</span>
+                          <span>{m.via || 'Via oral'}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
           </div>
 
           {/* Core breakdown row: Hydration / Feeding / Hygiene / Mood & Notes */}
@@ -9742,96 +9833,12 @@ Segunda-feira:
 
       {/* DUPLICATE ROUTINE WARNING MODAL */}
       {duplicateWarning?.show && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-[9999] animate-fade-in" id="duplicate-warning-modal">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 border border-slate-200 shadow-2xl space-y-5 animate-scale-in">
-            <div className="flex items-start gap-3">
-              <div className="p-2.5 rounded-full bg-amber-50 text-amber-600 shrink-0">
-                <AlertTriangle className="w-6 h-6 animate-pulse" />
-              </div>
-              <div className="space-y-1">
-                <h3 className="text-base font-bold text-slate-950 leading-snug">
-                  {duplicateWarning.isIdentical ? ' ‚ö†Ô∏è  Registro Id√™ntico Detectado!' : ' ‚ö†Ô∏è  Registro Existente para Hoje!'}
-                </h3>
-                <p className="text-xs text-slate-500 leading-relaxed">
-                  Voc√™ j√° salvou informa√ß√µes de rotina para o(a) aluno(a) <strong className="text-slate-800">{duplicateWarning.studentName}</strong> hoje.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-3 bg-slate-50 border border-slate-150 rounded-xl space-y-2 text-xs">
-              <div>
-                <span className="font-extrabold text-[10px] text-slate-400 block uppercase tracking-wider"> REGISTRO J√Å EXISTENTE:</span>
-                <span className="font-semibold text-slate-700">{duplicateWarning.existingInfo}</span>
-              </div>
-              <div className="border-t border-slate-200 pt-2">
-                <span className="font-extrabold text-[10px] text-indigo-500 block uppercase tracking-wider"> NOVO REGISTRO TENTADO:</span>
-                <span className="font-semibold text-indigo-950">{duplicateWarning.newInfo}</span>
-              </div>
-            </div>
-
-            <div className={duplicateWarning.isIdentical ? "bg-rose-50 border border-rose-200 p-3 rounded-xl text-[11px] text-rose-800 font-bold leading-relaxed" : "bg-amber-50 border border-amber-100 p-3 rounded-xl text-[11px] text-amber-800 font-semibold leading-relaxed"}>
-              {duplicateWarning.isIdentical 
-                ? ' As informa√ß√µes digitadas s√£o exatamente iguais √Äs que j√° foram salvas hoje. O salvamento foi bloqueado para evitar mensagens duplicadas enviadas √Ä fam√≠lia.'
-                : 'Voc√™ est√° salvando informa√ß√µes complementares diferentes para o mesmo dia. Se for isso mesmo, confirme abaixo para salvar!'
-              }
-            </div>
-            
-            <div className="flex gap-2 justify-end pt-2">
-              <button
-                type="button"
-                onClick={() => setDuplicateWarning(null)}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-700 font-bold text-xs rounded-xl cursor-pointer transition-all"
-              >
-                {duplicateWarning.isIdentical ? 'Entendido, Voltar' : 'Voltar e Cancelar'}
-              </button>
-              {!duplicateWarning.isIdentical && (
-                <button
-                  type="button"
-                  onClick={duplicateWarning.onConfirm}
-                  className="px-4 py-2 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-extrabold text-xs rounded-xl shadow-xs cursor-pointer transition-all"
-                >
-                  Sim, Salvar de Qualquer Forma
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* SAFE SANDBOXED CONFIRMATION MODAL */}
-      {confirmDialog.isOpen && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-[9999] animate-fade-in" id="custom-confirm-modal">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 border border-slate-200 shadow-2xl space-y-5 animate-scale-in">
-            <div className="flex items-start gap-3">
-              <div className="p-2.5 rounded-full bg-amber-50 text-amber-600 shrink-0">
-                <AlertTriangle className="w-6 h-6" />
-              </div>
-              <div className="space-y-1">
-                <h3 className="text-base font-bold text-slate-950 leading-snug">{confirmDialog.title}</h3>
-                <p className="text-xs text-slate-500 leading-relaxed">{confirmDialog.description}</p>
-              </div>
-            </div>
-            
-            <div className="flex gap-2 justify-end pt-2">
-              <button
-                type="button"
-                onClick={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 font-bold text-xs rounded-xl cursor-pointer"
-                id="confirm-cancel-btn"
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                onClick={confirmDialog.onConfirm}
-                className="px-4 py-2 bg-rose-500 hover:bg-rose-600 active:bg-rose-700 text-white font-bold text-xs rounded-xl cursor-pointer shadow-sm"
-                id="confirm-action-btn"
-              >
-                Confirmar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      {/* FLOATING ACTION PILL: Quick Toggle between Professora / Cuidador and Portal de Tranquxú‘UMn”@ﬁÁOí§¡n˙#µ$A®Ç	ƒ!ı≈3NFœòôq‚E‚  ƒ	≤`U!.¿ÜEo¬	r^Ï§qäJŸ Å73~zﬂèl©$G.‡n4kAıtπC¢–πßòâ^ê RpÔM∆Aâ‘≥›®Ã[‘N°¨¨oŸ~©%H/2«°Ω∞0ƒúÌﬁ;Ä¡ê’ŸGqÄ•gìÂ¬ ì3nMŒ™∞,„PWXSh.8K•¿çêõ	Îîäv±ú◊G›"ÍƒPÌ#Ω4ö!dX≤	{uè'Ø°Jr9&Çi3±ò˝\<(õæzÁ9Ø√A#nÙâí…Yo∫”Ü^F®πœÖ)]ÅÍâ·b'Lä%°∆ÜÌY£r√ÁÙ4/Ÿ°ÀœYgb≈HÈ 5⁄D uL7≥ãâócqÏTƒ$Öu∆≤‹»*Õ	%OÿµÄ;”∆b „´Â°◊Î¡¿V¿I¬°E.i4ÛÜYH-yBj.áÜ∆$ÅYJ(Í˚Fﬂïv$¨ïz∏ÑΩ<j·ˆ„ÎÉé!¨jk∑ÏQ´ë{‹hXÎª[=fßMÊΩÙäXóÓëKåBK8Çáä8—tœ—"<C©ÖN7kR·à7hã“ú¨
-6s˙çâ]ÚôÓoMÛO?ﬁ}XÃ?~	ó Ûão·¨U©∑‘n∂™J◊”-ÔFµeˇñµSÃ§í¯ﬂ:{Ωˇü[d¬¢‚kg{ÅÍﬂsˆuóÎë\*‡¸¶ê´Ô˚	y˘Ÿê}›“…"xåŸÂW‚£¸∆∆ã˘˚Ô7Ÿtk¬mfÏFÙ_È∑Zç;@˚~k÷˙	  ˇˇ 8Ô<
+        <div classNamexúÏW¡N#GΩÛÖ¨h€¿YDõÑ(ã@d•’⁄3mªóûÓIwèmÇ,mæ ˜úÂi•#ÂÓ?…‰R=3ÿ„ôÌjµá 3’”]UØ™^UT:|»|‡“0KÍ–Ó#®e‰yΩ^€¡wÍ]˚ZÖ§-"MÜ:ÇÅ[‚1iôÜ7ë±ºss˜íg#yı^ï<pßu®œó‡˛A≈èB¡='P-πÏí@˘TTó`Ú≥ÔÛ>xÇsFvPAª=TZE“g>Ÿ
+ËêH‡√Ät"!Pı¥ïˆ—ä‰_ÍÀfΩ¶G}5 õ∏ÕÑ‘c‰ÜlOÃ3±}YäFd|7ñj]í≠‹¶‚∂êlV∑'Ü«ñ¢;4h£Å€u∞lh”∑ùÿPÕÂ5©é≈Éè”ˆRs*ªÇeU–Û˛ﬁ9F¬∞
+‘
+¶’–∂yˆﬁ·≥QfBo+˚il{õ%ÒI	?Ò'M"tO0ÍªuK∏ù‰√˜I:Tπ9ı1ôP&‡XÅ~˘ıﬂø8g]n¨VpÍèﬂπufôg1¥À+∞Wˆisàˇ]fBH5ÖØ’∂º2*˙UÎmïxú≈»8∏]ü:®ô†XJ•>^)o¸ﬁåCE_EXo•:˛c¸3‡ªº∂\“ƒHµJ◊ÄäH∆˚ŒŸ-XíXY3•°±ëÉ–}>⁄Ø%'BΩØñ¯.ê'©Ë¡¡jò2∆æ¨7P~Wôb‹Ñﬁ“r*	nî3≈Èè–töÖØ6Í·u6`œ0`m°ºkà¬êiœ•.nÒÆ]Õ¨¬yÛ´”ãÀÛ|3˛	ö/ÒπyvŸ‹CQÁ¢¶|=Ïñãπ≈áSLäQπñÖ
+7≈ŸŸ/¥d≥¨ö"ó>Ô™8ÌÁ¢x÷∫jM°t5ZÔb™Y•E…èpÅåû«MÆ/ieJí=ñ∆–cMdÚ=Ötci¸!VqÜAÛåÇÃV…våYMâxcU…ó]pÛ˙FyÜ°K«ŸG&œqºÀë®©3˛]Rã;bÊ›àr„∑~àXÃí∏ë1W‚˜1kA+yu[ÆsóÄ¯9RBö¨è«k¿uCª¯RõùF&˚<~øÖ∆
+N´+ª±Å$DÕåM©öJ<÷O°`Œ™cø:L;?LJﬁhÇ	 i.\c‘¿çI≈Î∏]v∏–6Â√‘¯Xï^Œõ4*À◊¨h˛∏‚FîÕ…å∆§_Œ˚Ì»Z%êÿõ–KºX)¨*yå_‹ÆÆ¡¡!‡Ÿ»% ™ƒqg≠ÿo≥McàcË:¿§u∏dÓ©>”{ë+%ÍYﬁgSŸVΩûc◊¸Ç›:S^§ç“$T<ûTë±§·ñ+I®yÔä5wPi‚±HQ>F˘J	Lèï$•‹#08¶“√
+”ÖÒcøñ \(ªÂ5>y´EΩ'êÛBô	fA)Æ$I[å„˝ëúN¥ìH&¢›ôHN9)X2‰óµ°ŸP¶„<
+‘≤∞\`.‚t£ÿw»,N\’óåKÂ—ZõS≠9¡Ã+ÓMünkO·‚Ë§âŒ_∂^6p‹:;9=qty⁄:É≠∆—∑¥vßÏ6ÂìßBπ¸hÖLŒ¶FÅ>˙çœ√* ©©ˇ_˜>–uÔSº‡ÂÚ—r+‹‰√›Ær
+|f<ÕCW£G]d≤¢OÆçg}\5ÎªÖ’[®V´ÓmíBﬂ√qo˙0Z˚H=vÁq=∂ËkL)xqC$m[¿§ò,wÕs¡÷˘ûÅòÕ±˙ﬂ}ßóÇƒ±dg·X¥[“˙`Rí3¡√0;ÖÿÉ9Ÿ≥ ŒèÌq…C“Í&kkü/çñ˛  ˇˇ &÷

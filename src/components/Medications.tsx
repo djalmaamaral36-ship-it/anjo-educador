@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Idoso, Medicamento, Usuario, TarefaDiaria } from '../types';
+import { Idoso, Medicamento, Usuario, TarefaDiaria, isStaffUser } from '../types';
 import { getFromDB, saveToDB, checkFeedingCareAuthorization, compressImage, getShiftActiveState, getNowTimeBr } from '../data';
 import { VoiceInput } from './VoiceInput';
 import { 
@@ -147,7 +147,7 @@ export default function Medications({
       return;
     }
 
-    if (usuarioAtual.tipo !== 'familiar' && usuarioAtual.tipo !== 'familiar_admin' && usuarioAtual.tipo !== 'admin' && !isMaster) {
+    if (isStaffUser(usuarioAtual) && usuarioAtual.tipo !== 'admin' && !isMaster) {
       showAlert(isEscolar 
         ? "⚠️ Operação Não Autorizada: A inclusão de medicamentos é de responsabilidade exclusiva dos pais ou responsáveis (mãe/família)."
         : "⚠️ Operação Não Autorizada: A inclusão de medicamentos é de responsabilidade exclusiva da família ou responsáveis.", "Acesso Restrito");
@@ -287,7 +287,7 @@ export default function Medications({
 
   const handleSuspendMedicine = (medId: string) => {
     const isMaster = localStorage.getItem('anjo_master_demonstracao_ativo') === 'true';
-    if (usuarioAtual.tipo !== 'familiar' && usuarioAtual.tipo !== 'admin' && !isMaster) {
+    if (isStaffUser(usuarioAtual) && usuarioAtual.tipo !== 'admin' && !isMaster) {
       showAlert(isEscolar 
         ? "⚠️ Operação Não Autorizada: A suspensão ou reativação de medicamentos é de responsabilidade exclusiva dos pais ou responsáveis."
         : "⚠️ Operação Não Autorizada: A suspensão ou reativação de medicamentos é de responsabilidade exclusiva da família ou responsáveis.", "Acesso Restrito");
@@ -390,7 +390,7 @@ export default function Medications({
 
   const handleDeleteMedicine = (medId: string, name: string) => {
     const isMaster = localStorage.getItem('anjo_master_demonstracao_ativo') === 'true';
-    if (usuarioAtual.tipo !== 'familiar' && usuarioAtual.tipo !== 'admin' && !isMaster) {
+    if (isStaffUser(usuarioAtual) && usuarioAtual.tipo !== 'admin' && !isMaster) {
       showAlert(isEscolar 
         ? "⚠️ Operação Não Autorizada: A exclusão de medicamentos é de responsabilidade exclusiva dos pais ou responsáveis."
         : "⚠️ Operação Não Autorizada: A exclusão de medicamentos é de responsabilidade exclusiva da família ou responsáveis.", "Acesso Restrito");
@@ -547,7 +547,7 @@ export default function Medications({
             );
           }
 
-          if (uType === 'familiar' || uType === 'familiar_admin' || uType === 'admin' || isMaster) {
+          if (!isStaffUser(usuarioAtual) || uType === 'familiar' || uType === 'familiar_admin' || uType === 'admin' || isMaster) {
             return (
               <button 
                 onClick={() => setShowAddModal(true)}
