@@ -119,7 +119,7 @@ export default function FirebaseDiagnosticBar() {
         ? 'top-2 sm:top-3 right-2 sm:right-3' 
         : 'bottom-2 sm:bottom-3 right-2 sm:right-3'
     }`}>
-      {/* Visual Indicator Pill */}
+      
       <div className={`shadow-xl rounded-xl border p-2 sm:p-2.5 transition-all duration-300 backdrop-blur-md ${
         isConnected ? 'bg-emerald-950/95 text-emerald-100 border-emerald-500/50' : 'bg-red-950/95 text-red-100 border-red-500/50'
       }`}>
@@ -141,7 +141,7 @@ export default function FirebaseDiagnosticBar() {
           </div>
 
           <div className="flex items-center gap-1">
-            {/* Toggle Position Button (Top vs Bottom) */}
+            
             <button
               onClick={() => setPosition(prev => prev === 'top' ? 'bottom' : 'top')}
               title={position === 'top' ? "Mover para baixo" : "Mover para cima"}
@@ -150,7 +150,7 @@ export default function FirebaseDiagnosticBar() {
               {position === 'top' ? <MoveDown className="w-3 h-3" /> : <MoveUp className="w-3 h-3" />}
             </button>
 
-            {/* Reconnect Button */}
+            
             <button
               onClick={handleManualReconnect}
               disabled={isReconnecting}
@@ -161,7 +161,7 @@ export default function FirebaseDiagnosticBar() {
               <span className="hidden md:inline">Reconectar</span>
             </button>
 
-            {/* Minimize Toggle */}
+            
             <button
               onClick={() => setIsMinimized(!isMinimized)}
               className="p-1 rounded-md hover:bg-white/10 text-white/80"
@@ -170,7 +170,7 @@ export default function FirebaseDiagnosticBar() {
               {isMinimized ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
             </button>
 
-            {/* Hide temporarily */}
+            
             <button
               onClick={() => setIsHidden(true)}
               className="p-1 rounded-md hover:bg-white/10 text-white/60 hover:text-white"
@@ -181,14 +181,14 @@ export default function FirebaseDiagnosticBar() {
           </div>
         </div>
 
-        {/* Feedback Temporário */}
+        
         {testResult && (
           <div className="mt-1.5 text-[9px] sm:text-[10px] p-1.5 rounded bg-black/50 border border-white/20 font-medium animate-fade-in">
             {testResult}
           </div>
         )}
 
-        {/* Painel Expandido de Diagnóstico */}
+        
         {!isMinimized && (
           <div className="mt-2 pt-2 border-t border-white/15 space-y-2 text-[10px] sm:text-[11px]">
             <div className="grid grid-cols-2 gap-1.5 text-[9px] sm:text-[10px]">
@@ -219,7 +219,7 @@ export default function FirebaseDiagnosticBar() {
               </button>
             </div>
 
-            {/* Painel de Logs */}
+            
             {showFullLogs && (
               <div className="mt-1.5 p-1.5 rounded bg-black/80 border border-white/10 font-mono text-[8px] sm:text-[9px] max-h-36 overflow-y-auto space-y-1 leading-tight text-emerald-400">
                 {logs.length === 0 ? (

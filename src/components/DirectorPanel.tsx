@@ -645,11 +645,11 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
   return (
     <div className={`space-y-6 animate-fade-in ${isDark ? 'text-slate-100' : 'text-slate-800'}`} id="school-director-panel">
       
-      {/*   PANEL HEADER WITH BRAND INTEGRITY */}
+      
       <div className={`p-6 sm:p-8 rounded-3xl border transition-all relative overflow-hidden ${
         isDark ? 'bg-slate-900 border-slate-800 shadow-black/40' : 'bg-gradient-to-br from-indigo-50/50 via-white to-white border-slate-200'
       } shadow-md`}>
-        {/* Decorative backdrop mesh */}
+        
         <div className="absolute -right-24 -top-24 w-72 h-72 rounded-full bg-indigo-500/5 blur-3xl pointer-events-none"></div>
         <div className="absolute -left-12 -bottom-12 w-60 h-60 rounded-full bg-amber-500/5 blur-3xl pointer-events-none"></div>
 
@@ -680,7 +680,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
           </div>
         </div>
 
-        {/* INTERACTION TABS */}
+        
         <div className="flex flex-wrap gap-1 border-b border-slate-100 dark:border-slate-800 pt-6 mt-2">
           <button
             onClick={() => setActiveTab('overview')}
@@ -725,11 +725,11 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         </div>
       </div>
 
-      {/* TAB 1: VISÁO GERAL / EXECUTIVE SUMMARY */}
+      
       {activeTab === 'overview' && (
         <div className="space-y-6">
           
-          {/*   VISÁO 360º DA ESCOLA (PAINEL EXECUTIVO DA DIREÇÁO) */}
+          
           <div className={`p-6 rounded-3xl border text-left space-y-5 ${
             isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-gradient-to-br from-indigo-900 via-slate-900 to-indigo-950 text-white border-indigo-950'
           } shadow-xl relative overflow-hidden`} id="visao-360-escola">
@@ -760,10 +760,10 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               </div>
             </div>
 
-            {/* 7 Pilar Cards */}
+            
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
               
-              {/* 1. OPERAÇÁO */}
+              
               <div className="p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-indigo-400/30 transition-all space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-black tracking-wider text-indigo-300 uppercase flex items-center gap-1.5">
@@ -782,7 +782,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 <p className="text-[10px] text-indigo-200/70 font-medium">Audit de rotinas e segurança LGPD/normativas</p>
               </div>
 
-              {/* 2. CUIDADO */}
+              
               <div className="p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-indigo-400/30 transition-all space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-black tracking-wider text-sky-300 uppercase flex items-center gap-1.5">
@@ -801,7 +801,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 <p className="text-[10px] text-indigo-200/70 font-medium">Sono, alimentação, fralda e hidratação do dia</p>
               </div>
 
-              {/* 3. ATENÇÁO */}
+              
               <div 
                 onClick={() => setShowStrategicConflictModal(true)}
                 className="p-4 rounded-2xl bg-rose-500/10 backdrop-blur-md border border-rose-500/30 hover:border-rose-400 transition-all space-y-2 cursor-pointer group"
@@ -824,7 +824,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </div>
               </div>
 
-              {/* 4. TURMAS */}
+              
               <div 
                 onClick={() => setActiveTab('classes')}
                 className="p-4 rounded-2xl bg-amber-500/10 backdrop-blur-md border border-amber-500/30 hover:border-amber-400 transition-all space-y-2 cursor-pointer group"
@@ -847,7 +847,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </div>
               </div>
 
-              {/* 5. EQUIPE */}
+              
               <div className="p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-indigo-400/30 transition-all space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-black tracking-wider text-emerald-300 uppercase flex items-center gap-1.5">
@@ -866,7 +866,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 <p className="text-[10px] text-indigo-200/70 font-medium">Professores e cuidadores preenchendo diários via PIN</p>
               </div>
 
-              {/* 6. FAMÍLIAS */}
+              
               <div className="p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-indigo-400/30 transition-all space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-black tracking-wider text-rose-300 uppercase flex items-center gap-1.5">
@@ -885,7 +885,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 <p className="text-[10px] text-indigo-200/70 font-medium">Visualização de recados, fotos e autorizações no app</p>
               </div>
 
-              {/* 7. PEDAGÓGICO */}
+              
               <div 
                 onClick={() => setActiveTab('pedagogy')}
                 className="p-4 rounded-2xl bg-indigo-500/20 backdrop-blur-md border border-indigo-400/30 hover:border-indigo-300 transition-all space-y-2 cursor-pointer group sm:col-span-2 lg:col-span-2"
@@ -913,7 +913,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
             </div>
           </div>
 
-          {/* Bento-style metrics grid */}
+          
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" id="director-kpis">
             
             <div className={`p-5 rounded-2xl border ${
@@ -980,7 +980,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             
-            {/* 🏫 CO-BRANDING CONFIGURATION (MANAGED BY THE DIRECTOR) */}
+            
             <div className={`lg:col-span-7 p-6 rounded-3xl border text-left space-y-5 ${
               isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
             } shadow-xs`}>
@@ -1064,7 +1064,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </div>
               </form>
 
-              {/* Quick suggestions presets */}
+              
               <div className="border-t border-slate-100 dark:border-slate-850 pt-3.5 space-y-1.5">
                 <span className="text-[9px] font-black text-slate-400 uppercase">Modelos de Marca Escolares:</span>
                 <div className="flex flex-wrap gap-2">
@@ -1095,7 +1095,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
             </div>
 
-            {/*   REAL FAMILY FEED / PARENT ENGAGEMENT LOGS */}
+            
             <div className={`lg:col-span-5 p-6 rounded-3xl border text-left flex flex-col ${
               isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
             } shadow-xs`}>
@@ -1134,7 +1134,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     );
                   })
                 )}
-                {/* Simulated continuous feed lines */}
+                
                 <div className="flex gap-2.5 text-[11px] leading-tight pb-3 border-b border-slate-50 dark:border-slate-850 last:border-0">
                   <div className="p-1.5 bg-blue-50 dark:bg-blue-950/40 text-blue-600 rounded-lg shrink-0 h-fit self-center">
                     <span> </span>
@@ -1165,7 +1165,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         </div>
       )}
 
-      {/* TAB 2: GRADE DE TURMAS / CLASSROOM DIRECTORY */}
+      
       {activeTab === 'classes' && (
         <div className="space-y-6 text-left">
           
@@ -1232,7 +1232,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
                   <div className="space-y-3.5 pt-2 border-t border-slate-100/10">
                     
-                    {/* Occupancy bar */}
+                    
                     <div className="space-y-1.5">
                       <div className="flex justify-between text-[10px] font-black uppercase text-slate-400">
                         <span>Lotação: {classStudents.length} / {room.capacity}</span>
@@ -1248,7 +1248,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       </div>
                     </div>
 
-                    {/* Teacher tag */}
+                    
                     <div className={`p-2.5 rounded-xl flex items-center justify-between gap-2 text-xs ${
                       isDark ? 'bg-slate-850 text-slate-300' : 'bg-slate-50 text-slate-700'
                     }`}>
@@ -1281,7 +1281,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         </div>
       )}
 
-      {/* TAB 3: DESEMPENHO PEDAGÓGICO & SAÚDE (HEALTH MONITORING) */}
+      
       {activeTab === 'pedagogy' && (
         <div className="space-y-6 text-left">
           
@@ -1295,7 +1295,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               </p>
             </div>
 
-            {/* View Mode Toggle: Trees vs Conventional Charts */}
+            
             <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl shrink-0 self-start sm:self-center border border-slate-200/50 dark:border-slate-700/50 shadow-3xs">
               <button
                 onClick={() => setPedagogyViewMode('trees')}
@@ -1320,13 +1320,13 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
             </div>
           </div>
 
-          {/* ========================================================================= */}
-          {/* VIEW MODE 1: EVOLVING TREES (ÁRVORES EM EVOLUÇÁO)                         */}
-          {/* ========================================================================= */}
+          
+          
+          
           {pedagogyViewMode === 'trees' ? (
             <div className="space-y-6">
               
-              {/* Forest Level Selectors */}
+              
               <div className="flex flex-wrap gap-1.5 border-b border-slate-100 dark:border-slate-850 pb-3">
                 <button
                   onClick={() => setTreeLevel('individual')}
@@ -1360,11 +1360,11 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </button>
               </div>
 
-              {/* LEVEL 1: INDIVIDUAL TREE FOCUS */}
+              
               {treeLevel === 'individual' && (
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
                   
-                  {/* Left Column: Interactive Tree Illustration */}
+                  
                   <div className={`lg:col-span-5 p-6 rounded-3xl border flex flex-col items-center justify-between text-center relative overflow-hidden ${
                     isDark ? 'bg-slate-900 border-slate-800' : 'bg-gradient-to-b from-sky-50/30 via-white to-white border-slate-200'
                   } shadow-xs`}>
@@ -1374,7 +1374,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       <span className="text-[10px] font-bold text-slate-400">Tempo Real</span>
                     </div>
 
-                    {/* Student Selection dropdown */}
+                    
                     <div className="w-full space-y-1 mb-4 text-left">
                       <label className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wide block">Selecione o Aluno para Ver Sua Árvore</label>
                       <select
@@ -1390,7 +1390,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       </select>
                     </div>
 
-                    {/* Render Tree SVG */}
+                    
                     {(() => {
                       const selectedStudent = students.find(s => s.id === selectedStudentForTree);
                       if (!selectedStudent) {
@@ -1458,7 +1458,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                               </filter>
                             </defs>
 
-                            {/* Droplets when watering is active */}
+                            
                             {isWateringAnimate && (
                               <g>
                                 <circle cx="180" cy="50" r="4" fill="#38bdf8" className="animate-bounce" />
@@ -1469,11 +1469,11 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                               </g>
                             )}
 
-                            {/* Ground grass hill */}
+                            
                             <path d="M 50 250 Q 200 230 350 250 L 350 280 L 50 280 Z" fill="#4ade80" opacity="0.9" />
                             <path d="M 80 251 Q 200 240 320 251" stroke="#22c55e" strokeWidth="3" fill="none" />
                             
-                            {/* Sprout vs Tree branch */}
+                            
                             {compliance <= 20 ? (
                               <g filter="url(#shadow)">
                                 <path d="M 200 245 Q 195 210 205 190" stroke="#4ade80" strokeWidth="6" strokeLinecap="round" fill="none" />
@@ -1483,7 +1483,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                               </g>
                             ) : (
                               <g filter="url(#shadow)">
-                                {/* Trunk */}
+                                
                                 <path 
                                   d={`M ${200 - trunkThickness/2} 248 
                                       Q ${200 - trunkThickness/4} ${250 - trunkHeight/2} ${195} ${250 - trunkHeight} 
@@ -1491,7 +1491,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                   fill="url(#trunkGrad)" 
                                 />
 
-                                {/* Left Branch */}
+                                
                                 {compliance > 45 && (
                                   <path 
                                     d={`M 197 ${250 - trunkHeight*0.6} Q 170 ${250 - trunkHeight*0.8} 150 ${250 - trunkHeight*0.95}`} 
@@ -1502,7 +1502,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                   />
                                 )}
 
-                                {/* Right Branch */}
+                                
                                 {compliance > 55 && (
                                   <path 
                                     d={`M 202 ${250 - trunkHeight*0.5} Q 230 ${250 - trunkHeight*0.75} 250 ${250 - trunkHeight*0.9}`} 
@@ -1513,7 +1513,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                   />
                                 )}
 
-                                {/* Foliage Crown circles */}
+                                
                                 <g className="transition-all duration-700">
                                   <circle cx="200" cy={250 - trunkHeight} r={trunkHeight * 0.46} fill="url(#leafGrad)" opacity="0.95" />
                                   {compliance > 40 && (
@@ -1527,7 +1527,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                   )}
                                 </g>
 
-                                {/* Parent engagement fruits/blossoms */}
+                                
                                 {fruitCoords.slice(0, fruitCount).map((f, i) => (
                                   <g key={i} className="animate-pulse" style={{ animationDelay: `${i * 0.2}s` }}>
                                     <circle cx={f.cx} cy={f.cy - (100 - compliance) * 0.25} r="7" fill="#f43f5e" />
@@ -1537,7 +1537,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                               </g>
                             )}
 
-                            {/* Scale Indicator Sign */}
+                            
                             <g transform="translate(135, 258)">
                               <rect x="0" y="0" width="130" height="18" rx="6" fill="#1e293b" opacity="0.9" />
                               <text x="65" y="12" fill="#ffffff" fontSize="8" fontWeight="black" textAnchor="middle" className="font-mono">
@@ -1546,7 +1546,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                             </g>
                           </svg>
 
-                          {/* Phase Label */}
+                          
                           <div className="mt-1 space-y-1">
                             <span className="text-[10px] font-black uppercase text-slate-400 block leading-none">Estágio de Vida</span>
                             <span className="px-3 py-1 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-extrabold rounded-full text-xs inline-block shadow-3xs">
@@ -1557,7 +1557,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                             </span>
                           </div>
 
-                          {/* Watering Button action to increase engagement count */}
+                          
                           <button
                             onClick={() => {
                               setIsWateringAnimate(true);
@@ -1583,7 +1583,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
                   </div>
 
-                  {/* Right Column: Naturalist Diagnosis & Affection Metrics */}
+                  
                   <div className={`lg:col-span-7 p-6 rounded-3xl border text-left flex flex-col justify-between ${
                     isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
                   } shadow-xs`}>
@@ -1606,7 +1606,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         <div className="space-y-5 h-full flex flex-col justify-between">
                           <div className="space-y-4">
                             
-                            {/* Header child card inside report */}
+                            
                             <div className="flex items-center gap-3 pb-3 border-b border-slate-100 dark:border-slate-850">
                               <img
                                 referrerPolicy="no-referrer"
@@ -1622,7 +1622,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                               </div>
                             </div>
 
-                            {/* Metaphor analysis explanation */}
+                            
                             <div className="space-y-2">
                               <h5 className="text-[10px] uppercase font-black tracking-wider text-indigo-500">Diagnóstico Ecológico</h5>
                               <p className="text-xs text-slate-650 dark:text-slate-400 font-semibold leading-relaxed">
@@ -1630,7 +1630,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                               </p>
                             </div>
 
-                            {/* Vital Stats grid mapped to soil nutrition */}
+                            
                             <div className="grid grid-cols-2 gap-3.5">
                               
                               <div className="p-3 bg-slate-50 dark:bg-slate-850 rounded-2xl border border-slate-100/10 space-y-1">
@@ -1677,7 +1677,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
                           </div>
 
-                          {/* Directors note */}
+                          
                           <div className="p-3 bg-indigo-50/50 dark:bg-indigo-950/20 rounded-2xl border border-indigo-100/20 text-[10.5px] text-indigo-800 dark:text-indigo-300 font-semibold leading-normal mt-4">
                               <strong>Dica da Coordenação:</strong> A folhagem de {selectedStudent.nome.split(' (')[0]} está {hasAlert ? 'amarela, sugerindo atenção de saúde.' : 'verde e vibrante!'} Estimule os pais a mandarem "Regadas de Amor" pelo app para continuarem preenchendo o diário com interações afetivas.
                           </div>
@@ -1691,11 +1691,11 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </div>
               )}
 
-              {/* LEVEL 2: CLASS GROVE (BOSQUE DA CLASSE) */}
+              
               {treeLevel === 'class' && (
                 <div className="space-y-6">
                   
-                  {/* Select class */}
+                  
                   <div className={`p-4 rounded-2xl border ${
                     isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
                   } flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-semibold`}>
@@ -1722,7 +1722,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
                   </div>
 
-                  {/* scenic landscape for the grove of trees */}
+                  
                   {(() => {
                     const classStudents = students.filter(s => s.nome.includes(selectedClassForBosque));
                     
@@ -1752,16 +1752,16 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     return (
                       <div className="space-y-6">
                         
-                        {/* Grassy Landscape */}
+                        
                         <div className={`p-6 rounded-3xl border relative overflow-hidden ${
                           isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-gradient-to-b from-sky-100 via-indigo-50/20 to-emerald-50/10 border-slate-200'
                         } shadow-xs min-h-[360px] flex flex-col justify-between`}>
                           
-                          {/* Sky decorative sun/clouds */}
+                          
                           <div className="absolute top-6 left-8 w-10 h-10 rounded-full bg-amber-400/20 blur-sm"></div>
                           <div className="absolute top-10 right-16 bg-white/70 dark:bg-slate-800/40 px-3 py-1 rounded-full text-[9px] font-bold text-slate-400">  Turma Harmônica</div>
 
-                          {/* Row of trees */}
+                          
                           <div className="flex flex-wrap items-end justify-center gap-6 md:gap-12 py-6 z-10 overflow-x-auto">
                             {classStudents.map(student => {
                               const foodVal = parseInt(localStorage.getItem(`anjo_almoço_pct_${student.id}`) || '90', 10);
@@ -1789,15 +1789,15 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                   className="flex flex-col items-center cursor-pointer hover:scale-105 transition-all duration-300 group max-w-[120px] text-center"
                                   title={`Ver Árvore Detalhada de ${student.nome.split(' (')[0]}`}
                                 >
-                                  {/* Miniature SVG Tree */}
+                                  
                                   <svg viewBox="0 0 160 160" className="w-20 h-20 overflow-visible">
-                                    {/* Mini soil */}
+                                    
                                     <ellipse cx="80" cy="140" rx="30" ry="6" fill="#86efac" opacity="0.8" />
-                                    {/* Mini trunk */}
+                                    
                                     <line x1="80" y1="140" x2="80" y2={140 - 55 * heightScale} stroke="#92400e" strokeWidth="6" strokeLinecap="round" />
-                                    {/* Mini Crown */}
+                                    
                                     <circle cx="80" cy={140 - 55 * heightScale} r={28 * heightScale} fill={leafColor} opacity="0.9" />
-                                    {/* Mini Fruits if watered */}
+                                    
                                     {regarCount > 0 && (
                                       <circle cx="70" cy={140 - 55 * heightScale + 5} r="4.5" fill="#f43f5e" />
                                     )}
@@ -1806,7 +1806,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                     )}
                                   </svg>
 
-                                  {/* Student Thumbnail */}
+                                  
                                   <div className="relative mt-2">
                                     <img 
                                       referrerPolicy="no-referrer"
@@ -1826,12 +1826,12 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                             })}
                           </div>
 
-                          {/* Landscape Ground line */}
+                          
                           <div className="w-full h-2 bg-emerald-400 dark:bg-emerald-950/40 rounded-full z-0"></div>
 
                         </div>
 
-                        {/* Grove Summary Stats Card */}
+                        
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                           
                           <div className={`p-4 rounded-2xl border text-left ${
@@ -1873,11 +1873,11 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </div>
               )}
 
-              {/* LEVEL 3: UNIFIED SCHOOL FOREST (FLORESTA ESCOLAR) */}
+              
               {treeLevel === 'school' && (
                 <div className="space-y-6">
                   
-                  {/* General Dashboard Panel */}
+                  
                   <div className={`p-6 rounded-3xl border text-left space-y-6 ${
                     isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-202'
                   } shadow-xs`}>
@@ -1892,7 +1892,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       </p>
                     </div>
 
-                    {/* School forest stats scoreboard */}
+                    
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                       
                       <div className="p-4 bg-slate-50 dark:bg-slate-850 rounded-2xl space-y-1 border border-slate-100/10">
@@ -1928,7 +1928,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
                     </div>
 
-                    {/* Scenic Forest View of all classrooms */}
+                    
                     <div className="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-850">
                       <h5 className="text-[10px] uppercase font-black tracking-wider text-slate-400">Bosques das Turmas no Ecossistema</h5>
                       
@@ -1978,7 +1978,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                 </div>
                               </div>
 
-                              {/* Big icon representing the class bosque strength */}
+                              
                               <span className="text-2xl p-2 bg-indigo-100/50 dark:bg-indigo-950/40 text-indigo-600 rounded-xl shrink-0">
                                 {avgCompliance > 80 ? ' ' : avgCompliance > 50 ? ' ' : ' '}
                               </span>
@@ -1989,7 +1989,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       </div>
                     </div>
 
-                    {/* Collective School watering action */}
+                    
                     <div className="flex items-center justify-between p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/40 rounded-2xl gap-4">
                       <div className="flex items-center gap-2.5 text-xs text-emerald-800 dark:text-emerald-300">
                         <span className="text-xl">☔</span>
@@ -2030,7 +2030,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
             // =========================================================================
             <div className="space-y-6 animate-fade-in">
               
-              {/* Charts Sub-Tab Selector */}
+              
               <div className="flex border-b border-slate-200 dark:border-slate-800 pb-px gap-6 overflow-x-auto">
                 <button
                   onClick={() => setChartsSubTab('care')}
@@ -2057,7 +2057,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               {chartsSubTab === 'care' ? (
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                   
-                  {/* Left Col: Aggregate Health Indices */}
+                  
                   <div className={`lg:col-span-8 p-6 rounded-3xl border space-y-6 ${
                     isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
                   } shadow-xs`}>
@@ -2103,7 +2103,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
                     </div>
 
-                    {/*   RASTREAMENTO 360º DE ATENÇÁO INDIVIDUAL DOS ALUNOS */}
+                    
                     <div className="space-y-4 pt-6 border-t border-slate-100/10">
                       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-slate-50 dark:bg-slate-850 p-4 rounded-2xl border border-slate-200/60 dark:border-slate-800">
                         <div className="space-y-1 text-left">
@@ -2120,7 +2120,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                           </p>
                         </div>
 
-                        {/* Filter Tabs */}
+                        
                         <div className="flex flex-wrap items-center gap-1.5 self-stretch sm:self-auto">
                           <button
                             type="button"
@@ -2154,7 +2154,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         </div>
                       )}
 
-                      {/* Search Bar & Class Filter */}
+                      
                       <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
                         <div className="relative flex-1 w-full">
                           <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -2186,7 +2186,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         </div>
                       </div>
 
-                      {/* Roster of Students with 360 Indicator Badges */}
+                      
                       <div className="space-y-3">
                         {students
                           .filter(s => {
@@ -2247,7 +2247,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                     : isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
                                 }`}
                               >
-                                {/* Header student line */}
+                                
                                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100/10 pb-2.5">
                                   <div className="flex items-center gap-3">
                                     <img 
@@ -2269,7 +2269,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                     </div>
                                   </div>
 
-                                  {/* Overall Badge */}
+                                  
                                   <div className="flex items-center gap-2 self-start sm:self-auto">
                                     <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
                                       isAlert 
@@ -2283,10 +2283,10 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                   </div>
                                 </div>
 
-                                {/* 6 Pillars Grid */}
+                                
                                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
                                   
-                                  {/* 1. Saúde / Temperatura */}
+                                  
                                   <div className={`p-2 rounded-xl border text-xs space-y-0.5 ${
                                     tempVal >= 37.8 ? 'bg-rose-100/60 border-rose-300 text-rose-900 font-extrabold' : 'bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700'
                                   }`}>
@@ -2295,7 +2295,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                     <span className="text-[9px] block text-slate-500 font-medium">{tempVal >= 37.8 ? 'Febril (Medição 10:15)' : 'Estável'}</span>
                                   </div>
 
-                                  {/* 2. Alimentação / Almoço */}
+                                  
                                   <div className={`p-2 rounded-xl border text-xs space-y-0.5 ${
                                     foodVal < 50 ? 'bg-amber-100/60 border-amber-300 text-amber-900 font-extrabold' : 'bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700'
                                   }`}>
@@ -2304,20 +2304,20 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                     <span className="text-[9px] block text-slate-500 font-medium">{foodVal < 50 ? 'Recusa Alimentar' : 'Ótima Aceitação'}</span>
                                   </div>
 
-                                  {/* 3. Repouso / Soneca */}
+                                  
                                   <div className="p-2 rounded-xl border bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700 text-xs space-y-0.5">
                                     <span className="text-[9px] font-bold uppercase text-slate-400 block">  Sono / Repouso</span>
                                     <span className="font-black text-slate-800 dark:text-slate-100">{sleepVal}h</span>
                                     <span className="text-[9px] block text-slate-500 font-medium">{sleepVal < 1.0 ? 'Repouso Curto' : 'Sono Tranquilo'}</span>
                                   </div>
 
-                                  {/* 4. Higiene / Fraldas */}
+                                  
                                   <div className="p-2 rounded-xl border bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700 text-xs space-y-0.5">
                                     <span className="text-[9px] font-bold uppercase text-slate-400 block">  Higiene / Trocas</span>
                                     <span className="font-black text-slate-800 dark:text-slate-100 text-[11px] truncate block">{diaperStatus}</span>
                                   </div>
 
-                                  {/* 5. Medicação Prescrita */}
+                                  
                                   <div className={`p-2 rounded-xl border text-xs space-y-0.5 ${
                                     medStatus.includes('Pendente') ? 'bg-amber-100/60 border-amber-300' : 'bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700'
                                   }`}>
@@ -2325,7 +2325,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                     <span className="font-black text-slate-800 dark:text-slate-100 text-[10px] block truncate">{medStatus}</span>
                                   </div>
 
-                                  {/* 6. Desenvolvimento & Emocional */}
+                                  
                                   <div className="p-2 rounded-xl border bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700 text-xs space-y-0.5">
                                     <span className="text-[9px] font-bold uppercase text-slate-400 block">  Sócioemocional</span>
                                     <span className="font-extrabold text-indigo-600 dark:text-indigo-400 text-[10px] block truncate">{emotionalStatus}</span>
@@ -2333,7 +2333,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
                                 </div>
 
-                                {/* Teacher Note Highlight */}
+                                
                                 <div className="p-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/50 text-xs text-slate-600 dark:text-slate-300 flex items-start gap-2">
                                   <FileText className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
                                   <p className="leading-relaxed text-[11px] font-medium">
@@ -2341,7 +2341,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                   </p>
                                 </div>
 
-                                {/* Director Quick Action Buttons */}
+                                
                                 <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-slate-100/10">
                                   <div className="flex items-center gap-2">
                                     <button
@@ -2408,7 +2408,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
                   </div>
 
-                  {/* Right Col: Most Engaged Classrooms ranking (gamified pedagogical index) */}
+                  
                   <div className={`lg:col-span-4 p-6 rounded-3xl border flex flex-col justify-between ${
                     isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
                   } shadow-xs`}>
@@ -2458,7 +2458,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 // =========================================================================
                 <div className="space-y-6">
                   
-                  {/* Header and Classroom Filter */}
+                  
                   <div className={`p-5 rounded-2xl border flex flex-col md:flex-row md:items-center justify-between gap-4 ${
                     isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
                   }`}>
@@ -2491,10 +2491,10 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
                   <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                     
-                    {/* LEFT COL: Indicators 1, 2, 3, 4 */}
+                    
                     <div className="lg:col-span-8 space-y-6">
                       
-                      {/* INDICATOR 1: Frequência Diária por Turma (Evasão) */}
+                      
                       <div className={`p-5 rounded-3xl border space-y-4 ${
                         isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
                       } shadow-xs`}>
@@ -2566,7 +2566,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         </div>
                       </div>
 
-                      {/* INDICATOR 2: % de crianças com atraso no desenvolvimento identificadas */}
+                      
                       <div className={`p-5 rounded-3xl border space-y-4 ${
                         isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
                       } shadow-xs`}>
@@ -2613,7 +2613,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         </div>
                       </div>
 
-                      {/* INDICATOR 3: Número de encaminhamentos pedagógicos por turma */}
+                      
                       <div className={`p-5 rounded-3xl border space-y-4 ${
                         isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
                       } shadow-xs`}>
@@ -2681,7 +2681,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         </div>
                       </div>
 
-                      {/* INDICATOR 4: Tempo de tela / exposição a dispositivos */}
+                      
                       <div className={`p-5 rounded-3xl border space-y-4 ${
                         isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
                       } shadow-xs`}>
@@ -2714,10 +2714,10 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
                     </div>
 
-                    {/* RIGHT COL: Indicators 5, 6, 7 */}
+                    
                     <div className="lg:col-span-4 space-y-6">
                       
-                      {/* INDICATOR 5: Distribuição do Tempo na Rotina */}
+                      
                       <div className={`p-5 rounded-3xl border space-y-4 ${
                         isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
                       } shadow-xs text-left`}>
@@ -2732,7 +2732,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                           </p>
 
                           <div className="space-y-3 text-[11px] font-bold">
-                            {/* Bar distribution */}
+                            
                             <div className="space-y-1">
                               <div className="flex justify-between text-[10px]">
                                 <span className="text-emerald-600 font-extrabold">  Brincar Livre / Explorar</span>
@@ -2770,7 +2770,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         </div>
                       </div>
 
-                      {/* INDICATOR 6: % de famílias participantes */}
+                      
                       <div className={`p-5 rounded-3xl border space-y-4 ${
                         isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
                       } shadow-xs text-left`}>
@@ -2795,7 +2795,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         </div>
                       </div>
 
-                      {/* INDICATOR 7: Ocorrências de comportamento/bullying */}
+                      
                       <div className={`p-5 rounded-3xl border space-y-4 ${
                         isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
                       } shadow-xs text-left`}>
@@ -2838,7 +2838,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         </div>
       )}
 
-      {/* TAB 4: CORPO DOCENTE (TEACHERS LIST) */}
+      
       {activeTab === 'teachers' && (
         <div className="space-y-6 text-left">
           
@@ -2942,7 +2942,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         </div>
       )}
 
-      {/*   MODAL DE CRIAR TURMA */}
+      
       {showClassroomModal && (
         <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
           <form 
@@ -3065,7 +3065,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         </div>
       )}
 
-      {/*  🏫 MODAL DE ALOCAÇÁO DE PROFESSOR */}
+      
       {editingClassroom && (
         <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className={`rounded-3xl max-w-sm w-full border p-6 space-y-4 shadow-2xl text-left ${
@@ -3129,7 +3129,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         </div>
       )}
 
-      {/* ✏ MODAL DE EDIÇÁO DE PROFESSOR / VÍNCULOS */}
+      
       {editingTeacher && (
         <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
           <form 
@@ -3230,7 +3230,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </div>
               </div>
 
-              {/* Checkboxes das Turmas */}
+              
               <div className="space-y-1.5 pt-1">
                 <label className="text-[10px] font-bold text-slate-400 uppercase flex items-center justify-between">
                   <span>Turmas Vinculadas</span>
@@ -3307,7 +3307,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         </div>
       )}
 
-      {/* ⚠ MODAL DE CONFIRMAÇÁO DE EXCLUSÁO DE TURMA */}
+      
       {deletingClassroom && (
         <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className={`rounded-3xl max-w-md w-full border p-6 space-y-4 shadow-2xl text-left ${
@@ -3330,7 +3330,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 Você tem certeza que deseja excluir permanentemente a turma <strong className="text-rose-600 font-extrabold">{deletingClassroom.name}</strong> ({deletingClassroom.emoji})? Esta ação não pode ser desfeita.
               </p>
 
-              {/* Warn if there are students in this classroom */}
+              
               {getStudentsInClassroom(deletingClassroom.name).length > 0 ? (
                 <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 text-amber-800 dark:text-amber-300 space-y-1">
                   <span className="font-black text-[10px] uppercase tracking-wider block">⚠ Alunos Alocados Detectados</span>
@@ -3346,7 +3346,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </div>
               )}
 
-              {/* Warn if teacher is assigned */}
+              
               {teachers.some(t => t.salaAula?.split(',').includes(deletingClassroom.name)) && (
                 <div className="p-3.5 rounded-xl bg-sky-50 dark:bg-sky-950/20 border border-sky-100 dark:border-sky-900/40 text-sky-800 dark:text-sky-300">
                   <span className="font-black text-[10px] uppercase tracking-wider block"> 🏫 Vínculo Docente</span>
@@ -3376,7 +3376,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         </div>
       )}
 
-      {/*   MODAL DE PROTOCOLO DE TRIAGEM E ENCAMINHAMENTO PRECOCE */}
+      
       {showStrategicReferralModal && (
         <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className={`rounded-3xl max-w-lg w-full border p-6 space-y-4 shadow-2xl text-left ${
@@ -3448,7 +3448,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         </div>
       )}
 
-      {/* ⚖ MODAL DE PLANO DE GESTÁO DE CONFLITOS E MEDIAÇÁO */}
+      
       {showStrategicConflictModal && (
         <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className={`rounded-3xl max-w-lg w-full border p-6 space-y-4 shadow-2xl text-left ${
@@ -3518,7 +3518,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         </div>
       )}
 
-      {/*   MODAL DE GESTÁO E LANÇAMENTO DE ENCAMINHAMENTOS PEDAGÓGICOS POR TURMA */}
+      
       {showReferralsClassModal && (() => {
         const cleanClassName = showReferralsClassModal.name.replace(/ | |🏫| | | |⭐| /g, '').trim().toLowerCase();
         
@@ -3607,7 +3607,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-800'
             } max-h-[90vh] overflow-y-auto`}>
               
-              {/* Header */}
+              
               <div className="flex items-center justify-between border-b border-slate-100/10 pb-4">
                 <div className="space-y-0.5">
                   <h4 className="text-sm font-black flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
@@ -3630,10 +3630,10 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </button>
               </div>
 
-              {/* Grid Content */}
+              
               <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
                 
-                {/* Left Side: Referrals History List (7 cols) */}
+                
                 <div className="md:col-span-7 space-y-4">
                   <h5 className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
                     Histórico de Encaminhamentos ({classReferrals.length})
@@ -3691,13 +3691,13 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   )}
                 </div>
 
-                {/* Right Side: Launch Referral Form (5 cols) */}
+                
                 <form onSubmit={handleAddReferral} className="md:col-span-5 space-y-4 border-t md:border-t-0 md:border-l border-slate-100/10 pt-4 md:pt-0 md:pl-6 text-left">
                   <h5 className="text-[11px] font-extrabold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
                     Lançar Novo Registro
                   </h5>
 
-                  {/* Student Select */}
+                  
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-black text-slate-400 uppercase">Aluno da Turma</label>
                     <select
@@ -3718,7 +3718,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     </select>
                   </div>
 
-                  {/* Custom Name input if 'custom' is selected */}
+                  
                   {(newReferralForm.studentName === 'custom' || classStudents.length === 0) && (
                     <div className="space-y-1.5 animate-slide-down">
                       <label className="text-[10px] font-black text-slate-400 uppercase">Escreva o Nome do Aluno</label>
@@ -3735,7 +3735,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     </div>
                   )}
 
-                  {/* Type Select */}
+                  
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-black text-slate-400 uppercase">Especialidade / Destino</label>
                     <select
@@ -3753,7 +3753,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     </select>
                   </div>
 
-                  {/* Reason text area */}
+                  
                   <div className="space-y-1.5">
                     <label className="text-[10px] font-black text-slate-400 uppercase">Relato do Motivo / Observação</label>
                     <textarea
@@ -3777,7 +3777,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
               </div>
 
-              {/* Footer */}
+              
               <div className="flex gap-2 items-center justify-end pt-4 border-t border-slate-100/10">
                 <button 
                   type="button"
@@ -3797,7 +3797,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         );
       })()}
 
-      {/*   MODAL FICHA 360º COMPLETA DO ALUNO (DIRETORIA) */}
+      
       {selectedStudent360 && (() => {
         const s = selectedStudent360;
         const foodVal = parseInt(localStorage.getItem(`anjo_almoço_pct_${s.id}`) || (s.id === 'aluno_1' ? '30' : s.id === 'aluno_2' ? '45' : '90'), 10);
@@ -3814,7 +3814,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-800'
             } max-h-[90vh] overflow-y-auto`}>
               
-              {/* Header */}
+              
               <div className="flex items-center justify-between border-b border-slate-100/10 pb-4">
                 <div className="flex items-center gap-3">
                   <img 
@@ -3844,7 +3844,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </button>
               </div>
 
-              {/* 6 Pillars Status Cards */}
+              
               <div className="space-y-2">
                 <h5 className="text-xs font-black uppercase tracking-wider text-indigo-500">
                     Monitoramento dos 6 Pilares de Cuidado Hoje
@@ -3885,7 +3885,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </div>
               </div>
 
-              {/* Parents Contacts & Medical Record */}
+              
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="p-3.5 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-200/50 dark:border-indigo-800/40 space-y-1.5">
                   <h6 className="text-[11px] font-black uppercase text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
@@ -3911,7 +3911,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </div>
               </div>
 
-              {/* Teacher Diary & Director Notes */}
+              
               <div className="space-y-2">
                 <h6 className="text-xs font-black uppercase text-slate-400">  Registro da Professora & Notações da Diretoria</h6>
                 <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700 space-y-2">
@@ -3926,7 +3926,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </div>
               </div>
 
-              {/* Action buttons */}
+              
               <div className="flex gap-2 justify-end pt-3 border-t border-slate-100/10">
                 <button
                   type="button"
@@ -3953,7 +3953,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         );
       })()}
 
-      {/* ✍ MODAL ANOTAR DIRETORIA NO PRONTUÁRIO DO ALUNO COM ENCAMINHAMENTO */}
+      
       {directorNoteModalStudent && (
         <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className={`rounded-3xl max-w-xl w-full border p-6 space-y-4 shadow-2xl text-left max-h-[92vh] overflow-y-auto ${
@@ -4029,7 +4029,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               </div>
             )}
 
-            {/*   SEÇÁO DE DESTINATÁRIOS / CANAIS DE ENCAMINHAMENTO */}
+            
             <div className={`p-3.5 rounded-2xl border space-y-2.5 ${
               isDark ? 'bg-slate-800/60 border-slate-700/80' : 'bg-slate-50/80 border-slate-200/80'
             }`}>
@@ -4041,7 +4041,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {/* 1. Professora da Turma */}
+                
                 <label className={`flex items-start gap-2.5 p-2.5 rounded-xl border cursor-pointer transition-all ${
                   noteNotifyTeacher 
                     ? 'bg-indigo-50/60 border-indigo-200 dark:bg-indigo-950/40 dark:border-indigo-800/60 text-indigo-900 dark:text-indigo-200' 
@@ -4063,7 +4063,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   </div>
                 </label>
 
-                {/* 2. Coordenação Pedagógica */}
+                
                 <label className={`flex items-start gap-2.5 p-2.5 rounded-xl border cursor-pointer transition-all ${
                   noteNotifyCoordination 
                     ? 'bg-purple-50/60 border-purple-200 dark:bg-purple-950/40 dark:border-purple-800/60 text-purple-900 dark:text-purple-200' 
@@ -4085,7 +4085,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   </div>
                 </label>
 
-                {/* 3. Mural da Família */}
+                
                 <label className={`flex items-start gap-2.5 p-2.5 rounded-xl border cursor-pointer transition-all ${
                   noteNotifyFamilyMural 
                     ? 'bg-amber-50/60 border-amber-200 dark:bg-amber-950/40 dark:border-amber-800/60 text-amber-900 dark:text-amber-200' 
@@ -4107,7 +4107,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   </div>
                 </label>
 
-                {/* 4. WhatsApp do Responsável */}
+                
                 <label className={`flex items-start gap-2.5 p-2.5 rounded-xl border cursor-pointer transition-all ${
                   noteCallWhatsApp 
                     ? 'bg-emerald-50/60 border-emerald-200 dark:bg-emerald-950/40 dark:border-emerald-800/60 text-emerald-900 dark:text-emerald-200' 
@@ -4131,7 +4131,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               </div>
             </div>
 
-            {/* BOTÕES DE AÇÁO */}
+            
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 pt-2 border-t border-slate-100/10">
               <button
                 type="button"
@@ -4142,7 +4142,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               </button>
 
               <div className="flex flex-col sm:flex-row gap-2">
-                {/* Botão 1: Salvar Apenas Interno */}
+                
                 <button
                   type="button"
                   onClick={() => {
@@ -4161,7 +4161,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   <Shield className="w-3.5 h-3.5 text-slate-500" /> Salvar Apenas Interno (Sigiloso)
                 </button>
 
-                {/* Botão 2: Salvar e Enviar Notificações */}
+                
                 <button
                   type="button"
                   onClick={() => {
@@ -4284,7 +4284,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         </div>
       )}
 
-      {/*  🏫 MODAL DE CADASTRAR NOVO COLABORADOR / PROFESSOR */}
+      
       {showStaffModal && (
         <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
           <form 
@@ -4314,7 +4314,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
             <div className="space-y-3.5 text-xs font-semibold">
               
-              {/* Cargo / Perfil */}
+              
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-400 uppercase">Função / Cargo</label>
                 <select
@@ -4332,7 +4332,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </select>
               </div>
 
-              {/* Nome */}
+              
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-400 uppercase">Nome Completo</label>
                 <input
@@ -4347,7 +4347,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 />
               </div>
 
-              {/* Telefone, Email & PIN */}
+              
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold text-slate-400 uppercase">WhatsApp / Telefone</label>
@@ -4393,7 +4393,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </div>
               </div>
 
-              {/* Turmas Vinculadas */}
+              
               <div className="space-y-1.5">
                 <label className="text-[10px] font-bold text-slate-400 uppercase">Vincular Turmas de Atuação</label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-2.5 rounded-xl border border-slate-200/60 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40">
@@ -4419,7 +4419,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 <p className="text-[10px] text-slate-400">Pode selecionar múltiplas salas para professores volantes ou coordenadores.</p>
               </div>
 
-              {/* Observações */}
+              
               <div className="space-y-1">
                 <label className="text-[10px] font-bold text-slate-400 uppercase">Observações & Especialidades</label>
                 <textarea
@@ -4454,7 +4454,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         </div>
       )}
 
-      {/*   MODAL DE CONVIDAR EQUIPE / PROFESSOR VIA WHATSAPP */}
+      
       {showInviteStaffModal && (
         <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className={`rounded-3xl max-w-md w-full border p-6 space-y-4 shadow-2xl text-left ${

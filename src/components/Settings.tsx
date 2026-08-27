@@ -479,7 +479,7 @@ export default function SettingsPage({
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      
       <div>
         <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
           <Settings className="w-6 h-6 text-serene-blue" />
@@ -496,10 +496,10 @@ export default function SettingsPage({
         </div>
       )}
 
-      {/* Grid panels */}
+      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
-        {/* PANEL: MEU PERFIL DE USUÁRIO */}
+        
         <div className="bg-gradient-to-br from-indigo-900 to-slate-900 text-white rounded-2xl border p-5 border-indigo-800/80 space-y-4 shadow-md md:col-span-2">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3.5">
@@ -541,14 +541,14 @@ export default function SettingsPage({
           </div>
         </div>
 
-        {/* PANEL: ACCESSIBILITY PREFERENCES */}
+        
         <div className="bg-white rounded-2xl border p-5 border-soft-gray space-y-4">
           <h3 className="text-base font-bold text-slate-850 flex items-center gap-1.5 border-b pb-2">
             <Sliders className="w-4.5 h-4.5 text-serene-blue" />
             Preferências de Visualização (Acessibilidade)
           </h3>
 
-          {/* Sise trigger */}
+          
           <div className="space-y-2">
             <span className="text-xs font-bold text-slate-500 block">Tamanho das Fontes de Texto:</span>
             <div className="grid grid-cols-3 gap-2">
@@ -576,7 +576,7 @@ export default function SettingsPage({
             <p className="text-[10px] text-slate-400">Selecionar "Aa Gigante" ajuda leitores seniores a lerem tarefas sem óculos.</p>
           </div>
 
-          {/* Simple toggle mode */}
+          
           <div className="space-y-2 pt-2">
             <span className="text-xs font-bold text-slate-500 block">Modo de Interface:</span>
             <label className="flex items-center gap-3 p-3 bg-amber-50/50 border border-amber-200 rounded-xl cursor-pointer hover:bg-amber-100/35 transition-colors">
@@ -593,7 +593,7 @@ export default function SettingsPage({
             </label>
           </div>
 
-          {/* Dark Mode toggle */}
+          
           <div className="space-y-2 pt-2 border-t border-slate-100">
             <span className="text-xs font-bold text-slate-500 block">Cor da Interface (Tema):</span>
             <label className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors border border-slate-205">
@@ -612,7 +612,7 @@ export default function SettingsPage({
             </label>
           </div>
 
-          {/* Presentation Mode toggle */}
+          
           <div className="space-y-2 pt-2 border-t border-slate-100">
             <span className="text-xs font-bold text-slate-500 block">Modo de Apresentação (Apenas o App Limpo):</span>
             <label className="flex items-center gap-3 p-3 bg-indigo-50/45 rounded-xl cursor-pointer hover:bg-indigo-100/30 transition-colors border border-indigo-150">
@@ -632,7 +632,7 @@ export default function SettingsPage({
           </div>
         </div>
 
-        {/* PANEL: SECURITY PIN MANAGEMENT */}
+        
         {isAdminOrCaregiver && (
           <div className="bg-white rounded-2xl border p-5 border-soft-gray space-y-4 shadow-2xs" id="pin-admin-management">
             <h3 className="text-base font-bold text-slate-850 flex items-center gap-1.5 border-b pb-2">
@@ -695,7 +695,7 @@ export default function SettingsPage({
           </div>
         )}
 
-        {/* PANEL: SELECT SIMULATED IDOSO & USER ROLES */}
+        
         {!modoApresentacao && usuarioAtual?.tipo !== 'familiar' && (
           <div className="bg-white rounded-2xl border p-5 border-soft-gray space-y-4">
             <h3 className="text-base font-bold text-slate-850 flex items-center gap-1.5 border-b pb-2">
@@ -703,7 +703,7 @@ export default function SettingsPage({
               Vias de Teste da Simulação
             </h3>
 
-          {/* Switch elder */}
+          
           <div className="space-y-2">
             <span className="text-xs font-bold text-slate-500 block">
               {localStorage.getItem('anjo_app_mode') && localStorage.getItem('anjo_app_mode')!.startsWith('escolar') ? 'Simular cuidado do Aluno:' : 'Simular cuidado do Idoso:'}
@@ -741,12 +741,12 @@ export default function SettingsPage({
             </p>
           </div>
 
-          {/* Switch active simulated caregiver */}
+          
           <div className="space-y-2 pt-1 border-t border-slate-100">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
               <span className="text-xs font-bold text-slate-500 block">Simular usuário conectado (Permissões):</span>
               
-              {/* Quick user search input */}
+              
               <div className="relative flex items-center max-w-xs w-full">
                 <Search className="w-3.5 h-3.5 absolute left-2.5 text-slate-400 pointer-events-none" />
                 <input
@@ -816,7 +816,7 @@ export default function SettingsPage({
         </div>
         )}
 
-        {/*   PANEL: RESTRICTED CONTROLS NOTICE FOR NON-ADMINS */}
+        
         {!isAdminOrCaregiver && (
           <div className="bg-slate-50 rounded-2xl border p-6 border-slate-200 md:col-span-2 flex flex-col items-center text-center space-y-3 animate-fade-in" id="restricted-controls-notice">
             <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center text-amber-600 border border-amber-200">
@@ -834,7 +834,7 @@ export default function SettingsPage({
           </div>
         )}
 
-        {/* PANEL: RESET DE DADOS PARA INICIAR TESTES REAIS */}
+        
         {isAdminOrCaregiver && !modoApresentacao && (
           <div className="bg-white rounded-2xl border p-5 border-soft-gray space-y-4 flex flex-col justify-between animate-fade-in" id="test-sandbox-reset">
             <div>
@@ -880,7 +880,7 @@ export default function SettingsPage({
           </div>
         )}
 
-        {/* PANEL: DYNAMIC EDIT OF THE ACTIVE IDOSO'S CLINICAL DETAILS */}
+        
         {isAdminOrCaregiver && (
           <div className="bg-white rounded-2xl border p-5 border-soft-gray md:col-span-2 space-y-4">
           <div className="flex justify-between items-center border-b pb-2">
@@ -938,7 +938,7 @@ export default function SettingsPage({
                 />
               </div>
 
-              {/* Foto do idoso */}
+              
               <div className="space-y-1 md:col-span-2 border-b border-dashed border-slate-200 pb-3">
                 <label className="text-xs font-bold text-slate-700 block">
                   Foto de Identificação do {localStorage.getItem('anjo_app_mode') && localStorage.getItem('anjo_app_mode')!.startsWith('escolar') ? 'Aluno' : 'Idoso'}
@@ -1144,7 +1144,7 @@ export default function SettingsPage({
           </div>
         )}
 
-        {/*   PANEL: LGPD GOVERNANCE, CONSENTS & DIGITAL AUDITATION */}
+        
         {isAdminOrCaregiver && (
           <div className="bg-white rounded-2xl border p-5 border-soft-gray md:col-span-2 space-y-6" id="lgpd-governance-panel">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-3 gap-2" id="lgpd-gov-header">
@@ -1171,7 +1171,7 @@ export default function SettingsPage({
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6" id="lgpd-gov-body-grid">
             
-            {/* COLUMN 1: ACTIVE AUTHORIZATIONS LIST (5 cols) */}
+            
             <div className="lg:col-span-5 bg-slate-50/60 border border-slate-200/80 rounded-2xl p-4.5 space-y-4" id="lgpd-active-authorizations-section">
               <span className="text-xs font-black text-slate-500 uppercase tracking-widest block">
                   Autorizações em Vigor
@@ -1231,7 +1231,7 @@ export default function SettingsPage({
               </div>
             </div>
 
-            {/* COLUMN 2: AUDIT LOG LEDGER (7 cols) */}
+            
             <div className="lg:col-span-7 space-y-4" id="lgpd-audit-log-section">
               <div className="flex justify-between items-center" id="lgpd-audit-title-row">
                 <span className="text-xs font-black text-slate-500 uppercase tracking-widest block">
@@ -1293,9 +1293,7 @@ export default function SettingsPage({
               </div>
             </div>
 
-            {/* ==========================================================================
-                  SEÇÁO DE PROPRIEDADE INTELECTUAL, DIREITOS AUTORAIS & ANTI-PLÁGIO
-                ========================================================================== */}
+            
             <div className="bg-white border-2 border-indigo-200 rounded-3xl p-6 space-y-5 shadow-xs" id="intellectual-property-security-section">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-150 pb-4">
                 <div className="flex items-center gap-3">
@@ -1325,7 +1323,7 @@ export default function SettingsPage({
                 </div>
               </div>
 
-              {/* Informações Oficiais de Titularidade */}
+              
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                 <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
                   <div className="flex items-center gap-1.5 text-slate-700 font-bold">
@@ -1351,7 +1349,7 @@ export default function SettingsPage({
                 </div>
               </div>
 
-              {/* Controles de Proteção Ativa */}
+              
               <div className="p-4 bg-amber-50/50 border border-amber-200 rounded-2xl space-y-3">
                 <div className="flex items-center justify-between gap-4">
                   <div className="space-y-0.5">
@@ -1376,7 +1374,7 @@ export default function SettingsPage({
                 </div>
               </div>
 
-              {/* Aviso Legal de Proibição de Engenharia Reversa */}
+              
               <div className="p-3.5 bg-slate-900 text-slate-200 rounded-2xl text-[10px] leading-relaxed space-y-1 font-mono">
                 <p className="text-amber-400 font-bold uppercase tracking-wider">
                   ⚠ AVISO LEGAL DE DIREITOS RESERVADOS
@@ -1393,7 +1391,7 @@ export default function SettingsPage({
 
       </div>
 
-      {/*   CONFIRMAR TROCA DE PERFIL COM PIN DE SEGURANÇA */}
+      
       {switchingUser && (
         <div className="fixed inset-0 bg-slate-905 bg-opacity-65 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in" id="confirm-switch-user-pin-modal">
           <div className="bg-white rounded-3xl border border-slate-200 p-6 max-w-sm w-full shadow-2xl space-y-4">

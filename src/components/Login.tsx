@@ -438,7 +438,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
   return (
     <div className={`min-h-screen ${accessibility?.darkMode ? 'bg-[#0f172a] text-slate-100 dark-mode' : 'bg-cozy-cream text-slate-800'} flex flex-col items-center justify-start sm:justify-center pt-6 pb-24 px-4 sm:p-6 relative font-sans overflow-y-auto`}>
       
-      {/* Visual Comfort / Dark Mode toggle fixed in top-right of screen */}
+      
       {onUpdateAccessibility && accessibility && (
         <div className="fixed top-4 right-4 z-50">
           <button
@@ -469,13 +469,13 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
         </div>
       )}
 
-      {/* Decorative vector overlays */}
+      
       <div className="absolute top-0 right-0 w-64 h-64 bg-serene-blue/5 rounded-full blur-3xl text-slate-100"></div>
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-care-green/5 rounded-full blur-3xl text-slate-100"></div>
 
       <div className={`max-w-xl w-full ${accessibility?.darkMode ? 'bg-slate-900 border-slate-800 shadow-2xl shadow-black/50' : 'bg-white border-soft-gray shadow-xl'} rounded-3xl border p-4 sm:p-8 space-y-5 md:space-y-6 relative z-10 my-4 sm:my-auto`}>
         
-        {/* Beautiful protective Wing / Hands supportive Logo */}
+        
         <div className="flex flex-col items-center space-y-2 text-center">
           <div className="w-44 h-44 bg-white rounded-3xl overflow-hidden flex items-center justify-center shadow-lg border border-slate-100 relative group transform hover:scale-105 transition-all p-2">
             <img src="/logo.png?v=15" alt="Anjo Cuidador Logo" className="w-full h-full object-contain transform scale-[1.45] rounded-2xl" referrerPolicy="no-referrer" />
@@ -498,7 +498,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
           </div>
         </div>
 
-        {/* Option B Strategy Tab Selector */}
+        
         {!registeredSuccess && (
           <div className="flex bg-slate-100/80 p-1 rounded-2xl gap-1">
             <button
@@ -532,7 +532,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
           </div>
         )}
 
-        {/* 1. TRIAL ONBOARDING FORM SUCCESS MODE */}
+        
         {registeredSuccess ? (
           <div className="space-y-5 py-2 animate-fade-in text-left">
             <div className="p-4 bg-emerald-50/75 border border-emerald-200 rounded-2xl flex items-start gap-3">
@@ -550,7 +550,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
               </div>
             </div>
 
-            {/* Trial Profile Setup Confirmation Details Card */}
+            
             <div className="border border-slate-150 rounded-2xl p-4 space-y-3 bg-slate-50/50">
               <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 block">Informações da Conta de Teste</span>
               
@@ -599,7 +599,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
           /* 2. TRIAL ONBOARDING FORM VIEW */
           <form onSubmit={handleTrialSubmit} className="space-y-4 animate-fade-in text-left">
             
-            {/* Visual Header Guide of 30-day Trial Activation */}
+            
             <div className={`p-3 rounded-2xl border ${accessibility?.darkMode ? 'bg-emerald-950/20 border-emerald-900/50 text-emerald-300' : 'bg-emerald-50/40 border-emerald-100 text-emerald-800'} flex items-center gap-2`}>
               <span className="text-xs"> </span>
               <p className="text-[11px] font-bold leading-normal">
@@ -607,7 +607,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
               </p>
             </div>
 
-            {/* Selected mode visual toggles */}
+            
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <button
                 type="button"
@@ -637,7 +637,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
               </button>
             </div>
 
-            {/* Interactive Inputs */}
+            
             <div className="space-y-3">
               <div>
                 <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Seu Nome Completo (Administrador/Tutor)</label>
@@ -753,7 +753,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
               </div>
             </div>
 
-            {/* Compliance LGPD Consent Form Block directly on Landing */}
+            
             <div className={`p-4.5 rounded-2xl border ${accessibility?.darkMode ? 'bg-slate-850 border-slate-750' : 'bg-slate-50 border-slate-200/80'} space-y-3`}>
               <div className={`flex items-center gap-1.5 ${accessibility?.darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
                 <Shield className="w-4 h-4 text-emerald-600" />
@@ -816,7 +816,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
           /* 3. SIMULATOR ACCESS LOGIN TAB (Original Chooser) */
           <form onSubmit={handleBypassSubmit} className={`space-y-6 pt-2 border-t ${accessibility?.darkMode ? 'border-slate-800' : 'border-slate-100'} text-left`}>
             
-            {/* 🏫 PENDING CLASSROOM SECURITY ALERT BANNER */}
+            
             {pendingClassroom && (
               <div className="p-4 bg-indigo-50 dark:bg-indigo-950/70 border-2 border-indigo-500/50 rounded-2xl flex items-start justify-between gap-3 text-indigo-900 dark:text-indigo-100 shadow-md animate-fade-in">
                 <div className="flex items-start gap-3">
@@ -856,14 +856,14 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                 Selecione o Modo e um dos Perfis Simulados para Entrar:
               </label>
               
-              {/* Connection Status Monitor */}
+              
               <div className={`text-[10px] text-center font-black uppercase tracking-widest p-1 rounded-md ${
                 connectionStatus === 'Conectado' ? 'text-emerald-600 bg-emerald-50' : 'text-amber-600 bg-amber-50'
               }`}>
                 Estado: {connectionStatus}
               </div>
 
-              {/* Mode toggle bar right in the login tab for instant toggling! */}
+              
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div className="bg-slate-100/80 dark:bg-slate-800/80 p-1 rounded-xl flex gap-1 w-full max-w-xs mx-auto sm:mx-0">
                   <button
@@ -901,7 +901,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                 </span>
               </div>
 
-              {/*   BUSCA RÁPIDA DE PROFISSIONAL / PERFIL POR NOME */}
+              
               <div className="space-y-2 pt-1">
                 <div className="relative flex items-center">
                   <Search className={`w-4 h-4 absolute left-3.5 pointer-events-none transition-colors ${
@@ -940,7 +940,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                   </div>
                 </div>
 
-                {/* Category Filter Chips */}
+                
                 <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-[10px]">
                   <button
                     type="button"
@@ -1022,7 +1022,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                 </div>
               </div>
               
-              {/* Profile grid items with embedded PIN & Confirmation under photo */}
+              
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-start">
                 {(() => {
                   const matchingUsers = dbUsers.filter(user => {
@@ -1191,7 +1191,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                               : 'bg-slate-50 border-slate-200 hover:bg-slate-100 hover:border-slate-300 text-slate-800 cursor-pointer')
                       }`}
                     >
-                      {/* Top profile header info */}
+                      
                       <div className="flex items-center justify-between gap-2.5">
                         <div className="flex items-center gap-3 min-w-0">
                           <img referrerPolicy="no-referrer" src={user.foto} alt={user.nome} className="w-10 h-10 rounded-full object-cover shadow-xs border border-white/40 shrink-0" />
@@ -1207,7 +1207,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                         )}
                       </div>
 
-                      {/* Embedded PIN Input & Confirmation Button directly under selected profile photo */}
+                      
                       {active && (
                         <div className="mt-3 pt-3 border-t border-indigo-200/60 dark:border-indigo-800/60 space-y-2.5 animate-fade-in" onClick={e => e.stopPropagation()}>
                           <div className="flex justify-between items-center flex-wrap gap-1">
@@ -1235,7 +1235,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                             autoFocus
                           />
 
-                          {/* Interactive PIN Pad for easy touch/mouse entry */}
+                          
                           <div className="grid grid-cols-3 gap-1.5 pt-1 max-w-[220px] mx-auto">
                             {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map(num => (
                               <button
@@ -1328,7 +1328,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
           </form>
         )}
 
-        {/* Bottom medical guidelines note block */}
+        
         <div className={`p-3.5 ${accessibility?.darkMode ? 'bg-indigo-950/20 border-indigo-900/50 text-indigo-300' : 'bg-indigo-50 border-indigo-200 text-indigo-800'} rounded-xl text-[10px] text-center leading-relaxed`}>
             <strong>Nota Importante:</strong> O aplicativo {selectedMode.startsWith('escolar') ? 'Anjinho Escolar' : 'Anjo Cuidador'} foi desenvolvido de forma estrita em total concord com as diretrizes de proteção e privacidade da <strong>LGPD (Lei nº 13.709/2018)</strong> brasileira.
         </div>

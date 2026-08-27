@@ -1543,7 +1543,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
 
   return (
     <>
-      {/* Floating Action Button (FAB) - Permanent on bottom right */}
+      
       <div className="fixed bottom-6 right-6 z-40 animate-bounce-subtle">
         <button
           type="button"
@@ -1566,12 +1566,12 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         </button>
       </div>
 
-      {/* Main Fullsheet / Modal Interface */}
+      
       {isOpen && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 animate-fade-in">
           <div className="bg-white w-full sm:max-w-lg sm:rounded-3xl rounded-t-3xl shadow-2xl border border-slate-100 flex flex-col max-h-[92vh] overflow-hidden text-left relative animate-slide-up">
             
-            {/* Header */}
+            
             <div className="p-4 sm:p-5 bg-gradient-to-r from-slate-900 via-emerald-950 to-teal-950 text-white flex items-center justify-between shrink-0 border-b border-emerald-800/40">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 bg-emerald-500/20 text-emerald-300 rounded-2xl border border-emerald-400/30">
@@ -1603,17 +1603,17 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
               </button>
             </div>
 
-            {/* Notification Toast Banner */}
+            
             {saveSuccessMsg && (
               <div className="bg-emerald-500 text-white text-xs font-bold px-4 py-3 text-center flex items-center justify-center gap-2 animate-fade-in shadow-inner">
                 <Check className="w-4 h-4 stroke-[3]" /> {saveSuccessMsg}
               </div>
             )}
 
-            {/* Content Area */}
+            
             <div className="p-5 overflow-y-auto space-y-4">
 
-              {/* Class / Shift Timer Status Indicator */}
+              
               {!isShiftActive ? (
                 <div className="p-3.5 bg-amber-50 border-2 border-amber-300/80 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-950">
                   <div className="flex items-center gap-2.5">
@@ -1647,10 +1647,10 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                 </div>
               )}
 
-              {/* HUB VIEW - Fast Action Launcher */}
+              
               {activeTab === 'hub' && (
                 <div className="space-y-4">
-                  {/* HERO BANNER 1: Aura Roteiro Guiado Completo para os Pais */}
+                  
                   <div className="p-4 bg-gradient-to-br from-indigo-900 via-teal-950 to-slate-900 text-white border-2 border-emerald-400/50 rounded-2xl relative overflow-hidden space-y-3 shadow-lg">
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-2.5">
@@ -1680,7 +1680,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                     </button>
                   </div>
 
-                  {/* HERO BANNER 2: Aura Intelligent Voice Multi-Record */}
+                  
                   <div className="p-3.5 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 border border-emerald-200 rounded-2xl relative overflow-hidden space-y-2">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
@@ -1710,7 +1710,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                     Ou selecione a categoria para registrar em 1 toque:
                   </p>
 
-                  {/* Grid of 1-Touch Categories */}
+                  
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                     <button
                       type="button"
@@ -1811,7 +1811,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                 </div>
               )}
 
-              {/* ROTEIRO GUIADO DA AURA (Diário Completo 6 Pilares) */}
+              
               {activeTab === 'roteiro_guiado' && (
                 <div className="space-y-5 animate-fade-in">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">
@@ -1832,7 +1832,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                     </button>
                   </div>
 
-                  {/* Banner explicativo */}
+                  
                   <div className="p-3 bg-emerald-50/80 border border-emerald-200 rounded-2xl flex items-start gap-2.5 text-emerald-950 text-xs">
                     <span className="text-base shrink-0">✨</span>
                     <p className="leading-relaxed">
@@ -1840,7 +1840,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                     </p>
                   </div>
 
-                  {/* Botões de Seleção Rápida */}
+                  
                   <div className="flex flex-wrap items-center gap-1.5 p-2 bg-slate-100/80 rounded-2xl border border-slate-200">
                     <span className="text-[10px] font-bold text-slate-500 uppercase px-1">Filtro rápido:</span>
                     <button
@@ -1880,7 +1880,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                     </button>
                   </div>
 
-                  {/* Atalho por voz no topo do roteiro */}
+                  
                   <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-[11px] font-black uppercase text-slate-500 flex items-center gap-1.5">
@@ -1899,7 +1899,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                     </p>
                   </div>
 
-                  {/* PILAR 1: SONO & SONECA */}
+                  
                   <div className={`p-3.5 rounded-2xl space-y-2 border transition-all ${
                     guidedState.incSono ? 'bg-indigo-50/50 border-indigo-200' : 'bg-slate-50/60 border-slate-200 opacity-60'
                   }`}>
@@ -1952,7 +1952,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                     )}
                   </div>
 
-                  {/* PILAR 2: HIGIENE & FRALDA */}
+                  
                   <div className={`p-3.5 rounded-2xl space-y-2 border transition-all ${
                     guidedState.incHigiene ? 'bg-purple-50/50 border-purple-200' : 'bg-slate-50/60 border-slate-200 opacity-60'
                   }`}>
@@ -2049,7 +2049,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                     )}
                   </div>
 
-                  {/* PILAR 3: HUMOR */}
+                  
                   <div className={`p-3.5 rounded-2xl space-y-2 border transition-all ${
                     guidedState.incHumor ? 'bg-rose-50/50 border-rose-200' : 'bg-slate-50/60 border-slate-200 opacity-60'
                   }`}>
@@ -2096,7 +2096,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                     )}
                   </div>
 
-                  {/* PILAR 4: ALIMENTAÇÁO */}
+                  
                   <div className={`p-3.5 rounded-2xl space-y-2 border transition-all ${
                     guidedState.incAlimentacao ? 'bg-amber-50/50 border-amber-200' : 'bg-slate-50/60 border-slate-200 opacity-60'
                   }`}>
@@ -2170,7 +2170,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                     )}
                   </div>
 
-                  {/* PILAR 5: HIDRATAÇÁO */}
+                  
                   <div className={`p-3.5 rounded-2xl space-y-2 border transition-all ${
                     guidedState.incAgua ? 'bg-cyan-50/50 border-cyan-200' : 'bg-slate-50/60 border-slate-200 opacity-60'
                   }`}>
@@ -2212,7 +2212,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                     )}
                   </div>
 
-                  {/* PILAR 6: SAÚDE, TEMPERATURA & PESO */}
+                  
                   <div className={`p-3.5 rounded-2xl space-y-3 border transition-all ${
                     guidedState.incSaude ? 'bg-red-50/50 border-red-200' : 'bg-slate-50/60 border-slate-200 opacity-60'
                   }`}>
@@ -2286,7 +2286,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                     )}
                   </div>
 
-                  {/* RESUMO PREVIEW CARD ANTES DE ENVIAR AOS PAIS */}
+                  
                   <div className="p-4 bg-gradient-to-br from-emerald-950 via-teal-950 to-slate-900 text-white border-2 border-emerald-400/60 rounded-2xl space-y-3 shadow-xl">
                     <div className="flex items-center justify-between border-b border-emerald-800/60 pb-2">
                       <span className="text-[10px] font-black uppercase tracking-widest text-emerald-300">
@@ -2353,7 +2353,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                 </div>
               )}
 
-              {/* 1. AURA VOICE MULTI-RECORD TAB */}
+              
               {activeTab === 'aura_voice' && (
                 <div className="space-y-4 animate-fade-in">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -2408,7 +2408,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                     )}
                   </button>
 
-                  {/* Aura Parsed Results Review Card */}
+                  
                   {parsedData && (
                     <div className="p-4 bg-emerald-50/90 border-2 border-emerald-200 rounded-2xl space-y-3 animate-slide-up">
                       <div className="flex items-start gap-2.5">
@@ -2516,7 +2516,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                 </div>
               )}
 
-              {/* 2. AGUA TAB */}
+              
               {activeTab === 'agua' && (
                 <div className="space-y-4 animate-fade-in">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -2548,7 +2548,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                 </div>
               )}
 
-              {/* 3. REFEICAO TAB */}
+              
               {activeTab === 'refeicao' && (
                 <div className="space-y-4 animate-fade-in">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -2612,7 +2612,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                 </div>
               )}
 
-              {/* 4. HIGIENE TAB */}
+              
               {activeTab === 'higiene' && (
                 <div className="space-y-4 animate-fade-in">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -2675,7 +2675,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                 </div>
               )}
 
-              {/* 5. SONO TAB */}
+              
               {activeTab === 'sono' && (
                 <div className="space-y-4 animate-fade-in">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -2705,7 +2705,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                 </div>
               )}
 
-              {/* 6. HUMOR TAB */}
+              
               {activeTab === 'humor' && (
                 <div className="space-y-4 animate-fade-in">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -2739,7 +2739,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                 </div>
               )}
 
-              {/* 7. SAUDE / TEMPERATURA / PESO TAB */}
+              
               {activeTab === 'saude' && (
                 <div className="space-y-4 animate-fade-in">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -2806,7 +2806,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                 </div>
               )}
 
-              {/* 8. ATIVIDADE TAB */}
+              
               {activeTab === 'atividade' && (
                 <div className="space-y-4 animate-fade-in">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -2839,7 +2839,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                 </div>
               )}
 
-              {/* 9. NOTA TAB */}
+              
               {activeTab === 'nota' && (
                 <div className="space-y-4 animate-fade-in">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-2">
@@ -2870,7 +2870,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                 </div>
               )}
 
-              {/* 10. INTERCORRÊNCIA TAB */}
+              
               {activeTab === 'intercorrencia' && (
                 <div className="space-y-4 animate-fade-in">
                   <div className="flex items-center justify-between border-b border-red-100 pb-2">
@@ -2934,7 +2934,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                 </div>
               )}
 
-              {/* 11. OCORRÊNCIA TAB */}
+              
               {activeTab === 'ocorrencia' && (
                 <div className="space-y-4 animate-fade-in">
                   <div className="flex items-center justify-between border-b border-amber-100 pb-2">
@@ -3004,7 +3004,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         </div>
       )}
 
-      {/* Modal de Confirmação para Ativar Cronômetro */}
+      
       {showShiftConfirmModal && (
         <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-[100] flex items-center justify-center p-4 animate-fade-in">
           <div className="bg-white w-full max-w-sm rounded-3xl shadow-2xl border border-slate-100 overflow-hidden relative p-6 space-y-4 text-left animate-scale-up">

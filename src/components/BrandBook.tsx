@@ -122,7 +122,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
   return (
     <div className="space-y-8 animate-fade-in pb-16">
       
-      {/* HEADER HERO BANNER */}
+      
       <div className="bg-gradient-to-br from-indigo-950 via-[#1F1A44] to-[#120F2D] rounded-3xl p-6 sm:p-10 border border-indigo-900 text-white relative overflow-hidden shadow-xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-amber-400/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none"></div>
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none"></div>
@@ -160,10 +160,10 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
         </div>
       </div>
 
-      {/* CORE LAYOUT WITH CHAPTER SELECTOR SIDEBAR & MAIN CARD */}
+      
       <div id="nav-chapters" className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         
-        {/* SIDEBAR NAVIGATION */}
+        
         <div className="lg:col-span-4 bg-[#FFFDF6] border border-amber-250/65 rounded-3xl p-5 shadow-sm space-y-4">
           <div className="border-b border-amber-200/50 pb-3">
             <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wider flex items-center gap-2">
@@ -208,11 +208,11 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
           </div>
         </div>
 
-        {/* MAIN INTERACTIVE CHAPTER CONTENT CARD */}
+        
         <div className="lg:col-span-8 bg-[#FFFDF6] border border-amber-250/65 rounded-3xl p-6 sm:p-8 shadow-sm relative min-h-[500px]">
           <AnimatePresence mode="wait">
             
-            {/* CHAPTER: INTRO */}
+            
             {activeChapter === 'intro' && (
               <motion.div
                 key="intro"
@@ -265,7 +265,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
               </motion.div>
             )}
 
-            {/* CHAPTER: PROPOSITO */}
+            
             {activeChapter === 'propósito' && (
               <motion.div
                 key="propósito"
@@ -284,7 +284,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                 <div className="space-y-6 text-xs sm:text-sm text-slate-800 leading-relaxed font-semibold">
                   
-                  {/* O PROPÓSITO SECTION */}
+                  
                   <div className="space-y-2 bg-rose-50/30 p-5 rounded-3xl border border-rose-100">
                     <h3 className="text-base font-black text-rose-950 flex items-center gap-1.5 font-display">
                       <Heart className="w-5 h-5 text-rose-500 fill-rose-500/10" /> Nosso Propósito (A Causa)
@@ -297,7 +297,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     </p>
                   </div>
 
-                  {/* A MISSÁO SECTION */}
+                  
                   <div className="space-y-2 bg-emerald-50/30 p-5 rounded-3xl border border-emerald-100">
                     <h3 className="text-base font-black text-emerald-950 flex items-center gap-1.5 font-display">
                       <Award className="w-5 h-5 text-emerald-600" /> Nossa Missão (O Meio)
@@ -310,7 +310,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     </p>
                   </div>
 
-                  {/* QUOTE STAMP */}
+                  
                   <div className="text-center py-4 border-t border-amber-250/20">
                     <p className="text-xs font-black text-indigo-900 uppercase tracking-widest">"Cuidar de quem cuida. Narrar para quem ama."</p>
                   </div>
@@ -318,7 +318,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
               </motion.div>
             )}
 
-            {/* CHAPTER: POSICIONAMENTO */}
+            
             {activeChapter === 'posicionamento' && (
               <motion.div
                 key="posicionamento"
@@ -382,7 +382,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
               </motion.div>
             )}
 
-            {/* CHAPTER: PERSONALIDADE */}
+            
             {activeChapter === 'personalidade' && (
               <motion.div
                 key="personalidade"
@@ -408,7 +408,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     
-                    {/* TRAÇO 1 */}
+                    
                     <div className="p-4 rounded-2xl border border-amber-200 bg-white space-y-2">
                       <div className="flex items-center gap-2">
                         <span className="text-lg"> </span>
@@ -419,7 +419,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       </p>
                     </div>
 
-                    {/* TRAÇO 2 */}
+                    
                     <div className="p-4 rounded-2xl border border-amber-200 bg-white space-y-2">
                       <div className="flex items-center gap-2">
                         <span className="text-lg"> </span>
@@ -430,7 +430,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       </p>
                     </div>
 
-                    {/* TRAÇO 3 */}
+                    
                     <div className="p-4 rounded-2xl border border-amber-200 bg-white space-y-2">
                       <div className="flex items-center gap-2">
                         <span className="text-lg">🏫</span>
@@ -441,7 +441,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       </p>
                     </div>
 
-                    {/* TRAÇO 4 */}
+                    
                     <div className="p-4 rounded-2xl border border-amber-200 bg-white space-y-2">
                       <div className="flex items-center gap-2">
                         <span className="text-lg"> </span>
@@ -457,7 +457,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
               </motion.div>
             )}
 
-            {/* CHAPTER: LINGUAGEM */}
+            
             {activeChapter === 'linguagem' && (
               <motion.div
                 key="linguagem"
@@ -479,7 +479,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     Nossa linguagem é uma ponte afetiva. Ela traduz ações diárias em contos curtos de afeto, valorizando cada esforço pedagógico das escolas e tranquilizando o coração das famílias.
                   </p>
 
-                  {/* INTERACTIVE BRAND VOICE SIMULATOR */}
+                  
                   <div className="bg-indigo-950 text-white rounded-3xl p-5 border border-indigo-900 space-y-4">
                     <div className="flex items-center justify-between border-b border-indigo-805 pb-2">
                       <h4 className="text-xs font-black text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
@@ -539,7 +539,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     </div>
                   </div>
 
-                  {/* DO'S & DONT'S CARD */}
+                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-amber-250/20">
                     <div className="bg-white border border-red-200 rounded-2xl p-4 space-y-2">
                       <h4 className="text-xs font-black text-red-900 flex items-center gap-1.5">
@@ -570,7 +570,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
               </motion.div>
             )}
 
-            {/* CHAPTER: BRAND-004 */}
+            
             {activeChapter === 'brand_004' && (
               <motion.div
                 key="brand_004"
@@ -600,7 +600,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                   </p>
                 </div>
 
-                {/* O JEITO DE FALAR */}
+                
                 <div className="space-y-3">
                   <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wider">O jeito de falar do Anjinho Escolar</h3>
                   <p className="text-xs text-slate-600 font-semibold">O Anjinho Escolar fala como uma escola que acolhe. Nunca como uma empresa tentando vender.</p>
@@ -628,7 +628,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                   </div>
                 </div>
 
-                {/* COMO ESCREVEMOS */}
+                
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wider">Como escrevemos</h3>
@@ -662,7 +662,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                   </div>
                 </div>
 
-                {/* PALAVRAS DA IDENTIDADE */}
+                
                 <div className="space-y-3">
                   <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wider">Palavras que fazem parte da nossa identidade</h3>
                   <p className="text-xs text-slate-600 font-semibold">Estas palavras reforçam o posicionamento e devem aparecer naturalmente ao longo de relatórios, relatórios assistidos por voz e comunicações:</p>
@@ -695,7 +695,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                   </div>
                 </div>
 
-                {/* EXPRESSÕES QUE REPRESENTAM A MARCA */}
+                
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wider">Expressões que representam a marca</h3>
@@ -728,7 +728,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                   </div>
                 </div>
 
-                {/* PALAVRAS QUE EVITAMOS */}
+                
                 <div className="space-y-3 bg-rose-50/15 border border-rose-250/50 p-5 rounded-2xl">
                   <h3 className="text-xs font-black text-rose-950 uppercase tracking-wider flex items-center gap-1">
                       Palavras que evitamos a todo custo
@@ -776,7 +776,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                   </div>
                 </div>
 
-                {/* COMO FALAMOS SOBRE OS TEMAS CHAVE */}
+                
                 <div className="space-y-3">
                   <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wider">Como tratamos temas-chave</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -801,7 +801,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                   </div>
                 </div>
 
-                {/* ANTES DE PUBLICAR: PLAYGROUND INTERATIVO E FILTRO */}
+                
                 <div className="border-t border-slate-200/50 pt-6 space-y-4">
                   <div className="bg-gradient-to-tr from-indigo-900 to-[#120F2D] p-5 sm:p-6 rounded-3xl border border-indigo-850 text-white relative overflow-hidden">
                     <div className="absolute right-0 top-0 w-48 h-48 bg-indigo-500/10 rounded-full blur-2xl"></div>
@@ -851,7 +851,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                         </div>
                       </div>
 
-                      {/* SCORE CARD */}
+                      
                       {Object.values(checklistScore).filter(Boolean).length > 0 && (
                         <div className="p-4 bg-indigo-950/85 border border-indigo-800 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 animate-slide-down">
                           <div className="space-y-1 text-center sm:text-left">
@@ -875,7 +875,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                   </div>
                 </div>
 
-                {/* GOLDEN RULES BANNERS */}
+                
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-200/50 pt-6">
                   <div className="bg-[#FFFDF3] border border-indigo-200 p-5 rounded-2xl space-y-2 text-center flex flex-col justify-between">
                     <div>
@@ -900,7 +900,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
               </motion.div>
             )}
 
-            {/* CHAPTER: PILARES */}
+            
             {activeChapter === 'pilares' && (
               <motion.div
                 key="pilares"
@@ -924,7 +924,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                   <div className="space-y-4">
                     
-                    {/* PILAR 1 */}
+                    
                     <div className="flex items-start gap-4 p-4 rounded-2xl bg-white border border-amber-200 shadow-3xs group hover:border-amber-400 transition-all">
                       <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center shrink-0 text-xl font-bold">
                          
@@ -940,7 +940,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       </div>
                     </div>
 
-                    {/* PILAR 2 */}
+                    
                     <div className="flex items-start gap-4 p-4 rounded-2xl bg-white border border-amber-200 shadow-3xs group hover:border-amber-400 transition-all">
                       <div className="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center shrink-0 text-xl font-bold">
                         ❤
@@ -956,7 +956,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       </div>
                     </div>
 
-                    {/* PILAR 3 */}
+                    
                     <div className="flex items-start gap-4 p-4 rounded-2xl bg-white border border-amber-200 shadow-3xs group hover:border-amber-400 transition-all">
                       <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0 text-xl font-bold">
                          
@@ -977,7 +977,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
               </motion.div>
             )}
 
-            {/* CHAPTER: NARRATIVA */}
+            
             {activeChapter === 'narrativa' && (
               <motion.div
                 key="narrativa"
@@ -996,7 +996,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                 <div className="space-y-6 text-xs sm:text-sm text-slate-800 leading-relaxed font-semibold">
                   
-                  {/* SLOGANS SECTION */}
+                  
                   <div className="space-y-3">
                     <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wide">Nossos Slogans Oficiais</h3>
                     
@@ -1045,7 +1045,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     </div>
                   </div>
 
-                  {/* NARRATIVA DE MARCA */}
+                  
                   <div className="space-y-3 border-t border-amber-250/20 pt-4">
                     <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wide">A Narrativa Principal (The Brand Story)</h3>
                     
@@ -1074,7 +1074,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
               </motion.div>
             )}
 
-            {/* CHAPTER: EXPERIENCIA */}
+            
             {activeChapter === 'experiencia' && (
               <motion.div
                 key="experiencia"
@@ -1100,7 +1100,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                   <div className="space-y-3.5">
                     
-                    {/* XP 1 */}
+                    
                     <div className="bg-white p-4 rounded-xl border border-amber-200 shadow-3xs flex gap-3.5 items-start">
                       <span className="text-xl">✉</span>
                       <div>
@@ -1111,7 +1111,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       </div>
                     </div>
 
-                    {/* XP 2 */}
+                    
                     <div className="bg-white p-4 rounded-xl border border-amber-200 shadow-3xs flex gap-3.5 items-start">
                       <span className="text-xl"> </span>
                       <div>
@@ -1122,7 +1122,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       </div>
                     </div>
 
-                    {/* XP 3 */}
+                    
                     <div className="bg-white p-4 rounded-xl border border-amber-200 shadow-3xs flex gap-3.5 items-start">
                       <span className="text-xl"> </span>
                       <div>
@@ -1133,7 +1133,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       </div>
                     </div>
 
-                    {/* XP 4 */}
+                    
                     <div className="bg-white p-4 rounded-xl border border-amber-200 shadow-3xs flex gap-3.5 items-start">
                       <span className="text-xl"> </span>
                       <div>
@@ -1373,7 +1373,7 @@ Solicitamos que, no prazo improrrogável de 48 (quarenta e oito) horas, cesse im
                       Para que o <strong>Anjinho Escolar</strong> seja uma marca de valor inestimável e protegida contra a comoditização, precisamos blindá-la legal e tecnologicamente. A concorrência pode tentar copiar nosso visual, mas nunca poderá copiar nossa integridade legal, nossa marca registrada e nossos algoritmos exclusivos.
                     </p>
 
-                    {/* INTERACTIVE SIMULATOR */}
+                    
                     <div className="p-5 rounded-2xl bg-gradient-to-tr from-[#FAF9F5] to-[#F1F5F9] border border-amber-200/70 shadow-sm space-y-4">
                       <div className="flex items-center gap-2">
                         <span className="text-base"> </span>
@@ -1384,7 +1384,7 @@ Solicitamos que, no prazo improrrogável de 48 (quarenta e oito) horas, cesse im
                       </p>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
-                        {/* Legal Side */}
+                        
                         <div className="space-y-3 p-4 bg-white rounded-xl border border-slate-200/60 shadow-3xs">
                           <h4 className="text-[11px] font-black text-indigo-900 uppercase tracking-wider flex items-center gap-1">
                             <span>⚖</span> Proteções Legais & Contratos
@@ -1444,7 +1444,7 @@ Solicitamos que, no prazo improrrogável de 48 (quarenta e oito) horas, cesse im
                           </div>
                         </div>
 
-                        {/* Technical Side */}
+                        
                         <div className="space-y-3 p-4 bg-white rounded-xl border border-slate-200/60 shadow-3xs">
                           <h4 className="text-[11px] font-black text-indigo-900 uppercase tracking-wider flex items-center gap-1">
                             <span> </span> Barreiras Técnicas & Arquitetura
@@ -1505,7 +1505,7 @@ Solicitamos que, no prazo improrrogável de 48 (quarenta e oito) horas, cesse im
                         </div>
                       </div>
 
-                      {/* SCORE GAUGE */}
+                      
                       <div className="p-4 rounded-xl bg-white border border-slate-200/80 space-y-3">
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-black text-indigo-950 uppercase">Grau de Blindagem do Produto:</span>
@@ -1567,11 +1567,11 @@ Solicitamos que, no prazo improrrogável de 48 (quarenta e oito) horas, cesse im
                       </div>
                     </div>
 
-                    {/* COPYABLE CONTRACT TEMPLATES */}
+                    
                     <div className="space-y-3 pt-2">
                       <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wide">Modelos Jurídicos Prontos para Copiar</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* NDA */}
+                        
                         <div className="space-y-1.5">
                           <div className="flex justify-between items-center bg-slate-100 px-3.5 py-2 rounded-t-xl border-x border-t border-slate-250">
                             <span className="text-[10px] font-black text-slate-700 flex items-center gap-1">  Modelo NDA & Não-Concorrência</span>
@@ -1587,7 +1587,7 @@ Solicitamos que, no prazo improrrogável de 48 (quarenta e oito) horas, cesse im
                           </pre>
                         </div>
 
-                        {/* NOTIFICATION */}
+                        
                         <div className="space-y-1.5">
                           <div className="flex justify-between items-center bg-slate-100 px-3.5 py-2 rounded-t-xl border-x border-t border-slate-250">
                             <span className="text-[10px] font-black text-slate-700 flex items-center gap-1">⚖ Notificação Extrajudicial de Plágio</span>

@@ -520,7 +520,7 @@ export default function Medications({
 
   return (
     <div className="space-y-6">
-      {/* Header with Search and Action Button */}
+      
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
@@ -568,7 +568,7 @@ export default function Medications({
 
       {renderAuthBadge()}
 
-      {/* Checklist of Today's Schedules */}
+      
       <div className="bg-white rounded-2xl p-5 border border-soft-gray space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
           <h3 className="text-base font-bold text-slate-700 flex items-center gap-2">
@@ -580,7 +580,7 @@ export default function Medications({
           </span>
         </div>
 
-        {/* Turnos selectors row */}
+        
         <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
           <button
             type="button"
@@ -625,7 +625,7 @@ export default function Medications({
           })}
         </div>
 
-        {/* List of active filtered turn tasks */}
+        
         {historicoDeHoje.length === 0 ? (
           <p className="text-sm text-slate-400 py-4 text-center">Nenhum controle de remédio programado para hoje.</p>
         ) : (
@@ -722,12 +722,12 @@ export default function Medications({
         )}
       </div>
 
-      {/* Active Inventory / List */}
+      
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           <h3 className="text-lg font-bold text-zinc-800">Remédios Cadastrados</h3>
           
-          {/* Search bar inside medications */}
+          
           <div className="bg-white border border-soft-gray rounded-xl flex items-center px-3 py-1.5 focus-within:ring-2 focus-within:ring-serene-blue/20">
             <Search className="w-4 h-4 text-slate-400 mr-2" />
             <input 
@@ -767,7 +767,7 @@ export default function Medications({
                         </h4>
                       </div>
                       
-                      {/* Package mockup image */}
+                      
                       <img 
                         referrerPolicy="no-referrer"
                         src={med.fotoEmbalagem || mockPackImages[0]} 
@@ -836,7 +836,7 @@ export default function Medications({
         )}
       </div>
 
-      {/* Add New Medicine Modal Dialog */}
+      
       {showAddModal && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className="bg-white rounded-3xl p-6 border border-soft-gray max-w-lg w-full shadow-2xl relative max-h-[90vh] overflow-y-auto space-y-4">
@@ -949,7 +949,7 @@ export default function Medications({
                 <div className="space-y-3 sm:col-span-2 border-t border-slate-100 pt-3">
                   <label className="text-xs font-bold text-slate-700 block">Foto ou Imagem do Medicamento (Opcional)</label>
                   
-                  {/* Selector of quick templates */}
+                  
                   <div className="space-y-1">
                     <span className="text-[11px] font-medium text-slate-500 block">Opção 1: Selecionar modelo rápido</span>
                     <div className="flex items-center gap-3">
@@ -971,7 +971,7 @@ export default function Medications({
                     </div>
                   </div>
 
-                  {/* Upload file directly */}
+                  
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                     <div className="space-y-1">
                       <span className="text-[11px] font-medium text-slate-500 block">Opção 2: Enviar foto do celular/computador</span>
@@ -1060,7 +1060,7 @@ export default function Medications({
         </div>
       )}
 
-      {/* Delete Medicine Confirmation Modal */}
+      
       {deleteConfirmation && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className="bg-white rounded-3xl p-6 border border-rose-100 max-w-md w-full shadow-2xl relative space-y-4">

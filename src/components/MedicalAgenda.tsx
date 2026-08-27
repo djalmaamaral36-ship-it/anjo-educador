@@ -637,7 +637,7 @@ export default function MedicalAgenda({
 
   return (
     <div className="space-y-6 animate-fade-in">
-      {/* Header section */}
+      
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">
@@ -672,7 +672,7 @@ export default function MedicalAgenda({
         </div>
       )}
 
-      {/* Main Timeline View */}
+      
       {compromissos.length === 0 ? (
         <div className="bg-white rounded-2xl p-10 border border-soft-gray text-center space-y-3">
           <p className="text-slate-400">
@@ -705,7 +705,7 @@ export default function MedicalAgenda({
                     : 'border-soft-gray hover:border-slate-300'
                 }`}
               >
-                {/* Visual date block */}
+                
                 <div className="flex items-start md:items-center gap-4 w-full md:w-auto">
                   <div className={`w-16 h-16 rounded-2xl flex flex-col items-center justify-center shrink-0 border uppercase font-display select-none ${
                     isDone 
@@ -746,7 +746,7 @@ export default function MedicalAgenda({
                       {appt.titulo}
                     </h4>
 
-                    {/* Metadata indicators */}
+                    
                     <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-slate-500 font-medium pt-1">
                       <span className="flex items-center gap-1">
                         {isEscolar ? (
@@ -775,7 +775,7 @@ export default function MedicalAgenda({
                   </div>
                 </div>
 
-                {/* Operations side panel */}
+                
                 <div className="flex md:flex-col items-center md:items-end justify-between md:justify-center w-full md:w-auto gap-2 shrink-0 pt-3 md:pt-0 border-t md:border-t-0 border-slate-100">
                   <div className="flex items-center gap-2">
                     <button 
@@ -820,7 +820,7 @@ export default function MedicalAgenda({
         </div>
       )}
 
-      {/* Add Consultation / Event Modal Dialogue */}
+      
       {showAddModal && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className="bg-white rounded-3xl p-6 border border-soft-gray max-w-lg w-full shadow-2xl relative max-h-[90vh] overflow-y-auto space-y-4">
@@ -920,7 +920,7 @@ export default function MedicalAgenda({
 
                   {isEscolar && (
                     <div className="pt-2 space-y-3">
-                      {/* 1. Categorias & Atalhos de Grupos */}
+                      
                       <div className="space-y-1.5">
                         <div className="flex items-center justify-between text-[11px] font-extrabold text-indigo-900">
                           <span className="flex items-center gap-1">
@@ -963,7 +963,7 @@ export default function MedicalAgenda({
                         </div>
                       </div>
 
-                      {/* 2. Seleção Individual de Salas (Pode marcar mais de uma) */}
+                      
                       <div className="space-y-1.5">
                         <div className="flex items-center justify-between text-[11px] font-extrabold text-indigo-900">
                           <span className="flex items-center gap-1">
@@ -1004,7 +1004,7 @@ export default function MedicalAgenda({
                           })}
                         </div>
 
-                        {/* Summary badge */}
+                        
                         <div className="p-2.5 bg-indigo-100/70 border border-indigo-200 rounded-xl text-xs text-indigo-950 font-bold flex items-center justify-between gap-2">
                           <span className="flex items-center gap-1.5">
                             <Users className="w-4 h-4 text-indigo-700 shrink-0" />
@@ -1138,7 +1138,7 @@ export default function MedicalAgenda({
         </div>
       )}
 
-      {/* Modern In-App Confirmation Modal for Deletions */}
+      
       {deleteConfirmTarget && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in shadow-2xl">
           <div className="bg-white rounded-3xl p-6 border border-slate-200 max-w-md w-full shadow-2xl space-y-4 text-left">
@@ -1206,7 +1206,7 @@ export default function MedicalAgenda({
         </div>
       )}
 
-      {/* Modern In-App Confirmation Modal for Status Toggles */}
+      
       {toggleConfirmTarget && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className="bg-white rounded-3xl p-6 border border-slate-200 max-w-md w-full shadow-2xl space-y-4 text-left">

@@ -440,7 +440,7 @@ ___
 
   return (
     <div className="space-y-6">
-      {/* Top action header */}
+      
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
@@ -461,7 +461,7 @@ ___
         </button>
       </div>
 
-      {/* SELETOR DE PERÍODO / FILTRO DE DATAS INTEGRADO */}
+      
       <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
@@ -504,7 +504,7 @@ ___
           })}
         </div>
 
-        {/* INPUTS PARA INTERVALO PERSONALIZADO */}
+        
         {presetFilter === 'personalizado' && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-white border border-slate-200 rounded-xl max-w-xl transition-all">
             <div className="space-y-1">
@@ -529,7 +529,7 @@ ___
         )}
       </div>
 
-      {/* RENDER SIMULATED PRINT READY REPORT OVERLAY */}
+      
       {showPrintReady && (
         <div className="bg-white border-2 border-slate-400 p-8 rounded-3xl space-y-6 shadow-2xl relative watermark-protected">
           <div className="absolute right-6 top-6 flex gap-2">
@@ -568,7 +568,7 @@ ___
             </div>
           </div>
 
-          {/* Vitals summary block */}
+          
           <div className="space-y-3">
             <h3 className="font-bold border-b pb-1 text-slate-800 text-sm">
               {isEscolar ? 'Diário de Saúde, Sono & Rotina Recente' : 'Aferições de Sinais Vitais Recentes'}
@@ -627,7 +627,7 @@ ___
             </table>
           </div>
 
-          {/* Routine summaries */}
+          
           <div className="grid grid-cols-2 gap-6 pt-4 border-t border-slate-100 text-xs">
             <div className="p-3 bg-slate-50 border rounded-xl space-y-1.5">
               <h4 className="font-bold text-slate-850">Acompanhamento Alimentação</h4>
@@ -641,7 +641,7 @@ ___
             </div>
           </div>
 
-          {/* Carimbo de Autenticidade Digital & Propriedade Intelectual */}
+          
           <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-2.5 text-[10px] text-slate-500">
             <div className="flex items-center gap-2">
               <span className="p-1 px-2 bg-emerald-100 text-emerald-800 rounded-md font-extrabold text-[9px] uppercase tracking-wider">
@@ -662,7 +662,7 @@ ___
         </div>
       )}
 
-      {/* Main interactive Tab selectors */}
+      
       <div className="flex border-b border-soft-gray gap-4 overflow-x-auto">
         {[
           { id: 'sinais', label: '  Sinais Vitais Históricos', icon: <Activity className="w-4 h-4" /> },
@@ -685,10 +685,10 @@ ___
         ))}
       </div>
 
-      {/* TAB CONTENTS RENDER */}
+      
       <div className="bg-white rounded-2xl border border-soft-gray p-6 space-y-6">
         
-        {/* =============== SUBTAB: SINAIS VITAIS GRAPHS =============== */}
+        
         {activeReportTab === 'sinais' && (
           <div className="space-y-8">
             {isEscolar ? (
@@ -714,7 +714,7 @@ ___
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               
-              {/* SYS/DIA line charts widget */}
+              
               <div className="border border-slate-200 rounded-2xl p-5 space-y-4">
                 <div className="flex justify-between items-center">
                   <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
@@ -728,17 +728,17 @@ ___
                   <p className="text-xs text-slate-400 py-10 text-center">Registrar aferições na Dashboard para alimentar o gráfico.</p>
                 ) : (
                   <div className="space-y-4">
-                    {/* Immersive SVG Diagram Line chart */}
+                    
                     <div className="relative h-56 border-b border-l border-slate-300 bg-slate-50/50 rounded-tr-lg p-3 overflow-visible">
                       <svg viewBox="0 0 400 170" className="w-full h-full overflow-visible">
-                        {/* Safe guideline limits (BP limits 140/90 and 90/60) */}
+                        
                         <line x1="0" y1="40" x2="400" y2="40" stroke="#fca5a5" strokeDasharray="4 4" strokeWidth="1.5" />
                         <text x="5" y="34" className="chart-limit-text-red" fontSize="9" fontWeight="900" fill="#991b1b">Limite Alerta Sistólica (140)</text>
 
                         <line x1="0" y1="100" x2="400" y2="100" stroke="#93c5fd" strokeDasharray="4 4" strokeWidth="1.5" />
                         <text x="5" y="94" className="chart-limit-text-blue" fontSize="9" fontWeight="900" fill="#1e3a8a">Limite Alerta Diastólica (90)</text>
                         
-                        {/* Plotting points - Sys Line (Red/Amber) */}
+                        
                         <polyline
                           fill="none"
                           stroke="#dc2626"
@@ -754,7 +754,7 @@ ___
                           }).join(' ')}
                         />
 
-                        {/* Plotting points - Dia Line (Intense Royal Blue) */}
+                        
                         <polyline
                           fill="none"
                           stroke="#2563eb"
@@ -770,7 +770,7 @@ ___
                           }).join(' ')}
                         />
 
-                        {/* Point Circles & Tooltips */}
+                        
                         {sinais.map((s, idx) => {
                           const x = (idx / (sinais.length - 1)) * 360 + 20;
                           
@@ -814,7 +814,7 @@ ___
                                 {dia}
                               </text>
 
-                              {/* Date marks */}
+                              
                               <text x={x} y="162" className="chart-date-text" fontSize="11" fontWeight="900" textAnchor="middle" fill="#0f172a">
                                 {new Date(s.data).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
                               </text>
@@ -823,7 +823,7 @@ ___
                         })}
                       </svg>
 
-                      {/* Legends */}
+                      
                       <div className="absolute top-2 left-2 flex gap-4 text-xs font-black">
                         <span className="flex items-center gap-1.5"><span className="w-3.5 h-3.5 bg-red-600 rounded-full"></span> Sistólica (Máx)</span>
                         <span className="flex items-center gap-1.5"><span className="w-3.5 h-3.5 bg-blue-600 rounded-full"></span> Diastólica (Mín)</span>
@@ -837,7 +837,7 @@ ___
                 )}
               </div>
 
-              {/* Capillar blood glucose trend */}
+              
               <div className="border border-slate-200 rounded-2xl p-5 space-y-4">
                 <div className="flex justify-between items-center">
                   <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
@@ -851,10 +851,10 @@ ___
                   <p className="text-xs text-slate-400 py-10 text-center">Registrar aferições na Dashboard para alimentar o gráfico.</p>
                 ) : (
                   <div className="space-y-4">
-                    {/* Immersive SVG Diagram Line chart */}
+                    
                     <div className="relative h-56 border-b border-l border-slate-300 bg-slate-50/50 rounded-tr-lg p-3 overflow-visible">
                       <svg viewBox="0 0 400 170" className="w-full h-full overflow-visible">
-                        {/* Safe target lines */}
+                        
                         <line x1="0" y1="40" x2="400" y2="40" stroke="#fca5a5" strokeDasharray="4 4" strokeWidth="1.5" />
                         <text x="5" y="34" className="chart-limit-text-red" fontSize="9" fontWeight="900" fill="#991b1b">Limite Alto Alerta (180 mg/dL)</text>
 
@@ -875,7 +875,7 @@ ___
                           }).join(' ')}
                         />
 
-                        {/* Points */}
+                        
                         {sinais.map((s, idx) => {
                           const x = (idx / (sinais.length - 1)) * 360 + 20;
                           const y = 145 - ((s.glicemia - 60) / (200 - 60)) * 110;
@@ -897,7 +897,7 @@ ___
                                 {s.glicemia}
                               </text>
 
-                              {/* Date marks */}
+                              
                               <text x={x} y="162" className="chart-date-text" fontSize="11" fontWeight="900" textAnchor="middle" fill="#0f172a">
                                 {new Date(s.data).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
                               </text>
@@ -917,7 +917,7 @@ ___
             </div>
             )}
 
-            {/* Weight Tracking Panel ⚖ */}
+            
             <div className="border border-slate-200 rounded-3xl p-6 bg-white space-y-4 shadow-3xs">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                 <div>
@@ -934,7 +934,7 @@ ___
                 <span className="text-[10px] text-slate-550 bg-indigo-50 text-indigo-700 px-3 py-1 font-bold rounded-lg self-start sm:self-center uppercase tracking-wider">Histórico de Peso</span>
               </div>
 
-              {/* Weight Interpretation Diagnosis Box */}
+              
               {(() => {
                 const weightedSinais = sinais.filter(s => s.peso && s.peso > 0);
                 if (weightedSinais.length === 0) {
@@ -981,7 +981,7 @@ ___
                       </div>
                     </div>
 
-                    {/* SVG Weight Line Chart */}
+                    
                     {weightedSinais.length < 2 ? (
                       <p className="text-xs text-slate-400 py-8 text-center bg-slate-50 rounded-xl border border-dashed">
                         Seja bem vindo! Registre pelo menos 2 aferições de peso para que a linha de tendência com variação histórica apareça automaticamente.
@@ -991,7 +991,7 @@ ___
                         <h5 className="text-[10px] uppercase tracking-wider text-slate-400 font-black">Evolução do Peso ao Longo do Tempo (kg)</h5>
                         <div className="relative h-44 border-b border-l border-slate-200 bg-slate-50/50 rounded-tr-lg p-2 overflow-visible">
                           <svg viewBox="0 0 400 120" className="w-full h-full overflow-visible">
-                            {/* Polyline plotting weight */}
+                            
                             <polyline
                               fill="none"
                               stroke="#4f46e5"
@@ -1011,7 +1011,7 @@ ___
                               }).join(' ')}
                             />
 
-                            {/* Circles & Labels */}
+                            
                             {weightedSinais.map((s, idx) => {
                               const x = (idx / (weightedSinais.length - 1)) * 360 + 20;
                               const weightsList = weightedSinais.map(ws => ws.peso!);
@@ -1054,12 +1054,12 @@ ___
           </div>
         )}
 
-        {/* =============== SUBTAB: ROTINA SONO / HUMORES =============== */}
+        
         {activeReportTab === 'rotina' && (
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               
-              {/* Sleep duration bars */}
+              
               <div className="border border-slate-200 rounded-2xl p-5 space-y-4">
                 <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
                   <Moon className="w-5 h-5 text-indigo-500" />
@@ -1070,7 +1070,7 @@ ___
                   <p className="text-xs text-slate-400 py-10 text-center">Registrar padrões de sono no painel de rotinas para ver médias.</p>
                 ) : (
                   <div className="space-y-4">
-                    {/* SVG column bar chart */}
+                    
                     <div className="relative h-52 border-b border-slate-300 bg-slate-50 rounded-xl p-4 flex items-end justify-around">
                       {sono.slice(-6).map((s) => {
                         const maxH = 135;
@@ -1107,7 +1107,7 @@ ___
                 )}
               </div>
 
-              {/* Mood statistics listing */}
+              
               <div className="border border-slate-200 rounded-2xl p-5 space-y-4">
                 <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
                   <Smile className="w-5 h-5 text-emerald-500" />
@@ -1127,7 +1127,7 @@ ___
                             <span>{mood}</span>
                             <span>{total} registros ({percentages}%)</span>
                           </div>
-                          {/* Progress slider bar */}
+                          
                           <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                             <div 
                               className="h-full bg-emerald-500 transition-all rounded-full"
@@ -1145,7 +1145,7 @@ ___
           </div>
         )}
 
-        {/* =============== SUBTAB: ALIMENTACAO & HIDRATACAO RESUMOS =============== */}
+        
         {activeReportTab === 'resumo' && (
           <div className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1196,12 +1196,12 @@ ___
           </div>
         )}
 
-        {/* =============== SUBTAB: AUTO DAILY WHATSAPP COMPILER =============== */}
+        
         {activeReportTab === 'whatsapp_diario' && (
           <div className="space-y-6">
             <div className="flex flex-col lg:flex-row gap-6">
               
-              {/* Left Configurator inputs panel */}
+              
               <div className="flex-1 space-y-4">
                 <div className="p-5 border border-slate-200 bg-slate-50/50 rounded-2xl space-y-3">
                   <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
@@ -1277,7 +1277,7 @@ ___
                   </div>
                 </div>
 
-                {/* Info Card helper */}
+                
                 <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl flex items-start gap-2.5">
                   <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
                   <div className="text-xs text-blue-700 space-y-1">
@@ -1289,11 +1289,11 @@ ___
                 </div>
               </div>
 
-              {/* Right Phone mockup live preview */}
+              
               <div className="w-full lg:max-w-md shrink-0 mx-auto">
                 <div className="bg-[#E5DDD5] rounded-3xl border-8 border-slate-805 shadow-2xl overflow-hidden flex flex-col h-[520px]">
                   
-                  {/* WhatsApp Header Mockup */}
+                  
                   <div className="bg-[#075E54] text-white p-3 flex items-center gap-3 shrink-0">
                     <div className="w-10 h-10 bg-slate-200 rounded-full overflow-hidden border border-white/20">
                       <img referrerPolicy="no-referrer" src={idoso.foto} alt="Dona" className="w-full h-full object-cover" />
@@ -1304,7 +1304,7 @@ ___
                     </div>
                   </div>
 
-                  {/* Message Bubble section */}
+                  
                   <div className="flex-1 p-3.5 overflow-y-auto space-y-4 bg-[url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')] bg-repeat bg-center">
                     
                     <div className="text-center">

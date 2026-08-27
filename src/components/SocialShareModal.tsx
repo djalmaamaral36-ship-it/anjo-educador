@@ -516,10 +516,10 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/70 backdrop-blur-xs overflow-y-auto">
-      {/* Hidden canvas for downloading */}
+      
       <canvas ref={canvasRef} className="hidden" />
 
-      {/* Floating toast notification */}
+      
       {toastMessage && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-60 bg-slate-900 dark:bg-indigo-950 text-white font-black text-xs px-5 py-3 rounded-2xl shadow-xl flex items-center gap-2 border border-slate-800 dark:border-indigo-800 animate-bounce">
           <span className="text-emerald-400 font-bold">✓</span>
@@ -533,7 +533,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
         exit={{ scale: 0.95, opacity: 0 }}
         className="relative bg-white dark:bg-slate-900 rounded-2xl sm:rounded-3xl shadow-2xl max-w-5xl w-full flex flex-col overflow-hidden border border-slate-200/50 dark:border-slate-800 max-h-[95vh] sm:max-h-[92vh]"
       >
-        {/* Top Header Bar for Mobile & Desktop */}
+        
         <div className="flex items-center justify-between p-3.5 sm:p-4 px-4 sm:px-6 border-b border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900 sticky top-0 z-30 shrink-0">
           <div className="flex items-center gap-2.5">
             <div className="p-2 rounded-xl bg-pink-50 text-pink-600 dark:bg-pink-950 dark:text-pink-300 shrink-0">
@@ -558,10 +558,10 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
           </button>
         </div>
 
-        {/* Modal Main Grid Content */}
+        
         <div className="grid grid-cols-1 lg:grid-cols-12 overflow-y-auto flex-1 divide-y lg:divide-y-0 lg:divide-x divide-slate-200 dark:divide-slate-800">
           
-          {/* Left / Top column - Card Live Preview (ALWAYS FIRST ON MOBILE) */}
+          
           <div className="lg:col-span-7 bg-slate-100 dark:bg-slate-950 p-3 sm:p-6 flex flex-col items-center justify-center relative">
             
             <div className="w-full flex items-center justify-between mb-2 sm:mb-3 px-1">
@@ -576,7 +576,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
               </span>
             </div>
 
-            {/* Device and Preview Container */}
+            
             <div className="w-full flex justify-center py-1 sm:py-2">
               <div 
                 className={`relative shadow-2xl transition-all duration-300 rounded-2xl overflow-hidden border border-slate-300/80 dark:border-slate-800 w-full ${
@@ -586,7 +586,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                 }`}
                 style={getGradientStyle(currentTheme.canvasBg, aspect === 'story')}
               >
-                {/* Overlay elements like Instagram Stories header (if 9:16) */}
+                
                 {aspect === 'story' && (
                   <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10">
                     <div className="flex items-center gap-1.5">
@@ -604,19 +604,19 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                   </div>
                 )}
 
-                {/* Card Container */}
+                
                 <div className={`h-full w-full flex flex-col justify-between p-3 sm:p-5 ${aspect === 'story' ? 'pt-11 sm:pt-14 pb-4 sm:pb-6' : ''}`}>
                   
-                  {/* School App Watermark Title */}
+                  
                   <div className="text-center font-black tracking-wide text-xs text-indigo-950/80 dark:text-white/80 mb-1.5">
                     ✨ Anjinho Escolar {currentTheme.emoji}
                   </div>
 
-                  {/* Main Content Card Block (White Box) */}
+                  
                   <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs rounded-2xl p-3 sm:p-4 border border-white/60 dark:border-slate-800 shadow-xl flex-1 flex flex-col justify-between space-y-2">
                     
                     <div className="space-y-2">
-                      {/* Badge and Name Row */}
+                      
                       <div className="flex items-center justify-between gap-1">
                         <span className="text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
                           {event.tipo === 'conquista' ? '  Conquista' :
@@ -629,7 +629,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                         </span>
                       </div>
 
-                      {/* Image Block (PROMINENT HIGH-VISIBILITY PHOTO) */}
+                      
                       {activePhotoUrl && !hidePhoto ? (
                         <div className="w-full h-36 xs:h-40 sm:h-48 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 relative shrink-0 shadow-inner">
                           <img 
@@ -651,7 +651,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                         </div>
                       )}
 
-                      {/* Title & Description */}
+                      
                       <div className="space-y-0.5 sm:space-y-1">
                         <h4 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white leading-tight">
                           {event.titulo}
@@ -661,7 +661,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                         </p>
                       </div>
 
-                      {/* Customizable User Note */}
+                      
                       {customNote.trim() && (
                         <div className="border-t border-dashed border-slate-200 dark:border-slate-800 pt-1">
                           <p className="text-[9px] sm:text-[10px] font-black italic text-indigo-600 dark:text-indigo-400">
@@ -671,13 +671,13 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                       )}
                     </div>
 
-                    {/* Watermark Logo bottom of white card */}
+                    
                     <div className="text-center text-[8px] font-extrabold text-slate-400 dark:text-slate-500 pt-1">
                       Compartilhado pelo app Anjinho Escolar  
                     </div>
                   </div>
 
-                  {/* Bottom CTA Overlay - Interactive Touch to Connect */}
+                  
                   <button
                     type="button"
                     onClick={handleConnectClick}
@@ -690,7 +690,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
               </div>
             </div>
             
-            {/* Quick Mobile Action Buttons Right Under Card */}
+            
             <div className="w-full max-w-[340px] mt-3 space-y-2">
               <div className="flex gap-2">
                 <button
@@ -726,12 +726,12 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
             </div>
           </div>
 
-          {/* Right / Bottom column - Controls and sharing options */}
+          
           <div className="lg:col-span-5 p-4 sm:p-6 flex flex-col justify-between bg-white dark:bg-slate-900">
             
             <div className="space-y-4 sm:space-y-5">
 
-              {/* Photo Upload / Change Option */}
+              
               <div className="bg-slate-50 dark:bg-slate-850 p-2.5 sm:p-3 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2 min-w-0">
                   <div className="p-2 rounded-xl bg-indigo-100 text-indigo-600 dark:bg-indigo-950 dark:text-indigo-300 shrink-0">
@@ -764,7 +764,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                 />
               </div>
 
-              {/* Privacy toggle option */}
+              
               <div 
                 onClick={() => setHidePhoto(!hidePhoto)}
                 className="bg-slate-50 dark:bg-slate-850/60 p-3 sm:p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between gap-4 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-850 transition-all select-none"
@@ -791,7 +791,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                 </button>
               </div>
 
-              {/* Layout selector */}
+              
               <div className="space-y-2">
                 <label className="text-xs font-extrabold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
                   <Layout className="w-3.5 h-3.5 text-indigo-500" /> Formato da Publicação
@@ -824,7 +824,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                 </div>
               </div>
 
-              {/* Themes palette selector */}
+              
               <div className="space-y-2">
                 <label className="text-xs font-extrabold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
                   <Palette className="w-3.5 h-3.5 text-pink-500" /> Estilo & Cores do Fundo
@@ -856,7 +856,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                 </div>
               </div>
 
-              {/* Customize: Add custom note */}
+              
               <div className="space-y-1.5">
                 <label className="text-xs font-extrabold text-slate-800 dark:text-slate-200 flex items-center justify-between">
                   <span>Recado Adicional (Opcional):</span>
@@ -883,7 +883,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                 </div>
               </div>
 
-              {/* LGPD & ECA Compliance Warning Block */}
+              
               <div className="rounded-2xl bg-amber-50/90 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-900/40 p-3 sm:p-3.5 space-y-1">
                 <div className="flex items-center gap-2 text-amber-950 dark:text-amber-300">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -896,7 +896,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
 
             </div>
 
-            {/* Share Actions Area */}
+            
             <div className="border-t border-slate-100 dark:border-slate-800 pt-4 mt-5 space-y-3">
               <div className="rounded-xl bg-[#FFFDF6] dark:bg-slate-950 p-3 border border-amber-100 dark:border-slate-800">
                 <div className="flex justify-between items-center mb-1">

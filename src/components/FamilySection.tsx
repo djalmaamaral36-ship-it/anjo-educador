@@ -563,7 +563,7 @@ export default function FamilySection({
 
   return (
     <div className="space-y-6 max-w-full overflow-x-hidden">
-      {/* Header Banner with summary details and Actions */}
+      
       <div className="bg-gradient-to-r from-indigo-900 via-slate-900 to-indigo-950 p-5 sm:p-6 rounded-3xl text-white shadow-md border border-indigo-500/20 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-5">
         <div className="space-y-1.5 max-w-2xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-indigo-200 text-xs font-black uppercase tracking-wider">
@@ -602,14 +602,14 @@ export default function FamilySection({
         </div>
       </div>
 
-      {/* Search, Filter Pills & View Mode Controls */}
+      
       <div className={`p-4 rounded-2xl border flex flex-col gap-3.5 ${
         accessibilitySettings.darkMode
           ? 'bg-slate-900 border-slate-800'
           : 'bg-white border-soft-gray shadow-3xs'
       }`}>
         <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
-          {/* Search Input with Voice Search and Instant Clear */}
+          
           <div className="relative w-full md:max-w-lg flex items-center">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-500 pointer-events-none" />
             <input
@@ -643,7 +643,7 @@ export default function FamilySection({
             </div>
           </div>
 
-          {/* View mode toggle button */}
+          
           <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl shrink-0 self-start md:self-auto">
             <button
               type="button"
@@ -670,7 +670,7 @@ export default function FamilySection({
           </div>
         </div>
 
-        {/* Quick Role Filter Pills */}
+        
         {(() => {
           const normHelper = (s: string) => (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
           const countFamiliar = integrantes.filter(u => {
@@ -772,7 +772,7 @@ export default function FamilySection({
         })()}
       </div>
 
-      {/* Grid of Team Members */}
+      
       {(() => {
         const norm = (s: string) => (s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
         
@@ -879,7 +879,7 @@ export default function FamilySection({
                     }`}
                   >
                     <div className="space-y-3">
-                      {/* Photo and general info */}
+                      
                       <div className="flex items-start gap-3">
                         <img 
                           referrerPolicy="no-referrer"
@@ -903,14 +903,14 @@ export default function FamilySection({
                         </div>
                       </div>
 
-                      {/* Compact Info Badges */}
+                      
                       <div className="flex flex-wrap gap-1 items-center">
-                        {/* Permission badge */}
+                        
                         <span className={`inline-flex items-center gap-1 text-[9px] font-black px-2 py-0.5 rounded-md border uppercase tracking-wider ${perm.color}`}>
                           <Shield className="w-2.5 h-2.5" /> {perm.text.split(' / ')[0]}
                         </span>
 
-                        {/* Classroom badge (only in school mode) */}
+                        
                         {isEscolar && (
                           user.salaAula && user.salaAula !== 'Todas' ? (
                             <span className="inline-flex items-center gap-1 text-[9px] bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 font-black px-2 py-0.5 rounded-md border border-indigo-150 uppercase tracking-wider">
@@ -923,14 +923,14 @@ export default function FamilySection({
                           )
                         )}
 
-                        {/* PIN Access badge */}
+                        
                         <span className="inline-flex items-center gap-1 text-[9px] bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 text-amber-800 dark:text-amber-400 font-mono font-bold px-1.5 py-0.5 rounded-md">
                             {user.pin || '1234'}
                         </span>
                       </div>
                     </div>
 
-                    {/* Actions bottom row */}
+                    
                     <div className="border-t border-slate-100 dark:border-slate-800 pt-2.5 flex items-center justify-between">
                       <span className="text-[9px] text-slate-400 dark:text-slate-500 truncate max-w-[120px] font-medium">
                         {user.email && user.email !== 'sem_email@anjo.com' ? user.email : 'Sem e-mail'}
@@ -965,7 +965,7 @@ export default function FamilySection({
                   className="bg-white rounded-2xl border border-soft-gray p-5 flex flex-col md:flex-row justify-between gap-4 hover:border-slate-300 transition-colors"
                 >
                   <div className="space-y-3 flex-1">
-                    {/* Info block */}
+                    
                     <div className="flex items-start gap-3">
                       <img 
                         referrerPolicy="no-referrer"
@@ -1002,7 +1002,7 @@ export default function FamilySection({
                       </div>
                     </div>
 
-                    {/* Permissions Description Badge */}
+                    
                     <div className={`p-3 rounded-xl border ${perm.color} space-y-1`}>
                       <div className="flex items-center gap-1 font-bold text-xs uppercase tracking-wider">
                         <Shield className="w-3.5 h-3.5" /> {perm.text}
@@ -1012,7 +1012,7 @@ export default function FamilySection({
                       </p>
                     </div>
 
-                    {/* Login Pin reminder badge */}
+                    
                     <div className="flex items-center gap-1.5 text-[11px] bg-amber-50 border border-amber-200 rounded-xl p-2.5 font-bold text-amber-800">
                       <span>  PIN de Acesso:</span>
                       <span className="font-mono bg-white px-2 py-0.5 rounded text-xs tracking-wider select-all shadow-xs border border-amber-200">
@@ -1028,7 +1028,7 @@ export default function FamilySection({
                     )}
                   </div>
 
-                  {/* Alerts dispatch setup panel */}
+                  
                   <div className="md:w-56 border-t md:border-t-0 md:border-l border-slate-100 pt-3 md:pt-0 md:pl-4 flex flex-col justify-between">
                     <div className="space-y-2">
                       <span className="text-[10px] font-bold text-slate-450 uppercase tracking-wider block">
@@ -1102,7 +1102,7 @@ export default function FamilySection({
         );
       })()}
 
-      {/* Add Member Dialogue overlay */}
+      
       {showAddModal && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-start justify-center p-2 sm:p-4 z-50 animate-fade-in overflow-y-auto">
           <div className={`rounded-3xl p-5 sm:p-6 border max-w-md w-full shadow-2xl relative space-y-4 my-auto ${
@@ -1129,11 +1129,11 @@ export default function FamilySection({
                   />
                 </div>
 
-                {/* Seleção de fotos */}
+                
                 <div className="space-y-2 border-t border-b border-dashed border-slate-200 py-3 my-1">
                   <label className="text-xs font-bold text-slate-700 block">Foto do Integrante</label>
                   
-                  {/* Modelos rápidos */}
+                  
                   <div className="space-y-1">
                     <span className="text-[10px] font-medium text-slate-500 block">Opção 1: Selecionar avatar rápido</span>
                     <div className="flex items-center gap-2">
@@ -1155,7 +1155,7 @@ export default function FamilySection({
                     </div>
                   </div>
 
-                  {/* Upload do computador/celular ou URL */}
+                  
                   <div className="grid grid-cols-2 gap-2 pt-1.55">
                     <div className="space-y-1">
                       <span className="text-[10px] font-medium text-slate-500 block">Opção 2: Enviar foto</span>
@@ -1516,7 +1516,7 @@ export default function FamilySection({
         </div>
       )}
 
-      {/* Edit Member Dialogue overlay */}
+      
       {showEditModal && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-start justify-center p-2 sm:p-4 z-50 animate-fade-in overflow-y-auto" id="modal-edit-member">
           <div className={`rounded-3xl p-5 sm:p-6 border max-w-md w-full shadow-2xl relative space-y-4 my-auto ${
@@ -1543,11 +1543,11 @@ export default function FamilySection({
                   />
                 </div>
 
-                {/* Seleção de fotos */}
+                
                 <div className="space-y-2 border-t border-b border-dashed border-slate-200 py-3 my-1">
                   <label className="text-xs font-bold text-slate-700 block">Foto do Integrante</label>
                   
-                  {/* Modelos rápidos */}
+                  
                   <div className="space-y-1">
                     <span className="text-[10px] font-medium text-slate-500 block">Opção 1: Selecionar avatar rápido</span>
                     <div className="flex items-center gap-2">
@@ -1569,7 +1569,7 @@ export default function FamilySection({
                     </div>
                   </div>
 
-                  {/* Upload do computador/celular ou URL */}
+                  
                   <div className="grid grid-cols-2 gap-2 pt-1.5">
                     <div className="space-y-1">
                       <span className="text-[10px] font-medium text-slate-500 block">Opção 2: Enviar foto</span>
@@ -1876,9 +1876,9 @@ export default function FamilySection({
         </div>
       )}
 
-      {/* ========================================================================= */}
-      {/*   MULTI-FUNCTIONAL INTERACTIVE INVITATION LINK GENERATOR & SIMULATOR     */}
-      {/* ========================================================================= */}
+      
+      
+      
       {showInviteModal && (
         <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 z-50 animate-fade-in overflow-y-auto">
           <div className={`rounded-3xl border shadow-2xl relative w-full max-w-2xl overflow-hidden ${
@@ -1886,7 +1886,7 @@ export default function FamilySection({
               ? 'bg-slate-900 border-slate-800 text-slate-100' 
               : 'bg-white border-slate-200 text-slate-800'
           }`}>
-            {/* Header */}
+            
             <div className="bg-emerald-600 text-white p-5 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Share2 className="w-6 h-6 animate-pulse" />
@@ -1908,9 +1908,9 @@ export default function FamilySection({
               </button>
             </div>
 
-            {/* Modal Body */}
+            
             <div className="p-5 sm:p-6 space-y-5 max-h-[75vh] overflow-y-auto">
-              {/* Context Badge (Adapts whether it's family or staff/coordination invite) */}
+              
               <div className={`p-4 rounded-2xl flex items-center gap-3 border shadow-3xs ${
                 accessibilitySettings.darkMode
                   ? 'bg-indigo-950/40 border-indigo-900/60 text-slate-150'
@@ -1948,7 +1948,7 @@ export default function FamilySection({
                 // VIEW 1: CONFIGURE & GENERATE THE LINK
                 <div className="space-y-5">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Left: Configuration Form */}
+                    
                     <div className="space-y-4 pr-0 md:pr-4 md:border-r border-slate-200/60">
                       <h4 className="text-sm font-black text-slate-550 uppercase tracking-wider flex items-center gap-1.5">
                         <Sliders className="w-4 h-4 text-emerald-600" />
@@ -2080,14 +2080,14 @@ export default function FamilySection({
                       </div>
                     </div>
 
-                    {/* Right: Message & Link Preview */}
+                    
                     <div className="space-y-4">
                       <h4 className="text-sm font-black text-slate-550 uppercase tracking-wider flex items-center gap-1.5">
                         <MessageSquare className="w-4 h-4 text-emerald-600" />
                         2. Pré-visualização do Envio
                       </h4>
 
-                      {/* Mockup WhatsApp message bubble */}
+                      
                       <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-4 space-y-3 relative overflow-hidden text-xs">
                         <div className="absolute top-0 right-0 bg-emerald-600 text-white px-2 py-0.5 rounded-bl-xl text-[9px] font-black uppercase tracking-widest">
                           MENSAGEM WHATSAPP
@@ -2098,7 +2098,7 @@ export default function FamilySection({
                       </div>
 
                       <div className="flex flex-col gap-2">
-                        {/* Send directly via WhatsApp if phone is provided */}
+                        
                         {inviteRecipientPhone.replace(/\D/g, "").length >= 10 ? (
                           <button
                             onClick={() => {
@@ -2116,7 +2116,7 @@ export default function FamilySection({
                           </div>
                         )}
 
-                        {/* Copy button */}
+                        
                         <button
                           type="button"
                           onClick={() => {
@@ -2147,7 +2147,7 @@ export default function FamilySection({
                     </div>
                   </div>
 
-                  {/* BOTTOM ACTIONS AND FLOW SIMULATOR ACCELERATOR */}
+                  
                   <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200/80 rounded-2xl p-4 space-y-3 mt-4 text-slate-800">
                     <div className="flex items-center gap-1.5 font-bold text-amber-800 text-sm">
                       <Sparkles className="w-5 h-5 text-amber-600 animate-bounce" />
@@ -2176,17 +2176,17 @@ export default function FamilySection({
               ) : (
                 // VIEW 2: INTERACTIVE CELLPHONE SIMULATION OF THE JOIN FLOW
                 <div className="max-w-md mx-auto bg-slate-950 rounded-[40px] p-3 border-4 border-slate-800 shadow-2xl relative">
-                  {/* Phone Speaker & Camera Notch */}
+                  
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-6 bg-slate-800 rounded-b-2xl z-10 flex items-center justify-center">
                     <div className="w-12 h-1 bg-slate-900 rounded-full mb-1"></div>
                   </div>
 
-                  {/* Phone Screen Canvas */}
+                  
                   <div className="bg-white rounded-[32px] overflow-hidden border border-slate-900 px-4 py-6 text-slate-800 min-h-[460px] flex flex-col justify-between space-y-4">
-                    {/* Top Notch Padding */}
+                    
                     <div className="h-2"></div>
 
-                    {/* App Brand Header */}
+                    
                     <div className="text-center space-y-1">
                       <div className="w-11 h-11 bg-emerald-600 text-white rounded-2xl flex items-center justify-center mx-auto shadow-md">
                         <Users className="w-6 h-6" />
@@ -2199,13 +2199,13 @@ export default function FamilySection({
                       </p>
                     </div>
 
-                    {/* Welcome Invite Alert */}
+                    
                     <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3 text-[11px] leading-relaxed text-emerald-900">
                         Olá! <strong>{usuarioAtual.nome}</strong> convidou você para fazer parte do plano de acompanhamento de <strong>{cleanStudentName}</strong>. 
                       Preencha os campos abaixo para ativar seu perfil:
                     </div>
 
-                    {/* Registration Form inside the simulated phone */}
+                    
                     <form onSubmit={handleCompleteInviteSimulation} className="space-y-2.5 text-xs">
                       <div className="space-y-0.5">
                         <label className="text-[10px] font-bold text-slate-500 block">Seu Nome Completo *</label>
@@ -2294,7 +2294,7 @@ export default function FamilySection({
               )}
             </div>
 
-            {/* Footer */}
+            
             <div className="bg-slate-50 border-t border-slate-200 p-4 flex justify-between items-center text-xs text-slate-500">
               <span className="flex items-center gap-1 font-semibold">
                 <Shield className="w-4 h-4 text-emerald-600" /> Acesso Seguro e Criptografado

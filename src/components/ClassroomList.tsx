@@ -1806,7 +1806,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
   return (
     <div className="space-y-6 animate-fade-in text-slate-800">
       
-      {/* Visual Header */}
+      
       <div className="bg-gradient-to-br from-indigo-900 via-indigo-800 to-teal-800 p-6 rounded-3xl text-white shadow-lg relative overflow-hidden">
         <div className="absolute right-0 top-0 -mt-6 -mr-6 w-36 h-36 bg-amber-400 opacity-15 rounded-full blur-xl"></div>
         <div className="absolute left-1/3 bottom-0 -mb-8 w-44 h-44 bg-teal-400 opacity-10 rounded-full blur-2xl"></div>
@@ -1839,7 +1839,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
         </div>
       </div>
 
-      {/* 🏫 TEST ENVIRONMENT QUICK CLASSROOM & TEACHER SWITCHER */}
+      
       <div className="bg-white rounded-3xl border border-slate-200 p-5 shadow-2xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
           <div className="space-y-1">
@@ -1869,7 +1869,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
           </div>
         </div>
 
-        {/*   GERENCIADOR DE SALAS PANEL (ADD & EDIT & DELETE SALAS) */}
+        
         {showAddClassroomForm && (
           <div id="classroom-config-panel" className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-4 animate-fade-in">
             <div className="flex items-center justify-between border-b border-slate-200 pb-2">
@@ -1881,7 +1881,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
               </span>
             </div>
 
-            {/* Form to add or edit a room */}
+            
             <form onSubmit={handleAddClassroom} className="grid grid-cols-1 md:grid-cols-12 gap-3.5">
               <div className="md:col-span-1">
                 <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">Emoji</label>
@@ -1957,7 +1957,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
               </div>
             </form>
 
-            {/* List of existing classrooms inside configuration panel for direct deletion and editing */}
+            
             <div className="border-t border-slate-200 pt-3 space-y-2">
               <span className="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider block">Lista de Salas para Edição e Exclusão</span>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
@@ -2074,10 +2074,10 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
           })}
         </div>
 
-        {/* Visual Classroom Preview and Confirmation Panel */}
+        
         {selectedClassroomForPreview && (
           <div className="bg-indigo-50/40 border-2 border-indigo-200/70 rounded-3xl p-5 mt-4 space-y-4 animate-fade-in">
-            {/* Header */}
+            
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-indigo-100 pb-3">
               <div className="flex items-center gap-3">
                 <span className="text-3xl p-2.5 bg-white rounded-2xl shadow-3xs">{selectedClassroomForPreview.emoji}</span>
@@ -2099,9 +2099,9 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
               </div>
             </div>
 
-            {/* Teacher info & Students list layout */}
+            
             <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
-              {/* Teacher Info (4 cols) */}
+              
               <div className="md:col-span-4 bg-white rounded-2xl p-4 border border-indigo-100/50 space-y-3">
                 <span className="text-[10px] font-black uppercase text-indigo-500 tracking-wider block"> 🏫 Educadora da Sala</span>
                 {(() => {
@@ -2136,7 +2136,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 })()}
               </div>
 
-              {/* Students selection (8 cols) */}
+              
               <div className="md:col-span-8 bg-white rounded-2xl p-4 border border-indigo-100/50 space-y-2.5">
                 <span className="text-[10px] font-black uppercase text-indigo-500 tracking-wider block">  Alunos Cadastrados nesta Sala</span>
                 {(() => {
@@ -2196,7 +2196,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
               </div>
             </div>
 
-            {/* Confirmation Banner */}
+            
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-2xl p-4 shadow-sm animate-fade-in">
               <div className="space-y-1 text-center sm:text-left">
                 <p className="text-xs font-black flex items-center justify-center sm:justify-start gap-1">
@@ -2245,16 +2245,16 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
         </div>
       )}
 
-      {/* Roster Layout Grid with Filters */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        {/* Left Column: Kids list and Search filters (8 cols) */}
+        
         <div className="lg:col-span-7 xl:col-span-8 space-y-4">
           
-          {/* Controls Bar */}
+          
           <div className="bg-white rounded-2xl p-4 border border-soft-gray shadow-3xs space-y-3.5">
             <div className="flex flex-col sm:flex-row gap-3">
-              {/* Search input */}
+              
               <div className="relative flex-1">
                 <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
@@ -2266,7 +2266,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 />
               </div>
               
-              {/* Cadastrar Aluno Button */}
+              
               <button
                 type="button"
                 id="btn_cadastrar_aluno_turma"
@@ -2276,7 +2276,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 <Plus className="w-4 h-4" /> Cadastrar Aluno
               </button>
 
-              {/* Quick Family Management / Invite Button */}
+              
               {onNavigate && (
                 <button
                   type="button"
@@ -2291,9 +2291,9 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
               )}
             </div>
 
-            {/* Quick Filters Buttons & View Mode */}
+            
             <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
-              {/* Quick Filters Buttons */}
+              
               <div className="flex flex-wrap items-center gap-1.5">
                 <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider mr-1">Filtros:</span>
                 <button
@@ -2330,7 +2330,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
             </div>
           </div>
 
-          {/* Grid of Students */}
+          
           {filteredStudents.length === 0 ? (
             <div className="bg-white rounded-2xl p-10 border border-soft-gray text-center space-y-2">
               <span className="text-3xl"> </span>
@@ -2361,7 +2361,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                     }`}
                   >
                     <div className="space-y-2.5">
-                      {/* Photo, Name & Active/Absence Indicator */}
+                      
                       <div className="flex items-start gap-3">
                         <img 
                           src={child.foto} 
@@ -2387,7 +2387,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                             ) : null}
                           </div>
                           
-                          {/* Responsável e Contato */}
+                          
                           {child.contatoEmergencia?.nome ? (
                             <p className="text-xs text-slate-550 flex items-center gap-1 mt-0.5 font-medium truncate">
                               <span className="text-[10px] text-slate-400 shrink-0">   </span>
@@ -2407,14 +2407,14 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                         </div>
                       </div>
 
-                      {/* Compact Badges: Sala, Alergia e Cuidados */}
+                      
                       <div className="flex flex-wrap gap-1 items-center">
-                        {/* Sala Badge */}
+                        
                         <span className="inline-flex items-center gap-1 text-[9px] bg-indigo-50 text-indigo-700 font-black px-2 py-0.5 rounded-md border border-indigo-150 uppercase tracking-wider">
                           🏫 {classLabel}
                         </span>
 
-                        {/* Alergias / Saúde Badge */}
+                        
                         {child.alergias && child.alergias.length > 0 ? (
                           <span className="inline-flex items-center gap-1 text-[9px] bg-rose-50 text-rose-700 font-black px-2 py-0.5 rounded-md border border-rose-200 uppercase tracking-wider truncate max-w-[150px]">
                             ⚠ {child.alergias[0]}
@@ -2429,14 +2429,14 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                           </span>
                         )}
 
-                        {/* ID do Aluno */}
+                        
                         <span className="inline-flex items-center text-[9px] bg-slate-100 text-slate-500 font-mono font-bold px-1.5 py-0.5 rounded-md border border-slate-200">
                           {child.id.replace('aluno_', 'AL-')}
                         </span>
                       </div>
                     </div>
 
-                    {/* Actions Bottom Row with Visible Ativar Perfil Button */}
+                    
                     <div className="border-t border-slate-100 pt-2 flex items-center justify-between mt-auto">
                       <span className="text-[10px] text-slate-400 font-bold">
                         {child.dataNascimento ? `Nasc: ${child.dataNascimento}` : 'Maternal'}
@@ -2466,15 +2466,15 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
           )}
         </div>
 
-        {/* Right Column: In-depth Information Desk of Selected Student (4 cols / 5 cols) */}
+        
         <div className="lg:col-span-5 xl:col-span-4">
           {selectedStudentForDetail ? (
             <div className="bg-white rounded-3xl border border-slate-200/90 shadow-sm overflow-hidden sticky top-6">
               
-              {/* Header profile background */}
+              
               <div className="bg-gradient-to-br from-indigo-100 to-indigo-50 p-6 border-b border-indigo-100/60 text-center relative space-y-3.5">
                 
-                {/* Edit Student Button top left */}
+                
                 <div className="absolute top-4 left-4">
                   <button
                     onClick={() => {
@@ -2492,7 +2492,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   </button>
                 </div>
 
-                {/* Switch button prominently placed in detail header */}
+                
                 <div className="absolute top-4 right-4">
                   {selectedStudentForDetail.id === activeIdoso.id ? (
                     <span className="bg-emerald-600 text-white font-black text-[9px] px-2.5 py-1 rounded-full uppercase flex items-center gap-1 shadow-3xs">
@@ -2705,7 +2705,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 )}
               </div>
 
-              {/* Data sheets list or Edit form */}
+              
               {isEditingStudentProfile ? (
                 <form onSubmit={handleSaveEditedStudentProfile} className="p-6 space-y-4 text-xs text-left bg-white">
                   <div className="bg-indigo-50/70 p-3 rounded-2xl border border-indigo-100 mb-1">
@@ -2855,7 +2855,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
               ) : (
                 <div className="p-6 space-y-5 text-xs">
                 
-                {/* 1. Nascimento & Idade */}
+                
                 <div className="space-y-1">
                   <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider flex items-center gap-1">
                     <Calendar className="w-3.5 h-3.5 text-slate-400" /> Nascimento e Idade
@@ -2868,7 +2868,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   </p>
                 </div>
 
-                {/* 2. Restrições e Cuidados Especiais (Maternal Needs) */}
+                
                 <div className="space-y-1">
                   <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider flex items-center gap-1">
                     <Baby className="w-3.5 h-3.5 text-slate-400" /> Rotina Especial / Soneca / Banheiro
@@ -2896,7 +2896,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   </div>
                 </div>
 
-                {/* 3. Alergias Críticas */}
+                
                 <div className="space-y-1">
                   <p className="text-[10px] text-rose-600 font-extrabold uppercase tracking-wider flex items-center gap-1">
                     <ShieldAlert className="w-3.5 h-3.5 text-rose-500" /> Alergias Comunicadas pelos Pais
@@ -2924,7 +2924,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   </div>
                 </div>
 
-                {/* Quick Add Parameter on ClassroomList Details panel */}
+                
                 <div className="pt-1.5 border-t border-slate-100">
                   <button
                     onClick={() => setShowAddSpecialField(!showAddSpecialField)}
@@ -2979,7 +2979,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   )}
                 </div>
 
-                {/* 4. Controle de Faltas & Frequência */}
+                
                 <div className="space-y-1">
                   <p className="text-[10px] text-rose-600 font-extrabold uppercase tracking-wider flex items-center gap-1">
                     <UserX className="w-3.5 h-3.5 text-rose-500" /> Frequência e Controle de Faltas
@@ -2992,7 +2992,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                       </span>
                     </div>
 
-                    {/* Presença de HOJE quick action */}
+                    
                     {(() => {
                       const todayStr = new Date().toISOString().split('T')[0];
                       const isAbsentToday = absenceDates.includes(todayStr);
@@ -3039,7 +3039,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                       <p className="text-slate-500 italic text-[11px] py-1">Nenhuma falta registrada. Aluno 100% presente!  </p>
                     )}
 
-                    {/* Add retro-active absence form */}
+                    
                     <div className="pt-1.5">
                       {!showAddRetroDate ? (
                         <button
@@ -3080,7 +3080,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   </div>
                 </div>
 
-                {/*   Registros do Turno Ativo: Saúde, Sono, Fralda & Água */}
+                
                 {(() => {
                   const student = selectedStudentForDetail;
                   const childHyg = getFromDB<any>(`anjo_higiene_log_${student.id}`, null);
@@ -3110,7 +3110,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                       </div>
 
                       <div className="space-y-2 pt-1 text-xs font-semibold text-slate-700">
-                        {/* Diaper / Hygiene */}
+                        
                         <div className="bg-white p-2 rounded-xl border border-slate-200/80 flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <span className="text-base"> </span>
@@ -3126,7 +3126,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                           </span>
                         </div>
 
-                        {/* Sleep / Nap */}
+                        
                         <div className="bg-white p-2 rounded-xl border border-slate-200/80 flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <span className="text-base"> </span>
@@ -3142,7 +3142,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                           </span>
                         </div>
 
-                        {/* Health / Vitals */}
+                        
                         <div className="bg-white p-2 rounded-xl border border-slate-200/80 flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <span className="text-base"> </span>
@@ -3158,7 +3158,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                           </span>
                         </div>
 
-                        {/* Mamadeira / Leite */}
+                        
                         {(() => {
                           const allFeedsGlobal = getFromDB<any[]>('anjo_alimentacao', []);
                           const studentFeedsToday = allFeedsGlobal.filter(f => f.idosoId === student.id && isTodayOrDemoDate(f.data));
@@ -3212,7 +3212,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   );
                 })()}
 
-                {/* 5. Telefone dps Pais / Responsável */}
+                
                 <div className="space-y-1">
                   <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider flex items-center gap-1">
                     <Phone className="w-3.5 h-3.5 text-slate-400" /> Responsáveis para Recados urgentes
@@ -3245,7 +3245,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   </div>
                 </div>
 
-                {/* 6. Diretriz de Orientação Pedagógica (Plano de Cuidado) */}
+                
                 <div className="space-y-1">
                   <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider flex items-center gap-1">
                     <ClipboardList className="w-3.5 h-3.5 text-slate-400" /> Diretrizes de Orientação e Cuidados
@@ -3255,7 +3255,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   </p>
                 </div>
 
-                {/* 7. Pediatra de Referência */}
+                
                 <div className="space-y-1">
                   <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider flex items-center gap-1">
                     <Heart className="w-3.5 h-3.5 text-slate-400" /> Pediatra de Referência do Aluno
@@ -3269,7 +3269,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   </div>
                 </div>
 
-                {/* Action button at the very bottom of Informative Tab */}
+                
                 <div className="pt-2 space-y-3">
                   {selectedStudentForDetail.id === activeIdoso.id ? (
                     <div className="p-3 bg-emerald-50 text-emerald-900 font-extrabold text-center rounded-xl border border-emerald-100 text-[11px]">
@@ -3284,7 +3284,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                     </button>
                   )}
 
-                  {/* Administrative delete area */}
+                  
                   <div className="pt-3 border-t border-slate-100 flex justify-between items-center">
                     <span className="text-[10px] text-slate-450 font-bold italic">Ficha Administrativa</span>
                     <button
@@ -3308,7 +3308,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
 
       </div>
 
-      {/* Modal para Adicionar Novo Aluno */}
+      
       {showAddStudentForm && (
         <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in" id="add-student-modal">
           <div className="bg-white rounded-3xl max-w-lg w-full border border-slate-200 p-6 space-y-4 shadow-2xl text-slate-800 max-h-[90vh] overflow-y-auto animate-scale-up">
@@ -3325,7 +3325,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
               </button>
             </div>
 
-            {/* Seleção de Abas do Modal */}
+            
             <div className="flex border-b border-slate-100 pb-1 gap-2">
               <button
                 type="button"
@@ -3488,7 +3488,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
               <form onSubmit={handleAddStudent} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 
-                {/*   SELEÇÁO DE FOTO DO ALUNO */}
+                
                 <div className="sm:col-span-2 space-y-2 border-b border-slate-100 pb-4">
                   <label className="text-[10px] uppercase font-black tracking-wider text-slate-500 block">Fotografia do Aluno *</label>
                   
@@ -3539,7 +3539,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                       </div>
                     ) : (
                       <div className="flex flex-col sm:flex-row items-center gap-4">
-                        {/* Active Selected Photo Preview */}
+                        
                         <div className="flex flex-col items-center gap-1 shrink-0">
                           <div className="w-20 h-20 bg-slate-100 rounded-2xl overflow-hidden border-2 border-indigo-250 shadow-sm flex items-center justify-center relative group">
                             <img 
@@ -3555,10 +3555,10 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                           <span className="text-[9px] text-slate-400 font-bold">Visualização</span>
                         </div>
                         
-                        {/* Photo Options: Camera, Upload, or Predefined Avatars */}
+                        
                         <div className="flex-1 space-y-3 w-full">
                           <div className="flex flex-wrap gap-2">
-                            {/* Camera Trigger */}
+                            
                             <button
                               type="button"
                               onClick={() => startCamera()}
@@ -3567,7 +3567,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                               <Camera className="w-3.5 h-3.5 text-indigo-600" /> Tirar Foto na C
                             </button>
                             
-                            {/* File Upload Trigger */}
+                            
                             <label className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-[10px] font-bold border border-slate-300 cursor-pointer transition-colors">
                               <Upload className="w-3.5 h-3.5 text-slate-600" /> Enviar Foto do Computador/Celular
                               <input 
@@ -3800,7 +3800,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
         </div>
       )}
 
-      {/* Custom Toast Banner */}
+      
       {toast && (
         <div className={`fixed top-4 right-4 z-[9999] max-w-sm bg-white shadow-xl rounded-xl p-4 flex items-center gap-3 border transition-all duration-300 transform translate-y-0 ${
           toast.type === 'warning' ? 'border-l-4 border-l-amber-500 border-slate-100' : 'border-l-4 border-l-emerald-500 border-slate-100'
@@ -3820,7 +3820,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
         </div>
       )}
 
-      {/* Custom Confirmation Modal */}
+      
       {confirmDialog && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
           <div className="relative bg-white max-w-md w-full rounded-2xl p-6 shadow-2xl border border-slate-150 space-y-4 animate-scale-up">
@@ -3855,7 +3855,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
         </div>
       )}
 
-      {/* Modal para Opções de Exclusão de Aluno (Preservar Histórico vs Apagar Tudo) */}
+      
       {deleteStudentOptions && (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-xs">
           <div className="relative bg-white max-w-lg w-full rounded-3xl p-6 shadow-2xl border border-slate-200 space-y-5 animate-scale-up text-slate-800">
@@ -3879,7 +3879,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
             </p>
 
             <div className="space-y-3">
-              {/* Opção 1: Manter Histórico */}
+              
               <button
                 type="button"
                 onClick={() => executeDeleteStudent(deleteStudentOptions.studentId, false)}
@@ -3896,7 +3896,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 </div>
               </button>
 
-              {/* Opção 2: Apagar Tudo */}
+              
               <button
                 type="button"
                 onClick={() => executeDeleteStudent(deleteStudentOptions.studentId, true)}
@@ -3927,7 +3927,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
         </div>
       )}
 
-      {/*   Security PIN Modal for Releasing Room Access */}
+      
       {showRoomPinModal && pendingRoomToSwitch && (
         <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-fade-in">
           <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-indigo-100 space-y-4 animate-scale-up">

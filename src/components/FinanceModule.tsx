@@ -202,7 +202,7 @@ export default function FinanceModule({
   return (
     <div className="space-y-6">
       
-      {/* HEADER CONTROLLER SECTION */}
+      
       <div className="bg-white rounded-3xl p-6 border border-indigo-50 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
@@ -219,7 +219,7 @@ export default function FinanceModule({
           </p>
         </div>
 
-        {/* Status Indicator Pill */}
+        
         <div className="flex items-center gap-3 self-stretch md:self-auto border-t md:border-t-0 pt-3 md:pt-0">
           <div className="text-right hidden sm:block">
             <span className="text-[10px] font-black uppercase text-slate-400 block">Status do Aluno</span>
@@ -256,16 +256,16 @@ export default function FinanceModule({
         </div>
       )}
 
-      {/* BODY GRID: METRICS & CONTROLS */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        {/* LEFT COLUMN: ACTIVE ACCOUNT OVERVIEW & PIX (8 cols) */}
+        
         <div className="lg:col-span-8 space-y-6">
           
-          {/* Bento summary row */}
+          
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             
-            {/* Box 1: Tuition fee */}
+            
             <div className="bg-gradient-to-br from-[#FFFDF9] to-[#FFFCEB] border border-amber-200 rounded-3xl p-5 shadow-3xs flex flex-col justify-between min-h-[120px]">
               <div className="flex justify-between items-start">
                 <span className="text-[10px] font-black uppercase text-amber-800 tracking-wider">Valor Mensal</span>
@@ -281,7 +281,7 @@ export default function FinanceModule({
               </div>
             </div>
 
-            {/* Box 2: Billing Day */}
+            
             <div className="bg-sky-50/40 border border-sky-100 rounded-3xl p-5 shadow-3xs flex flex-col justify-between min-h-[120px]">
               <div className="flex justify-between items-start">
                 <span className="text-[10px] font-black uppercase text-sky-800 tracking-wider">Vencimento</span>
@@ -297,7 +297,7 @@ export default function FinanceModule({
               </div>
             </div>
 
-            {/* Box 3: Plan Type */}
+            
             <div className="bg-indigo-50/40 border border-indigo-100 rounded-3xl p-5 shadow-3xs flex flex-col justify-between min-h-[120px]">
               <div className="flex justify-between items-start">
                 <span className="text-[10px] font-black uppercase text-indigo-800 tracking-wider">Modalidade</span>
@@ -317,7 +317,7 @@ export default function FinanceModule({
 
           </div>
 
-          {/* ACTIVE INVOICE BOX (Simulate payment) */}
+          
           <div className="bg-white rounded-3xl border border-indigo-50 shadow-sm overflow-hidden">
             <div className="p-5 border-b border-indigo-50 bg-indigo-50/20 flex justify-between items-center">
               <h3 className="text-sm font-black text-indigo-950 flex items-center gap-1.5">
@@ -370,7 +370,7 @@ export default function FinanceModule({
 
                   {showQrCode && (
                     <div className="flex flex-col items-center justify-center p-4 bg-white border border-slate-100 rounded-xl space-y-2 max-w-[200px] mx-auto shadow-3xs">
-                      {/* Simple CSS simulated QR code for pixel-perfect look without outer packages */}
+                      
                       <div className="w-32 h-32 bg-slate-100 border-4 border-slate-800 p-2 relative flex flex-wrap">
                         <div className="absolute top-2 left-2 w-8 h-8 bg-slate-800 border-2 border-white" />
                         <div className="absolute top-2 right-2 w-8 h-8 bg-slate-800 border-2 border-white" />
@@ -385,7 +385,7 @@ export default function FinanceModule({
                     </div>
                   )}
 
-                  {/* PIX copy field */}
+                  
                   <div className="flex gap-2">
                     <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 font-mono text-[10px] text-slate-600 select-all truncate">
                       {pixMockCode}
@@ -433,7 +433,7 @@ export default function FinanceModule({
             </div>
           </div>
 
-          {/* HISTORICO DE FATURAS */}
+          
           <div className="bg-white rounded-3xl border border-indigo-50 shadow-sm p-6 space-y-4">
             <h3 className="text-sm font-black text-indigo-950 flex items-center gap-1.5">
               <Calendar className="w-4.5 h-4.5 text-indigo-600" /> Histórico de Faturamento & Recibos
@@ -490,10 +490,10 @@ export default function FinanceModule({
 
         </div>
 
-        {/* RIGHT COLUMN: ADMINISTRATIVE CONFIGURATION (4 cols) */}
+        
         <div className="lg:col-span-4 space-y-6">
           
-          {/* Admin adjustments config block */}
+          
           <div className="bg-white rounded-3xl border border-indigo-50 shadow-sm p-6 space-y-5">
             <div className="border-b border-indigo-50 pb-3">
               <h3 className="text-sm font-black text-indigo-950 flex items-center gap-1.5">
@@ -507,7 +507,7 @@ export default function FinanceModule({
             {isAdminOrDirector ? (
               <form onSubmit={handleUpdateBillingSettings} className="space-y-4">
                 
-                {/* Tuition Field */}
+                
                 <div className="space-y-1.5">
                   <label className="text-xs font-black text-slate-700 block">
                     Valor Mensal da Turma (R$)
@@ -527,7 +527,7 @@ export default function FinanceModule({
                   </div>
                 </div>
 
-                {/* Day of payment Field */}
+                
                 <div className="space-y-1.5">
                   <label className="text-xs font-black text-slate-700 block">
                     Dia do Vencimento Recorrente
@@ -544,7 +544,7 @@ export default function FinanceModule({
                   </select>
                 </div>
 
-                {/* Faturamento Mode */}
+                
                 <div className="space-y-1.5">
                   <label className="text-xs font-black text-slate-700 block">
                     Tipo de Plano do Aluno
@@ -594,7 +594,7 @@ export default function FinanceModule({
             )}
           </div>
 
-          {/* Educational Finance Explanation (Anti-slop compliant, clean and direct) */}
+          
           <div className="bg-gradient-to-br from-indigo-950 to-[#2A2359] border border-indigo-900 text-white rounded-3xl p-6 shadow-sm space-y-4">
             <h3 className="text-xs font-black uppercase tracking-widest text-amber-300">
               Sobre o Faturamento Anjinho®

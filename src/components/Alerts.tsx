@@ -184,7 +184,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
 
   return (
     <div className="space-y-6">
-      {/* top info block */}
+      
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
         <div>
           <h2 className={`text-xl font-bold flex items-center gap-2 ${isDark ? 'text-white' : 'text-slate-800'}`}>
@@ -206,7 +206,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
         </button>
       </div>
 
-      {/* Manual Quick Dispatch Sandbox for Testing Templates */}
+      
       <div className={`p-5 rounded-2xl border space-y-4 ${
         isDark ? 'bg-[#161e2e] border-slate-750' : 'bg-white border-soft-gray'
       }`}>
@@ -262,10 +262,10 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
         </div>
       </div>
 
-      {/* High-Fidelity Phone/WhatsApp Simulator Frame */}
+      
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         
-        {/* Left checklist panel of family triggers info */}
+        
         <div className={`border p-5 rounded-2xl space-y-4 md:col-span-1 ${
           isDark ? 'bg-[#161e2e] border-slate-750' : 'bg-white border-soft-gray'
         }`}>
@@ -314,11 +314,11 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
           </div>
         </div>
 
-        {/* Right Phone layout with WhatsApp chat history */}
+        
         <div className={`md:col-span-2 rounded-3xl overflow-hidden shadow-lg flex flex-col h-[520px] border ${
           isDark ? 'bg-[#0f172a] border-slate-750' : 'bg-[#efeae2] border-[#d1d7db]'
         }`}>
-          {/* Simulated WhatsApp conversation top header bar */}
+          
           <div className={`p-4 flex items-center justify-between shrink-0 ${
             isDark ? 'bg-[#202c33] text-[#e9edef]' : 'bg-[#00a884] text-white'
           }`}>
@@ -350,7 +350,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
             </span>
           </div>
 
-          {/* Chat bubbles list area */}
+          
           <div className={`flex-1 overflow-y-auto p-4 space-y-3 flex flex-col relative ${
             isDark ? 'bg-[#0b141a]' : 'bg-[#efeae2]'
           }`} id="whatsapp-chat-container">
@@ -461,7 +461,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
             })()}
           </div>
 
-          {/* Simple mock texting input bar at bottom */}
+          
           <div className={`p-2.5 border-t flex items-center gap-3 shrink-0 ${
             isDark ? 'bg-[#202c33] border-[#2f3b43]' : 'bg-[#f0f2f5] border-[#e9edef]'
           }`}>
@@ -476,7 +476,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
 
       </div>
 
-      {/* Broadcast Modal for Mass Dispatches */}
+      
       {selectedBroadcastLog && (() => {
         const list = getBroadcastList(selectedBroadcastLog);
         const filteredList = list.filter(item => 
@@ -589,7 +589,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
         );
       })()}
 
-      {/* Custom Confirmation Modal for Clearing History */}
+      
       {showClearConfirm && (
         <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in shadow-2xl">
           <div className="bg-white rounded-3xl p-6 border border-slate-200 max-w-md w-full shadow-2xl space-y-4 text-left">

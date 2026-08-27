@@ -208,7 +208,7 @@ export default function EditProfileModal({
     <div className="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto animate-fade-in">
       <div className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 max-w-lg w-full overflow-hidden text-slate-850 dark:text-slate-100 my-8">
         
-        {/* Modal Header */}
+        
         <div className="p-5 bg-gradient-to-r from-indigo-900 via-indigo-950 to-slate-900 text-white flex items-center justify-between border-b border-indigo-800/50">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center border border-white/15 shrink-0">
@@ -233,7 +233,7 @@ export default function EditProfileModal({
           </button>
         </div>
 
-        {/* Form Body */}
+        
         <form onSubmit={handleSave} className="p-6 space-y-5 max-h-[80vh] overflow-y-auto">
           
           {successMsg && (
@@ -250,7 +250,7 @@ export default function EditProfileModal({
             </div>
           )}
 
-          {/* Photo Preview & Options */}
+          
           <div className="space-y-3 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
             <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 block flex items-center gap-1.5">
               <ImageIcon className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
@@ -328,7 +328,7 @@ export default function EditProfileModal({
                     </label>
                   </div>
 
-                  {/* URL Input */}
+                  
                   <input
                     type="text"
                     value={foto.startsWith('data:') ? '' : foto}
@@ -337,7 +337,7 @@ export default function EditProfileModal({
                     className="w-full px-3 py-1.5 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500/20"
                   />
 
-                  {/* Predefined Avatars */}
+                  
                   <div>
                     <span className="text-[10px] font-bold text-slate-500 block mb-1">Ou escolha um avatar predefinido:</span>
                     <div className="flex gap-1.5 overflow-x-auto pb-1">
@@ -360,7 +360,7 @@ export default function EditProfileModal({
             )}
           </div>
 
-          {/* User Full Name */}
+          
           <div className="space-y-1">
             <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 block flex items-center gap-1.5">
               <User className="w-3.5 h-3.5 text-indigo-500" /> Nome Completo
@@ -375,7 +375,7 @@ export default function EditProfileModal({
             />
           </div>
 
-          {/* User Email & Phone Grid */}
+          
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
               <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 block flex items-center gap-1.5">
@@ -404,7 +404,7 @@ export default function EditProfileModal({
             </div>
           </div>
 
-          {/* User PIN & Role Info */}
+          
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
               <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 block flex items-center gap-1.5">
@@ -444,7 +444,7 @@ export default function EditProfileModal({
             </div>
           </div>
 
-          {/* Parentesco / Vínculo (if familiar or desired) */}
+          
           <div className="space-y-1">
             <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 block flex items-center gap-1.5">
               <Heart className="w-3.5 h-3.5 text-rose-500" /> Parentesco / Vínculo / Cargo
@@ -458,7 +458,7 @@ export default function EditProfileModal({
             />
           </div>
 
-          {/* Observações / Bio */}
+          
           <div className="space-y-1">
             <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 block">
               Observações / Bio
@@ -472,7 +472,7 @@ export default function EditProfileModal({
             />
           </div>
 
-          {/* Buttons Footer */}
+          
           <div className="pt-3 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-2">
             <button
               type="button"

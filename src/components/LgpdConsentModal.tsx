@@ -57,7 +57,7 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
          className="bg-white rounded-3xl max-w-xl w-full p-6 md:p-8 border border-slate-200 shadow-2xl space-y-6 my-8 animate-slide-up"
          id="lgpd-consent-card"
       >
-        {/* Header decoration */}
+        
         <div className="flex items-center gap-3 border-b border-slate-100 pb-4" id="lgpd-header">
           <div className="p-3 bg-emerald-50 rounded-2xl text-emerald-600 shrink-0">
             <Lock className="w-6 h-6" />
@@ -68,7 +68,7 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
           </div>
         </div>
 
-        {/* Informative text & scrolling terms document */}
+        
         <div className="space-y-4" id="lgpd-description-block">
           <div className="bg-slate-50 border border-slate-200/60 rounded-2xl p-4 space-y-3">
             <p className="text-xs text-slate-600 leading-normal">
@@ -138,7 +138,7 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
           </div>
         </div>
 
-        {/* Checklist checkboxes */}
+        
         <div className="space-y-3.5 pt-1" id="lgpd-consent-checkboxes">
           
           <label className="flex items-start gap-3 cursor-pointer group" id="lgpd-check-sensivel">
@@ -212,7 +212,7 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
 
         </div>
 
-        {/* Footer & Active Actions */}
+        
         <div className="border-t border-slate-100 pt-5 flex items-center justify-between gap-4" id="lgpd-footer">
           <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400">
             <ShieldCheck className="w-4 h-4 text-emerald-500" />

@@ -836,7 +836,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
   return (
     <div className={`space-y-6 ${isDark ? 'text-slate-100' : 'text-slate-800'}`}>
       
-      {/* Upper banner section */}
+      
       <div className={`p-6 bg-gradient-to-br ${
         isDark ? 'from-indigo-950 to-slate-900 border-indigo-900' : 'from-indigo-600 to-indigo-800 text-white'
       } rounded-3xl border shadow-lg relative overflow-hidden`} id="admin-banner-panel">
@@ -857,7 +857,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         </div>
       </div>
 
-      {/*   DEV MAIN MODE SWITCHER: FATURAMENTO vs CRM ANJINHO ESCOLAR BAURU */}
+      
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-100 dark:bg-slate-900 p-2 rounded-2xl border border-slate-200 dark:border-slate-800">
         <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
           <button
@@ -908,11 +908,11 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         </div>
       )}
 
-      {/* ------------------- TAB 1: FATURAMENTO & ASSINATURAS GENERAL ------------------- */}
+      
       {adminActiveTab === 'faturamento' && (
         <div className="space-y-6">
 
-      {/* KPI Stats Cards row */}
+      
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4" id="admin-kpi-row">
         
         <div className={`p-5 rounded-2xl border ${
@@ -976,7 +976,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
 
       </div>
 
-      {/*   PANEL: SUBSCRIPTION MANAGEMENT & FAMILIAR ACCESS CONTROL */}
+      
       <div className={`${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'} rounded-3xl border p-6 space-y-6 shadow-md`}>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-3">
           <div className="space-y-1">
@@ -990,7 +990,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           </div>
           
           <div className="flex flex-wrap items-center gap-3">
-            {/* Senior selector dropdown */}
+            
             <div className="flex items-center gap-2">
               <label className="text-xs font-bold text-slate-500 shrink-0">Selecionar Aluno/Assistido:</label>
               <select
@@ -1015,7 +1015,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           </div>
         </div>
 
-        {/* ⚙ CONFIGURAÇÁO DO PREÇO PADRÁO GERAL */}
+        
         <div className={`p-4 rounded-2xl border ${
           isDark ? 'bg-indigo-950/20 border-indigo-900/40 text-indigo-100' : 'bg-indigo-50 border-indigo-100'
         } space-y-3`}>
@@ -1053,7 +1053,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           </div>
         </div>
 
-        {/* ⚙ CONFIGURAÇÁO DA CHAVE PIX DO DESENVOLVEDOR (RECEBER PAGAMENTOS) */}
+        
         <div className={`p-4 rounded-2xl border ${
           isDark ? 'bg-slate-800/40 border-slate-755 text-indigo-100' : 'bg-emerald-50/50 border-emerald-150'
         } space-y-3`}>
@@ -1099,7 +1099,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         {selectedIdosoId ? (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             
-            {/* COLUMN 1: LIVE SIMULATOR SWITCH */}
+            
             <div className={`${isDark ? 'bg-slate-850 border-slate-750' : 'bg-slate-50/75 border-slate-200'} border rounded-2xl p-4 space-y-4`}>
               <span className="text-xs font-bold text-slate-600 block uppercase tracking-wider">
                   Simulador de Inadimplência
@@ -1155,7 +1155,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               </div>
             </div>
 
-            {/* COLUMN 2: SUB CONFIG FORM */}
+            
             <div className={`border rounded-2xl p-4 space-y-4 ${
               isDark ? 'bg-slate-850 border-slate-750' : 'bg-white border-slate-200'
             }`}>
@@ -1294,7 +1294,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               </form>
             </div>
 
-            {/* COLUMN 3: REAL WORLD EXPLANATION & ARCHITECTURE */}
+            
             <div className={`border rounded-2xl p-4 space-y-3 ${
               isDark ? 'bg-indigo-950/20 border-indigo-900/40 text-indigo-200' : 'bg-indigo-50/50 border-indigo-150 text-indigo-950'
             }`}>
@@ -1332,7 +1332,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           </div>
         )}
 
-        {/* SIMULATED BILLING HISTORY LIST */}
+        
         <div className={`border rounded-2xl p-4 space-y-3 ${
           isDark ? 'bg-slate-850 border-slate-750' : 'bg-white border-slate-150'
         }`}>
@@ -1393,12 +1393,12 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
 
       </div>
 
-      {/* Main filter & database table card block */}
+      
       <div className={`p-6 rounded-3xl border ${
         isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
       } shadow-md space-y-5`} id="admin-table-container">
         
-        {/* Table header menu */}
+        
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
           <div className="space-y-1">
             <h3 className="text-base font-extrabold text-slate-800">Assinaturas e Trace de LGPD</h3>
@@ -1416,7 +1416,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               <RefreshCw className="w-4 h-4 text-slate-500" />
             </button>
 
-            {/* Pivot selectors */}
+            
             <div className="inline-flex bg-slate-100 p-1 rounded-xl gap-1 shrink-0">
               <button
                 onClick={() => setFilterMode('todos')}
@@ -1444,7 +1444,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               </button>
             </div>
 
-            {/*   EXPORT COMMAND TRIGGER */}
+            
             <button
               onClick={handleExportToCSV}
               className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer shadow-xs transition-transform active:scale-95"
@@ -1456,7 +1456,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           </div>
         </div>
 
-        {/* Search bar row */}
+        
         <div className="relative">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
           <input
@@ -1470,7 +1470,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           />
         </div>
 
-        {/* Database Grid / Table */}
+        
         <div className="overflow-x-auto border border-slate-100 rounded-2xl shadow-3xs">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
@@ -1642,7 +1642,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
 
       </div>
 
-      {/*   MÁQUINA DE VENDAS: JORNADA DE COMUNICAÇÁO DE 30 DIAS */}
+      
       <div className={`p-6 rounded-3xl border ${
         isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200'
       } shadow-md space-y-6`} id="admin-sales-machine-panel">
@@ -1660,7 +1660,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
             </p>
           </div>
 
-          {/* User selector */}
+          
           <div className="shrink-0 flex flex-col items-start gap-1.5">
             <label className="text-[10px] font-black uppercase text-slate-400">Selecionar Tutor Alvo:</label>
             <select
@@ -1689,7 +1689,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         {selectedJourneyUser ? (
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             
-            {/* Milestone 1: Dia 1 */}
+            
             <div className={`p-4 rounded-2xl border flex flex-col justify-between space-y-4 ${
               isDark ? 'bg-slate-850/50 border-slate-755' : 'bg-slate-50/50 border-slate-150'
             }`}>
@@ -1704,7 +1704,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   Acolher o tutor na ativação do perfil grátis, gerando simpatia e demonstrando a utilidade do aplicativo desde o primeiro minuto.
                 </p>
 
-                {/* Mock Phone Bubble */}
+                
                 <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-3 text-[11px] leading-relaxed text-slate-700 text-left font-medium select-all">
                   {getJourneyMessage(1, selectedJourneyUser)}
                 </div>
@@ -1739,7 +1739,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               </div>
             </div>
 
-            {/* Milestone 2: Dia 15 */}
+            
             <div className={`p-4 rounded-2xl border flex flex-col justify-between space-y-4 ${
               isDark ? 'bg-slate-850/50 border-slate-755' : 'bg-slate-50/50 border-slate-150'
             }`}>
@@ -1754,7 +1754,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   Garantir que o tutor conheça as abas mais importantes (Medicamentos, Sinais Vitais) para que ele perceba o valor diário.
                 </p>
 
-                {/* Mock Phone Bubble */}
+                
                 <div className="bg-amber-500/10 border border-amber-500/20 rounded-2xl p-3 text-[11px] leading-relaxed text-slate-700 text-left font-medium select-all">
                   {getJourneyMessage(15, selectedJourneyUser)}
                 </div>
@@ -1789,7 +1789,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               </div>
             </div>
 
-            {/* Milestone 3: Dia 25 */}
+            
             <div className={`p-4 rounded-2xl border flex flex-col justify-between space-y-4 ${
               isDark ? 'bg-slate-850/50 border-slate-755' : 'bg-slate-50/50 border-slate-150'
             }`}>
@@ -1804,7 +1804,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   Avisar de forma amigável que faltam apenas 5 dias para o fim do teste e fornecer a chave Pix para renovar sem pausas de segurança.
                 </p>
 
-                {/* Mock Phone Bubble */}
+                
                 <div className="bg-rose-500/10 border border-rose-500/20 rounded-2xl p-3 text-[11px] leading-relaxed text-slate-700 text-left font-medium select-all">
                   {getJourneyMessage(25, selectedJourneyUser)}
                 </div>
@@ -1839,7 +1839,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               </div>
             </div>
 
-            {/* Milestone 4: Dia 30 */}
+            
             <div className={`p-4 rounded-2xl border flex flex-col justify-between space-y-4 ${
               isDark ? 'bg-slate-850/50 border-slate-755' : 'bg-slate-50/50 border-slate-150'
             }`}>
@@ -1854,7 +1854,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   Bloquear o painel de faturamento no aplicativo de forma automática e enviar uma cobrança firme, mas polida, para reativação via Pix.
                 </p>
 
-                {/* Mock Phone Bubble */}
+                
                 <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-3 text-[11px] leading-relaxed text-slate-700 text-left font-medium select-all">
                   {getJourneyMessage(30, selectedJourneyUser)}
                 </div>
@@ -1903,7 +1903,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
 
       </div>
 
-      {/*   CENTRAL DE COMERCIALIZAÇÁO, TESTE & QR CODE */}
+      
       <div className={`p-6 rounded-3xl border ${
         isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200'
       } shadow-md space-y-6`} id="admin-marketing-panel">
@@ -1919,7 +1919,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* Col 1: Marketing & Sales Operational Guide */}
+          
           <div className="lg:col-span-7 space-y-5">
             <h4 className="text-sm font-extrabold text-slate-850">Como comercializar e controlar o acesso do app?</h4>
             
@@ -1980,7 +1980,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
 
           </div>
 
-          {/* Col 2: Interactive Real-Time Custom QR Code Generator Card */}
+          
           <div className="lg:col-span-5 flex flex-col items-center">
             <div className={`w-full max-w-sm p-6 rounded-2xl border ${
               isDark ? 'bg-slate-850 border-slate-750' : 'bg-slate-50 border-slate-200'
@@ -1991,7 +1991,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                 <h5 className="text-xs font-black text-slate-800">QR Code e Link de Divulgação</h5>
               </div>
 
-              {/* URL Overrider */}
+              
               <div className="space-y-1">
                 <label className="text-[10px] font-black uppercase text-slate-400">Link Destino (Web App)</label>
                 <input 
@@ -2005,7 +2005,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                 />
               </div>
 
-              {/* Suffix Selection */}
+              
               <div className="space-y-1.5">
                 <label className="text-[10px] font-black uppercase text-slate-400">Rastrear canal promocional:</label>
                 <div className="grid grid-cols-2 gap-1.5">
@@ -2052,7 +2052,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                 </div>
               </div>
 
-              {/* Target Profile Selector */}
+              
               <div className="space-y-1.5">
                 <label className="text-[10px] font-black uppercase text-slate-400">Perfil Alvo ao escancear:</label>
                 <div className="grid grid-cols-2 gap-1.5">
@@ -2079,7 +2079,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                 </div>
               </div>
 
-              {/* Visual QR Code Image representation */}
+              
               {(() => {
                 const base = overrideUrl || (typeof window !== 'undefined' ? window.location.origin : 'https://anjo-cuidador.app');
                 const cleanBase = base.endsWith('/') ? base : base + '/';
@@ -2127,7 +2127,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                 return (
                   <div className="space-y-4 pt-1 flex flex-col items-center">
                     
-                    {/* Glassmorphic border holder */}
+                    
                     <div className="bg-white p-4.5 rounded-2xl shadow-md border border-slate-150 relative group flex flex-col items-center">
                       <img 
                         src={qrServiceUrl} 
@@ -2193,7 +2193,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
 
       </div>
 
-      {/* Automatic Integration Architecture & Guide Card */}
+      
       <div className={`p-6 rounded-3xl border ${
         isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-205'
       } space-y-4 shadow-2xs`} id="admin-integration-educative">
@@ -2275,7 +2275,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
         )}
       </div>
 
-      {/*   REAL-TIME GENERAL LOGS AUDITOR: SAÚDE, SONO & FRALDA */}
+      
       <div className={`p-6 rounded-3xl border ${
         isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-205'
       } shadow-md space-y-5`} id="admin-sinais-realtime-monitor">
@@ -2304,7 +2304,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
               <RefreshCw className="w-4 h-4 text-slate-500" />
             </button>
 
-            {/* Mode Segmented Controls */}
+            
             <div className="inline-flex bg-slate-100 p-1 rounded-xl gap-1 shrink-0">
               <button
                 onClick={() => setSinaisFilterMode('todos')}
@@ -2342,7 +2342,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
           </div>
         </div>
 
-        {/* Search Input for signals */}
+        
         <div className="relative">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4.5 h-4.5 text-slate-400" />
           <input
@@ -2356,7 +2356,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
           />
         </div>
 
-        {/* Signals Table */}
+        
         <div className="overflow-x-auto border border-slate-100 rounded-2xl shadow-3xs">
           <table className="w-full text-left text-xs border-collapse">
             <thead>
@@ -2546,10 +2546,10 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
       </div>
       )}
 
-      {/* ------------------- TAB 2: CRM ANJINHO ESCOLAR BAURU (FAMÍLIAS & FUNIL) ------------------- */}
+      
       {adminActiveTab === 'crm_escolar' && (
         <div className="space-y-6 animate-fade-in">
-          {/* Sub-navigation for CRM Bauru */}
+          
           <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
             <button
               type="button"
@@ -2617,10 +2617,10 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
             </button>
           </div>
 
-          {/* CRM SUB-TAB 1: DASHBOARD */}
+          
           {crmSubTab === 'dashboard' && (
             <div className="space-y-6">
-              {/* Top KPIs Bauru */}
+              
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white shadow-md space-y-1">
                   <span className="text-[10px] font-black uppercase opacity-80 tracking-wider">Famílias Ativas Bauru</span>
@@ -2652,9 +2652,9 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                 </div>
               </div>
 
-              {/* Charts Grid */}
+              
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Distribution by School in Bauru */}
+                
                 <div className="p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xs space-y-4">
                   <div>
                     <h4 className="text-sm font-black text-slate-800 dark:text-white flex items-center gap-2">
@@ -2683,7 +2683,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                   </div>
                 </div>
 
-                {/* Acquisition Channel Pie */}
+                
                 <div className="p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xs space-y-4">
                   <div>
                     <h4 className="text-sm font-black text-slate-800 dark:text-white flex items-center gap-2">
@@ -2731,10 +2731,10 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
             </div>
           )}
 
-          {/* CRM SUB-TAB 2: FAMÍLIAS */}
+          
           {crmSubTab === 'familias' && (
             <div className="space-y-4">
-              {/* Filter controls */}
+              
               <div className="p-4 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xs grid grid-cols-1 md:grid-cols-4 gap-3">
                 <div className="relative">
                   <Search className="w-4 h-4 absolute left-3 top-3 text-slate-400" />
@@ -2790,7 +2790,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                 </div>
               </div>
 
-              {/* Families Table */}
+              
               <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-xs overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
@@ -2888,7 +2888,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
             </div>
           )}
 
-          {/* CRM SUB-TAB 3: ORIGEM & DIVULGAÇÁO BAURU */}
+          
           {crmSubTab === 'origem' && (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl space-y-3">
@@ -2932,7 +2932,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
             </div>
           )}
 
-          {/* CRM SUB-TAB 4: JORNADA DE ENGAJAMENTO */}
+          
           {crmSubTab === 'jornada' && (
             <div className="p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl space-y-4">
               <h4 className="font-black text-slate-800 dark:text-white text-base">
@@ -2964,7 +2964,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
             </div>
           )}
 
-          {/* CRM SUB-TAB 5: FINANCEIRO BAURU */}
+          
           {crmSubTab === 'financeiro' && (
             <div className="p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl space-y-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
@@ -3016,7 +3016,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
         </div>
       )}
 
-      {/* ➕ MODAL DE CADASTRO DE NOVA FAMÍLIA EM BAURU */}
+      
       {crmNewFamilyModal && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in overflow-y-auto">
           <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4 my-auto">
@@ -3162,7 +3162,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
         </div>
       )}
 
-      {/*   MODAL DE COBRANÇA E COMERCIALIZAÇÁO WHATSAPP */}
+      
       {billingModalUser && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-start justify-center p-2 sm:p-4 z-50 animate-fade-in overflow-y-auto">
           <div className={`rounded-3xl p-5 sm:p-6 border max-w-lg w-full shadow-2xl relative space-y-4 my-auto ${
@@ -3186,7 +3186,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
             </div>
 
             <div className="space-y-4 text-xs font-medium leading-relaxed text-left">
-              {/* Recipient info badge */}
+              
               <div className={`p-3 rounded-2xl border flex items-center gap-3 ${
                 accessibilitySettings.darkMode ? 'bg-indigo-950/20 border-indigo-900/50 text-indigo-300' : 'bg-indigo-50/50 border-indigo-100 text-indigo-800'
               }`}>
@@ -3197,7 +3197,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                 </div>
               </div>
 
-              {/* PIX Billing settings card */}
+              
               <div className={`p-4 rounded-2xl border space-y-3 ${
                 accessibilitySettings.darkMode ? 'bg-slate-850/50 border-slate-755' : 'bg-slate-50 border-slate-200'
               }`}>
@@ -3231,7 +3231,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                 </div>
               </div>
 
-              {/* Template selection tabs */}
+              
               <div className="space-y-1.5">
                 <label className="text-[10px] font-black uppercase text-slate-450 text-slate-500 tracking-wide block">Escolha o Tipo de Notificação</label>
                 <div className="grid grid-cols-3 gap-1.5 bg-slate-100 p-1 rounded-xl">
@@ -3271,7 +3271,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                 </div>
               </div>
 
-              {/* Text preview edit area */}
+              
               <div className="space-y-1">
                 <div className="flex justify-between items-center">
                   <label className="text-[10px] font-black uppercase text-slate-500 tracking-wide">Mensagem Pronta para WhatsApp</label>
@@ -3287,7 +3287,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                 />
               </div>
 
-              {/* Actions buttons */}
+              
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2 border-t border-slate-150">
                 <button
                   type="button"

@@ -241,7 +241,7 @@ export default function FinancePaywall({
     <div className={`max-w-3xl mx-auto my-6 p-5 md:p-8 rounded-3xl border shadow-2xl text-center space-y-6 relative overflow-hidden transition-all ${
       isDark ? 'bg-slate-900 border-slate-800 text-white shadow-black/40' : 'bg-white border-slate-200 shadow-xl'
     }`}>
-      {/* Absolute visual premium indicator line */}
+      
       <div className="absolute top-0 left-0 right-0 h-2.5 bg-gradient-to-r from-indigo-500 via-emerald-500 to-teal-500"></div>
       
       <div className="flex flex-col items-center space-y-2">
@@ -264,7 +264,7 @@ export default function FinancePaywall({
         </p>
       </div>
 
-      {/*   ANCORAGEM COMERCIAL: ESCOLHA DE PLANOS */}
+      
       <div className="space-y-3 text-left">
         <span className="text-[10px] font-black uppercase tracking-wider text-indigo-600 flex items-center gap-1">
           <TrendingUp className="w-3.5 h-3.5" />
@@ -273,7 +273,7 @@ export default function FinancePaywall({
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
           
-          {/* Plano Mensal */}
+          
           <button
             type="button"
             onClick={() => setSelectedPlan('mensal')}
@@ -303,7 +303,7 @@ export default function FinancePaywall({
             </p>
           </button>
 
-          {/* Plano Semestral */}
+          
           <button
             type="button"
             onClick={() => setSelectedPlan('semestral')}
@@ -329,7 +329,7 @@ export default function FinancePaywall({
             </p>
           </button>
 
-          {/* Plano Anual */}
+          
           <button
             type="button"
             onClick={() => setSelectedPlan('anual')}
@@ -358,7 +358,7 @@ export default function FinancePaywall({
         </div>
       </div>
 
-      {/*   DADOS DO PAGAMENTO INTEGRADO & WEBHOOK AUTOMÁTICO */}
+      
       <div className={`p-5 md:p-6 rounded-3xl border ${
         isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50/50 border-slate-200'
       } space-y-4`}>
@@ -374,7 +374,7 @@ export default function FinancePaywall({
           </span>
         </div>
 
-        {/* Dynamic customized CPF input to show anchoring */}
+        
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
           <div className="space-y-1">
             <label className="text-[10px] font-black text-slate-400 uppercase">CPF do Pagador (Ancorar no Pix)</label>
@@ -406,10 +406,10 @@ export default function FinancePaywall({
           </div>
         </div>
 
-        {/* Dynamic interactive payment block */}
+        
         <div className="flex flex-col md:flex-row items-center gap-6 pt-2">
           
-          {/* Visual Interactive QR Code */}
+          
           <div className={`p-3 rounded-2xl border-2 border-slate-200 bg-white flex flex-col items-center justify-center shrink-0 shadow-xs relative group ${
             loading ? 'opacity-40' : ''
           }`}>
@@ -428,13 +428,13 @@ export default function FinancePaywall({
               ))}
             </div>
             
-            {/* Core logo watermark */}
+            
             <div className="absolute inset-0 m-auto w-10 h-10 bg-indigo-600 border-2 border-white rounded-xl flex items-center justify-center text-white text-[9px] font-black uppercase tracking-tighter">
               PIX
             </div>
           </div>
 
-          {/* Copia e Cola copy mechanism */}
+          
           <div className="flex-1 space-y-3 text-left w-full">
             <div className="space-y-1">
               <span className="text-[10px] font-black uppercase text-slate-500">Chave Copia e Cola do {activePlan.nome}</span>
@@ -466,7 +466,7 @@ export default function FinancePaywall({
               </div>
             </div>
 
-            {/* Simulated instant activation trigger */}
+            
             <div className="flex flex-col sm:flex-row gap-2">
               <button
                 type="button"
@@ -487,7 +487,7 @@ export default function FinancePaywall({
                 )}
               </button>
 
-              {/*   Automação Salvadora: WhatsApp dispatch button */}
+              
               <button
                 type="button"
                 onClick={handleSendReminderToWhatsApp}
@@ -512,7 +512,7 @@ export default function FinancePaywall({
 
       </div>
 
-      {/* Access info banner details */}
+      
       <div className={`p-4 rounded-2xl border text-left space-y-2.5 text-xs font-medium leading-relaxed ${
         isDark ? 'bg-slate-950/40 border-slate-850' : 'bg-slate-50 border-slate-200'
       }`}>

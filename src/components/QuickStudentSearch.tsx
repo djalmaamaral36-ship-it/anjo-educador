@@ -168,7 +168,7 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
   return (
     <div ref={containerRef} className={`relative w-full ${className}`}>
       
-      {/*   SEARCH INPUT FIELD */}
+      
       <div className="relative flex items-center">
         <Search className={`w-4 h-4 absolute left-3.5 pointer-events-none transition-colors ${
           compact
@@ -200,7 +200,7 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
           }`}
         />
 
-        {/* Action icons right side inside input: Voice + Clear */}
+        
         <div className="absolute right-2.5 flex items-center gap-1">
           {searchTerm && (
             <button
@@ -226,7 +226,7 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
         </div>
       </div>
 
-      {/*   DROPDOWN RESULTS POPOVER */}
+      
       {isOpen && (
         <div className={`absolute left-0 right-0 top-full mt-2 z-50 rounded-3xl border shadow-2xl overflow-hidden animate-fade-in ${
           darkMode
@@ -234,14 +234,14 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
             : 'bg-white border-slate-200 text-slate-900'
         }`}>
           
-          {/* Header section in Dropdown */}
+          
           <div className="p-3 bg-slate-50 dark:bg-slate-800/80 border-b border-slate-200/60 dark:border-slate-800 flex items-center justify-between gap-2">
             <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-amber-500" />
               <span>{isEscolar ? 'Alunos Encontrados' : 'Assistidos Encontrados'} ({filteredStudents.length})</span>
             </span>
 
-            {/* Room Filter Pills */}
+            
             <div className="hidden sm:flex items-center gap-1 overflow-x-auto max-w-xs scrollbar-none">
               {roomFilterOptions.slice(0, 4).map(room => (
                 <button
@@ -268,7 +268,7 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
             </button>
           </div>
 
-          {/* List of matching students */}
+          
           <div className="max-h-80 overflow-y-auto divide-y divide-slate-100 dark:divide-slate-800 p-1">
             {filteredStudents.length === 0 ? (
               <div className="p-6 text-center space-y-2">
@@ -361,7 +361,7 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
             )}
           </div>
 
-          {/* Footer note in popover */}
+          
           <div className="p-2.5 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
             <span>  Clique para selecionar o aluno instantaneamente</span>
             <span className="font-mono text-[9px]">ESC para fechar</span>

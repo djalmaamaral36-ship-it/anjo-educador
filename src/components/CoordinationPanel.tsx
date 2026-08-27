@@ -439,7 +439,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
   return (
     <div className="space-y-6 max-w-7xl mx-auto p-4 md:p-6 animate-fade-in text-left">
       
-      {/*   Welcome and Header */}
+      
       <div className={`p-6 rounded-3xl border ${
         isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-gradient-to-br from-indigo-50 via-white to-pink-50/20 border-indigo-100 text-slate-800'
       } shadow-xs relative overflow-hidden`}>
@@ -461,7 +461,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
           </div>
         </div>
 
-        {/* Classroom Quick Filter Row */}
+        
         <div className="mt-5 pt-4 border-t border-slate-100/10 space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Turma de Trabalho:</span>
@@ -499,7 +499,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
         </div>
       </div>
 
-      {/*   Tabs Controller */}
+      
       <div className="flex border-b border-slate-100 dark:border-slate-800 gap-1.5 pb-0">
         <button
           onClick={() => setActiveTab('early_alerts')}
@@ -533,11 +533,11 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
         </button>
       </div>
 
-      {/*   SECTION 1: Identificação Precoce de Atraso no Desenvolvimento */}
+      
       {activeSubTab === 'early_alerts' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
-          {/* Left Column: Alarms Register / Guidelines (4 cols) */}
+          
           <div className="lg:col-span-4 space-y-4">
             <div className={`p-4 rounded-3xl border space-y-3.5 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-100'}`}>
               <h4 className="text-xs font-extrabold uppercase text-indigo-600 flex items-center gap-1.5">
@@ -575,10 +575,10 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
             </div>
           </div>
 
-          {/* Right Column: Students Checklist and Alerts List (8 cols) */}
+          
           <div className="lg:col-span-8 space-y-6">
             
-            {/* Quick Trigger Button for a specific student */}
+            
             <div className={`p-5 rounded-3xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-150'} space-y-4`}>
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100/15 pb-3">
                 <div>
@@ -784,7 +784,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
               )}
             </div>
 
-            {/* List of Registered Early Alerts */}
+            
             <div className="space-y-4 text-left">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <h4 className="text-xs font-extrabold uppercase text-slate-400 tracking-wider">
@@ -876,7 +876,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                           </span>
                         </div>
 
-                        {/* Welcoming message generator inside the card */}
+                        
                         <div className="bg-indigo-50/50 dark:bg-indigo-950/20 p-2.5 rounded-xl border border-indigo-100/10 text-left space-y-1.5">
                           <span className="text-[8px] font-black uppercase text-indigo-600 dark:text-indigo-400 tracking-wider">  Mensagem de Acolhimento Sugerida</span>
                           <p className="text-[8.5px] leading-relaxed text-slate-500 italic">
@@ -904,7 +904,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
         </div>
       )}
 
-      {/*   SECTION 2: Encaminhamentos Pedagógicos */}
+      
       {activeSubTab === 'referrals' && (
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -922,7 +922,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
             </button>
           </div>
 
-          {/* New Referral Form */}
+          
           {showReferralForm && (
             <form onSubmit={handleAddReferral} className={`p-5 rounded-3xl border text-left max-w-2xl mx-auto space-y-4 animate-slide-down ${
               isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-150 text-slate-800'
@@ -1052,7 +1052,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                  </div>
                </div>
  
-               {/* Typed student name if custom selected */}
+               
                {(newReferralForm.studentName === 'custom') && (
                  <div className="space-y-1.5 animate-slide-down">
                    <label className="text-[10px] font-black text-slate-400 uppercase">Nome do Aluno</label>
@@ -1109,7 +1109,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
              </form>
            )}
  
-           {/* Search bar and referrals history */}
+           
            <div className="space-y-4">
              <div className="relative max-w-md text-left">
                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
@@ -1124,7 +1124,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                />
              </div>
  
-             {/* Referrals Cards Grid */}
+             
              {(() => {
                const filtered = pedagogicalReferrals.filter(r => {
                  const matchesSearch = r.studentName.toLowerCase().includes(searchReferrals.toLowerCase()) || 
@@ -1146,7 +1146,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
  
                return (
                  <div className="space-y-4">
-                   {/* If there are school students matching but without referrals, show them prominently */}
+                   
                    {matchingStudentsInSchool.length > 0 && (
                      <div className={`p-4 rounded-3xl border border-dashed text-left space-y-3 ${
                        isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-indigo-50/30 border-indigo-200'
@@ -1262,11 +1262,11 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
         </div>
       )}
 
-      {/*   SECTION 3: Mediação de Conflitos */}
+      
       {activeSubTab === 'conflict_mediation' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
-          {/* Left Column: Protocol Guidelines (4 cols) */}
+          
           <div className="lg:col-span-4 space-y-4 text-left">
             <div className={`p-5 rounded-3xl border space-y-4 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-rose-50/50 border-rose-100'}`}>
               <h4 className="text-xs font-extrabold uppercase text-rose-600 flex items-center gap-1.5">
@@ -1300,7 +1300,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
             </div>
           </div>
 
-          {/* Right Column: Logs Registry (8 cols) */}
+          
           <div className="lg:col-span-8 space-y-6 text-left">
             
             <div className="flex items-center justify-between">
@@ -1315,7 +1315,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
               </button>
             </div>
 
-            {/* New Mediation Log Form */}
+            
             {showMediationForm && (
               <form onSubmit={handleAddMediation} className={`p-5 rounded-3xl border text-left space-y-3.5 animate-slide-down ${
                 isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-150'
@@ -1449,7 +1449,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
               </form>
             )}
 
-            {/* Mediation Logs List with Search */}
+            
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <h4 className="text-xs font-extrabold uppercase text-slate-400 tracking-wider">

@@ -5007,7 +5007,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
   return (
     <div className="space-y-6">
       
-      {/*  SELETOR DE FILHOS MATRICULADOS (Para Pais com m√∫ltiplos filhos) */}
+      
       {usuarioAtual?.tipo === 'familiar' && myChildren.length > 1 && (
         <div className={`p-5 rounded-3xl border transition-all shadow-sm ${
           accessibilitySettings?.darkMode
@@ -5027,7 +5027,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
               </p>
             </div>
             
-            {/* Child switching pills */}
+            
             <div className="flex flex-wrap gap-2.5">
               {myChildren.map((child) => {
                 const isActive = idoso?.id === child.id;
@@ -5055,7 +5055,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
         </div>
       )}
       
-      {/*  INSTITUTION SPONSOR & LOGO BRANDING BANNER (FIRST TAB ACCESSIBILITY) */}
+      
       <div className={`p-4 rounded-3xl border text-left flex items-center justify-between gap-4 shadow-xs relative overflow-hidden ${
         accessibilitySettings?.darkMode 
           ? 'bg-slate-900 border-slate-800 text-white' 
@@ -5084,7 +5084,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
           </div>
         </div>
 
-        {/* Small professional certification tag */}
+        
         <div className="hidden sm:flex flex-col items-end text-right shrink-0">
           <span className="text-[9px] font-black uppercase text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">
             Parceiro Oficial
@@ -5093,7 +5093,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
         </div>
       </div>
 
-      {/*  BUSCA R√ÅPIDA DE ALUNO POR NOME */}
+      
       {onSwitchIdoso && (
         <div className={`p-5 rounded-3xl border transition-all shadow-sm ${
           accessibilitySettings?.darkMode
@@ -5128,7 +5128,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
         </div>
       )}
 
-      {/*  CENTRAL DE SALAS E PROFESSORAS - SELETOR R√ÅPIDO PARA SIMULA√á√ÅO */}
+      
       {appMode === 'escolar_infantil' && usuarioAtual?.tipo !== 'familiar' && (
         <div className={`p-5 rounded-3xl border transition-all shadow-md ${
           accessibilitySettings?.darkMode
@@ -5215,7 +5215,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
         </div>
       )}
       
-      {/* Dynamic simulation helper banner for easy switching */}
+      
       <div className={`p-5 rounded-3xl border transition-all shadow-md ${
         accessibilitySettings?.darkMode
           ? 'bg-slate-800/80 border-slate-700 text-slate-100'
@@ -5223,7 +5223,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
             ? 'bg-linear-to-r from-teal-50 to-indigo-50 border-indigo-200 text-slate-800' 
             : 'bg-linear-to-r from-amber-50 to-orange-50 border-amber-200 text-slate-800'
       }`}>
-      {/* Dynamic simulation helper banner content */}
+      
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-start gap-3.5 text-left">
             {appMode === 'escolar_infantil' ? (
@@ -5245,7 +5245,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                   : 'Nossa tecnologia de cuidado integrado oferece duas vers√µes super otimizadas: Anjo Cuidador (Acompanhamento S√™nior) e Anjinho Escolar (Educa√ß√£o Infantil). Conhe√ßa as abas correspondentes:'}
               </p>
 
-              {/* Bullet list of adjusted tabs for transparency */}
+              
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2">
                 {appMode === 'escolar_infantil' ? (
                   <>
@@ -5285,7 +5285,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
         </div>
       </div>
 
-      {/* Perspective / Mode Toggle Switch (Visually stunning toggle banner - ONLY FOR STAFF) */}
+      
       {isStaffUser(usuarioAtual) && (
 <div className="bg-white rounded-2xl border border-[#cbd5e1] p-1.5 shadow-sm max-w-md mx-auto flex items-center justify-between gap-1.5">
         <button
@@ -5313,7 +5313,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
       </div>
       )}
 
-      {/* Dynamic connection indicator with optional simulation details */}
+      
       <div className="bg-slate-50 border border-[#cbd5e1] p-3 rounded-2xl flex flex-col gap-3 shadow-xs">
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-2">
@@ -5352,7 +5352,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
           </div>
         </div>
 
-        {/* Collapsible Simulation Panel for testing environments */}
+        
         {!isApresentacao && showSimulationTools && (
           <div className="bg-white p-4 rounded-xl border border-dashed border-slate-350 space-y-3 animate-slide-down">
             <div className="flex items-start gap-2.5">
@@ -5381,7 +5381,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
         )}
       </div>
 
-      {/* Caregiver / Educator Profile Banner when active */}
+      
       <div className="bg-white hover:bg-slate-50 transition-colors border border-soft-gray p-4 rounded-xl flex flex-wrap md:flex-nowrap items-center justify-between gap-3 shadow-xs">
         <div className="flex items-center gap-3">
           {usuarioAtual.foto ? (
@@ -5430,7 +5430,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
         </div>
       </div>
 
-      {/* Main Beautiful Header featuring the senior person */}
+      
       <div className="bg-white rounded-2xl p-6 border border-soft-gray shadow-xs overflow-hidden relative">
         <div className="absolute right-0 top-0 w-24 h-24 bg-serene-blue/5 rounded-full -translate-y-6 translate-x-6"></div>
         <div className="absolute left-1/3 bottom-0 w-32 h-32 bg-care-green/5 rounded-full translate-y-12"></div>
@@ -5485,7 +5485,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
               </div>
             )}
             
-            {/* Allergies and extreme alerts on top bar */}
+            
             <div className="flex flex-col gap-2 pt-1">
               <div className="flex flex-wrap gap-2 items-center justify-center md:justify-start">
                 {(idoso.condicoesMedicas || []).map((cond, i) => (
@@ -5599,14 +5599,14 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
         </div>
       </div>
 
-      {/*  TRIAL MILESTONE TRACKER: JORNADA COMERCIAL DE 30 DIAS (EXCLUSIVO PARA A VIS√ÅO DA FAM√çLIA / PAIS) */}
+      
       {!isStaffUser(usuarioAtual) && visualMode === 'familia' && localStorage.getItem(`anjo_sub_status_${idoso.id}`) !== 'atrasado' && (
         <div className={`p-6 rounded-3xl border text-left space-y-4 shadow-xs relative overflow-hidden transition-all ${
           accessibilitySettings?.darkMode 
             ? 'bg-slate-900 border-slate-800 text-white' 
             : 'bg-linear-to-r from-emerald-50/50 to-teal-50/50 border-emerald-200'
         }`}>
-          {/* Subtle decoration */}
+          
           <div className="absolute top-0 right-0 p-3 text-3xl opacity-20 pointer-events-none"></div>
           
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -5661,17 +5661,17 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
             </div>
           </div>
 
-          {/* Interactive Visual Timeline Indicator */}
+          
           <div className="pt-2">
             <div className="relative">
-              {/* Timeline Connector Line */}
+              
               <div className="absolute top-1/2 left-0 right-0 h-1 bg-slate-200 -translate-y-1/2 z-0 rounded-full"></div>
-              {/* Highlight active progress line */}
+              
               <div className="absolute top-1/2 left-0 w-1/2 h-1 bg-emerald-500 -translate-y-1/2 z-0 rounded-full"></div>
 
-              {/* 4 Steps */}
+              
               <div className="relative z-10 grid grid-cols-4 text-center">
-                {/* Step 1: Dia 1 */}
+                
                 <div className="flex flex-col items-center space-y-1">
                   <div className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-black border-2 border-white shadow-xs">
                     
@@ -5680,7 +5680,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                   <span className={`text-[9px] font-bold block ${accessibilitySettings?.darkMode ? 'text-slate-400' : 'text-slate-400'}`}>Boas-vindas</span>
                 </div>
 
-                {/* Step 2: Dia 15 */}
+                
                 <div className="flex flex-col items-center space-y-1">
                   <div className="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[10px] font-black border-2 border-white shadow-xs animate-pulse">
                     
@@ -5689,7 +5689,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                   <span className={`text-[9px] font-extrabold ${accessibilitySettings?.darkMode ? 'text-emerald-400' : 'text-emerald-500'}`}>Voc√™ est√° aqui</span>
                 </div>
 
-                {/* Step 3: Dia 25 */}
+                
                 <div className="flex flex-col items-center space-y-1">
                   <div className="w-6 h-6 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-[10px] font-black border-2 border-white shadow-xs">
                     3
@@ -5698,7 +5698,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                   <span className={`text-[9px] font-bold block ${accessibilitySettings?.darkMode ? 'text-slate-400' : 'text-slate-400'}`}>Aviso Pr√©vio</span>
                 </div>
 
-                {/* Step 4: Dia 30 */}
+                
                 <div className="flex flex-col items-center space-y-1">
                   <div className="w-6 h-6 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center text-[10px] font-black border-2 border-white shadow-xs">
                     4
@@ -5718,7 +5718,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
         // =====================================================================
         <div className="space-y-6">
           
-          {/* Active Shift Controls (Turno) */}
+          
           {isAbsent ? (
             <div className="rounded-2xl p-6 border bg-rose-50 border-rose-300 shadow-xs relative overflow-hidden transition-all duration-300">
               <div className="absolute right-4 top-4">
@@ -5789,7 +5789,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                  {/* Unified Stopwatch Card: Always visible to avoid "disappeared" feeling */}
+                  
                   <div className={`px-4 py-2.5 rounded-xl border leading-none transition-all duration-300 ${isShiftActive ? 'bg-white border-emerald-300 shadow-xs' : 'bg-slate-100 border-slate-200'}`}>
                     <div className="flex items-center justify-between gap-3 mb-1">
                       <span className="text-[9px] font-bold text-slate-400 block uppercase tracking-wider">
@@ -5885,7 +5885,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
             </div>
           )}
 
-          {/* SIMULATED OFFLINE CONTINGENCY QUEUE */}
+          
           {filaOffline.length > 0 && (
             <div className="bg-amber-50/70 border-2 border-amber-300 p-5 rounded-2xl space-y-3 shadow-xs">
               <div className="flex items-center gap-2">
@@ -5911,7 +5911,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
             </div>
           )}
 
-          {/* ONE-TAP INSTANT CARE PANEL (Painel Um-Toque de Alta Performance) */}
+          
           <div className="space-y-4">
             <h3 className="text-lg font-black text-slate-800 flex items-center gap-1.5">
               <Plus className="w-5 h-5 text-blue-600" /> Painel "Um-Toque" de Registros Di√°rios
@@ -5947,7 +5947,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                 className="grid grid-cols-1 lg:grid-cols-2 gap-4"
               >
               
-              {/* Quick meal */}
+              
               <div className="bg-white p-5 rounded-2xl border border-soft-gray space-y-4">
                 <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
                   <Coffee className="text-amber-500 w-4.5 h-4.5" /> Registrar Refei√ß√£o R√°pida
@@ -5995,7 +5995,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                         </span>
                       </div>
 
-                      {/* Presets in mL */}
+                      
                       <div className="grid grid-cols-6 gap-1">
                         {[90, 120, 150, 180, 210, 240].map(vol => (
                           <button
@@ -6013,7 +6013,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                         ))}
                       </div>
 
-                      {/* Fine-tune stepper */}
+                      
                       <div className="flex items-center justify-between pt-1 border-t border-indigo-100/70">
                         <span className="text-[10px] font-bold text-indigo-800">Ajuste fino:</span>
                         <div className="flex items-center gap-1 bg-white p-0.5 rounded-lg border border-indigo-200 shadow-3xs">
@@ -6070,7 +6070,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                 </form>
               </div>
 
-              {/* Quick constant hydration meter with animated Jarrinha */}
+              
               <div className="bg-white p-5 rounded-2xl border border-soft-gray space-y-4 flex flex-col justify-between relative overflow-hidden">
                 <div className="flex items-start justify-between gap-3">
                   <div className="space-y-1 flex-1">
@@ -6107,7 +6107,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                         ))}
                       </div>
 
-                      {/* Fine-tune water stepper */}
+                      
                       <div className="flex items-center justify-between pt-1 border-t border-slate-100">
                         <span className="text-[10px] font-bold text-cyan-900">Ajuste fino:</span>
                         <div className="flex items-center gap-1 bg-slate-50 p-0.5 rounded-lg border border-slate-200 shadow-3xs">
@@ -6139,16 +6139,16 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                     </div>
                   </div>
 
-                  {/*  Jarrinha Animada no card de Hidrata√ß√£o Instant */}
+                  
                   {(() => {
                     const targetGoal = isEscolar ? 600 : 1500;
                     const percentJug = Math.min(100, Math.round((totalWaterMl / targetGoal) * 100));
                     return (
                       <div className="flex flex-col items-center bg-cyan-50/70 p-2.5 rounded-2xl border border-cyan-200 shrink-0 shadow-3xs" title="Jarrinha de hidrata√ß√£o: o conte√∫do sobe conforme a √°gua √© oferecida!">
                         <div className="relative my-0.5">
-                          {/* Glass Jug Body */}
+                          
                           <div className="relative w-10 h-16 border-2 border-cyan-600 rounded-b-xl rounded-t-xs bg-white/90 overflow-hidden shadow-inner flex flex-col justify-end">
-                            {/* Animated Liquid level */}
+                            
                             <div 
                               className="bg-gradient-to-t from-cyan-600 via-sky-500 to-sky-400 w-full transition-all duration-700 relative"
                               style={{ height: `${percentJug}%` }}
@@ -6156,14 +6156,14 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                               <div className="absolute top-0 left-0 right-0 h-1 bg-sky-200 animate-pulse"></div>
                             </div>
 
-                            {/* Level lines inside jug */}
+                            
                             <div className="absolute inset-0 flex flex-col justify-between py-1 px-0.5 pointer-events-none opacity-40">
                               <div className="border-t border-cyan-800 w-full"></div>
                               <div className="border-t border-cyan-800 w-full"></div>
                               <div className="border-t border-cyan-800 w-full"></div>
                             </div>
                           </div>
-                          {/* Jug Handle */}
+                          
                           <div className="absolute -right-2 top-2 bottom-2 w-2 border-2 border-l-0 border-cyan-600 rounded-r-lg pointer-events-none"></div>
                         </div>
 
@@ -6184,7 +6184,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                 </button>
               </div>
 
-              {/* Quick Hygiene checklist */}
+              
               <div className="bg-white p-5 rounded-2xl border border-soft-gray space-y-4">
                 <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
                   <Heart className="text-rose-500 w-4.5 h-4.5" /> {isEscolar ? 'Higiene & Cuidados da Crian√ßa ' : 'Higiene & Cuidados de Conforto'}
@@ -6283,7 +6283,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                 </form>
               </div>
 
-              {/* Quick Mood & Observations */}
+              
               <div className="bg-white p-5 rounded-2xl border border-soft-gray space-y-4">
                 <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
                   <Smile className="text-indigo-505 w-4.5 h-4.5" /> Estado de Humor / Nota do Cuidador
@@ -6340,7 +6340,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                 </form>
               </div>
 
-              {/* Quick Vitals & Weight Track Card  */}
+              
               <div className="bg-white p-5 rounded-2xl border border-soft-gray space-y-4">
                 <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
                   <Activity className="text-rose-500 w-4.5 h-4.5 animate-pulse" /> {isEscolar ? 'Sa√∫de, Sono & Fralda do Aluno ' : 'Sinais Vitais & Peso do Idoso '}
@@ -6642,7 +6642,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
 
             </div>
 
-            {/* Quick Atypical Occurrence / Alert Card (Placed OUTSIDE the active-shift locked grid so caregivers can always register occurrences or call immediately) */}
+            
             {emergencyMinimized ? (
               <div className="lg:fixed lg:bottom-6 lg:right-6 lg:z-45 mt-4 animate-fade-in flex flex-wrap items-center gap-2">
                 <button
@@ -6680,7 +6680,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
             ) : (
               <div className="bg-rose-50 border-2 border-red-200 p-5 rounded-2xl space-y-4 flex flex-col justify-between mt-4 relative lg:fixed lg:bottom-6 lg:right-6 lg:z-45 lg:max-w-[340px] lg:m-0 lg:shadow-2xl lg:bg-white/95 lg:backdrop-blur-sm lg:border-red-300 dark:lg:bg-slate-900/95 transition-all duration-300">
                 
-                {/* Minimize Button on Mobile and Desktop */}
+                
                 <button 
                   onClick={() => setEmergencyMinimized(true)}
                   className="absolute top-3 right-3 text-slate-400 hover:text-red-600 dark:text-slate-500 hover:bg-red-50 dark:hover:bg-red-950/40 p-1 rounded-lg transition-colors cursor-pointer flex"
@@ -6744,7 +6744,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                       </div>
                       
                       <div className="flex items-center gap-1.5 shrink-0">
-                        {/* Normal call */}
+                        
                         <a 
                           href={`tel:${idoso.contatoEmergencia.telefone}`}
                           className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 hover:bg-indigo-200 dark:bg-indigo-950 dark:text-indigo-400 transition-colors flex items-center justify-center cursor-pointer shadow-3xs border border-indigo-200/40"
@@ -6753,7 +6753,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                           <Phone className="w-3.5 h-3.5" />
                         </a>
                         
-                        {/* WhatsApp Call / Message */}
+                        
                         <a 
                           href={`https://wa.me/${formatWhatsAppNumber(idoso.contatoEmergencia.telefone)}`}
                           target="_blank"
@@ -6774,7 +6774,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
 
           </div>
 
-          {/* Agenda de cuidados de hoje list */}
+          
           <div className="relative">
             {isAbsent && (
               <div className="mb-4 p-4 bg-rose-50 border border-rose-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-rose-900 shadow-xs animate-fade-in">
@@ -6816,7 +6816,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                 </div>
 
                 <div className="flex items-center gap-2 flex-wrap">
-                  {/* Ferramentas de Gest√£o da Agenda */}
+                  
                   {tarefas.length > 0 && isStaffUser(usuarioAtual) && (
                     <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 shadow-2xs">
                       <button
@@ -6875,7 +6875,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                 </div>
               </div>
 
-            {/* Form to Add New Task */}
+            
             {isAddingTask && (
               <div className="bg-blue-50/50 p-5 rounded-2xl border border-blue-200 mb-5 animate-fade-in space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-blue-100 pb-3">
@@ -7054,7 +7054,7 @@ Segunda-feira:
 
                       return (
                         <div className="space-y-3 pt-3 border-t border-indigo-200">
-                          {/* Cabe√ßalho no Padr√£o Manual Pedag√≥gico */}
+                          
                           <div className="bg-white p-4 rounded-xl border-2 border-indigo-200 shadow-xs space-y-2">
                             <div className="flex items-center justify-between border-b border-indigo-100 pb-2">
                               <h4 className="text-sm font-black text-indigo-950 flex items-center gap-1.5">
@@ -7083,7 +7083,7 @@ Segunda-feira:
                             </div>
                           </div>
 
-                          {/* Seletor de Abas por Dia da Semana / Data */}
+                          
                           {distinctDays.length > 1 && (
                             <div className="bg-indigo-50/70 p-2 rounded-xl border border-indigo-200 space-y-1.5">
                               <div className="flex items-center justify-between">
@@ -7128,7 +7128,7 @@ Segunda-feira:
                             </div>
                           )}
 
-                          {/* Modo de Aplica√ß√£o da Rotina */}
+                          
                           <div className="bg-amber-50/80 p-3 rounded-xl border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
                             <div className="space-y-0.5">
                               <span className="font-bold text-amber-950 flex items-center gap-1">
@@ -7166,7 +7166,7 @@ Segunda-feira:
                             </div>
                           </div>
 
-                          {/* Tabela com Todos os Dados Detalhados */}
+                          
                           <div className="border border-slate-200 rounded-xl overflow-hidden bg-white max-h-[300px] overflow-y-auto shadow-inner">
                             <table className="w-full text-left border-collapse text-xs">
                               <thead className="bg-slate-100 font-bold text-slate-700 border-b border-slate-200 sticky top-0 z-10">
@@ -7258,7 +7258,7 @@ Segunda-feira:
                   </div>
                 ) : (
                   <>
-                {/* Quick Task Templates Selector */}
+                
                 <div className="space-y-2 border-b border-blue-150/60 pb-3" id="quick-task-templates-container">
                   <span className="text-[10px] font-black text-blue-800 uppercase tracking-wider block">
                      {isEscolar ? 'Modelos R√°pidos de Atividades Escolares' : 'Modelos R√°pidos de Cuidados S√™nior'}
@@ -7538,7 +7538,7 @@ Segunda-feira:
                               onChange={e => setEditingTaskForm({ ...editingTaskForm, horarioPrevisto: e.target.value })}
                               className="w-full text-xs px-2 py-1.5 border border-slate-300 rounded-xl bg-white text-slate-800 font-mono text-center"
                             />
-                            {/* Short time pills for edit */}
+                            
                             <div className="flex flex-wrap gap-1 mt-1">
                               {['08:00', '10:30', '13:00', '15:00', '16:30'].map(t => (
                                 <button
@@ -7613,7 +7613,7 @@ Segunda-feira:
                 return (
                   <div key={task.id} className={`flex flex-col border ${borderCol} ${bgCol} rounded-2xl p-5 shadow-xs transition-all duration-200 hover:-translate-y-0.5 relative group`}>
                     
-                    {/* Pencil & Trash2 edit tools shown for caregivers */}
+                    
                     <div className="absolute top-4 right-4 flex items-center gap-1">
                       <button
                         type="button"
@@ -7835,7 +7835,7 @@ Segunda-feira:
         // =====================================================================
         <div className="space-y-6 max-w-full overflow-x-hidden">
 
-          {/* Perspective / Mode Toggle Switch for Family View (Only visible to teachers/staff) */}
+          
           {isStaffUser(usuarioAtual) && (
 <div className="bg-white rounded-2xl border border-[#cbd5e1] p-1.5 shadow-sm max-w-md mx-auto flex items-center justify-between gap-1.5">
             <button
@@ -7863,7 +7863,7 @@ Segunda-feira:
           </div>
           )}
 
-          {/*  INDICADOR DE TESTE GRATUITO (PAINEL DOS PAIS / FAM√çLIA) */}
+          
           {!isStaffUser(usuarioAtual) && localStorage.getItem(`anjo_sub_status_${idoso.id}`) !== 'atrasado' && (
             <div className={`p-4 rounded-3xl border text-left flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs relative overflow-hidden transition-all ${
               accessibilitySettings?.darkMode 
@@ -7907,7 +7907,7 @@ Segunda-feira:
             </div>
           )}
 
-          {/* Real-time elegant read-only chronometer for the Family / Simplicity Panel */}
+          
           {isAbsent ? (
             <div className="rounded-3xl p-6 border bg-rose-50 border-rose-300 shadow-xs relative overflow-hidden transition-all duration-300 animate-fade-in">
               <div className="absolute right-4 top-4">
@@ -7983,15 +7983,15 @@ Segunda-feira:
             </div>
           )}
           
-          {/* Compliance Card: Circular Ring Gauge */}
+          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            {/* compliance dual donut block */}
+            
             <div className="bg-white p-6 rounded-3xl border border-[#cbd5e1] shadow-xs flex flex-col justify-center text-center space-y-4">
               <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block">M√©tricas de Governan√ßa</strong>
               
               <div className="flex gap-4 items-center justify-around">
-                {/* Ring 1: Conformidade */}
+                
                 <div className="flex flex-col items-center space-y-1">
                   <div className="relative w-20 h-20 flex items-center justify-center">
                     <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
@@ -8012,7 +8012,7 @@ Segunda-feira:
                   <span className="text-[9px] font-black uppercase text-slate-400 tracking-wider">Conformidade</span>
                 </div>
 
-                {/* Ring 2: Qualidade */}
+                
                 <div className="flex flex-col items-center space-y-1">
                   <div className="relative w-20 h-20 flex items-center justify-center">
                     <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
@@ -8039,7 +8039,7 @@ Segunda-feira:
               </div>
             </div>
 
-            {/* Daily traffic light with premium visual block */}
+            
             <div className={`p-6 rounded-3xl border ${farol.bg} shadow-xs flex flex-col justify-between md:col-span-2 relative overflow-hidden`}>
               <div className="absolute right-4 top-4 flex items-center gap-1.5">
                 <span className="relative flex h-3 w-3">
@@ -8072,7 +8072,7 @@ Segunda-feira:
 
           </div>
 
-                    {/* PARENT MEDICATION AUTHORIZATIONS MANAGEMENT CARD */}
+                    
           <div className="bg-white p-6 rounded-3xl border border-indigo-200 shadow-sm space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2.5">
@@ -8101,7 +8101,7 @@ Segunda-feira:
               </button>
             </div>
 
-            {/* List of current medications for this senior/student */}
+            
             {(() => {
               const studentMeds = getFromDB<Medicamento[]>('anjo_medicamentos', []).filter(m => m.idosoId === idoso.id);
               if (studentMeds.length === 0) {
@@ -8157,10 +8157,10 @@ Segunda-feira:
             })()}
           </div>
 
-          {/* Core breakdown row: Hydration / Feeding / Hygiene / Mood & Notes */}
+          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
             
-            {/* Water hydration container state with visual water cups and animated jug */}
+            
             <div className="bg-white p-5 rounded-2xl border border-[#cbd5e1] space-y-4 shadow-sm relative overflow-hidden">
               <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                 <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block"> CONSUMO DE √ÅGUA HOJE</strong>
@@ -8182,16 +8182,16 @@ Segunda-feira:
                   </span>
                 </div>
 
-                {/*  Animated Water Jug Graphic */}
+                
                 {(() => {
                   const targetGoal = isEscolar ? 600 : 1500;
                   const percentJug = Math.min(100, Math.round((totalWaterMl / targetGoal) * 100));
                   return (
                     <div className="flex items-center gap-2 bg-gradient-to-b from-cyan-50 to-sky-50/60 p-2.5 rounded-2xl border border-cyan-200 shrink-0 shadow-3xs" title="Jarrinha de hidrata√ß√£o: sobe √Ä medida que a √°gua √© servida!">
                       <div className="relative my-0.5">
-                        {/* Glass Jug Body */}
+                        
                         <div className="relative w-11 h-16 border-2 border-cyan-600 rounded-b-xl rounded-t-xs bg-white/80 overflow-hidden shadow-inner flex flex-col justify-end">
-                          {/* Animated Liquid level */}
+                          
                           <div 
                             className="bg-gradient-to-t from-cyan-600 via-sky-500 to-sky-400 w-full transition-all duration-700 relative"
                             style={{ height: `${percentJug}%` }}
@@ -8199,14 +8199,14 @@ Segunda-feira:
                             <div className="absolute top-0 left-0 right-0 h-1 bg-sky-200 animate-pulse"></div>
                           </div>
 
-                          {/* Level lines inside jug */}
+                          
                           <div className="absolute inset-0 flex flex-col justify-between py-1 px-0.5 pointer-events-none opacity-40">
                             <div className="border-t border-cyan-800 w-full"></div>
                             <div className="border-t border-cyan-800 w-full"></div>
                             <div className="border-t border-cyan-800 w-full"></div>
                           </div>
                         </div>
-                        {/* Jug Handle */}
+                        
                         <div className="absolute -right-2 top-2 bottom-2 w-2 border-2 border-l-0 border-cyan-600 rounded-r-lg pointer-events-none"></div>
                       </div>
 
@@ -8220,7 +8220,7 @@ Segunda-feira:
                 })()}
               </div>
               
-              {/* cups visualizations */}
+              
               <div className="flex gap-2.5 pt-1">
                 {(isEscolar ? [50, 150, 300, 450, 550, 600] : [250, 500, 750, 1000, 1250, 1500]).map((stepWater, i) => (
                   <div 
@@ -8244,7 +8244,7 @@ Segunda-feira:
               </p>
             </div>
 
-            {/* Food checklist state today */}
+            
             <div className="bg-white p-5 rounded-2xl border border-[#cbd5e1] space-y-4 shadow-sm">
               <div className="flex items-center justify-between border-b border-slate-100 pb-2">
                 <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block">  NUTRI√á√ÅO / ALIMENTA√á√ÅO</strong>
@@ -8335,7 +8335,7 @@ Segunda-feira:
               </div>
             </div>
 
-            {/* Hygiene tracker block */}
+            
             <div className="bg-white p-5 rounded-2xl border border-[#cbd5e1] space-y-4 shadow-sm flex flex-col justify-between">
               <div className="flex items-start justify-between gap-2">
                 <div>
@@ -8361,7 +8361,7 @@ Segunda-feira:
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {/* 1. Troca de Fralda / Toalete */}
+                
                 <div className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
                   todayHygieneLog?.diaper 
                     ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
@@ -8373,7 +8373,7 @@ Segunda-feira:
                   </span>
                 </div>
 
-                {/* 2. Escova√ß√£o de Dentes Orientada */}
+                
                 <div className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
                   todayHygieneLog?.teeth 
                     ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
@@ -8385,7 +8385,7 @@ Segunda-feira:
                   </span>
                 </div>
 
-                {/* 3. Troca de Roupa */}
+                
                 <div className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
                   todayHygieneLog?.clothes 
                     ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
@@ -8397,7 +8397,7 @@ Segunda-feira:
                   </span>
                 </div>
 
-                {/* 4. M√£os e Rosto / Banho */}
+                
                 <div className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
                   (todayHygieneLog?.hands || todayHygieneLog?.bath) 
                     ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
@@ -8409,7 +8409,7 @@ Segunda-feira:
                   </span>
                 </div>
 
-                {/* 5. Pomada Antiassadura / Protetor */}
+                
                 <div className={`p-2.5 rounded-xl text-center border font-bold transition-all col-span-2 sm:col-span-1 ${
                   todayHygieneLog?.cream 
                     ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
@@ -8441,7 +8441,7 @@ Segunda-feira:
                 </div>
               )}
 
-              {/* Registered Occurrences / Care Notes List */}
+              
               {occurrencesList && occurrencesList.length > 0 && (
                 <div className="pt-2 border-t border-slate-100 space-y-2">
                   <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider block">
@@ -8476,7 +8476,7 @@ Segunda-feira:
               )}
             </div>
 
-            {/* Mood & Caregiver / Teacher Note card state  */}
+            
             {(() => {
               const humsToday = getFromDB<RegistroHumor[]>('anjo_humor', []).filter(h => h && h.idosoId === idoso.id && isTodayOrDemoDate(h.data));
               const currentHum = humsToday.length > 0 ? humsToday[humsToday.length - 1] : null;
@@ -8557,7 +8557,7 @@ Segunda-feira:
 
           </div>
 
-          {/* VITAL SIGNS AUDIT BLOCK WITH COMPACT SPARK CARDS */}
+          
           <div className="space-y-3">
             <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block">
               {isFundamental ? ' DI√ÅRIO DE ACOMPANHAMENTO PEDAG√ìGICO & FOCO' : (isEscolar ? ' DI√ÅRIO DE SA√öDE, SONO & FRALDA' : ' MONITORAMENTO DE SINAIS VITAIS')}
@@ -8611,7 +8611,7 @@ Segunda-feira:
                 </span>
               </div>
 
-              {/* COMPACT BOTTLE / MAMADEIRA CARD  (Infantil / Maternal / Ber√ß√°rio / Pr√©) */}
+              
               {isEscolar && !isFundamental && (
                 <div className="bg-white p-4 rounded-xl border border-soft-gray flex flex-col justify-between">
                   <div>
@@ -8635,7 +8635,7 @@ Segunda-feira:
                 </div>
               )}
 
-              {/* COMPACT MATERIAL / CADERNOS CARD  (Fundamental) */}
+              
               {isFundamental && (
                 <div className="bg-white p-4 rounded-xl border border-soft-gray flex flex-col justify-between">
                   <div>
@@ -8669,7 +8669,7 @@ Segunda-feira:
                   </span>
                 </div>
 
-                {/*  Mini Jarrinha Animada em Tempo Real */}
+                
                 {(() => {
                   const targetGoal = isEscolar ? 600 : 1500;
                   const percentJug = Math.min(100, Math.round((totalWaterMl / targetGoal) * 100));
@@ -8708,7 +8708,7 @@ Segunda-feira:
                 </span>
               </div>
 
-              {/* INTERACTIVE WEIGHT CARD  */}
+              
               <div 
                 id="clinical-weight-card"
                 onClick={() => onNavigate('reports')} 
@@ -8739,7 +8739,7 @@ Segunda-feira:
                 </div>
               </div>
 
-              {/* COMPACT HUMOR & BEHAVIOR CARD   */}
+              
               {(() => {
                 const humsToday = getFromDB<RegistroHumor[]>('anjo_humor', []).filter(h => h && h.idosoId === idoso.id && isTodayOrDemoDate(h.data));
                 const currentHum = humsToday.length > 0 ? humsToday[humsToday.length - 1] : null;
@@ -8767,7 +8767,7 @@ Segunda-feira:
             </div>
           </div>
 
-          {/* CHRONOLOGICAL TIMELINE OF TODAY'S ACTIONS (Com dupla marca√ß√£o temporal!) */}
+          
           <div className="space-y-4">
             <h3 className="text-md font-black text-slate-800 flex items-center gap-1.5">
               <Layers className="text-emerald-600 w-5 h-5" /> Linha do Tempo e Auditoria de Sa√∫de
@@ -8783,7 +8783,7 @@ Segunda-feira:
                   const tieneDobleTiempo = tItem.meta && tItem.meta.status_sincronizacao === 'offline_sincronizado';
                   return (
                     <div key={tItem.id || i} className="relative">
-                      {/* circle dot */}
+                      
                       <span className="absolute -left-10 top-1 w-7 h-7 bg-white border-2 border-emerald-500 rounded-full flex items-center justify-center text-[10px] shadow-sm font-bold text-emerald-600">
                         {i + 1}
                       </span>
@@ -8815,7 +8815,7 @@ Segunda-feira:
             )}
           </div>
 
-          {/* HISTORICAL SHIFT SUMMARIES (RESUMOS DE TURNO ANTERIORES) */}
+          
           <div className="space-y-4">
             <h3 className="text-md font-black text-slate-850 flex items-center gap-1.5">
               <FileText className="text-indigo-505 w-5 h-5" /> {isEscolar ? 'Di√°rios de Rotina Escolar Recebidos' : 'Relat√≥rios e Resumos de Turno Recebidos (WhatsApp)'}
@@ -8850,7 +8850,7 @@ Segunda-feira:
                       {report.mensagemCompleta}
                     </pre>
 
-                    {/* Interactive Direct Report Link & Action Bar */}
+                    
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 bg-indigo-50/80 dark:bg-indigo-950/40 rounded-xl border border-indigo-200/60 dark:border-indigo-800 text-xs font-bold text-indigo-900 dark:text-indigo-200">
                       <div className="flex items-center gap-2 min-w-0">
                         <span className="text-base shrink-0"></span>
@@ -8920,7 +8920,7 @@ Segunda-feira:
 
         </div>
       )}
-      {/* MODAL: REGISTRAR SA√çDA / DESLIGAR CRON√îMETRO INDIVIDUAL */}
+      
       {showStopIndividualShiftModal && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 border border-slate-200 shadow-2xl space-y-4 max-h-[92vh] overflow-y-auto">
@@ -8951,7 +8951,7 @@ Segunda-feira:
                 Selecione ou digite o motivo da sa√≠da:
               </label>
 
-              {/* Preset Quick Chips */}
+              
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {[
                   ' Consulta M√©dica / Exame',
@@ -9105,7 +9105,7 @@ Segunda-feira:
                     </div>
 
                     <div className="flex items-center gap-2 shrink-0">
-                      {/* Normal call */}
+                      
                       <a 
                         href={`tel:${idoso.contatoEmergencia.telefone}`}
                         className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[11px] rounded-lg flex items-center gap-1 transition-colors cursor-pointer shadow-3xs"
@@ -9115,7 +9115,7 @@ Segunda-feira:
                         <span>Ligar</span>
                       </a>
                       
-                      {/* WhatsApp call */}
+                      
                       <a 
                         href={`https://wa.me/${formatWhatsAppNumber(idoso.contatoEmergencia.telefone)}`}
                         target="_blank"
@@ -9179,7 +9179,7 @@ Segunda-feira:
           <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-55 overflow-y-auto animate-fade-in" id="manual-occurrence-share-modal">
             <div className="bg-white rounded-3xl max-w-lg w-full p-6 md:p-8 border border-slate-200 shadow-2xl space-y-6">
               
-              {/* Header section with our brand and clear Assisted dispatch philosophy */}
+              
               <div className="flex items-center gap-3 border-b border-slate-100 pb-3">
                 <div className="p-2.5 bg-emerald-100 text-emerald-600 rounded-2xl shrink-0" style={{ animationDuration: '4s' }}>
                   <MessageSquare className="w-5 h-5" />
@@ -9194,7 +9194,7 @@ Segunda-feira:
                 </div>
               </div>
 
-              {/* Dynamic 3-stage Audit Trail indicators if sharing an occurrence */}
+              
               {activeSharingOccurrenceId && (
                 <div className="bg-slate-50 border border-slate-150 rounded-2xl p-4 space-y-3">
                   <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Hist√≥rico de Auditoria do Alerta</span>
@@ -9238,7 +9238,7 @@ Segunda-feira:
                 </div>
               )}
 
-              {/* Compiled message text layout with interactive Copy feedback */}
+              
               <div className="space-y-1.5">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Mensagem Padronizada do Dia</span>
@@ -9261,7 +9261,7 @@ Segunda-feira:
                 </div>
               </div>
 
-              {/* Quick Primary Actions for Instant WhatsApp & Mobile Dispatch */}
+              
               {(() => {
                 const primaryRecipient = idoso.contatoEmergencia?.telefone
                   ? { nome: idoso.contatoEmergencia.nome || 'Respons√°vel', telefone: idoso.contatoEmergencia.telefone, parentesco: idoso.contatoEmergencia.parentesco || 'Respons√°vel' }
@@ -9316,9 +9316,9 @@ Segunda-feira:
                 );
               })()}
 
-              {/* Direct selective dispatcher & Custom phone input */}
+              
               <div className="space-y-3 font-sans">
-                {/* Send to a custom phone number */}
+                
                 <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3 space-y-2">
                   <span className="text-[10px] font-black uppercase text-slate-500 block">
                     Enviar para outro n√∫mero de celular/WhatsApp:
@@ -9386,7 +9386,7 @@ Segunda-feira:
                             </a>
                           </div>
                           
-                          {/* Interactive individual status buttons */}
+                          
                           <div className="flex items-center gap-1 mt-0.5 pt-1 border-t border-slate-100/60 text-[9px] font-bold">
                             <span className="text-slate-400 cursor-default shrink-0">Status:</span>
                             <div className="flex gap-1 overflow-x-auto">
@@ -9424,7 +9424,7 @@ Segunda-feira:
                     })
                   }
                   
-                  {/* Emergency contacts block inside modal */}
+                  
                   {idoso.contatoEmergencia && (() => {
                     const status = familiarShareStatuses['emergencia'] || 'pendente';
                     const number = formatWhatsAppNumber(idoso.contatoEmergencia.telefone);
@@ -9451,7 +9451,7 @@ Segunda-feira:
                           </a>
                         </div>
 
-                        {/* Interactive individual status buttons for emergency contact */}
+                        
                         <div className="flex items-center gap-1 mt-0.5 pt-1 border-t border-red-200/40 text-[9px] font-bold">
                           <span className="text-slate-450 cursor-default shrink-0">Status:</span>
                           <div className="flex gap-1 overflow-x-auto">
@@ -9490,7 +9490,7 @@ Segunda-feira:
                 </div>
               </div>
 
-              {/* Interactive Audit Questionnaire if sharing an alert */}
+              
               <div className="border-t border-slate-150 pt-4 space-y-4">
                 <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center space-y-3.5">
                   <span className="text-xs font-black text-slate-800 block">
@@ -9526,7 +9526,7 @@ Segunda-feira:
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-55 overflow-y-auto animate-fade-in" id="collective-share-modal">
           <div className="bg-white rounded-3xl max-w-2xl w-full p-6 md:p-8 border border-slate-200 shadow-2xl space-y-6 my-8">
             
-            {/* Header */}
+            
             <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
               <div className="p-3 bg-emerald-100 text-emerald-600 rounded-2xl shrink-0">
                 <Users className="w-6 h-6" />
@@ -9541,7 +9541,7 @@ Segunda-feira:
               </div>
             </div>
 
-            {/* List of classmate reports */}
+            
             <div className="space-y-4 max-h-[50vh] overflow-y-auto pr-1">
               {collectiveShareList.map((item, index) => {
                 const number = formatWhatsAppNumber(item.contatoTelefone);
@@ -9560,7 +9560,7 @@ Segunda-feira:
                       </div>
                       
                       <div className="flex items-center gap-2">
-                        {/* Copy Button */}
+                        
                         <button
                           type="button"
                           onClick={() => {
@@ -9577,7 +9577,7 @@ Segunda-feira:
                           {copiedCollectiveIndex === index ? ' Copiado' : ' Copiar'}
                         </button>
 
-                        {/* WhatsApp Button */}
+                        
                         <a
                           href={waLink}
                           target="_blank"
@@ -9592,12 +9592,12 @@ Segunda-feira:
                       </div>
                     </div>
 
-                    {/* Pre-formatted Message box */}
+                    
                     <div className="bg-white border border-slate-150 rounded-xl p-3 text-[11px] font-mono text-slate-600 max-h-24 overflow-y-auto whitespace-pre-wrap select-all">
                       {item.mensagem}
                     </div>
 
-                    {/* Individual Status flags */}
+                    
                     <div className="flex items-center gap-1.5 text-[9px] font-bold">
                       <span className="text-slate-400 cursor-default shrink-0">Status do Envio:</span>
                       <div className="flex gap-1 overflow-x-auto">
@@ -9641,7 +9641,7 @@ Segunda-feira:
               })}
             </div>
 
-            {/* Footer buttons */}
+            
             <div className="border-t border-slate-100 pt-4 flex justify-between items-center">
               <p className="text-[10px] text-slate-400 font-medium">
                 Marque cada di√°rio como enviado √Ä medida que concluir as transmiss√µes.
@@ -9675,7 +9675,7 @@ Segunda-feira:
 
             <div className="space-y-4 max-h-[420px] overflow-y-auto pr-1">
               
-              {/* Core Audit Metrics side-by-side */}
+              
               <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-150">
                 <div className="text-center">
                   <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider block">CONFORMIDADE DA ROTINA</span>
@@ -9689,7 +9689,7 @@ Segunda-feira:
                 </div>
               </div>
 
-              {/* Routines Summary */}
+              
               <div className="space-y-2">
                 <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1.5"> Status das medica√ß√µes & Rotinas de Cuidado</h4>
                 <div className="space-y-1.5">
@@ -9733,7 +9733,7 @@ Segunda-feira:
                 </div>
               </div>
 
-              {/* nutrition/hydration quick logs summary */}
+              
               <div className="grid grid-cols-2 gap-4">
                 <div className="border border-slate-150 p-3.5 rounded-xl">
                   <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1"> L√≠quidos Consumidos</h5>
@@ -9747,7 +9747,7 @@ Segunda-feira:
                 </div>
               </div>
 
-              {/* Vitals information */}
+              
               {shiftReviewPayload.ultimoSinal && (
                 <div className="border border-slate-150 p-3.5 rounded-xl">
                   <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1"> Sinais Vitais aferidos</h5>
@@ -9760,7 +9760,7 @@ Segunda-feira:
                 </div>
               )}
 
-              {/* Occurrences logged within active shift */}
+              
               <div className="space-y-1.5">
                 <h5 className="text-xs font-black text-slate-400 uppercase tracking-wider"> Ocorr√™ncias registradas ({shiftReviewPayload.ocorrencias.length})</h5>
                 {shiftReviewPayload.ocorrencias.length > 0 ? (
@@ -9777,7 +9777,7 @@ Segunda-feira:
                 )}
               </div>
 
-              {/* Medication Adjustments logged within active shift */}
+              
               <div className="space-y-1.5 pt-1.5 border-t border-slate-100">
                 <h5 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1"> Altera√ß√µes de Medicamentos ({shiftReviewPayload.medChanges?.length || 0})</h5>
                 {shiftReviewPayload.medChanges && shiftReviewPayload.medChanges.length > 0 ? (
@@ -9829,13 +9829,41 @@ Segunda-feira:
         </div>
       )}
 
-      {/* COMPLIANCE / LGPD STRICT CONSENT VIEW MODAL */}
+      
       {!lgpdAccepted && (
         <LgpdConsentModal onAccept={handleLgpdAcceptComplete} seniorName={idoso.nome} />
       )}
 
-      {/* DxúîT—n⁄0}ÔW\ÒPïI&)¥®›(j´â©£S’™œ;âW«élßÑU|Ãæe?∂õ(âªU„∏ŒÕ=Áû{ÆæﬂL/'˜◊pw˚p?ù]√„‰n6ù}Åo∑Wì¯¨†˙º∞<ìbA§F	ÓŸD/·é6) #&ûa!©µ3öÚãN$
-Œ@(À	·'9a+±
-9√`à1]<1£32óπ!ÖÖHÚÑ„©%Æ7#∑ND´mòëìŒxÈÉ"¬2¡`tÆgdPH|i)-»í§ñ$ •õP¶ó§èèÁ⁄0,]ˇlá!ÿå.8Yëpºp[Tâ¥Ãà(„D®üœí˜!)øêMÁPñÆ
-÷·√-ŸäŸª§°π”-dƒûHn‹ΩT≈í7Yëƒ∞AãmÄtˇ›¿VÑc.Ï'V-…"≠Œ'[wYÎyvv∆ìga50w<÷WµØò…¿»º˙hëΩ¢•t\ ô»Sêú24'1\RÙû«‡ÎÔ_¿ƒÊÄ˘fK√JZ»®°0*èT<ˆLﬂ≥.gòWÚYèÇMZØÕ:»⁄∏~•ä˛ô™H7∑Ëos»»‡’BÂ*5L[˜˜¨ÑæÆ'¬#ÌÍ‹Ûñv©#˝7{è¸⁄'Ó{
-†ª˛_ﬂU[”åÙwˆÁäAˆÕ—<wN+èä[eÂïP=ÏxOµ∫ƒæû.^é∫p1º¶ÆZù)‹«Æﬂbc≥™ùÕV§ﬂ;}ΩﬂŒP›D?sÛqˇ ´ıØÔßJ{ùk…v⁄ﬂ"7VíiQn}õø?™kLSL0Ì≤V‡ù’o4¬çª≥ÓßÉı¡   ˇˇ xÕ„
+      
+      {duplicateWarning?.show && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-100 space-y-4 text-center animate-fade-in">
+            <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
+              <AlertTriangle className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-lg font-black text-slate-850">Aviso de Registro Duplicado</h3>
+              <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                J√° existe um registro recente para <strong>{duplicateWarning.studentName}</strong>.
+              </p>
+              {duplicateWarning.existingInfo && (
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-left text-xs text-amber-900 font-medium mt-2">
+                  {duplicateWarning.existingInfo}
+                </div>
+              )}
+            </div>
+            <div className="flex gap-2 justify-end pt-2">
+              <button
+                type="button"
+                onClick={() => setDuplicateWarning(null)}
+                className="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-extrabold text-xs rounded-xl cursor-pointer"
+              >
+                Entendido
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -1824,7 +1824,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
   return (
     <div className={`min-h-screen max-w-full ${accessibility.darkMode ? 'bg-[#0f172a] text-slate-100 dark-mode' : 'bg-cozy-cream text-slate-800'} flex flex-col font-sans transition-all selection:bg-serene-blue selection:text-white ${getFontSizeClass()}`}>
       
-      {/*   SIMULATED HIGH-FIDELITY SMARTPHONE PUSH BANNER OVERLAY */}
+      
       {notifPush?.visible && (
         <div className="fixed top-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md bg-zinc-900 text-white p-4 rounded-2xl shadow-2xl z-50 border border-zinc-800 flex items-start gap-3 animate-bounce cursor-pointer hover:bg-zinc-850 transition-all transform hover:scale-101"
              onClick={() => { setActiveScreen('alerts'); setNotifPush(null); }}
@@ -1868,9 +1868,9 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
         </div>
       )}
 
-      {/* Sticky Header Container (Primary Header + Sub-header bar) */}
+      
       <div className="sticky top-0 left-0 right-0 z-40 shadow-md">
-        {/* Primary top Header Bar in Serene Blue */}
+        
         <header className={`${
           appMode === 'escolar_fundamental'
             ? 'bg-gradient-to-r from-violet-600 via-indigo-600 to-indigo-700'
@@ -1910,7 +1910,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
             </div>
           </div>
 
-          {/* Desktop Nav Links - Streamlined 5 Primary Items + Dropdown "Mais" */}
+          
           <nav className="hidden lg:flex items-center gap-1 font-bold text-xs relative">
             {primaryNavLinks.map(nm => {
               const active = activeScreen === nm.id;
@@ -1937,7 +1937,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
               );
             })}
 
-            {/* "Mais (☰)" Dropdown Menu */}
+            
             <div className="relative">
               <button
                 type="button"
@@ -1992,10 +1992,10 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
             </div>
           </nav>
 
-          {/* User profile bubble showing right side of bar */}
+          
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             
-            {/* Botão de Destaque Inteligente Anjinha Aura (Visível apenas para diretores, coordenadores e professores) */}
+            
             {temAcessoAura && (
               <a
                 href="#"
@@ -2055,7 +2055,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
                 }`}></span>
               </div>
               
-              {/* Cargo/perfil abaixo da foto */}
+              
               <span className="text-[7.5px] uppercase font-black tracking-wider text-white bg-black/30 group-hover:bg-indigo-600 px-1 py-0.5 rounded-md mt-1 leading-none text-center transition-colors">
                 {localStorage.getItem('anjo_master_demonstracao_ativo') === 'true' 
                   ? 'Dev' 
@@ -2064,7 +2064,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
               </span>
             </div>
 
-            {/* Quick Dark Mode toggle button - Always visible for high accessibility */}
+            
             <button
               onClick={() => handleUpdateAccessibility({ 
                 ...accessibility, 
@@ -2076,7 +2076,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
               {accessibility.darkMode ? <Sun className="w-5 h-5 text-amber-300 fill-amber-300/15" /> : <Moon className="w-5 h-5 text-indigo-100" />}
             </button>
 
-            {/* Logout button - Always visible for quick profile switching */}
+            
             <button
               onClick={handleLogout}
               className="flex p-2 hover:bg-white/10 text-white/80 hover:text-white rounded-xl transition-all cursor-pointer"
@@ -2085,7 +2085,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
               <LogOut className="w-5 h-5" />
             </button>
 
-            {/* Mobile Nav Menu Hamburger Toggle Button with prominent backdrop container */}
+            
             <button 
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               className="lg:hidden px-3 py-2 bg-white/10 hover:bg-white/20 active:bg-white/30 border border-white/15 text-white rounded-xl transition-all cursor-pointer flex items-center justify-center shadow-3xs"
@@ -2098,11 +2098,11 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
         </div>
       </header>
 
-      {/* Mobile drawer layout element */}
+      
       {mobileMenuOpen && (
         <div className={`lg:hidden ${isEscolar ? 'bg-indigo-700' : 'bg-serene-blue'} text-white border-t border-white/10 py-3.5 px-4 space-y-2 sticky top-[68px] z-40 shrink-0 shadow-lg max-h-[calc(100vh-68px)] overflow-y-auto`}>
           
-          {/* Active Profile Info inside Drawer */}
+          
           <div className="flex items-center gap-3 p-3 bg-white/10 rounded-2xl mb-2.5 border border-white/5">
             <img 
               referrerPolicy="no-referrer"
@@ -2147,7 +2147,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
             );
           })}
 
-          {/* Botão de Atalho Aura AI Mobile */}
+          
           {temAcessoAura && (
             <a
               href="#"
@@ -2163,11 +2163,11 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
             </a>
           )}
 
-          {/* Quick settings/config section for mobile users to access mode changes easily */}
+          
           <div className="border-t border-white/10 my-2 pt-2.5 space-y-1">
             <span className="text-[9px] text-white/50 uppercase font-bold tracking-wider px-3 block">Configurações Rápidas</span>
             
-            {/* Dark Mode toggle for mobile drawer */}
+            
             <button
               onClick={() => {
                 handleUpdateAccessibility({ 
@@ -2190,7 +2190,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
               )}
             </button>
 
-            {/* Logout/Profile Switcher for mobile drawer */}
+            
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
@@ -2205,7 +2205,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
         </div>
       )}
 
-      {/* Sub-header Quick Search & Active Student Bar */}
+      
       {usuarioAtual && idosoAdaptado && (
         <div className={`border-b py-1.5 sm:py-2 px-4 sm:px-6 lg:px-8 transition-colors relative z-20 ${
           isEscolar
@@ -2213,7 +2213,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
             : 'bg-slate-800 text-slate-100 border-slate-700 shadow-sm'
         }`}>
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-2.5">
-            {/* Active Student Chip */}
+            
             <div className="flex items-center gap-2.5 min-w-0">
               <div className="relative shrink-0">
                 <img
@@ -2238,7 +2238,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
               </div>
             </div>
 
-            {/* Quick Search Bar Input */}
+            
             <div className="w-full md:max-w-lg">
               <QuickStudentSearch
                 activeIdoso={idosoAdaptado}
@@ -2255,10 +2255,10 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
       )}
       </div>
 
-      {/* Middle body canvas layout */}
+      
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-7">
         
-        {/* Banner 1: Active unpaid alert for Admin / Master */}
+        
         {subscriptionStatus === 'atrasado' && usuarioAdaptado && usuarioAdaptado.tipo === 'admin' && (
           <div className="mb-6 p-4 bg-rose-50 border-2 border-rose-200 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-3 text-slate-800 animate-pulse">
             <div className="flex items-center gap-3">
@@ -2277,7 +2277,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
           </div>
         )}
 
-        {/* Banner 2: Caregiver operation reassurance */}
+        
         {subscriptionStatus === 'atrasado' && usuarioAdaptado && usuarioAdaptado.tipo === 'cuidador' && (
           <div className="mb-6 p-3.5 bg-emerald-50 border border-emerald-250 rounded-2xl flex items-center gap-2 text-slate-800">
             <span className="text-emerald-600 font-bold shrink-0"> </span>
@@ -2287,7 +2287,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
           </div>
         )}
 
-        {/* Paywall routing interceptor for passive family companions */}
+        
         {subscriptionStatus === 'atrasado' && usuarioAdaptado && usuarioAdaptado.tipo === 'familiar' ? (
           <FinancePaywall 
             idoso={idosoAdaptado} 
@@ -2300,7 +2300,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
           />
         ) : (
           <>
-            {/* Navigation screen switch block */}
+            
             {activeScreen === 'dashboard' && idosoAdaptado && (
               <Dashboard 
                 key={`dashboard_${idosoAdaptado.id}_${usuarioAdaptado?.id || ''}`}
@@ -2461,7 +2461,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
 
 
 
-      {/* Humble visual footer (No Telemetry, no logs, anti-slop) */}
+      
       <footer className="py-4 border-t border-soft-gray shrink-0 text-center text-xs text-slate-500 font-medium animate-fade-in">
         {isFundamental
           ? 'Anjinho Fundamental — Aprendizado, foco e desenvolvimento acompanhados de perto.'
@@ -2471,7 +2471,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
         }
       </footer>
 
-      {/* MODAL DE SEGURANÇA CONTRA ACESSO DE TERCEIROS DENTRO DA SIMULAÇÁO */}
+      
       {showPinModal && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in" id="school-protection-modal">
           <div className="bg-white rounded-3xl max-w-md w-full border border-slate-200 p-6 space-y-4 shadow-2xl text-slate-800 animate-scale-up">
@@ -2657,7 +2657,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 max-w-3xl mx-auto gap-4">
-              {/* Opção 1: Idosos */}
+              
               <button
                 onClick={() => changeAppMode('idoso')}
                 className={`text-left p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer flex flex-col justify-between h-full space-y-4 hover:shadow-md ${
@@ -2689,7 +2689,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
                 </div>
               </button>
 
-              {/* Opção 2: Educação Infantil */}
+              
               <button
                 onClick={() => changeAppMode('escolar_infantil')}
                 className={`text-left p-5 rounded-2xl border-2 transition-all duration-200 cursor-pointer flex flex-col justify-between h-full space-y-4 hover:shadow-md ${
@@ -2737,7 +2737,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
         </div>
       )}
 
-      {/* Edit Profile Modal for Active User */}
+      
       <EditProfileModal
         isOpen={isEditProfileModalOpen}
         onClose={() => setIsEditProfileModalOpen(false)}
@@ -2745,7 +2745,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
         onSaveUsuario={handleSaveProfile}
       />
 
-      {/* Floating Realtime Firebase Diagnostic Toolbar (Tests 1, 2, 3, 4, 5) */}
+      
       <FirebaseDiagnosticBar />
     </div>
   );

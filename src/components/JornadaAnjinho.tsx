@@ -1784,7 +1784,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
   return (
     <div className="space-y-6">
       
-      {/* Printable Memory Book (Overlay View) */}
+      
       <AnimatePresence>
         {isBookMode && (
           <motion.div 
@@ -1797,7 +1797,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
           >
             <div className="album-container bg-[#FFFDF6] text-slate-900 rounded-3xl max-w-4xl w-full p-8 md:p-12 shadow-2xl relative flex flex-col space-y-8 print:p-0 print:shadow-none print:rounded-none border border-amber-200/50 min-h-[500px]">
               
-              {/* Close and Actions bar (hidden in print) */}
+              
               <div className="flex justify-between items-center border-b border-amber-250/30 pb-4 print:hidden">
                 <button 
                   onClick={() => setIsBookMode(false)}
@@ -1815,7 +1815,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                 </div>
               </div>
 
-              {/* COVER PAGE */}
+              
               <div className="flex flex-col items-center justify-center text-center py-16 border-4 border-dashed border-amber-300 rounded-3xl bg-gradient-to-tr from-amber-50 via-emerald-50 to-sky-50 px-6 relative shadow-inner">
                 <div className="absolute top-4 left-4 text-amber-500 animate-pulse">
                   <Sparkles className="w-8 h-8 animate-spin" style={{ animationDuration: '6s' }} />
@@ -1850,10 +1850,10 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                 </div>
               </div>
 
-              {/* PAGE BREAK (for printing) */}
+              
               <div className="page-break" style={{ pageBreakBefore: 'always' }} />
 
-              {/* CHRONOLOGICAL MOMENTS */}
+              
               <div className="space-y-12">
                 <h3 className="text-2xl font-bold text-slate-800 border-b pb-2 flex items-center gap-2 border-amber-250/30">
                   <Award className="w-6 h-6 text-indigo-500" /> Registro de Momentos Especiais
@@ -1902,7 +1902,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                 </div>
               </div>
 
-              {/* BACK COVER */}
+              
               <div className="border-t border-amber-250/30 pt-8 flex justify-between items-center text-xs text-slate-400">
                 <p>Gerado via Plataforma Anjinho Escolar • Todos os Direitos Reservados</p>
                 <p>{new Date().toLocaleDateString('pt-BR')}</p>
@@ -1913,7 +1913,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
         )}
       </AnimatePresence>
 
-      {/* SELETOR DE VISTAS DA JORNADA */}
+      
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#FFFDF6] border border-amber-250/50 p-4 rounded-3xl shadow-sm">
         <div className="space-y-1">
           <h3 className="text-sm sm:text-base font-black text-indigo-950 flex items-center gap-1.5">
@@ -1955,10 +1955,10 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
 
       {activeViewTab === 'individual' ? (
         <>
-          {/* HEADER HERO PANEL */}
+          
       <div className="relative overflow-hidden bg-gradient-to-br from-indigo-600 via-indigo-700 to-purple-700 rounded-3xl shadow-xl p-6 md:p-8 text-white">
         
-        {/* Floating circles */}
+        
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-2xl -mr-20 -mt-20"></div>
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/10 rounded-full blur-2xl -ml-16 -mb-16"></div>
 
@@ -1993,7 +1993,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
             </div>
           </div>
 
-          {/* Action buttons with full tablet support to prevent cutting off */}
+          
           <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto justify-center lg:justify-end items-stretch sm:items-center">
             <button
               type="button"
@@ -2028,7 +2028,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
         </div>
       </div>
 
-      {/* TEACHER ADD FORM ACCORDION - Rendered right at top below hero banner for instant visibility */}
+      
       <AnimatePresence>
         {showAddForm && (
           <motion.div 
@@ -2056,7 +2056,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 
-                {/* Title and Category */}
+                
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between items-center mb-1">
@@ -2115,7 +2115,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                   </div>
                 </div>
 
-                {/* Description and dimension tagging */}
+                
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between items-center mb-1">
@@ -2167,12 +2167,12 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                   </div>
                 </div>
 
-                {/* Image selection & Mobile Upload Column */}
+                
                 <div className="space-y-4">
                   <div className="space-y-3">
                     <label className="text-xs font-bold block text-slate-700">  Foto do Momento (Galeria ou C):</label>
                     
-                    {/* Primary Action: Native Mobile File/Gallery Upload & WebRTC */}
+                    
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       <button
                         type="button"
@@ -2208,7 +2208,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                       )}
                     </div>
 
-                    {/* Live WebRTC Camera Stream if activated */}
+                    
                     {isCameraActive && (
                       <div className="border-2 border-indigo-300 rounded-2xl p-3 bg-indigo-950 text-white space-y-2 text-center animate-fade-in">
                         <p className="text-xs font-black text-indigo-200 animate-pulse flex items-center justify-center gap-1.5">
@@ -2239,7 +2239,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                       </div>
                     )}
 
-                    {/* Display PROMINENT high-visibility photo preview on mobile & desktop */}
+                    
                     {newImgUrl ? (
                       <div className="rounded-2xl border-2 border-indigo-200 bg-white p-3 shadow-sm space-y-2 animate-fade-in">
                         <div className="flex items-center justify-between">
@@ -2271,7 +2271,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                       </div>
                     )}
 
-                    {/* Preset Image Gallery Options */}
+                    
                     <div className="pt-2">
                       <label className="text-[10px] font-bold block mb-1 text-slate-600">Ou escolha uma ilustração pedagógica rápida:</label>
                       <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 p-1 border rounded-xl bg-white border-slate-200">
@@ -2291,7 +2291,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                       </div>
                     </div>
 
-                    {/* Custom URL Option */}
+                    
                     <div className="pt-1">
                       <label className="text-[10px] font-semibold text-slate-500">Ou cole um link direto de imagem (URL):</label>
                       <input
@@ -2318,9 +2318,9 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
 
               </div>
 
-              {/* VALORES VIVENCIADOS & DESTAQUE (Full width row inside form) */}
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-5 border-t border-amber-200/40">
-                {/* Valores Vivenciados Checklist */}
+                
                 <div className="space-y-2">
                   <label className="text-xs font-bold block text-slate-700 flex items-center gap-1.5">
                     <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
@@ -2369,7 +2369,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                   </div>
                 </div>
 
-                {/* Destacar como Momento Inesquecivel */}
+                
                 <div className="space-y-4 flex flex-col justify-center bg-indigo-50/40 p-4 rounded-2xl border border-indigo-100">
                   <div className="flex items-start gap-3">
                     <input
@@ -2411,7 +2411,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                 </div>
               </div>
 
-              {/* Form Actions */}
+              
               <div className="flex justify-end gap-2 pt-2 border-t border-amber-100">
                 <button
                   type="button"
@@ -2432,7 +2432,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
         )}
       </AnimatePresence>
 
-      {/* COMPILATION OF DIMENSIONS (BENTO GRID HEADER ITEM) */}
+      
       <div className="bg-[#FFFCEB] border border-amber-200/50 text-slate-800 rounded-3xl p-6 shadow-sm">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-2 mb-4">
           <div>
@@ -2482,9 +2482,9 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
         </p>
       </div>
 
-      {/*   ÁRVORE DA INFNCIA (MÉTODO PROPRIETÁRIO) */}
+      
       <div className="bg-[#FFFDF6] border-2 border-amber-200 text-slate-800 rounded-3xl p-6 md:p-8 shadow-md relative overflow-hidden">
-        {/* Raining Hearts, Butterflies, Birds or Sparkles on the tree card container */}
+        
         {rainingHearts.map((item) => (
           <div
             key={item.id}
@@ -2501,7 +2501,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
           </div>
         ))}
 
-        {/* Feedback Banner when parent reacts */}
+        
         {lastAfetoFeedback && (
           <div className="mb-4 bg-gradient-to-r from-amber-100 via-rose-50 to-indigo-100 border border-amber-300/80 rounded-2xl p-3.5 flex items-center justify-between shadow-xs animate-pulse">
             <div className="flex items-center gap-2.5">
@@ -2523,78 +2523,78 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
 
         <div className="flex flex-col lg:flex-row gap-8 items-center">
           
-          {/* Left Visual Area: Interactive SVG tree */}
+          
           <div className="w-full lg:w-1/3 flex flex-col items-center justify-center relative bg-gradient-to-b from-sky-50 to-emerald-50 rounded-2xl p-6 border border-emerald-100 min-h-[280px]">
-            {/* Ambient sun/light effect */}
+            
             <div className="absolute top-4 right-4 w-12 h-12 rounded-full bg-amber-200/50 blur-lg animate-pulse" />
             
-            {/* The Tree SVG */}
+            
             <svg viewBox="0 0 200 200" className="w-48 h-48 drop-shadow-md relative z-10 transition-all duration-500">
-              {/* Sky and Ground */}
+              
               <path d="M 20,180 Q 100,165 180,180" fill="none" stroke="#D1FAE5" strokeWidth="8" strokeLinecap="round" />
               <path d="M 10,180 Q 100,160 190,180" fill="none" stroke="#86EFAC" strokeWidth="4" strokeLinecap="round" />
               
-              {/* 1. SEED STATE */}
+              
               {stats.station.svgState === 'seed' && (
                 <>
-                  {/* Seed in soil */}
+                  
                   <circle cx="100" cy="170" r="6" fill="#78350F" />
-                  {/* Sprout breaking soil */}
+                  
                   <path d="M 100,170 Q 95,150 102,140" fill="none" stroke="#22C55E" strokeWidth="4" strokeLinecap="round" />
                   <path d="M 102,140 Q 112,138 114,144" fill="#4ADE80" stroke="#166534" strokeWidth="1" />
                   <circle cx="102" cy="140" r="2" fill="#FACC15" className="animate-ping" />
                 </>
               )}
 
-              {/* 2. SPROUT STATE */}
+              
               {stats.station.svgState === 'sprout' && (
                 <>
-                  {/* Small trunk / main stem */}
+                  
                   <path d="M 100,175 Q 98,140 100,120" fill="none" stroke="#78350F" strokeWidth="6" strokeLinecap="round" />
-                  {/* Left leaf */}
+                  
                   <path d="M 99,145 Q 80,135 78,145 Q 92,152 99,145" fill="#4ADE80" stroke="#166534" strokeWidth="1.5" />
-                  {/* Right leaf */}
+                  
                   <path d="M 100,135 Q 120,125 122,135 Q 108,142 100,135" fill="#22C55E" stroke="#14532D" strokeWidth="1.5" />
-                  {/* Top leaf */}
+                  
                   <path d="M 100,120 Q 90,100 100,95 Q 110,100 100,120" fill="#86EFAC" stroke="#166534" strokeWidth="1" />
                 </>
               )}
 
-              {/* 3. ROOTS STATE */}
+              
               {stats.station.svgState === 'roots' && (
                 <>
-                  {/* Tree trunk */}
+                  
                   <path d="M 100,175 Q 98,140 100,110" fill="none" stroke="#78350F" strokeWidth="10" strokeLinecap="round" />
-                  {/* Branches */}
+                  
                   <path d="M 99,135 Q 75,120 65,115" fill="none" stroke="#78350F" strokeWidth="5" strokeLinecap="round" />
                   <path d="M 100,125 Q 125,110 135,105" fill="none" stroke="#78350F" strokeWidth="5" strokeLinecap="round" />
                   
-                  {/* Canopy layers */}
+                  
                   <circle cx="100" cy="90" r="25" fill="#22C55E" opacity="0.9" />
                   <circle cx="75" cy="110" r="20" fill="#15803D" opacity="0.85" />
                   <circle cx="125" cy="100" r="20" fill="#166534" opacity="0.85" />
                   
-                  {/* Roots visible underground (stylized) */}
+                  
                   <path d="M 100,175 Q 90,190 85,195" fill="none" stroke="#D97706" strokeWidth="3" strokeLinecap="round" />
                   <path d="M 100,175 Q 110,190 115,195" fill="none" stroke="#D97706" strokeWidth="3" strokeLinecap="round" />
                 </>
               )}
 
-              {/* 4. BLOSSOM STATE */}
+              
               {stats.station.svgState === 'blossom' && (
                 <>
-                  {/* Tree trunk & branch structure */}
+                  
                   <path d="M 100,175 Q 98,130 100,100" fill="none" stroke="#78350F" strokeWidth="12" strokeLinecap="round" />
                   <path d="M 99,125 Q 70,110 55,105" fill="none" stroke="#78350F" strokeWidth="6" strokeLinecap="round" />
                   <path d="M 100,115 Q 130,95 145,90" fill="none" stroke="#78350F" strokeWidth="6" strokeLinecap="round" />
                   
-                  {/* Lush green canopy */}
+                  
                   <circle cx="100" cy="80" r="30" fill="#22C55E" opacity="0.95" />
                   <circle cx="70" cy="100" r="25" fill="#15803D" opacity="0.9" />
                   <circle cx="130" cy="90" r="25" fill="#166534" opacity="0.9" />
                   <circle cx="100" cy="105" r="22" fill="#4ADE80" opacity="0.9" />
 
-                  {/* Soft beautiful pink flowers (blossoms) */}
+                  
                   <circle cx="90" cy="70" r="5" fill="#F472B6" />
                   <circle cx="90" cy="70" r="2" fill="#FDE047" />
                   
@@ -2607,46 +2607,46 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                   <circle cx="110" cy="105" r="5" fill="#F472B6" />
                   <circle cx="110" cy="105" r="2" fill="#FDE047" />
                   
-                  {/* Floating sparkles */}
+                  
                   <circle cx="60" cy="60" r="2" fill="#FFF" className="animate-pulse" />
                   <circle cx="140" cy="70" r="1.5" fill="#FFF" className="animate-ping" />
                 </>
               )}
 
-              {/* 5. FRUIT STATE */}
+              
               {stats.station.svgState === 'fruit' && (
                 <>
-                  {/* Grand trunk & branch structure */}
+                  
                   <path d="M 100,175 Q 98,130 100,100" fill="none" stroke="#78350F" strokeWidth="14" strokeLinecap="round" />
                   <path d="M 99,120 Q 65,100 50,95" fill="none" stroke="#78350F" strokeWidth="7" strokeLinecap="round" />
                   <path d="M 100,110 Q 135,85 150,80" fill="none" stroke="#78350F" strokeWidth="7" strokeLinecap="round" />
                   
-                  {/* Grand Canopy */}
+                  
                   <circle cx="100" cy="75" r="35" fill="#166534" />
                   <circle cx="65" cy="95" r="28" fill="#15803D" />
                   <circle cx="135" cy="85" r="28" fill="#22C55E" />
                   <circle cx="100" cy="100" r="25" fill="#4ADE80" opacity="0.95" />
 
-                  {/* Flowers */}
+                  
                   <circle cx="85" cy="65" r="4" fill="#F472B6" />
                   <circle cx="115" cy="75" r="4" fill="#F472B6" />
                   <circle cx="130" cy="95" r="4" fill="#F472B6" />
 
-                  {/* Shiny Red Apples (fruits) */}
+                  
                   <circle cx="100" cy="60" r="6" fill="#EF4444" className="animate-pulse" />
                   <circle cx="75" cy="85" r="6" fill="#EF4444" />
                   <circle cx="120" cy="70" r="6" fill="#EF4444" />
                   <circle cx="90" cy="90" r="6" fill="#EF4444" />
                   <circle cx="110" cy="95" r="6" fill="#EF4444" />
                   
-                  {/* Floating sparkles */}
+                  
                   <circle cx="50" cy="50" r="2.5" fill="#FACC15" className="animate-bounce" />
                   <circle cx="150" cy="60" r="2" fill="#FACC15" className="animate-ping" />
                 </>
               )}
             </svg>
             
-            {/* Action button "Regar com Amor" (interactive watering) */}
+            
             <div className="flex flex-col items-center w-full">
               <button
                 onClick={handleRegar}
@@ -2659,7 +2659,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                   {watering ? 'Regando com amor...' : 'Regar com Amor'}
               </button>
 
-              {/* Tree conversational speech bubble - The Character Narrator */}
+              
               <div className="mt-4 w-full max-w-[240px] bg-indigo-50 border border-indigo-100 rounded-2xl p-4 text-xs font-semibold text-indigo-950 relative shadow-3xs text-center">
                 <div className="absolute -top-1.5 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-indigo-50 border-t border-l border-indigo-100 rotate-45" />
                 <p className="relative z-10 leading-relaxed font-semibold italic text-slate-700">
@@ -2669,7 +2669,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
             </div>
           </div>
 
-          {/* Right Info Area: Estações, Vigor de Cultivo, Breakdown (Camada Visível de Emoção) */}
+          
           <div className="flex-1 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-200/50 pb-3">
               <div>
@@ -2691,7 +2691,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
               </button>
             </div>
 
-            {/* Current Station & Metaphor */}
+            
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
               <div className="md:col-span-8 space-y-1">
                 <p className="text-[10px] font-black uppercase text-indigo-500 tracking-wider">Estação do Desenvolvimento</p>
@@ -2707,7 +2707,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                 </p>
               </div>
 
-              {/* Dynamic Score widget (Qualitative / Emotional) */}
+              
               <div className="md:col-span-4 bg-gradient-to-br from-[#FFFDF9] to-[#FFFCEB] border border-amber-200 rounded-2xl p-4 text-center space-y-1.5 shadow-3xs">
                 <span className="text-[9px] uppercase font-black text-amber-800 tracking-widest block">Vitalidade de Cultivo</span>
                 <div className={`inline-block text-[10px] font-black px-2.5 py-1 rounded-full border ${stats.labelColor} uppercase tracking-wider`}>
@@ -2717,7 +2717,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
               </div>
             </div>
 
-            {/* Progress to next Stage Maturation */}
+            
             <div className="space-y-1.5 pt-1">
               <div className="flex justify-between items-center text-[10px] font-black text-slate-500">
                 <span>Raízes do Ciclo</span>
@@ -2734,7 +2734,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
               </div>
             </div>
 
-            {/* Quality breakdown tags */}
+            
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-2 font-sans">
               <div className="bg-[#FFFDF9] border border-amber-200/40 rounded-xl p-2.5 text-center shadow-3xs">
                 <span className="text-xs block"> </span>
@@ -2771,7 +2771,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
         </div>
       </div>
 
-      {/* METHOD EXPLANATION MODAL */}
+      
       <AnimatePresence>
         {showMethodModal && (
           <motion.div 
@@ -2805,7 +2805,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                 </p>
 
                 <div className="space-y-3 font-sans text-xs">
-                  {/* Camada Visível */}
+                  
                   <div className="bg-amber-50/60 p-3 rounded-xl border border-amber-200/40 space-y-1">
                     <h4 className="font-extrabold text-amber-900 uppercase text-[10px] flex items-center gap-1.5">
                         Camada Visível (Afetiva & Narrativa)
@@ -2815,7 +2815,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                     </p>
                   </div>
 
-                  {/* Camada Oculta */}
+                  
                   <div className="bg-indigo-50/50 p-3 rounded-xl border border-indigo-100 space-y-1">
                     <h4 className="font-extrabold text-indigo-900 uppercase text-[10px] flex items-center gap-1.5">
                       ⚖ Camada Oculta (Inteligência & Equidade)
@@ -2849,10 +2849,10 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
         )}
       </AnimatePresence>
 
-      {/* DIÁRIO INTELIGENTE & CÁPSULA DO TEMPO */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
-        {/* DIÁRIO INTELIGENTE */}
+        
         <div className="bg-gradient-to-br from-amber-50 to-amber-100/40 border border-amber-200/50 text-amber-950 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-4">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -2870,7 +2870,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
               Com base no histórico real de conquistas do seu filho, criamos uma narrativa aconchegante para ler em família ou compartilhar no grupo com os avós.
             </p>
             
-            {/* The Diary content itself styled like a gorgeous book page */}
+            
             <div className="rounded-2xl p-4 md:p-5 text-xs shadow-inner italic font-serif leading-relaxed max-h-60 overflow-y-auto whitespace-pre-wrap border bg-[#FFFDF9]/95 border-amber-100 text-slate-700">
               {generateSmartDiary(idoso.nome, events)}
             </div>
@@ -2910,7 +2910,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
           </div>
         </div>
 
-        {/* CÁPSULA DO TEMPO */}
+        
         <div className="bg-gradient-to-br from-indigo-50 to-indigo-100/40 border border-indigo-200/50 text-indigo-950 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-4">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -2968,10 +2968,10 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
 
       </div>
 
-      {/* SEÇÁO FILOSOFIA DE VALOR & POSICIONAMENTO (MÉTODO L.I.V.R.O. + 3 PILARES + CARTA PRO FUTURO) */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* CARD 1: OS TRÊS PILARES DA MARCA */}
+        
         <div className="bg-[#FFFDF6] border border-amber-250/65 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-4">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -3023,7 +3023,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
           </div>
         </div>
 
-        {/* CARD 2: MÉTODO L.I.V.R.O. INTERATIVO */}
+        
         <div className="bg-[#FFFDF6] border border-amber-250/65 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -3083,7 +3083,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
           </div>
         </div>
 
-        {/* CARD 3: CARTA PARA O FUTURO */}
+        
         <div className="bg-gradient-to-br from-indigo-950 to-[#2A2359] border border-indigo-900 text-white rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-4">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
@@ -3122,7 +3122,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
 
       </div>
 
-      {/* FILTER BUTTONS AND COUNTER */}
+      
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 p-4 rounded-2xl border bg-[#FFFDF6] border-amber-250/50 shadow-xs">
         <div className="flex flex-wrap gap-1.5">
           {[
@@ -3164,7 +3164,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
         </div>
       </div>
 
-      {/*   MOMENTOS QUE MERECEM SER LEMBRADOS (Galeria Afetiva do Anjinho) */}
+      
       {events.filter(e => e.inesquecivel).length > 0 && (
         <div className="bg-gradient-to-br from-[#FFFDF2] to-[#FFF9E1] border-2 border-amber-300 rounded-3xl p-6 shadow-sm space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-200/65 pb-3">
@@ -3211,7 +3211,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                   </p>
                 </div>
 
-                {/* Valores Vivenciados tags in highlight */}
+                
                 {e.valoresVivenciados && e.valoresVivenciados.length > 0 && (
                   <div className="flex flex-wrap gap-1 items-center pt-2 border-t border-slate-100">
                     {e.valoresVivenciados.slice(0, 2).map(val => (
@@ -3230,9 +3230,9 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
         </div>
       )}
 
-      {/* TIMELINE LIST */}
+      
       <div className="relative">
-        {/* Continuous Center-Left Timeline line */}
+        
         <div className="absolute left-6 md:left-1/2 top-4 bottom-4 w-1 -translate-x-1/2 hidden md:block bg-indigo-100"></div>
         <div className="absolute left-6 top-4 bottom-4 w-1 -translate-x-1/2 md:hidden bg-indigo-100"></div>
 
@@ -3270,15 +3270,15 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                     isEven ? 'md:flex-row-reverse' : ''
                   }`}
                 >
-                  {/* Circle Pin Icon on Timeline Line */}
+                  
                   <div className="absolute left-6 md:left-1/2 top-6 w-8 h-8 rounded-full border-4 border-indigo-400 flex items-center justify-center -translate-x-1/2 z-10 shadow bg-[#FFFCEB]">
                     <Sparkles className="w-3.5 h-3.5 text-indigo-500 animate-spin" style={{ animationDuration: '9s' }} />
                   </div>
 
-                  {/* Spacer or Left Column Content for desktop */}
+                  
                   <div className="w-full md:w-1/2 px-12 md:px-8 hidden md:block"></div>
 
-                  {/* Main Content card */}
+                  
                   <div className="w-full md:w-1/2 pl-12 pr-4 md:px-8">
                     <div className={`rounded-3xl p-5 border shadow-sm hover:shadow-md transition-all space-y-4 group relative overflow-hidden ${
                       e.inesquecivel 
@@ -3286,7 +3286,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                         : 'bg-[#FFFCEB] border-amber-200/50'
                     }`}>
                       
-                      {/* Decorative colored left/top stripe based on type */}
+                      
                       <div className={`absolute top-0 left-0 right-0 h-1.5 ${
                         e.tipo === 'conquista' ? 'bg-indigo-500' :
                         e.tipo === 'atividade' ? 'bg-emerald-500' :
@@ -3296,7 +3296,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                         'bg-rose-500'
                       }`} />
 
-                      {/* Top Meta info */}
+                      
                       <div className="flex flex-wrap justify-between items-center gap-2 pt-1.5">
                         <div className="flex items-center gap-1.5">
                           <span className={`text-[10px] font-black px-2.5 py-1 rounded-full border ${getCategoryBadgeColor(e.tipo)}`}>
@@ -3316,7 +3316,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                         </div>
                       </div>
 
-                      {/* Image Frame with polaroid-like look */}
+                      
                       {e.imagemUrl && (
                         <div className="p-2 rounded-2xl border shadow-sm overflow-hidden transform group-hover:rotate-1 transition-transform duration-300 bg-[#FFFDF6] border-amber-200/40">
                           <div className="w-full h-48 rounded-xl overflow-hidden relative bg-amber-50/30">
@@ -3331,7 +3331,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                         </div>
                       )}
 
-                      {/* Details */}
+                      
                       <div className="space-y-2">
                         <h4 className="text-base sm:text-lg font-black group-hover:text-indigo-600 transition-colors leading-snug text-slate-800">
                           {e.titulo}
@@ -3342,7 +3342,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                         </p>
                       </div>
 
-                      {/* Development Dimension Badges */}
+                      
                       {e.dimensoesDesenvolvimento && e.dimensoesDesenvolvimento.length > 0 && (
                         <div className="flex flex-wrap gap-1 items-center">
                           <span className="text-[9px] font-bold uppercase tracking-wider mr-1 text-slate-750">Foco:</span>
@@ -3357,7 +3357,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                         </div>
                       )}
 
-                      {/* Valores Vivenciados Badges */}
+                      
                       {e.valoresVivenciados && e.valoresVivenciados.length > 0 && (
                         <div className="flex flex-wrap gap-1 items-center border-t border-amber-200/30 pt-2">
                           <span className="text-[9px] font-bold uppercase tracking-wider mr-1 text-amber-800 flex items-center gap-0.5">
@@ -3374,7 +3374,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                         </div>
                       )}
 
-                      {/* File attachment preview */}
+                      
                       {e.anexoNome && (
                         <div className="flex items-center gap-2 p-2 rounded-xl border border-dashed bg-[#FFFDF6] border-indigo-250/40">
                           <FileText className="w-4 h-4 text-indigo-500 shrink-0" />
@@ -3392,7 +3392,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                         </div>
                       )}
 
-                      {/* Gestos de Afeto (Barra de Reações Humanizadas com grande destaque visual) */}
+                      
                       <div className="pt-3 pb-1 border-t-2 border-amber-300/60 bg-amber-50/40 -mx-4 -mb-1 px-4 py-3 rounded-b-2xl">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-[10px] font-black uppercase tracking-wider text-amber-950 flex items-center gap-1.5 bg-white px-2.5 py-0.5 rounded-md border border-amber-200 shadow-3xs">
@@ -3438,7 +3438,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                         </div>
                       </div>
 
-                      {/* Footer Interaction Bar */}
+                      
                       <div className="flex justify-between items-center border-t pt-2.5 text-[10px] border-amber-200/50 text-slate-600">
                         <span className="text-[9px] font-bold italic text-slate-700 bg-white/65 px-2 py-0.5 rounded-md border border-slate-200/40">
                           Registrado por: {e.registradoPor || 'Educadora'}
@@ -3509,7 +3509,7 @@ Equipe Anjinho Escolar ❤ `;
           transition={{ duration: 0.3 }}
           className="space-y-8 pb-10 animate-fade-in"
         >
-          {/* BANNER DA FLORESTA */}
+          
           <div className="relative overflow-hidden bg-gradient-to-br from-emerald-700 via-teal-800 to-indigo-900 rounded-3xl shadow-xl p-6 md:p-8 text-white">
             <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
             <div className="absolute bottom-0 left-0 w-56 h-56 bg-indigo-500/10 rounded-full blur-2xl -ml-16 -mb-16 pointer-events-none" />
@@ -3532,7 +3532,7 @@ Equipe Anjinho Escolar ❤ `;
                 </p>
               </div>
 
-              {/* Rain of affection interactive gesture */}
+              
               <button
                 onClick={() => {
                   handleRegar();
@@ -3546,7 +3546,7 @@ Equipe Anjinho Escolar ❤ `;
             </div>
           </div>
 
-          {/* ESTÁCULOS DA FLORESTA (METRICS DASHBOARD) */}
+          
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-[#FFFCEB] border border-amber-200/50 rounded-2xl p-4 shadow-sm flex flex-col justify-between space-y-3">
               <div className="flex justify-between items-start">
@@ -3614,7 +3614,7 @@ Equipe Anjinho Escolar ❤ `;
             </div>
           </div>
 
-          {/* FILTERS AND CONTEXT CARD */}
+          
           <div className="bg-[#FFFDF6] border border-amber-250/50 rounded-3xl p-6 shadow-sm space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-amber-200/30 pb-4">
               <div className="space-y-0.5">
@@ -3626,7 +3626,7 @@ Equipe Anjinho Escolar ❤ `;
                 </p>
               </div>
 
-              {/* Filtering Controls */}
+              
               {usuarioAtual?.tipo !== 'familiar' && (
                 <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                   <div className="flex-1 sm:flex-none">
@@ -3677,9 +3677,9 @@ Equipe Anjinho Escolar ❤ `;
               )}
             </div>
 
-            {/* RENDER TREES IN FOREST GRIDS */}
+            
             <div className="space-y-6">
-              {/* If user is Family Member, pre-filter for their student's room only and explain privacy */}
+              
               {usuarioAtual?.tipo === 'familiar' ? (
                 <div className="p-4 bg-indigo-50/55 border border-indigo-200/50 rounded-2xl space-y-1.5">
                   <div className="flex items-center gap-2">
@@ -3699,7 +3699,7 @@ Equipe Anjinho Escolar ❤ `;
                 </div>
               ) : null}
 
-              {/* RENDER ACTUAL GRID */}
+              
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
                 {idososList
                   .filter(student => student.id.startsWith('aluno_'))
@@ -3755,19 +3755,19 @@ Equipe Anjinho Escolar ❤ `;
                               : 'bg-white hover:bg-slate-50 border-slate-200 shadow-3xs'
                         }`}
                       >
-                        {/* Glow for own child */}
+                        
                         {isOwnChild && (
                           <span className="absolute -top-2.5 bg-amber-400 text-slate-900 font-extrabold text-[8px] px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm z-10">
                             Seu Anjinho  
                           </span>
                         )}
 
-                        {/* Interactive mini SVG Tree */}
+                        
                         <div className="flex justify-center items-center h-20 w-20 bg-slate-50/40 rounded-xl border border-slate-100/50 p-1">
                           <MiniTreeSVG svgState={stats.svgState} />
                         </div>
 
-                        {/* Child face or placeholder */}
+                        
                         <div className="space-y-1">
                           <div className="flex justify-center">
                             <img
@@ -3785,7 +3785,7 @@ Equipe Anjinho Escolar ❤ `;
                           </p>
                         </div>
 
-                        {/* Progress meter */}
+                        
                         <div className="w-full space-y-1">
                           <div className="flex justify-between items-baseline text-[8px] font-extrabold text-slate-500">
                             <span className="truncate">{stats.stageName.split(' /')[0]}</span>
@@ -3806,7 +3806,7 @@ Equipe Anjinho Escolar ❤ `;
                           )}
                         </div>
 
-                        {/* Hover Overlay Help tip */}
+                        
                         {(!isFamilyMode || isOwnChild) && (
                           <div className="absolute inset-0 bg-indigo-950/5 rounded-2xl opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
                             <span className="bg-white/95 text-slate-900 text-[8px] font-black py-1 px-2.5 rounded-lg border border-slate-200 shadow-sm uppercase tracking-wider">
@@ -3823,7 +3823,7 @@ Equipe Anjinho Escolar ❤ `;
         </motion.div>
       )}
 
-      {/* CARTA PARA O FUTURO MODAL OVERLAY */}
+      
       <AnimatePresence>
         {showLetterModal && (
           <motion.div 
@@ -3840,7 +3840,7 @@ Equipe Anjinho Escolar ❤ `;
               className="bg-[#FAF6EE] text-slate-900 rounded-3xl max-w-2xl w-full p-6 sm:p-10 shadow-2xl border border-amber-300 max-h-[90vh] overflow-y-auto space-y-6 relative"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Close Button */}
+              
               <button 
                 type="button" 
                 onClick={() => setShowLetterModal(false)}
@@ -3849,7 +3849,7 @@ Equipe Anjinho Escolar ❤ `;
                 <X className="w-6 h-6" />
               </button>
 
-              {/* Envelope Design Accent */}
+              
               <div className="text-center space-y-2 pb-4 border-b border-amber-200">
                 <span className="text-3xl">✉</span>
                 <h3 className="text-xl sm:text-2xl font-serif font-black text-amber-900 tracking-tight">
@@ -3860,7 +3860,7 @@ Equipe Anjinho Escolar ❤ `;
                 </p>
               </div>
 
-              {/* Letter Content (styled beautifully as an emotional parchment letter) */}
+              
               <div className="font-serif leading-relaxed text-slate-800 text-xs sm:text-sm space-y-4 max-h-[50vh] overflow-y-auto px-2 sm:px-4 text-justify">
                 <p className="font-bold text-amber-900">
                   Querido(a) {idoso.nome.split(' (')[0]},
@@ -3886,7 +3886,7 @@ Equipe Anjinho Escolar ❤ `;
                 </p>
               </div>
 
-              {/* Signature stamp graphic */}
+              
               <div className="flex justify-between items-center pt-4 border-t border-amber-200 text-xs">
                 <div className="text-slate-500 font-semibold">
                   Data de Emissão: <span className="font-extrabold text-slate-700">{new Date().toLocaleDateString('pt-BR')}</span>
@@ -3896,7 +3896,7 @@ Equipe Anjinho Escolar ❤ `;
                 </div>
               </div>
 
-              {/* Actions */}
+              
               <div className="flex flex-col sm:flex-row gap-2 pt-2">
                 <button
                   type="button"
@@ -3924,7 +3924,7 @@ Equipe Anjinho Escolar ❤ `;
         )}
       </AnimatePresence>
 
-      {/* Social share exporter modal */}
+      
       {selectedEventToShare && (
         <SocialShareModal
           isOpen={shareModalOpen}
@@ -3937,7 +3937,7 @@ Equipe Anjinho Escolar ❤ `;
         />
       )}
 
-      {/* PERSISTENT FLOATING ACTION BUTTON (FAB) FOR EASY ACCESS */}
+      
       <div className="fixed bottom-6 right-6 z-[999] animate-fade-in">
         <button
           type="button"
@@ -3977,7 +3977,7 @@ Equipe Anjinho Escolar ❤ `;
         </button>
       </div>
 
-      {/* FULL-SCREEN FLOATING BUTTERFLIES, BIRDS & SPARKLES OVERLAY (Visible anywhere the user scrolls!) */}
+      
       {screenCelebration && (
         <div className="fixed inset-0 pointer-events-none z-[99999] overflow-hidden">
           {screenCelebration.items.map((item) => (
@@ -3998,7 +3998,7 @@ Equipe Anjinho Escolar ❤ `;
         </div>
       )}
 
-      {/* Floating Toast Notification for Immediate Visual Feedback */}
+      
       {lastAfetoFeedback && (
         <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[100000] pointer-events-auto bg-gradient-to-r from-amber-400 via-rose-500 to-indigo-600 p-[3px] rounded-3xl shadow-2xl animate-bounce max-w-[92vw] sm:max-w-lg">
           <div className="bg-[#FFFDF6] px-5 py-3.5 sm:px-6 sm:py-4 rounded-[22px] flex items-center gap-3 sm:gap-4 shadow-2xl border border-amber-200">

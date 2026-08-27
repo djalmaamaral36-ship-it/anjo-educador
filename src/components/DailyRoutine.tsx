@@ -1424,7 +1424,7 @@ export default function DailyRoutine({
 
   return (
     <div className="space-y-6">
-      {/* Tab selection headers */}
+      
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-bold text-slate-850">
@@ -1438,7 +1438,7 @@ export default function DailyRoutine({
         </div>
       </div>
 
-      {/* Student/Elder active profile badge */}
+      
       <div className="bg-gradient-to-r from-indigo-50/50 to-slate-50/50 border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-3xs">
         <div className="flex items-center gap-3.5">
           <img
@@ -1478,7 +1478,7 @@ export default function DailyRoutine({
         </div>
       )}
 
-      {/* Grid of buttons to make them completely visible and easy to click on mobile */}
+      
       <div className="grid grid-cols-2 md:flex md:flex-wrap gap-2 w-full pb-2">
         <button onClick={() => setActiveTab('alimentacao')} className={getTabBtnClass('alimentacao')} id="btn-tab-alimentacao">
           <Coffee className="w-4 h-4 sm:w-5 h-5 shrink-0" /> 
@@ -1510,7 +1510,7 @@ export default function DailyRoutine({
         </button>
       </div>
 
-      {/*   Banner do Somatório de Água & Jarrinha Animada Persistente (Visível em Notebook e Celular) */}
+      
       {(() => {
         const allHidsGlobal = getFromDB<any[]>('anjo_hidratacao', []);
         const studentHidsToday = allHidsGlobal.filter(h => h.idosoId === idoso.id && isTodayOrDemoDate(h.data));
@@ -1542,7 +1542,7 @@ export default function DailyRoutine({
             </div>
 
             <div className="flex items-center gap-3 shrink-0 self-stretch sm:self-auto justify-between sm:justify-end">
-              {/* Jarrinha Animada de Água */}
+              
               <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-xl border border-cyan-300 shadow-3xs" title={`Jarrinha de ${idoso.nome}: ${percentJug}% preenchida`}>
                 <div className="relative my-0.5">
                   <div className="relative w-8 h-11 border-2 border-cyan-600 rounded-b-lg rounded-t-xs bg-cyan-50/50 overflow-hidden shadow-inner flex flex-col justify-end">
@@ -1569,7 +1569,7 @@ export default function DailyRoutine({
                 </div>
               </div>
 
-              {/* Botão de Registro Rápido */}
+              
               <button
                 type="button"
                 onClick={() => handleAddWater(100)}
@@ -1584,7 +1584,7 @@ export default function DailyRoutine({
         );
       })()}
 
-      {/* RENDER ACTIVE TAB LAYOUTS */}
+      
       <div className="bg-white rounded-2xl border border-soft-gray p-6 relative">
         {isAbsent && activeTab !== 'recados' && (
           <div className="mb-6 p-4 bg-rose-50 border border-rose-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-rose-900 shadow-xs animate-fade-in">
@@ -1613,7 +1613,7 @@ export default function DailyRoutine({
         
         <div>
         
-        {/* =============== TAB: ALIMENTACAO =============== */}
+        
         {activeTab === 'alimentacao' && (
           <form onSubmit={handleSaveFeed} className="space-y-6">
             <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
@@ -1688,7 +1688,7 @@ export default function DailyRoutine({
                     </span>
                   </div>
 
-                  {/* Quick ML pills for bottles */}
+                  
                   <div className="flex flex-wrap gap-1.5 pt-0.5">
                     {[90, 120, 150, 180, 210, 240].map(vol => (
                       <button
@@ -1706,7 +1706,7 @@ export default function DailyRoutine({
                     ))}
                   </div>
 
-                  {/* Stepper / Fine-tuning volume */}
+                  
                   <div className="flex items-center gap-2 pt-1">
                     <span className="text-[11px] font-bold text-indigo-800">Ajuste fino:</span>
                     <div className="flex items-center gap-1">
@@ -1802,7 +1802,7 @@ export default function DailyRoutine({
               </div>
             </div>
 
-            {/* Listing historic meals logged today */}
+            
             <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
               <span className="text-xs font-bold text-slate-500 block">Registros do dia ({alimentacaoToday.length}):</span>
               {alimentacaoToday.length === 0 ? (
@@ -1861,7 +1861,7 @@ export default function DailyRoutine({
           </form>
         )}
 
-        {/* =============== TAB: BANHO E HIGIENE =============== */}
+        
         {activeTab === 'banho' && (
           <form onSubmit={handleSaveHygiene} className="space-y-6">
             <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
@@ -2003,7 +2003,7 @@ export default function DailyRoutine({
           </form>
         )}
 
-        {/* =============== TAB: HIDRATACAO =============== */}
+        
         {activeTab === 'hidratacao' && (
           <div className="space-y-6">
             <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
@@ -2024,7 +2024,7 @@ export default function DailyRoutine({
 
             {renderAuthBadge()}
 
-            {/*   Banner de Somatório de Água do Educador */}
+            
             {(() => {
               const allHidsGlobal = getFromDB<any[]>('anjo_hidratacao', []);
               const teacherNameClean = usuarioAtual?.nome || '';
@@ -2064,18 +2064,18 @@ export default function DailyRoutine({
               );
             })()}
 
-            {/* Simulated interactive water jug filling anim */}
+            
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center py-4">
               <div className="flex flex-col items-center justify-center space-y-4">
                 
-                {/* Visual Glass/Jug Animation */}
+                
                 <div className="relative w-44 h-60 border-4 border-slate-300 rounded-b-3xl rounded-t-lg bg-white overflow-hidden shadow-inner flex flex-col justify-end">
-                  {/* Fluid liquid filling */}
+                  
                   <div 
                     className="bg-sky-400/80 w-full rounded-b-xl transition-all duration-700 relative"
                     style={{ height: `${percentHydrated}%` }}
                   >
-                    {/* Ripple visual top border elements */}
+                    
                     <div className="absolute top-0 left-0 right-0 h-3 bg-sky-200/80 animate-pulse rounded-t"></div>
                     
                     <div className="absolute inset-0 flex items-center justify-center text-white font-black font-mono text-2xl select-none text-shadow-sm">
@@ -2083,7 +2083,7 @@ export default function DailyRoutine({
                     </div>
                   </div>
 
-                  {/* Measuring lines on water cup layout */}
+                  
                   <div className="absolute inset-x-0 inset-y-0 flex flex-col justify-between p-4 pointer-events-none select-none">
                     <div className="border-t border-slate-200 text-right text-[10px] font-bold text-slate-400">1.500 ml (Meta)</div>
                     <div className="border-t border-slate-200 text-right text-[10px] font-bold text-slate-400">1.000 ml</div>
@@ -2098,7 +2098,7 @@ export default function DailyRoutine({
                 </div>
               </div>
 
-              {/* Water logging interaction buttons */}
+              
               <div className="space-y-6">
                 <div className="p-4 bg-cyan-50 border border-cyan-200 rounded-2xl flex items-center gap-3 text-cyan-800">
                   <div className="p-2 bg-cyan-200 rounded-md">
@@ -2180,7 +2180,7 @@ export default function DailyRoutine({
                     </button>
                   </div>
 
-                  {/* Custom ml volume input / stepper */}
+                  
                   <div className="p-3.5 bg-gradient-to-r from-cyan-50 to-sky-50 rounded-2xl border border-cyan-200 space-y-2">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-cyan-900 flex items-center gap-1.5">
@@ -2233,7 +2233,7 @@ export default function DailyRoutine({
                   </div>
                 </div>
 
-                {/* Listing historic fluids logged today */}
+                
                 <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-slate-500 block">Registros do dia ({hidratacaoToday.length} copos / doses):</span>
@@ -2261,7 +2261,7 @@ export default function DailyRoutine({
           </div>
         )}
 
-        {/* =============== TAB: SONO =============== */}
+        
         {activeTab === 'sono' && (
           <form onSubmit={handleSaveSleep} className="space-y-6">
             <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
@@ -2409,7 +2409,7 @@ export default function DailyRoutine({
           </form>
         )}
 
-        {/* =============== TAB: HUMOR =============== */}
+        
         {activeTab === 'humores' && (
           <form onSubmit={handleSaveHumor} className="space-y-6">
             <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
@@ -2524,7 +2524,7 @@ export default function DailyRoutine({
           </form>
         )}
 
-        {/* =============== TAB: ATIVIDADES =============== */}
+        
         {activeTab === 'atividades' && (
           <form onSubmit={handleSaveActivity} className="space-y-6">
             <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
@@ -2543,7 +2543,7 @@ export default function DailyRoutine({
               </div>
             </div>
 
-            {/* Mode Switcher: Registro Avulso vs Importar Planejamento Aura */}
+            
             <div className="flex bg-slate-100 p-1.5 rounded-2xl gap-1.5 border border-slate-200/80 shadow-inner">
               <button
                 type="button"
@@ -2631,7 +2631,7 @@ Terça-feira:
 
                 {parsedWeeklyActivities.length > 0 && (
                   <div className="space-y-3 pt-3 border-t border-indigo-100">
-                    {/* Cabeçalho no Padrão Manual Pedagógico */}
+                    
                     <div className="bg-white p-4 rounded-xl border-2 border-indigo-200 shadow-xs space-y-2">
                       <div className="flex items-center justify-between border-b border-indigo-100 pb-2">
                         <h4 className="text-sm font-black text-indigo-950 flex items-center gap-1.5">
@@ -2775,7 +2775,7 @@ Terça-feira:
                   </div>
                 </div>
                 
-                {/* Quick Suggestion Pills */}
+                
                 <div className="pt-1.5">
                   <span className="text-[10px] font-bold text-slate-400 block mb-1">Sugestões rápidas (Clique para selecionar):</span>
                   <div className="flex flex-wrap gap-1.5">
@@ -2855,7 +2855,7 @@ Terça-feira:
                   </button>
                 </div>
 
-                {/* Reloginho Preset Pills */}
+                
                 <div className="pt-1.5">
                   <span className="text-[10px] font-bold text-slate-400 block mb-1">Durações comuns:</span>
                   <div className="flex flex-wrap gap-1.5">
@@ -2897,13 +2897,13 @@ Terça-feira:
                 ></textarea>
               </div>
 
-              {/* TRABALHINHOS PHOTO UPLOAD SECTOR */}
+              
               <div className="space-y-4 sm:col-span-2 bg-indigo-50/20 p-4 rounded-2xl border border-indigo-100/60 font-sans">
                 <label className="text-xs font-black text-slate-700 block uppercase tracking-wider">
                     {isEscolar ? 'Fotos dos Trabalhinhos / Atividade do Aluno' : 'Fotos de Comprovação da Atividade'}
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* File Upload button area */}
+                  
                   <div className="flex flex-col justify-center items-center p-4 border border-dashed border-slate-300 rounded-xl bg-white hover:bg-slate-50 transition-all cursor-pointer relative min-h-[90px]">
                     <input 
                       type="file" 
@@ -2916,7 +2916,7 @@ Terça-feira:
                     <span className="text-[10px] text-slate-400 mt-0.5">Capturar c ou escolher arquivo</span>
                   </div>
 
-                  {/* Pre-made quick templates */}
+                  
                   <div className="space-y-1.5 flex flex-col justify-center">
                     <span className="text-[10px] uppercase font-black tracking-wider text-indigo-900/60 block">{isFundamental ? 'Prefere simular uma tarefa do aluno?' : 'Prefere simular um desenho do aluno?'}</span>
                     <div className="grid grid-cols-2 gap-1.5">
@@ -2945,7 +2945,7 @@ Terça-feira:
                   </div>
                 </div>
 
-                {/* Previews uploaded artwork */}
+                
                 {activityForm.fotoTrabalhinho && (
                   <div className="mt-3 flex items-center gap-3 bg-white p-2 rounded-xl border border-indigo-200/50 animate-fade-in">
                     <img 
@@ -2980,7 +2980,7 @@ Terça-feira:
               </button>
             )}
 
-            {/* HISTORICAL REGISTERED ACTIVITIES LOG FOR TODAY */}
+            
             <div className="mt-8 pt-6 border-t border-slate-200 space-y-4 font-sans">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-50/50 p-3 rounded-2xl border border-slate-100">
                 <h4 className="text-sm font-black text-slate-800 flex items-center gap-2">
@@ -3070,7 +3070,7 @@ Terça-feira:
           </form>
         )}
 
-        {/* =============== TAB: RECADO / MURAL DE COMUNICACAO =============== */}
+        
         {activeTab === 'recados' && (
           <div className="space-y-6">
             <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
@@ -3089,7 +3089,7 @@ Terça-feira:
               </div>
             </div>
 
-            {/* Warning card to highlight the bi-lateral communication flow */}
+            
             <div className={`p-4 rounded-2xl border text-sm ${isEscolar ? 'bg-indigo-50/50 border-indigo-100 text-indigo-900' : 'bg-emerald-50/50 border-emerald-100 text-emerald-900'}`}>
               <p className="font-semibold mb-1">  Como funciona este Mural de Mão Dupla?</p>
               <p className="text-xs leading-relaxed text-slate-600">
@@ -3099,7 +3099,7 @@ Terça-feira:
               </p>
             </div>
 
-            {/* SEND NEW MESSAGE FORM */}
+            
             <form onSubmit={handleSaveRecado} className="p-5 border border-slate-100 bg-slate-50/50 rounded-2xl space-y-4">
               <h4 className="text-sm font-bold text-slate-800">Escrever Novo Recado ou Memorando</h4>
               
@@ -3158,7 +3158,7 @@ Terça-feira:
               </div>
             </form>
 
-            {/* MESSAGE ITERATION BOARD */}
+            
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold text-slate-450 uppercase tracking-widest block">Mural de Mensagens Históricas ({recados.length})</span>
@@ -3275,12 +3275,12 @@ Terça-feira:
           </div>
         )}
 
-        {/* =============== DIGITAL ART EXHIBITION SLIDESHOW MODAL =============== */}
+        
         {showGalleryShow && (
           <div className="fixed inset-0 z-55 bg-slate-950/90 backdrop-blur-lg flex items-center justify-center p-4 animate-fade-in font-sans">
             <div className="bg-white rounded-3xl shadow-2xl border border-slate-100 max-w-4xl w-full max-h-[92vh] overflow-hidden flex flex-col justify-between relative">
               
-              {/* Header */}
+              
               <div className="p-4 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-50">
                 <div className="space-y-1">
                   <h3 className="text-base font-black text-slate-800 flex items-center gap-2">
@@ -3291,7 +3291,7 @@ Terça-feira:
                   </p>
                 </div>
 
-                {/* Filter Selector */}
+                
                 <div className="flex gap-1 bg-slate-200/70 p-1 rounded-xl self-start md:self-auto shrink-0">
                   <button
                     type="button"
@@ -3323,7 +3323,7 @@ Terça-feira:
                   </button>
                 </div>
 
-                {/* Close Button */}
+                
                 <button
                   type="button"
                   onClick={() => {
@@ -3337,7 +3337,7 @@ Terça-feira:
                 </button>
               </div>
 
-              {/* Body */}
+              
               <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-slate-900 flex flex-col justify-center min-h-[300px]">
                 {(() => {
                   const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
@@ -3377,7 +3377,7 @@ Terça-feira:
 
                   return (
                     <div className="space-y-4 max-w-2xl mx-auto w-full">
-                      {/* Image Frame with Navigation */}
+                      
                       <div className="relative group rounded-3xl overflow-hidden border-4 border-white/95 shadow-2xl bg-black flex items-center justify-center aspect-video max-h-[480px]">
                         <img 
                           src={currentItem.fotoTrabalhinho} 
@@ -3386,7 +3386,7 @@ Terça-feira:
                           referrerPolicy="no-referrer"
                         />
 
-                        {/* Navigation Arrows */}
+                        
                         <button
                           type="button"
                           onClick={() => setCurrentSlideIndex(prev => (prev - 1 + galleryItems.length) % galleryItems.length)}
@@ -3404,13 +3404,13 @@ Terça-feira:
                           <ChevronRight className="w-5 h-5" />
                         </button>
 
-                        {/* Slide Count Overlay */}
+                        
                         <div className="absolute right-4 top-4 bg-black/70 px-2.5 py-1 rounded-full text-[10px] text-white font-mono font-bold tracking-wider">
                           {currentSlideIndex + 1} / {galleryItems.length}
                         </div>
                       </div>
 
-                      {/* Details Card */}
+                      
                       <div className="bg-white/95 p-4 rounded-2xl border border-white/20 shadow-lg space-y-2">
                         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
                           <div>
@@ -3457,7 +3457,7 @@ Terça-feira:
                 })()}
               </div>
 
-              {/* Footer Controls */}
+              
               {(() => {
                 const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
                 const allAtivs = getFromDB<RegistroAtividade[]>('anjo_atividades', []);

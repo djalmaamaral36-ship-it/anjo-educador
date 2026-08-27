@@ -311,7 +311,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
         )}
       </button>
 
-      {/* Floating explanation or feedback badge */}
+      
       {showStatus && (
         <div className="absolute bottom-full mb-2 right-0 bg-slate-900 text-white text-[11px] px-3 py-2 rounded-xl shadow-xl flex flex-col gap-1 max-w-[280px] pointer-events-none min-w-[220px] border border-slate-700 animate-fade-in z-50">
           {errorMsg ? (
