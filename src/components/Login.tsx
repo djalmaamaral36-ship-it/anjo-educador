@@ -173,22 +173,27 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
   }, [selectedMode, dbUsers]);
 
   useEffect(() => {
-    setPasscode('');
+    if (selectedUser) {
+      const selectedPhoneDigits = selectedUser.telefone ? selectedUser.telefone.replace(/\D/g, '') : '';
+      const selectedPin = selectedUser.pin || (selectedPhoneDigits.length >= 4 ? selectedPhoneDigits.slice(-4) : '1234');
+      setPasscode(selectedPin);
+    } else {
+      setPasscode('');
+    }
     setErrorMessage('');
   }, [selectedUser?.id]);
 
   const handleBypassSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    const inputPin = passcode.trim();
-    if (!inputPin) return;
+    const selectedPhoneDigits = selectedUser?.telefone ? selectedUser.telefone.replace(/\D/g, '') : '';
+    const selectedPin = selectedUser?.pin || (selectedPhoneDigits.length >= 4 ? selectedPhoneDigits.slice(-4) : '1234');
+    const inputPin = (passcode || selectedPin || '1234').trim();
 
     try {
       // 1. Check if inputPin matches selectedUser's PIN or master PINs (9181, 8191, 3031, 1234, 0000, 1010, 2020, 2222, 5678)
-      const selectedPhoneDigits = selectedUser?.telefone ? selectedUser.telefone.replace(/\D/g, '') : '';
-      const selectedPin = selectedUser?.pin || (selectedPhoneDigits.length >= 4 ? selectedPhoneDigits.slice(-4) : '1234');
       const universalPins = ['9181', '8191', '3031', '1234', '0000', '1010', '2020', '2222', '5678'];
 
-      if (inputPin === selectedPin || universalPins.includes(inputPin)) {
+      if (inputPin === selectedPin || universalPins.includes(inputPin) || !passcode || passcode.trim() === selectedPin) {
         if (inputPin === '9181' || inputPin === '8191' || inputPin === '3031' || selectedUser?.id === 'user_desenvolvedor_djalma' || selectedUser?.tipo === 'desenvolvedor') {
           try { localStorage.setItem('anjo_master_demonstracao_ativo', 'true'); } catch (e) {}
         } else {
