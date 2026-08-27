@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Idoso, Usuario, TarefaDiaria, RegistroAlimentacao, RegistroHidratacao, RegistroSono, RegistroHumor, RegistroAtividade, SinalVital, Classroom, isStaffUser, getRoleLabel } from '../types';
-import { getFromDB, saveToDB, checkFeedingCareAuthorization, compressImage, SALAS_INICIAIS, getShiftActiveState, setShiftActiveState, getNowTimeBr, checkBottleFeedingInterval, registerBottleAttemptNotice, isTodayOrDemoDate, purgeOrphanedStudentData } from '../data';
+import { getFromDB, saveToDB, checkFeedingCareAuthorization, compressImage, SALAS_INICIAIS, getShiftActiveState, setShiftActiveState, getNowTimeBr, checkBottleFeedingInterval, registerBottleAttemptNotice, isTodayOrDemoDate, purgeOrphanedStudentData, saveHygieneLog, getHygieneLog, saveMealRecord, getStudentMealsToday, isStudentIdMatch } from '../data';
 import { deleteStudentDataFromFirestore, deleteBatchFromFirestore } from '../firebase';
 import { VoiceInput } from './VoiceInput';
 import { parseAuraRawPlan, formatAuraTaskTitle, inferTaskType, realignPedagogicalActivity, isConversationalChatNoise, findMatchingMealTask } from '../utils/auraPlanParser';
@@ -454,30 +454,8 @@ export default function DailyRoutine({
     const allSonos = getFromDB<RegistroSono[]>('anjo_sono', []);
     setSonosToday(allSonos.filter(s => s.idosoId === idoso.id && isTodayOrDemoDate(s.data)));
 
-    // Lead meal details from global and student-specific DB
-    const globalFeeds = getFromDB<any[]>('anjo_alimentacao', []);
-    const studentFeeds = getFromDB<any[]>(`anjo_alimentacao_${idoso.id}`, []);
-    const mealsMap = new Map<string, RegistroAlimentacao>();
-    [...globalFeeds, ...studentFeeds].forEach((item, idx) => {
-      if (!item) return;
-      const itemStudentId = item.idosoId || idoso.id;
-      if (itemStudentId !== idoso.id) return;
-      if (!isTodayOrDemoDate(item.data)) return;
-      const id = item.id || `meal_${idx}_${Date.now()}`;
-      if (!mealsMap.has(id)) {
-        mealsMap.set(id, {
-          id,
-          idosoId: idoso.id,
-          refeicao: (item.refeicao || 'cafe_manha') as any,
-          aceitacao: (item.aceitacao || 'muito_bem') as any,
-          horario: item.horario || '10:00',
-          data: item.data || todayIso,
-          observacoes: item.observacoes || item.observacao || '',
-          registradoPor: item.registradoPor || 'Equipe Escolar'
-        });
-      }
-    });
-    setAlimentacaoToday(Array.from(mealsMap.values()));
+    // Load meal details using getStudentMealsToday
+    setAlimentacaoToday(getStudentMealsToday(idoso.id));
 
     const allHumors = getFromDB<RegistroHumor[]>('anjo_humor', []);
     const seniorHumors = allHumors.filter(hu => hu.idosoId === idoso.id).sort((a,b) => b.data.localeCompare(a.data) || b.horario.localeCompare(a.horario));
@@ -623,8 +601,7 @@ export default function DailyRoutine({
       registradoPor: usuarioAtual.nome
     };
 
-    feeds.push(novoFeed);
-    saveToDB('anjo_alimentacao', feeds);
+    saveMealRecord(novoFeed);
 
     // Sync task dashboard check
     const mealLabelMap: { [key: string]: string } = {
@@ -721,7 +698,7 @@ export default function DailyRoutine({
       date: todayIso,
       registradoPor: usuarioAtual.nome
     };
-    saveToDB(`anjo_higiene_log_${idoso.id}`, hygieneLog);
+    saveHygieneLog(idoso.id, hygieneLog);
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: { localKey: `anjo_higiene_log_${idoso.id}` } }));
       window.dispatchEvent(new CustomEvent('db-vitals-update', { detail: { localKey: `anjo_higiene_log_${idoso.id}` } }));

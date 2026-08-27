@@ -736,6 +736,105 @@ export function getAllPossibleStudentKeys(key: string): string[] {
   return Array.from(keys).filter(Boolean);
 }
 
+export function isStudentIdMatch(idA: string | undefined | null, idB: string | undefined | null): boolean {
+  if (!idA || !idB) return false;
+  const strA = String(idA).trim();
+  const strB = String(idB).trim();
+  if (strA === strB) return true;
+  const keysA = getAllPossibleStudentKeys(strA);
+  const keysB = new Set(getAllPossibleStudentKeys(strB));
+  return keysA.some(k => keysB.has(k) || keyMatches(k, strB) || keyMatches(strA, k));
+}
+
+export function saveHygieneLog(idosoId: string, hygieneLog: any) {
+  if (typeof window === 'undefined' || !idosoId) return;
+  const keys = getAllPossibleStudentKeys(idosoId);
+  keys.forEach(k => {
+    saveToDB(`anjo_higiene_log_${k}`, hygieneLog);
+  });
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: { localKey: `anjo_higiene_log_${idosoId}` } }));
+    window.dispatchEvent(new CustomEvent('db-vitals-update', { detail: { localKey: `anjo_higiene_log_${idosoId}` } }));
+    window.dispatchEvent(new CustomEvent('db-routine-update'));
+  }
+}
+
+export function getHygieneLog(idosoId: string): any {
+  if (typeof window === 'undefined' || !idosoId) return null;
+  const keys = getAllPossibleStudentKeys(idosoId);
+  for (const k of keys) {
+    const h = getFromDB<any>(`anjo_higiene_log_${k}`, null);
+    if (h && (h.diaper || h.teeth || h.clothes || h.hands || h.bath || h.cream || h.observations || h.obs || h.time || h.trocaFralda || h.higieneBucal || h.trocaRoupa || h.banho || h.pele)) {
+      return h;
+    }
+  }
+  return null;
+}
+
+export function saveMealRecord(mealRecord: RegistroAlimentacao) {
+  if (typeof window === 'undefined' || !mealRecord || !mealRecord.idosoId) return;
+  const globalMeals = getFromDB<RegistroAlimentacao[]>('anjo_alimentacao', []);
+  const existingIdx = globalMeals.findIndex(m => m.id === mealRecord.id);
+  if (existingIdx >= 0) {
+    globalMeals[existingIdx] = mealRecord;
+  } else {
+    globalMeals.push(mealRecord);
+  }
+  saveToDB('anjo_alimentacao', globalMeals);
+
+  const keys = getAllPossibleStudentKeys(mealRecord.idosoId);
+  keys.forEach(k => {
+    const sKey = `anjo_alimentacao_${k}`;
+    const sMeals = getFromDB<RegistroAlimentacao[]>(sKey, []);
+    const idx = sMeals.findIndex(m => m.id === mealRecord.id);
+    if (idx >= 0) sMeals[idx] = mealRecord;
+    else sMeals.push(mealRecord);
+    saveToDB(sKey, sMeals);
+  });
+
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: { localKey: 'anjo_alimentacao' } }));
+    window.dispatchEvent(new CustomEvent('db-vitals-update', { detail: { localKey: 'anjo_alimentacao' } }));
+    window.dispatchEvent(new CustomEvent('db-routine-update'));
+  }
+}
+
+export function getStudentMealsToday(idosoId: string): RegistroAlimentacao[] {
+  if (typeof window === 'undefined' || !idosoId) return [];
+  const globalMeals = getFromDB<any[]>('anjo_alimentacao', []);
+  const keys = getAllPossibleStudentKeys(idosoId);
+  let studentSpecificMeals: any[] = [];
+  keys.forEach(k => {
+    const sMeals = getFromDB<any[]>(`anjo_alimentacao_${k}`, []);
+    if (sMeals && sMeals.length > 0) {
+      studentSpecificMeals = [...studentSpecificMeals, ...sMeals];
+    }
+  });
+
+  const mealsMap = new Map<string, RegistroAlimentacao>();
+  [...globalMeals, ...studentSpecificMeals].forEach((item, idx) => {
+    if (!item) return;
+    const itemStudentId = item.idosoId || idosoId;
+    if (!isStudentIdMatch(itemStudentId, idosoId)) return;
+    if (!isTodayOrDemoDate(item.data)) return;
+    const id = item.id || `meal_${idx}_${Date.now()}`;
+    if (!mealsMap.has(id)) {
+      mealsMap.set(id, {
+        id,
+        idosoId,
+        refeicao: (item.refeicao || 'cafe_manha') as any,
+        aceitacao: (item.aceitacao || 'muito_bem') as any,
+        horario: item.horario || '10:00',
+        data: item.data || new Date().toISOString().split('T')[0],
+        observacoes: item.observacoes || item.observacao || '',
+        quantidadeMl: Number(item.quantidadeMl || item.ml || item.quantidade) || (item.refeicao === 'mamadeira' ? 180 : undefined),
+        registradoPor: item.registradoPor || 'Equipe Escolar / Pais'
+      });
+    }
+  });
+  return Array.from(mealsMap.values());
+}
+
 export function getShiftActiveState(studentId: string, customShiftStates?: ShiftState[]): { active: boolean; isAbsent: boolean; reason?: string | null; startTime: string | null; lastResetTime: string | null } {
   if (typeof window === 'undefined' || !studentId) return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
   

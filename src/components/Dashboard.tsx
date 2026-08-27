@@ -3,7 +3,7 @@
 // Vercel build fix update: 514140926665909969
 import React, { useState, useEffect, useRef } from 'react';
 import { Idoso, TarefaDiaria, Usuario, TaskType, TaskStatus, RegistroAlimentacao, RegistroHidratacao, RegistroHumor, RegistroSono, RegistroAtividade, SinalVital, Medicamento, formatWhatsAppNumber, NotificacaoSimulada, Classroom, isStaffUser, isDirectorOrAdminUser, getRoleLabel } from '../types';
-import { getFromDB, saveToDB, checkFeedingCareAuthorization, SALAS_INICIAIS, getShiftActiveState, setShiftActiveState, setShiftActiveStatesBatch, getAssignedTeacherForRoom, getStudentRoomName, resetStudentDailyRoutine, checkBottleFeedingInterval, registerBottleAttemptNotice, purgeOrphanedStudentData } from '../data';
+import { getFromDB, saveToDB, checkFeedingCareAuthorization, SALAS_INICIAIS, getShiftActiveState, setShiftActiveState, setShiftActiveStatesBatch, getAssignedTeacherForRoom, getStudentRoomName, resetStudentDailyRoutine, checkBottleFeedingInterval, registerBottleAttemptNotice, purgeOrphanedStudentData, saveHygieneLog, getHygieneLog, saveMealRecord, getStudentMealsToday, isStudentIdMatch } from '../data';
 import { deleteFromFirestore, deleteStudentDataFromFirestore } from '../firebase';
 import { 
   ItemFilaOffline, 
@@ -918,7 +918,7 @@ Equipe Anjinho Escolar`
   // Quick Action form states
   const [quickMeal, setQuickMeal] = useState<{ refeicao: string; aceitacao: string; observacao: string; quantidadeMl?: number }>({ refeicao: 'cafe_manha', aceitacao: 'muito_bem', observacao: '', quantidadeMl: 180 });
   const [quickHygiene, setQuickHygiene] = useState(() => {
-    const saved = getFromDB<any>(`anjo_higiene_log_${idoso.id}`, null);
+    const saved = getHygieneLog(idoso.id);
     if (saved) {
       return {
         bath: Boolean(saved.bath ?? saved.banho),
@@ -936,7 +936,51 @@ Equipe Anjinho Escolar`
   const handleHygieneChange = (updatedFields: Partial<typeof quickHygiene>) => {
     setQuickHygiene(prev => {
       const next = { ...prev, ...updatedFields };
-      saveToDB(`anjo_higiene_log_${idoso.id}`, next);
+      const defaultTime = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      const hygieneLog = {
+        ...next,
+        banho: next.hands || next.bath,
+        higieneBucal: next.teeth,
+        trocaRoupa: next.clothes,
+        trocaFralda: next.diaper,
+        pele: next.cream,
+        observations: next.observations || '',
+        obs: next.observations || '',
+        time: defaultTime,
+        date: getTodayIso(),
+        registradoPor: usuarioAtual?.nome || 'Pai / Responsável'
+      };
+      saveHygieneLog(idoso.id, hygieneLog);
+      return next;
+    });
+  };
+
+  const handleToggleHygieneCard = (field: 'diaper' | 'teeth' | 'clothes' | 'hands' | 'cream') => {
+    setQuickHygiene(prev => {
+      const next = { ...prev };
+      if (field === 'diaper') next.diaper = !prev.diaper;
+      if (field === 'teeth') next.teeth = !prev.teeth;
+      if (field === 'clothes') next.clothes = !prev.clothes;
+      if (field === 'hands') { next.hands = !(prev.hands || prev.bath); next.bath = !(prev.hands || prev.bath); }
+      if (field === 'cream') next.cream = !prev.cream;
+      
+      const defaultTime = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      const hygieneLog = {
+        ...next,
+        banho: next.hands || next.bath,
+        higieneBucal: next.teeth,
+        trocaRoupa: next.clothes,
+        trocaFralda: next.diaper,
+        pele: next.cream,
+        observations: next.observations || '',
+        obs: next.observations || '',
+        time: defaultTime,
+        date: getTodayIso(),
+        registradoPor: usuarioAtual?.nome || 'Pai / Responsável'
+      };
+      saveHygieneLog(idoso.id, hygieneLog);
+      setVitalsUpdateTrigger(p => p + 1);
+      showToast('Registro de higiene salvo com sucesso!', 'success');
       return next;
     });
   };
@@ -4343,8 +4387,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
       return;
     }
 
-    const mealsStore = getFromDB<RegistroAlimentacao[]>('anjo_alimentacao', []);
-    mealsStore.push({
+    const newMealObj: RegistroAlimentacao = {
       id: 'ali_' + Date.now(),
       idosoId: idoso.id,
       refeicao: quickMeal.refeicao as any,
@@ -4354,8 +4397,8 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
       data: getTodayIso(),
       observacoes: quickMeal.observacao,
       registradoPor: usuarioAtual.nome
-    });
-    saveToDB('anjo_alimentacao', mealsStore);
+    };
+    saveMealRecord(newMealObj);
 
     // Sync tasks - vincula estritamente por palavra E horário do registro
     const labelMap: { [key: string]: string } = {
@@ -4441,7 +4484,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
       date: getTodayIso(),
       registradoPor: usuarioAtual.nome
     };
-    saveToDB(`anjo_higiene_log_${idoso.id}`, hygieneLog);
+    saveHygieneLog(idoso.id, hygieneLog);
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: { localKey: `anjo_higiene_log_${idoso.id}` } }));
       window.dispatchEvent(new CustomEvent('db-vitals-update', { detail: { localKey: `anjo_higiene_log_${idoso.id}` } }));
@@ -4860,30 +4903,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
   const totalWaterMl = todaysWaterList.reduce((acc, curr) => acc + (Number(curr.quantidadeMl) || 0), 0);
 
   // Compile today's food acceptance state combining global and student-specific stores
-  const globalMeals = getFromDB<any[]>('anjo_alimentacao', []);
-  const studentMeals = getFromDB<any[]>(`anjo_alimentacao_${idoso.id}`, []);
-  const mealsMap = new Map<string, RegistroAlimentacao>();
-  [...globalMeals, ...studentMeals].forEach((item, idx) => {
-    if (!item) return;
-    const itemStudentId = item.idosoId || idoso.id;
-    if (itemStudentId !== idoso.id) return;
-    if (!isTodayOrDemoDate(item.data)) return;
-    const id = item.id || `meal_${idx}_${Date.now()}`;
-    if (!mealsMap.has(id)) {
-      mealsMap.set(id, {
-        id,
-        idosoId: idoso.id,
-        refeicao: (item.refeicao || 'cafe_manha') as any,
-        aceitacao: (item.aceitacao || 'muito_bem') as any,
-        horario: item.horario || '10:00',
-        data: item.data || getTodayIso(),
-        observacoes: item.observacoes || item.observacao || '',
-        quantidadeMl: Number(item.quantidadeMl || item.ml || item.quantidade) || (item.refeicao === 'mamadeira' ? 180 : undefined),
-        registradoPor: item.registradoPor || 'Equipe Escolar'
-      });
-    }
-  });
-  const todaysMealsList = Array.from(mealsMap.values());
+  const todaysMealsList = getStudentMealsToday(idoso.id);
   const studentBottlesToday = todaysMealsList.filter(m => {
     if (!m || !m.refeicao) return false;
     const ref = String(m.refeicao).toLowerCase();
@@ -4892,13 +4912,13 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
   const totalBottlesMl = studentBottlesToday.reduce((acc, curr) => acc + (Number(curr.quantidadeMl) || 180), 0);
 
   // Core routine checkpoints for governance metrics score
-  const allVitalsList = getFromDB<SinalVital[]>('anjo_sinais', []).filter(s => s.idosoId === idoso.id);
+  const allVitalsList = getFromDB<SinalVital[]>('anjo_sinais', []).filter(s => isStudentIdMatch(s.idosoId, idoso.id));
   const latestVitals = allVitalsList.length > 0 ? allVitalsList[allVitalsList.length - 1] : null;
 
-  const allSonoList = getFromDB<any[]>('anjo_sono', []).filter(s => s.idosoId === idoso.id);
+  const allSonoList = getFromDB<any[]>('anjo_sono', []).filter(s => isStudentIdMatch(s.idosoId, idoso.id));
   const latestSono = allSonoList.length > 0 ? allSonoList[allSonoList.length - 1] : null;
 
-  const rawHygiene = getFromDB<any>(`anjo_higiene_log_${idoso.id}`, null);
+  const rawHygiene = getHygieneLog(idoso.id);
   const todayHygieneLog = rawHygiene ? {
     bath: Boolean(rawHygiene.bath ?? rawHygiene.banho),
     teeth: Boolean(rawHygiene.teeth ?? rawHygiene.higieneBucal),
@@ -8362,64 +8382,89 @@ Segunda-feira:
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 
-                <div className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                  todayHygieneLog?.diaper 
-                    ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
-                    : 'bg-slate-50 border-slate-100 text-slate-400'
-                }`}>
+                <button 
+                  type="button"
+                  onClick={() => handleToggleHygieneCard('diaper')}
+                  className={`p-2.5 rounded-xl text-center border font-bold transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98] ${
+                    todayHygieneLog?.diaper 
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
+                      : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+                  }`}
+                  title="Clique para alternar Fralda / Toalete"
+                >
                   <span className="text-xs block font-bold">{isEscolar ? ' Fralda / Toalete' : ' Fralda / Absorvente'}</span>
                   <span className="text-[10px] font-black uppercase">
                     {todayHygieneLog?.diaper ? 'Trocada / Cuidada' : 'Pendente'}
                   </span>
-                </div>
+                </button>
 
                 
-                <div className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                  todayHygieneLog?.teeth 
-                    ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
-                    : 'bg-slate-50 border-slate-100 text-slate-400'
-                }`}>
+                <button 
+                  type="button"
+                  onClick={() => handleToggleHygieneCard('teeth')}
+                  className={`p-2.5 rounded-xl text-center border font-bold transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98] ${
+                    todayHygieneLog?.teeth 
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
+                      : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+                  }`}
+                  title="Clique para alternar Escovação de Dentes"
+                >
                   <span className="text-xs block font-bold">{isEscolar ? ' Escovação Dentes' : ' Higiene Bucal'}</span>
                   <span className="text-[10px] font-black uppercase">
                     {todayHygieneLog?.teeth ? 'Realizada' : 'Pendente'}
                   </span>
-                </div>
+                </button>
 
                 
-                <div className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                  todayHygieneLog?.clothes 
-                    ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
-                    : 'bg-slate-50 border-slate-100 text-slate-400'
-                }`}>
+                <button 
+                  type="button"
+                  onClick={() => handleToggleHygieneCard('clothes')}
+                  className={`p-2.5 rounded-xl text-center border font-bold transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98] ${
+                    todayHygieneLog?.clothes 
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
+                      : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+                  }`}
+                  title="Clique para alternar Troca de Roupa"
+                >
                   <span className="text-xs block font-bold">{isEscolar ? ' Troca de Roupa' : ' Roupa Limpa'}</span>
                   <span className="text-[10px] font-black uppercase">
                     {todayHygieneLog?.clothes ? 'Trocada' : 'Pendente'}
                   </span>
-                </div>
+                </button>
 
                 
-                <div className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                  (todayHygieneLog?.hands || todayHygieneLog?.bath) 
-                    ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
-                    : 'bg-slate-50 border-slate-100 text-slate-400'
-                }`}>
+                <button 
+                  type="button"
+                  onClick={() => handleToggleHygieneCard('hands')}
+                  className={`p-2.5 rounded-xl text-center border font-bold transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98] ${
+                    (todayHygieneLog?.hands || todayHygieneLog?.bath) 
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
+                      : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+                  }`}
+                  title="Clique para alternar Mãos / Banho"
+                >
                   <span className="text-xs block font-bold">{isEscolar ? ' Mãos e Rosto' : ' Banho Chuveiro'}</span>
                   <span className="text-[10px] font-black uppercase">
                     {(todayHygieneLog?.hands || todayHygieneLog?.bath) ? (isEscolar ? 'Lavados' : 'Concluído') : 'Pendente'}
                   </span>
-                </div>
+                </button>
 
                 
-                <div className={`p-2.5 rounded-xl text-center border font-bold transition-all col-span-2 sm:col-span-1 ${
-                  todayHygieneLog?.cream 
-                    ? 'bg-emerald-50 border-emerald-200 text-emerald-800' 
-                    : 'bg-slate-50 border-slate-100 text-slate-400'
-                }`}>
+                <button 
+                  type="button"
+                  onClick={() => handleToggleHygieneCard('cream')}
+                  className={`p-2.5 rounded-xl text-center border font-bold transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98] col-span-2 sm:col-span-1 ${
+                    todayHygieneLog?.cream 
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
+                      : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+                  }`}
+                  title="Clique para alternar Pomada / Hidratação"
+                >
                   <span className="text-xs block font-bold">{isEscolar ? ' Pomada Antiassadura' : ' Hidratação Pele'}</span>
                   <span className="text-[10px] font-black uppercase">
                     {todayHygieneLog?.cream ? 'Aplicada' : 'Pendente'}
                   </span>
-                </div>
+                </button>
               </div>
 
               {todayHygieneLog?.observations && (
