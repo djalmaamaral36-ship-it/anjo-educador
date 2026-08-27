@@ -289,7 +289,7 @@ ${customNote ? `\n💬 *Recadinho:* ${customNote}` : ''}
       const catText = event.tipo === 'conquista' ? '🏆 CONQUISTA' :
                      event.tipo === 'atividade' ? '🎨 ATIVIDADE' :
                      event.tipo === 'foto' ? '📸 FOTO DO DIA' :
-                     event.tipo === 'evolucao' ? '📈 EVOLUÇÃO' : '📝 ROTINA';
+                     event.tipo === 'evolucao' ? '📈 EVOLUÇÁO' : '📝 ROTINA';
       ctx.fillText(catText, tagX + 160, tagY + 36);
 
       // Student name highlight

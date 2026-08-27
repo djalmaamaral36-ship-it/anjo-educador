@@ -254,6 +254,17 @@ async function startServer() {
   }
 
   // 1. SSO Endpoint (GET /api/sso?token=<JWT>)
+  app.get('/api/download-dashboard', (_req, res) => {
+    try {
+      const filePath = path.join(process.cwd(), 'src', 'components', 'Dashboard.tsx');
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      res.setHeader('Content-Disposition', 'attachment; filename="Dashboard.tsx"');
+      res.sendFile(filePath);
+    } catch (err: any) {
+      res.status(500).send('Erro ao baixar arquivo: ' + err.message);
+    }
+  });
+
   app.get('/api/sso', (req, res) => {
     try {
       const token = req.query.token as string;

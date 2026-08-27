@@ -159,7 +159,7 @@ export function normalizeTimeString(raw: string): string {
   return '09:00';
 }
 
-// Realinha inteligentemente títulos e horários quando há conflito semântico ou deslocamento (shift) no texto
+// Realinha inteligentemente títulos e horários quando há conflito sem ou deslocamento (shift) no texto
 export function realignPedagogicalActivity(
   rawTitle: string, 
   description: string, 
@@ -173,7 +173,7 @@ export function realignPedagogicalActivity(
 
   // 1. Detecção de Nome Explícito entre Aspas na Descrição (aspas duplas, simples ou curvas)
   // Ex: plantio da 'Minha Primeira Horta', apresentar a "Caixa Mágica das Texturas" -> título real é "Minha Primeira Horta 🌿"
-  const quotedMatch = desc.match(/(?:apresentar|utilizar|explorar|conduzir|oferecer|trabalhar|realizar|plantio|oficina|projeto|dinâmica|dinamica|atividade|tema)\s+(?:a|o|com\s+a|com\s+o|da|do|de)?\s*["“'‘]([^"”'‘]{3,60})["”'‘]/i)
+  const quotedMatch = desc.match(/(?:apresentar|utilizar|explorar|conduzir|oferecer|trabalhar|realizar|plantio|oficina|projeto|din)\s+(?:a|o|com\s+a|com\s+o|da|do|de)?\s*["“'‘]([^"”'‘]{3,60})["”'‘]/i)
     || desc.match(/["“'‘](Minha Primeira Horta[^"”'‘]*|Horta[^"”'‘]*|Mãos na Terra[^"”'‘]*|Caixa\s+Mágica[^"”'‘]*|Pintura[^"”'‘]*|Circuito[^"”'‘]*|Massinha[^"”'‘]*|Roda\s+de[^"”'‘]*|Varal[^"”'‘]*|Brincadeira[^"”'‘]*|Oficina[^"”'‘]*|História[^"”'‘]*|Teatro[^"”'‘]*|Tapete[^"”'‘]*|Painel[^"”'‘]*|Dança[^"”'‘]*|Música[^"”'‘]*|Boliche[^"”'‘]*|Culinária[^"”'‘]*|Quebra-cabeça[^"”'‘]*|Jogos[^"”'‘]*|Garrafa\s+Sensorial[^"”'‘]*|Pique-[^"”'‘]*|Mundo\s+das[^"”'‘]*|Cesto\s+dos[^"”'‘]*|Bicho[^"”'‘]*|Bandinha[^"”'‘]*|Fantoche[^"”'‘]*|Árvore[^"”'‘]*|Caixa\s+das\s+Sensações[^"”'‘]*|Caixa\s+dos\s+Sentidos[^"”'‘]*|Caixa\s+de\s+Texturas[^"”'‘]*)/i);
 
   // Caso 1: Conflito flagrante - Título diz "Almoço", mas descrição é sobre "Horta / Natureza", "Caixa Mágica", "exploração sensorial", "texturas", "roda", etc.
@@ -519,7 +519,7 @@ export function parseAuraRawPlan(text: string): {
 
   const activities: ParsedAuraActivity[] = [];
 
-  // 2. PARSER ROBUSTO LINHA A LINHA (Zero regex lock, Instantâneo < 2ms)
+  // 2. PARSER ROBUSTO LINHA A LINHA (Zero regex lock, Instant < 2ms)
   let currentDia = defaultDia;
   let currentDataStr = defaultDataStr;
   let currentDataIso = defaultDataIso;
@@ -1400,7 +1400,7 @@ export function findMatchingMealTask(
     let timeWindowMatches = false;
 
     if (refeicao === 'mamadeira') {
-      // 1. Palavra: deve conter explicitamente mamadeira ou fórmula e NÃO ser lanche/frutinha/almoço/jantar
+      // 1. Palavra: deve conter explicitamente mamadeira ou fórmula e NÁO ser lanche/frutinha/almoço/jantar
       keywordMatches = (titleLower.includes('mamadeira') || titleLower.includes('fórmula') || titleLower.includes('formula')) &&
         !titleLower.includes('lanche') && !titleLower.includes('frut') && !titleLower.includes('almoço') && !titleLower.includes('jantar');
 

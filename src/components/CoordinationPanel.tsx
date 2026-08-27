@@ -73,7 +73,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
         </div>
         <h2 className="text-lg font-black text-slate-800">Acesso Restrito</h2>
         <p className="text-sm text-slate-500 max-w-md leading-relaxed">
-          Esta tela é exclusiva para a equipe de Coordenação Pedagógica. Responsáveis têm acesso aos dados individuais de seus filhos através do Diário da Infância.
+          Esta tela é exclusiva para a equipe de Coordenação Pedagógica. Responsáveis têm acesso aos dados individuais de seus filhos através do Diário da Inf
         </p>
       </div>
     );
@@ -195,7 +195,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
           studentName: 'Maria Eduarda',
           classroomName: 'Maternal I',
           category: 'fala',
-          indicator: 'Ausência de fala espontânea ou tentativas de comunicação aos 2 anos e meio.',
+          indicator: 'Ausência de fala espont ou tentativas de comunicação aos 2 anos e meio.',
           intensity: 'moderada',
           date: '2026-05-11',
           observations: 'Notado em interações na roda de música. Prefere apontar ou puxar o braço da professora.',
@@ -564,7 +564,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                 <div className="p-3 bg-white dark:bg-slate-950/40 rounded-xl border border-slate-100 dark:border-slate-800 space-y-1">
                   <span className="text-[10px] font-black text-slate-800 dark:text-slate-300 block">🎨 Integração Sensorial:</span>
                   <p className="text-[9px] text-slate-400 font-semibold leading-normal">
-                    Pânico ou reações severas de choro com barulhos de sala de aula; recusa alimentar extrema por texturas.
+                    P ou reações severas de choro com barulhos de sala de aula; recusa alimentar extrema por texturas.
                   </p>
                 </div>
               </div>
@@ -647,7 +647,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                         <option value="">-- Selecione o Sinal --</option>
                         {newAlertForm.category === 'fala' && (
                           <>
-                            <option value="Ausência de fala espontânea ou tentativas de comunicação aos 2 anos e meio.">Ausência de fala expressiva espontânea</option>
+                            <option value="Ausência de fala espont ou tentativas de comunicação aos 2 anos e meio.">Ausência de fala expressiva espont</option>
                             <option value="Ecolalia imediata ou tardia sistemática em vez de responder perguntas simples.">Ecolalia persistente</option>
                             <option value="Não atende a comandos verbais de rotina nem responde ao próprio nome.">Não atende ao próprio nome</option>
                           </>
@@ -661,7 +661,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                         )}
                         {newAlertForm.category === 'sensorial' && (
                           <>
-                            <option value="Irritabilidade severa ou pânico com barulhos cotidianos (liquidificador, portão, recreio).">Hipersensibilidade auditiva</option>
+                            <option value="Irritabilidade severa ou p com barulhos cotidianos (liquidificador, portão, recreio).">Hipersensibilidade auditiva</option>
                             <option value="Recusa total de alimentos sólidos ou de determinadas cores e texturas.">Seletividade alimentar extrema</option>
                             <option value="Choro e asco corporal ao tocar massinha, tintas ou alimentos úmidos.">Aversão a texturas e toques</option>
                           </>
@@ -1273,7 +1273,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                 <Smile className="w-4 h-4 text-rose-500" /> Protocolo de Mediação
               </h4>
               <p className="text-[11px] leading-relaxed text-slate-500 font-semibold">
-                Pequenas agressões físicas (mordidas, puxões) e disputas territoriais de brinquedos são comuns na primeira infância. 
+                Pequenas agressões físicas (mordidas, puxões) e disputas territoriais de brinquedos são comuns na primeira inf 
                 Nossa atuação deve ser focada no desenvolvimento socioemocional e mediação assertiva.
               </p>
 

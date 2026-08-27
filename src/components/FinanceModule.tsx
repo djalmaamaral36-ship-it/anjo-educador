@@ -355,7 +355,7 @@ export default function FinanceModule({
                         ⚡ Pagamento Facilitado via Pix
                       </span>
                       <p className="text-[11px] text-amber-900 font-semibold leading-relaxed">
-                        Copie a chave Pix Copia e Cola ou escaneie o código QR para realizar a simulação instantânea de regularização.
+                        Copie a chave Pix Copia e Cola ou escaneie o código QR para realizar a simulação instant de regularização.
                       </p>
                     </div>
 

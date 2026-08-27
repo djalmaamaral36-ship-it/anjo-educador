@@ -88,7 +88,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
       setTestToneOutput({
         original: "O aluno brigou pelo brinquedo mas a professora interveio e resolveu.",
         brandVoice: "Durante as brincadeiras, tivemos um momento de aprendizado sobre compartilhar! O anjinho queria o mesmo brinquedo do colega, mas com jeitinho e mediação, conversamos sobre cooperação e logo os dois estavam rindo juntos de novo. 🤝❤️",
-        tip: "Nunca dramatize ou use tom punitivo. Encare conflitos da primeira infância sob a ótica do desenvolvimento socioemocional e da mediação afetuosa."
+        tip: "Nunca dramatize ou use tom punitivo. Encare conflitos da primeira inf sob a ótica do desenvolvimento socioemocional e da mediação afetuosa."
       });
     } else if (scenario === 'sono') {
       setTestToneOutput({
@@ -115,7 +115,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
     { id: 'pilares', label: 'Pilares Emocionais', icon: <Star className="w-4 h-4" /> },
     { id: 'narrativa', label: 'Slogans & Narrativa', icon: <FileText className="w-4 h-4" /> },
     { id: 'experiencia', label: 'A Experiência do Legado', icon: <Sparkles className="w-4 h-4" /> },
-    { id: 'metodo_arvore', label: 'Método Árvore da Infância®', icon: <TreePine className="w-4 h-4" /> },
+    { id: 'metodo_arvore', label: 'Método Árvore da Inf', icon: <TreePine className="w-4 h-4" /> },
     { id: 'protecao_marca', label: 'BRAND-005 — Blindagem & IP 🛡️', icon: <ShieldCheck className="w-4 h-4 text-emerald-500 font-bold" /> },
   ];
 
@@ -140,7 +140,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
           </h1>
           
           <p className="text-xs sm:text-sm text-indigo-150 leading-relaxed font-sans max-w-2xl font-semibold">
-            Empresas memoráveis criam produtos, mas o que as torna eternas é a narrativa e a experiência que entregam. Este documento estratégico define a nossa essência: o Anjinho Escolar não é uma simples ferramenta administrativa, mas o lugar sagrado onde as famílias guardam os primeiros e mais lindos capítulos da infância de seus filhos.
+            Empresas memoráveis criam produtos, mas o que as torna eternas é a narrativa e a experiência que entregam. Este documento estratégico define a nossa essência: o Anjinho Escolar não é uma simples ferramenta administrativa, mas o lugar sagrado onde as famílias guardam os primeiros e mais lindos capítulos da inf de seus filhos.
           </p>
           
           <div className="flex flex-wrap gap-2 pt-2">
@@ -231,7 +231,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                 <div className="prose text-xs sm:text-sm text-slate-800 leading-relaxed space-y-4 font-semibold">
                   <p>
-                    A infância é um sopro. Em um piscar de olhos, os bebês que segurávamos no colo estão prontos para os primeiros passos na educação formal. Na correria do dia a dia moderno, pais e mães trabalham com o coração apertado, perdendo as pequenas piadas cotidianas, os gestos gentis espontâneos, a primeira semente plantada na horta escolar.
+                    A inf é um sopro. Em um piscar de olhos, os bebês que segurávamos no colo estão prontos para os primeiros passos na educação formal. Na correria do dia a dia moderno, pais e mães trabalham com o coração apertado, perdendo as pequenas piadas cotidianas, os gestos gentis espont a primeira semente plantada na horta escolar.
                   </p>
                   
                   <div className="p-5 my-4 bg-amber-100/50 rounded-2xl border border-amber-200/60 relative overflow-hidden">
@@ -242,7 +242,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                   </div>
 
                   <p>
-                    Enquanto a concorrência foca puramente no aspecto técnico (gerenciar cobranças, listar presenças, enviar avisos burocráticos frios), o <strong>Anjinho Escolar</strong> se posiciona no território emocional. Nosso compromisso é com a <strong>afetividade</strong>, a <strong>segurança psicológica</strong> e o <strong>legado da infância</strong>.
+                    Enquanto a concorrência foca puramente no aspecto técnico (gerenciar cobranças, listar presenças, enviar avisos burocráticos frios), o <strong>Anjinho Escolar</strong> se posiciona no território emocional. Nosso compromisso é com a <strong>afetividade</strong>, a <strong>segurança psicológica</strong> e o <strong>legado da inf</strong>.
                   </p>
                 </div>
 
@@ -290,14 +290,14 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       <Heart className="w-5 h-5 text-rose-500 fill-rose-500/10" /> Nosso Propósito (A Causa)
                     </h3>
                     <p className="font-serif italic text-rose-900 font-bold">
-                      "Preservar as memórias afetivas da primeira infância e construir laços inabaláveis de amor, confiança e desenvolvimento humano entre a escola e a família."
+                      "Preservar as memórias afetivas da primeira inf e construir laços inabaláveis de amor, confiança e desenvolvimento humano entre a escola e a família."
                     </p>
                     <p className="text-[11px] text-slate-750 font-semibold leading-relaxed pt-1">
-                      Acreditamos que a infância é o solo fértil onde todo o futuro do ser humano é plantado. Guardar essa jornada é um ato de preservação do que temos de mais valioso: a nossa própria história.
+                      Acreditamos que a inf é o solo fértil onde todo o futuro do ser humano é plantado. Guardar essa jornada é um ato de preservação do que temos de mais valioso: a nossa própria história.
                     </p>
                   </div>
 
-                  {/* A MISSÃO SECTION */}
+                  {/* A MISSÁO SECTION */}
                   <div className="space-y-2 bg-emerald-50/30 p-5 rounded-3xl border border-emerald-100">
                     <h3 className="text-base font-black text-emerald-950 flex items-center gap-1.5 font-display">
                       <Award className="w-5 h-5 text-emerald-600" /> Nossa Missão (O Meio)
@@ -583,7 +583,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                   <div>
                     <div className="flex flex-wrap items-center gap-2 mb-1">
                       <span className="text-[9px] uppercase font-black bg-indigo-100 text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-400 px-2 py-0.5 rounded-md tracking-wider">CÓDIGO: BRAND-004</span>
-                      <span className="text-[9px] uppercase font-black bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-400 px-2 py-0.5 rounded-md tracking-wider">VERSÃO 1.0</span>
+                      <span className="text-[9px] uppercase font-black bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-400 px-2 py-0.5 rounded-md tracking-wider">VERSÁO 1.0</span>
                       <span className="text-[9px] uppercase font-black bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400 px-2 py-0.5 rounded-md tracking-wider">STATUS: OFICIAL</span>
                     </div>
                     <h2 className="text-xl sm:text-2xl font-serif font-black text-indigo-950">Tom de Voz e Linguagem da Marca</h2>
@@ -674,7 +674,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     </div>
                     <div className="p-3 bg-white border border-amber-200 rounded-xl space-y-1.5">
                       <h4 className="text-[10px] font-black text-slate-500 uppercase">🎓 Educação</h4>
-                      <p className="text-[9.5px] font-semibold text-slate-750 leading-relaxed">Educação Infantil, desenvolvimento, aprendizagem, infância, descoberta, evolução, cuidado, protagonismo da criança</p>
+                      <p className="text-[9.5px] font-semibold text-slate-750 leading-relaxed">Educação Infantil, desenvolvimento, aprendizagem, inf descoberta, evolução, cuidado, protagonismo da criança</p>
                     </div>
                     <div className="p-3 bg-white border border-amber-200 rounded-xl space-y-1.5">
                       <h4 className="text-[10px] font-black text-slate-500 uppercase">🏠 Família</h4>
@@ -706,7 +706,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       'fortalecer a relação entre escola e família',
                       'valorizar o trabalho dos educadores',
                       'acompanhar o desenvolvimento da criança',
-                      'preservar a história da infância',
+                      'preservar a história da inf',
                       'aproximar pessoas com cuidado',
                       'organizar a rotina com simplicidade',
                       'tornar cada momento significativo',
@@ -772,7 +772,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     </div>
                   </div>
                   <div className="pt-2 border-t border-rose-150/40 text-[9.5px] italic font-semibold text-rose-900 leading-normal">
-                    * Falamos sobre a infância com respeito técnico e afeto profundo. Não infantilizamos quem trabalha com ela e nunca exploramos as inseguranças das diretoras baseando nossa comunicação no medo ou em mercantilismo frio.
+                    * Falamos sobre a inf com respeito técnico e afeto profundo. Não infantilizamos quem trabalha com ela e nunca exploramos as inseguranças das diretoras baseando nossa comunicação no medo ou em mercantilismo frio.
                   </div>
                 </div>
 
@@ -792,7 +792,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     <div className="p-4 rounded-xl bg-white border border-slate-150 space-y-2">
                       <h4 className="text-[10px] font-black text-slate-500 uppercase">👶 A Criança e a Escola</h4>
                       <p className="text-[10px] text-slate-750 font-semibold leading-relaxed">
-                        A criança nunca é um número, usuário ou cadastro. Ela é sempre descrita como: criança, infância, desenvolvimento, história, descoberta, jornada de aprendizagem.
+                        A criança nunca é um número, usuário ou cadastro. Ela é sempre descrita como: criança, inf desenvolvimento, história, descoberta, jornada de aprendizagem.
                       </p>
                       <p className="text-[9.5px] font-black text-indigo-900">
                         A escola nunca é tratada apenas como um cliente comum. Ela é nossa parceira permanente que transforma vidas.
@@ -935,7 +935,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                           <span className="text-[8px] font-black uppercase tracking-widest bg-sky-100 text-sky-800 px-2 py-0.5 rounded">Eternidade</span>
                         </div>
                         <p className="text-[11px] text-slate-600 leading-relaxed font-semibold">
-                          A primeira infância passa rápido demais. Acreditamos que cada marco — o primeiro 'por favor' espontâneo, o primeiro amigo, o desenho da família — é um tesouro nacional privado. Nós tratamos fotos, áudios e pequenos relatos não como 'registros de banco de dados', mas como relíquias digitais permanentes e exportáveis para toda a vida.
+                          A primeira inf passa rápido demais. Acreditamos que cada marco — o primeiro 'por favor' espont o primeiro amigo, o desenho da família — é um tesouro nacional privado. Nós tratamos fotos, áudios e pequenos relatos não como 'registros de banco de dados', mas como relíquias digitais permanentes e exportáveis para toda a vida.
                         </p>
                       </div>
                     </div>
@@ -1003,7 +1003,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {[
                         { 
-                          text: "Onde os primeiros capítulos da infância são guardados com amor.", 
+                          text: "Onde os primeiros capítulos da inf são guardados com amor.", 
                           type: "Slogan Institucional Principal" 
                         },
                         { 
@@ -1166,7 +1166,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                 <div className="flex justify-between items-center border-b border-amber-200/50 pb-4">
                   <div>
                     <span className="text-[9px] uppercase font-black text-indigo-500 tracking-wider">Capítulo 9</span>
-                    <h2 className="text-xl sm:text-2xl font-serif font-black text-indigo-950">Método Árvore da Infância®</h2>
+                    <h2 className="text-xl sm:text-2xl font-serif font-black text-indigo-950">Método Árvore da Inf</h2>
                   </div>
                   <span className="text-3xl">🌳</span>
                 </div>
@@ -1179,7 +1179,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                   </div>
 
                   <p>
-                    O <strong>Método Árvore da Infância®</strong> é a nossa metodologia exclusiva e registrada de comunicação afetiva, documentação do desenvolvimento e preservação de legados. Com ele, o Anjinho Escolar deixa de ser um mero software de rotina e se consolida como uma propriedade intelectual insubstituível.
+                    O <strong>Método Árvore da Inf</strong> é a nossa metodologia exclusiva e registrada de comunicação afetiva, documentação do desenvolvimento e preservação de legados. Com ele, o Anjinho Escolar deixa de ser um mero software de rotina e se consolida como uma propriedade intelectual insubstituível.
                   </p>
 
                   <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wide">Os 5 Princípios do Método</h3>
@@ -1213,7 +1213,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       <span className="text-2xl block">🍎</span>
                       <h4 className="text-xs font-black text-slate-900">4. Frutificar</h4>
                       <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
-                        Legado consolidado. O Álbum da Primeira Infância e a Linha do Tempo Inesquecível.
+                        Legado consolidado. O Álbum da Primeira Inf e a Linha do Tempo Inesquecível.
                       </p>
                     </div>
 
@@ -1228,7 +1228,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                   <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wide">As 5 Estações de Crescimento (Índice de Cultivo)</h3>
                   <p className="text-xs text-slate-700">
-                    A árvore da criança cresce no aplicativo de forma orgânica de acordo com o seu <strong>Índice de Cultivo</strong>. Este índice é um indicador de qualidade (não apenas de volume), ponderando registros enriquecidos com fotos, momentos marcados como "Inesquecíveis" e valores vivenciados.
+                    A árvore da criança cresce no aplicativo de forma org de acordo com o seu <strong>Índice de Cultivo</strong>. Este índice é um indicador de qualidade (não apenas de volume), ponderando registros enriquecidos com fotos, momentos marcados como "Inesquecíveis" e valores vivenciados.
                   </p>
 
                   <div className="space-y-2.5 font-sans">
@@ -1248,7 +1248,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                         <span className="text-xl">🌿</span>
                         <div>
                           <h4 className="text-xs font-black text-indigo-950">Estação 2: Os Primeiros Brotos</h4>
-                          <p className="text-[10px] text-slate-600">Curiosidade e exploração ativa das novas dinâmicas pedagógicas.</p>
+                          <p className="text-[10px] text-slate-600">Curiosidade e exploração ativa das novas din pedagógicas.</p>
                         </div>
                       </div>
                       <span className="text-[10px] font-black bg-white px-2 py-0.5 rounded-full border border-emerald-200">16 - 40 pts</span>
@@ -1281,7 +1281,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                         <span className="text-xl">🍎</span>
                         <div>
                           <h4 className="text-xs font-black text-indigo-950">Estação 5: Árvore de Frutos</h4>
-                          <p className="text-[10px] text-slate-600">O legado completo da infância com memórias maduras, prontas para as próximas etapas da vida.</p>
+                          <p className="text-[10px] text-slate-600">O legado completo da inf com memórias maduras, prontas para as próximas etapas da vida.</p>
                         </div>
                       </div>
                       <span className="text-[10px] font-black bg-white px-2 py-0.5 rounded-full border border-amber-300">111+ pts</span>
@@ -1318,7 +1318,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                 level = 'Moderado ⚠️';
                 riskBg = 'bg-amber-50 border-amber-200 text-amber-800';
                 barColor = 'bg-amber-500';
-                desc = 'Você já implementou as primeiras defesas (ex: NDA ou termos de uso), mas ainda possui vulnerabilidades críticas. Seu principal método ("Árvore da Infância") ou seu logotipo ainda podem ser imitados.';
+                desc = 'Você já implementou as primeiras defesas (ex: NDA ou termos de uso), mas ainda possui vulnerabilidades críticas. Seu principal método ("Árvore da Inf") ou seu logotipo ainda podem ser imitados.';
               } else if (percent >= 60 && percent < 90) {
                 level = 'Seguro & Blindado 🛡️';
                 riskBg = 'bg-indigo-50 border-indigo-200 text-indigo-900';
@@ -1331,16 +1331,16 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                 desc = 'Parabéns! Sua propriedade intelectual está blindada em todas as esferas. Seus métodos, marcas, código-fonte e dados estão protegidos por contratos impecáveis e tecnologias antipirataria.';
               }
 
-              const templateNda = `ACORDO DE CONFIDENCIALIDADE E NÃO-CONCORRÊNCIA (NDA)
+              const templateNda = `ACORDO DE CONFIDENCIALIDADE E NÁO-CONCORRÊNCIA (NDA)
 
 Pelo presente instrumento particular, de um lado ANJINHO ESCOLAR TECNOLOGIA LTDA, e de outro lado o CONTRATADO, ajustam o seguinte:
 
-1. OBJETO: O Contratado terá acesso a informações confidenciais relativas à arquitetura, código-fonte, metodologia "Árvore da Infância®" e segredos de negócios do aplicativo Anjinho Escolar.
-2. OBRIGAÇÃO DE SIGILO: O Contratado obriga-se a manter absoluto sigilo sobre todas as Informações Confidenciais, não as revelando a terceiros nem utilizando-as para fins alheios ao projeto.
-3. NÃO-CONCORRÊNCIA: O Contratado compromete-se a não desenvolver, participar, prestar consultoria ou assessorar direta ou indiretamente qualquer software de gestão escolar, diário ou agenda escolar pelo prazo de 24 (vinte e quatro) meses a contar do término deste vínculo.
+1. OBJETO: O Contratado terá acesso a informações confidenciais relativas à arquitetura, código-fonte, metodologia "Árvore da Inf" e segredos de negócios do aplicativo Anjinho Escolar.
+2. OBRIGAÇÁO DE SIGILO: O Contratado obriga-se a manter absoluto sigilo sobre todas as Informações Confidenciais, não as revelando a terceiros nem utilizando-as para fins alheios ao projeto.
+3. NÁO-CONCORRÊNCIA: O Contratado compromete-se a não desenvolver, participar, prestar consultoria ou assessorar direta ou indiretamente qualquer software de gestão escolar, diário ou agenda escolar pelo prazo de 24 (vinte e quatro) meses a contar do término deste vínculo.
 4. PENALIDADES: O descumprimento de qualquer cláusula ensejará multa penal de R$ 100.000,00, sem prejuízo de perdas e danos e medidas criminais cabíveis.`;
 
-              const templateNotice = `NOTIFICAÇÃO EXTRAJUDICIAL POR PLÁGIO E USO INDEVIDO DE MARCA
+              const templateNotice = `NOTIFICAÇÁO EXTRAJUDICIAL POR PLÁGIO E USO INDEVIDO DE MARCA
 
 À [NOME DO INFRATOR / CONCORRENTE]
 
@@ -1411,7 +1411,7 @@ Solicitamos que, no prazo improrrogável de 48 (quarenta e oito) horas, cesse im
                                 className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4 mt-0.5 shrink-0"
                               />
                               <div className="space-y-0.5">
-                                <span className="block text-[11px] font-black text-slate-800">Direitos Autorais do Método Árvore da Infância</span>
+                                <span className="block text-[11px] font-black text-slate-800">Direitos Autorais do Método Árvore da Inf</span>
                                 <span className="block text-[9px] text-slate-500 font-medium">Registro na Biblioteca Nacional impedindo o plágio da metodologia pedagógica.</span>
                               </div>
                             </label>
@@ -1557,7 +1557,7 @@ Solicitamos que, no prazo improrrogável de 48 (quarenta e oito) horas, cesse im
                         <span className="text-2xl">🌳</span>
                         <h4 className="text-xs font-black text-slate-900 leading-tight">3. Registro de Metodologia</h4>
                         <p className="text-[10px] text-slate-600 leading-relaxed">
-                          A apostila literária e didática do "Método Árvore da Infância" deve ser registrada como obra literária e científica.
+                          A apostila literária e didática do "Método Árvore da Inf" deve ser registrada como obra literária e científica.
                         </p>
                         <div className="text-[9px] text-slate-500 pt-1 font-bold">
                           • Prazo: 30 a 90 dias<br />

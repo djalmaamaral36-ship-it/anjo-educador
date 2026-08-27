@@ -98,8 +98,8 @@ export default function EditProfileModal({
         videoRef.current.play();
       }
     } catch (err: any) {
-      console.error("Erro ao abrir câmera:", err);
-      setCameraError("Não foi possível acessar a câmera. Verifique as permissões do seu navegador.");
+      console.error("Erro ao abrir c", err);
+      setCameraError("Não foi possível acessar a c Verifique as permissões do seu navegador.");
       setIsCapturing(false);
     }
   };
@@ -114,7 +114,7 @@ export default function EditProfileModal({
       ctx.drawImage(videoRef.current, 0, 0, 300, 300);
       const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
       setFoto(dataUrl);
-      setSuccessMsg("Foto capturada pela câmera com sucesso!");
+      setSuccessMsg("Foto capturada pela c com sucesso!");
       setTimeout(() => setSuccessMsg(''), 3000);
     }
     stopCamera();
@@ -314,7 +314,7 @@ export default function EditProfileModal({
                       onClick={() => startCamera('user')}
                       className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/60 dark:hover:bg-indigo-900/60 text-indigo-700 dark:text-indigo-300 rounded-xl text-xs font-bold border border-indigo-200 dark:border-indigo-800 cursor-pointer flex items-center gap-1.5 transition-colors"
                     >
-                      <Camera className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" /> Câmera
+                      <Camera className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" /> C
                     </button>
 
                     <label className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-600 cursor-pointer flex items-center gap-1.5 transition-colors">
