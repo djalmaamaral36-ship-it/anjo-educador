@@ -12,6 +12,7 @@ import {
   disableNetwork
 } from 'firebase/firestore';
 import firebaseConfig from '../firebase-applet-config.json';
+import { USUARIOS_SIMULADOS, SALAS_INICIAIS, IDOSOS_INICIAIS } from './seedData';
 
 const app = initializeApp(firebaseConfig);
 let dbInstance;
@@ -207,7 +208,37 @@ export function startFirebaseSync(force?: boolean) {
         lastSnapshotTime = nowTime;
         snapshotCountTotal++;
 
-        const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+        let data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+
+        // Self-heal and protect canonical collections from being wiped to empty array
+        if (colName === 'anjo_usuarios') {
+          if (data.length === 0) {
+            console.log("🚀 [Firebase] Auto-seeding empty anjo_usuarios in Firestore with 14 canonical simulated users...");
+            seedDatabase('anjo_usuarios', USUARIOS_SIMULADOS);
+            data = USUARIOS_SIMULADOS;
+          } else {
+            // Check if any canonical users are missing from remote (like dev, director, coordinators, teachers, parents)
+            const missingSeedUsers = USUARIOS_SIMULADOS.filter(seedU => !data.some(d => d.id === seedU.id));
+            if (missingSeedUsers.length > 0) {
+              console.log(`🚀 [Firebase] Restoring ${missingSeedUsers.length} missing seed users to anjo_usuarios in Firestore...`);
+              missingSeedUsers.forEach(u => saveToFirestore('anjo_usuarios', u));
+              data = [...data, ...missingSeedUsers];
+            }
+          }
+        } else if (colName === 'anjo_salas') {
+          if (data.length === 0) {
+            console.log("🚀 [Firebase] Auto-seeding empty anjo_salas in Firestore with 2 initial classes...");
+            seedDatabase('anjo_salas', SALAS_INICIAIS);
+            data = SALAS_INICIAIS;
+          }
+        } else if (colName === 'anjo_idosos') {
+          if (data.length === 0) {
+            console.log("🚀 [Firebase] Auto-seeding empty anjo_idosos in Firestore with 10 students...");
+            seedDatabase('anjo_idosos', IDOSOS_INICIAIS);
+            data = IDOSOS_INICIAIS;
+          }
+        }
+
         const serialized = JSON.stringify(data);
 
         if (typeof window !== 'undefined') {

@@ -1,7 +1,7 @@
 // Sync trigger: 2026-06-21 20:37 - Anjo Cuidador high-fidelity PNG logo update using bulletproof asset loading
 import React, { useState, useEffect } from 'react';
 import { Usuario, Idoso, NotificacaoSimulada, formatWhatsAppNumber, isStaffUser, getRoleLabel, isDirectorOrAdminUser } from './types';
-import { initializeDB, getFromDB, saveToDB, SALAS_INICIAIS, IDOSOS_INICIAIS, USUARIOS_INICIAIS } from './data';
+import { initializeDB, getFromDB, saveToDB, SALAS_INICIAIS, IDOSOS_INICIAIS, USUARIOS_SIMULADOS } from './data';
 import { startFirebaseSync } from './firebase';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
@@ -311,7 +311,11 @@ export default function App() {
     
     // Load active settings if saved
     const savedUserId = localStorage.getItem('anjo_simulacao_user_id');
-    const allUsers = getFromDB<Usuario[]>('anjo_usuarios', []);
+    let allUsers = getFromDB<Usuario[]>('anjo_usuarios', USUARIOS_SIMULADOS);
+    if (!allUsers || allUsers.length === 0) {
+      allUsers = USUARIOS_SIMULADOS;
+      saveToDB('anjo_usuarios', allUsers);
+    }
     
     // Automatically login simulation character if one exists
     let loggedUser: Usuario | null = null;

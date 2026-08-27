@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Idoso, Usuario, Classroom, isStaffUser, isDirectorOrAdminUser } from '../types';
-import { getFromDB, saveToDB, compressImage, SALAS_INICIAIS, isPinUnique } from '../data';
+import { getFromDB, saveToDB, compressImage, SALAS_INICIAIS, USUARIOS_SIMULADOS, isPinUnique } from '../data';
 import { VoiceInput } from './VoiceInput';
 import { 
   Users, 
@@ -281,7 +281,11 @@ export default function FamilySection({
   }, [idoso, keyTrigger]);
 
   const loadMembers = () => {
-    const allUsers = getFromDB<Usuario[]>('anjo_usuarios', []);
+    let allUsers = getFromDB<Usuario[]>('anjo_usuarios', USUARIOS_SIMULADOS);
+    if (!allUsers || allUsers.length === 0) {
+      allUsers = USUARIOS_SIMULADOS;
+      saveToDB('anjo_usuarios', allUsers);
+    }
     setIntegrantes(allUsers);
     
     // Alert configs per relative

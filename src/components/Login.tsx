@@ -16,24 +16,31 @@ interface LoginProps {
 }
 
 export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibility }: LoginProps) {
+  const [userListVersion, setUserListVersion] = useState(0);
+
+  useEffect(() => {
+    const handleUpdate = () => setUserListVersion(v => v + 1);
+    window.addEventListener('anjo_user_updated', handleUpdate);
+    window.addEventListener('storage', handleUpdate);
+    return () => {
+      window.removeEventListener('anjo_user_updated', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
+    };
+  }, []);
+
   const dbUsers = useMemo(() => {
-    const list = getFromDB<Usuario[]>('anjo_usuarios', USUARIOS_SIMULADOS);
+    let list = getFromDB<Usuario[]>('anjo_usuarios', USUARIOS_SIMULADOS);
+    if (!list || list.length === 0) {
+      list = USUARIOS_SIMULADOS;
+      saveToDB('anjo_usuarios', list);
+    }
     if (!list.some(u => u.id === 'user_desenvolvedor_djalma' || u.tipo === 'desenvolvedor' || u.nome.includes('Djalma'))) {
-      const devUser: Usuario = {
-        id: 'user_desenvolvedor_djalma',
-        nome: 'Djalma Amaral (Desenvolvedor Dev)',
-        email: 'djalmaamaral36@gmail.com',
-        telefone: '(11) 98765-9181',
-        tipo: 'desenvolvedor',
-        parentesco: 'Desenvolvedor Master',
-        foto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150',
-        observacoes: 'Desenvolvedor e Criador da Plataforma. Possui acesso total e privilégios master.',
-        pin: '9181'
-      };
-      return [devUser, ...list];
+      const devUser: Usuario = USUARIOS_SIMULADOS[0];
+      list = [devUser, ...list];
+      saveToDB('anjo_usuarios', list);
     }
     return list;
-  }, []);
+  }, [userListVersion]);
   const [selectedUser, setSelectedUser] = useState<Usuario>(() => {
     return dbUsers.find(u => u.tipo === 'desenvolvedor') || dbUsers.find(u => u.tipo === 'cuidador') || dbUsers[1] || dbUsers[0];
   });

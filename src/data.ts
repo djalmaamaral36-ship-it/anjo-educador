@@ -157,7 +157,7 @@ export function generateUniquePin(excludeUserId?: string, preferredDigits?: stri
 export function initializeDB() {
   if (typeof window === 'undefined') return;
 
-  const DB_SCHEMA_VERSION = 'v11_school_10students_2classes_1director_2coords_10parents_1dev';
+  const DB_SCHEMA_VERSION = 'v12_school_10students_2classes_1director_2coords_10parents_1dev_live';
   const currentDbVersion = localStorage.getItem('anjo_db_version');
 
   // Hard reset/seed to canonical dataset on version upgrade
@@ -184,8 +184,18 @@ export function initializeDB() {
   }
   
   const checkAndSet = (key: string, initialData: any) => {
-    if (!localStorage.getItem(key)) {
+    const raw = localStorage.getItem(key);
+    if (!raw) {
       localStorage.setItem(key, JSON.stringify(initialData));
+    } else {
+      try {
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(initialData) && (!Array.isArray(parsed) || parsed.length === 0)) {
+          localStorage.setItem(key, JSON.stringify(initialData));
+        }
+      } catch (e) {
+        localStorage.setItem(key, JSON.stringify(initialData));
+      }
     }
   };
 
@@ -218,7 +228,14 @@ export function getFromDB<T>(key: string, defaultValue: T): T {
   const item = localStorage.getItem(key);
   if (!item) return defaultValue;
   try {
-    return JSON.parse(item);
+    const parsed = JSON.parse(item);
+    if (Array.isArray(defaultValue) && (defaultValue as any[]).length > 0 && Array.isArray(parsed) && parsed.length === 0) {
+      if (key === 'anjo_usuarios' || key === 'anjo_salas' || key === 'anjo_idosos') {
+        localStorage.setItem(key, JSON.stringify(defaultValue));
+        return defaultValue;
+      }
+    }
+    return parsed;
   } catch (e) {
     console.error(`Erro ao analisar JSON do localStorage para chave: ${key}`, e);
     return defaultValue;
