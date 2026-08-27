@@ -863,6 +863,15 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
 
   const possibleKeys = getAllPossibleStudentKeys(realId);
 
+  // Check if any possible key has an explicit local stop flag ('false')
+  for (const k of possibleKeys) {
+    const flag = localStorage.getItem(`anjo_shift_active_${k}`);
+    if (flag === 'false') {
+      const isAbsentVal = localStorage.getItem(`anjo_is_absent_${k}`) === 'true';
+      return { active: false, isAbsent: isAbsentVal, reason: null, startTime: null, lastResetTime: null };
+    }
+  }
+
 
 // TTL-based local cache resolution utility
 const LOCAL_FLAG_TTL_MS = 15000;
