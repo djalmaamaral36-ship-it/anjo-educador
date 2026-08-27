@@ -96,7 +96,7 @@ export default function DailyRoutine({
     if (!auth.isAuthorized) {
       return (
         <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-start gap-3 shadow-xs mb-4">
-          <div className="text-xl">⚠️</div>
+          <div className="text-xl">⚠</div>
           <div className="space-y-1">
             <h4 className="font-extrabold text-sm text-rose-950">
               {isEscolar ? 'Falta de Autorização Escolar dos Pais' : 'Falta de Autorização de Cuidados'}
@@ -296,7 +296,7 @@ export default function DailyRoutine({
     window.dispatchEvent(new CustomEvent('db-tasks-update'));
     window.dispatchEvent(new CustomEvent('db-vitals-update'));
     window.dispatchEvent(new CustomEvent('db-jornada-update'));
-    alert(`🗑️ Todas as atividades anteriores foram limpas com sucesso para ${targetStudents.length} ${targetStudents.length === 1 ? 'aluno' : 'alunos'}!`);
+    alert(`  Todas as atividades anteriores foram limpas com sucesso para ${targetStudents.length} ${targetStudents.length === 1 ? 'aluno' : 'alunos'}!`);
   };
 
   useEffect(() => {
@@ -564,7 +564,7 @@ export default function DailyRoutine({
     }
     const auth = checkFeedingCareAuthorization();
     if (!auth.isAuthorized) {
-      alert(`⚠️ Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar ou realizar alimentação sem autorização ativa.`);
+      alert(`⚠ Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar ou realizar alimentação sem autorização ativa.`);
       return;
     }
     if (isAbsent) {
@@ -585,11 +585,11 @@ export default function DailyRoutine({
         );
 
         triggerWhatsAppSim(
-          '🍼 Comunicado: Mamadeira Já Servida',
+          '  Comunicado: Mamadeira Já Servida',
           `Anjinho Escolar: ${idoso.nome} já tomou mamadeira às ${check.lastHorario}. A tentativa de novo registro foi feita às ${nowTime}. Para garantir a nutrição e o descanso digestivo de 2h, a próxima mamadeira estará liberada a partir das ${check.nextAllowedHorario}.`
         );
 
-        alert(`${check.message}\n\n📢 Foi gerado um comunicado oficial no mural e no diário do aluno informando os pais e a equipe.`);
+        alert(`${check.message}\n\n  Foi gerado um comunicado oficial no mural e no diário do aluno informando os pais e a equipe.`);
         return;
       }
     } else {
@@ -605,7 +605,7 @@ export default function DailyRoutine({
           ceia: 'Ceia'
         };
         const label = mealLabelMap[mealForm.refeicao] || mealForm.refeicao;
-        alert(`⚠️ Registro Duplicado Bloqueado: A refeição "${label}" já foi registrada para ${idoso.nome} hoje!\n\nNão é permitido enviar duas refeições idênticas no mesmo dia.`);
+        alert(`⚠ Registro Duplicado Bloqueado: A refeição "${label}" já foi registrada para ${idoso.nome} hoje!\n\nNão é permitido enviar duas refeições idênticas no mesmo dia.`);
         return;
       }
     }
@@ -687,7 +687,7 @@ export default function DailyRoutine({
     }
     const auth = checkFeedingCareAuthorization();
     if (!auth.isAuthorized) {
-      alert(`⚠️ Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar ou realizar cuidados de higiene sem autorização ativa.`);
+      alert(`⚠ Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar ou realizar cuidados de higiene sem autorização ativa.`);
       return;
     }
     if (isAbsent) {
@@ -697,7 +697,7 @@ export default function DailyRoutine({
     const allTasksCheck = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
     const alreadyCompleted = allTasksCheck.some(t => t.idosoId === idoso.id && t.tipo === 'banho' && t.status === 'concluido');
     if (alreadyCompleted) {
-      const confirmSave = window.confirm(`⚠️ Atenção: O registro de Higiene e Banho para ${idoso.nome} já foi marcado como concluído hoje!\n\nDeseja realmente registrar novamente?`);
+      const confirmSave = window.confirm(`⚠ Atenção: O registro de Higiene e Banho para ${idoso.nome} já foi marcado como concluído hoje!\n\nDeseja realmente registrar novamente?`);
       if (!confirmSave) return;
     }
     
@@ -761,7 +761,7 @@ export default function DailyRoutine({
     }
     const auth = checkFeedingCareAuthorization();
     if (!auth.isAuthorized) {
-      alert(`⚠️ Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar ou administrar hidratação sem autorização ativa.`);
+      alert(`⚠ Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar ou administrar hidratação sem autorização ativa.`);
       return;
     }
     if (isAbsent) {
@@ -875,7 +875,7 @@ export default function DailyRoutine({
 
     if (alreadyExistsInSono || alreadyExistsInSinais) {
       const sourceName = alreadyExistsInSinais ? 'Diário da Inf' : 'Frequência';
-      alert(`⚠️ Registro Duplicado Bloqueado: Já existe um registro de soneca/sono para ${idoso.nome} no mesmo horário (${sleepForm.dormiuEm} às ${sleepForm.acordouEm}) registrado hoje no ${sourceName}!\n\nNão é permitido salvar dois registros idênticos para o mesmo horário.`);
+      alert(`⚠ Registro Duplicado Bloqueado: Já existe um registro de soneca/sono para ${idoso.nome} no mesmo horário (${sleepForm.dormiuEm} às ${sleepForm.acordouEm}) registrado hoje no ${sourceName}!\n\nNão é permitido salvar dois registros idênticos para o mesmo horário.`);
       return;
     }
 
@@ -929,7 +929,7 @@ export default function DailyRoutine({
     const humores = getFromDB<RegistroHumor[]>('anjo_humor', []);
     const alreadyExistsHumor = humores.some(h => h.idosoId === idoso.id && isTodayOrDemoDate(h.data) && h.estado === humorForm.estado);
     if (alreadyExistsHumor) {
-      const confirmSave = window.confirm(`⚠️ Atenção: Você já registrou o humor "${humorForm.estado.toUpperCase()}" para ${idoso.nome} hoje!\n\nDeseja realmente salvar esse novo registro de humor?`);
+      const confirmSave = window.confirm(`⚠ Atenção: Você já registrou o humor "${humorForm.estado.toUpperCase()}" para ${idoso.nome} hoje!\n\nDeseja realmente salvar esse novo registro de humor?`);
       if (!confirmSave) return;
     }
 
@@ -1018,9 +1018,9 @@ export default function DailyRoutine({
 
     if (duplicates.length > 0) {
       if (activityScope === 'coletivo') {
-        alert(`⚠️ Registro Duplicado Bloqueado: A atividade "${activityForm.tipo}" já foi registrada para a turma hoje!\n\nNão é permitido enviar duas atividades iguais no mesmo dia.`);
+        alert(`⚠ Registro Duplicado Bloqueado: A atividade "${activityForm.tipo}" já foi registrada para a turma hoje!\n\nNão é permitido enviar duas atividades iguais no mesmo dia.`);
       } else {
-        alert(`⚠️ Registro Duplicado Bloqueado: A atividade "${activityForm.tipo}" já foi registrada para ${idoso.nome} hoje!\n\nNão é permitido enviar duas atividades iguais no mesmo dia.`);
+        alert(`⚠ Registro Duplicado Bloqueado: A atividade "${activityForm.tipo}" já foi registrada para ${idoso.nome} hoje!\n\nNão é permitido enviar duas atividades iguais no mesmo dia.`);
       }
       return;
     }
@@ -1108,7 +1108,7 @@ export default function DailyRoutine({
     setActivityScope('individual');
     
     if (isEscolar && activityScope === 'coletivo') {
-      alert(`🎉 Atividade coletiva registrada com sucesso para todos os ${createdCount} alunos da sala!`);
+      alert(`  Atividade coletiva registrada com sucesso para todos os ${createdCount} alunos da sala!`);
     } else {
       alert(isEscolar ? 'Atividade pedagógica e registro salvos com sucesso!' : 'Atividade diária salva com sucesso!');
     }
@@ -1331,7 +1331,7 @@ export default function DailyRoutine({
     setActivityTabMode('direto');
     loadTrackerData();
 
-    alert(`🎉 Sucesso! ${parsedWeeklyActivities.length} atividade(s) padronizadas do planejamento da Aura foram cadastradas para ${targetStudents.length} aluno(s)!`);
+    alert(`  Sucesso! ${parsedWeeklyActivities.length} atividade(s) padronizadas do planejamento da Aura foram cadastradas para ${targetStudents.length} aluno(s)!`);
   };
 
   // 7. Save and handle Mural de Recados
@@ -1466,7 +1466,7 @@ export default function DailyRoutine({
 
       {usuarioAtual?.tipo === 'familiar' && (
         <div className="bg-amber-50 border border-amber-250 rounded-2xl p-4 flex items-center gap-3 shadow-3xs animate-fade-in">
-          <div className="text-xl">🔒</div>
+          <div className="text-xl"> </div>
           <div className="space-y-1">
             <h4 className="font-extrabold text-sm text-amber-900">
               Modo Família / Leitura Ativo
@@ -1506,11 +1506,11 @@ export default function DailyRoutine({
         </button>
         <button onClick={() => setActiveTab('recados')} className={getTabBtnClass('recados')} id="btn-tab-recados">
           <MessageSquare className="w-4 h-4 sm:w-5 h-5 shrink-0" /> 
-          <span className="truncate font-black text-rose-650">{isEscolar ? 'Recados de Mão Dupla 💬' : 'Caderno de Recados 💬'}</span>
+          <span className="truncate font-black text-rose-650">{isEscolar ? 'Recados de Mão Dupla  ' : 'Caderno de Recados  '}</span>
         </button>
       </div>
 
-      {/* 🥤 Banner do Somatório de Água & Jarrinha Animada Persistente (Visível em Notebook e Celular) */}
+      {/*   Banner do Somatório de Água & Jarrinha Animada Persistente (Visível em Notebook e Celular) */}
       {(() => {
         const allHidsGlobal = getFromDB<any[]>('anjo_hidratacao', []);
         const studentHidsToday = allHidsGlobal.filter(h => h.idosoId === idoso.id && isTodayOrDemoDate(h.data));
@@ -1526,7 +1526,7 @@ export default function DailyRoutine({
           <div className="bg-gradient-to-r from-cyan-500/10 via-sky-50 to-indigo-50/80 border-2 border-cyan-300 rounded-2xl p-3.5 mb-4 shadow-sm flex flex-wrap items-center justify-between gap-3">
             <div className="flex items-center gap-3">
               <div className="p-2.5 bg-cyan-600 text-white rounded-xl text-xl shadow-xs shrink-0 flex items-center justify-center">
-                🥤
+                 
               </div>
               <div className="space-y-0.5">
                 <h4 className="text-xs font-black text-slate-900 flex items-center gap-2 flex-wrap">
@@ -1558,7 +1558,7 @@ export default function DailyRoutine({
 
                 <div className="flex flex-col text-left space-y-0.5">
                   <span className="text-[9px] font-black uppercase tracking-wider text-cyan-800">
-                    🫖 Jarrinha
+                      Jarrinha
                   </span>
                   <span className="text-sm font-black text-cyan-900 font-mono leading-none">
                     {percentJug}%
@@ -1577,7 +1577,7 @@ export default function DailyRoutine({
                 title="Dar 1 copinho (100ml) e encher a jarrinha"
               >
                 <span>+100ml Água</span>
-                <span className="text-[10px] bg-cyan-800/40 px-1.5 py-0.5 rounded font-mono">🫖 Sobe!</span>
+                <span className="text-[10px] bg-cyan-800/40 px-1.5 py-0.5 rounded font-mono">  Sobe!</span>
               </button>
             </div>
           </div>
@@ -1649,18 +1649,18 @@ export default function DailyRoutine({
                   {isFundamental ? (
                     <>
                       <option value="lanche_manha">☕ Lanche do Recreio (Manhã)</option>
-                      <option value="almoco">🍽️ Almoço na Escola</option>
-                      <option value="lanche_tarde">🍪 Lanche do Recreio (Tarde)</option>
-                      <option value="outro">🍉 Fruta / Outros Lanches</option>
+                      <option value="almoco">  Almoço na Escola</option>
+                      <option value="lanche_tarde">  Lanche do Recreio (Tarde)</option>
+                      <option value="outro">  Fruta / Outros Lanches</option>
                     </>
                   ) : isEscolar ? (
                     <>
-                      <option value="mamadeira">🍼 Mamadeira de Leite / Fórmula</option>
+                      <option value="mamadeira">  Mamadeira de Leite / Fórmula</option>
                       <option value="cafe_manha">☕ Café da Manhã</option>
-                      <option value="lanche">🍎 Lanchinho da Manhã (Colação)</option>
-                      <option value="almoco">🍲 Almoço Escolar</option>
-                      <option value="lanche_tarde">🍪 Lanche da Tarde</option>
-                      <option value="ceia">🥛 Colação do Final de Período</option>
+                      <option value="lanche">  Lanchinho da Manhã (Colação)</option>
+                      <option value="almoco">  Almoço Escolar</option>
+                      <option value="lanche_tarde">  Lanche da Tarde</option>
+                      <option value="ceia">  Colação do Final de Período</option>
                     </>
                   ) : (
                     <>
@@ -1678,7 +1678,7 @@ export default function DailyRoutine({
                 <div className="space-y-3 sm:col-span-2 bg-indigo-50/80 p-3.5 rounded-2xl border border-indigo-200 text-xs">
                   <div className="flex items-center justify-between gap-2 text-indigo-900 font-bold">
                     <div className="flex items-center gap-1.5">
-                      <span>🍼 Volume da Mamadeira (mL):</span>
+                      <span>  Volume da Mamadeira (mL):</span>
                       <span className="bg-indigo-600 text-white text-xs px-2.5 py-0.5 rounded-md font-black shadow-xs font-mono">
                         {mealForm.quantidadeMl || 180} ml
                       </span>
@@ -1811,13 +1811,13 @@ export default function DailyRoutine({
                 <div className="max-h-36 overflow-y-auto space-y-2 pr-1">
                   {alimentacaoToday.map(m => {
                     const mealLabels: Record<string, string> = {
-                      mamadeira: '🍼 Mamadeira de Leite / Fórmula',
+                      mamadeira: '  Mamadeira de Leite / Fórmula',
                       cafe_manha: isEscolar ? '☕ Café da Manhã' : 'Café da Manhã',
-                      almoco: isEscolar ? '🍲 Papinha / Almocinho' : 'Almoço Principal',
-                      lanche: isEscolar ? '🍎 Frutinha / Lanchinho' : 'Lanche / Tarde',
-                      lanche_tarde: isEscolar ? '🍎 Lanchinho Tarde' : 'Lanche da Tarde',
-                      jantar: isEscolar ? '🥣 Jantinha Escolar' : 'Jantar Sênior',
-                      ceia: isEscolar ? '🥛 Colação Final' : 'Ceia / Repouso'
+                      almoco: isEscolar ? '  Papinha / Almocinho' : 'Almoço Principal',
+                      lanche: isEscolar ? '  Frutinha / Lanchinho' : 'Lanche / Tarde',
+                      lanche_tarde: isEscolar ? '  Lanchinho Tarde' : 'Lanche da Tarde',
+                      jantar: isEscolar ? '  Jantinha Escolar' : 'Jantar Sênior',
+                      ceia: isEscolar ? '  Colação Final' : 'Ceia / Repouso'
                     };
                     const label = mealLabels[m.refeicao] || m.refeicao || 'Refeição';
                     const volumeText = (m.quantidadeMl && m.refeicao !== 'mamadeira') 
@@ -2024,7 +2024,7 @@ export default function DailyRoutine({
 
             {renderAuthBadge()}
 
-            {/* 🥤 Banner de Somatório de Água do Educador */}
+            {/*   Banner de Somatório de Água do Educador */}
             {(() => {
               const allHidsGlobal = getFromDB<any[]>('anjo_hidratacao', []);
               const teacherNameClean = usuarioAtual?.nome || '';
@@ -2036,7 +2036,7 @@ export default function DailyRoutine({
                 <div className="bg-gradient-to-r from-cyan-600 via-sky-600 to-indigo-600 text-white rounded-2xl p-4 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div className="p-3 bg-white/20 rounded-xl text-2xl font-black shrink-0">
-                      🥤
+                       
                     </div>
                     <div>
                       <h4 className="text-sm font-black flex items-center gap-2">
@@ -2292,14 +2292,14 @@ export default function DailyRoutine({
                     className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-550/20 text-sm font-medium text-slate-800"
                   >
                     <option value="">-- Selecione a Matéria --</option>
-                    <option value="Matemática">📐 Matemática</option>
-                    <option value="Português">✏️ Língua Portuguesa / Redação</option>
-                    <option value="História">🌍 História</option>
-                    <option value="Geografia">🌍 Geografia</option>
-                    <option value="Ciências">🔬 Ciências da Natureza</option>
-                    <option value="Inglês">💬 Língua Estrangeira (Inglês)</option>
-                    <option value="Artes">🎨 Artes / Projetos</option>
-                    <option value="Outro">🎒 Outra Matéria / Recado</option>
+                    <option value="Matemática">  Matemática</option>
+                    <option value="Português">✏ Língua Portuguesa / Redação</option>
+                    <option value="História">  História</option>
+                    <option value="Geografia">  Geografia</option>
+                    <option value="Ciências">  Ciências da Natureza</option>
+                    <option value="Inglês">  Língua Estrangeira (Inglês)</option>
+                    <option value="Artes">  Artes / Projetos</option>
+                    <option value="Outro">  Outra Matéria / Recado</option>
                   </select>
                 </div>
               ) : (
@@ -2436,13 +2436,13 @@ export default function DailyRoutine({
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {isEscolar ? (
                   [
-                    { id: 'feliz', label: '😊 Alegre / Lúdico', bgSel: 'bg-emerald-500 text-white border-emerald-500' },
-                    { id: 'calmo', label: '😌 Calmo / Atento', bgSel: 'bg-indigo-600 text-white border-indigo-600' },
-                    { id: 'choroso', label: '🥺 Choroso / Manhoso', bgSel: 'bg-amber-500 text-white border-amber-500' },
-                    { id: 'timido', label: '🫣 Tímido / Calado', bgSel: 'bg-blue-500 text-white border-blue-500' },
-                    { id: 'agitado', label: '🤪 Muito Agitado / Elétrico', bgSel: 'bg-orange-500 text-white border-orange-500' },
-                    { id: 'birra', label: '😤 Birra / Teimosia', bgSel: 'bg-rose-500 text-white border-rose-500' },
-                    { id: 'sonolento', label: '😴 Preguiça / Sono', bgSel: 'bg-purple-500 text-white border-purple-500' }
+                    { id: 'feliz', label: '  Alegre / Lúdico', bgSel: 'bg-emerald-500 text-white border-emerald-500' },
+                    { id: 'calmo', label: '  Calmo / Atento', bgSel: 'bg-indigo-600 text-white border-indigo-600' },
+                    { id: 'choroso', label: '  Choroso / Manhoso', bgSel: 'bg-amber-500 text-white border-amber-500' },
+                    { id: 'timido', label: '  Tímido / Calado', bgSel: 'bg-blue-500 text-white border-blue-500' },
+                    { id: 'agitado', label: '  Muito Agitado / Elétrico', bgSel: 'bg-orange-500 text-white border-orange-500' },
+                    { id: 'birra', label: '  Birra / Teimosia', bgSel: 'bg-rose-500 text-white border-rose-500' },
+                    { id: 'sonolento', label: '  Preguiça / Sono', bgSel: 'bg-purple-500 text-white border-purple-500' }
                   ].map(item => {
                     const active = humorForm.estado === item.id;
                     return (
@@ -2462,13 +2462,13 @@ export default function DailyRoutine({
                   })
                 ) : (
                   [
-                    { id: 'feliz', label: '😊 Feliz', bgSel: 'bg-emerald-500 text-white border-emerald-500' },
-                    { id: 'calmo', label: '😌 Calmo', bgSel: 'bg-emerald-650 text-white border-emerald-650' },
-                    { id: 'agitado', label: '😰 Agitado', bgSel: 'bg-amber-500 text-white border-amber-500' },
-                    { id: 'triste', label: '😢 Triste', bgSel: 'bg-indigo-500 text-white border-indigo-500' },
-                    { id: 'confuso', label: '🤔 Confuso', bgSel: 'bg-indigo-600 text-white border-indigo-600' },
-                    { id: 'sonolento', label: '😴 Sonolento', bgSel: 'bg-purple-500 text-white border-purple-500' },
-                    { id: 'irritado', label: '😠 Irritado', bgSel: 'bg-rose-500 text-white border-rose-500' }
+                    { id: 'feliz', label: '  Feliz', bgSel: 'bg-emerald-500 text-white border-emerald-500' },
+                    { id: 'calmo', label: '  Calmo', bgSel: 'bg-emerald-650 text-white border-emerald-650' },
+                    { id: 'agitado', label: '  Agitado', bgSel: 'bg-amber-500 text-white border-amber-500' },
+                    { id: 'triste', label: '  Triste', bgSel: 'bg-indigo-500 text-white border-indigo-500' },
+                    { id: 'confuso', label: '  Confuso', bgSel: 'bg-indigo-600 text-white border-indigo-600' },
+                    { id: 'sonolento', label: '  Sonolento', bgSel: 'bg-purple-500 text-white border-purple-500' },
+                    { id: 'irritado', label: '  Irritado', bgSel: 'bg-rose-500 text-white border-rose-500' }
                   ].map(item => {
                     const active = humorForm.estado === item.id;
                     return (
@@ -2554,7 +2554,7 @@ export default function DailyRoutine({
                     : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
-                📌 Registro Avulso Diário
+                  Registro Avulso Diário
               </button>
               <button
                 type="button"
@@ -2565,7 +2565,7 @@ export default function DailyRoutine({
                     : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-bold'
                 }`}
               >
-                🧠 Importar Planejamento Semanal (Aura)
+                  Importar Planejamento Semanal (Aura)
               </button>
             </div>
 
@@ -2580,18 +2580,18 @@ export default function DailyRoutine({
                     Cole qualquer texto bruto, relatório de aula ou planejamento semanal de professores. A <strong>Aura AI</strong> extrai e padroniza automaticamente todos os campos pedagógicos oficiais:
                   </p>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-2 gap-y-1 text-[10px] pt-1 font-semibold text-amber-100">
-                    <div>📌 <strong>Atividade / Tema</strong></div>
-                    <div>🗓️ <strong>Dia & Horário</strong></div>
-                    <div>⏱️ <strong>Duração (min)</strong></div>
-                    <div>🎯 <strong>Objetivo BNCC</strong></div>
-                    <div>🎒 <strong>Materiais & Recursos</strong></div>
-                    <div>📖 <strong>Passo a Passo / Instruções</strong></div>
+                    <div>  <strong>Atividade / Tema</strong></div>
+                    <div>  <strong>Dia & Horário</strong></div>
+                    <div>⏱ <strong>Duração (min)</strong></div>
+                    <div>  <strong>Objetivo BNCC</strong></div>
+                    <div>  <strong>Materiais & Recursos</strong></div>
+                    <div>  <strong>Passo a Passo / Instruções</strong></div>
                   </div>
                 </div>
 
                 <div className="space-y-1.5">
                   <label className="text-xs font-black text-indigo-950 uppercase tracking-wider flex items-center gap-2">
-                    <span>👇</span> COLE O PLANO DE AULA / TEXTO BRUTO AQUI:
+                    <span> </span> COLE O PLANO DE AULA / TEXTO BRUTO AQUI:
                   </label>
                   <textarea
                     rows={6}
@@ -2623,7 +2623,7 @@ Terça-feira:
                       </>
                     ) : (
                       <>
-                        <span>🧠 Extrair & Padronizar com Aura</span>
+                        <span>  Extrair & Padronizar com Aura</span>
                       </>
                     )}
                   </button>
@@ -2635,7 +2635,7 @@ Terça-feira:
                     <div className="bg-white p-4 rounded-xl border-2 border-indigo-200 shadow-xs space-y-2">
                       <div className="flex items-center justify-between border-b border-indigo-100 pb-2">
                         <h4 className="text-sm font-black text-indigo-950 flex items-center gap-1.5">
-                          <span>📋</span> Planejamento Diário: {parsedAuraMeta?.tema || 'Rotina Pedagógica'}
+                          <span> </span> Planejamento Diário: {parsedAuraMeta?.tema || 'Rotina Pedagógica'}
                         </h4>
                         <span className="text-[10px] font-bold px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-200">
                           {parsedWeeklyActivities.length} Atividades
@@ -2644,15 +2644,15 @@ Terça-feira:
 
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
                         <div className="bg-slate-50 p-2 rounded-lg border border-slate-200">
-                          <span className="text-[10px] font-bold text-slate-500 block uppercase">📅 Data</span>
+                          <span className="text-[10px] font-bold text-slate-500 block uppercase">  Data</span>
                           <span className="font-extrabold text-slate-800">{parsedAuraMeta?.dataStr || parsedAuraMeta?.dia || 'Segunda-feira'}</span>
                         </div>
                         <div className="bg-slate-50 p-2 rounded-lg border border-slate-200">
-                          <span className="text-[10px] font-bold text-slate-500 block uppercase">🎨 Tema do Dia</span>
+                          <span className="text-[10px] font-bold text-slate-500 block uppercase">  Tema do Dia</span>
                           <span className="font-extrabold text-indigo-900">{parsedAuraMeta?.tema || 'Identidade e Desenvolvimento'}</span>
                         </div>
                         <div className="bg-slate-50 p-2 rounded-lg border border-slate-200">
-                          <span className="text-[10px] font-bold text-slate-500 block uppercase">👶 Turma</span>
+                          <span className="text-[10px] font-bold text-slate-500 block uppercase">  Turma</span>
                           <span className="font-extrabold text-purple-900">{parsedAuraMeta?.turma || getStudentClassroomLocal(idoso.nome)}</span>
                         </div>
                       </div>
@@ -2674,13 +2674,13 @@ Terça-feira:
                               <td className="p-2.5">
                                 <span className="font-bold text-slate-900 block text-xs">{String(act.tipo || 'Atividade')}</span>
                                 {act.duracao ? (
-                                  <span className="text-[10px] text-slate-400 font-medium">⏱️ {act.duracao} min</span>
+                                  <span className="text-[10px] text-slate-400 font-medium">⏱ {act.duracao} min</span>
                                 ) : null}
                               </td>
                               <td className="p-2.5 space-y-1">
                                 {act.objetivoBNCC && (
                                   <span className="inline-block px-1.5 py-0.5 bg-indigo-50 text-indigo-700 text-[10px] font-bold rounded border border-indigo-100 mr-1.5">
-                                    🎯 {act.objetivoBNCC}
+                                      {act.objetivoBNCC}
                                   </span>
                                 )}
                                 <p className="text-slate-600 text-[11px] leading-relaxed line-clamp-2">{String(act.obs || '')}</p>
@@ -2704,7 +2704,7 @@ Terça-feira:
                         onClick={handleSaveParsedWeeklyPlan}
                         className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl text-xs transition-all cursor-pointer shadow-md flex items-center gap-1.5"
                       >
-                        <span>💾 Confirmar e Cadastrar no Padrão Escolar</span>
+                        <span>  Confirmar e Cadastrar no Padrão Escolar</span>
                       </button>
                     </div>
                   </div>
@@ -2716,7 +2716,7 @@ Terça-feira:
                 <div className="sm:col-span-2 bg-indigo-50/40 p-4 rounded-2xl border border-indigo-100/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <span className="text-xs font-black text-indigo-900 uppercase tracking-wider block flex items-center gap-1">
-                      👥 Alcance do Registro Pedagógico
+                        Alcance do Registro Pedagógico
                     </span>
                     <p className="text-xs text-slate-500 font-medium leading-relaxed">
                       Selecione se o registro é individual para <strong>{idoso.nome}</strong> ou coletivo para toda a turma <strong>{getStudentClassroomLocal(idoso.nome)}</strong>.
@@ -2754,7 +2754,7 @@ Terça-feira:
                   <label className="text-sm font-bold text-slate-705 block">Qual atividade foi realizada?</label>
                   <div className="flex items-center gap-1.5">
                     <span className="text-[10px] text-indigo-600 font-extrabold uppercase bg-indigo-50 px-2 py-0.5 rounded-md flex items-center gap-0.5">
-                      🎙️ Voz
+                        Voz
                     </span>
                     <VoiceInput 
                       onTranscript={text => setActivityForm(prev => ({ ...prev, tipo: text }))} 
@@ -2780,25 +2780,25 @@ Terça-feira:
                   <span className="text-[10px] font-bold text-slate-400 block mb-1">Sugestões rápidas (Clique para selecionar):</span>
                   <div className="flex flex-wrap gap-1.5">
                     {(isFundamental ? [
-                      { label: "📚 Aulas & Explicações", val: "Aulas e Matérias Regulares" },
-                      { label: "📝 Provas / Testes", val: "Provas e Avaliações" },
+                      { label: "  Aulas & Explicações", val: "Aulas e Matérias Regulares" },
+                      { label: "  Provas / Testes", val: "Provas e Avaliações" },
                       { label: "⚽ Ed. Física", val: "Educação Física e Esportes" },
-                      { label: "🎨 Oficina de Artes", val: "Artes e Expressão Gráfica" },
-                      { label: "🔬 Ciências", val: "Laboratório / Ciências" },
-                      { label: "📖 Leitura / Redação", val: "Leitura e Produção de Texto" }
+                      { label: "  Oficina de Artes", val: "Artes e Expressão Gráfica" },
+                      { label: "  Ciências", val: "Laboratório / Ciências" },
+                      { label: "  Leitura / Redação", val: "Leitura e Produção de Texto" }
                     ] : isEscolar ? [
-                      { label: "🎨 Pintura & Desenho", val: "Pintura e Artes Visuais" },
-                      { label: "📖 Contação de Histórias", val: "Roda de Leitura e Contos" },
-                      { label: "🎵 Musicalização", val: "Musicalização Infantil" },
-                      { label: "🏃‍♂️ Psicomotricidade", val: "Psicomotricidade no Parque" },
-                      { label: "🧩 Peças de Encaixe", val: "Peças de Encaixe e Blocos" },
-                      { label: "💬 Prática de Inglês", val: "Atividade de Linguagem/Inglês" }
+                      { label: "  Pintura & Desenho", val: "Pintura e Artes Visuais" },
+                      { label: "  Contação de Histórias", val: "Roda de Leitura e Contos" },
+                      { label: "  Musicalização", val: "Musicalização Infantil" },
+                      { label: " ♂ Psicomotricidade", val: "Psicomotricidade no Parque" },
+                      { label: "  Peças de Encaixe", val: "Peças de Encaixe e Blocos" },
+                      { label: "  Prática de Inglês", val: "Atividade de Linguagem/Inglês" }
                     ] : [
-                      { label: "🧘 Alongamento", val: "Alongamento Leve" },
-                      { label: "🚶 Caminhada", val: "Caminhada Assistida" },
-                      { label: "🧠 Atv. Cognitiva", val: "Atividade Cognitiva" },
-                      { label: "🌿 Recreação no Jardim", val: "Recreação no Jardim" },
-                      { label: "📖 Leitura", val: "Leitura ou Conversa" },
+                      { label: "  Alongamento", val: "Alongamento Leve" },
+                      { label: "  Caminhada", val: "Caminhada Assistida" },
+                      { label: "  Atv. Cognitiva", val: "Atividade Cognitiva" },
+                      { label: "  Recreação no Jardim", val: "Recreação no Jardim" },
+                      { label: "  Leitura", val: "Leitura ou Conversa" },
                       { label: "🩺 Fisioterapia", val: "Fisioterapia" }
                     ]).map((sug) => (
                       <button
@@ -2900,7 +2900,7 @@ Terça-feira:
               {/* TRABALHINHOS PHOTO UPLOAD SECTOR */}
               <div className="space-y-4 sm:col-span-2 bg-indigo-50/20 p-4 rounded-2xl border border-indigo-100/60 font-sans">
                 <label className="text-xs font-black text-slate-700 block uppercase tracking-wider">
-                  🖼️ {isEscolar ? 'Fotos dos Trabalhinhos / Atividade do Aluno' : 'Fotos de Comprovação da Atividade'}
+                    {isEscolar ? 'Fotos dos Trabalhinhos / Atividade do Aluno' : 'Fotos de Comprovação da Atividade'}
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* File Upload button area */}
@@ -2921,15 +2921,15 @@ Terça-feira:
                     <span className="text-[10px] uppercase font-black tracking-wider text-indigo-900/60 block">{isFundamental ? 'Prefere simular uma tarefa do aluno?' : 'Prefere simular um desenho do aluno?'}</span>
                     <div className="grid grid-cols-2 gap-1.5">
                       {(isFundamental ? [
-                        { name: "📝 Redação Feita", url: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=440&auto=format&fit=crop&q=60" },
-                        { name: "📐 Conta Matemática", url: "https://images.unsplash.com/photo-1453733190148-c44698c265a8?w=440&auto=format&fit=crop&q=60" },
-                        { name: "🔬 Experimento", url: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=440&auto=format&fit=crop&q=60" },
-                        { name: "🎨 Trabalho Artes", url: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=440&auto=format&fit=crop&q=60" }
+                        { name: "  Redação Feita", url: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=440&auto=format&fit=crop&q=60" },
+                        { name: "  Conta Matemática", url: "https://images.unsplash.com/photo-1453733190148-c44698c265a8?w=440&auto=format&fit=crop&q=60" },
+                        { name: "  Experimento", url: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=440&auto=format&fit=crop&q=60" },
+                        { name: "  Trabalho Artes", url: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=440&auto=format&fit=crop&q=60" }
                       ] : [
-                        { name: "🎨 Pintura de Flor", url: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=440&auto=format&fit=crop&q=60" },
-                        { name: "🖍️ Giz de Cera", url: "https://images.unsplash.com/photo-1596495574221-8fcb78c772cb?w=440&auto=format&fit=crop&q=60" },
-                        { name: "🧩 Castelo de Blocos", url: "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=440&auto=format&fit=crop&q=60" },
-                        { name: "🧸 Massa Modelar", url: "https://images.unsplash.com/photo-1517164850305-99a3e65bb47e?w=440&auto=format&fit=crop&q=60" }
+                        { name: "  Pintura de Flor", url: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=440&auto=format&fit=crop&q=60" },
+                        { name: "  Giz de Cera", url: "https://images.unsplash.com/photo-1596495574221-8fcb78c772cb?w=440&auto=format&fit=crop&q=60" },
+                        { name: "  Castelo de Blocos", url: "https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=440&auto=format&fit=crop&q=60" },
+                        { name: "  Massa Modelar", url: "https://images.unsplash.com/photo-1517164850305-99a3e65bb47e?w=440&auto=format&fit=crop&q=60" }
                       ]).map((preset, idx) => (
                         <button
                           key={idx}
@@ -2976,7 +2976,7 @@ Terça-feira:
                 type="submit"
                 className={`px-5 py-3 ${isEscolar ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-serene-blue hover:bg-blue-600'} text-white font-bold rounded-xl active:scale-95 transition-all text-sm block ml-auto cursor-pointer shadow-sm`}
               >
-                {isEscolar ? '📸 + Registrar Nova Lembrança na Jornada' : 'Registrar Atividade Diária'}
+                {isEscolar ? '  + Registrar Nova Lembrança na Jornada' : 'Registrar Atividade Diária'}
               </button>
             )}
 
@@ -2984,7 +2984,7 @@ Terça-feira:
             <div className="mt-8 pt-6 border-t border-slate-200 space-y-4 font-sans">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-50/50 p-3 rounded-2xl border border-slate-100">
                 <h4 className="text-sm font-black text-slate-800 flex items-center gap-2">
-                  📂 {isEscolar ? 'Trabalhinhos e Atividades Registradas Hoje' : 'Registro de Exercícios e Atividades Recentes'}
+                    {isEscolar ? 'Trabalhinhos e Atividades Registradas Hoje' : 'Registro de Exercícios e Atividades Recentes'}
                 </h4>
                 <div className="flex items-center gap-2 flex-wrap">
                   {atividadesToday.length > 0 && isStaffUser(usuarioAtual) && (
@@ -3008,7 +3008,7 @@ Terça-feira:
                       }}
                       className="px-3.5 py-1.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-xl text-xs font-black shadow-xs hover:shadow-md flex items-center gap-1.5 transition-all hover:scale-102 active:scale-95 cursor-pointer"
                     >
-                      🎨 Apresentação de Trabalhinhos (Slideshow)
+                        Apresentação de Trabalhinhos (Slideshow)
                     </button>
                   )}
                 </div>
@@ -3025,7 +3025,7 @@ Terça-feira:
                       <div className="space-y-1.5 min-w-0">
                         <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400">
                           <span className="bg-slate-100 px-2 py-0.5 rounded border border-slate-200 text-slate-700 font-mono">
-                            ⏱️ {ati.horario}
+                            ⏱ {ati.horario}
                           </span>
                           <div className="flex items-center gap-2">
                             <span className={`${isEscolar ? 'text-indigo-600' : 'text-emerald-600'} font-bold`}>
@@ -3058,7 +3058,7 @@ Terça-feira:
                             referrerPolicy="no-referrer"
                           />
                           <div className="absolute inset-x-0 bottom-0 bg-black/60 p-2 text-[10px] text-white text-center font-bold">
-                            🎨 {isEscolar ? 'Trabalhinho Registrado na Rotina' : 'Registro Visual da Atividade'}
+                              {isEscolar ? 'Trabalhinho Registrado na Rotina' : 'Registro Visual da Atividade'}
                           </div>
                         </div>
                       )}
@@ -3091,7 +3091,7 @@ Terça-feira:
 
             {/* Warning card to highlight the bi-lateral communication flow */}
             <div className={`p-4 rounded-2xl border text-sm ${isEscolar ? 'bg-indigo-50/50 border-indigo-100 text-indigo-900' : 'bg-emerald-50/50 border-emerald-100 text-emerald-900'}`}>
-              <p className="font-semibold mb-1">💡 Como funciona este Mural de Mão Dupla?</p>
+              <p className="font-semibold mb-1">  Como funciona este Mural de Mão Dupla?</p>
               <p className="text-xs leading-relaxed text-slate-600">
                 Se os <strong>Pais</strong> escreverem, a <strong>Professora</strong> receberá um alerta em tempo real e dará visto. 
                 Se a <strong>Professora</strong> registrar uma tarefa pedagógica ou comportamento, os <strong>Pais</strong> receberão no WhatsApp! 
@@ -3113,17 +3113,17 @@ Terça-feira:
                   >
                     {isEscolar ? (
                       <>
-                        <option value="geral">💬 Recado Geral / Comunicado</option>
-                        <option value="alimentacao">🎒 Material ou Alimentação</option>
+                        <option value="geral">  Recado Geral / Comunicado</option>
+                        <option value="alimentacao">  Material ou Alimentação</option>
                         <option value="saude_sono">💊 Vacina ou Remédio</option>
-                        <option value="pedagogico">🎨 Feedback Pedagógico</option>
+                        <option value="pedagogico">  Feedback Pedagógico</option>
                       </>
                     ) : (
                       <>
-                        <option value="geral">💬 Recado Geral</option>
+                        <option value="geral">  Recado Geral</option>
                         <option value="saude_remedios">💊 Saúde / Remédios</option>
-                        <option value="alimentacao">🍎 Alimentação / Compras</option>
-                        <option value="intercorrencia">🚨 Intercorrência / Alerta</option>
+                        <option value="alimentacao">  Alimentação / Compras</option>
+                        <option value="intercorrencia">  Intercorrência / Alerta</option>
                       </>
                     )}
                   </select>
@@ -3194,13 +3194,13 @@ Terça-feira:
                         case 'saude_remedios': case 'saude_sono':
                           return <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">💊 Saúde</span>;
                         case 'alimentacao':
-                          return <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">🍼 Alimentação</span>;
+                          return <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">  Alimentação</span>;
                         case 'pedagogico':
-                          return <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">🎨 Pedagógico</span>;
+                          return <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">  Pedagógico</span>;
                         case 'intercorrencia':
-                          return <span className="bg-rose-100 text-rose-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">🚨 Intercorrência</span>;
+                          return <span className="bg-rose-100 text-rose-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">  Intercorrência</span>;
                         default:
-                          return <span className="bg-slate-100 text-slate-650 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">💬 Comunicado</span>;
+                          return <span className="bg-slate-100 text-slate-650 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">  Comunicado</span>;
                       }
                     };
 
@@ -3284,7 +3284,7 @@ Terça-feira:
               <div className="p-4 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-50">
                 <div className="space-y-1">
                   <h3 className="text-base font-black text-slate-800 flex items-center gap-2">
-                    🎨 Expositor e Galeria de Arte Digital
+                      Expositor e Galeria de Arte Digital
                   </h3>
                   <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                     Anjinho Escolar • Exposição de Trabalhinhos e Atividades
@@ -3359,14 +3359,14 @@ Terça-feira:
                     return (
                       <div className="text-center space-y-4 max-w-md mx-auto py-12">
                         <div className="w-16 h-16 bg-white/10 text-slate-400 rounded-full flex items-center justify-center mx-auto text-3xl">
-                          🖼️
+                           
                         </div>
                         <h4 className="font-extrabold text-white text-base">Nenhum trabalhinho encontrado</h4>
                         <p className="text-xs text-slate-400 leading-relaxed">
                           Não existem fotos de trabalhinhos registradas {galleryFilter === 'aluno' ? `para ${idoso.nome}` : `para a sala ${currentClassroom}`} até o momento. 
                         </p>
                         <p className="text-[11px] text-indigo-400 font-semibold bg-indigo-950/50 p-3 rounded-2xl border border-indigo-900/30">
-                          💡 Dica: Ao registrar uma atividade pedagógica ou lúdica na aba ao lado, você pode bater foto do desenho ou pintura para que apareça nesta galeria!
+                            Dica: Ao registrar uma atividade pedagógica ou lúdica na aba ao lado, você pode bater foto do desenho ou pintura para que apareça nesta galeria!
                         </p>
                       </div>
                     );
@@ -3415,7 +3415,7 @@ Terça-feira:
                         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
                           <div>
                             <span className="text-[10px] font-black uppercase text-indigo-600 tracking-widest block">
-                              🎨 Autoria do Aluno
+                                Autoria do Aluno
                             </span>
                             <span className="font-extrabold text-slate-800 text-sm">
                               {author ? author.nome : 'Aluno'}
@@ -3442,7 +3442,7 @@ Terça-feira:
                         {currentItem.observacoes ? (
                           <div className="space-y-1">
                             <span className="text-[10px] font-black uppercase text-indigo-600 tracking-widest block">
-                              📝 Observação Pedagógica
+                                Observação Pedagógica
                             </span>
                             <p className="text-xs text-slate-650 italic bg-indigo-50/30 p-2.5 rounded-xl border border-dashed border-indigo-100 leading-relaxed">
                               "{currentItem.observacoes}"
@@ -3499,7 +3499,7 @@ Terça-feira:
 
                       {slideshowActive && (
                         <span className="text-[10px] text-indigo-600 font-bold bg-indigo-50 px-2 py-1 rounded-lg animate-pulse">
-                          ▶️ Avanço Automático Ativo (3s)
+                          ▶ Avanço Automático Ativo (3s)
                         </span>
                       )}
                     </div>

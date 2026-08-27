@@ -161,7 +161,7 @@ export default function FinanceModule({
     setHistory(updatedHistory);
     localStorage.setItem(`anjo_sub_historico_${idoso.id}`, JSON.stringify(updatedHistory));
 
-    setSuccessMessage('⚙️ Configurações financeiras do aluno atualizadas com sucesso!');
+    setSuccessMessage('⚙ Configurações financeiras do aluno atualizadas com sucesso!');
     setTimeout(() => setSuccessMessage(''), 3000);
     onRefresh();
   };
@@ -186,7 +186,7 @@ export default function FinanceModule({
     setHistory(updatedHistory);
     localStorage.setItem(`anjo_sub_historico_${idoso.id}`, JSON.stringify(updatedHistory));
 
-    setSuccessMessage(`💰 Status alterado com sucesso para: ${nextStatus === 'pago' ? 'PAGO (Adimplente)' : 'PENDENTE (Atrasado)'}`);
+    setSuccessMessage(`  Status alterado com sucesso para: ${nextStatus === 'pago' ? 'PAGO (Adimplente)' : 'PENDENTE (Atrasado)'}`);
     setTimeout(() => setSuccessMessage(''), 3000);
     onRefresh();
   };
@@ -243,7 +243,7 @@ export default function FinanceModule({
             ) : (
               <>
                 <AlertTriangle className="w-4 h-4 text-rose-600 animate-bounce" />
-                <span>Mensalidade: ATRASADA ⚠️</span>
+                <span>Mensalidade: ATRASADA ⚠</span>
               </>
             )}
           </button>
@@ -307,7 +307,7 @@ export default function FinanceModule({
               </div>
               <div>
                 <p className="text-xl font-black text-indigo-950 uppercase tracking-tight">
-                  {billingType === 'coletivo' ? '👥 Coletivo' : '👤 Individual'}
+                  {billingType === 'coletivo' ? '  Coletivo' : '  Individual'}
                 </p>
                 <span className="text-[9px] font-extrabold text-indigo-700 uppercase tracking-widest mt-1 block">
                   Faturamento de Serviços
@@ -414,14 +414,14 @@ export default function FinanceModule({
                       onClick={togglePaymentStatus}
                       className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-[11px] rounded-lg cursor-pointer transition-all shadow-3xs"
                     >
-                      Pagar Fatura Agora (Simulação) 💳
+                      Pagar Fatura Agora (Simulação)  
                     </button>
                   </div>
 
                 </div>
               ) : (
                 <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center gap-3">
-                  <span className="text-xl">🎉</span>
+                  <span className="text-xl"> </span>
                   <div className="space-y-0.5">
                     <strong className="text-xs font-bold text-emerald-950 block">Selo de Regularidade Ativo!</strong>
                     <p className="text-[11px] text-emerald-800 font-semibold">
@@ -475,7 +475,7 @@ export default function FinanceModule({
                       </td>
                       <td className="py-3.5 text-right">
                         <button
-                          onClick={() => alert(`📥 Recibo PDF da competência "${inv.competencia}" simulado com sucesso. Arquivo anjo_recibo_${inv.id}.pdf pronto para impressão!`)}
+                          onClick={() => alert(`  Recibo PDF da competência "${inv.competencia}" simulado com sucesso. Arquivo anjo_recibo_${inv.id}.pdf pronto para impressão!`)}
                           className="px-2.5 py-1 bg-white hover:bg-indigo-50 border border-indigo-100 rounded-md text-[10px] font-black text-indigo-700 transition-all cursor-pointer"
                         >
                           Recibo
@@ -559,7 +559,7 @@ export default function FinanceModule({
                           : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
                       }`}
                     >
-                      👤 Individual
+                        Individual
                     </button>
                     <button
                       type="button"
@@ -570,7 +570,7 @@ export default function FinanceModule({
                           : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
                       }`}
                     >
-                      👥 Coletivo
+                        Coletivo
                     </button>
                   </div>
                 </div>
@@ -579,13 +579,13 @@ export default function FinanceModule({
                   type="submit"
                   className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-xl transition-all shadow-3xs cursor-pointer text-center"
                 >
-                  Salvar Ajustes do Aluno 💾
+                  Salvar Ajustes do Aluno  
                 </button>
 
               </form>
             ) : (
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
-                <span className="text-base">🔒</span>
+                <span className="text-base"> </span>
                 <strong className="text-xs font-bold text-slate-800 block">Acesso Reservado à Direção</strong>
                 <p className="text-[11px] text-slate-500 leading-normal font-medium">
                   Para alterar as mensalidades ou configurar preços específicos, use um perfil de Professor ou Diretor com PIN autorizado.

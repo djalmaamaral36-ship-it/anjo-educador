@@ -41,7 +41,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
   const [testToneScenario, setTestToneScenario] = useState<string>('refeicao');
   const [testToneOutput, setTestToneOutput] = useState<{ original: string; brandVoice: string; tip: string }>({
     original: "O aluno comeu toda a refeição do almoço sem problemas.",
-    brandVoice: "Hoje no almoço, o nosso pequeno anjinho devorou tudinho com um sorriso no rosto! Ele experimentou os legumes com muita curiosidade e adorou. 🍲✨",
+    brandVoice: "Hoje no almoço, o nosso pequeno anjinho devorou tudinho com um sorriso no rosto! Ele experimentou os legumes com muita curiosidade e adorou.  ✨",
     tip: "Evite termos burocráticos como 'consumiu a refeição'. Prefira humanizar com termos afetivos e focar na experiência de descoberta da criança."
   });
 
@@ -81,25 +81,25 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
     if (scenario === 'refeicao') {
       setTestToneOutput({
         original: "O aluno comeu toda a refeição do almoço sem problemas.",
-        brandVoice: "Hoje no almoço, o nosso pequeno anjinho devorou tudinho com um sorriso no rosto! Ele experimentou os legumes com muita curiosidade e adorou. 🍲✨",
+        brandVoice: "Hoje no almoço, o nosso pequeno anjinho devorou tudinho com um sorriso no rosto! Ele experimentou os legumes com muita curiosidade e adorou.  ✨",
         tip: "Evite termos burocráticos como 'consumiu a refeição'. Prefira humanizar com termos afetivos e focar na experiência de descoberta da criança."
       });
     } else if (scenario === 'conflito') {
       setTestToneOutput({
         original: "O aluno brigou pelo brinquedo mas a professora interveio e resolveu.",
-        brandVoice: "Durante as brincadeiras, tivemos um momento de aprendizado sobre compartilhar! O anjinho queria o mesmo brinquedo do colega, mas com jeitinho e mediação, conversamos sobre cooperação e logo os dois estavam rindo juntos de novo. 🤝❤️",
+        brandVoice: "Durante as brincadeiras, tivemos um momento de aprendizado sobre compartilhar! O anjinho queria o mesmo brinquedo do colega, mas com jeitinho e mediação, conversamos sobre cooperação e logo os dois estavam rindo juntos de novo.  ❤",
         tip: "Nunca dramatize ou use tom punitivo. Encare conflitos da primeira inf sob a ótica do desenvolvimento socioemocional e da mediação afetuosa."
       });
     } else if (scenario === 'sono') {
       setTestToneOutput({
         original: "Dormiu apenas 30 minutos de soneca da tarde e acordou chorando.",
-        brandVoice: "Na hora do soninho dos anjos, ele descansou por 30 minutinhos. Acordou com aquela preguiça gostosa e pediu um colinho aconchegante para recarregar as energias. Logo já estava pronto para a próxima aventura! 😴🧸",
+        brandVoice: "Na hora do soninho dos anjos, ele descansou por 30 minutinhos. Acordou com aquela preguiça gostosa e pediu um colinho aconchegante para recarregar as energias. Logo já estava pronto para a próxima aventura!   ",
         tip: "Suavize o despertar difícil enfatizando o acolhimento, o afeto física da professora (colo, abraço) e o restabelecimento da segurança emocional da criança."
       });
     } else if (scenario === 'machucado') {
       setTestToneOutput({
         original: "Caiu no parquinho e ralou o joelho esquerdo. Lavamos e passamos antisséptico.",
-        brandVoice: "No parquinho, nosso pequeno explorador deu um tropeço super corajoso! Ele ganhou um 'carimbo de aventura' (um raladinho de leve) no joelho esquerdo. Ganhamos um colinho especial, lavamos com água mágica e ele já voltou a sorrir rapidinho. 🩹✨",
+        brandVoice: "No parquinho, nosso pequeno explorador deu um tropeço super corajoso! Ele ganhou um 'carimbo de aventura' (um raladinho de leve) no joelho esquerdo. Ganhamos um colinho especial, lavamos com água mágica e ele já voltou a sorrir rapidinho.  ✨",
         tip: "Transforme o pequeno acidente físico em um momento de superação e coragem ('carimbo de aventura', 'água mágica'), garantindo que o cuidado foi imediato e acolhedor."
       });
     }
@@ -111,12 +111,12 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
     { id: 'posicionamento', label: 'Posicionamento', icon: <Compass className="w-4 h-4" /> },
     { id: 'personalidade', label: 'Personalidade da Marca', icon: <Smile className="w-4 h-4" /> },
     { id: 'linguagem', label: 'A Linguagem do Afeto', icon: <MessageCircle className="w-4 h-4" /> },
-    { id: 'brand_004', label: 'BRAND-004 — Tom de Voz 📜', icon: <FileText className="w-4 h-4 text-amber-500 font-bold animate-pulse" /> },
+    { id: 'brand_004', label: 'BRAND-004 — Tom de Voz  ', icon: <FileText className="w-4 h-4 text-amber-500 font-bold animate-pulse" /> },
     { id: 'pilares', label: 'Pilares Emocionais', icon: <Star className="w-4 h-4" /> },
     { id: 'narrativa', label: 'Slogans & Narrativa', icon: <FileText className="w-4 h-4" /> },
     { id: 'experiencia', label: 'A Experiência do Legado', icon: <Sparkles className="w-4 h-4" /> },
     { id: 'metodo_arvore', label: 'Método Árvore da Inf', icon: <TreePine className="w-4 h-4" /> },
-    { id: 'protecao_marca', label: 'BRAND-005 — Blindagem & IP 🛡️', icon: <ShieldCheck className="w-4 h-4 text-emerald-500 font-bold" /> },
+    { id: 'protecao_marca', label: 'BRAND-005 — Blindagem & IP  ', icon: <ShieldCheck className="w-4 h-4 text-emerald-500 font-bold" /> },
   ];
 
   return (
@@ -130,7 +130,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
         <div className="relative z-10 max-w-3xl space-y-4">
           <div className="flex items-center gap-2">
             <span className="font-extrabold text-[10px] px-3 py-1 rounded-full uppercase tracking-widest bg-amber-400 text-indigo-950 font-sans shadow-md">
-              Brand Book • Livro de Marca 📖
+              Brand Book • Livro de Marca  
             </span>
             <span className="text-xs font-bold text-indigo-200">Anjinho Escolar</span>
           </div>
@@ -148,7 +148,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
               onClick={() => window.print()}
               className="flex items-center gap-2 bg-amber-400 hover:bg-amber-500 text-indigo-950 text-xs font-black py-2.5 px-4 rounded-xl shadow-md cursor-pointer transition-all"
             >
-              <Printer className="w-4 h-4 text-indigo-950" /> Imprimir / Salvar PDF do Brand Book 🖨️
+              <Printer className="w-4 h-4 text-indigo-950" /> Imprimir / Salvar PDF do Brand Book  
             </button>
             <a 
               href="#nav-chapters"
@@ -200,7 +200,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
           </div>
 
           <div className="bg-indigo-50/50 p-4 rounded-2xl border border-indigo-100 space-y-2 text-center">
-            <span className="text-[16px] block">👑</span>
+            <span className="text-[16px] block"> </span>
             <h4 className="text-[11px] font-black text-indigo-950 uppercase tracking-wider">O Maior Patrimônio</h4>
             <p className="text-[10px] text-slate-700 leading-relaxed font-semibold">
               O código pode ser copiado, mas um relacionamento baseado em confiança afetuosa e legado é inimitável.
@@ -226,7 +226,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     <span className="text-[9px] uppercase font-black text-indigo-500 tracking-wider">Capítulo 1</span>
                     <h2 className="text-xl sm:text-2xl font-serif font-black text-indigo-950">Introdução: O Legado e a Magia</h2>
                   </div>
-                  <span className="text-3xl">🧸</span>
+                  <span className="text-3xl"> </span>
                 </div>
 
                 <div className="prose text-xs sm:text-sm text-slate-800 leading-relaxed space-y-4 font-semibold">
@@ -248,14 +248,14 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-amber-250/20">
                   <div className="p-4 rounded-2xl bg-white border border-amber-100 space-y-2">
-                    <span className="text-sm">🏢</span>
+                    <span className="text-sm"> </span>
                     <h4 className="text-xs font-black text-indigo-950">A Visão Burocrática (Concorrência)</h4>
                     <p className="text-[10px] text-slate-650 font-semibold leading-relaxed">
                       "O aluno consumiu a refeição e dormiu por 1 hora. Segue boleto da mensalidade."
                     </p>
                   </div>
                   <div className="p-4 rounded-2xl bg-indigo-50/50 border border-indigo-100 space-y-2">
-                    <span className="text-sm">🌟</span>
+                    <span className="text-sm"> </span>
                     <h4 className="text-xs font-black text-indigo-950">A Visão do Anjinho Escolar</h4>
                     <p className="text-[10px] text-indigo-950 font-semibold leading-relaxed">
                       "Hoje na hora do almoço, o pequeno explorador comeu tudinho e experimentou legumes novos com coragem! Depois, sonhou com anjos por 1 hora e acordou com sorriso no rosto."
@@ -279,7 +279,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     <span className="text-[9px] uppercase font-black text-indigo-500 tracking-wider">Capítulo 2</span>
                     <h2 className="text-xl sm:text-2xl font-serif font-black text-indigo-950">Propósito & Missão</h2>
                   </div>
-                  <span className="text-3xl">❤️</span>
+                  <span className="text-3xl">❤</span>
                 </div>
 
                 <div className="space-y-6 text-xs sm:text-sm text-slate-800 leading-relaxed font-semibold">
@@ -332,7 +332,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     <span className="text-[9px] uppercase font-black text-indigo-500 tracking-wider">Capítulo 3</span>
                     <h2 className="text-xl sm:text-2xl font-serif font-black text-indigo-950">O Posicionamento Estratégico</h2>
                   </div>
-                  <span className="text-3xl">🧭</span>
+                  <span className="text-3xl"> </span>
                 </div>
 
                 <div className="prose text-xs sm:text-sm text-slate-800 leading-relaxed space-y-4 font-semibold">
@@ -411,7 +411,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     {/* TRAÇO 1 */}
                     <div className="p-4 rounded-2xl border border-amber-200 bg-white space-y-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-lg">🧸</span>
+                        <span className="text-lg"> </span>
                         <h4 className="text-xs font-black text-slate-900">Acolhedora & Afetuosa</h4>
                       </div>
                       <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
@@ -422,7 +422,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     {/* TRAÇO 2 */}
                     <div className="p-4 rounded-2xl border border-amber-200 bg-white space-y-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-lg">🎨</span>
+                        <span className="text-lg"> </span>
                         <h4 className="text-xs font-black text-slate-900">Lúdica & Inspiradora</h4>
                       </div>
                       <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
@@ -433,7 +433,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     {/* TRAÇO 3 */}
                     <div className="p-4 rounded-2xl border border-amber-200 bg-white space-y-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-lg">🎓</span>
+                        <span className="text-lg">🏫</span>
                         <h4 className="text-xs font-black text-slate-900">Pedagogicamente Sólida</h4>
                       </div>
                       <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
@@ -444,7 +444,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     {/* TRAÇO 4 */}
                     <div className="p-4 rounded-2xl border border-amber-200 bg-white space-y-2">
                       <div className="flex items-center gap-2">
-                        <span className="text-lg">🛡️</span>
+                        <span className="text-lg"> </span>
                         <h4 className="text-xs font-black text-slate-900">Zelosa & Guardiã</h4>
                       </div>
                       <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
@@ -471,7 +471,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     <span className="text-[9px] uppercase font-black text-indigo-500 tracking-wider">Capítulo 5</span>
                     <h2 className="text-xl sm:text-2xl font-serif font-black text-indigo-950">A Linguagem do Afeto</h2>
                   </div>
-                  <span className="text-3xl">🗣️</span>
+                  <span className="text-3xl"> </span>
                 </div>
 
                 <div className="space-y-6 text-xs sm:text-sm text-slate-800 leading-relaxed font-semibold">
@@ -494,10 +494,10 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                       {[
-                        { id: 'refeicao', label: '🍲 Refeição' },
-                        { id: 'conflito', label: '🤝 Conflito' },
-                        { id: 'sono', label: '😴 Sono/Choro' },
-                        { id: 'machucado', label: '🩹 Pequeno Acidente' },
+                        { id: 'refeicao', label: '  Refeição' },
+                        { id: 'conflito', label: '  Conflito' },
+                        { id: 'sono', label: '  Sono/Choro' },
+                        { id: 'machucado', label: '  Pequeno Acidente' },
                       ].map((scen) => (
                         <button
                           key={scen.id}
@@ -532,7 +532,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     </div>
 
                     <div className="bg-indigo-900/40 p-3 rounded-lg border border-indigo-800 flex items-start gap-2">
-                      <span className="text-xs">💡</span>
+                      <span className="text-xs"> </span>
                       <p className="text-[9px] text-indigo-150 leading-normal font-semibold">
                         <strong>Diretriz do Anjinho:</strong> {testToneOutput.tip}
                       </p>
@@ -588,12 +588,12 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     </div>
                     <h2 className="text-xl sm:text-2xl font-serif font-black text-indigo-950">Tom de Voz e Linguagem da Marca</h2>
                   </div>
-                  <span className="text-3xl shrink-0">📜</span>
+                  <span className="text-3xl shrink-0"> </span>
                 </div>
 
                 <div className="p-5 bg-amber-50/50 border border-amber-200 rounded-2xl space-y-3">
                   <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wider flex items-center gap-1">
-                    🎯 Objetivo da Constituição
+                      Objetivo da Constituição
                   </h3>
                   <p className="text-[11px] text-slate-700 font-semibold leading-relaxed">
                     Definir como o <strong>Anjinho Escolar</strong> se comunica em todos os pontos de contato com diretoras, educadores, coordenação pedagógica, famílias e parceiros, garantindo uma linguagem consistente, acolhedora, humana e profundamente alinhada ao propósito da marca.
@@ -614,7 +614,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       </ul>
                     </div>
                     <div className="bg-white border border-slate-150 p-4 rounded-xl space-y-2">
-                      <h4 className="text-[11px] font-black text-indigo-900 uppercase">👤 Nossa Personalidade</h4>
+                      <h4 className="text-[11px] font-black text-indigo-900 uppercase">  Nossa Personalidade</h4>
                       <p className="text-[10px] text-slate-600 font-semibold leading-relaxed">Se o Anjinho Escolar fosse uma pessoa, seria alguém que:</p>
                       <div className="flex flex-wrap gap-1.5 pt-1">
                         {['escuta antes de responder', 'orienta sem impor', 'inspira confiança', 'demonstra organização', 'transmite calma', 'valoriza relações humanas', 'fala com clareza', 'acredita no poder da Educação Infantil'].map((item, idx) => (
@@ -623,7 +623,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                           </span>
                         ))}
                       </div>
-                      <p className="text-[9.5px] font-black text-rose-600 pt-1.5 uppercase">⚠️ Nunca arrogante, exagerado ou impessoal.</p>
+                      <p className="text-[9.5px] font-black text-rose-600 pt-1.5 uppercase">⚠ Nunca arrogante, exagerado ou impessoal.</p>
                     </div>
                   </div>
                 </div>
@@ -669,15 +669,15 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                   
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     <div className="p-3 bg-white border border-amber-200 rounded-xl space-y-1.5">
-                      <h4 className="text-[10px] font-black text-slate-500 uppercase">🤝 Relações</h4>
+                      <h4 className="text-[10px] font-black text-slate-500 uppercase">  Relações</h4>
                       <p className="text-[9.5px] font-semibold text-slate-750 leading-relaxed">relacionamento, aproximação, parceria, diálogo, presença, vínculo, confiança, acolhimento, comunidade</p>
                     </div>
                     <div className="p-3 bg-white border border-amber-200 rounded-xl space-y-1.5">
-                      <h4 className="text-[10px] font-black text-slate-500 uppercase">🎓 Educação</h4>
+                      <h4 className="text-[10px] font-black text-slate-500 uppercase">🏫 Educação</h4>
                       <p className="text-[9.5px] font-semibold text-slate-750 leading-relaxed">Educação Infantil, desenvolvimento, aprendizagem, inf descoberta, evolução, cuidado, protagonismo da criança</p>
                     </div>
                     <div className="p-3 bg-white border border-amber-200 rounded-xl space-y-1.5">
-                      <h4 className="text-[10px] font-black text-slate-500 uppercase">🏠 Família</h4>
+                      <h4 className="text-[10px] font-black text-slate-500 uppercase">  Família</h4>
                       <p className="text-[9.5px] font-semibold text-slate-750 leading-relaxed">famílias, responsáveis, participação, conexão, presença, compartilhamento</p>
                     </div>
                     <div className="p-3 bg-white border border-amber-200 rounded-xl space-y-1.5">
@@ -685,7 +685,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       <p className="text-[9.5px] font-semibold text-slate-750 leading-relaxed">escola, educadores, professoras, coordenação, direção, equipe pedagógica</p>
                     </div>
                     <div className="p-3 bg-white border border-amber-200 rounded-xl space-y-1.5">
-                      <h4 className="text-[10px] font-black text-slate-500 uppercase">📱 Produto</h4>
+                      <h4 className="text-[10px] font-black text-slate-500 uppercase">  Produto</h4>
                       <p className="text-[9.5px] font-semibold text-slate-750 leading-relaxed">plataforma, experiência, organização, rotina, comunicação, registro, história, jornada, memória, simplicidade</p>
                     </div>
                     <div className="p-3 bg-white border border-amber-200 rounded-xl space-y-1.5">
@@ -731,7 +731,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                 {/* PALAVRAS QUE EVITAMOS */}
                 <div className="space-y-3 bg-rose-50/15 border border-rose-250/50 p-5 rounded-2xl">
                   <h3 className="text-xs font-black text-rose-950 uppercase tracking-wider flex items-center gap-1">
-                    🛑 Palavras que evitamos a todo custo
+                      Palavras que evitamos a todo custo
                   </h3>
                   <p className="text-[10px] text-slate-650 font-semibold leading-relaxed">
                     Estas expressões ou termos comerciais/frios rompem a conexão de carinho e a seriedade ética. Salve em contextos estritamente técnicos, evite sempre:
@@ -739,7 +739,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
                     <div className="space-y-1 text-[10px] font-semibold text-slate-700">
-                      <strong className="text-rose-900 block text-[10.5px] uppercase">🚨 Linguagem Comercial</strong>
+                      <strong className="text-rose-900 block text-[10.5px] uppercase">  Linguagem Comercial</strong>
                       <div className="flex flex-wrap gap-1 pt-1">
                         {['imperdível', 'promoção', 'desconto', 'gatilho', 'compre agora', 'oportunidade única'].map((word, idx) => (
                           <span key={idx} className="bg-rose-50 border border-rose-100 text-rose-800 text-[9px] px-1.5 py-0.5 rounded">
@@ -750,7 +750,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     </div>
 
                     <div className="space-y-1 text-[10px] font-semibold text-slate-700">
-                      <strong className="text-rose-900 block text-[10.5px] uppercase">🚨 Corporativa Fria / TI</strong>
+                      <strong className="text-rose-900 block text-[10.5px] uppercase">  Corporativa Fria / TI</strong>
                       <div className="flex flex-wrap gap-1 pt-1">
                         {['software', 'sistema', 'disruptivo', 'sinergia', 'KPI', 'otimização', 'benchmark', 'stakeholders'].map((word, idx) => (
                           <span key={idx} className="bg-rose-50 border border-rose-100 text-rose-800 text-[9px] px-1.5 py-0.5 rounded">
@@ -761,7 +761,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     </div>
 
                     <div className="space-y-1 text-[10px] font-semibold text-slate-700">
-                      <strong className="text-rose-900 block text-[10.5px] uppercase">🚨 Infantilizada / Medo</strong>
+                      <strong className="text-rose-900 block text-[10.5px] uppercase">  Infantilizada / Medo</strong>
                       <div className="flex flex-wrap gap-1 pt-1">
                         {['fofinho', 'lindinho', 'turminha', 'perder dinheiro', 'ficar para trás', 'desastre'].map((word, idx) => (
                           <span key={idx} className="bg-rose-50 border border-rose-100 text-rose-800 text-[9px] px-1.5 py-0.5 rounded">
@@ -781,7 +781,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                   <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wider">Como tratamos temas-chave</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="p-4 rounded-xl bg-white border border-slate-150 space-y-2">
-                      <h4 className="text-[10px] font-black text-slate-500 uppercase">💻 Tecnologia e Produto</h4>
+                      <h4 className="text-[10px] font-black text-slate-500 uppercase">  Tecnologia e Produto</h4>
                       <p className="text-[10px] text-slate-750 font-semibold leading-relaxed">
                         A tecnologia nunca é protagonista; trabalha nos bastidores para que educadores e famílias se concentrem na relação humana. 
                       </p>
@@ -790,7 +790,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       </p>
                     </div>
                     <div className="p-4 rounded-xl bg-white border border-slate-150 space-y-2">
-                      <h4 className="text-[10px] font-black text-slate-500 uppercase">👶 A Criança e a Escola</h4>
+                      <h4 className="text-[10px] font-black text-slate-500 uppercase">  A Criança e a Escola</h4>
                       <p className="text-[10px] text-slate-750 font-semibold leading-relaxed">
                         A criança nunca é um número, usuário ou cadastro. Ela é sempre descrita como: criança, inf desenvolvimento, história, descoberta, jornada de aprendizagem.
                       </p>
@@ -859,7 +859,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                             <div className="text-xs font-black">
                               {Object.values(checklistScore).filter(Boolean).length === 8 ? (
                                 <span className="text-emerald-400 flex items-center gap-1 font-serif text-sm">
-                                  👑 100% Alinhado ao Cuidado do Anjinho Escolar!
+                                    100% Alinhado ao Cuidado do Anjinho Escolar!
                                 </span>
                               ) : (
                                 <span>Aprovou {Object.values(checklistScore).filter(Boolean).length} de 8 critérios. {Object.values(checklistScore).filter(Boolean).length < 8 && 'Recomendamos ajustar para atingir o selo de ouro!'}</span>
@@ -879,7 +879,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-slate-200/50 pt-6">
                   <div className="bg-[#FFFDF3] border border-indigo-200 p-5 rounded-2xl space-y-2 text-center flex flex-col justify-between">
                     <div>
-                      <span className="text-sm">🌟</span>
+                      <span className="text-sm"> </span>
                       <h4 className="text-[11px] font-black text-indigo-950 uppercase tracking-widest mt-1">A Regra de Ouro da Comunicação</h4>
                     </div>
                     <p className="font-serif italic text-indigo-900 font-bold text-xs sm:text-sm py-2">
@@ -889,7 +889,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                   <div className="bg-[#FFFDF3] border border-amber-300 p-5 rounded-2xl space-y-2 text-center flex flex-col justify-between">
                     <div>
-                      <span className="text-sm">👑</span>
+                      <span className="text-sm"> </span>
                       <h4 className="text-[11px] font-black text-indigo-950 uppercase tracking-widest mt-1">O Princípio Permanente da Marca</h4>
                     </div>
                     <p className="font-serif italic text-amber-950 font-bold text-xs sm:text-sm py-2">
@@ -914,7 +914,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     <span className="text-[9px] uppercase font-black text-indigo-500 tracking-wider">Capítulo 6</span>
                     <h2 className="text-xl sm:text-2xl font-serif font-black text-indigo-950">Os Três Pilares Emocionais</h2>
                   </div>
-                  <span className="text-3xl">🌟</span>
+                  <span className="text-3xl"> </span>
                 </div>
 
                 <div className="space-y-6 text-xs sm:text-sm text-slate-800 leading-relaxed font-semibold">
@@ -927,7 +927,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     {/* PILAR 1 */}
                     <div className="flex items-start gap-4 p-4 rounded-2xl bg-white border border-amber-200 shadow-3xs group hover:border-amber-400 transition-all">
                       <div className="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center shrink-0 text-xl font-bold">
-                        📘
+                         
                       </div>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
@@ -943,7 +943,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     {/* PILAR 2 */}
                     <div className="flex items-start gap-4 p-4 rounded-2xl bg-white border border-amber-200 shadow-3xs group hover:border-amber-400 transition-all">
                       <div className="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center shrink-0 text-xl font-bold">
-                        ❤️
+                        ❤
                       </div>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
@@ -959,7 +959,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     {/* PILAR 3 */}
                     <div className="flex items-start gap-4 p-4 rounded-2xl bg-white border border-amber-200 shadow-3xs group hover:border-amber-400 transition-all">
                       <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0 text-xl font-bold">
-                        🌱
+                         
                       </div>
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
@@ -991,7 +991,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     <span className="text-[9px] uppercase font-black text-indigo-500 tracking-wider">Capítulo 7</span>
                     <h2 className="text-xl sm:text-2xl font-serif font-black text-indigo-950">Slogans & Narrativa de Marca</h2>
                   </div>
-                  <span className="text-3xl">✉️</span>
+                  <span className="text-3xl">✉</span>
                 </div>
 
                 <div className="space-y-6 text-xs sm:text-sm text-slate-800 leading-relaxed font-semibold">
@@ -1088,7 +1088,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     <span className="text-[9px] uppercase font-black text-indigo-500 tracking-wider">Capítulo 8</span>
                     <h2 className="text-xl sm:text-2xl font-serif font-black text-indigo-950">A Experiência do Legado</h2>
                   </div>
-                  <span className="text-3xl">🌱</span>
+                  <span className="text-3xl"> </span>
                 </div>
 
                 <div className="space-y-6 text-xs sm:text-sm text-slate-800 leading-relaxed font-semibold font-sans">
@@ -1102,7 +1102,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     
                     {/* XP 1 */}
                     <div className="bg-white p-4 rounded-xl border border-amber-200 shadow-3xs flex gap-3.5 items-start">
-                      <span className="text-xl">✉️</span>
+                      <span className="text-xl">✉</span>
                       <div>
                         <h4 className="text-xs font-black text-slate-900">1. A Carta para o Futuro (Cápsula do Tempo)</h4>
                         <p className="text-[10px] text-slate-600 leading-relaxed font-semibold mt-1">
@@ -1113,7 +1113,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                     {/* XP 2 */}
                     <div className="bg-white p-4 rounded-xl border border-amber-200 shadow-3xs flex gap-3.5 items-start">
-                      <span className="text-xl">🌟</span>
+                      <span className="text-xl"> </span>
                       <div>
                         <h4 className="text-xs font-black text-slate-900">2. O Selo de Preservação Anjinho Escolar</h4>
                         <p className="text-[10px] text-slate-600 leading-relaxed font-semibold mt-1">
@@ -1124,7 +1124,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                     {/* XP 3 */}
                     <div className="bg-white p-4 rounded-xl border border-amber-200 shadow-3xs flex gap-3.5 items-start">
-                      <span className="text-xl">🗣️</span>
+                      <span className="text-xl"> </span>
                       <div>
                         <h4 className="text-xs font-black text-slate-900">3. Valores Vivenciados (Desenvolvimento Ético)</h4>
                         <p className="text-[10px] text-slate-600 leading-relaxed font-semibold mt-1">
@@ -1135,7 +1135,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                     {/* XP 4 */}
                     <div className="bg-white p-4 rounded-xl border border-amber-200 shadow-3xs flex gap-3.5 items-start">
-                      <span className="text-xl">💬</span>
+                      <span className="text-xl"> </span>
                       <div>
                         <h4 className="text-xs font-black text-slate-900">4. Linha do Tempo de Momentos Inesquecíveis</h4>
                         <p className="text-[10px] text-slate-600 leading-relaxed font-semibold mt-1">
@@ -1168,7 +1168,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     <span className="text-[9px] uppercase font-black text-indigo-500 tracking-wider">Capítulo 9</span>
                     <h2 className="text-xl sm:text-2xl font-serif font-black text-indigo-950">Método Árvore da Inf</h2>
                   </div>
-                  <span className="text-3xl">🌳</span>
+                  <span className="text-3xl"> </span>
                 </div>
 
                 <div className="space-y-6 text-xs sm:text-sm text-slate-800 leading-relaxed font-semibold font-sans">
@@ -1186,7 +1186,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                   <div className="grid grid-cols-1 md:grid-cols-5 gap-3.5 pt-1 font-sans">
                     <div className="bg-white p-4 rounded-xl border border-amber-200 shadow-3xs text-center space-y-1.5 flex flex-col items-center">
-                      <span className="text-2xl block">🌱</span>
+                      <span className="text-2xl block"> </span>
                       <h4 className="text-xs font-black text-slate-900">1. Plantar</h4>
                       <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
                         Acolhimento e confiança. Registros essenciais de rotina (sono, alimentação, higiene).
@@ -1194,7 +1194,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     </div>
 
                     <div className="bg-white p-4 rounded-xl border border-amber-200 shadow-3xs text-center space-y-1.5 flex flex-col items-center">
-                      <span className="text-2xl block">🌿</span>
+                      <span className="text-2xl block"> </span>
                       <h4 className="text-xs font-black text-slate-900">2. Cultivar</h4>
                       <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
                         Estímulo diário. Oficinas de arte, experiências pedagógicas, fotos e descobertas.
@@ -1202,7 +1202,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     </div>
 
                     <div className="bg-white p-4 rounded-xl border border-amber-200 shadow-3xs text-center space-y-1.5 flex flex-col items-center">
-                      <span className="text-2xl block">🌸</span>
+                      <span className="text-2xl block"> </span>
                       <h4 className="text-xs font-black text-slate-900">3. Florescer</h4>
                       <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
                         Valores humanos visíveis. Empatia, cooperação, gentileza, respeito e autonomia.
@@ -1210,7 +1210,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     </div>
 
                     <div className="bg-white p-4 rounded-xl border border-amber-200 shadow-3xs text-center space-y-1.5 flex flex-col items-center">
-                      <span className="text-2xl block">🍎</span>
+                      <span className="text-2xl block"> </span>
                       <h4 className="text-xs font-black text-slate-900">4. Frutificar</h4>
                       <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
                         Legado consolidado. O Álbum da Primeira Inf e a Linha do Tempo Inesquecível.
@@ -1218,7 +1218,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     </div>
 
                     <div className="bg-white p-4 rounded-xl border border-amber-200 shadow-3xs text-center space-y-1.5 flex flex-col items-center">
-                      <span className="text-2xl block">🌳</span>
+                      <span className="text-2xl block"> </span>
                       <h4 className="text-xs font-black text-slate-900">5. Preservar</h4>
                       <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
                         Permanência vitalícia. Garantia de guarda segura e perene das mídias para o futuro.
@@ -1234,7 +1234,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                   <div className="space-y-2.5 font-sans">
                     <div className="p-3 bg-amber-50/50 border border-amber-200 rounded-xl flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3">
-                        <span className="text-xl">🌱</span>
+                        <span className="text-xl"> </span>
                         <div>
                           <h4 className="text-xs font-black text-indigo-950">Estação 1: A Semente</h4>
                           <p className="text-[10px] text-slate-600">Fase inicial de adaptação e criação de laços afetuosos.</p>
@@ -1245,7 +1245,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                     <div className="p-3 bg-emerald-50/50 border border-emerald-200 rounded-xl flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3">
-                        <span className="text-xl">🌿</span>
+                        <span className="text-xl"> </span>
                         <div>
                           <h4 className="text-xs font-black text-indigo-950">Estação 2: Os Primeiros Brotos</h4>
                           <p className="text-[10px] text-slate-600">Curiosidade e exploração ativa das novas din pedagógicas.</p>
@@ -1256,7 +1256,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                     <div className="p-3 bg-sky-50/50 border border-sky-200 rounded-xl flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3">
-                        <span className="text-xl">🌳</span>
+                        <span className="text-xl"> </span>
                         <div>
                           <h4 className="text-xs font-black text-indigo-950">Estação 3: Raízes Fortes</h4>
                           <p className="text-[10px] text-slate-600">Desenvolvimento da autonomia, independência e autoconfiança sólida.</p>
@@ -1267,7 +1267,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                     <div className="p-3 bg-pink-50/50 border border-pink-200 rounded-xl flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3">
-                        <span className="text-xl">🌸</span>
+                        <span className="text-xl"> </span>
                         <div>
                           <h4 className="text-xs font-black text-indigo-950">Estação 4: Tempo de Florescer</h4>
                           <p className="text-[10px] text-slate-600">Desabrochar da inteligência emocional, empatia, cooperação e gentileza.</p>
@@ -1278,7 +1278,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                     <div className="p-3 bg-amber-100/30 border border-amber-300 rounded-xl flex items-center justify-between gap-4">
                       <div className="flex items-center gap-3">
-                        <span className="text-xl">🍎</span>
+                        <span className="text-xl"> </span>
                         <div>
                           <h4 className="text-xs font-black text-indigo-950">Estação 5: Árvore de Frutos</h4>
                           <p className="text-[10px] text-slate-600">O legado completo da inf com memórias maduras, prontas para as próximas etapas da vida.</p>
@@ -1309,23 +1309,23 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
               const activeCount = Object.values(ipProtections).filter(Boolean).length;
               const percent = Math.round((activeCount / totalItems) * 100);
 
-              let level = 'Crítico 🚨';
+              let level = 'Crítico  ';
               let riskBg = 'bg-rose-50 border-rose-200 text-rose-800';
               let barColor = 'bg-rose-500';
               let desc = 'Sua propriedade intelectual está exposta. Concorrentes podem facilmente plagiar sua marca, copiar sua interface e até mesmo clonar seus scripts sem grandes barreiras jurídicas ou técnicas.';
 
               if (percent >= 30 && percent < 60) {
-                level = 'Moderado ⚠️';
+                level = 'Moderado ⚠';
                 riskBg = 'bg-amber-50 border-amber-200 text-amber-800';
                 barColor = 'bg-amber-500';
                 desc = 'Você já implementou as primeiras defesas (ex: NDA ou termos de uso), mas ainda possui vulnerabilidades críticas. Seu principal método ("Árvore da Inf") ou seu logotipo ainda podem ser imitados.';
               } else if (percent >= 60 && percent < 90) {
-                level = 'Seguro & Blindado 🛡️';
+                level = 'Seguro & Blindado  ';
                 riskBg = 'bg-indigo-50 border-indigo-200 text-indigo-900';
                 barColor = 'bg-indigo-600';
                 desc = 'Sua marca possui barreiras legais e tecnológicas consolidadas. Cópias triviais serão combatidas judicialmente de forma rápida e a extração do seu código é extremamente difícil.';
               } else if (percent >= 90) {
-                level = 'Fortaleza Intelectual 💎';
+                level = 'Fortaleza Intelectual  ';
                 riskBg = 'bg-emerald-50 border-emerald-250 text-emerald-950';
                 barColor = 'bg-emerald-500';
                 desc = 'Parabéns! Sua propriedade intelectual está blindada em todas as esferas. Seus métodos, marcas, código-fonte e dados estão protegidos por contratos impecáveis e tecnologias antipirataria.';
@@ -1365,7 +1365,7 @@ Solicitamos que, no prazo improrrogável de 48 (quarenta e oito) horas, cesse im
                       <span className="text-[9px] uppercase font-black text-indigo-500 tracking-wider">Capítulo 10 • Diretrizes</span>
                       <h2 className="text-xl sm:text-2xl font-serif font-black text-indigo-950">BRAND-005 — Segurança, Blindagem & IP</h2>
                     </div>
-                    <span className="text-3xl">🛡️</span>
+                    <span className="text-3xl"> </span>
                   </div>
 
                   <div className="space-y-4 text-xs sm:text-sm text-slate-800 leading-relaxed font-semibold font-sans">
@@ -1376,7 +1376,7 @@ Solicitamos que, no prazo improrrogável de 48 (quarenta e oito) horas, cesse im
                     {/* INTERACTIVE SIMULATOR */}
                     <div className="p-5 rounded-2xl bg-gradient-to-tr from-[#FAF9F5] to-[#F1F5F9] border border-amber-200/70 shadow-sm space-y-4">
                       <div className="flex items-center gap-2">
-                        <span className="text-base">🎛️</span>
+                        <span className="text-base"> </span>
                         <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wide">Simulador de Vulnerabilidade & Blindagem de IP</h3>
                       </div>
                       <p className="text-slate-600 text-[11px] leading-relaxed">
@@ -1387,7 +1387,7 @@ Solicitamos que, no prazo improrrogável de 48 (quarenta e oito) horas, cesse im
                         {/* Legal Side */}
                         <div className="space-y-3 p-4 bg-white rounded-xl border border-slate-200/60 shadow-3xs">
                           <h4 className="text-[11px] font-black text-indigo-900 uppercase tracking-wider flex items-center gap-1">
-                            <span>⚖️</span> Proteções Legais & Contratos
+                            <span>⚖</span> Proteções Legais & Contratos
                           </h4>
                           <div className="space-y-2.5">
                             <label className="flex items-start gap-2 text-xs font-bold text-slate-700 cursor-pointer">
@@ -1447,7 +1447,7 @@ Solicitamos que, no prazo improrrogável de 48 (quarenta e oito) horas, cesse im
                         {/* Technical Side */}
                         <div className="space-y-3 p-4 bg-white rounded-xl border border-slate-200/60 shadow-3xs">
                           <h4 className="text-[11px] font-black text-indigo-900 uppercase tracking-wider flex items-center gap-1">
-                            <span>💻</span> Barreiras Técnicas & Arquitetura
+                            <span> </span> Barreiras Técnicas & Arquitetura
                           </h4>
                           <div className="space-y-2.5">
                             <label className="flex items-start gap-2 text-xs font-bold text-slate-700 cursor-pointer">
@@ -1528,7 +1528,7 @@ Solicitamos que, no prazo improrrogável de 48 (quarenta e oito) horas, cesse im
                     <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wide">Como Realizar os Registros Oficiais (Brasil)</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-2">
-                        <span className="text-2xl">🏷️</span>
+                        <span className="text-2xl"> </span>
                         <h4 className="text-xs font-black text-slate-900 leading-tight">1. Registro de Marca (INPI)</h4>
                         <p className="text-[10px] text-slate-600 leading-relaxed">
                           Protege o nome "Anjinho Escolar" e o logotipo misto. Impede imitadores de usarem o mesmo nome na classe de softwares e educação.
@@ -1541,7 +1541,7 @@ Solicitamos que, no prazo improrrogável de 48 (quarenta e oito) horas, cesse im
                       </div>
 
                       <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-2">
-                        <span className="text-2xl">💻</span>
+                        <span className="text-2xl"> </span>
                         <h4 className="text-xs font-black text-slate-900 leading-tight">2. Registro de Código (INPI)</h4>
                         <p className="text-[10px] text-slate-600 leading-relaxed">
                           O registro do código-fonte é feito via hash criptográfica gerada do código e depositada no INPI, garantindo propriedade autoral internacional.
@@ -1554,7 +1554,7 @@ Solicitamos que, no prazo improrrogável de 48 (quarenta e oito) horas, cesse im
                       </div>
 
                       <div className="p-4 bg-white border border-slate-200 rounded-xl space-y-2">
-                        <span className="text-2xl">🌳</span>
+                        <span className="text-2xl"> </span>
                         <h4 className="text-xs font-black text-slate-900 leading-tight">3. Registro de Metodologia</h4>
                         <p className="text-[10px] text-slate-600 leading-relaxed">
                           A apostila literária e didática do "Método Árvore da Inf" deve ser registrada como obra literária e científica.
@@ -1574,12 +1574,12 @@ Solicitamos que, no prazo improrrogável de 48 (quarenta e oito) horas, cesse im
                         {/* NDA */}
                         <div className="space-y-1.5">
                           <div className="flex justify-between items-center bg-slate-100 px-3.5 py-2 rounded-t-xl border-x border-t border-slate-250">
-                            <span className="text-[10px] font-black text-slate-700 flex items-center gap-1">📄 Modelo NDA & Não-Concorrência</span>
+                            <span className="text-[10px] font-black text-slate-700 flex items-center gap-1">  Modelo NDA & Não-Concorrência</span>
                             <button
                               onClick={() => handleCopy(templateNda, 'nda-text')}
                               className="text-[10px] text-indigo-600 font-extrabold hover:underline flex items-center gap-1 cursor-pointer"
                             >
-                              {copiedText === 'nda-text' ? 'Copiado! ✓' : 'Copiar Texto 📋'}
+                              {copiedText === 'nda-text' ? 'Copiado! ✓' : 'Copiar Texto  '}
                             </button>
                           </div>
                           <pre className="p-3 bg-slate-50 text-[10px] text-slate-650 leading-relaxed font-mono rounded-b-xl border border-slate-250 max-h-48 overflow-y-auto whitespace-pre-wrap select-all shadow-inner">
@@ -1590,12 +1590,12 @@ Solicitamos que, no prazo improrrogável de 48 (quarenta e oito) horas, cesse im
                         {/* NOTIFICATION */}
                         <div className="space-y-1.5">
                           <div className="flex justify-between items-center bg-slate-100 px-3.5 py-2 rounded-t-xl border-x border-t border-slate-250">
-                            <span className="text-[10px] font-black text-slate-700 flex items-center gap-1">⚖️ Notificação Extrajudicial de Plágio</span>
+                            <span className="text-[10px] font-black text-slate-700 flex items-center gap-1">⚖ Notificação Extrajudicial de Plágio</span>
                             <button
                               onClick={() => handleCopy(templateNotice, 'notice-text')}
                               className="text-[10px] text-indigo-600 font-extrabold hover:underline flex items-center gap-1 cursor-pointer"
                             >
-                              {copiedText === 'notice-text' ? 'Copiado! ✓' : 'Copiar Texto 📋'}
+                              {copiedText === 'notice-text' ? 'Copiado! ✓' : 'Copiar Texto  '}
                             </button>
                           </div>
                           <pre className="p-3 bg-slate-50 text-[10px] text-slate-650 leading-relaxed font-mono rounded-b-xl border border-slate-250 max-h-48 overflow-y-auto whitespace-pre-wrap select-all shadow-inner">
@@ -1606,7 +1606,7 @@ Solicitamos que, no prazo improrrogável de 48 (quarenta e oito) horas, cesse im
                     </div>
 
                     <div className="p-4 bg-emerald-50/50 border border-emerald-200 rounded-xl text-[11px] text-emerald-950 font-bold flex items-center gap-3">
-                      <span className="text-xl">💡</span>
+                      <span className="text-xl"> </span>
                       <p className="leading-relaxed">
                         <strong>Recomendação de Operação:</strong> Execute o registro de marca mista no INPI o quanto antes para garantir precedência. Em paralelo, faça com que todos os prestadores de serviço terceirizados assinem o termo de não-concorrência e NDA antes de entregá-los acesso ao repositório de código.
                       </p>

@@ -92,7 +92,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
   const [billingMessageType, setBillingMessageType] = useState<'trial_ending' | 'monthly_billing' | 'block_warning'>('trial_ending');
   const [billingCustomText, setBillingCustomText] = useState('');
 
-  // 📈 Jornada de Vendas 30 Dias State & Helper
+  //   Jornada de Vendas 30 Dias State & Helper
   const [selectedJourneyUser, setSelectedJourneyUser] = useState<ConsentRecord | null>(null);
 
   // Subscription States
@@ -463,16 +463,16 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
     const priceFormatted = getSubValorForConsent(record).toFixed(2).replace('.', ',');
     
     if (day === 1) {
-      return `Olá, *${usuarioNome}*! Que bom ter você no aplicativo *${appName}*! 🎁 Aproveite seus 30 dias de teste gratuito para acompanhar a rotina diária em tempo real de *${idosoNome}*.\n\nQualquer dúvida, estamos à inteira disposição!`;
+      return `Olá, *${usuarioNome}*! Que bom ter você no aplicativo *${appName}*!   Aproveite seus 30 dias de teste gratuito para acompanhar a rotina diária em tempo real de *${idosoNome}*.\n\nQualquer dúvida, estamos à inteira disposição!`;
     }
     if (day === 15) {
-      return `Olá, *${usuarioNome}*! Já se passaram 15 dias de acompanhamento do(a) *${idosoNome}* no aplicativo *${appName}*. 🌸 Viu como as abas de Medicamentos, Rotina e Relatórios facilitam seu dia e trazem muito mais tranquilidade? Aproveite o restante do seu teste grátis!`;
+      return `Olá, *${usuarioNome}*! Já se passaram 15 dias de acompanhamento do(a) *${idosoNome}* no aplicativo *${appName}*.   Viu como as abas de Medicamentos, Rotina e Relatórios facilitam seu dia e trazem muito mais tranquilidade? Aproveite o restante do seu teste grátis!`;
     }
     if (day === 25) {
-      return `Olá, *${usuarioNome}*! Faltam apenas 5 dias para encerrar seu período gratuito no aplicativo *${appName}*. 🔔 Para não perder o acesso em tempo real à rotina do(a) *${idosoNome}*, ative sua assinatura mensal por apenas *R$ ${priceFormatted}/mês*!\n\n🔑 *Chave Pix:* ${billingPixKey}\n👤 *Favorecido:* ${billingPixReceiver}\n\nEnvie o comprovante para liberação instant`;
+      return `Olá, *${usuarioNome}*! Faltam apenas 5 dias para encerrar seu período gratuito no aplicativo *${appName}*.   Para não perder o acesso em tempo real à rotina do(a) *${idosoNome}*, ative sua assinatura mensal por apenas *R$ ${priceFormatted}/mês*!\n\n  *Chave Pix:* ${billingPixKey}\n  *Favorecido:* ${billingPixReceiver}\n\nEnvie o comprovante para liberação instant`;
     }
     // Day 30 - Elegant Cut
-    return `⚠️ *AVISO DE PAUSA NO ACESSO - ${appName}* ⚠️\n\nOlá, *${usuarioNome}*! O período de 30 dias grátis de testes de *${idosoNome}* chegou ao fim.\n\nPara restabelecer ou manter o seu acesso de familiar ativo imediatamente, regularize sua assinatura por apenas *R$ ${priceFormatted}*:\n\n🔑 *Chave Pix:* ${billingPixKey}\n👤 *Favorecido:* ${billingPixReceiver}\n\nEstamos à disposição para ajudar!`;
+    return `⚠ *AVISO DE PAUSA NO ACESSO - ${appName}* ⚠\n\nOlá, *${usuarioNome}*! O período de 30 dias grátis de testes de *${idosoNome}* chegou ao fim.\n\nPara restabelecer ou manter o seu acesso de familiar ativo imediatamente, regularize sua assinatura por apenas *R$ ${priceFormatted}*:\n\n  *Chave Pix:* ${billingPixKey}\n  *Favorecido:* ${billingPixReceiver}\n\nEstamos à disposição para ajudar!`;
   };
 
   useEffect(() => {
@@ -485,11 +485,11 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
     
     let template = '';
     if (billingMessageType === 'trial_ending') {
-      template = `Olá, *${usuarioNome}*! O período de teste grátis de 30 dias de *${idosoNome}* no aplicativo *${appName}* está chegando ao fim. 🎁\n\nPara continuar acompanhando a rotina diária, medicamentos, sinais vitais e receber relatórios de turno em tempo real, ative sua assinatura mensal por apenas *R$ ${priceFormatted}*!\n\n🔑 *Chave Pix para ativação:* ${billingPixKey}\n👤 *Favorecido:* ${billingPixReceiver}\n\nApós o pagamento, envie o comprovante por aqui para liberarmos seu acesso definitivo. Obrigado pela confiança!`;
+      template = `Olá, *${usuarioNome}*! O período de teste grátis de 30 dias de *${idosoNome}* no aplicativo *${appName}* está chegando ao fim.  \n\nPara continuar acompanhando a rotina diária, medicamentos, sinais vitais e receber relatórios de turno em tempo real, ative sua assinatura mensal por apenas *R$ ${priceFormatted}*!\n\n  *Chave Pix para ativação:* ${billingPixKey}\n  *Favorecido:* ${billingPixReceiver}\n\nApós o pagamento, envie o comprovante por aqui para liberarmos seu acesso definitivo. Obrigado pela confiança!`;
     } else if (billingMessageType === 'monthly_billing') {
-      template = `Olá, *${usuarioNome}*! Passando para lembrar que a mensalidade do aplicativo *${appName}* para o acompanhamento de *${idosoNome}* está disponível para renovação. 🔔\n\nValor: *R$ ${priceFormatted}*\n🔑 *Chave Pix:* ${billingPixKey}\n👤 *Favorecido:* ${billingPixReceiver}\n\nBasta realizar o Pix e nos enviar o comprovante de pagamento para manter seu acesso ativo sem interrupções! Muito obrigado!`;
+      template = `Olá, *${usuarioNome}*! Passando para lembrar que a mensalidade do aplicativo *${appName}* para o acompanhamento de *${idosoNome}* está disponível para renovação.  \n\nValor: *R$ ${priceFormatted}*\n  *Chave Pix:* ${billingPixKey}\n  *Favorecido:* ${billingPixReceiver}\n\nBasta realizar o Pix e nos enviar o comprovante de pagamento para manter seu acesso ativo sem interrupções! Muito obrigado!`;
     } else {
-      template = `⚠️ *AVISO IMPORTANTE - ${appName}* ⚠️\n\nOlá, *${usuarioNome}*! Identificamos que o período de testes ou a mensalidade do perfil de *${idosoNome}* expirou e o painel de acompanhamento foi temporariamente suspenso.\n\nPara restabelecer o acesso imediatamente e continuar recebendo os registros diários:\n\nValor: *R$ ${priceFormatted}*\n🔑 *Chave Pix:* ${billingPixKey}\n👤 *Favorecido:* ${billingPixReceiver}\n\nRealize o Pix e envie o comprovante para liberação instant Estamos à disposição!`;
+      template = `⚠ *AVISO IMPORTANTE - ${appName}* ⚠\n\nOlá, *${usuarioNome}*! Identificamos que o período de testes ou a mensalidade do perfil de *${idosoNome}* expirou e o painel de acompanhamento foi temporariamente suspenso.\n\nPara restabelecer o acesso imediatamente e continuar recebendo os registros diários:\n\nValor: *R$ ${priceFormatted}*\n  *Chave Pix:* ${billingPixKey}\n  *Favorecido:* ${billingPixReceiver}\n\nRealize o Pix e envie o comprovante para liberação instant Estamos à disposição!`;
     }
     
     setBillingCustomText(template);
@@ -534,10 +534,10 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
     if (triggerWhatsAppSim) {
       triggerWhatsAppSim(
         billingMessageType === 'trial_ending' 
-          ? '🎁 Fim do Teste Comercial' 
+          ? '  Fim do Teste Comercial' 
           : billingMessageType === 'monthly_billing' 
-            ? '🔔 Cobrança Mensal' 
-            : '⚠️ Alerta de Bloqueio',
+            ? '  Cobrança Mensal' 
+            : '⚠ Alerta de Bloqueio',
         billingCustomText
       );
     }
@@ -587,7 +587,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           usuarioTipo: 'familiar',
           idosoNome: 'Mariana Souza',
           dataConsentimento: new Date(Date.now() - 3600000 * 24).toLocaleString('pt-BR'),
-          modoApp: '🧸 Anjinho Escolar',
+          modoApp: '  Anjinho Escolar',
           deviceFingerprint: 'IP 189.14.88.221 (SSL • Android 14)',
           statusFinanceiro: 'pago'
         },
@@ -599,7 +599,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           usuarioTipo: 'cuidador',
           idosoNome: 'Berçário I - A',
           dataConsentimento: new Date(Date.now() - 3600000 * 48).toLocaleString('pt-BR'),
-          modoApp: '🧸 Anjinho Escolar',
+          modoApp: '  Anjinho Escolar',
           deviceFingerprint: 'IP 177.33.102.13 (SSL • iOS 17)',
           statusFinanceiro: 'pago'
         },
@@ -611,7 +611,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           usuarioTipo: 'familiar',
           idosoNome: 'Alice Santos',
           dataConsentimento: new Date(Date.now() - 3600000 * 12).toLocaleString('pt-BR'),
-          modoApp: '🧸 Anjinho Escolar',
+          modoApp: '  Anjinho Escolar',
           deviceFingerprint: 'IP 200.180.2.49 (SSL • Windows 11)',
           statusFinanceiro: 'pago'
         }
@@ -624,7 +624,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           usuarioTipo: 'admin',
           idosoNome: 'Dona Maria de Souza',
           dataConsentimento: new Date(Date.now() - 3600000 * 24).toLocaleString('pt-BR'),
-          modoApp: '👵 Anjo Cuidador',
+          modoApp: '  Anjo Cuidador',
           deviceFingerprint: 'IP 189.14.88.221 (SSL • Android 14)',
           statusFinanceiro: 'pago'
         },
@@ -636,7 +636,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           usuarioTipo: 'cuidador',
           idosoNome: 'Dona Maria de Souza',
           dataConsentimento: new Date(Date.now() - 3600000 * 48).toLocaleString('pt-BR'),
-          modoApp: '👵 Anjo Cuidador',
+          modoApp: '  Anjo Cuidador',
           deviceFingerprint: 'IP 177.33.102.13 (SSL • iOS 17)',
           statusFinanceiro: 'pago'
         },
@@ -648,7 +648,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           usuarioTipo: 'familiar',
           idosoNome: 'Seu João Alencar',
           dataConsentimento: new Date(Date.now() - 3600000 * 12).toLocaleString('pt-BR'),
-          modoApp: '👵 Anjo Cuidador',
+          modoApp: '  Anjo Cuidador',
           deviceFingerprint: 'IP 200.180.2.49 (SSL • Windows 11)',
           statusFinanceiro: 'atrasado'
         }
@@ -724,7 +724,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
     loadData();
   };
 
-  // 📥 EXPORT SPREADSHEET (CSV ENGINE)
+  //   EXPORT SPREADSHEET (CSV ENGINE)
   const handleExportToCSV = () => {
     if (consents.length === 0) {
       alert("Nenhum dado para exportar!");
@@ -846,7 +846,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
 
         <div className="max-w-2xl space-y-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/15 backdrop-blur-md rounded-full text-[10px] font-black uppercase tracking-widest text-amber-300">
-            🔒 Painel do Desenvolvedor (Exclusivo & Privado)
+              Painel do Desenvolvedor (Exclusivo & Privado)
           </div>
           <h2 className="text-2xl md:text-3xl font-black font-display tracking-tight">
             Console do Dono (Financeiro & CRM Anjinho Escolar)
@@ -857,7 +857,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         </div>
       </div>
 
-      {/* 🧭 DEV MAIN MODE SWITCHER: FATURAMENTO vs CRM ANJINHO ESCOLAR BAURU */}
+      {/*   DEV MAIN MODE SWITCHER: FATURAMENTO vs CRM ANJINHO ESCOLAR BAURU */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-100 dark:bg-slate-900 p-2 rounded-2xl border border-slate-200 dark:border-slate-800">
         <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto">
           <button
@@ -870,7 +870,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
             }`}
           >
             <CreditCard className="w-4 h-4" />
-            <span>💳 Faturamento, Pix & LGPD</span>
+            <span>  Faturamento, Pix & LGPD</span>
           </button>
 
           <button
@@ -964,19 +964,19 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         } shadow-2xs space-y-2`}>
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-black uppercase tracking-wider text-indigo-500">Engajamento de Afeto</span>
-            <span className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg">❤️</span>
+            <span className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg">❤</span>
           </div>
           <div className="text-2xl font-black text-rose-600 flex items-baseline gap-1.5">
             {globalLikes} <span className="text-xs text-slate-400 font-bold">gestos de afeto</span>
           </div>
           <p className="text-[10px] text-slate-400 font-bold leading-none flex items-center gap-1.5">
-            <span>💧</span> <strong>{globalWaterings}</strong> regadas de amor ativas
+            <span> </span> <strong>{globalWaterings}</strong> regadas de amor ativas
           </p>
         </div>
 
       </div>
 
-      {/* 💳 PANEL: SUBSCRIPTION MANAGEMENT & FAMILIAR ACCESS CONTROL */}
+      {/*   PANEL: SUBSCRIPTION MANAGEMENT & FAMILIAR ACCESS CONTROL */}
       <div className={`${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'} rounded-3xl border p-6 space-y-6 shadow-md`}>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-3 gap-3">
           <div className="space-y-1">
@@ -1015,14 +1015,14 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           </div>
         </div>
 
-        {/* ⚙️ CONFIGURAÇÁO DO PREÇO PADRÁO GERAL */}
+        {/* ⚙ CONFIGURAÇÁO DO PREÇO PADRÁO GERAL */}
         <div className={`p-4 rounded-2xl border ${
           isDark ? 'bg-indigo-950/20 border-indigo-900/40 text-indigo-100' : 'bg-indigo-50 border-indigo-100'
         } space-y-3`}>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="space-y-1">
               <span className="text-xs font-black uppercase tracking-wider text-indigo-700 dark:text-indigo-300 block flex items-center gap-1">
-                ⚙️ Configuração do Preço Base Geral (Para Todos)
+                ⚙ Configuração do Preço Base Geral (Para Todos)
               </span>
               <p className="text-xs text-slate-500 font-semibold max-w-xl">
                 Altere o valor padrão cobrado de todos os alunos cadastrados. Os alunos com descontos especiais (como desconto coletivo para irmãos) são mantidos como exceções e não serão alterados!
@@ -1053,14 +1053,14 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           </div>
         </div>
 
-        {/* ⚙️ CONFIGURAÇÁO DA CHAVE PIX DO DESENVOLVEDOR (RECEBER PAGAMENTOS) */}
+        {/* ⚙ CONFIGURAÇÁO DA CHAVE PIX DO DESENVOLVEDOR (RECEBER PAGAMENTOS) */}
         <div className={`p-4 rounded-2xl border ${
           isDark ? 'bg-slate-800/40 border-slate-755 text-indigo-100' : 'bg-emerald-50/50 border-emerald-150'
         } space-y-3`}>
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="space-y-1">
               <span className="text-xs font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300 block flex items-center gap-1.5">
-                🔑 Configuração das Chaves de Recebimento PIX (Desenvolvedor)
+                  Configuração das Chaves de Recebimento PIX (Desenvolvedor)
               </span>
               <p className="text-xs text-slate-500 font-semibold max-w-xl">
                 Defina os dados da sua chave Pix e o nome do favorecido. Essas informações serão usadas para gerar o <strong>Pix Copia e Cola</strong> automático dos familiares e nas mensagens do WhatsApp!
@@ -1102,7 +1102,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
             {/* COLUMN 1: LIVE SIMULATOR SWITCH */}
             <div className={`${isDark ? 'bg-slate-850 border-slate-750' : 'bg-slate-50/75 border-slate-200'} border rounded-2xl p-4 space-y-4`}>
               <span className="text-xs font-bold text-slate-600 block uppercase tracking-wider">
-                🔄 Simulador de Inadimplência
+                  Simulador de Inadimplência
               </span>
               
               <div className="space-y-3">
@@ -1147,7 +1147,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   }`}
                 >
                   {subStatus === 'pago' ? (
-                    <>⚠️ Simular Parcela Vencida (Bloquear)</>
+                    <>⚠ Simular Parcela Vencida (Bloquear)</>
                   ) : (
                     <>✓ Normalizar Pagamento (Simular Pago)</>
                   )}
@@ -1160,7 +1160,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               isDark ? 'bg-slate-850 border-slate-750' : 'bg-white border-slate-200'
             }`}>
               <span className="text-xs font-bold text-slate-600 block uppercase tracking-wider">
-                ⚙️ Ajuste de Assinatura
+                ⚙ Ajuste de Assinatura
               </span>
 
               <form onSubmit={handleSaveSubConfig} className="space-y-3.5">
@@ -1179,7 +1179,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                           : isDark ? 'bg-slate-900 border-slate-750 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-600'
                       }`}
                     >
-                      <span className="mt-0.5 text-xs">🌐</span>
+                      <span className="mt-0.5 text-xs"> </span>
                       <div>
                         <span className="block font-bold">Usar Preço Base Geral (R$ {globalSubValor.toFixed(2).replace('.', ',')})</span>
                         <span className="text-[10px] text-slate-400 font-medium leading-normal block mt-0.5">Herdará reajustes futuros que você fizer para toda a escola automaticamente.</span>
@@ -1197,7 +1197,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                           : isDark ? 'bg-slate-900 border-slate-750 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-600'
                       }`}
                     >
-                      <span className="mt-0.5 text-xs">👤</span>
+                      <span className="mt-0.5 text-xs"> </span>
                       <div>
                         <span className="block font-bold">Usar Valor Personalizado (Exceção/Desconto)</span>
                         <span className="text-[10px] text-slate-400 font-medium leading-normal block mt-0.5">Definir tarifa própria para esse aluno (ex: desconto para irmãos, bolsas ou acordos).</span>
@@ -1223,7 +1223,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                               : isDark ? 'bg-slate-900 border-slate-750 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-600'
                           }`}
                         >
-                          👤 Individual (Integral)
+                            Individual (Integral)
                         </button>
                         <button
                           type="button"
@@ -1237,12 +1237,12 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                               : isDark ? 'bg-slate-900 border-slate-750 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-600'
                           }`}
                         >
-                          👥 Coletivo (Desconto Irmãos)
+                            Coletivo (Desconto Irmãos)
                         </button>
                       </div>
                       {subTipo === 'coletivo' && (
                         <div className="p-2.5 rounded-xl bg-indigo-50 border border-indigo-100 text-[10px] text-indigo-850 font-bold leading-normal">
-                          💡 <strong>Dica de Desconto:</strong> Como este pai possui dois ou mais filhos na escola, aplique uma tarifa reduzida (ex: R$ 19,90) para o segundo aluno para incentivar a fidelidade!
+                            <strong>Dica de Desconto:</strong> Como este pai possui dois ou mais filhos na escola, aplique uma tarifa reduzida (ex: R$ 19,90) para o segundo aluno para incentivar a fidelidade!
                         </div>
                       )}
                     </div>
@@ -1266,7 +1266,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   </>
                 ) : (
                   <div className="p-3 bg-slate-50 border border-slate-150 rounded-xl text-[11px] text-slate-500 font-semibold leading-relaxed">
-                     🌐 Este aluno herdará o preço base geral de <strong>R$ {globalSubValor.toFixed(2).replace('.', ',')} / mês</strong> automaticamente. Se quiser aplicar um desconto específico para irmãos ou estipular outra exceção, selecione <strong>"Valor Personalizado"</strong> acima.
+                       Este aluno herdará o preço base geral de <strong>R$ {globalSubValor.toFixed(2).replace('.', ',')} / mês</strong> automaticamente. Se quiser aplicar um desconto específico para irmãos ou estipular outra exceção, selecione <strong>"Valor Personalizado"</strong> acima.
                   </div>
                 )}
 
@@ -1338,7 +1338,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         }`}>
           <div className="flex justify-between items-center pb-1">
             <span className="text-xs font-bold text-slate-550 uppercase tracking-wider block">
-              📋 Histórico Recente de Compensações
+                Histórico Recente de Compensações
             </span>
             <button
               type="button"
@@ -1365,7 +1365,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   <tr key={h.id || h.comprovante || i} className="hover:bg-slate-500/5">
                     <td className="py-2.5 text-slate-500 font-mono text-[11px]">{h.data}</td>
                     <td className="py-2.5 text-xs font-semibold flex items-center gap-1">
-                      <span>💳</span> Mensalidade de {seniors.find(s => s.id === selectedIdosoId)?.nome.split(' ')[0]} 
+                      <span> </span> Mensalidade de {seniors.find(s => s.id === selectedIdosoId)?.nome.split(' ')[0]} 
                       <span className="text-[10px] bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-slate-400 font-mono font-normal">
                         {h.comprovante}
                       </span>
@@ -1444,7 +1444,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               </button>
             </div>
 
-            {/* 📥 EXPORT COMMAND TRIGGER */}
+            {/*   EXPORT COMMAND TRIGGER */}
             <button
               onClick={handleExportToCSV}
               className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs rounded-xl flex items-center gap-1.5 cursor-pointer shadow-xs transition-transform active:scale-95"
@@ -1531,7 +1531,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                       </td>
                       <td className="p-4">
                         <div className="flex items-center gap-1.5 font-bold text-slate-805">
-                          <span>👤</span>
+                          <span> </span>
                           {item.idosoNome}
                         </div>
                       </td>
@@ -1547,11 +1547,11 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                       <td className="p-4 text-center">
                         <div className="inline-flex items-center justify-center gap-3.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
                           <div className="flex items-center gap-1 text-xs text-rose-600 font-black" title="Gestos de Afeto Enviados">
-                            <span>❤️</span>
+                            <span>❤</span>
                             <span>{totalLikes}</span>
                           </div>
                           <div className="flex items-center gap-1 text-xs text-blue-600 font-black" title="Regar com Amor (Regadas)">
-                            <span>💧</span>
+                            <span> </span>
                             <span>{totalRegadas}</span>
                           </div>
                         </div>
@@ -1569,7 +1569,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                             R$ {getSubValorForConsent(item).toFixed(2).replace('.', ',')}
                           </span>
                           <span className="text-[9px] font-bold text-indigo-600 px-1.5 py-0.5 rounded-md bg-indigo-50 border border-indigo-100 uppercase tracking-wide block">
-                            {(seniorIdMatch ? (localStorage.getItem(`anjo_sub_tipo_${seniorIdMatch}`) || 'individual') : 'individual') === 'coletivo' ? '👥 Coletivo' : '👤 Individual'}
+                            {(seniorIdMatch ? (localStorage.getItem(`anjo_sub_tipo_${seniorIdMatch}`) || 'individual') : 'individual') === 'coletivo' ? '  Coletivo' : '  Individual'}
                           </span>
                         </div>
                       </td>
@@ -1616,7 +1616,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                             }`}
                             title={liveStatus === 'pago' ? "Bloquear acesso por inadimplência" : "Aprovar pagamento / Desbloquear"}
                           >
-                            {liveStatus === 'pago' ? '⚠️ Cortar Acesso' : '✓ Registrar Pago'}
+                            {liveStatus === 'pago' ? '⚠ Cortar Acesso' : '✓ Registrar Pago'}
                           </button>
 
                           <button
@@ -1642,7 +1642,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
 
       </div>
 
-      {/* 📈 MÁQUINA DE VENDAS: JORNADA DE COMUNICAÇÁO DE 30 DIAS */}
+      {/*   MÁQUINA DE VENDAS: JORNADA DE COMUNICAÇÁO DE 30 DIAS */}
       <div className={`p-6 rounded-3xl border ${
         isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200'
       } shadow-md space-y-6`} id="admin-sales-machine-panel">
@@ -1650,10 +1650,10 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         <div className="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="space-y-1 text-left">
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-black rounded-full uppercase tracking-wider">
-              📈 Máquina de Vendas
+                Máquina de Vendas
             </span>
             <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-              <span>🚀</span> Jornada Comercial dos 30 Dias Grátis (Trial)
+              <span> </span> Jornada Comercial dos 30 Dias Grátis (Trial)
             </h3>
             <p className="text-xs text-slate-500 leading-relaxed font-semibold">
               Não perca assinantes! Acompanhe o funil de comunicação dos 30 dias de teste grátis e envie mensagens de alto valor para guiar os pais até a assinatura por Pix.
@@ -1678,7 +1678,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               ) : (
                 consents.map(c => (
                   <option key={c.id} value={c.id}>
-                    👤 {c.usuarioNome} ({c.idosoNome})
+                      {c.usuarioNome} ({c.idosoNome})
                   </option>
                 ))
               )}
@@ -1696,7 +1696,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               <div className="space-y-3">
                 <div className="flex items-center justify-between border-b border-slate-150 pb-2">
                   <span className="text-xs font-black text-indigo-600 uppercase tracking-wide">Dia 1 • Boas-vindas</span>
-                  <span className="text-lg">🎁</span>
+                  <span className="text-lg"> </span>
                 </div>
                 
                 <p className="text-[10px] text-slate-400 font-bold text-left uppercase leading-none">Ação Estratégica:</p>
@@ -1720,7 +1720,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   }}
                   className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[10px] font-black uppercase transition-all cursor-pointer flex items-center justify-center gap-1"
                 >
-                  💬 Enviar WhatsApp Real
+                    Enviar WhatsApp Real
                 </button>
                 <button
                   type="button"
@@ -1734,7 +1734,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   }}
                   className="w-full py-1.5 border border-slate-200 hover:bg-slate-100 text-slate-600 rounded-xl text-[10px] font-bold uppercase transition-all cursor-pointer"
                 >
-                  📱 Testar Disparo Virtual
+                    Testar Disparo Virtual
                 </button>
               </div>
             </div>
@@ -1746,7 +1746,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               <div className="space-y-3">
                 <div className="flex items-center justify-between border-b border-slate-150 pb-2">
                   <span className="text-xs font-black text-amber-600 uppercase tracking-wide">Dia 15 • Reforçar Valor</span>
-                  <span className="text-lg">🌸</span>
+                  <span className="text-lg"> </span>
                 </div>
                 
                 <p className="text-[10px] text-slate-400 font-bold text-left uppercase leading-none">Ação Estratégica:</p>
@@ -1770,7 +1770,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   }}
                   className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[10px] font-black uppercase transition-all cursor-pointer flex items-center justify-center gap-1"
                 >
-                  💬 Enviar WhatsApp Real
+                    Enviar WhatsApp Real
                 </button>
                 <button
                   type="button"
@@ -1784,7 +1784,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   }}
                   className="w-full py-1.5 border border-slate-200 hover:bg-slate-100 text-slate-600 rounded-xl text-[10px] font-bold uppercase transition-all cursor-pointer"
                 >
-                  📱 Testar Disparo Virtual
+                    Testar Disparo Virtual
                 </button>
               </div>
             </div>
@@ -1796,7 +1796,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               <div className="space-y-3">
                 <div className="flex items-center justify-between border-b border-slate-150 pb-2">
                   <span className="text-xs font-black text-rose-500 uppercase tracking-wide">Dia 25 • Aviso Prévio</span>
-                  <span className="text-lg">🔔</span>
+                  <span className="text-lg"> </span>
                 </div>
                 
                 <p className="text-[10px] text-slate-400 font-bold text-left uppercase leading-none">Ação Estratégica:</p>
@@ -1820,7 +1820,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   }}
                   className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[10px] font-black uppercase transition-all cursor-pointer flex items-center justify-center gap-1"
                 >
-                  💬 Enviar WhatsApp Real
+                    Enviar WhatsApp Real
                 </button>
                 <button
                   type="button"
@@ -1834,7 +1834,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   }}
                   className="w-full py-1.5 border border-slate-200 hover:bg-slate-100 text-slate-600 rounded-xl text-[10px] font-bold uppercase transition-all cursor-pointer"
                 >
-                  📱 Testar Disparo Virtual
+                    Testar Disparo Virtual
                 </button>
               </div>
             </div>
@@ -1846,7 +1846,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               <div className="space-y-3">
                 <div className="flex items-center justify-between border-b border-slate-150 pb-2">
                   <span className="text-xs font-black text-red-600 uppercase tracking-wide">Dia 30 • Corte Elegante</span>
-                  <span className="text-lg">⚠️</span>
+                  <span className="text-lg">⚠</span>
                 </div>
                 
                 <p className="text-[10px] text-slate-400 font-bold text-left uppercase leading-none">Ação Estratégica:</p>
@@ -1870,7 +1870,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   }}
                   className="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-[10px] font-black uppercase transition-all cursor-pointer flex items-center justify-center gap-1"
                 >
-                  💬 Enviar WhatsApp Real
+                    Enviar WhatsApp Real
                 </button>
                 <button
                   type="button"
@@ -1891,7 +1891,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   className="w-full py-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl text-[10px] font-bold uppercase transition-all cursor-pointer border border-red-200"
                   title="Testar o corte elegante simulado: Além do push, altera o status do perfil selecionado para bloquear na hora!"
                 >
-                  🚨 Testar Bloqueio Imediato
+                    Testar Bloqueio Imediato
                 </button>
               </div>
             </div>
@@ -1903,14 +1903,14 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
 
       </div>
 
-      {/* 📱 CENTRAL DE COMERCIALIZAÇÁO, TESTE & QR CODE */}
+      {/*   CENTRAL DE COMERCIALIZAÇÁO, TESTE & QR CODE */}
       <div className={`p-6 rounded-3xl border ${
         isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200'
       } shadow-md space-y-6`} id="admin-marketing-panel">
         
         <div className="border-b border-slate-100 pb-4">
           <h3 className="text-lg font-black text-indigo-600 uppercase tracking-tight flex items-center gap-2">
-            <span>📱</span> Central Comercial de Testes & Divulgação por QR Code
+            <span> </span> Central Comercial de Testes & Divulgação por QR Code
           </h3>
           <p className="text-xs text-slate-500 leading-relaxed font-semibold mt-1">
             Gere links promocionais e códigos QR para clínicas geriátricas, consultórios parceiros ou panfletos impressos. Controle o funil de aquisição de familiares de forma profissional.
@@ -1928,7 +1928,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               <div className={`p-4 rounded-2xl border ${
                 isDark ? 'bg-slate-850 border-slate-750' : 'bg-slate-50 border-slate-150'
               } space-y-2`}>
-                <div className="text-xl">🎁</div>
+                <div className="text-xl"> </div>
                 <h5 className="text-xs font-black uppercase text-indigo-600">Disponibilizar para Testes (Trial)</h5>
                 <p className="text-[11px] text-slate-500 leading-relaxed">
                   Ofereça até <strong>30 dias de teste grátis</strong> para novas famílias criarem perfis e usarem todos os recursos. Eles se cadastram pelo link gerado no QR Code ao lado.
@@ -1938,17 +1938,17 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               <div className={`p-4 rounded-2xl border ${
                 isDark ? 'bg-slate-850 border-slate-750' : 'bg-slate-50 border-slate-150'
               } space-y-2`}>
-                <div className="text-xl">🎯</div>
+                <div className="text-xl"> </div>
                 <h5 className="text-xs font-black uppercase text-rose-500">Bloqueio & Controle Absoluto</h5>
                 <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Gerencie o funil na planilha ou na <strong>Tabela de Faturamento</strong> acima. Se o período de teste expirar e o cliente não pagar o Pix mensal, clique em <strong className="text-rose-600">⚠️ Cortar Acesso</strong>. O app deles é bloqueado na hora com um cadeado e instruções de pagamento de R$ {subValor.toFixed(2).replace('.', ',')}!
+                  Gerencie o funil na planilha ou na <strong>Tabela de Faturamento</strong> acima. Se o período de teste expirar e o cliente não pagar o Pix mensal, clique em <strong className="text-rose-600">⚠ Cortar Acesso</strong>. O app deles é bloqueado na hora com um cadeado e instruções de pagamento de R$ {subValor.toFixed(2).replace('.', ',')}!
                 </p>
               </div>
 
               <div className={`p-4 rounded-2xl border ${
                 isDark ? 'bg-slate-850 border-slate-750' : 'bg-slate-50 border-slate-150'
               } space-y-2`}>
-                <div className="text-xl">🏥</div>
+                <div className="text-xl"> </div>
                 <h5 className="text-xs font-black uppercase text-emerald-600">Parcerias com Clínicas e Escolas</h5>
                 <p className="text-[11px] text-slate-500 leading-relaxed">
                   Imprima e cole o QR Code preparado no balcão de clínicas de geriatria ou envie nas reuniões de pais escolares. Isso automatiza a captação de clientes sem segredos.
@@ -1958,7 +1958,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               <div className={`p-4 rounded-2xl border ${
                 isDark ? 'bg-slate-850 border-slate-750' : 'bg-slate-50 border-slate-150'
               } space-y-2`}>
-                <div className="text-xl">📊</div>
+                <div className="text-xl"> </div>
                 <h5 className="text-xs font-black uppercase text-amber-500">Rastreamento de Origem</h5>
                 <p className="text-[11px] text-slate-500 leading-relaxed">
                   Selecione a campanha no painel ao lado e nós adicionamos um par invisível. Assim, você saberá exatamente de qual clínica ou panfleto veio cada novo responsável!
@@ -1971,7 +1971,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               isDark ? 'border-slate-700 bg-slate-850/50' : 'border-indigo-200 bg-indigo-50/20'
             } space-y-2`}>
               <div className="flex items-center gap-1.5 text-xs font-black text-indigo-700 uppercase">
-                <span>💡</span> Estratégia Recomendada
+                <span> </span> Estratégia Recomendada
               </div>
               <p className="text-[11px] text-slate-500 leading-relaxed">
                 Recomendamos imprimir um pequeno display acrílico para o balcão com a frase: <strong className="text-indigo-600">"Conecte sua família com o cuidado que ela merece. Escaneie e ganhe 10 dias de teste grátis no aplicativo oficial Anjo Cuidador."</strong>
@@ -2017,7 +2017,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                         : isDark ? 'border-slate-700 text-slate-350 hover:bg-slate-750' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-100'
                     }`}
                   >
-                    🏷️ Sem Filtro
+                      Sem Filtro
                   </button>
                   <button
                     onClick={() => setQrCampaign('recepcao')}
@@ -2027,7 +2027,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                         : isDark ? 'border-slate-700 text-slate-350 hover:bg-slate-750' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-100'
                     }`}
                   >
-                    🏥 Recepção
+                      Recepção
                   </button>
                   <button
                     onClick={() => setQrCampaign('panfleto')}
@@ -2037,7 +2037,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                         : isDark ? 'border-slate-700 text-slate-350 hover:bg-slate-750' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-100'
                     }`}
                   >
-                    📄 Panfleto
+                      Panfleto
                   </button>
                   <button
                     onClick={() => setQrCampaign('parceiros')}
@@ -2047,7 +2047,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                         : isDark ? 'border-slate-700 text-slate-350 hover:bg-slate-750' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-100'
                     }`}
                   >
-                    🤝 Parceiro Pix
+                      Parceiro Pix
                   </button>
                 </div>
               </div>
@@ -2064,7 +2064,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                         : isDark ? 'border-slate-700 text-slate-350 hover:bg-slate-750' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-100'
                     }`}
                   >
-                    👵 Anjo Cuidador
+                      Anjo Cuidador
                   </button>
                   <button
                     onClick={() => setQrTargetMode('escolar_infantil')}
@@ -2074,7 +2074,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                         : isDark ? 'border-slate-700 text-slate-350 hover:bg-slate-750' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-100'
                     }`}
                   >
-                    🧸 Anjinho Escolar
+                      Anjinho Escolar
                   </button>
                 </div>
               </div>
@@ -2153,7 +2153,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                           }`}
                           title="Clique caso seu bloqueador de anúncios ou antivírus no computador esteja impedindo a imagem de carregar"
                         >
-                          🔄 Alternar Servidor de QR
+                            Alternar Servidor de QR
                         </button>
                       </div>
 
@@ -2200,7 +2200,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         <div className="flex items-center justify-between flex-col md:flex-row gap-3">
           <div className="space-y-1">
             <h4 className="text-sm font-black text-indigo-600 flex items-center gap-1.5 uppercase">
-              🚀 Como Integrar de forma 100% Automática com o Google Sheets?
+                Como Integrar de forma 100% Automática com o Google Sheets?
             </h4>
             <p className="text-slate-500 text-xs leading-relaxed max-w-2xl font-medium">
               Sua ideia de mandar automaticamente para a planilha é excelente! No mundo real, você não precisa exportar manualmente o arquivo CSV toda hora. Nós fazemos as informações se comunicarem de forma fluida.
@@ -2266,7 +2266,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
             </div>
 
             <div className="p-3.5 bg-slate-850 rounded-xl text-slate-300 leading-normal flex items-start gap-2 border border-slate-750">
-              <span className="text-base shrink-0">💡</span>
+              <span className="text-base shrink-0"> </span>
               <span>
                 <strong>Próximo Passo Recomendado:</strong> se você quiser implantar essa automação definitiva com o Sheets para receber as notificações direto no celular da sua equipe comercial, peça para eu escrever ou configurar esse webhook para você!
               </span>
@@ -2275,7 +2275,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
         )}
       </div>
 
-      {/* 📋 REAL-TIME GENERAL LOGS AUDITOR: SAÚDE, SONO & FRALDA */}
+      {/*   REAL-TIME GENERAL LOGS AUDITOR: SAÚDE, SONO & FRALDA */}
       <div className={`p-6 rounded-3xl border ${
         isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-205'
       } shadow-md space-y-5`} id="admin-sinais-realtime-monitor">
@@ -2283,7 +2283,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
           <div className="space-y-1 text-left">
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-rose-50 text-rose-700 text-[10px] font-black rounded-full uppercase tracking-wider">
-              📋 Auditoria de Rotina
+                Auditoria de Rotina
             </span>
             <h3 className="text-base font-extrabold text-slate-800 flex items-center gap-1.5">
               <span>🩺</span> Diários de Saúde, Sono & Fralda (Tempo Real)
@@ -2320,7 +2320,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                   sinaisFilterMode === 'idoso' ? 'bg-white text-slate-800 shadow-3xs' : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
-                👵 Idosos
+                  Idosos
               </button>
               <button
                 onClick={() => setSinaisFilterMode('creche')}
@@ -2328,7 +2328,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                   sinaisFilterMode === 'creche' ? 'bg-white text-slate-800 shadow-3xs' : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
-                🧸 Creche
+                  Creche
               </button>
               <button
                 onClick={() => setSinaisFilterMode('fundamental')}
@@ -2336,7 +2336,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                   sinaisFilterMode === 'fundamental' ? 'bg-white text-slate-800 shadow-3xs' : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
-                🎒 Fundamental
+                  Fundamental
               </button>
             </div>
           </div>
@@ -2423,13 +2423,13 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                   const isEscolarInf = item.idosoId && item.idosoId.startsWith('aluno') && !isEscolarFun;
                   const isIdosoMode = !isEscolarFun && !isEscolarInf;
 
-                  let modeLabel = '👵 Idoso';
+                  let modeLabel = '  Idoso';
                   let modeClass = 'bg-emerald-50 text-emerald-800 border-emerald-100';
                   if (isEscolarFun) {
-                    modeLabel = '🎒 Fundamental';
+                    modeLabel = '  Fundamental';
                     modeClass = 'bg-violet-50 text-violet-800 border-violet-100';
                   } else if (isEscolarInf) {
-                    modeLabel = '🧸 Creche';
+                    modeLabel = '  Creche';
                     modeClass = 'bg-indigo-50 text-indigo-800 border-indigo-100';
                   }
 
@@ -2464,7 +2464,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                           </div>
                         ) : isEscolarInf ? (
                           <div className="space-y-0.5">
-                            <span className="text-[9px] block text-indigo-400 font-bold uppercase">💤 Soneca:</span>
+                            <span className="text-[9px] block text-indigo-400 font-bold uppercase">  Soneca:</span>
                             <span className="text-indigo-800 text-xs">{item.pressaoArterial || item.soneca || 'Sem registros'}</span>
                           </div>
                         ) : (
@@ -2477,12 +2477,12 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                       <td className="p-4 font-extrabold">
                         {isEscolarFun ? (
                           <div className="space-y-0.5">
-                            <span className="text-[9px] block text-slate-400 font-bold uppercase">🎯 Comportamento:</span>
+                            <span className="text-[9px] block text-slate-400 font-bold uppercase">  Comportamento:</span>
                             <span className="text-slate-800 text-xs">{item.glicemia || 'Sem registros'}</span>
                           </div>
                         ) : isEscolarInf ? (
                           <div className="space-y-0.5">
-                            <span className="text-[9px] block text-pink-400 font-bold uppercase">🧻 Fralda:</span>
+                            <span className="text-[9px] block text-pink-400 font-bold uppercase">  Fralda:</span>
                             <span className="text-pink-800 text-xs">{item.glicemia || item.fralda || 'Sem registros'}</span>
                           </div>
                         ) : (
@@ -2495,33 +2495,33 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                       <td className="p-4">
                         <div className="space-y-1 font-bold text-slate-650">
                           {item.temperatura ? (
-                            <p className="flex items-center gap-1"><span className="text-red-500">🌡️</span> {item.temperatura} °C</p>
+                            <p className="flex items-center gap-1"><span className="text-red-500"> </span> {item.temperatura} °C</p>
                           ) : null}
                           {isEscolarFun || isEscolarInf ? (
                             <>
                               {item.frequenciaCardiaca ? (
-                                <p className="flex items-center gap-1"><span className="text-sky-500">💧</span> {item.frequenciaCardiaca} copos de água</p>
+                                <p className="flex items-center gap-1"><span className="text-sky-500"> </span> {item.frequenciaCardiaca} copos de água</p>
                               ) : null}
                               {item.saturacao ? (
                                 <p className="flex items-center gap-1">
-                                  <span className="text-amber-500">🍽️</span> {item.saturacao === 100 ? 'Aceitou Tudo' : item.saturacao === 50 ? 'Aceitou Parcial' : 'Recusou / Pouco'}
+                                  <span className="text-amber-500"> </span> {item.saturacao === 100 ? 'Aceitou Tudo' : item.saturacao === 50 ? 'Aceitou Parcial' : 'Recusou / Pouco'}
                                 </p>
                               ) : null}
                             </>
                           ) : (
                             <>
                               {item.frequenciaCardiaca ? (
-                                <p className="flex items-center gap-1"><span className="text-rose-500">❤️</span> {item.frequenciaCardiaca} bpm</p>
+                                <p className="flex items-center gap-1"><span className="text-rose-500">❤</span> {item.frequenciaCardiaca} bpm</p>
                               ) : null}
                               {item.saturacao ? (
-                                <p className="flex items-center gap-1"><span className="text-blue-500">💙</span> {item.saturacao}% Sat. O₂</p>
+                                <p className="flex items-center gap-1"><span className="text-blue-500"> </span> {item.saturacao}% Sat. O₂</p>
                               ) : null}
                             </>
                           )}
                         </div>
                       </td>
                       <td className="p-4 font-extrabold text-slate-800 text-xs">
-                        👤 {item.registradoPor || 'Sistema'}
+                          {item.registradoPor || 'Sistema'}
                       </td>
                       <td className="p-4 text-xs text-slate-500 italic max-w-xs truncate font-medium" title={item.observacoes}>
                         {item.observacoes || 'Nenhuma observação'}
@@ -2640,7 +2640,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                 <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-1">
                   <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Demonstrações de Afeto</span>
                   <div className="text-2xl font-black text-rose-500 flex items-center gap-1">
-                    ❤️ {crmFamilias.reduce((acc, f) => acc + (f.likesRecebidos || 0) + (f.regadasAmor || 0), 0)}
+                    ❤ {crmFamilias.reduce((acc, f) => acc + (f.likesRecebidos || 0) + (f.regadasAmor || 0), 0)}
                   </div>
                   <p className="text-[11px] font-medium text-slate-500">Likes & Regadas de Amor no diário</p>
                 </div>
@@ -2830,7 +2830,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                               <td className="p-4">
                                 <div className="font-bold text-slate-900 dark:text-white">{fam.responsavel}</div>
                                 <div className="text-[11px] text-slate-500 flex items-center gap-1">
-                                  <span>📞 {fam.telefone}</span>
+                                  <span>  {fam.telefone}</span>
                                 </div>
                               </td>
                               <td className="p-4">
@@ -2853,7 +2853,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                               <td className="p-4 text-center">
                                 <div className="font-black text-slate-800 dark:text-white">Dia {fam.diaJornada}/30</div>
                                 <div className="text-[10px] text-rose-500 font-bold flex items-center justify-center gap-1">
-                                  <span>❤️ {fam.likesRecebidos} likes</span>
+                                  <span>❤ {fam.likesRecebidos} likes</span>
                                 </div>
                               </td>
                               <td className="p-4 text-center">
@@ -2863,7 +2863,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                                   </span>
                                 ) : (
                                   <span className="px-2.5 py-1 bg-amber-100 text-amber-800 font-black rounded-full text-[10px] uppercase animate-pulse">
-                                    ⚠️ Pendente
+                                    ⚠ Pendente
                                   </span>
                                 )}
                               </td>
@@ -2893,7 +2893,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl space-y-3">
                 <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-black text-lg">
-                  📍
+                   
                 </div>
                 <h4 className="font-black text-slate-800 dark:text-white">Panfletagem de Portão (7h30)</h4>
                 <p className="text-xs text-slate-500 leading-relaxed">
@@ -2919,7 +2919,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
 
               <div className="p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl space-y-3">
                 <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-lg">
-                  👩‍👧‍👦
+                     
                 </div>
                 <h4 className="font-black text-slate-800 dark:text-white">Grupos de Mães no WhatsApp</h4>
                 <p className="text-xs text-slate-500 leading-relaxed">
@@ -3162,7 +3162,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
         </div>
       )}
 
-      {/* 💳 MODAL DE COBRANÇA E COMERCIALIZAÇÁO WHATSAPP */}
+      {/*   MODAL DE COBRANÇA E COMERCIALIZAÇÁO WHATSAPP */}
       {billingModalUser && (
         <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-start justify-center p-2 sm:p-4 z-50 animate-fade-in overflow-y-auto">
           <div className={`rounded-3xl p-5 sm:p-6 border max-w-lg w-full shadow-2xl relative space-y-4 my-auto ${
@@ -3172,7 +3172,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
           }`}>
             <div className="flex items-center justify-between border-b border-slate-150 pb-3">
               <h3 className="text-base font-black flex items-center gap-2">
-                <span className="text-xl">💬</span>
+                <span className="text-xl"> </span>
                 <span>Central de Cobrança WhatsApp</span>
               </h3>
               <button 
@@ -3190,7 +3190,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
               <div className={`p-3 rounded-2xl border flex items-center gap-3 ${
                 accessibilitySettings.darkMode ? 'bg-indigo-950/20 border-indigo-900/50 text-indigo-300' : 'bg-indigo-50/50 border-indigo-100 text-indigo-800'
               }`}>
-                <span className="text-xl shrink-0">👤</span>
+                <span className="text-xl shrink-0"> </span>
                 <div>
                   <p className="font-bold text-slate-800">Enviando para: {billingModalUser.usuarioNome}</p>
                   <p className="text-[10px] opacity-75 text-slate-600">Tutor de {billingModalUser.idosoNome} • WhatsApp: {billingModalUser.usuarioTelefone}</p>
@@ -3244,7 +3244,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                         : 'text-slate-500 hover:text-slate-800'
                     }`}
                   >
-                    🎁 Fim do Teste
+                      Fim do Teste
                   </button>
                   <button
                     type="button"
@@ -3255,7 +3255,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                         : 'text-slate-500 hover:text-slate-800'
                     }`}
                   >
-                    🔔 Cobrança Pix
+                      Cobrança Pix
                   </button>
                   <button
                     type="button"
@@ -3266,7 +3266,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                         : 'text-slate-500 hover:text-slate-800'
                     }`}
                   >
-                    ⚠️ Bloqueio
+                    ⚠ Bloqueio
                   </button>
                 </div>
               </div>
@@ -3298,14 +3298,14 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                       : 'border-slate-200 hover:bg-slate-100 text-slate-650'
                   }`}
                 >
-                  📱 Testar com Disparo Virtual
+                    Testar com Disparo Virtual
                 </button>
                 <button
                   type="button"
                   onClick={handleSendRealWhatsAppBilling}
                   className="w-full py-2.5 rounded-xl font-black bg-emerald-600 hover:bg-emerald-700 text-white transition-all cursor-pointer text-[11px] shadow-sm shadow-emerald-600/10 flex items-center justify-center gap-1"
                 >
-                  💬 Abrir Conversa Real no WhatsApp
+                    Abrir Conversa Real no WhatsApp
                 </button>
               </div>
 

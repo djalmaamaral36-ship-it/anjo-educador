@@ -24,7 +24,7 @@ export default function FirebaseDiagnosticBar() {
   };
 
   useEffect(() => {
-    addLog('🔬 Painel de Diagnóstico do Firestore ativado.');
+    addLog('  Painel de Diagnóstico do Firestore ativado.');
     startFirebaseSync();
 
     const handleConnectionStatus = (e: any) => {
@@ -41,7 +41,7 @@ export default function FirebaseDiagnosticBar() {
       setLastUpdate(timestamp);
       setLastCol(collectionName);
       setTotalSnapshots(prev => prev + 1);
-      addLog(`📡 [onSnapshot] Recebido de "${collectionName}" (${docCount} docs) às ${timestamp}`);
+      addLog(`  [onSnapshot] Recebido de "${collectionName}" (${docCount} docs) às ${timestamp}`);
     };
 
     const handleSyncError = (e: any) => {
@@ -65,7 +65,7 @@ export default function FirebaseDiagnosticBar() {
 
   const handleManualReconnect = async () => {
     setIsReconnecting(true);
-    addLog('🔄 [Teste 3] Forçando reinicialização da rede WebSocket do Firestore...');
+    addLog('  [Teste 3] Forçando reinicialização da rede WebSocket do Firestore...');
     const success = await forceReconnectFirestore();
     setIsReconnecting(false);
     if (success) {
@@ -77,7 +77,7 @@ export default function FirebaseDiagnosticBar() {
   };
 
   const handleTestWriteAndRead = async () => {
-    addLog('🧪 [Teste 4] Testando leitura e escrita no Firestore...');
+    addLog('  [Teste 4] Testando leitura e escrita no Firestore...');
     try {
       const pingDocRef = doc(db, 'turnos_ativos', '_diagnostic_ping_test');
       const testPayload = {
@@ -91,7 +91,7 @@ export default function FirebaseDiagnosticBar() {
         addLog('✅ [Teste 4 SUCESSO] Regras do Firestore OK! Escrita e Leitura permitidas.');
         setTestResult('✅ Regras OK! Conexão de leitura/escrita funcionando.');
       } else {
-        addLog('⚠️ [Teste 4 AVISO] O documento de teste não retornou.');
+        addLog('⚠ [Teste 4 AVISO] O documento de teste não retornou.');
       }
     } catch (err: any) {
       addLog(`❌ [Teste 4 ERRO DE REGRAS] ${err?.message || err}`);

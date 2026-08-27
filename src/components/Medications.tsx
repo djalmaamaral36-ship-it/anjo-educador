@@ -46,7 +46,7 @@ export default function Medications({
     if (!auth.isAuthorized) {
       return (
         <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-start gap-3 shadow-xs">
-          <div className="text-xl">⚠️</div>
+          <div className="text-xl">⚠</div>
           <div className="space-y-1">
             <h4 className="font-extrabold text-sm text-rose-950">
               {isEscolar ? 'Falta de Autorização Escolar dos Pais' : 'Falta de Autorização de Cuidados'}
@@ -143,14 +143,14 @@ export default function Medications({
     const isConvidado = uType === 'familiar_convidado' || uType === 'convidado' || uParentesco.includes('convidado') || uObs.includes('convidado');
 
     if (isConvidado) {
-      showAlert("⚠️ Operação Não Autorizada: O Familiar Convidado tem acesso apenas de leitura ao diário. O cadastro de medicamentos e autorizações é exclusivo do Familiar Admin (mãe/pai responsável).", "Acesso Restrito");
+      showAlert("⚠ Operação Não Autorizada: O Familiar Convidado tem acesso apenas de leitura ao diário. O cadastro de medicamentos e autorizações é exclusivo do Familiar Admin (mãe/pai responsável).", "Acesso Restrito");
       return;
     }
 
     if (isStaffUser(usuarioAtual) && usuarioAtual.tipo !== 'admin' && !isMaster) {
       showAlert(isEscolar 
-        ? "⚠️ Operação Não Autorizada: A inclusão de medicamentos é de responsabilidade exclusiva dos pais ou responsáveis (mãe/família)."
-        : "⚠️ Operação Não Autorizada: A inclusão de medicamentos é de responsabilidade exclusiva da família ou responsáveis.", "Acesso Restrito");
+        ? "⚠ Operação Não Autorizada: A inclusão de medicamentos é de responsabilidade exclusiva dos pais ou responsáveis (mãe/família)."
+        : "⚠ Operação Não Autorizada: A inclusão de medicamentos é de responsabilidade exclusiva da família ou responsáveis.", "Acesso Restrito");
       return;
     }
     if (!newMed.nome || !newMed.dosagem) {
@@ -172,7 +172,7 @@ export default function Medications({
     const allMeds = getFromDB<Medicamento[]>('anjo_medicamentos', []);
     const alreadyExistsMed = allMeds.some(m => m.idosoId === idoso.id && m.nome.toLowerCase().trim() === newMed.nome.toLowerCase().trim() && m.status === 'ativo');
     if (alreadyExistsMed) {
-      const confirmSave = window.confirm(`⚠️ Atenção: Já existe um medicamento ativo com o nome "${newMed.nome}" cadastrado para ${idoso.nome}!\n\nDeseja cadastrar outro perfil/prescrição para este mesmo medicamento?`);
+      const confirmSave = window.confirm(`⚠ Atenção: Já existe um medicamento ativo com o nome "${newMed.nome}" cadastrado para ${idoso.nome}!\n\nDeseja cadastrar outro perfil/prescrição para este mesmo medicamento?`);
       if (!confirmSave) return;
     }
 
@@ -289,8 +289,8 @@ export default function Medications({
     const isMaster = localStorage.getItem('anjo_master_demonstracao_ativo') === 'true';
     if (isStaffUser(usuarioAtual) && usuarioAtual.tipo !== 'admin' && !isMaster) {
       showAlert(isEscolar 
-        ? "⚠️ Operação Não Autorizada: A suspensão ou reativação de medicamentos é de responsabilidade exclusiva dos pais ou responsáveis."
-        : "⚠️ Operação Não Autorizada: A suspensão ou reativação de medicamentos é de responsabilidade exclusiva da família ou responsáveis.", "Acesso Restrito");
+        ? "⚠ Operação Não Autorizada: A suspensão ou reativação de medicamentos é de responsabilidade exclusiva dos pais ou responsáveis."
+        : "⚠ Operação Não Autorizada: A suspensão ou reativação de medicamentos é de responsabilidade exclusiva da família ou responsáveis.", "Acesso Restrito");
       return;
     }
 
@@ -392,8 +392,8 @@ export default function Medications({
     const isMaster = localStorage.getItem('anjo_master_demonstracao_ativo') === 'true';
     if (isStaffUser(usuarioAtual) && usuarioAtual.tipo !== 'admin' && !isMaster) {
       showAlert(isEscolar 
-        ? "⚠️ Operação Não Autorizada: A exclusão de medicamentos é de responsabilidade exclusiva dos pais ou responsáveis."
-        : "⚠️ Operação Não Autorizada: A exclusão de medicamentos é de responsabilidade exclusiva da família ou responsáveis.", "Acesso Restrito");
+        ? "⚠ Operação Não Autorizada: A exclusão de medicamentos é de responsabilidade exclusiva dos pais ou responsáveis."
+        : "⚠ Operação Não Autorizada: A exclusão de medicamentos é de responsabilidade exclusiva da família ou responsáveis.", "Acesso Restrito");
       return;
     }
     setDeleteConfirmation({ id: medId, nome: name });
@@ -477,14 +477,14 @@ export default function Medications({
   const handleToggleChecklistStatus = (taskId: string, titleName: string) => {
     const isShiftActive = getShiftActiveState(idoso.id).active;
     if (usuarioAtual.tipo !== 'familiar' && usuarioAtual.tipo !== 'admin' && !isShiftActive) {
-      showAlert(isEscolar ? "⚠️ Operação Bloqueada: Por favor, inicie o período letivo antes de registrar medicações!" : "⚠️ Operação Bloqueada: Por favor, inicie o seu turno de cuidados antes de registrar medicações!", "Período Não Iniciado");
+      showAlert(isEscolar ? "⚠ Operação Bloqueada: Por favor, inicie o período letivo antes de registrar medicações!" : "⚠ Operação Bloqueada: Por favor, inicie o seu turno de cuidados antes de registrar medicações!", "Período Não Iniciado");
       return;
     }
     const auth = checkFeedingCareAuthorization();
     if (usuarioAtual.tipo !== 'familiar' && usuarioAtual.tipo !== 'admin' && !auth.isAuthorized) {
       showAlert(isEscolar 
-        ? "⚠️ Operação Não Autorizada: Nenhum pai ou responsável autorizou \"Alimentação e Cuidados\" no painel \"Pais & Autorizados\" para este aluno. A professora/cuidadora não pode registrar a administração de medicamentos."
-        : "⚠️ Operação Não Autorizada: Nenhum familiar responsável autorizou \"Alimentação e Cuidados\" no painel \"Família\". O cuidador não pode registrar a administração de medicamentos.", "Sem Autorização");
+        ? "⚠ Operação Não Autorizada: Nenhum pai ou responsável autorizou \"Alimentação e Cuidados\" no painel \"Pais & Autorizados\" para este aluno. A professora/cuidadora não pode registrar a administração de medicamentos."
+        : "⚠ Operação Não Autorizada: Nenhum familiar responsável autorizou \"Alimentação e Cuidados\" no painel \"Família\". O cuidador não pode registrar a administração de medicamentos.", "Sem Autorização");
       return;
     }
     const allTasks = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
@@ -542,7 +542,7 @@ export default function Medications({
           if (isConvidado) {
             return (
               <div className="px-4 py-2 bg-purple-50 border border-purple-200 rounded-xl text-xs font-bold text-purple-900 flex items-center gap-1.5 shadow-xs">
-                <span>👥 Familiar Convidado (Somente Leitura)</span>
+                <span>  Familiar Convidado (Somente Leitura)</span>
               </div>
             );
           }
@@ -560,7 +560,7 @@ export default function Medications({
 
           return (
             <div className="px-4 py-2 bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold text-slate-500 flex items-center gap-1.5 shadow-xs">
-              <span>🔒 Gestão restrita aos Pais/Responsáveis</span>
+              <span>  Gestão restrita aos Pais/Responsáveis</span>
             </div>
           );
         })()}
@@ -602,7 +602,7 @@ export default function Medications({
             const shiftDone = shiftTasks.filter(t => t.status === 'concluido').length;
             const shiftTotal = shiftTasks.length;
             
-            const icon = turnoId === 'Manhã' ? '🌅' : turnoId === 'Tarde' ? '☀️' : turnoId === 'Noite' ? '🌙' : '🌌';
+            const icon = turnoId === 'Manhã' ? ' ' : turnoId === 'Tarde' ? '☀' : turnoId === 'Noite' ? ' ' : ' ';
             const isActive = selectedShift === turnoId;
 
             return (
@@ -647,7 +647,7 @@ export default function Medications({
                 return null;
               }
 
-              const icon = turnoId === 'Manhã' ? '🌅' : turnoId === 'Tarde' ? '☀️' : turnoId === 'Noite' ? '🌙' : '🌌';
+              const icon = turnoId === 'Manhã' ? ' ' : turnoId === 'Tarde' ? '☀' : turnoId === 'Noite' ? ' ' : ' ';
               const labelRange = turnoId === 'Manhã' ? '06h às 12h' : turnoId === 'Tarde' ? '12h às 18h' : turnoId === 'Noite' ? '18h às 00h' : '00h às 06h';
 
               return (
@@ -825,7 +825,7 @@ export default function Medications({
                     </div>
                   ) : (
                     <div className="pt-3 border-t border-slate-150 flex items-center justify-between text-slate-400 text-[11px] font-semibold">
-                      <span className="flex items-center gap-1">🔒 Gestão restrita aos pais</span>
+                      <span className="flex items-center gap-1">  Gestão restrita aos pais</span>
                       <span className="text-slate-400 text-[10px] font-mono font-semibold bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200">ID: {med.id.slice(0, 8)}</span>
                     </div>
                   )}
@@ -848,7 +848,7 @@ export default function Medications({
             <form onSubmit={handleSaveMedicine} className="space-y-4">
               {validationError && (
                 <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-800 font-extrabold flex items-center gap-2 animate-fade-in" id="med-form-validation-error">
-                  <span className="text-sm shrink-0">⚠️</span>
+                  <span className="text-sm shrink-0">⚠</span>
                   <span>{validationError}</span>
                 </div>
               )}
@@ -881,7 +881,7 @@ export default function Medications({
                   <span className="text-xs font-bold text-slate-700 block mb-1">Horários por Turno (Preencha os horários que se aplicam)</span>
                   <div className={`grid ${isEscolar ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-2'} gap-3`}>
                     <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
-                      <label className="text-[11px] font-bold text-amber-600 block flex items-center gap-1">🌅 Manhã (06h - 12h)</label>
+                      <label className="text-[11px] font-bold text-amber-600 block flex items-center gap-1">  Manhã (06h - 12h)</label>
                       <input 
                         type="time" 
                         value={newMed.horarioManha}
@@ -890,7 +890,7 @@ export default function Medications({
                       />
                     </div>
                     <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
-                      <label className="text-[11px] font-bold text-orange-600 block flex items-center gap-1">☀️ Tarde (12h - 18h)</label>
+                      <label className="text-[11px] font-bold text-orange-600 block flex items-center gap-1">☀ Tarde (12h - 18h)</label>
                       <input 
                         type="time" 
                         value={newMed.horarioTarde}
@@ -901,7 +901,7 @@ export default function Medications({
                     {!isEscolar && (
                       <>
                         <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
-                          <label className="text-[11px] font-bold text-indigo-600 block flex items-center gap-1">🌙 Noite (18h - 00h)</label>
+                          <label className="text-[11px] font-bold text-indigo-600 block flex items-center gap-1">  Noite (18h - 00h)</label>
                           <input 
                             type="time" 
                             value={newMed.horarioNoite}
@@ -910,7 +910,7 @@ export default function Medications({
                           />
                         </div>
                         <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
-                          <label className="text-[11px] font-bold text-purple-600 block flex items-center gap-1">🌌 Madrugada (00h - 06h)</label>
+                          <label className="text-[11px] font-bold text-purple-600 block flex items-center gap-1">  Madrugada (00h - 06h)</label>
                           <input 
                             type="time" 
                             value={newMed.horarioMadrugada}
@@ -1088,7 +1088,7 @@ export default function Medications({
                 <span className="text-[10px] font-mono text-slate-400">ID: {deleteConfirmation.id.slice(0, 8)}</span>
               </div>
               <p className="font-medium text-slate-500">
-                ⚠️ <strong className="text-slate-800">O que acontece ao confirmar?</strong>
+                ⚠ <strong className="text-slate-800">O que acontece ao confirmar?</strong>
               </p>
               <ul className="list-disc pl-5 space-y-1 text-[11px] text-slate-500">
                 <li>O remédio será removido da listagem de estoque de medicamentos.</li>

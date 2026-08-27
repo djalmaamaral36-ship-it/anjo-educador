@@ -324,17 +324,17 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
     // Check if customPin is unique across users
     const pinCheck = isPinUnique(customPin.trim());
     if (!pinCheck.isUnique) {
-      setErrorMessage(`⚠️ O PIN "${customPin.trim()}" já está em uso por ${pinCheck.conflictingUser?.nome || 'outro usuário'}. Por favor, escolha um PIN exclusivo de 4 dígitos.`);
+      setErrorMessage(`⚠ O PIN "${customPin.trim()}" já está em uso por ${pinCheck.conflictingUser?.nome || 'outro usuário'}. Por favor, escolha um PIN exclusivo de 4 dígitos.`);
       return;
     }
 
     setErrorMessage('');
 
     // Rastreamento amigável
-    let finalCampLabel = '🏷️ Divulgação Geral';
-    if (refCampaign === 'recepcao') finalCampLabel = '🏥 Recepção Clínica';
-    if (refCampaign === 'panfleto') finalCampLabel = '📄 Panfleto Promocional';
-    if (refCampaign === 'parceiros') finalCampLabel = '🤝 Parceiro Credenciado';
+    let finalCampLabel = '  Divulgação Geral';
+    if (refCampaign === 'recepcao') finalCampLabel = '  Recepção Clínica';
+    if (refCampaign === 'panfleto') finalCampLabel = '  Panfleto Promocional';
+    if (refCampaign === 'parceiros') finalCampLabel = '  Parceiro Credenciado';
 
     const cleanRef = refCampaign || 'geral';
     const deviceHash = `IP ${Math.floor(Math.random() * 80 + 171)}.${Math.floor(Math.random() * 200)}.${Math.floor(Math.random() * 255)} (SSL • ${navigator.userAgent.includes('iPhone') ? 'iPhone OS' : 'Android OS 14'})`;
@@ -349,7 +349,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
       usuarioTipo: 'familiar',
       idosoNome: assistidoNome,
       dataConsentimento: new Date().toLocaleString('pt-BR'),
-      modoApp: selectedMode === 'escolar_infantil' ? '🧸 Anjinho Escolar (Infantil)' : '👵 Anjo Cuidador',
+      modoApp: selectedMode === 'escolar_infantil' ? '  Anjinho Escolar (Infantil)' : '  Anjo Cuidador',
       deviceFingerprint: `${deviceHash} • Ref: ${cleanRef.toUpperCase()}`,
       statusFinanceiro: 'pago' // Free 15-day trial is registered as Active/Adimplente directly
     };
@@ -569,7 +569,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                 </div>
                 <div>
                   <span className="text-slate-400 block leading-tight">Assistido (Sênior/Aluno)</span>
-                  <strong className="text-slate-800 block font-bold truncate">👤 {registeredSuccess.senior.nome}</strong>
+                  <strong className="text-slate-800 block font-bold truncate">  {registeredSuccess.senior.nome}</strong>
                 </div>
               </div>
 
@@ -601,7 +601,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
             
             {/* Visual Header Guide of 30-day Trial Activation */}
             <div className={`p-3 rounded-2xl border ${accessibility?.darkMode ? 'bg-emerald-950/20 border-emerald-900/50 text-emerald-300' : 'bg-emerald-50/40 border-emerald-100 text-emerald-800'} flex items-center gap-2`}>
-              <span className="text-xs">🎁</span>
+              <span className="text-xs"> </span>
               <p className="text-[11px] font-bold leading-normal">
                 Você escaneou e ativou nosso voucher promocional! Preencha abaixo para assinar os termos e criar seu perfil grátis de 30 dias.
               </p>
@@ -618,7 +618,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                     : (accessibility?.darkMode ? 'border-slate-700 bg-slate-800 text-slate-400 hover:bg-slate-750' : 'border-slate-205 bg-slate-50 text-slate-500')
                 }`}
               >
-                <span className="text-lg">👵</span>
+                <span className="text-lg"> </span>
                 Anjo Cuidador (Idosos)
               </button>
               <button
@@ -662,12 +662,12 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                     onChange={e => setCargoUsuario(e.target.value as any)}
                     className={`w-full mt-0.5 px-3 py-2 ${accessibility?.darkMode ? 'bg-slate-800 border-slate-700 text-slate-100 focus:bg-slate-850 focus:ring-emerald-500/25' : 'bg-slate-50 border-slate-205 text-slate-800 focus:bg-white focus:ring-emerald-400/25'} rounded-xl text-xs font-bold focus:ring-2`}
                   >
-                    <option value="diretor">👔 Diretor(a) / Gestor(a)</option>
-                    <option value="coordenador">👩‍🏫 Coordenador(a) Pedagógico(a)</option>
-                    <option value="professor">👨‍🏫 Professor(a) / Educador(a)</option>
-                    <option value="desenvolvedor">💻 Desenvolvedor (Dev)</option>
-                    <option value="familiar_admin">👨‍👩‍👧 Familiar Admin (Responsável Principal - Acesso a Autorizações)</option>
-                    <option value="familiar_convidado">👥 Familiar Convidado (Leitor / Outro Parente - Sem Autorizações)</option>
+                    <option value="diretor">  Diretor(a) / Gestor(a)</option>
+                    <option value="coordenador"> 🏫 Coordenador(a) Pedagógico(a)</option>
+                    <option value="professor"> 🏫 Professor(a) / Educador(a)</option>
+                    <option value="desenvolvedor">  Desenvolvedor (Dev)</option>
+                    <option value="familiar_admin">    Familiar Admin (Responsável Principal - Acesso a Autorizações)</option>
+                    <option value="familiar_convidado">  Familiar Convidado (Leitor / Outro Parente - Sem Autorizações)</option>
                   </select>
                 </div>
 
@@ -878,7 +878,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                         : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
                     }`}
                   >
-                    👵 Idoso
+                      Idoso
                   </button>
                   <button
                     type="button"
@@ -892,7 +892,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                         : 'text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200'
                     }`}
                   >
-                    🧸 Creche
+                      Creche
                   </button>
                 </div>
 
@@ -901,7 +901,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                 </span>
               </div>
 
-              {/* 🔍 BUSCA RÁPIDA DE PROFISSIONAL / PERFIL POR NOME */}
+              {/*   BUSCA RÁPIDA DE PROFISSIONAL / PERFIL POR NOME */}
               <div className="space-y-2 pt-1">
                 <div className="relative flex items-center">
                   <Search className={`w-4 h-4 absolute left-3.5 pointer-events-none transition-colors ${
@@ -962,7 +962,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                     }`}
                   >
-                    👔 Dir.
+                      Dir.
                   </button>
                   <button
                     type="button"
@@ -973,7 +973,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                     }`}
                   >
-                    👩‍🏫 Coord.
+                     🏫 Coord.
                   </button>
                   <button
                     type="button"
@@ -984,7 +984,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                     }`}
                   >
-                    👨‍🏫 Prof.
+                     🏫 Prof.
                   </button>
                   <button
                     type="button"
@@ -995,7 +995,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                     }`}
                   >
-                    👨‍👩‍👧 Fam. Admin
+                        Fam. Admin
                   </button>
                   <button
                     type="button"
@@ -1006,7 +1006,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                     }`}
                   >
-                    👥 Fam. Conv.
+                      Fam. Conv.
                   </button>
                   <button
                     type="button"
@@ -1017,7 +1017,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                     }`}
                   >
-                    💻 Dev
+                      Dev
                   </button>
                 </div>
               </div>
@@ -1120,21 +1120,21 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
 
                   const nameLower = (user.nome || '').toLowerCase();
                   if (uType === 'desenvolvedor' || uType === 'dev' || nameLower.includes('desenvolvedor') || nameLower.includes('dev') || user.id === 'user_desenvolvedor_djalma') {
-                    roleLabel = '💻 Desenvolvedor do Sistema';
+                    roleLabel = '  Desenvolvedor do Sistema';
                   } else if (uType === 'diretor' || uType === 'diretora' || user.id === 'user_admin' || nameLower.includes('diret') || nameLower.includes('direção')) {
-                    roleLabel = '👔 Diretor(a) / Gestão Geral';
+                    roleLabel = '  Diretor(a) / Gestão Geral';
                   } else if (uType === 'coordenador' || uType === 'coordenadora' || user.id === 'user_medico_1' || nameLower.includes('coordenad')) {
-                    roleLabel = '👩‍🏫 Coordenador(a) Pedagógico(a)';
+                    roleLabel = ' 🏫 Coordenador(a) Pedagógico(a)';
                   } else if (uType === 'professor' || uType === 'professora' || uType === 'cuidador' || user.id === 'user_cuidador_1' || nameLower.includes('prof') || nameLower.includes('educad')) {
                     roleLabel = user.salaAula && user.salaAula !== 'Todas' 
-                      ? `👨‍🏫 Professora (${user.salaAula})` 
-                      : '👨‍🏫 Professor(a) / Educador(a)';
+                      ? ` 🏫 Professora (${user.salaAula})` 
+                      : ' 🏫 Professor(a) / Educador(a)';
                   } else if (uType === 'profissional') {
-                    roleLabel = '👩‍⚕️ Equipe de Apoio / Saúde';
+                    roleLabel = ' ⚕ Equipe de Apoio / Saúde';
                   } else if (isConvidadoUser) {
-                    roleLabel = '👥 Familiar (Convidado / Leitor)';
+                    roleLabel = '  Familiar (Convidado / Leitor)';
                   } else {
-                    roleLabel = user.parentesco ? `👨‍👩‍👧 Familiar Admin (${user.parentesco})` : '👨‍👩‍👧 Familiar (Admin)';
+                    roleLabel = user.parentesco ? `    Familiar Admin (${user.parentesco})` : '    Familiar (Admin)';
                   }
 
                   if (user.tipo === 'admin') {
@@ -1330,7 +1330,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
 
         {/* Bottom medical guidelines note block */}
         <div className={`p-3.5 ${accessibility?.darkMode ? 'bg-indigo-950/20 border-indigo-900/50 text-indigo-300' : 'bg-indigo-50 border-indigo-200 text-indigo-800'} rounded-xl text-[10px] text-center leading-relaxed`}>
-          🔒 <strong>Nota Importante:</strong> O aplicativo {selectedMode.startsWith('escolar') ? 'Anjinho Escolar' : 'Anjo Cuidador'} foi desenvolvido de forma estrita em total concord com as diretrizes de proteção e privacidade da <strong>LGPD (Lei nº 13.709/2018)</strong> brasileira.
+            <strong>Nota Importante:</strong> O aplicativo {selectedMode.startsWith('escolar') ? 'Anjinho Escolar' : 'Anjo Cuidador'} foi desenvolvido de forma estrita em total concord com as diretrizes de proteção e privacidade da <strong>LGPD (Lei nº 13.709/2018)</strong> brasileira.
         </div>
       </div>
     </div>

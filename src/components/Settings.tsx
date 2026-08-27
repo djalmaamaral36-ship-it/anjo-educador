@@ -80,7 +80,7 @@ export default function SettingsPage({
   const handleTogglePresentation = (checked: boolean) => {
     setModoApresentacao(checked);
     localStorage.setItem('anjo_modo_apresentacao', checked ? 'true' : 'false');
-    setSavingMessage(checked ? '✨ Modo de Apresentação Ativado! Atualizando...' : '🔄 Modo de Apresentação Desativado! Atualizando...');
+    setSavingMessage(checked ? '✨ Modo de Apresentação Ativado! Atualizando...' : '  Modo de Apresentação Desativado! Atualizando...');
     setTimeout(() => {
       setSavingMessage('');
       window.location.reload();
@@ -103,7 +103,7 @@ export default function SettingsPage({
   const handleToggleCopyProtection = (checked: boolean) => {
     setCopyProtection(checked);
     localStorage.setItem('anjo_copy_protection', checked ? 'true' : 'false');
-    setSavingMessage(checked ? '🛡️ Proteção Anti-Cópia Ativada!' : '⚠️ Proteção Anti-Cópia Desativada');
+    setSavingMessage(checked ? '  Proteção Anti-Cópia Ativada!' : '⚠ Proteção Anti-Cópia Desativada');
     setTimeout(() => setSavingMessage(''), 2000);
   };
 
@@ -605,7 +605,7 @@ export default function SettingsPage({
               />
               <div>
                 <strong className="text-sm font-bold text-slate-800 block flex items-center gap-1.5">
-                  🌙 Ativar Modo Noturno (Tema Escuro)
+                    Ativar Modo Noturno (Tema Escuro)
                 </strong>
                 <span className="text-[11px] leading-normal font-semibold text-slate-500 block">Muda as cores de fundo para tons escuros confortáveis para uso em horários de baixa luminosidade (noite/madrugada) ou para menor cansaço visual.</span>
               </div>
@@ -640,7 +640,7 @@ export default function SettingsPage({
               PIN de Segurança do Administrador
             </h3>
             <p className="text-xs text-slate-500 font-medium leading-relaxed">
-              Configure o PIN de 4 dígitos usado para proteger a troca para o <strong>Modo Escolar 🧸</strong> e para restringir o acesso à aba de <strong>Controle de Assinaturas e Relatórios de Governança (Admin & Planilha)</strong>.
+              Configure o PIN de 4 dígitos usado para proteger a troca para o <strong>Modo Escolar  </strong> e para restringir o acesso à aba de <strong>Controle de Assinaturas e Relatórios de Governança (Admin & Planilha)</strong>.
             </p>
 
             <form onSubmit={(e) => {
@@ -686,7 +686,7 @@ export default function SettingsPage({
                 <span className="text-[10px] uppercase font-black tracking-wider text-indigo-700 block">Status da Chave de Segurança:</span>
                 <div className="flex items-center justify-between gap-1.5 bg-white/60 p-3 rounded-lg border border-indigo-100/40">
                   <p className="text-[11px] text-slate-600 font-bold leading-relaxed">
-                    🔐 PIN do Administrador: <span className="font-mono text-indigo-800 tracking-widest bg-indigo-100/60 px-2.5 py-0.5 rounded border border-indigo-200 font-extrabold">••••</span>
+                      PIN do Administrador: <span className="font-mono text-indigo-800 tracking-widest bg-indigo-100/60 px-2.5 py-0.5 rounded border border-indigo-200 font-extrabold">••••</span>
                     <span className="block text-[9px] text-slate-450 mt-1 font-semibold leading-normal">Por diretrizes estritas de rastreabilidade e segurança corporativa, o PIN ativo permanece estritamente ocultado e inacessível na interface gráfica, mesmo para administradores. Redefina-o de forma segura utilizando o formulário acima.</span>
                   </p>
                 </div>
@@ -800,12 +800,12 @@ export default function SettingsPage({
                       <div className="min-w-0">
                         <strong className="text-[11px] font-bold block text-slate-800 leading-tight truncate">{usr.nome.split(' ')[0]}</strong>
                         <span className="text-[9px] uppercase font-bold text-emerald-800 truncate block">
-                          {usr.tipo === 'diretor' || usr.tipo === 'diretora' || usr.tipo === 'admin' ? '👔 Diretor(a)' :
-                           usr.tipo === 'coordenador' || usr.tipo === 'coordenadora' ? '👩‍🏫 Coordenador(a)' :
-                           usr.tipo === 'desenvolvedor' || usr.tipo === 'dev' ? '💻 Desenvolvedor' :
-                           usr.tipo === 'professor' || usr.tipo === 'professora' || usr.tipo === 'cuidador' ? '👨‍🏫 Professor(a)' :
-                           usr.tipo === 'profissional' ? '👩‍⚕️ Saúde' :
-                           '👨‍👩‍👧 Familiar'}
+                          {usr.tipo === 'diretor' || usr.tipo === 'diretora' || usr.tipo === 'admin' ? '  Diretor(a)' :
+                           usr.tipo === 'coordenador' || usr.tipo === 'coordenadora' ? ' 🏫 Coordenador(a)' :
+                           usr.tipo === 'desenvolvedor' || usr.tipo === 'dev' ? '  Desenvolvedor' :
+                           usr.tipo === 'professor' || usr.tipo === 'professora' || usr.tipo === 'cuidador' ? ' 🏫 Professor(a)' :
+                           usr.tipo === 'profissional' ? ' ⚕ Saúde' :
+                           '    Familiar'}
                         </span>
                       </div>
                     </button>
@@ -816,7 +816,7 @@ export default function SettingsPage({
         </div>
         )}
 
-        {/* 🔒 PANEL: RESTRICTED CONTROLS NOTICE FOR NON-ADMINS */}
+        {/*   PANEL: RESTRICTED CONTROLS NOTICE FOR NON-ADMINS */}
         {!isAdminOrCaregiver && (
           <div className="bg-slate-50 rounded-2xl border p-6 border-slate-200 md:col-span-2 flex flex-col items-center text-center space-y-3 animate-fade-in" id="restricted-controls-notice">
             <div className="w-12 h-12 bg-amber-50 rounded-full flex items-center justify-center text-amber-600 border border-amber-200">
@@ -967,7 +967,7 @@ export default function SettingsPage({
                             onClick={capturePhoto}
                             className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs cursor-pointer"
                           >
-                            📸 Capturar Foto
+                              Capturar Foto
                           </button>
                           <button
                             type="button"
@@ -1144,7 +1144,7 @@ export default function SettingsPage({
           </div>
         )}
 
-        {/* 🛡️ PANEL: LGPD GOVERNANCE, CONSENTS & DIGITAL AUDITATION */}
+        {/*   PANEL: LGPD GOVERNANCE, CONSENTS & DIGITAL AUDITATION */}
         {isAdminOrCaregiver && (
           <div className="bg-white rounded-2xl border p-5 border-soft-gray md:col-span-2 space-y-6" id="lgpd-governance-panel">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-3 gap-2" id="lgpd-gov-header">
@@ -1165,7 +1165,7 @@ export default function SettingsPage({
                   : 'bg-amber-50 text-amber-800 border-amber-250'
               }`}
             >
-              {lgpdAccepted ? '✓ Termos Aceitos (Ativo)' : '⚠️ Consentimento Pendente'}
+              {lgpdAccepted ? '✓ Termos Aceitos (Ativo)' : '⚠ Consentimento Pendente'}
             </div>
           </div>
 
@@ -1174,7 +1174,7 @@ export default function SettingsPage({
             {/* COLUMN 1: ACTIVE AUTHORIZATIONS LIST (5 cols) */}
             <div className="lg:col-span-5 bg-slate-50/60 border border-slate-200/80 rounded-2xl p-4.5 space-y-4" id="lgpd-active-authorizations-section">
               <span className="text-xs font-black text-slate-500 uppercase tracking-widest block">
-                📝 Autorizações em Vigor
+                  Autorizações em Vigor
               </span>
               
               <div className="space-y-3" id="lgpd-terms-list">
@@ -1235,7 +1235,7 @@ export default function SettingsPage({
             <div className="lg:col-span-7 space-y-4" id="lgpd-audit-log-section">
               <div className="flex justify-between items-center" id="lgpd-audit-title-row">
                 <span className="text-xs font-black text-slate-500 uppercase tracking-widest block">
-                  🔎 Trilha de Auditoria & Acessos (LGPD)
+                    Trilha de Auditoria & Acessos (LGPD)
                 </span>
                 <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-md uppercase">
                   Imunidade & Conformidade Ativa
@@ -1288,13 +1288,13 @@ export default function SettingsPage({
 
               <div className="p-3 bg-indigo-50/60 border border-indigo-150 rounded-xl space-y-1.5 text-[10px] text-slate-600 leading-normal" id="lgpd-disclaimer-box">
                 <p>
-                  🛡️ <strong>Garantia de Confidencialidade:</strong> Toda visualização de relatórios de saúde, prescrição ou histórico clínico da pessoa idosa é registrada com carimbo de tempo inviolável de conformidade legal, atendendo às exigências de transparência perante o titular de dados e familiares responsáveis.
+                    <strong>Garantia de Confidencialidade:</strong> Toda visualização de relatórios de saúde, prescrição ou histórico clínico da pessoa idosa é registrada com carimbo de tempo inviolável de conformidade legal, atendendo às exigências de transparência perante o titular de dados e familiares responsáveis.
                 </p>
               </div>
             </div>
 
             {/* ==========================================================================
-                🛡️ SEÇÁO DE PROPRIEDADE INTELECTUAL, DIREITOS AUTORAIS & ANTI-PLÁGIO
+                  SEÇÁO DE PROPRIEDADE INTELECTUAL, DIREITOS AUTORAIS & ANTI-PLÁGIO
                 ========================================================================== */}
             <div className="bg-white border-2 border-indigo-200 rounded-3xl p-6 space-y-5 shadow-xs" id="intellectual-property-security-section">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-150 pb-4">
@@ -1379,7 +1379,7 @@ export default function SettingsPage({
               {/* Aviso Legal de Proibição de Engenharia Reversa */}
               <div className="p-3.5 bg-slate-900 text-slate-200 rounded-2xl text-[10px] leading-relaxed space-y-1 font-mono">
                 <p className="text-amber-400 font-bold uppercase tracking-wider">
-                  ⚠️ AVISO LEGAL DE DIREITOS RESERVADOS
+                  ⚠ AVISO LEGAL DE DIREITOS RESERVADOS
                 </p>
                 <p>
                   É expressamente proibida a cópia, clonagem, distribuição, modificação não autorizada, descompilação ou engenharia reversa de qualquer módulo, tela ou código-fonte desta aplicação. Todos os direitos reservados © 2026. Violações estão sujeitas a sanções cíveis e criminais conforme o Art. 12 da Lei Federal 9.609/98.
@@ -1393,7 +1393,7 @@ export default function SettingsPage({
 
       </div>
 
-      {/* 🔐 CONFIRMAR TROCA DE PERFIL COM PIN DE SEGURANÇA */}
+      {/*   CONFIRMAR TROCA DE PERFIL COM PIN DE SEGURANÇA */}
       {switchingUser && (
         <div className="fixed inset-0 bg-slate-905 bg-opacity-65 backdrop-blur-xs flex items-center justify-center p-4 z-50 animate-fade-in" id="confirm-switch-user-pin-modal">
           <div className="bg-white rounded-3xl border border-slate-200 p-6 max-w-sm w-full shadow-2xl space-y-4">
@@ -1403,7 +1403,7 @@ export default function SettingsPage({
               </div>
               <div className="space-y-1">
                 <span className="text-[9px] font-black uppercase tracking-wider text-indigo-700 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-md">
-                  🔒 Gating de Segurança
+                    Gating de Segurança
                 </span>
                 <h3 className="text-base font-bold text-slate-800 mt-1">
                   Acessar perfil de {switchingUser.nome}
@@ -1435,7 +1435,7 @@ export default function SettingsPage({
 
               {switchingError && (
                 <p className="text-[10px] text-alert-red font-bold text-center bg-red-50 border border-red-200 rounded-lg p-2 animate-pulse">
-                  ⚠️ {switchingError}
+                  ⚠ {switchingError}
                 </p>
               )}
 

@@ -237,7 +237,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
                 : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
             }`}
           >
-            {isEscolar ? '⚠️ Item Pendente' : '⚠️ Próximo / Pendente'}
+            {isEscolar ? '⚠ Item Pendente' : '⚠ Próximo / Pendente'}
           </button>
           <button
             onClick={() => handleTestDispatchTemplates('atraso')}
@@ -247,7 +247,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
                 : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
             }`}
           >
-            {isEscolar ? '🚨 Alerta de Rotina' : '🚨 Alerta Crítico Atraso'}
+            {isEscolar ? '  Alerta de Rotina' : '  Alerta Crítico Atraso'}
           </button>
           <button
             onClick={() => handleTestDispatchTemplates('resumo')}
@@ -257,7 +257,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
                 : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
             }`}
           >
-            {isEscolar ? '📝 Diário de Aula' : '📝 Resumo do Dia'}
+            {isEscolar ? '  Diário de Aula' : '  Resumo do Dia'}
           </button>
         </div>
       </div>
@@ -411,7 +411,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
                               className="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-extrabold px-2.5 py-1.5 rounded-xl flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-xs border border-indigo-500/20"
                             >
                               <Users className="w-3.5 h-3.5" />
-                              <span>📢 Transmitir via WhatsApp para Todos os {totalCount} Pais / Famílias</span>
+                              <span>  Transmitir via WhatsApp para Todos os {totalCount} Pais / Famílias</span>
                             </button>
 
                             <button
@@ -424,7 +424,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
                               }}
                               className="bg-emerald-600 hover:bg-emerald-700 text-[10px] font-bold text-white px-2 py-1 rounded-lg flex items-center justify-center gap-1 cursor-pointer transition-colors opacity-90 hover:opacity-100"
                             >
-                              💬 Enviar Direct para {log.familiarNome.split(' ')[0]} ({log.telefoneDestino})
+                                Enviar Direct para {log.familiarNome.split(' ')[0]} ({log.telefoneDestino})
                             </button>
                           </>
                         ) : (
@@ -438,7 +438,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
                             }}
                             className="bg-emerald-600 hover:bg-emerald-700 text-[10px] font-black text-white px-2 py-0.5 rounded-lg flex items-center gap-1 cursor-pointer transition-colors border border-emerald-500/10 shadow-xs justify-end self-end"
                           >
-                            💬 Enviar Whatsapp Real para {log.familiarNome.split(' ')[0]} ({log.telefoneDestino})
+                              Enviar Whatsapp Real para {log.familiarNome.split(' ')[0]} ({log.telefoneDestino})
                           </button>
                         )}
                       </div>
@@ -513,7 +513,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
 
               <div className="bg-indigo-50/70 p-3 rounded-2xl border border-indigo-150 text-xs space-y-2 shrink-0">
                 <div className="flex items-center justify-between">
-                  <span className="font-extrabold text-indigo-950">📌 Conteúdo do Comunicado:</span>
+                  <span className="font-extrabold text-indigo-950">  Conteúdo do Comunicado:</span>
                   <button
                     type="button"
                     onClick={() => {
@@ -553,12 +553,12 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
                     <div key={`rcp_item_${idx}`} className="p-2.5 bg-white border border-slate-200 rounded-2xl flex items-center justify-between gap-3 hover:border-indigo-300 transition-all shadow-3xs">
                       <div className="min-w-0">
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="text-xs font-extrabold text-slate-800">👧/👦 {item.idosoNome}</span>
+                          <span className="text-xs font-extrabold text-slate-800"> /  {item.idosoNome}</span>
                           <span className="text-[10px] text-indigo-700 bg-indigo-50 px-2 py-0.2 rounded-full font-bold border border-indigo-100">
                             {item.familiarNome}
                           </span>
                         </div>
-                        <p className="text-[11px] text-slate-500 font-mono mt-0.5">📞 {item.telefone}</p>
+                        <p className="text-[11px] text-slate-500 font-mono mt-0.5">  {item.telefone}</p>
                       </div>
 
                       <a

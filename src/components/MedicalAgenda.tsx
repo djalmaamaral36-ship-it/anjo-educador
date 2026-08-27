@@ -222,7 +222,7 @@ export default function MedicalAgenda({
     if (bercarioSalas.length > 0) {
       cats.push({
         id: 'bercario',
-        label: '🍼 Todo o Berçário',
+        label: '  Todo o Berçário',
         salas: bercarioSalas,
         count: getStudentsCountForClasses(bercarioSalas)
       });
@@ -231,7 +231,7 @@ export default function MedicalAgenda({
     if (maternalSalas.length > 0) {
       cats.push({
         id: 'maternal',
-        label: '🧸 Todo o Maternal',
+        label: '  Todo o Maternal',
         salas: maternalSalas,
         count: getStudentsCountForClasses(maternalSalas)
       });
@@ -240,7 +240,7 @@ export default function MedicalAgenda({
     if (jardimSalas.length > 0) {
       cats.push({
         id: 'jardim',
-        label: '🎨 Todo o Jardim',
+        label: '  Todo o Jardim',
         salas: jardimSalas,
         count: getStudentsCountForClasses(jardimSalas)
       });
@@ -249,7 +249,7 @@ export default function MedicalAgenda({
     if (fundamentalSalas.length > 0) {
       cats.push({
         id: 'fundamental',
-        label: '📚 Ensino Fundamental',
+        label: '  Ensino Fundamental',
         salas: fundamentalSalas,
         count: getStudentsCountForClasses(fundamentalSalas)
       });
@@ -476,7 +476,7 @@ export default function MedicalAgenda({
       saveToDB('anjo_agenda', allComp);
       saveToDB('anjo_tarefas_diarias', allTasks);
 
-      const msg = `📢 COMUNICADO DE EVENTO ESCOLAR\n\n🎯 Público-Alvo: ${summaryText}\n📌 Evento: ${newAppt.titulo}\n👤 Responsável: ${newAppt.medico}\n🗓️ Data: ${dateFormatted} às ${newAppt.horario}\n📍 Local: ${newAppt.local || 'Escolinha'}\n\nAgendado para ${todosAlunos.length} alunos (${targetRooms.length} turma(s) selecionada(s)).`;
+      const msg = `  COMUNICADO DE EVENTO ESCOLAR\n\n  Público-Alvo: ${summaryText}\n  Evento: ${newAppt.titulo}\n  Responsável: ${newAppt.medico}\n  Data: ${dateFormatted} às ${newAppt.horario}\n  Local: ${newAppt.local || 'Escolinha'}\n\nAgendado para ${todosAlunos.length} alunos (${targetRooms.length} turma(s) selecionada(s)).`;
       triggerWhatsAppSim(`Comunicado Enviado (${summaryText})`, msg, todosAlunos);
     } else {
       const novoCompromisso: CompromissoMedico = {
@@ -662,7 +662,7 @@ export default function MedicalAgenda({
 
       {isEscolar && (
         <div className="p-4 bg-indigo-50 border border-indigo-200/60 rounded-2xl flex items-start gap-3.5 shadow-3xs">
-          <div className="text-xl">📢</div>
+          <div className="text-xl"> </div>
           <div className="space-y-1">
             <h4 className="font-extrabold text-sm text-indigo-900">Mapeamento e Comunicados por Classe da Escolinha</h4>
             <p className="text-xs text-indigo-700 leading-relaxed">
@@ -729,7 +729,7 @@ export default function MedicalAgenda({
                       </span>
                       {appt.broadcastGroupId && (
                         <span className="bg-amber-100 text-amber-900 border border-amber-300 text-[10px] font-black uppercase px-2 py-0.5 rounded-full flex items-center gap-1">
-                          <span className="animate-bounce">📢</span> Comunicado Geral
+                          <span className="animate-bounce"> </span> Comunicado Geral
                         </span>
                       )}
                       {isToday && (
@@ -1092,7 +1092,7 @@ export default function MedicalAgenda({
                       />
                       <div>
                         <label htmlFor="newAppt_sendAll" className="text-xs font-extrabold text-indigo-900 cursor-pointer select-none flex items-center gap-1.5">
-                          📢 Cadastrar evento em massa para as turmas selecionadas ({getStudentsCountForClasses(selectedTargetClassrooms)} alunos)
+                            Cadastrar evento em massa para as turmas selecionadas ({getStudentsCountForClasses(selectedTargetClassrooms)} alunos)
                         </label>
                         <span className="text-[10px] text-indigo-700 font-medium block mt-1 leading-relaxed">
                           Ative isto para cadastrar este evento na agenda de todos os alunos das turmas marcadas acima ({getTargetSummaryText(selectedTargetClassrooms)}).
@@ -1159,7 +1159,7 @@ export default function MedicalAgenda({
             {isEscolar && deleteConfirmTarget.broadcastGroupId && (
               <div className="p-3.5 bg-amber-50 rounded-2xl border border-amber-200 space-y-2">
                 <p className="text-[11px] font-black text-amber-950 flex items-center gap-1">
-                  <span>📢</span> Este evento foi replicado para toda a turma!
+                  <span> </span> Este evento foi replicado para toda a turma!
                 </p>
                 <div className="space-y-2 text-xs font-semibold">
                   <label className="flex items-center gap-2 cursor-pointer text-amber-900">

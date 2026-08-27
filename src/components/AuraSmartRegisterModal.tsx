@@ -179,7 +179,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
       window.dispatchEvent(new CustomEvent('db-vitals-update'));
       window.dispatchEvent(new CustomEvent('anjo_user_updated'));
     }
-    setSaveSuccessMsg(`▶️ Cronômetro ativado! Registros de ${idoso.nome} iniciados.`);
+    setSaveSuccessMsg(`▶ Cronômetro ativado! Registros de ${idoso.nome} iniciados.`);
     setTimeout(() => setSaveSuccessMsg(null), 3000);
 
     setShowShiftConfirmModal(false);
@@ -283,7 +283,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         data: todayIso,
         horario: now,
         registradoPor: usuarioAtual.nome,
-        observacoes: `💧 Hidratação: +${ml}ml de água`
+        observacoes: `  Hidratação: +${ml}ml de água`
       });
       saveToDB('anjo_sinais', vitalsStore);
 
@@ -293,7 +293,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         `${prefix}: ${isEscolar ? 'Profª ' : ''}${usuarioAtual.nome} acabou de registrar hidratação de ${ml}ml para ${idoso.nome} às ${now}.`
       );
 
-      setSaveSuccessMsg(`💧 Registrado +${ml}ml de água para ${idoso.nome}!`);
+      setSaveSuccessMsg(`  Registrado +${ml}ml de água para ${idoso.nome}!`);
       notifyUpdate();
       setTimeout(() => {
         setSaveSuccessMsg(null);
@@ -368,7 +368,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         data: todayIso,
         horario: now,
         registradoPor: usuarioAtual.nome,
-        observacoes: `🍽️ Refeição (${refeicaoNome}): ${aceitacaoText}`
+        observacoes: `  Refeição (${refeicaoNome}): ${aceitacaoText}`
       });
       saveToDB('anjo_sinais', vitalsStore);
 
@@ -377,7 +377,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         `${prefix}: Refeição "${refeicaoNome}" de ${idoso.nome} registrada por ${usuarioAtual.nome}: ${aceitacaoText}.`
       );
 
-      setSaveSuccessMsg(`🍎 Refeição (${refeicaoNome}) salva com sucesso!`);
+      setSaveSuccessMsg(`  Refeição (${refeicaoNome}) salva com sucesso!`);
       notifyUpdate();
       setTimeout(() => {
         setSaveSuccessMsg(null);
@@ -453,7 +453,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         `${prefix}: Registro de higiene de ${idoso.nome} feito por ${usuarioAtual.nome}: ${label}.`
       );
 
-      setSaveSuccessMsg(`🚼 ${label} registrado!`);
+      setSaveSuccessMsg(`  ${label} registrado!`);
       notifyUpdate();
       setTimeout(() => {
         setSaveSuccessMsg(null);
@@ -501,7 +501,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         data: todayIso,
         horario: now,
         registradoPor: usuarioAtual.nome,
-        observacoes: `😊 Humor: ${humorVal.toUpperCase()}`
+        observacoes: `  Humor: ${humorVal.toUpperCase()}`
       });
       saveToDB('anjo_sinais', vitalsStore);
 
@@ -510,7 +510,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         `${prefix}: ${idoso.nome} está se sentindo ${humorVal.toUpperCase()} hoje (registrado por ${usuarioAtual.nome} às ${now}).`
       );
 
-      setSaveSuccessMsg(`😊 Humor "${humorVal}" registrado!`);
+      setSaveSuccessMsg(`  Humor "${humorVal}" registrado!`);
       notifyUpdate();
       setTimeout(() => {
         setSaveSuccessMsg(null);
@@ -593,7 +593,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         `${prefix}: ${idoso.nome} dormiu uma soneca tranquilamente por ${horastxt} (registrado por ${usuarioAtual.nome} às ${now}).`
       );
 
-      setSaveSuccessMsg(`😴 Soneca de ${horastxt} registrada!`);
+      setSaveSuccessMsg(`  Soneca de ${horastxt} registrada!`);
       notifyUpdate();
       setTimeout(() => {
         setSaveSuccessMsg(null);
@@ -650,8 +650,8 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
 
       if (tempNum >= 37.8) {
         notifyWhatsApp(
-          `🚨 ALERTA FEBRE (${tempNum}°C)`,
-          `🚨 ALERTA DE TEMPERATURA (${tempPrefix()}): ${idoso.nome} apresentou temperatura de ${tempNum}°C às ${now}. ${isEscolar ? 'A professora' : 'O cuidador'} ${usuarioAtual.nome} acionou o protocolo de observação contínua.`
+          `  ALERTA FEBRE (${tempNum}°C)`,
+          `  ALERTA DE TEMPERATURA (${tempPrefix()}): ${idoso.nome} apresentou temperatura de ${tempNum}°C às ${now}. ${isEscolar ? 'A professora' : 'O cuidador'} ${usuarioAtual.nome} acionou o protocolo de observação contínua.`
         );
       } else {
         notifyWhatsApp(
@@ -660,7 +660,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         );
       }
 
-      setSaveSuccessMsg(`🌡️ Temperatura ${tempNum}°C salva!`);
+      setSaveSuccessMsg(`  Temperatura ${tempNum}°C salva!`);
       notifyUpdate();
       setTimeout(() => {
         setSaveSuccessMsg(null);
@@ -703,16 +703,16 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         data: todayIso,
         horario: now,
         registradoPor: usuarioAtual.nome,
-        observacoes: `🚨 Intercorrência Urgente (${tipo}): ${descricao}`
+        observacoes: `  Intercorrência Urgente (${tipo}): ${descricao}`
       });
       saveToDB('anjo_sinais', vitalsStore);
 
       notifyWhatsApp(
-        `🚨 INTERCORRÊNCIA URGENTE - ${tipo.toUpperCase()}`,
-        `🚨 ALERTA DE INTERCORRÊNCIA (${prefix}): ${idoso.nome} apresentou "${tipo}" - ${descricao}. Registrado por ${usuarioAtual.nome} às ${now}. Contato imediato recomendado.`
+        `  INTERCORRÊNCIA URGENTE - ${tipo.toUpperCase()}`,
+        `  ALERTA DE INTERCORRÊNCIA (${prefix}): ${idoso.nome} apresentou "${tipo}" - ${descricao}. Registrado por ${usuarioAtual.nome} às ${now}. Contato imediato recomendado.`
       );
 
-      setSaveSuccessMsg(`🚨 Intercorrência urgente registrada com sucesso! Alerta acionado.`);
+      setSaveSuccessMsg(`  Intercorrência urgente registrada com sucesso! Alerta acionado.`);
       notifyUpdate();
       setTimeout(() => {
         setSaveSuccessMsg(null);
@@ -755,16 +755,16 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         data: todayIso,
         horario: now,
         registradoPor: usuarioAtual.nome,
-        observacoes: `📋 Ocorrência do Dia (${tipo}): ${descricao}`
+        observacoes: `  Ocorrência do Dia (${tipo}): ${descricao}`
       });
       saveToDB('anjo_sinais', vitalsStore);
 
       notifyWhatsApp(
-        `📋 Ocorrência do Dia - ${tipo}`,
+        `  Ocorrência do Dia - ${tipo}`,
         `${prefix}: Ocorrência de rotina registrada para ${idoso.nome} (${tipo}): "${descricao}". Registrado às ${now} por ${usuarioAtual.nome}.`
       );
 
-      setSaveSuccessMsg(`📋 Ocorrência do dia registrada na rotina!`);
+      setSaveSuccessMsg(`  Ocorrência do dia registrada na rotina!`);
       notifyUpdate();
       setTimeout(() => {
         setSaveSuccessMsg(null);
@@ -812,7 +812,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         data: todayIso,
         horario: now,
         registradoPor: usuarioAtual.nome,
-        observacoes: `🎨 Atividade (${actVal}): ${actName}`
+        observacoes: `  Atividade (${actVal}): ${actName}`
       });
       saveToDB('anjo_sinais', vitalsStore);
 
@@ -821,7 +821,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         `${prefix}: ${idoso.nome} participou com entusiasmo da atividade "${actName}" às ${now}.`
       );
 
-      setSaveSuccessMsg(`🎨 Atividade "${actVal}" registrada!`);
+      setSaveSuccessMsg(`  Atividade "${actVal}" registrada!`);
       notifyUpdate();
       setTimeout(() => {
         setSaveSuccessMsg(null);
@@ -866,7 +866,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         data: todayIso,
         horario: now,
         registradoPor: usuarioAtual.nome,
-        observacoes: `📝 Observação: ${noteText}`
+        observacoes: `  Observação: ${noteText}`
       });
       saveToDB('anjo_sinais', vitalsStore);
 
@@ -875,7 +875,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         `${prefix}: Recado de ${isEscolar ? 'Profª ' : ''}${usuarioAtual.nome} para os responsáveis de ${idoso.nome}: "${noteText}".`
       );
 
-      setSaveSuccessMsg(`📝 Observação salva!`);
+      setSaveSuccessMsg(`  Observação salva!`);
       notifyUpdate();
       setTimeout(() => {
         setSaveSuccessMsg(null);
@@ -993,7 +993,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
 
       const hasSelected = guidedState.incAgua || guidedState.incAlimentacao || guidedState.incSono || guidedState.incHigiene || guidedState.incHumor || guidedState.incSaude;
       if (!hasSelected) {
-        alert('⚠️ Por favor, selecione ao menos 1 item (refeição, água, higiene, etc.) para registrar.');
+        alert('⚠ Por favor, selecione ao menos 1 item (refeição, água, higiene, etc.) para registrar.');
         return;
       }
 
@@ -1019,7 +1019,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         recs.unshift({ id: commonId, quantidadeMl: guidedState.aguaMl, horario: now, data: todayIso, registradoPor: usuarioAtual.nome });
         saveToDB(waterKey, recs);
 
-        summaryParts.push(`💧 Água: ${guidedState.aguaMl}ml`);
+        summaryParts.push(`  Água: ${guidedState.aguaMl}ml`);
       }
 
       // 2. Meal
@@ -1042,7 +1042,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         });
         saveToDB(mealKey, meals);
 
-        summaryParts.push(refKey === 'mamadeira' ? '🍼 Mamadeira: 1 mamadeira' : `🍽️ Refeição: ${guidedState.refeicaoTipo} (${guidedState.refeicaoAceitacao === 'muito_bem' ? 'Comeu Tudo' : guidedState.refeicaoAceitacao})`);
+        summaryParts.push(refKey === 'mamadeira' ? '  Mamadeira: 1 mamadeira' : `  Refeição: ${guidedState.refeicaoTipo} (${guidedState.refeicaoAceitacao === 'muito_bem' ? 'Comeu Tudo' : guidedState.refeicaoAceitacao})`);
       }
 
       // 3. Sleep
@@ -1072,7 +1072,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
           observacao: sonecaStr
         });
 
-        summaryParts.push(`😴 Sono: ${sonecaStr}`);
+        summaryParts.push(`  Sono: ${sonecaStr}`);
       }
 
       // 4. Hygiene / Diaper
@@ -1098,7 +1098,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
           observations: fraldaStr
         });
 
-        summaryParts.push(`🚾 Higiene: ${fraldaStr}`);
+        summaryParts.push(`  Higiene: ${fraldaStr}`);
       }
 
       // 5. Humor
@@ -1116,7 +1116,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         saveToDB(humKey, hums);
         saveToDB(`anjo_humor_${idoso.id}`, { humor: guidedState.humor, horario: now, registradoPor: usuarioAtual.nome });
 
-        summaryParts.push(`😊 Humor: ${guidedState.humor.toUpperCase()}`);
+        summaryParts.push(`  Humor: ${guidedState.humor.toUpperCase()}`);
       }
 
       // 6. Health & Temperature
@@ -1143,8 +1143,8 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         });
         saveToDB(vitalsKey, vitRecords);
 
-        summaryParts.push(`🌡️ Saúde: ${tempNum}°C`);
-        if (pesoNum > 0) summaryParts.push(`⚖️ Peso: ${pesoNum} kg`);
+        summaryParts.push(`  Saúde: ${tempNum}°C`);
+        if (pesoNum > 0) summaryParts.push(`⚖ Peso: ${pesoNum} kg`);
       }
 
       // 7. Core Sinais Store (anjo_sinais)
@@ -1243,7 +1243,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         const recs = getFromDB<any[]>(key, []);
         recs.unshift({ id: commonId, quantidadeMl: ml, horario: now, data: todayIso, registradoPor: usuarioAtual.nome });
         saveToDB(key, recs);
-        summaryParts.push(`💧 Hidratação: +${ml}ml de água`);
+        summaryParts.push(`  Hidratação: +${ml}ml de água`);
       }
 
       // 2. Sono / Soneca
@@ -1290,7 +1290,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
         });
         saveToDB(tasksKey, updatedTasks);
 
-        summaryParts.push(`😴 Soneca: ${sonecaTextStr}`);
+        summaryParts.push(`  Soneca: ${sonecaTextStr}`);
       }
 
       // 3. Humor / Bem-Estar
@@ -1311,7 +1311,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
 
         const key = `anjo_humor_${idoso.id}`;
         saveToDB(key, { humor: estadoHumor, horario: now, registradoPor: usuarioAtual.nome });
-        summaryParts.push(`😊 Humor: ${estadoHumor}`);
+        summaryParts.push(`  Humor: ${estadoHumor}`);
       }
 
       // 4. Higiene / Troca de Fralda / Banho
@@ -1357,7 +1357,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
           return t;
         });
         saveToDB(tasksKey, updatedTasks);
-        summaryParts.push(`🚾 Higiene: ${fraldaTextStr}`);
+        summaryParts.push(`  Higiene: ${fraldaTextStr}`);
       }
 
       // 5. Alimentação
@@ -1403,7 +1403,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
           });
           saveToDB(tasksKey, updatedTasks);
         }
-        summaryParts.push(refKey === 'mamadeira' ? '🍼 Mamadeira: 1 mamadeira' : `🍽️ Refeição: ${parsedData.alimentacao.refeicao || 'Refeição'} (${parsedData.alimentacao.aceitacao})`);
+        summaryParts.push(refKey === 'mamadeira' ? '  Mamadeira: 1 mamadeira' : `  Refeição: ${parsedData.alimentacao.refeicao || 'Refeição'} (${parsedData.alimentacao.aceitacao})`);
       }
 
       // 6. Atividades
@@ -1424,7 +1424,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
               observacoes: a.observacao || 'Registrado por voz via Aura'
             });
           });
-          summaryParts.push(`🎨 Atividade: ${activTitle}`);
+          summaryParts.push(`  Atividade: ${activTitle}`);
         } else if (typeof parsedData.atividades === 'object') {
           activTitle = (parsedData.atividades as any).titulo || (parsedData.atividades as any).tipo || activTitle;
           ativs.unshift({
@@ -1436,7 +1436,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
             data: todayIso,
             observacoes: (parsedData.atividades as any).observacao || 'Registrado por voz via Aura'
           });
-          summaryParts.push(`🎨 Atividade: ${activTitle}`);
+          summaryParts.push(`  Atividade: ${activTitle}`);
         }
         saveToDB(ativKey, ativs);
 
@@ -1484,11 +1484,11 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
           alertaFebre: parsedData.saude.febre || tempNum >= 37.8
         });
         saveToDB(key, records);
-        summaryParts.push(`🌡️ Saúde: ${tempNum}°C`);
+        summaryParts.push(`  Saúde: ${tempNum}°C`);
       }
 
       if (summaryParts.length === 0) {
-        alert('⚠️ Nenhum item selecionado para gravar!');
+        alert('⚠ Nenhum item selecionado para gravar!');
         return;
       }
 
@@ -1586,7 +1586,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                   </h3>
                   {idoso.contatoEmergencia?.nome && (
                     <span className="text-[11px] font-medium text-emerald-200/90 block mt-0.5">
-                      👨‍👩‍👧 Resp: {idoso.contatoEmergencia.nome} ({idoso.contatoEmergencia.parentesco || 'Mãe/Pai'})
+                          Resp: {idoso.contatoEmergencia.nome} ({idoso.contatoEmergencia.parentesco || 'Mãe/Pai'})
                     </span>
                   )}
                 </div>
@@ -1622,7 +1622,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                     </div>
                     <div>
                       <h4 className="text-xs font-black uppercase tracking-wider text-amber-900 flex items-center gap-1.5">
-                        <span>⏸️ Cronômetro da Aula Desligado</span>
+                        <span>⏸ Cronômetro da Aula Desligado</span>
                       </h4>
                       <p className="text-[11px] text-amber-800 leading-snug">
                         Registros da rotina ocorrem com o cronômetro ligado. Ao registrar qualquer item, a aula iniciará automaticamente!
@@ -1641,7 +1641,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                 <div className="px-3.5 py-2 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-between text-emerald-900 text-xs">
                   <div className="flex items-center gap-2">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                    <span className="font-bold text-emerald-800">🟢 Cronômetro de Aulas: LIGADO</span>
+                    <span className="font-bold text-emerald-800">  Cronômetro de Aulas: LIGADO</span>
                   </div>
                   <span className="text-[11px] font-semibold text-emerald-600">Registros Autorizados</span>
                 </div>
@@ -1719,7 +1719,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                     >
                       <AlertTriangle className="w-6 h-6 text-white" />
                       <div className="text-left">
-                        <span className="text-xs font-black uppercase tracking-wider block">🚨 Intercorrência Urgente</span>
+                        <span className="text-xs font-black uppercase tracking-wider block">  Intercorrência Urgente</span>
                         <span className="text-[10px] text-red-100 block">Febre, Queda, Machucado, Reação</span>
                       </div>
                     </button>
@@ -1731,7 +1731,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                     >
                       <FileText className="w-6 h-6 text-white" />
                       <div className="text-left">
-                        <span className="text-xs font-black uppercase tracking-wider block">📋 Ocorrência do Dia</span>
+                        <span className="text-xs font-black uppercase tracking-wider block">  Ocorrência do Dia</span>
                         <span className="text-[10px] text-amber-100 block">Mordida, Choro, Falta de Material</span>
                       </div>
                     </button>
@@ -1742,7 +1742,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                       className="p-3.5 bg-cyan-50 hover:bg-cyan-100 border border-cyan-200 text-cyan-900 rounded-2xl flex flex-col items-center justify-center text-center gap-2 transition-all hover:scale-102 cursor-pointer"
                     >
                       <Droplets className="w-7 h-7 text-cyan-600" />
-                      <span className="text-xs font-bold">💧 Água</span>
+                      <span className="text-xs font-bold">  Água</span>
                     </button>
 
                     <button
@@ -1751,7 +1751,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                       className="p-3.5 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 rounded-2xl flex flex-col items-center justify-center text-center gap-2 transition-all hover:scale-102 cursor-pointer"
                     >
                       <Coffee className="w-7 h-7 text-amber-600" />
-                      <span className="text-xs font-bold">🍎 Refeição</span>
+                      <span className="text-xs font-bold">  Refeição</span>
                     </button>
 
                     <button
@@ -1760,7 +1760,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                       className="p-3.5 bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-900 rounded-2xl flex flex-col items-center justify-center text-center gap-2 transition-all hover:scale-102 cursor-pointer"
                     >
                       <Activity className="w-7 h-7 text-purple-600" />
-                      <span className="text-xs font-bold">🚼 Higiene/Fralda</span>
+                      <span className="text-xs font-bold">  Higiene/Fralda</span>
                     </button>
 
                     <button
@@ -1769,7 +1769,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                       className="p-3.5 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-900 rounded-2xl flex flex-col items-center justify-center text-center gap-2 transition-all hover:scale-102 cursor-pointer"
                     >
                       <Moon className="w-7 h-7 text-indigo-600" />
-                      <span className="text-xs font-bold">😴 Soneca</span>
+                      <span className="text-xs font-bold">  Soneca</span>
                     </button>
 
                     <button
@@ -1778,7 +1778,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                       className="p-3.5 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-900 rounded-2xl flex flex-col items-center justify-center text-center gap-2 transition-all hover:scale-102 cursor-pointer"
                     >
                       <Smile className="w-7 h-7 text-rose-600" />
-                      <span className="text-xs font-bold">😊 Humor</span>
+                      <span className="text-xs font-bold">  Humor</span>
                     </button>
 
                     <button
@@ -1787,7 +1787,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                       className="p-3.5 bg-red-50 hover:bg-red-100 border border-red-200 text-red-900 rounded-2xl flex flex-col items-center justify-center text-center gap-2 transition-all hover:scale-102 cursor-pointer"
                     >
                       <Thermometer className="w-7 h-7 text-red-600" />
-                      <span className="text-xs font-bold">🌡️ Temperatura</span>
+                      <span className="text-xs font-bold">  Temperatura</span>
                     </button>
 
                     <button
@@ -1796,7 +1796,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                       className="p-3.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-900 rounded-2xl flex flex-col items-center justify-center text-center gap-2 transition-all hover:scale-102 cursor-pointer"
                     >
                       <Palette className="w-7 h-7 text-emerald-600" />
-                      <span className="text-xs font-bold">🎨 Atividade</span>
+                      <span className="text-xs font-bold">  Atividade</span>
                     </button>
 
                     <button
@@ -1805,7 +1805,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                       className="p-3.5 bg-slate-100 hover:bg-slate-200 border border-slate-250 text-slate-800 rounded-2xl flex flex-col items-center justify-center text-center gap-2 transition-all hover:scale-102 cursor-pointer"
                     >
                       <FileText className="w-7 h-7 text-slate-600" />
-                      <span className="text-xs font-bold">📝 Observação</span>
+                      <span className="text-xs font-bold">  Observação</span>
                     </button>
                   </div>
                 </div>
@@ -1862,21 +1862,21 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                       onClick={() => setGuidedState(p => ({ ...p, incSono: false, incHigiene: false, incHumor: false, incAlimentacao: true, incAgua: false, incSaude: false }))}
                       className="px-2.5 py-1 bg-amber-100 text-amber-900 hover:bg-amber-200 border border-amber-300 rounded-xl text-[10px] font-bold cursor-pointer transition-all"
                     >
-                      🍽️ Só Refeição
+                        Só Refeição
                     </button>
                     <button
                       type="button"
                       onClick={() => setGuidedState(p => ({ ...p, incSono: false, incHigiene: false, incHumor: false, incAlimentacao: false, incAgua: true, incSaude: false }))}
                       className="px-2.5 py-1 bg-cyan-100 text-cyan-900 hover:bg-cyan-200 border border-cyan-300 rounded-xl text-[10px] font-bold cursor-pointer transition-all"
                     >
-                      💧 Só Água
+                        Só Água
                     </button>
                     <button
                       type="button"
                       onClick={() => setGuidedState(p => ({ ...p, incSono: false, incHigiene: true, incHumor: false, incAlimentacao: false, incAgua: false, incSaude: false }))}
                       className="px-2.5 py-1 bg-purple-100 text-purple-900 hover:bg-purple-200 border border-purple-300 rounded-xl text-[10px] font-bold cursor-pointer transition-all"
                     >
-                      🚼 Só Higiene
+                        Só Higiene
                     </button>
                   </div>
 
@@ -1984,7 +1984,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                               guidedState.xixi ? 'bg-purple-600 text-white border-purple-700' : 'bg-white text-slate-600 border-slate-200'
                             }`}
                           >
-                            👶 Xixi {guidedState.xixi ? '✓' : ''}
+                              Xixi {guidedState.xixi ? '✓' : ''}
                           </button>
 
                           <button
@@ -1994,7 +1994,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                               guidedState.coco ? 'bg-amber-600 text-white border-amber-700' : 'bg-white text-slate-600 border-slate-200'
                             }`}
                           >
-                            💩 Cocô {guidedState.coco ? '✓' : ''}
+                              Cocô {guidedState.coco ? '✓' : ''}
                           </button>
 
                           <button
@@ -2004,7 +2004,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                               guidedState.dentes ? 'bg-teal-600 text-white border-teal-700' : 'bg-white text-slate-600 border-slate-200'
                             }`}
                           >
-                            🪥 Dentes {guidedState.dentes ? '✓' : ''}
+                              Dentes {guidedState.dentes ? '✓' : ''}
                           </button>
 
                           <button
@@ -2014,7 +2014,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                               guidedState.roupa ? 'bg-indigo-600 text-white border-indigo-700' : 'bg-white text-slate-600 border-slate-200'
                             }`}
                           >
-                            👚 Roupa {guidedState.roupa ? '✓' : ''}
+                              Roupa {guidedState.roupa ? '✓' : ''}
                           </button>
 
                           <button
@@ -2024,7 +2024,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                               guidedState.banho ? 'bg-cyan-600 text-white border-cyan-700' : 'bg-white text-slate-600 border-slate-200'
                             }`}
                           >
-                            🚿 Banho {guidedState.banho ? '✓' : ''}
+                              Banho {guidedState.banho ? '✓' : ''}
                           </button>
                         </div>
 
@@ -2074,9 +2074,9 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                     {guidedState.incHumor && (
                       <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 pt-1">
                         {[
-                          { id: 'feliz', label: '😊 Feliz / Alegre' },
-                          { id: 'tranquilo', label: '😌 Calmo / Ok' },
-                          { id: 'choroso', label: '🥺 Manhoso' },
+                          { id: 'feliz', label: '  Feliz / Alegre' },
+                          { id: 'tranquilo', label: '  Calmo / Ok' },
+                          { id: 'choroso', label: '  Manhoso' },
                           { id: 'agitado', label: '⚡ Agitado' }
                         ].map((item) => (
                           <button
@@ -2154,7 +2154,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                               guidedState.refeicaoAceitacao === 'parcial' ? 'bg-amber-600 text-white' : 'bg-white text-slate-700 border border-slate-200'
                             }`}
                           >
-                            👍 Parcial
+                              Parcial
                           </button>
                           <button
                             type="button"
@@ -2249,13 +2249,13 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                                   : 'bg-white text-slate-700 border border-slate-200'
                               }`}
                             >
-                              {t}°C {parseFloat(t) >= 37.8 ? '🔥 Febre' : ''}
+                              {t}°C {parseFloat(t) >= 37.8 ? '  Febre' : ''}
                             </button>
                           ))}
                         </div>
 
                         <div className="pt-2 border-t border-red-200/60">
-                          <span className="text-[10px] font-bold text-slate-500 uppercase block mb-1">⚖️ Peso Corporal da Criança (Kg):</span>
+                          <span className="text-[10px] font-bold text-slate-500 uppercase block mb-1">⚖ Peso Corporal da Criança (Kg):</span>
                           <div className="flex flex-wrap items-center gap-2">
                             <input
                               type="number"
@@ -2293,44 +2293,44 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                         ITENS SELECIONADOS A ENVIAR AO PORTAL DE TRANQUILIDADE
                       </span>
                       <span className="text-[10px] font-bold bg-emerald-500/30 text-emerald-300 px-2.5 py-0.5 rounded-full border border-emerald-400/30">
-                        🔒 Requer Confirmação
+                          Requer Confirmação
                       </span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2 text-xs text-slate-200">
                       {guidedState.incSono && (
                         <div>
-                          <span className="text-emerald-300 font-bold block text-[11px]">😴 Sono:</span>
+                          <span className="text-emerald-300 font-bold block text-[11px]">  Sono:</span>
                           <span>{guidedState.sonecaNaoDormiu ? 'Não dormiu' : `${guidedState.sonecaMinutos} min`}</span>
                         </div>
                       )}
                       {guidedState.incHigiene && (
                         <div>
-                          <span className="text-emerald-300 font-bold block text-[11px]">🚾 Higiene:</span>
+                          <span className="text-emerald-300 font-bold block text-[11px]">  Higiene:</span>
                           <span>{guidedState.coco ? 'Cocô ' : ''}{guidedState.xixi ? 'Xixi' : ''}</span>
                         </div>
                       )}
                       {guidedState.incHumor && (
                         <div>
-                          <span className="text-emerald-300 font-bold block text-[11px]">😊 Humor:</span>
+                          <span className="text-emerald-300 font-bold block text-[11px]">  Humor:</span>
                           <span className="capitalize">{guidedState.humor}</span>
                         </div>
                       )}
                       {guidedState.incAlimentacao && (
                         <div>
-                          <span className="text-emerald-300 font-bold block text-[11px]">🍽️ Refeição:</span>
+                          <span className="text-emerald-300 font-bold block text-[11px]">  Refeição:</span>
                           <span>{guidedState.refeicaoTipo} ({guidedState.refeicaoAceitacao === 'muito_bem' ? '100%' : 'Parcial'})</span>
                         </div>
                       )}
                       {guidedState.incAgua && (
                         <div>
-                          <span className="text-emerald-300 font-bold block text-[11px]">💧 Água:</span>
+                          <span className="text-emerald-300 font-bold block text-[11px]">  Água:</span>
                           <span>{guidedState.aguaMl} ml</span>
                         </div>
                       )}
                       {guidedState.incSaude && (
                         <div>
-                          <span className="text-emerald-300 font-bold block text-[11px]">🌡️ Saúde:</span>
+                          <span className="text-emerald-300 font-bold block text-[11px]">  Saúde:</span>
                           <span>{guidedState.temperatura}°C</span>
                         </div>
                       )}
@@ -2338,7 +2338,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
 
                     {(!guidedState.incAgua && !guidedState.incAlimentacao && !guidedState.incSono && !guidedState.incHigiene && !guidedState.incHumor && !guidedState.incSaude) && (
                       <p className="text-xs text-amber-300 italic">
-                        ⚠️ Nenhum item selecionado. Marque as caixinhas dos itens que deseja enviar acima.
+                        ⚠ Nenhum item selecionado. Marque as caixinhas dos itens que deseja enviar acima.
                       </p>
                     )}
 
@@ -2433,7 +2433,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                               className="w-4 h-4 rounded text-cyan-600 focus:ring-cyan-500 cursor-pointer"
                             />
                             <span className={voiceSelected.hidratacao ? '' : 'line-through text-slate-400'}>
-                              💧 Hidratação: +{parsedData.hidratacao.quantidadeMl || 100}ml de água
+                                Hidratação: +{parsedData.hidratacao.quantidadeMl || 100}ml de água
                             </span>
                           </label>
                         )}
@@ -2446,7 +2446,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                               className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 cursor-pointer"
                             />
                             <span className={voiceSelected.sono ? '' : 'line-through text-slate-400'}>
-                              😴 Soneca: {parsedData.sono.duracaoMinutos || 60} minutos de sono
+                                Soneca: {parsedData.sono.duracaoMinutos || 60} minutos de sono
                             </span>
                           </label>
                         )}
@@ -2459,7 +2459,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                               className="w-4 h-4 rounded text-amber-600 focus:ring-amber-500 cursor-pointer"
                             />
                             <span className={voiceSelected.alimentacao ? '' : 'line-through text-slate-400'}>
-                              🍽️ Alimentação: {parsedData.alimentacao.refeicao || 'Refeição'} ({parsedData.alimentacao.aceitacao})
+                                Alimentação: {parsedData.alimentacao.refeicao || 'Refeição'} ({parsedData.alimentacao.aceitacao})
                             </span>
                           </label>
                         )}
@@ -2472,7 +2472,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                               className="w-4 h-4 rounded text-purple-600 focus:ring-purple-500 cursor-pointer"
                             />
                             <span className={voiceSelected.higiene ? '' : 'line-through text-slate-400'}>
-                              🚼 Higiene: {parsedData.higiene.tipoFralda || 'Troca de Fralda'}
+                                Higiene: {parsedData.higiene.tipoFralda || 'Troca de Fralda'}
                             </span>
                           </label>
                         )}
@@ -2485,7 +2485,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                               className="w-4 h-4 rounded text-rose-600 focus:ring-rose-500 cursor-pointer"
                             />
                             <span className={voiceSelected.humor ? '' : 'line-through text-slate-400'}>
-                              😊 Humor: {parsedData.humor.estado || 'Feliz'}
+                                Humor: {parsedData.humor.estado || 'Feliz'}
                             </span>
                           </label>
                         )}
@@ -2498,7 +2498,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                               className="w-4 h-4 rounded text-red-600 focus:ring-red-500 cursor-pointer"
                             />
                             <span className={voiceSelected.saude ? '' : 'line-through text-slate-400'}>
-                              🌡️ Saúde: {parsedData.saude.temperatura || 36.5}°C
+                                Saúde: {parsedData.saude.temperatura || 36.5}°C
                             </span>
                           </label>
                         )}
@@ -2540,7 +2540,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                         onClick={() => handleQuickAgua(ml)}
                         className="py-4 px-3 bg-cyan-50 hover:bg-cyan-500 hover:text-white border-2 border-cyan-200 hover:border-cyan-600 rounded-2xl text-cyan-950 hover:text-white transition-all font-black text-sm flex flex-col items-center gap-1 cursor-pointer shadow-xs"
                       >
-                        <span className="text-xl">💧</span>
+                        <span className="text-xl"> </span>
                         <span>+{ml} ml</span>
                       </button>
                     ))}
@@ -2585,7 +2585,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                           onClick={() => handleQuickRefeicao(quickMeal.tipo, 'muito_bem')}
                           className="p-3 bg-emerald-50 hover:bg-emerald-100 border border-emerald-300 text-emerald-900 rounded-2xl text-center flex flex-col items-center gap-1 transition-all cursor-pointer"
                         >
-                          <span className="text-xl">😊</span>
+                          <span className="text-xl"> </span>
                           <span className="text-[11px] font-bold">Comeu Tudo</span>
                         </button>
 
@@ -2594,7 +2594,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                           onClick={() => handleQuickRefeicao(quickMeal.tipo, 'parcial')}
                           className="p-3 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 rounded-2xl text-center flex flex-col items-center gap-1 transition-all cursor-pointer"
                         >
-                          <span className="text-xl">😐</span>
+                          <span className="text-xl"> </span>
                           <span className="text-[11px] font-bold">Pouco</span>
                         </button>
 
@@ -2632,7 +2632,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                       onClick={() => handleQuickHigiene('xixi')}
                       className="p-3.5 bg-cyan-50 hover:bg-cyan-100 border border-cyan-200 text-cyan-900 rounded-2xl flex flex-col items-center gap-1.5 cursor-pointer"
                     >
-                      <span className="text-2xl">💦</span>
+                      <span className="text-2xl"> </span>
                       <span className="text-xs font-bold">Xixi</span>
                     </button>
 
@@ -2641,7 +2641,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                       onClick={() => handleQuickHigiene('coco')}
                       className="p-3.5 bg-amber-50 hover:bg-amber-100 border border-amber-200 text-amber-900 rounded-2xl flex flex-col items-center gap-1.5 cursor-pointer"
                     >
-                      <span className="text-2xl">💩</span>
+                      <span className="text-2xl"> </span>
                       <span className="text-xs font-bold">Cocô</span>
                     </button>
 
@@ -2650,7 +2650,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                       onClick={() => handleQuickHigiene('banho')}
                       className="p-3.5 bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-900 rounded-2xl flex flex-col items-center gap-1.5 cursor-pointer"
                     >
-                      <span className="text-2xl">🧼</span>
+                      <span className="text-2xl"> </span>
                       <span className="text-xs font-bold">Banho</span>
                     </button>
 
@@ -2659,7 +2659,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                       onClick={() => handleQuickHigiene('dentes')}
                       className="p-3.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-900 rounded-2xl flex flex-col items-center gap-1.5 cursor-pointer"
                     >
-                      <span className="text-2xl">🪥</span>
+                      <span className="text-2xl"> </span>
                       <span className="text-xs font-bold">Dentes</span>
                     </button>
 
@@ -2668,7 +2668,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                       onClick={() => handleQuickHigiene('roupa')}
                       className="p-3.5 bg-purple-50 hover:bg-purple-100 border border-purple-200 text-purple-900 rounded-2xl flex flex-col items-center gap-1.5 cursor-pointer"
                     >
-                      <span className="text-2xl">👕</span>
+                      <span className="text-2xl"> </span>
                       <span className="text-xs font-bold">Troca Roupa</span>
                     </button>
                   </div>
@@ -2697,7 +2697,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                         onClick={() => handleQuickSono(mins)}
                         className="py-4 px-3 bg-indigo-50 hover:bg-indigo-600 hover:text-white border-2 border-indigo-200 rounded-2xl text-indigo-950 hover:text-white transition-all font-black text-sm flex flex-col items-center gap-1 cursor-pointer shadow-xs"
                       >
-                        <span className="text-xl">😴</span>
+                        <span className="text-xl"> </span>
                         <span>{mins >= 60 ? `${mins / 60}h` : `${mins} min`}</span>
                       </button>
                     ))}
@@ -2719,11 +2719,11 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
 
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                     {[
-                      { label: 'Feliz / Contente', emoji: '😊', val: 'feliz' },
-                      { label: 'Tranquilo', emoji: '😐', val: 'tranquilo' },
-                      { label: 'Sensível / Choroso', emoji: '😢', val: 'choroso' },
-                      { label: 'Com Sono', emoji: '😴', val: 'sonolento' },
-                      { label: 'Indisposto', emoji: '🤒', val: 'indisposto' }
+                      { label: 'Feliz / Contente', emoji: ' ', val: 'feliz' },
+                      { label: 'Tranquilo', emoji: ' ', val: 'tranquilo' },
+                      { label: 'Sensível / Choroso', emoji: ' ', val: 'choroso' },
+                      { label: 'Com Sono', emoji: ' ', val: 'sonolento' },
+                      { label: 'Indisposto', emoji: ' ', val: 'indisposto' }
                     ].map((item) => (
                       <button
                         key={item.val}
@@ -2752,7 +2752,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                   </div>
 
                   <div className="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-2">
-                    <label className="text-xs font-bold text-slate-800 block">⚖️ Peso Corporal da Criança (Kg):</label>
+                    <label className="text-xs font-bold text-slate-800 block">⚖ Peso Corporal da Criança (Kg):</label>
                     <div className="flex flex-wrap items-center gap-2">
                       <input
                         type="number"
@@ -2796,7 +2796,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                               : 'bg-slate-50 hover:bg-slate-800 text-slate-800 hover:text-white border-slate-200'
                           }`}
                         >
-                          <span className="text-xl">{isFebre ? '🌡️🚨' : '🌡️'}</span>
+                          <span className="text-xl">{isFebre ? '  ' : ' '}</span>
                           <span>{tStr}° C</span>
                           {isFebre && <span className="text-[10px] font-extrabold uppercase">Alerta Febre</span>}
                         </button>
@@ -2820,11 +2820,11 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
 
                   <div className="grid grid-cols-2 gap-2.5">
                     {[
-                      { name: '🎨 Pintura e Arte', val: 'Pintura' },
-                      { name: '🎵 Aula de Música', val: 'Música' },
-                      { name: '🛝 Recreação no Parque', val: 'Parque' },
-                      { name: '📖 Roda de Histórias', val: 'História' },
-                      { name: '🧩 Jogos Pedagógicos', val: 'Jogos' }
+                      { name: '  Pintura e Arte', val: 'Pintura' },
+                      { name: '  Aula de Música', val: 'Música' },
+                      { name: '  Recreação no Parque', val: 'Parque' },
+                      { name: '  Roda de Histórias', val: 'História' },
+                      { name: '  Jogos Pedagógicos', val: 'Jogos' }
                     ].map((act) => (
                       <button
                         key={act.val}
@@ -2875,7 +2875,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                 <div className="space-y-4 animate-fade-in">
                   <div className="flex items-center justify-between border-b border-red-100 pb-2">
                     <h4 className="text-sm font-black text-red-700 flex items-center gap-2">
-                      <AlertTriangle className="w-5 h-5 text-red-600 animate-pulse" /> Intercorrência Urgente 🚨
+                      <AlertTriangle className="w-5 h-5 text-red-600 animate-pulse" /> Intercorrência Urgente  
                     </h4>
                     <button type="button" onClick={() => setActiveTab('hub')} className="text-xs font-bold text-slate-500 hover:text-slate-800 cursor-pointer">
                       ← Voltar
@@ -2888,11 +2888,11 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
 
                   <div className="grid grid-cols-2 gap-2">
                     {[
-                      { tipo: 'Febre', icon: '🌡️', desc: 'Febre aferida alta' },
-                      { tipo: 'Queda / Escoriação', icon: '🩹', desc: 'Queda no recreio/sala' },
-                      { tipo: 'Machucado / Hematoma', icon: '🤕', desc: 'Pancada ou machucado' },
-                      { tipo: 'Vômito / Mal-estar', icon: '🤮', desc: 'Sintomas gástricos' },
-                      { tipo: 'Reação Alérgica', icon: '🚨', desc: 'Alergia súbita' },
+                      { tipo: 'Febre', icon: ' ', desc: 'Febre aferida alta' },
+                      { tipo: 'Queda / Escoriação', icon: ' ', desc: 'Queda no recreio/sala' },
+                      { tipo: 'Machucado / Hematoma', icon: ' ', desc: 'Pancada ou machucado' },
+                      { tipo: 'Vômito / Mal-estar', icon: ' ', desc: 'Sintomas gástricos' },
+                      { tipo: 'Reação Alérgica', icon: ' ', desc: 'Alergia súbita' },
                       { tipo: 'Recusa de Medicação', icon: '💊', desc: 'Medicação não tomada' }
                     ].map((item) => (
                       <button
@@ -2939,7 +2939,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
                 <div className="space-y-4 animate-fade-in">
                   <div className="flex items-center justify-between border-b border-amber-100 pb-2">
                     <h4 className="text-sm font-black text-amber-800 flex items-center gap-2">
-                      <FileText className="w-5 h-5 text-amber-600" /> Ocorrência do Dia / Rotina 📋
+                      <FileText className="w-5 h-5 text-amber-600" /> Ocorrência do Dia / Rotina  
                     </h4>
                     <button type="button" onClick={() => setActiveTab('hub')} className="text-xs font-bold text-slate-500 hover:text-slate-800 cursor-pointer">
                       ← Voltar
@@ -2952,12 +2952,12 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
 
                   <div className="grid grid-cols-2 gap-2">
                     {[
-                      { tipo: 'Mordida / Atrito', icon: '🦷', desc: 'Atitude com coleguinha' },
-                      { tipo: 'Choro / Adaptação', icon: '😭', desc: 'Choro prolongado' },
-                      { tipo: 'Falta de Material', icon: '🎒', desc: 'Sem muda de roupa/fralda' },
-                      { tipo: 'Desentendimento', icon: '💬', desc: 'Conflito na brincadeira' },
+                      { tipo: 'Mordida / Atrito', icon: ' ', desc: 'Atitude com coleguinha' },
+                      { tipo: 'Choro / Adaptação', icon: ' ', desc: 'Choro prolongado' },
+                      { tipo: 'Falta de Material', icon: ' ', desc: 'Sem muda de roupa/fralda' },
+                      { tipo: 'Desentendimento', icon: ' ', desc: 'Conflito na brincadeira' },
                       { tipo: 'Agitação', icon: '⚡', desc: 'Dificuldade de concentração' },
-                      { tipo: 'Recusa Alimentar', icon: '🍽️', desc: 'Não quis o lanche' }
+                      { tipo: 'Recusa Alimentar', icon: ' ', desc: 'Não quis o lanche' }
                     ].map((item) => (
                       <button
                         key={item.tipo}

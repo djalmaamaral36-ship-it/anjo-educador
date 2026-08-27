@@ -457,7 +457,7 @@ export default function App() {
       setTimeout(() => {
         setNotifPush({
           visible: true,
-          title: "🎁 Voucher de Parceria Ativado!",
+          title: "  Voucher de Parceria Ativado!",
           message: `Código de rastreamento: "${ref.toUpperCase()}". Carregamos o modo ideal para você com suporte de faturamento estendido!`
         });
       }, 2000);
@@ -1293,7 +1293,7 @@ export default function App() {
             const responseData = await response.json();
             console.log('✅ Mensagem real de WhatsApp enviada com sucesso via Netlify:', responseData);
           } catch (err: any) {
-            console.warn('ℹ️ Função serverless local não encontrada ou offline. Erro:', err.message);
+            console.warn('ℹ Função serverless local não encontrada ou offline. Erro:', err.message);
           }
         });
       }
@@ -1741,77 +1741,77 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
   const allNavLinks = [
     { 
       id: 'dashboard', 
-      label: isEscolar ? 'Diário Escolar 📝' : 'Início 🏠', 
+      label: isEscolar ? 'Diário Escolar  ' : 'Início  ', 
       icon: isEscolar ? <BookOpen className="w-4 h-4 text-indigo-400 font-bold" /> : <Activity className="w-4 h-4" /> 
     },
     ...(isEscolar && !isFamiliarUser ? [{
       id: 'classroom',
-      label: `Turma & Alunos 👶`,
+      label: `Turma & Alunos  `,
       icon: <Users className="w-4 h-4 text-indigo-400 font-bold" />
     }] : []),
     { 
       id: 'routine', 
-      label: isEscolar ? 'Diário de Rotina ⏱️' : 'Rotina Diária', 
+      label: isEscolar ? 'Diário de Rotina ⏱' : 'Rotina Diária', 
       icon: <Clock className="w-4 h-4 text-amber-500 font-bold" /> 
     },
     ...(!isFamiliarConvidado ? [{ 
       id: 'medicacoes', 
-      label: isEscolar ? 'Autorizações ✍️' : 'Remédios', 
+      label: isEscolar ? 'Autorizações ✍' : 'Remédios', 
       icon: <Heart className="w-4 h-4 text-rose-500 fill-rose-500/10" /> 
     }] : []),
     { 
       id: 'agenda', 
-      label: isEscolar ? 'Agenda 📅' : 'Agenda Médica', 
+      label: isEscolar ? 'Agenda  ' : 'Agenda Médica', 
       icon: <Calendar className="w-4 h-4 text-blue-500 font-bold" /> 
     },
     ...(isEscolar && !isFamiliarUser ? [{
       id: 'coordenacao',
-      label: 'Coordenação 👩‍🏫',
+      label: 'Coordenação  🏫',
       icon: <GraduationCap className="w-4 h-4 text-indigo-400 font-bold" />
     }] : []),
     { 
       id: 'jornada',
-      label: 'Jornada do Anjinho 🌟',
+      label: 'Jornada do Anjinho  ',
       icon: <Sparkles className="w-4 h-4 text-amber-400 font-bold" />
     },
     ...(isEscolar && !isFamiliarUser ? [{
       id: 'brandbook',
-      label: 'Brand Book 📖',
+      label: 'Brand Book  ',
       icon: <BookOpen className="w-4 h-4 text-indigo-400 font-bold" />
     }] : []),
     { 
       id: 'reports', 
-      label: isFundamental ? 'Boletins & Foco' : (isEscolar ? 'Boletins & Relatórios 📊' : 'Relatórios'), 
+      label: isFundamental ? 'Boletins & Foco' : (isEscolar ? 'Boletins & Relatórios  ' : 'Relatórios'), 
       icon: <Sliders className="w-4 h-4 text-purple-400 font-bold" /> 
     },
     { 
       id: 'family', 
-      label: isEscolar ? 'Famílias 👨‍👩‍👧' : 'Família', 
+      label: isEscolar ? 'Famílias    ' : 'Família', 
       icon: <Users className="w-4 h-4 text-indigo-400 font-bold" /> 
     },
     { 
       id: 'alerts', 
-      label: isEscolar ? 'Mural de Avisos 📢' : 'WhatsApp Log', 
+      label: isEscolar ? 'Mural de Avisos  ' : 'WhatsApp Log', 
       icon: <MessageSquare className="w-4 h-4 text-emerald-500 font-bold" /> 
     },
     ...(isEscolar && !isFamiliarUser ? [{ 
       id: 'director', 
-      label: 'Direção Escolar 🛡️', 
+      label: 'Direção Escolar  ', 
       icon: <ShieldCheck className="w-4 h-4 text-amber-500 font-bold" /> 
     }] : []),
     { 
       id: 'admin', 
-      label: 'Painel Dev (Privado) 🛠️', 
+      label: 'Painel Dev (Privado)  ', 
       icon: <ShieldCheck className="w-4 h-4 text-indigo-500 font-bold" /> 
     },
     { 
       id: 'settings', 
-      label: 'Configurar ⚙️', 
+      label: 'Configurar ⚙', 
       icon: <Sliders className="w-4 h-4 text-slate-500 font-bold" /> 
     },
     { 
       id: 'toggle_mode_tab', 
-      label: isEscolar ? 'Modo Sênior 👵' : 'Modo Escola 🧸', 
+      label: isEscolar ? 'Modo Sênior  ' : 'Modo Escola  ', 
       icon: isEscolar ? <Baby className="w-4 h-4 text-amber-400 font-bold" /> : <GraduationCap className="w-4 h-4 text-amber-300 font-bold" /> 
     },
   ];
@@ -1823,7 +1823,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
   return (
     <div className={`min-h-screen max-w-full ${accessibility.darkMode ? 'bg-[#0f172a] text-slate-100 dark-mode' : 'bg-cozy-cream text-slate-800'} flex flex-col font-sans transition-all selection:bg-serene-blue selection:text-white ${getFontSizeClass()}`}>
       
-      {/* 🟢 SIMULATED HIGH-FIDELITY SMARTPHONE PUSH BANNER OVERLAY */}
+      {/*   SIMULATED HIGH-FIDELITY SMARTPHONE PUSH BANNER OVERLAY */}
       {notifPush?.visible && (
         <div className="fixed top-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md bg-zinc-900 text-white p-4 rounded-2xl shadow-2xl z-50 border border-zinc-800 flex items-start gap-3 animate-bounce cursor-pointer hover:bg-zinc-850 transition-all transform hover:scale-101"
              onClick={() => { setActiveScreen('alerts'); setNotifPush(null); }}
@@ -1854,7 +1854,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
                 className="bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-[10px] px-2.5 py-1 text-white font-black rounded-lg transition-colors flex items-center gap-1 cursor-pointer border border-emerald-500/20"
                 title="Clique para abrir a conversa real no WhatsApp e enviar o texto"
               >
-                💬 Enviar WhatsApp p/ {getNotificationRecipient().nome ? getNotificationRecipient().nome.split(' ')[0] : 'Família'} de verdade
+                  Enviar WhatsApp p/ {getNotificationRecipient().nome ? getNotificationRecipient().nome.split(' ')[0] : 'Família'} de verdade
               </button>
             </div>
           </div>
@@ -2011,7 +2011,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
             <div className="hidden md:flex flex-col text-right leading-none">
               <span className="text-xs font-bold text-white flex items-center justify-end gap-1">
                 {localStorage.getItem('anjo_master_demonstracao_ativo') === 'true' && (
-                  <span className="text-[10px]" title="Acesso Total de Demonstração (PIN Dev 9181 / Direção 3031)">👑</span>
+                  <span className="text-[10px]" title="Acesso Total de Demonstração (PIN Dev 9181 / Direção 3031)"> </span>
                 )}
                 {usuarioAdaptado ? usuarioAdaptado.nome.replace(/ \((Educadora|Cuidadora|Mãe|Pai|Familiar|Médico|Pediatra|Profissional)\)/g, '') : ''}
               </span>
@@ -2224,7 +2224,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
               </div>
               <div className="min-w-0 leading-tight">
                 <div className="text-[9.5px] uppercase font-black text-amber-300 tracking-wider flex items-center gap-1">
-                  <span>{isEscolar ? '👶 Criança/Aluno em Exibição:' : '👵 Assistido em Exibição:'}</span>
+                  <span>{isEscolar ? '  Criança/Aluno em Exibição:' : '  Assistido em Exibição:'}</span>
                 </div>
                 <div className="text-xs sm:text-sm font-black text-white truncate flex items-center gap-2">
                   <span>{idosoAdaptado.nome.split(' (')[0]}</span>
@@ -2261,7 +2261,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
         {subscriptionStatus === 'atrasado' && usuarioAdaptado && usuarioAdaptado.tipo === 'admin' && (
           <div className="mb-6 p-4 bg-rose-50 border-2 border-rose-200 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-3 text-slate-800 animate-pulse">
             <div className="flex items-center gap-3">
-              <span className="text-2xl">⚠️</span>
+              <span className="text-2xl">⚠</span>
               <div>
                 <strong className="text-sm font-bold text-rose-950 block">Mensalidade Pendente (R$ {subscriptionPrice.toFixed(2).replace('.', ',')})</strong>
                 <span className="text-xs text-rose-800 font-medium">Os familiares estão temporariamente com acesso suspenso até a confirmação de regularidade.</span>
@@ -2279,7 +2279,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
         {/* Banner 2: Caregiver operation reassurance */}
         {subscriptionStatus === 'atrasado' && usuarioAdaptado && usuarioAdaptado.tipo === 'cuidador' && (
           <div className="mb-6 p-3.5 bg-emerald-50 border border-emerald-250 rounded-2xl flex items-center gap-2 text-slate-800">
-            <span className="text-emerald-600 font-bold shrink-0">🛡️</span>
+            <span className="text-emerald-600 font-bold shrink-0"> </span>
             <span className="text-xs text-emerald-800 font-semibold leading-normal">
               <strong>Modo de Cuidado de Emergência Ativo:</strong> Mesmo com aviso financeiro pendente do idoso, seu login como cuidador continua 100% liberado para registrar remédios, refeições e sinais vitais. O cuidado físico e a segurança nunca param!
             </span>
@@ -2604,11 +2604,11 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
                   </p>
                 ) : (
                   <p className="text-[10px] text-slate-400 font-semibold text-center leading-normal">
-                    🔒 Acesso Master & Direção: Digite o PIN de 4 dígitos para prosseguir. <br />
+                      Acesso Master & Direção: Digite o PIN de 4 dígitos para prosseguir. <br />
                     <span className="text-indigo-600 font-black">
                       {pendingAction === 'view_director' 
-                        ? '🔑 Dica de Acesso: Use o PIN Master Dev "9181" (Acesso Total) ou o PIN da Diretora Nilva "3031" para liberar!' 
-                        : '🔑 Dica de Acesso: Use o PIN Master Dev "9181" (Acesso Total) ou o PIN da Diretora Nilva "3031" para liberar!'
+                        ? '  Dica de Acesso: Use o PIN Master Dev "9181" (Acesso Total) ou o PIN da Diretora Nilva "3031" para liberar!' 
+                        : '  Dica de Acesso: Use o PIN Master Dev "9181" (Acesso Total) ou o PIN da Diretora Nilva "3031" para liberar!'
                       }
                     </span>
                   </p>
@@ -2667,7 +2667,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
               >
                 <div className="space-y-3">
                   <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center text-xl shadow-3xs">
-                    👵
+                     
                   </div>
                   <div>
                     <h4 className="font-extrabold text-sm text-slate-800 flex items-center gap-1.5">
@@ -2723,7 +2723,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
 
             <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-400">
               <span className="font-semibold text-center sm:text-left leading-normal flex items-center gap-1">
-                🔒 <span>Acesso seguro com privilégios de Direção Geral ativos.</span>
+                  <span>Acesso seguro com privilégios de Direção Geral ativos.</span>
               </span>
               <button
                 onClick={() => setShowModeSelectionModal(false)}

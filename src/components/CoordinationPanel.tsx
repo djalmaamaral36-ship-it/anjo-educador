@@ -69,7 +69,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
     return (
       <div className="flex flex-col items-center justify-center p-12 text-center bg-white rounded-3xl border border-red-100 shadow-sm space-y-4">
         <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center text-red-500 border border-red-200">
-          <span className="text-3xl">🔒</span>
+          <span className="text-3xl"> </span>
         </div>
         <h2 className="text-lg font-black text-slate-800">Acesso Restrito</h2>
         <p className="text-sm text-slate-500 max-w-md leading-relaxed">
@@ -244,7 +244,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
 
   // Filter students by selected classroom
   const getCleanClassName = (roomName: string) => {
-    return roomName.replace(/🧸|🎒|🏫|🎨|👶|🌈|⭐|🌻/g, '').trim().toLowerCase();
+    return roomName.replace(/ | |🏫| | | |⭐| /g, '').trim().toLowerCase();
   };
 
   const filteredStudents = students.filter(s => {
@@ -256,18 +256,18 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
   // Category Translation Helpers
   const getCategoryLabel = (cat: string) => {
     switch (cat) {
-      case 'fala': return '🗣️ Fala & Linguagem';
-      case 'socioemocional': return '🧠 Socioemocional';
-      case 'sensorial': return '🎨 Integração Sensorial';
+      case 'fala': return '  Fala & Linguagem';
+      case 'socioemocional': return '  Socioemocional';
+      case 'sensorial': return '  Integração Sensorial';
       default: return cat;
     }
   };
 
   const getIntensityLabel = (intensity: string) => {
     switch (intensity) {
-      case 'leve': return '🟢 Leve / Início';
-      case 'moderada': return '🟡 Moderada / Frequente';
-      case 'recorrente': return '🔴 Recorrente / Severa';
+      case 'leve': return '  Leve / Início';
+      case 'moderada': return '  Moderada / Frequente';
+      case 'recorrente': return '  Recorrente / Severa';
       default: return intensity;
     }
   };
@@ -429,17 +429,17 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
 
   const getReferralTipoLabel = (tipo: string) => {
     switch (tipo) {
-      case 'fonoaudiologia': return '🗣️ Fonoaudiologia';
-      case 'psicologia': return '🧠 Psicologia';
-      case 'terapia_ocupacional': return '🎨 Terapia Ocupacional';
-      default: return '📝 Geral / Coordenação';
+      case 'fonoaudiologia': return '  Fonoaudiologia';
+      case 'psicologia': return '  Psicologia';
+      case 'terapia_ocupacional': return '  Terapia Ocupacional';
+      default: return '  Geral / Coordenação';
     }
   };
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto p-4 md:p-6 animate-fade-in text-left">
       
-      {/* 👑 Welcome and Header */}
+      {/*   Welcome and Header */}
       <div className={`p-6 rounded-3xl border ${
         isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-gradient-to-br from-indigo-50 via-white to-pink-50/20 border-indigo-100 text-slate-800'
       } shadow-xs relative overflow-hidden`}>
@@ -448,7 +448,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-100/60 dark:bg-indigo-950/40 rounded-full text-[10px] font-black uppercase tracking-widest text-indigo-700 dark:text-indigo-400">
-              👩‍🏫 Portal Confidencial da Coordenação Pedagógica
+               🏫 Portal Confidencial da Coordenação Pedagógica
             </div>
             <h2 className="text-xl md:text-2xl font-black font-display tracking-tight flex items-center gap-2">
               <GraduationCap className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
@@ -466,7 +466,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Turma de Trabalho:</span>
             <div className="flex items-center gap-1.5 bg-indigo-50/50 dark:bg-slate-800/40 border border-indigo-100/10 px-3 py-1.5 rounded-2xl text-[10px] font-bold text-slate-500">
-              <span>🎒 Alunos Filtrados:</span>
+              <span>  Alunos Filtrados:</span>
               <span className="text-indigo-600 font-extrabold">{filteredStudents.length}</span>
             </div>
           </div>
@@ -499,7 +499,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
         </div>
       </div>
 
-      {/* 🧭 Tabs Controller */}
+      {/*   Tabs Controller */}
       <div className="flex border-b border-slate-100 dark:border-slate-800 gap-1.5 pb-0">
         <button
           onClick={() => setActiveTab('early_alerts')}
@@ -509,7 +509,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
               : 'border-transparent text-slate-400 hover:text-slate-600'
           }`}
         >
-          🧠 Identificação Precoce ({milestoneAlerts.filter(a => selectedClassroom === 'Todas' || a.classroomName === selectedClassroom).length})
+            Identificação Precoce ({milestoneAlerts.filter(a => selectedClassroom === 'Todas' || a.classroomName === selectedClassroom).length})
         </button>
         <button
           onClick={() => setActiveTab('referrals')}
@@ -519,7 +519,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
               : 'border-transparent text-slate-400 hover:text-slate-600'
           }`}
         >
-          🗣️ Encaminhamentos ({pedagogicalReferrals.filter(r => selectedClassroom === 'Todas' || r.classroomName === selectedClassroom).length})
+            Encaminhamentos ({pedagogicalReferrals.filter(r => selectedClassroom === 'Todas' || r.classroomName === selectedClassroom).length})
         </button>
         <button
           onClick={() => setActiveTab('conflict_mediation')}
@@ -529,11 +529,11 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
               : 'border-transparent text-slate-400 hover:text-slate-600'
           }`}
         >
-          🤝 Mediação de Conflitos ({mediationLogs.filter(m => selectedClassroom === 'Todas' || m.classroomName === selectedClassroom).length})
+            Mediação de Conflitos ({mediationLogs.filter(m => selectedClassroom === 'Todas' || m.classroomName === selectedClassroom).length})
         </button>
       </div>
 
-      {/* 🧠 SECTION 1: Identificação Precoce de Atraso no Desenvolvimento */}
+      {/*   SECTION 1: Identificação Precoce de Atraso no Desenvolvimento */}
       {activeSubTab === 'early_alerts' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
@@ -550,19 +550,19 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
               
               <div className="space-y-2.5">
                 <div className="p-3 bg-white dark:bg-slate-950/40 rounded-xl border border-slate-100 dark:border-slate-800 space-y-1">
-                  <span className="text-[10px] font-black text-slate-800 dark:text-slate-300 block">🗣️ Fala & Linguagem:</span>
+                  <span className="text-[10px] font-black text-slate-800 dark:text-slate-300 block">  Fala & Linguagem:</span>
                   <p className="text-[9px] text-slate-400 font-semibold leading-normal">
                     Ausência de palavras inteligíveis aos 2 anos; ecolalia persistente ou perda de vocabulário prévio.
                   </p>
                 </div>
                 <div className="p-3 bg-white dark:bg-slate-950/40 rounded-xl border border-slate-100 dark:border-slate-800 space-y-1">
-                  <span className="text-[10px] font-black text-slate-800 dark:text-slate-300 block">🧠 Socioemocional:</span>
+                  <span className="text-[10px] font-black text-slate-800 dark:text-slate-300 block">  Socioemocional:</span>
                   <p className="text-[9px] text-slate-400 font-semibold leading-normal">
                     Falta de contato visual ou compartilhamento de atenção; isolamento intencional persistente no pátio.
                   </p>
                 </div>
                 <div className="p-3 bg-white dark:bg-slate-950/40 rounded-xl border border-slate-100 dark:border-slate-800 space-y-1">
-                  <span className="text-[10px] font-black text-slate-800 dark:text-slate-300 block">🎨 Integração Sensorial:</span>
+                  <span className="text-[10px] font-black text-slate-800 dark:text-slate-300 block">  Integração Sensorial:</span>
                   <p className="text-[9px] text-slate-400 font-semibold leading-normal">
                     P ou reações severas de choro com barulhos de sala de aula; recusa alimentar extrema por texturas.
                   </p>
@@ -570,7 +570,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
               </div>
 
               <div className="bg-amber-50 dark:bg-amber-950/10 p-3 rounded-2xl border border-amber-200/50 text-amber-800 dark:text-amber-400 text-[10px] font-semibold leading-relaxed">
-                💡 <strong>Conduta Ética:</strong> Nunca afirme diagnósticos (ex: &quot;Este aluno tem Autismo&quot;). Registre fatos objetivos observados (ex: &quot;O aluno enfileira brinquedos e não atende a comandos verbais de roda&quot;).
+                  <strong>Conduta Ética:</strong> Nunca afirme diagnósticos (ex: &quot;Este aluno tem Autismo&quot;). Registre fatos objetivos observados (ex: &quot;O aluno enfileira brinquedos e não atende a comandos verbais de roda&quot;).
               </div>
             </div>
           </div>
@@ -582,7 +582,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
             <div className={`p-5 rounded-3xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-150'} space-y-4`}>
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100/15 pb-3">
                 <div>
-                  <h4 className="text-xs font-extrabold uppercase text-slate-400">📝 Registrar Sinal de Alerta / Acompanhamento</h4>
+                  <h4 className="text-xs font-extrabold uppercase text-slate-400">  Registrar Sinal de Alerta / Acompanhamento</h4>
                   <p className="text-[10px] text-slate-500 font-medium">Selecione um aluno da turma para registrar um sinal de atraso monitorado.</p>
                 </div>
               </div>
@@ -592,7 +592,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                   <div className="p-3 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-150 flex items-center justify-between">
                     <div className="text-left">
                       <span className="text-xs font-black text-indigo-700 dark:text-indigo-400">Aluno Selecionado:</span>
-                      <p className="text-sm font-black text-slate-800 dark:text-white">👦 {selectedStudentForAlert.nome}</p>
+                      <p className="text-sm font-black text-slate-800 dark:text-white">  {selectedStudentForAlert.nome}</p>
                     </div>
                     <button 
                       type="button"
@@ -613,9 +613,9 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                         value={newAlertForm.category}
                         onChange={(e) => setNewAlertForm({ ...newAlertForm, category: e.target.value as any })}
                       >
-                        <option value="fala">🗣️ Fala & Linguagem</option>
-                        <option value="socioemocional">🧠 Socioemocional</option>
-                        <option value="sensorial">🎨 Integração Sensorial</option>
+                        <option value="fala">  Fala & Linguagem</option>
+                        <option value="socioemocional">  Socioemocional</option>
+                        <option value="sensorial">  Integração Sensorial</option>
                       </select>
                     </div>
 
@@ -666,7 +666,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                             <option value="Choro e asco corporal ao tocar massinha, tintas ou alimentos úmidos.">Aversão a texturas e toques</option>
                           </>
                         )}
-                        <option value="Outro sinal atípico observado detalhado nas notas abaixo...">✍️ Outro sinal (especificar nas observações)...</option>
+                        <option value="Outro sinal atípico observado detalhado nas notas abaixo...">✍ Outro sinal (especificar nas observações)...</option>
                       </select>
                     </div>
 
@@ -770,9 +770,9 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                                   : 'bg-slate-50/50 border-slate-100 dark:bg-slate-900/30 dark:border-slate-800'
                               }`}
                             >
-                              <span className="block truncate text-slate-850 dark:text-slate-100">👦 {st.nome.split(' (')[0]}</span>
+                              <span className="block truncate text-slate-850 dark:text-slate-100">  {st.nome.split(' (')[0]}</span>
                               <span className={`text-[8px] font-semibold mt-1 block ${hasAlerts ? 'text-amber-600' : 'text-slate-400'}`}>
-                                {hasAlerts ? '⚠️ Sinais Registrados' : '✅ Monitorado'}
+                                {hasAlerts ? '⚠ Sinais Registrados' : '✅ Monitorado'}
                               </span>
                             </button>
                           );
@@ -833,7 +833,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                         <div className="space-y-2">
                           <div className="flex items-center justify-between gap-2">
                             <span className="text-xs font-black text-slate-900 dark:text-white">
-                              👦 {alertItem.studentName}
+                                {alertItem.studentName}
                             </span>
                             <button
                               onClick={() => handleDeleteAlert(alertItem.id)}
@@ -854,7 +854,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                           </div>
 
                           <p className="text-[10px] font-bold text-slate-800 dark:text-slate-200 leading-normal bg-slate-50 dark:bg-slate-950/30 p-2 rounded-xl">
-                            🚨 {alertItem.indicator}
+                              {alertItem.indicator}
                           </p>
 
                           {alertItem.observations && (
@@ -867,7 +867,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                         <div className="pt-2 border-t border-slate-100/10 flex flex-wrap items-center justify-between text-[9px] font-semibold text-slate-400 gap-2">
                           <span>Registrado por: <strong className="text-slate-600 dark:text-slate-300">{alertItem.registeredBy}</strong></span>
                           <span className="flex items-center gap-1">
-                            📅 {alertItem.date}
+                              {alertItem.date}
                             {alertItem.time && (
                               <span className="inline-flex items-center gap-0.5 ml-1 bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-slate-500 dark:text-slate-400">
                                 <Clock className="w-2.5 h-2.5" /> {alertItem.time}
@@ -878,7 +878,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
 
                         {/* Welcoming message generator inside the card */}
                         <div className="bg-indigo-50/50 dark:bg-indigo-950/20 p-2.5 rounded-xl border border-indigo-100/10 text-left space-y-1.5">
-                          <span className="text-[8px] font-black uppercase text-indigo-600 dark:text-indigo-400 tracking-wider">📞 Mensagem de Acolhimento Sugerida</span>
+                          <span className="text-[8px] font-black uppercase text-indigo-600 dark:text-indigo-400 tracking-wider">  Mensagem de Acolhimento Sugerida</span>
                           <p className="text-[8.5px] leading-relaxed text-slate-500 italic">
                             {generateWelcomingMessage(alertItem.studentName, 'comportamentos de foco atípicos', alertItem.category === 'fala' ? 'comunicação' : 'convivência social')}
                           </p>
@@ -904,7 +904,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
         </div>
       )}
 
-      {/* 🗣️ SECTION 2: Encaminhamentos Pedagógicos */}
+      {/*   SECTION 2: Encaminhamentos Pedagógicos */}
       {activeSubTab === 'referrals' && (
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
@@ -928,7 +928,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
               isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-150 text-slate-800'
             }`}>
               <h5 className="text-xs font-extrabold uppercase text-indigo-600 flex items-center gap-1">
-                📝 Lançar Novo Registro de Encaminhamento
+                  Lançar Novo Registro de Encaminhamento
               </h5>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -938,7 +938,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                     <div className={`p-2.5 rounded-xl border flex items-center justify-between text-xs font-bold ${
                       isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
                     }`}>
-                      <span className="truncate">👦 {newReferralForm.studentName === 'custom' ? `Outro: ${customStudentName || 'Digite abaixo'}` : newReferralForm.studentName}</span>
+                      <span className="truncate">  {newReferralForm.studentName === 'custom' ? `Outro: ${customStudentName || 'Digite abaixo'}` : newReferralForm.studentName}</span>
                       <button
                         type="button"
                         onClick={() => {
@@ -981,7 +981,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                                 isDark ? 'border-slate-800 text-slate-400 hover:bg-slate-800/40' : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                               }`}
                             >
-                              ✍️ Digitar nome manualmente...
+                              ✍ Digitar nome manualmente...
                             </button>
                           );
                         }
@@ -1000,7 +1000,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                                   isDark ? 'text-slate-200' : 'text-slate-700'
                                 }`}
                               >
-                                👦 {st.nome.split(' (')[0]}
+                                  {st.nome.split(' (')[0]}
                               </button>
                             ))}
                             <button
@@ -1010,7 +1010,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                               }}
                               className="w-full p-1.5 rounded-lg text-left text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50/20"
                             >
-                              ✍️ Outro Aluno (Digitar nome)...
+                              ✍ Outro Aluno (Digitar nome)...
                             </button>
                           </div>
                         );
@@ -1029,10 +1029,10 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                      value={newReferralForm.tipo}
                      onChange={(e) => setNewReferralForm({ ...newReferralForm, tipo: e.target.value })}
                    >
-                     <option value="pedagogico_geral">📝 Geral / Coordenação</option>
-                     <option value="fonoaudiologia">🗣️ Fonoaudiologia</option>
-                     <option value="psicologia">🧠 Psicologia (Socioemocional)</option>
-                     <option value="terapia_ocupacional">🎨 Terapia Ocupacional</option>
+                     <option value="pedagogico_geral">  Geral / Coordenação</option>
+                     <option value="fonoaudiologia">  Fonoaudiologia</option>
+                     <option value="psicologia">  Psicologia (Socioemocional)</option>
+                     <option value="terapia_ocupacional">  Terapia Ocupacional</option>
                    </select>
                  </div>
  
@@ -1152,7 +1152,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                        isDark ? 'bg-slate-900/40 border-slate-800' : 'bg-indigo-50/30 border-indigo-200'
                      }`}>
                        <p className="text-[10px] font-black uppercase text-indigo-600 tracking-wider flex items-center gap-1.5">
-                         🔍 Alunos Encontrados na Escola (Sem Encaminhamento Registrado):
+                           Alunos Encontrados na Escola (Sem Encaminhamento Registrado):
                        </p>
                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                          {matchingStudentsInSchool.map(st => {
@@ -1167,7 +1167,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                              >
                                <div className="truncate text-left">
                                  <span className="text-xs font-black text-slate-800 dark:text-white block truncate">
-                                   👦 {shortName}
+                                     {shortName}
                                  </span>
                                  <span className="text-[9px] text-slate-400 font-extrabold uppercase truncate block">
                                    {details}
@@ -1213,7 +1213,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                         <div className="flex items-start justify-between gap-2">
                           <div>
                             <span className="text-xs font-black text-slate-800 dark:text-white block">
-                              👦 {ref.studentName}
+                                {ref.studentName}
                             </span>
                             <span className="text-[9px] text-slate-400 font-extrabold uppercase">
                               🏫 {ref.classroomName}
@@ -1233,7 +1233,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                             {getReferralTipoLabel(ref.tipo)}
                           </span>
                           <span className="text-[9px] text-slate-400 font-mono flex items-center gap-0.5">
-                            📅 {ref.data}
+                              {ref.data}
                             {ref.time && (
                               <span className="inline-flex items-center gap-0.5 ml-1 bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-slate-500 dark:text-slate-400">
                                 <Clock className="w-2.5 h-2.5" /> {ref.time}
@@ -1262,7 +1262,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
         </div>
       )}
 
-      {/* 🤝 SECTION 3: Mediação de Conflitos */}
+      {/*   SECTION 3: Mediação de Conflitos */}
       {activeSubTab === 'conflict_mediation' && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           
@@ -1279,19 +1279,19 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
 
               <div className="space-y-3">
                 <div className="p-3 bg-white dark:bg-slate-950/40 rounded-2xl border border-rose-100/35 space-y-1">
-                  <span className="text-[10px] font-extrabold uppercase text-rose-600 block">🛡️ Eixo 1: Proteção e Limite</span>
+                  <span className="text-[10px] font-extrabold uppercase text-rose-600 block">  Eixo 1: Proteção e Limite</span>
                   <p className="text-[9px] text-slate-400 leading-normal font-medium">
                     Separar fisicamente e acolher imediatamente a criança atingida de forma carinhosa e neutra. Sem gritos.
                   </p>
                 </div>
                 <div className="p-3 bg-white dark:bg-slate-950/40 rounded-2xl border border-rose-100/35 space-y-1">
-                  <span className="text-[10px] font-extrabold uppercase text-rose-600 block">🤝 Eixo 2: Empatia e Cuidado</span>
+                  <span className="text-[10px] font-extrabold uppercase text-rose-600 block">  Eixo 2: Empatia e Cuidado</span>
                   <p className="text-[9px] text-slate-400 leading-normal font-medium">
                     Envolver a criança que bateu/mordeu no cuidado ao amigo (ajudar com o gelo, dar o urso). Estimular a responsabilidade social.
                   </p>
                 </div>
                 <div className="p-3 bg-white dark:bg-slate-950/40 rounded-2xl border border-rose-100/35 space-y-1">
-                  <span className="text-[10px] font-extrabold uppercase text-rose-600 block">📋 Eixo 3: Sigilo & Comunicação</span>
+                  <span className="text-[10px] font-extrabold uppercase text-rose-600 block">  Eixo 3: Sigilo & Comunicação</span>
                   <p className="text-[9px] text-slate-400 leading-normal font-medium">
                     Informar os responsáveis no privado de maneira discreta, resguardando sempre a identidade da outra criança envolvida.
                   </p>
@@ -1320,7 +1320,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
               <form onSubmit={handleAddMediation} className={`p-5 rounded-3xl border text-left space-y-3.5 animate-slide-down ${
                 isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-150'
               }`}>
-                <h5 className="text-xs font-extrabold uppercase text-rose-600">✍️ Registrar Mediação Ativa</h5>
+                <h5 className="text-xs font-extrabold uppercase text-rose-600">✍ Registrar Mediação Ativa</h5>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-1">
@@ -1497,7 +1497,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                         <div className="flex items-start justify-between border-b border-slate-100/10 pb-2">
                           <div>
                             <span className="text-xs font-black text-slate-800 dark:text-white block">
-                              🤝 Envolvidos: {log.studentsInvolved}
+                                Envolvidos: {log.studentsInvolved}
                             </span>
                             <span className="text-[9px] text-indigo-600 dark:text-indigo-400 font-extrabold uppercase">
                               🏫 {log.classroomName}
@@ -1505,7 +1505,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                           </div>
                           <div className="text-right">
                             <span className="text-[9px] text-slate-400 font-mono flex items-center gap-0.5 justify-end mb-1">
-                              📅 {log.date}
+                                {log.date}
                               {log.time && (
                                 <span className="inline-flex items-center gap-0.5 ml-1 bg-slate-100 dark:bg-slate-800 px-1 py-0.5 rounded text-slate-500 dark:text-slate-400">
                                   <Clock className="w-2.5 h-2.5" /> {log.time}
@@ -1517,7 +1517,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                                 ? 'bg-emerald-50 text-emerald-700 border border-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400' 
                                 : 'bg-amber-50 text-amber-700 border border-amber-100 dark:bg-amber-950/20 dark:text-amber-400'
                             }`}>
-                              {log.familyNotified ? '✓ Pais Notificados' : '⚠️ Notificação Pendente'}
+                              {log.familyNotified ? '✓ Pais Notificados' : '⚠ Notificação Pendente'}
                             </span>
                           </div>
                         </div>

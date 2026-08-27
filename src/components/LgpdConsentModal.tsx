@@ -102,14 +102,14 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
             ) : (
               <div className="flex items-center justify-between bg-white px-3.5 py-2.5 rounded-xl border border-slate-100 shadow-2xs">
                 <span className="text-xs font-bold text-slate-400">
-                  {isEscolar ? 'Aluno / Criança:' : 'Idoso:'} <span className="font-extrabold text-slate-800 text-sm ml-1">{isEscolar ? '👶' : '👵'} {seniorName}</span>
+                  {isEscolar ? 'Aluno / Criança:' : 'Idoso:'} <span className="font-extrabold text-slate-800 text-sm ml-1">{isEscolar ? ' ' : ' '} {seniorName}</span>
                 </span>
                 <button
                   onClick={() => setIsEditingName(true)}
                   className="text-[10px] font-black text-emerald-600 hover:text-emerald-750 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-lg flex items-center gap-1 transition-all cursor-pointer"
                   title={isEscolar ? "Clique para editar o nome do aluno" : "Clique para editar o nome do idoso"}
                 >
-                  ✏️ Editar Nome
+                  ✏ Editar Nome
                 </button>
               </div>
             )}

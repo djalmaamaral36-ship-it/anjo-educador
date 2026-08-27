@@ -152,7 +152,7 @@ export default function EditProfileModal({
     // Check if PIN is unique
     const pinCheck = isPinUnique(newPin, usuarioAtual.id);
     if (!pinCheck.isUnique) {
-      setErrorMsg(`⚠️ O PIN "${newPin}" já está em uso por ${pinCheck.conflictingUser?.nome || 'outro usuário'}. Por favor, escolha um PIN exclusivo de 4 dígitos.`);
+      setErrorMsg(`⚠ O PIN "${newPin}" já está em uso por ${pinCheck.conflictingUser?.nome || 'outro usuário'}. Por favor, escolha um PIN exclusivo de 4 dígitos.`);
       return;
     }
 
@@ -435,11 +435,11 @@ export default function EditProfileModal({
                 }}
                 className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-850 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500/20"
               >
-                <option value="familiar">👨‍👩‍👧 Familiar (Mãe / Pai / Responsável)</option>
-                <option value="professor">👨‍🏫 Professor(a) / Educador(a)</option>
-                <option value="coordenador">👩‍🏫 Coordenação Pedagógica</option>
-                <option value="diretor">👔 Direção Escolar / Gestão</option>
-                <option value="desenvolvedor">💻 Desenvolvedor Master</option>
+                <option value="familiar">    Familiar (Mãe / Pai / Responsável)</option>
+                <option value="professor"> 🏫 Professor(a) / Educador(a)</option>
+                <option value="coordenador"> 🏫 Coordenação Pedagógica</option>
+                <option value="diretor">  Direção Escolar / Gestão</option>
+                <option value="desenvolvedor">  Desenvolvedor Master</option>
               </select>
             </div>
           </div>

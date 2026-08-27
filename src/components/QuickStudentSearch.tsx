@@ -168,7 +168,7 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
   return (
     <div ref={containerRef} className={`relative w-full ${className}`}>
       
-      {/* 🔍 SEARCH INPUT FIELD */}
+      {/*   SEARCH INPUT FIELD */}
       <div className="relative flex items-center">
         <Search className={`w-4 h-4 absolute left-3.5 pointer-events-none transition-colors ${
           compact
@@ -226,7 +226,7 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
         </div>
       </div>
 
-      {/* 📋 DROPDOWN RESULTS POPOVER */}
+      {/*   DROPDOWN RESULTS POPOVER */}
       {isOpen && (
         <div className={`absolute left-0 right-0 top-full mt-2 z-50 rounded-3xl border shadow-2xl overflow-hidden animate-fade-in ${
           darkMode
@@ -330,7 +330,7 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
 
                         {student.contatoEmergencia?.nome && (
                           <div className="text-[10px] font-bold text-indigo-700 dark:text-indigo-300 block truncate leading-snug">
-                            👨‍👩‍👧 Resp: {student.contatoEmergencia.nome} ({student.contatoEmergencia.parentesco || 'Mãe/Pai'})
+                                Resp: {student.contatoEmergencia.nome} ({student.contatoEmergencia.parentesco || 'Mãe/Pai'})
                           </div>
                         )}
 
@@ -363,7 +363,7 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
 
           {/* Footer note in popover */}
           <div className="p-2.5 bg-slate-50 dark:bg-slate-800/50 border-t border-slate-100 dark:border-slate-800 text-[10px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
-            <span>💡 Clique para selecionar o aluno instantaneamente</span>
+            <span>  Clique para selecionar o aluno instantaneamente</span>
             <span className="font-mono text-[9px]">ESC para fechar</span>
           </div>
 

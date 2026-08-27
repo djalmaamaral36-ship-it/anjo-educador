@@ -258,8 +258,8 @@ export default function Reports({ idoso, accessibilitySettings, keyTrigger, trig
     const ultimoSinal = sinaisHoje[sinaisHoje.length - 1];
     
     let msgSinais = isEscolar 
-      ? '⚠️ Nenhuma observação de saúde ou rotina hoje.'
-      : '⚠️ Nenhum sinal aferido hoje.';
+      ? '⚠ Nenhuma observação de saúde ou rotina hoje.'
+      : '⚠ Nenhum sinal aferido hoje.';
     if (ultimoSinal) {
       msgSinais = isEscolar
         ? `• Período de Sono/Soneca: ${ultimoSinal.pressaoArterial}
@@ -283,11 +283,11 @@ export default function Reports({ idoso, accessibilitySettings, keyTrigger, trig
     } else {
       msgMed = '';
       if (medicamentosH.length > 0) {
-        msgMed += '🟢 *Tomados:*\n' + medicamentosH.map(m => `  • ${m.titulo} às ${m.concluidaEm}`).join('\n');
+        msgMed += '  *Tomados:*\n' + medicamentosH.map(m => `  • ${m.titulo} às ${m.concluidaEm}`).join('\n');
       }
       if (medPendentesH.length > 0) {
         if (msgMed) msgMed += '\n';
-        msgMed += '🔴 *Pendentes/Próximos:*\n' + medPendentesH.map(m => `  • ${m.titulo} (${m.horarioPrevisto})`).join('\n');
+        msgMed += '  *Pendentes/Próximos:*\n' + medPendentesH.map(m => `  • ${m.titulo} (${m.horarioPrevisto})`).join('\n');
       }
     }
 
@@ -322,13 +322,13 @@ export default function Reports({ idoso, accessibilitySettings, keyTrigger, trig
 
     const bottleFeedsToday = feedsHoje.filter(f => f.refeicao === 'mamadeira');
     if (bottleFeedsToday.length > 0) {
-      msgAlimento += `\n🍼 Mamadeiras Servidas Hoje: ${bottleFeedsToday.length} mamadeira(s) (Total de ${bottleFeedsToday.reduce((acc, curr) => acc + (curr.quantidadeMl || 150), 0)}ml).`;
+      msgAlimento += `\n  Mamadeiras Servidas Hoje: ${bottleFeedsToday.length} mamadeira(s) (Total de ${bottleFeedsToday.reduce((acc, curr) => acc + (curr.quantidadeMl || 150), 0)}ml).`;
     }
     
     if (isEscolar) {
-      msgAlimento += `\n💧 Ingestão Hídrica (Água): ${totalMl} ml (${coposCount} copo(s) d'água registrados hoje).`;
+      msgAlimento += `\n  Ingestão Hídrica (Água): ${totalMl} ml (${coposCount} copo(s) d'água registrados hoje).`;
     } else {
-      msgAlimento += `\n💧 Ingestão Hídrica: ${totalMl} ml (${coposCount} copo(s) d'água registrados hoje).`;
+      msgAlimento += `\n  Ingestão Hídrica: ${totalMl} ml (${coposCount} copo(s) d'água registrados hoje).`;
     }
 
     // Routine checklist (baths, sun, exercises...)
@@ -340,37 +340,37 @@ export default function Reports({ idoso, accessibilitySettings, keyTrigger, trig
       msgRotinas += '\n' + outRotinasH.map(r => `  • [Concluído] ${r.titulo} às ${r.concluidaEm}`).join('\n');
     }
 
-    const obsTxt = customNotes ? `\n\n📝 *${isEscolar ? 'MENSAGEM DA PROFESSORA' : 'NOTAS DO CUIDADOR'}:*\n"${customNotes}"` : '';
+    const obsTxt = customNotes ? `\n\n  *${isEscolar ? 'MENSAGEM DA PROFESSORA' : 'NOTAS DO CUIDADOR'}:*\n"${customNotes}"` : '';
 
     if (isEscolar) {
       const tenderName = idoso.nome.split(' (')[0].replace(/[0-9]/g, '').trim() || 'Nosso Anjinho';
-      return `🌸 *DIÁRIO AFETIVO ESCOLAR — ${tenderName.toUpperCase()}* 🌸
-📅 *Data:* ${dataAtual}
+      return `  *DIÁRIO AFETIVO ESCOLAR — ${tenderName.toUpperCase()}*  
+  *Data:* ${dataAtual}
 
 Olá, família querida! ✨
 Segue o resumo carinhoso do dia do(a) nosso(a) pequeno(a) na escola:
 
-😴 *SONO & BEM-ESTAR:*
+  *SONO & BEM-ESTAR:*
 ${msgSinais}
 
-🍼 *ALIMENTAÇÁO & HIDRATAÇÁO:*
+  *ALIMENTAÇÁO & HIDRATAÇÁO:*
 ${msgAlimento}
 
-🎨 *VIVÊNCIAS & CUIDADOS:*
+  *VIVÊNCIAS & CUIDADOS:*
 ${msgRotinas}${obsTxt}
 
 ✨ *Um dia cheio de carinho, aprendizado e acolhimento!*
 ___
-📱 *Anjinho Escolar — Cuidando com amor de cada pequeno passo.*`;
+  *Anjinho Escolar — Cuidando com amor de cada pequeno passo.*`;
     }
 
-    const title = `📋 *RELATÓRIO DIÁRIO DE CUIDADOS — ${idoso.nome.toUpperCase()}* 📋`;
-    const sinaisLabel = `❤️ *SINAIS VITAIS:*`;
+    const title = `  *RELATÓRIO DIÁRIO DE CUIDADOS — ${idoso.nome.toUpperCase()}*  `;
+    const sinaisLabel = `❤ *SINAIS VITAIS:*`;
     const medsLabel = `💊 *MEDICAÇÕES DO DIA:*`;
-    const routinesLabel = `💆 *OUTROS CUIDADOS REALIZADOS:*`;
+    const routinesLabel = `  *OUTROS CUIDADOS REALIZADOS:*`;
 
     return `${title}
-📅 *Data:* ${dataAtual}
+  *Data:* ${dataAtual}
 
 ${sinaisLabel}
 ${msgSinais}
@@ -378,14 +378,14 @@ ${msgSinais}
 ${medsLabel}
 ${msgMed}
 
-🍲 *ALIMENTAÇÁO & HIDRATAÇÁO:*
+  *ALIMENTAÇÁO & HIDRATAÇÁO:*
 ${msgAlimento}
 
 ${routinesLabel}
 ${msgRotinas}${obsTxt}
 
 ___
-📱 Relatório gerado no aplicativo *Anjo Cuidador*.`;
+  Relatório gerado no aplicativo *Anjo Cuidador*.`;
   };
 
   const handleCopy = () => {
@@ -484,7 +484,7 @@ ___
             { id: '7', label: 'Últimos 7 dias' },
             { id: '30', label: 'Últimos 30 dias' },
             { id: '90', label: 'Últimos 3 meses (90 dias)' },
-            { id: 'personalizado', label: 'Intervalo Personalizado 📅' }
+            { id: 'personalizado', label: 'Intervalo Personalizado  ' }
           ].map(p => {
             const isActive = presetFilter === p.id;
             return (
@@ -665,10 +665,10 @@ ___
       {/* Main interactive Tab selectors */}
       <div className="flex border-b border-soft-gray gap-4 overflow-x-auto">
         {[
-          { id: 'sinais', label: '📊 Sinais Vitais Históricos', icon: <Activity className="w-4 h-4" /> },
-          { id: 'rotina', label: '📅 Padrão de Sono e Humor', icon: <Moon className="w-4 h-4" /> },
-          { id: 'resumo', label: '💡 Resumo de Alimentação', icon: <FileText className="w-4 h-4" /> },
-          { id: 'whatsapp_diario', label: '💬 Relatório Diário WhatsApp', icon: <Share2 className="w-4 h-4 text-emerald-500" fill="currentColor" /> }
+          { id: 'sinais', label: '  Sinais Vitais Históricos', icon: <Activity className="w-4 h-4" /> },
+          { id: 'rotina', label: '  Padrão de Sono e Humor', icon: <Moon className="w-4 h-4" /> },
+          { id: 'resumo', label: '  Resumo de Alimentação', icon: <FileText className="w-4 h-4" /> },
+          { id: 'whatsapp_diario', label: '  Relatório Diário WhatsApp', icon: <Share2 className="w-4 h-4 text-emerald-500" fill="currentColor" /> }
         ].map(tb => (
           <button
             key={tb.id}
@@ -704,7 +704,7 @@ ___
                   O monitoramento no ambiente escolar é focado integralmente no bem-estar diário e desenvolvimento do(a) aluno(a). Isso inclui o controle de temperatura corporal para prevenção e identificação de episódios de febre, supervisão e registro dos períodos de sono e soneca, trocas higiênicas de fralda (com acompanhamento de assaduras ou necessidades), consumo alimentar/hídrico adequado e evolução saudável do peso da criança.
                 </p>
                 <div className="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 flex items-start gap-2.5 text-xs text-indigo-800">
-                  <span className="text-sm">💡</span>
+                  <span className="text-sm"> </span>
                   <div>
                     <strong className="font-bold block mb-1">Rotina Humanizada e Conectada</strong>
                     Use o formulário rápido de Diário de Rotina na Dashboard para registrar as sonecas, mamadeiras e trocas de fralda de hoje. Todas as observações estarão disponíveis para a família em tempo real!
@@ -917,7 +917,7 @@ ___
             </div>
             )}
 
-            {/* Weight Tracking Panel ⚖️ */}
+            {/* Weight Tracking Panel ⚖ */}
             <div className="border border-slate-200 rounded-3xl p-6 bg-white space-y-4 shadow-3xs">
               <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2">
                 <div>
@@ -1270,7 +1270,7 @@ ___
                           className="flex-1 px-4 py-3 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 text-sm"
                           title="Enviar de Verdade pelo WhatsApp"
                         >
-                          📱 Enviar p/ WhatsApp Real ({getNotificationRecipient().nome ? getNotificationRecipient().nome.split(' ')[0] : 'Família'})
+                            Enviar p/ WhatsApp Real ({getNotificationRecipient().nome ? getNotificationRecipient().nome.split(' ')[0] : 'Família'})
                         </button>
                       </div>
                     )}

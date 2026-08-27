@@ -158,25 +158,25 @@ export default function FamilySection({
 
   const getInviteAcessoLabel = () => {
     if (inviteRole === 'desenvolvedor') {
-      return '💻 Desenvolvedor do Sistema';
+      return '  Desenvolvedor do Sistema';
     }
     if (inviteRole === 'diretor') {
-      return '👔 Diretor(a) Geral';
+      return '  Diretor(a) Geral';
     }
     if (inviteRole === 'coordenador') {
-      return '👩‍🏫 Coordenador(a) Escolar' + (inviteClass !== 'Todas' ? ` (${inviteClass})` : '');
+      return ' 🏫 Coordenador(a) Escolar' + (inviteClass !== 'Todas' ? ` (${inviteClass})` : '');
     }
     if (inviteRole === 'cuidador' || inviteRole === 'professor') {
-      return (isEscolar ? '👨‍🏫 Professor(a) Titular' : 'Cuidador de Plantão') + (inviteClass !== 'Todas' ? ` (${inviteClass})` : '');
+      return (isEscolar ? ' 🏫 Professor(a) Titular' : 'Cuidador de Plantão') + (inviteClass !== 'Todas' ? ` (${inviteClass})` : '');
     }
     if (inviteRole === 'profissional') {
       return '🩺 Profissional de Saúde / Especialista (Médico, Fonoaudiólogo, Psicólogo, Pediatra, Terapeuta)';
     }
     if (inviteRole === 'familiar' || inviteRole === 'familiar_admin') {
-      return (inviteParentesco || 'Responsável') + ' • 👨‍👩‍👧 Familiar Admin (Com Autorizações)';
+      return (inviteParentesco || 'Responsável') + ' •     Familiar Admin (Com Autorizações)';
     }
     if (inviteRole === 'familiar_convidado') {
-      return (inviteParentesco || 'Parente') + ' • 👥 Familiar Convidado (Somente Leitura)';
+      return (inviteParentesco || 'Parente') + ' •   Familiar Convidado (Somente Leitura)';
     }
     return 'Profissional / Convidado';
   };
@@ -194,7 +194,7 @@ export default function FamilySection({
     // Validate PIN uniqueness
     const pinCheck = isPinUnique(fallbackPin);
     if (!pinCheck.isUnique) {
-      alert(`⚠️ O PIN "${fallbackPin}" já pertence a outro integrante (${pinCheck.conflictingUser?.nome}). Cada pessoa deve possuir um PIN exclusivo de 4 dígitos. Por favor, escolha outro PIN.`);
+      alert(`⚠ O PIN "${fallbackPin}" já pertence a outro integrante (${pinCheck.conflictingUser?.nome}). Cada pessoa deve possuir um PIN exclusivo de 4 dígitos. Por favor, escolha outro PIN.`);
       return;
     }
 
@@ -260,7 +260,7 @@ export default function FamilySection({
 
     // Dispatch global sync event
     window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-    alert(`🎉 Sucesso! O perfil de ${novoUsuario.nome} (${finalParentesco || finalType}) foi ativado e já está vinculado ao aluno(a) ${cleanStudentName}!`);
+    alert(`  Sucesso! O perfil de ${novoUsuario.nome} (${finalParentesco || finalType}) foi ativado e já está vinculado ao aluno(a) ${cleanStudentName}!`);
   };
 
   useEffect(() => {
@@ -357,7 +357,7 @@ export default function FamilySection({
     // Validate PIN uniqueness
     const pinCheck = isPinUnique(fallbackPin);
     if (!pinCheck.isUnique) {
-      alert(`⚠️ O PIN "${fallbackPin}" já pertence a outro integrante (${pinCheck.conflictingUser?.nome}). Cada pessoa deve ter seu próprio PIN exclusivo. Por favor, escolha outro PIN.`);
+      alert(`⚠ O PIN "${fallbackPin}" já pertence a outro integrante (${pinCheck.conflictingUser?.nome}). Cada pessoa deve ter seu próprio PIN exclusivo. Por favor, escolha outro PIN.`);
       return;
     }
 
@@ -477,7 +477,7 @@ export default function FamilySection({
     // Validate PIN uniqueness excluding current member
     const pinCheck = isPinUnique(editFallbackPin, editingMemberId || undefined);
     if (!pinCheck.isUnique) {
-      alert(`⚠️ O PIN "${editFallbackPin}" já está em uso por ${pinCheck.conflictingUser?.nome}. Cada integrante deve possuir seu próprio PIN de acesso. Por favor, digite um PIN exclusivo.`);
+      alert(`⚠ O PIN "${editFallbackPin}" já está em uso por ${pinCheck.conflictingUser?.nome}. Cada integrante deve possuir seu próprio PIN de acesso. Por favor, digite um PIN exclusivo.`);
       return;
     }
 
@@ -723,7 +723,7 @@ export default function FamilySection({
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
                 }`}
               >
-                <span>👨‍👩‍👧 Familiares</span>
+                <span>    Familiares</span>
                 <span className="text-[10px] opacity-80">({countFamiliar})</span>
               </button>
 
@@ -736,7 +736,7 @@ export default function FamilySection({
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
                 }`}
               >
-                <span>👩‍🏫 Educadores</span>
+                <span> 🏫 Educadores</span>
                 <span className="text-[10px] opacity-80">({countEducador})</span>
               </button>
 
@@ -749,7 +749,7 @@ export default function FamilySection({
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
                 }`}
               >
-                <span>👔 Direção & Coord.</span>
+                <span>  Direção & Coord.</span>
                 <span className="text-[10px] opacity-80">({countDirecao})</span>
               </button>
 
@@ -828,7 +828,7 @@ export default function FamilySection({
                 : 'bg-slate-50 border-slate-150'
             }`}>
               <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-lg mx-auto">
-                🔍
+                 
               </div>
               <h4 className="font-bold text-slate-800 dark:text-white">Nenhum integrante encontrado</h4>
               <p className="text-xs text-slate-500 max-w-sm mx-auto">
@@ -925,7 +925,7 @@ export default function FamilySection({
 
                         {/* PIN Access badge */}
                         <span className="inline-flex items-center gap-1 text-[9px] bg-amber-50 dark:bg-amber-950/40 border border-amber-200/60 text-amber-800 dark:text-amber-400 font-mono font-bold px-1.5 py-0.5 rounded-md">
-                          🔑 {user.pin || '1234'}
+                            {user.pin || '1234'}
                         </span>
                       </div>
                     </div>
@@ -1014,7 +1014,7 @@ export default function FamilySection({
 
                     {/* Login Pin reminder badge */}
                     <div className="flex items-center gap-1.5 text-[11px] bg-amber-50 border border-amber-200 rounded-xl p-2.5 font-bold text-amber-800">
-                      <span>🔑 PIN de Acesso:</span>
+                      <span>  PIN de Acesso:</span>
                       <span className="font-mono bg-white px-2 py-0.5 rounded text-xs tracking-wider select-all shadow-xs border border-amber-200">
                         {user.pin || '1234'}
                       </span>
@@ -1267,31 +1267,31 @@ export default function FamilySection({
                     >
                       {isEscolar ? (
                         <>
-                          {canInviteDev && <option value="desenvolvedor">💻 Desenvolvedor (Dev)</option>}
-                          {canInviteDiretor && <option value="diretor">👔 Diretor(a) Geral (Acesso Completo)</option>}
-                          {canInviteCoordenador && <option value="coordenador">👩‍🏫 Coordenador(a) Escolar (Salas Vinculadas)</option>}
+                          {canInviteDev && <option value="desenvolvedor">  Desenvolvedor (Dev)</option>}
+                          {canInviteDiretor && <option value="diretor">  Diretor(a) Geral (Acesso Completo)</option>}
+                          {canInviteCoordenador && <option value="coordenador"> 🏫 Coordenador(a) Escolar (Salas Vinculadas)</option>}
                           {canInviteProfessor && (
                             <>
-                              <option value="cuidador">👨‍🏫 Professor(a) / Educador(a) Titular</option>
+                              <option value="cuidador"> 🏫 Professor(a) / Educador(a) Titular</option>
                               <option value="profissional">🩺 Profissional de Saúde / Especialista (Médico, Fono, Psicólogo, Terapeuta, Pediatra)</option>
                             </>
                           )}
-                          {canInviteFamiliarAdmin && <option value="familiar">👨‍👩‍👧 Familiar Admin (Pais / Responsáveis com Autorização)</option>}
-                          <option value="familiar_convidado">👥 Familiar Convidado (Somente Leitura)</option>
+                          {canInviteFamiliarAdmin && <option value="familiar">    Familiar Admin (Pais / Responsáveis com Autorização)</option>}
+                          <option value="familiar_convidado">  Familiar Convidado (Somente Leitura)</option>
                         </>
                       ) : (
                         <>
-                          {canInviteDev && <option value="desenvolvedor">💻 Desenvolvedor (Dev)</option>}
-                          {canInviteDiretor && <option value="admin">👔 Administrador Geral / Responsável</option>}
-                          {canInviteCoordenador && <option value="coordenador">👩‍⚕️ Coordenador(a)</option>}
+                          {canInviteDev && <option value="desenvolvedor">  Desenvolvedor (Dev)</option>}
+                          {canInviteDiretor && <option value="admin">  Administrador Geral / Responsável</option>}
+                          {canInviteCoordenador && <option value="coordenador"> ⚕ Coordenador(a)</option>}
                           {canInviteProfessor && (
                             <>
-                              <option value="cuidador">👨‍⚕️ Cuidador Profissional / Plantonista</option>
+                              <option value="cuidador"> ⚕ Cuidador Profissional / Plantonista</option>
                               <option value="profissional">🩺 Profissional de Saúde / Especialista (Médico, Fono, Psicólogo, Terapeuta)</option>
                             </>
                           )}
-                          {canInviteFamiliarAdmin && <option value="familiar">👨‍👩‍👧 Familiar Admin</option>}
-                          <option value="familiar_convidado">👥 Familiar Convidado (Somente Leitura)</option>
+                          {canInviteFamiliarAdmin && <option value="familiar">    Familiar Admin</option>}
+                          <option value="familiar_convidado">  Familiar Convidado (Somente Leitura)</option>
                         </>
                       )}
                     </select>
@@ -1311,7 +1311,7 @@ export default function FamilySection({
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-pink-600 flex items-center gap-1">🔒 PIN de Acesso *</label>
+                    <label className="text-xs font-bold text-pink-600 flex items-center gap-1">  PIN de Acesso *</label>
                     <input 
                       type="text" 
                       placeholder="Ex: 1234" 
@@ -1324,7 +1324,7 @@ export default function FamilySection({
                     <span className="text-[9px] text-pink-500 font-bold leading-tight block">Sugerido: últimos 4 dígitos do celular</span>
                     {newMember.pin && integrantes.some(m => (m.pin || (m.telefone ? m.telefone.replace(/\D/g, '').slice(-4) : '1234')) === newMember.pin) && (
                       <div className="text-[10px] text-amber-800 bg-amber-50 border border-amber-200 p-1.5 rounded-lg font-bold mt-1 text-left leading-tight">
-                        ⚠️ Atenção: Os últimos dígitos coincidem com outro usuário cadastrado. Você pode personalizar este PIN com qualquer número único.
+                        ⚠ Atenção: Os últimos dígitos coincidem com outro usuário cadastrado. Você pode personalizar este PIN com qualquer número único.
                       </div>
                     )}
                   </div>
@@ -1348,7 +1348,7 @@ export default function FamilySection({
                     newMember.tipo === 'profissional' && selectedAddRooms.length === 0 ? (
                       <div className="p-4 bg-indigo-50/60 border border-indigo-200 rounded-2xl text-xs text-indigo-950 font-semibold space-y-1 animate-fade-in">
                         <p className="font-extrabold flex items-center gap-1.5 text-indigo-900 text-sm">
-                          👑 Acesso de Direção Geral Ativo
+                            Acesso de Direção Geral Ativo
                         </p>
                         <p className="text-[11px] text-slate-600 leading-relaxed font-bold">
                           Como <strong>Diretor(a) Geral</strong>, este usuário tem permissões administrativas globais e visualizará todas as salas da creche de forma irrestrita. O controle individual de turmas está desativado para esta função.
@@ -1362,7 +1362,7 @@ export default function FamilySection({
                           }}
                           className="text-[10px] text-indigo-600 font-extrabold hover:underline block pt-1.5 cursor-pointer"
                         >
-                          ⚙️ Alterar para Coordenador(a) Escolar (Selecionar turmas)
+                          ⚙ Alterar para Coordenador(a) Escolar (Selecionar turmas)
                         </button>
                       </div>
                     ) : (
@@ -1379,7 +1379,7 @@ export default function FamilySection({
                               }}
                               className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4"
                             />
-                            <span className="text-xs font-black text-slate-800">🗂️ Acesso Total a Todas as Salas (Diretor/Geral)</span>
+                            <span className="text-xs font-black text-slate-800">  Acesso Total a Todas as Salas (Diretor/Geral)</span>
                           </label>
                           {newMember.tipo === 'profissional' && (
                             <button
@@ -1387,7 +1387,7 @@ export default function FamilySection({
                               onClick={() => setSelectedAddRooms([])}
                               className="text-[10px] text-indigo-600 font-black hover:underline cursor-pointer"
                             >
-                              👑 Tornar Diretor(a) Geral
+                                Tornar Diretor(a) Geral
                             </button>
                           )}
                         </div>
@@ -1432,7 +1432,7 @@ export default function FamilySection({
                       onChange={e => setNewMember({ ...newMember, salaAula: e.target.value })}
                       className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-serene-blue/20 bg-white text-xs font-bold text-slate-750"
                     >
-                      <option value="Todas">🗂️ Todas as Salas / Visão Geral</option>
+                      <option value="Todas">  Todas as Salas / Visão Geral</option>
                       {classrooms.map(room => (
                         <option key={room.id} value={room.name}>{room.emoji} {room.name}</option>
                       ))}
@@ -1712,7 +1712,7 @@ export default function FamilySection({
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-pink-600 flex items-center gap-1">🔒 PIN de Acesso *</label>
+                    <label className="text-xs font-bold text-pink-600 flex items-center gap-1">  PIN de Acesso *</label>
                     <input 
                       type="text" 
                       placeholder="Ex: 1234" 
@@ -1725,7 +1725,7 @@ export default function FamilySection({
                     <span className="text-[9px] text-pink-500 font-bold leading-tight block">Sugerido: últimos 4 dígitos do celular</span>
                     {editMemberForm.pin && integrantes.some(m => m.id !== editMemberForm.id && (m.pin || (m.telefone ? m.telefone.replace(/\D/g, '').slice(-4) : '1234')) === editMemberForm.pin) && (
                       <div className="text-[10px] text-amber-800 bg-amber-50 border border-amber-200 p-1.5 rounded-lg font-bold mt-1 text-left leading-tight">
-                        ⚠️ Atenção: Os últimos dígitos coincidem com outro usuário cadastrado. Você pode personalizar este PIN com qualquer número único.
+                        ⚠ Atenção: Os últimos dígitos coincidem com outro usuário cadastrado. Você pode personalizar este PIN com qualquer número único.
                       </div>
                     )}
                   </div>
@@ -1749,7 +1749,7 @@ export default function FamilySection({
                     editMemberForm.tipo === 'profissional' && selectedEditRooms.length === 0 ? (
                       <div className="p-4 bg-indigo-50/60 border border-indigo-200 rounded-2xl text-xs text-indigo-950 font-semibold space-y-1 animate-fade-in">
                         <p className="font-extrabold flex items-center gap-1.5 text-indigo-900 text-sm">
-                          👑 Acesso de Direção Geral Ativo
+                            Acesso de Direção Geral Ativo
                         </p>
                         <p className="text-[11px] text-slate-600 leading-relaxed font-bold">
                           Como <strong>Diretor(a) Geral</strong>, este usuário tem permissões administrativas globais e visualizará todas as salas da creche de forma irrestrita. O controle individual de turmas está desativado para esta função.
@@ -1763,7 +1763,7 @@ export default function FamilySection({
                           }}
                           className="text-[10px] text-indigo-600 font-extrabold hover:underline block pt-1.5 cursor-pointer"
                         >
-                          ⚙️ Alterar para Coordenador(a) Escolar (Selecionar turmas)
+                          ⚙ Alterar para Coordenador(a) Escolar (Selecionar turmas)
                         </button>
                       </div>
                     ) : (
@@ -1780,7 +1780,7 @@ export default function FamilySection({
                               }}
                               className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4"
                             />
-                            <span className="text-xs font-black text-slate-800">🗂️ Acesso Total a Todas as Salas (Diretor/Geral)</span>
+                            <span className="text-xs font-black text-slate-800">  Acesso Total a Todas as Salas (Diretor/Geral)</span>
                           </label>
                           {editMemberForm.tipo === 'profissional' && (
                             <button
@@ -1788,7 +1788,7 @@ export default function FamilySection({
                               onClick={() => setSelectedEditRooms([])}
                               className="text-[10px] text-indigo-600 font-black hover:underline cursor-pointer"
                             >
-                              👑 Tornar Diretor(a) Geral
+                                Tornar Diretor(a) Geral
                             </button>
                           )}
                         </div>
@@ -1833,7 +1833,7 @@ export default function FamilySection({
                       onChange={e => setEditMemberForm({ ...editMemberForm, salaAula: e.target.value })}
                       className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-serene-blue/20 bg-white text-xs font-bold text-slate-750"
                     >
-                      <option value="Todas">🗂️ Todas as Salas / Visão Geral</option>
+                      <option value="Todas">  Todas as Salas / Visão Geral</option>
                       {classrooms.map(room => (
                         <option key={room.id} value={room.name}>{room.emoji} {room.name}</option>
                       ))}
@@ -1877,7 +1877,7 @@ export default function FamilySection({
       )}
 
       {/* ========================================================================= */}
-      {/* 💬 MULTI-FUNCTIONAL INTERACTIVE INVITATION LINK GENERATOR & SIMULATOR     */}
+      {/*   MULTI-FUNCTIONAL INTERACTIVE INVITATION LINK GENERATOR & SIMULATOR     */}
       {/* ========================================================================= */}
       {showInviteModal && (
         <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 z-50 animate-fade-in overflow-y-auto">
@@ -1917,7 +1917,7 @@ export default function FamilySection({
                   : 'bg-indigo-50 border-indigo-200 text-slate-800'
               }`}>
                 <div className="w-11 h-11 bg-indigo-600 rounded-full flex items-center justify-center text-xl shrink-0 shadow-xs">
-                  {inviteRole === 'diretor' || inviteRole === 'desenvolvedor' ? '👔' : inviteRole === 'coordenador' ? '👩‍🏫' : inviteRole === 'cuidador' || inviteRole === 'professor' ? '👨‍🏫' : inviteRole === 'profissional' ? '🩺' : (isEscolar ? '👶' : '👴')}
+                  {inviteRole === 'diretor' || inviteRole === 'desenvolvedor' ? ' ' : inviteRole === 'coordenador' ? ' 🏫' : inviteRole === 'cuidador' || inviteRole === 'professor' ? ' 🏫' : inviteRole === 'profissional' ? '🩺' : (isEscolar ? ' ' : ' ')}
                 </div>
                 <div className="space-y-0.5">
                   <span className={`text-[10px] font-black uppercase tracking-wider block ${
@@ -1930,7 +1930,7 @@ export default function FamilySection({
                   <h4 className={`text-base font-black ${
                     accessibilitySettings.darkMode ? 'text-white' : 'text-indigo-950'
                   }`}>
-                    {inviteRole === 'diretor' ? '👔 Direção Geral (Todas as Turmas)' : inviteRole === 'coordenador' ? '👩‍🏫 Coordenação Pedagógica' : inviteRole === 'cuidador' || inviteRole === 'professor' ? '👨‍🏫 Equipe Pedagógica / Docente' : inviteRole === 'profissional' ? '🩺 Profissional Especialista / Saúde' : cleanStudentName}
+                    {inviteRole === 'diretor' ? '  Direção Geral (Todas as Turmas)' : inviteRole === 'coordenador' ? ' 🏫 Coordenação Pedagógica' : inviteRole === 'cuidador' || inviteRole === 'professor' ? ' 🏫 Equipe Pedagógica / Docente' : inviteRole === 'profissional' ? '🩺 Profissional Especialista / Saúde' : cleanStudentName}
                   </h4>
                   <p className={`text-xs ${
                     accessibilitySettings.darkMode ? 'text-indigo-300' : 'text-indigo-850'
@@ -1971,29 +1971,29 @@ export default function FamilySection({
                           className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500/20 bg-slate-50 text-xs font-extrabold text-slate-750"
                         >
                           {canInviteDev && (
-                            <option value="desenvolvedor">💻 Desenvolvedor do Sistema (Dev Total)</option>
+                            <option value="desenvolvedor">  Desenvolvedor do Sistema (Dev Total)</option>
                           )}
                           {canInviteDiretor && (
-                            <option value="diretor">{isEscolar ? '👔 Diretor(a) Geral (Gestão Escolar)' : '👔 Administrador Geral'}</option>
+                            <option value="diretor">{isEscolar ? '  Diretor(a) Geral (Gestão Escolar)' : '  Administrador Geral'}</option>
                           )}
                           {canInviteCoordenador && (
-                            <option value="coordenador">{isEscolar ? '👩‍🏫 Coordenador(a) Pedagógico(a)' : '👩‍⚕️ Coordenador de Equipe'}</option>
+                            <option value="coordenador">{isEscolar ? ' 🏫 Coordenador(a) Pedagógico(a)' : ' ⚕ Coordenador de Equipe'}</option>
                           )}
                           {canInviteProfessor && (
                             <>
-                              <option value="cuidador">{isEscolar ? '👨‍🏫 Professor(a) / Educador(a) Titular' : '👨‍⚕️ Cuidador(a) / Plantonista'}</option>
+                              <option value="cuidador">{isEscolar ? ' 🏫 Professor(a) / Educador(a) Titular' : ' ⚕ Cuidador(a) / Plantonista'}</option>
                               <option value="profissional">🩺 Profissional de Saúde / Especialista (Médico, Fono, Psicólogo, Terapeuta, Pediatra)</option>
                             </>
                           )}
                           {canInviteFamiliarAdmin && (
-                            <option value="familiar">{isEscolar ? '👨‍👩‍👧 Familiar Admin (Mãe/Pai com Autorizações)' : '👨‍👩‍👧 Familiar Admin'}</option>
+                            <option value="familiar">{isEscolar ? '    Familiar Admin (Mãe/Pai com Autorizações)' : '    Familiar Admin'}</option>
                           )}
                           {canInviteFamiliarConvidado && (
-                            <option value="familiar_convidado">{isEscolar ? '👥 Familiar Convidado (Outro Parente - Leitor Sem Autorizações)' : '👥 Familiar Convidado (Somente Leitura)'}</option>
+                            <option value="familiar_convidado">{isEscolar ? '  Familiar Convidado (Outro Parente - Leitor Sem Autorizações)' : '  Familiar Convidado (Somente Leitura)'}</option>
                           )}
                         </select>
                         <span className="text-[10px] text-slate-400 font-semibold block pt-0.5">
-                          💡 Convidando como <strong>{usuarioAtual.nome}</strong>. Opções filtradas conforme sua hierarquia de acesso.
+                            Convidando como <strong>{usuarioAtual.nome}</strong>. Opções filtradas conforme sua hierarquia de acesso.
                         </span>
                       </div>
 
@@ -2035,13 +2035,13 @@ export default function FamilySection({
                             onChange={e => setInviteClass(e.target.value)}
                             className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500/20 bg-slate-50 text-xs font-bold text-slate-705"
                           >
-                            <option value="Todas">🗂️ Todas as Salas / Visão Geral</option>
-                            <option value="Berçário I">🍼 Berçário I (0-1 ano)</option>
-                            <option value="Berçário II">🐥 Berçário II (1-2 anos)</option>
-                            <option value="Maternal I">🧸 Maternal I (2-3 anos)</option>
-                            <option value="Maternal II">👶 Maternal II (3-4 anos)</option>
-                            <option value="Jardim I">🎨 Jardim I (4-5 anos)</option>
-                            <option value="Jardim II">🚀 Jardim II (5-6 anos)</option>
+                            <option value="Todas">  Todas as Salas / Visão Geral</option>
+                            <option value="Berçário I">  Berçário I (0-1 ano)</option>
+                            <option value="Berçário II">  Berçário II (1-2 anos)</option>
+                            <option value="Maternal I">  Maternal I (2-3 anos)</option>
+                            <option value="Maternal II">  Maternal II (3-4 anos)</option>
+                            <option value="Jardim I">  Jardim I (4-5 anos)</option>
+                            <option value="Jardim II">  Jardim II (5-6 anos)</option>
                           </select>
                         </div>
                       )}
@@ -2093,7 +2093,7 @@ export default function FamilySection({
                           MENSAGEM WHATSAPP
                         </div>
                         <div className="font-sans text-slate-700 leading-relaxed whitespace-pre-wrap mt-2 select-all">
-                          {`*Convite de Acesso - ${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}* 🧸\n\nOlá${inviteRecipientName ? ' ' + inviteRecipientName : ''}! Você foi convidado(a) por *${usuarioAtual.nome}* para acessar e acompanhar a rotina diária de *${cleanStudentName}* no aplicativo Anjo.\n\n*Acesso:* ${getInviteAcessoLabel()}\n\nPara ativar seu perfil com segurança e cadastrar seu PIN pessoal de acesso rápido, clique no link oficial abaixo:\n\n🔗 ${window.location.origin}/entrar?token=convite_${Date.now().toString(36)}&ref=${idoso.id}&role=${inviteRole}`}
+                          {`*Convite de Acesso - ${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}*  \n\nOlá${inviteRecipientName ? ' ' + inviteRecipientName : ''}! Você foi convidado(a) por *${usuarioAtual.nome}* para acessar e acompanhar a rotina diária de *${cleanStudentName}* no aplicativo Anjo.\n\n*Acesso:* ${getInviteAcessoLabel()}\n\nPara ativar seu perfil com segurança e cadastrar seu PIN pessoal de acesso rápido, clique no link oficial abaixo:\n\n  ${window.location.origin}/entrar?token=convite_${Date.now().toString(36)}&ref=${idoso.id}&role=${inviteRole}`}
                         </div>
                       </div>
 
@@ -2102,7 +2102,7 @@ export default function FamilySection({
                         {inviteRecipientPhone.replace(/\D/g, "").length >= 10 ? (
                           <button
                             onClick={() => {
-                              const linkMsg = `*Convite de Acesso - ${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}* 🧸\n\nOlá${inviteRecipientName ? ' ' + inviteRecipientName : ''}! Você foi convidado(a) por *${usuarioAtual.nome}* para acessar e acompanhar a rotina diária de *${cleanStudentName}* no aplicativo Anjo.\n\n*Acesso:* ${getInviteAcessoLabel()}\n\nPara ativar seu perfil com segurança e cadastrar seu PIN pessoal de acesso rápido, clique no link oficial abaixo:\n\n🔗 ${window.location.origin}/entrar?token=convite_${Date.now().toString(36)}&ref=${idoso.id}&role=${inviteRole}`;
+                              const linkMsg = `*Convite de Acesso - ${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}*  \n\nOlá${inviteRecipientName ? ' ' + inviteRecipientName : ''}! Você foi convidado(a) por *${usuarioAtual.nome}* para acessar e acompanhar a rotina diária de *${cleanStudentName}* no aplicativo Anjo.\n\n*Acesso:* ${getInviteAcessoLabel()}\n\nPara ativar seu perfil com segurança e cadastrar seu PIN pessoal de acesso rápido, clique no link oficial abaixo:\n\n  ${window.location.origin}/entrar?token=convite_${Date.now().toString(36)}&ref=${idoso.id}&role=${inviteRole}`;
                               const cleanNum = inviteRecipientPhone.replace(/\D/g, "");
                               window.open(`https://api.whatsapp.com/send?phone=55${cleanNum}&text=${encodeURIComponent(linkMsg)}`, '_blank');
                             }}
@@ -2112,7 +2112,7 @@ export default function FamilySection({
                           </button>
                         ) : (
                           <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-center text-[11px] text-slate-550 font-medium">
-                            💡 Digite o celular no campo ao lado para habilitar o <strong>disparo automático direto</strong> para o WhatsApp!
+                              Digite o celular no campo ao lado para habilitar o <strong>disparo automático direto</strong> para o WhatsApp!
                           </div>
                         )}
 
@@ -2120,7 +2120,7 @@ export default function FamilySection({
                         <button
                           type="button"
                           onClick={() => {
-                            const linkMsg = `*Convite de Acesso - ${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}* 🧸\n\nOlá${inviteRecipientName ? ' ' + inviteRecipientName : ''}! Você foi convidado(a) por *${usuarioAtual.nome}* para acessar e acompanhar a rotina diária de *${cleanStudentName}* no aplicativo Anjo.\n\n*Acesso:* ${getInviteAcessoLabel()}\n\nPara ativar seu perfil com segurança e cadastrar seu PIN pessoal de acesso rápido, clique no link oficial abaixo:\n\n🔗 ${window.location.origin}/entrar?token=convite_${Date.now().toString(36)}&ref=${idoso.id}&role=${inviteRole}`;
+                            const linkMsg = `*Convite de Acesso - ${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}*  \n\nOlá${inviteRecipientName ? ' ' + inviteRecipientName : ''}! Você foi convidado(a) por *${usuarioAtual.nome}* para acessar e acompanhar a rotina diária de *${cleanStudentName}* no aplicativo Anjo.\n\n*Acesso:* ${getInviteAcessoLabel()}\n\nPara ativar seu perfil com segurança e cadastrar seu PIN pessoal de acesso rápido, clique no link oficial abaixo:\n\n  ${window.location.origin}/entrar?token=convite_${Date.now().toString(36)}&ref=${idoso.id}&role=${inviteRole}`;
                             handleCopyInviteLink(linkMsg);
                           }}
                           className={`w-full py-2.5 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all ${
@@ -2201,7 +2201,7 @@ export default function FamilySection({
 
                     {/* Welcome Invite Alert */}
                     <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3 text-[11px] leading-relaxed text-emerald-900">
-                      👋 Olá! <strong>{usuarioAtual.nome}</strong> convidou você para fazer parte do plano de acompanhamento de <strong>{cleanStudentName}</strong>. 
+                        Olá! <strong>{usuarioAtual.nome}</strong> convidou você para fazer parte do plano de acompanhamento de <strong>{cleanStudentName}</strong>. 
                       Preencha os campos abaixo para ativar seu perfil:
                     </div>
 

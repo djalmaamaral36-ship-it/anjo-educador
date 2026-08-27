@@ -52,7 +52,7 @@ const THEMES: Record<ThemeType, ThemeConfig> = {
     badgeBg: '#FCE7F3',
     badgeText: '#9D174D',
     accentColor: '#EC4899',
-    emoji: '🌸'
+    emoji: ' '
   },
   sunset: {
     name: 'Pôr do Sol',
@@ -63,7 +63,7 @@ const THEMES: Record<ThemeType, ThemeConfig> = {
     badgeBg: '#FFEDD5',
     badgeText: '#C2410C',
     accentColor: '#F97316',
-    emoji: '🌅'
+    emoji: ' '
   },
   forest: {
     name: 'Bosque Verde',
@@ -74,7 +74,7 @@ const THEMES: Record<ThemeType, ThemeConfig> = {
     badgeBg: '#D1FAE5',
     badgeText: '#065F46',
     accentColor: '#10B981',
-    emoji: '🌳'
+    emoji: ' '
   },
   cosmic: {
     name: 'Estrela Cósmica',
@@ -96,7 +96,7 @@ const THEMES: Record<ThemeType, ThemeConfig> = {
     badgeBg: '#FEF3C7',
     badgeText: '#92400E',
     accentColor: '#F59E0B',
-    emoji: '🎒'
+    emoji: ' '
   }
 };
 
@@ -146,7 +146,7 @@ export function SocialShareModal({ isOpen, onClose, event, studentName }: Social
         if (readerEvent.target?.result) {
           setCustomPhotoUrl(readerEvent.target.result as string);
           setHidePhoto(false);
-          showToast('📸 Foto adicionada ao card com sucesso!');
+          showToast('  Foto adicionada ao card com sucesso!');
         }
       };
       reader.readAsDataURL(file);
@@ -171,15 +171,15 @@ export function SocialShareModal({ isOpen, onClose, event, studentName }: Social
   // Generate WhatsApp/Instagram style caption text
   const generateCaption = () => {
     const emojiMap: Record<string, string> = {
-      conquista: '🏆',
-      atividade: '🎨',
-      foto: '📸',
-      evolucao: '📈',
-      relatorio: '📝',
-      data_importante: '📅'
+      conquista: ' ',
+      atividade: ' ',
+      foto: ' ',
+      evolucao: ' ',
+      relatorio: ' ',
+      data_importante: ' '
     };
     
-    const categoryEmoji = emojiMap[event.tipo] || '🌟';
+    const categoryEmoji = emojiMap[event.tipo] || ' ';
     
     return `✨ MOMENTO INESQUECÍVEL NO ANJINHO ESCOLAR ✨
 
@@ -187,11 +187,11 @@ Hoje o(a) ${cleanStudentName} brilhou muito na escola!
 
 ${categoryEmoji} *${event.titulo}*
 "${event.descricao}"
-${customNote ? `\n💬 *Recadinho:* ${customNote}` : ''}
+${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
 
 🏫 Compartilhado pelo Anjinho Escolar, aproximando as famílias do dia a dia pedagógico com amor e transparência.
 
-👉 Ative suas notificações e participe das conquistas do seu pequeno!
+  Ative suas notificações e participe das conquistas do seu pequeno!
 
 #AnjinhoEscolar #EducacaoInfantil #AmorPedagogico #MomentosEscolares #DesenvolvimentoInfantil #EscolaParceira #${cleanStudentName.replace(/\s+/g, '')}`;
   };
@@ -200,7 +200,7 @@ ${customNote ? `\n💬 *Recadinho:* ${customNote}` : ''}
     try {
       await navigator.clipboard.writeText(generateCaption());
       setCopied(true);
-      showToast('📝 Legenda copiada com sucesso!');
+      showToast('  Legenda copiada com sucesso!');
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error('Falha ao copiar:', err);
@@ -286,17 +286,17 @@ ${customNote ? `\n💬 *Recadinho:* ${customNote}` : ''}
       ctx.fillStyle = currentTheme.badgeText;
       ctx.font = '900 22px sans-serif';
       ctx.textAlign = 'center';
-      const catText = event.tipo === 'conquista' ? '🏆 CONQUISTA' :
-                     event.tipo === 'atividade' ? '🎨 ATIVIDADE' :
-                     event.tipo === 'foto' ? '📸 FOTO DO DIA' :
-                     event.tipo === 'evolucao' ? '📈 EVOLUÇÁO' : '📝 ROTINA';
+      const catText = event.tipo === 'conquista' ? '  CONQUISTA' :
+                     event.tipo === 'atividade' ? '  ATIVIDADE' :
+                     event.tipo === 'foto' ? '  FOTO DO DIA' :
+                     event.tipo === 'evolucao' ? '  EVOLUÇÁO' : '  ROTINA';
       ctx.fillText(catText, tagX + 160, tagY + 36);
 
       // Student name highlight
       ctx.fillStyle = activeTheme === 'cosmic' ? '#FFFFFF' : '#1E293B';
       ctx.font = 'bold 28px sans-serif';
       ctx.textAlign = 'right';
-      ctx.fillText(`💙 ${cleanStudentName}`, boxX + boxWidth - 40, tagY + 36);
+      ctx.fillText(`  ${cleanStudentName}`, boxX + boxWidth - 40, tagY + 36);
 
       let contentStartY = tagY + 100;
 
@@ -450,7 +450,7 @@ ${customNote ? `\n💬 *Recadinho:* ${customNote}` : ''}
       if (customNote.trim()) {
         ctx.fillStyle = currentTheme.accentColor;
         ctx.font = 'italic bold 24px sans-serif';
-        const noteLines = wrapText(ctx, `💬 "${customNote}"`, boxWidth - 80, 28);
+        const noteLines = wrapText(ctx, `  "${customNote}"`, boxWidth - 80, 28);
         noteLines.forEach((line, idx) => {
           ctx.fillText(line, boxX + 40, contentStartY + (idx * 32));
         });
@@ -466,7 +466,7 @@ ${customNote ? `\n💬 *Recadinho:* ${customNote}` : ''}
       // 10. Outer bottom footer
       ctx.fillStyle = activeTheme === 'cosmic' ? '#94A3B8' : '#475569';
       ctx.font = 'bold 22px sans-serif';
-      ctx.fillText('🌟 Conectando famílias e escolas todos os dias 🌟', width / 2, height - (aspect === 'feed' ? 45 : 120));
+      ctx.fillText('  Conectando famílias e escolas todos os dias  ', width / 2, height - (aspect === 'feed' ? 45 : 120));
 
       // Trigger download
       const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
@@ -508,7 +508,7 @@ ${customNote ? `\n💬 *Recadinho:* ${customNote}` : ''}
   const handleConnectClick = () => {
     const inviteUrl = `https://anjinho.app/conectar?escola=AnjinhoEscolar&aluno=${encodeURIComponent(cleanStudentName)}`;
     navigator.clipboard.writeText(inviteUrl).then(() => {
-      showToast(`🔗 Link de convite para ${cleanStudentName} copiado!`);
+      showToast(`  Link de convite para ${cleanStudentName} copiado!`);
     }).catch(err => {
       console.error('Erro ao copiar link:', err);
     });
@@ -568,7 +568,7 @@ ${customNote ? `\n💬 *Recadinho:* ${customNote}` : ''}
               <div className="flex items-center gap-1.5">
                 <span className="flex h-2.5 w-2.5 rounded-full bg-emerald-500 animate-pulse" />
                 <span className="text-[10px] sm:text-xs font-black tracking-wider uppercase text-slate-700 dark:text-slate-200">
-                  📸 Card Pronto para Redes Sociais
+                    Card Pronto para Redes Sociais
                 </span>
               </div>
               <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/80 px-2 py-0.5 rounded-full">
@@ -590,7 +590,7 @@ ${customNote ? `\n💬 *Recadinho:* ${customNote}` : ''}
                 {aspect === 'story' && (
                   <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10">
                     <div className="flex items-center gap-1.5">
-                      <div className="w-6 h-6 rounded-full bg-indigo-600 border border-white/40 flex items-center justify-center text-[10px] font-black text-white">👼</div>
+                      <div className="w-6 h-6 rounded-full bg-indigo-600 border border-white/40 flex items-center justify-center text-[10px] font-black text-white"> </div>
                       <div>
                         <p className="text-[9px] font-black text-slate-800 drop-shadow-xs leading-none">anjinho_escolar</p>
                         <p className="text-[7px] text-slate-500 font-bold leading-none">Patrocinado</p>
@@ -619,13 +619,13 @@ ${customNote ? `\n💬 *Recadinho:* ${customNote}` : ''}
                       {/* Badge and Name Row */}
                       <div className="flex items-center justify-between gap-1">
                         <span className="text-[9px] sm:text-[10px] font-black px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
-                          {event.tipo === 'conquista' ? '🏆 Conquista' :
-                           event.tipo === 'atividade' ? '🎨 Atividade' :
-                           event.tipo === 'foto' ? '📸 Foto' :
-                           event.tipo === 'evolucao' ? '📈 Evolução' : '📝 Rotina'}
+                          {event.tipo === 'conquista' ? '  Conquista' :
+                           event.tipo === 'atividade' ? '  Atividade' :
+                           event.tipo === 'foto' ? '  Foto' :
+                           event.tipo === 'evolucao' ? '  Evolução' : '  Rotina'}
                         </span>
                         <span className="text-[9px] sm:text-[10px] font-black text-slate-800 dark:text-slate-100 truncate max-w-[130px]">
-                          💙 {cleanStudentName}
+                            {cleanStudentName}
                         </span>
                       </div>
 
@@ -643,7 +643,7 @@ ${customNote ? `\n💬 *Recadinho:* ${customNote}` : ''}
                         <div className="w-full py-5 sm:py-6 rounded-xl bg-indigo-50/50 dark:bg-slate-800/50 border border-dashed border-indigo-200 dark:border-slate-700 flex flex-col items-center justify-center text-indigo-400 gap-1">
                           <span className="text-2xl animate-bounce">{currentTheme.emoji}</span>
                           <span className="text-[9px] font-black tracking-wider uppercase text-indigo-600 dark:text-indigo-400">
-                            {hidePhoto ? 'Proteção de Imagem Ativa 🔒' : 'Momento Pedagógico'}
+                            {hidePhoto ? 'Proteção de Imagem Ativa  ' : 'Momento Pedagógico'}
                           </span>
                           <span className="text-[7px] sm:text-[8px] text-slate-500 text-center px-4 font-semibold">
                             {hidePhoto ? 'Foto oculta para proteção de privacidade.' : 'Aproximando com amor.'}
@@ -665,7 +665,7 @@ ${customNote ? `\n💬 *Recadinho:* ${customNote}` : ''}
                       {customNote.trim() && (
                         <div className="border-t border-dashed border-slate-200 dark:border-slate-800 pt-1">
                           <p className="text-[9px] sm:text-[10px] font-black italic text-indigo-600 dark:text-indigo-400">
-                            💬 "{customNote}"
+                              "{customNote}"
                           </p>
                         </div>
                       )}
@@ -673,7 +673,7 @@ ${customNote ? `\n💬 *Recadinho:* ${customNote}` : ''}
 
                     {/* Watermark Logo bottom of white card */}
                     <div className="text-center text-[8px] font-extrabold text-slate-400 dark:text-slate-500 pt-1">
-                      Compartilhado pelo app Anjinho Escolar 👼
+                      Compartilhado pelo app Anjinho Escolar  
                     </div>
                   </div>
 
@@ -683,7 +683,7 @@ ${customNote ? `\n💬 *Recadinho:* ${customNote}` : ''}
                     onClick={handleConnectClick}
                     className="w-full text-center text-[10px] font-black text-slate-800 dark:text-slate-200 mt-2 select-none drop-shadow-xs hover:text-indigo-600 dark:hover:text-indigo-400 hover:scale-102 hover:underline transition-all cursor-pointer bg-transparent border-none flex items-center justify-center gap-1 py-1"
                   >
-                    👉 Toque para se conectar e acompanhar!
+                      Toque para se conectar e acompanhar!
                   </button>
 
                 </div>
@@ -721,7 +721,7 @@ ${customNote ? `\n💬 *Recadinho:* ${customNote}` : ''}
                 </button>
               </div>
               <p className="text-[9px] text-center text-slate-500 font-bold">
-                👇 Role para baixo para personalizar cores, fotos e legenda
+                  Role para baixo para personalizar cores, fotos e legenda
               </p>
             </div>
           </div>
@@ -771,7 +771,7 @@ ${customNote ? `\n💬 *Recadinho:* ${customNote}` : ''}
               >
                 <div className="space-y-0.5">
                   <span className="text-xs font-black text-slate-900 dark:text-white flex items-center gap-1.5">
-                    🔒 Ocultar Foto do(a) Aluno(a)
+                      Ocultar Foto do(a) Aluno(a)
                   </span>
                   <p className="text-[9px] text-slate-600 dark:text-slate-400 font-semibold">
                     Garante conformidade com a LGPD sem expor o rosto da criança.
@@ -867,7 +867,7 @@ ${customNote ? `\n💬 *Recadinho:* ${customNote}` : ''}
                     type="text"
                     value={customNote}
                     onChange={(e) => setCustomNote(e.target.value.slice(0, 60))}
-                    placeholder="Ex: Orgulho do papai e da mamãe! ❤️"
+                    placeholder="Ex: Orgulho do papai e da mamãe! ❤"
                     className="flex-1 min-w-0 border px-3 py-2 rounded-xl text-xs font-semibold focus:outline-indigo-500 bg-white text-slate-900 border-slate-200 dark:bg-slate-850 dark:text-white dark:border-slate-700"
                   />
                   <VoiceInput
@@ -956,7 +956,7 @@ ${customNote ? `\n💬 *Recadinho:* ${customNote}` : ''}
 
               <div className="text-center">
                 <p className="text-[10px] text-slate-600 dark:text-slate-400 font-semibold">
-                  💡 Compartilhe a imagem baixada nos Stories ou Feed e cole a legenda copiada!
+                    Compartilhe a imagem baixada nos Stories ou Feed e cole a legenda copiada!
                 </p>
               </div>
             </div>

@@ -235,7 +235,7 @@ export default function Dashboard({
     if (!auth.isAuthorized) {
       return (
         <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-start gap-3 shadow-xs mb-3">
-          <div className="text-xl"> âš ï¸ </div>
+          <div className="text-xl"> âš  </div>
           <div className="space-y-1">
             <h4 className="font-extrabold text-sm text-rose-950">
               {isEscolar ? 'AlimentaÃ§Ã£o e Cuidados NÃ£o Autorizados' : 'Sem AutorizaÃ§Ã£o de Cuidados'}
@@ -600,7 +600,7 @@ Equipe Anjinho Escolar`
       e.stopPropagation();
     }
     if (!isStaffUser(usuarioAtual)) {
-      alert(" âš ï¸  OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para excluir informaÃ§Ãµes!");
+      alert(" âš   OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para excluir informaÃ§Ãµes!");
       return;
     }
     const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
@@ -624,7 +624,7 @@ Equipe Anjinho Escolar`
       e.stopPropagation();
     }
     if (!isStaffUser(usuarioAtual)) {
-      alert(" âš ï¸  OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para excluir informaÃ§Ãµes!");
+      alert(" âš   OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para excluir informaÃ§Ãµes!");
       return;
     }
     const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
@@ -648,7 +648,7 @@ Equipe Anjinho Escolar`
       e.stopPropagation();
     }
     if (!isStaffUser(usuarioAtual)) {
-      alert(" âš ï¸  OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para excluir observaÃ§Ãµes!");
+      alert(" âš   OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para excluir observaÃ§Ãµes!");
       return;
     }
     triggerConfirm(
@@ -679,7 +679,7 @@ Equipe Anjinho Escolar`
       e.stopPropagation();
     }
     if (!isStaffUser(usuarioAtual)) {
-      alert(" âš ï¸  OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para limpar ou excluir registros!");
+      alert(" âš   OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para limpar ou excluir registros!");
       return;
     }
     triggerConfirm(
@@ -714,7 +714,7 @@ Equipe Anjinho Escolar`
       e.stopPropagation();
     }
     if (!isStaffUser(usuarioAtual)) {
-      alert(" âš ï¸  OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para excluir ocorrÃªncias!");
+      alert(" âš   OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para excluir ocorrÃªncias!");
       return;
     }
     triggerConfirm(
@@ -1796,7 +1796,7 @@ Equipe Anjinho Escolar`
     if (['alimentacao', 'banho', 'medicacao', 'hidratacao'].includes(task.tipo)) {
       const auth = checkFeedingCareAuthorization();
       if (!auth.isAuthorized) {
-        alert(` âš ï¸  OperaÃ§Ã£o NÃ£o Autorizada: Nenhum pai ou responsÃ¡vel autorizou "AlimentaÃ§Ã£o e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora nÃ£o tem permissÃ£o para registrar ou realizar esta atividade.`);
+        alert(` âš   OperaÃ§Ã£o NÃ£o Autorizada: Nenhum pai ou responsÃ¡vel autorizou "AlimentaÃ§Ã£o e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora nÃ£o tem permissÃ£o para registrar ou realizar esta atividade.`);
         return;
       }
     }
@@ -1808,7 +1808,7 @@ Equipe Anjinho Escolar`
 
     // Check if refusal and comment is blank
     if (targetStatus === 'recusado' && !comment.trim()) {
-      alert(" âš ï¸  AtenÃ§Ã£o: Por favor, preencha o campo de observaÃ§Ãµes com a justificativa tÃ©cnica para a recusa ou nÃ£o-administraÃ§Ã£o do cuidado!");
+      alert(" âš   AtenÃ§Ã£o: Por favor, preencha o campo de observaÃ§Ãµes com a justificativa tÃ©cnica para a recusa ou nÃ£o-administraÃ§Ã£o do cuidado!");
       return;
     }
 
@@ -1875,7 +1875,7 @@ Equipe Anjinho Escolar`
     const updated = tarefas.map(t => {
       if (t.id === taskId) {
         const detailStr = comment ? ` Relato: "${comment}".` : '';
-        const actionText = targetStatus === 'concluido' ? 'concluÃ­da' : ' âš ï¸  RECUSADA (Registrado com Justificativa)';
+        const actionText = targetStatus === 'concluido' ? 'concluÃ­da' : ' âš   RECUSADA (Registrado com Justificativa)';
         const msg = `Anjo Cuidador: A atividade "${t.titulo}" de ${idoso.nome} foi registrada como ${actionText} por ${usuarioAtual.nome}.${detailStr}`;
         
         triggerWhatsAppSim(t.titulo + ' ' + (targetStatus === 'concluido' ? 'ConcluÃ­do' : 'Recusado'), msg);
@@ -2123,7 +2123,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
   // Reset task execution back to pending
   const handleResetTask = async (taskId: string) => {
     if (!isStaffUser(usuarioAtual)) {
-      alert(" âš ï¸  OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para desfazer ou alterar atividades!");
+      alert(" âš   OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para desfazer ou alterar atividades!");
       return;
     }
     if (!isShiftActive) {
@@ -2309,7 +2309,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
   const handleAddCustomTask = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isStaffUser(usuarioAtual)) {
-      alert(" âš ï¸  OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para criar atividades ou alterar a rotina!");
+      alert(" âš   OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para criar atividades ou alterar a rotina!");
       return;
     }
     if (!isShiftActive) {
@@ -2597,7 +2597,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     if (parsedAuraTasks.length === 0) return;
 
     if (!isStaffUser(usuarioAtual)) {
-      alert(" âš ï¸  OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para criar atividades!");
+      alert(" âš   OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para criar atividades!");
       return;
     }
 
@@ -2742,7 +2742,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
   const handleEditTaskSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isStaffUser(usuarioAtual)) {
-      alert(" âš ï¸  OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para editar atividades!");
+      alert(" âš   OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para editar atividades!");
       return;
     }
     if (!editingTaskForm.titulo.trim() || !editingTaskForm.horarioPrevisto.trim()) {
@@ -2790,7 +2790,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
       e.stopPropagation();
     }
     if (!isStaffUser(usuarioAtual)) {
-      alert(" âš ï¸  OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para excluir atividades!");
+      alert(" âš   OperaÃ§Ã£o Bloqueada: Familiares nÃ£o tÃªm permissÃ£o para excluir atividades!");
       return;
     }
     const description = isEscolar 
@@ -3014,7 +3014,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
 
   const handleToggleAbsence = () => {
     if (!isStaffUser(usuarioAtual)) {
-      alert(" âš ï¸  OperaÃ§Ã£o Bloqueada: Apenas educadores/cuidadores autorizados podem registrar ou alterar faltas/ausÃªncias de alunos!");
+      alert(" âš   OperaÃ§Ã£o Bloqueada: Apenas educadores/cuidadores autorizados podem registrar ou alterar faltas/ausÃªncias de alunos!");
       return;
     }
     const nextAbsent = !isAbsent;
@@ -3130,8 +3130,8 @@ Desejamos um excelente dia e esperamos vÃª-lo(a) de volta em breve! Qualquer dÃº
       e.preventDefault();
       e.stopPropagation();
       alert(isEscolar 
-        ? " âš ï¸  PerÃ­odo Letivo NÃ£o Iniciado!\n\nPor favor, clique no botÃ£o 'Iniciar PerÃ­odo' ou 'Iniciar Coletivo' no topo da pÃ¡gina antes de lanÃ§ar qualquer refeiÃ§Ã£o, higiene, comportamento, medicamento ou saÃºde do aluno!" 
-        : " âš ï¸  Turno de Cuidados NÃ£o Iniciado!\n\nPor favor, clique no botÃ£o 'Iniciar Meu Turno de Cuidados' no topo da pÃ¡gina antes de lanÃ§ar qualquer controle de rotina, refeiÃ§Ã£o, higiene ou saÃºde!"
+        ? " âš   PerÃ­odo Letivo NÃ£o Iniciado!\n\nPor favor, clique no botÃ£o 'Iniciar PerÃ­odo' ou 'Iniciar Coletivo' no topo da pÃ¡gina antes de lanÃ§ar qualquer refeiÃ§Ã£o, higiene, comportamento, medicamento ou saÃºde do aluno!" 
+        : " âš   Turno de Cuidados NÃ£o Iniciado!\n\nPor favor, clique no botÃ£o 'Iniciar Meu Turno de Cuidados' no topo da pÃ¡gina antes de lanÃ§ar qualquer controle de rotina, refeiÃ§Ã£o, higiene ou saÃºde!"
       );
     }
   };
@@ -3442,7 +3442,7 @@ Desejamos um excelente dia e esperamos vÃª-lo(a) de volta em breve! Qualquer dÃº
 
   const handleEndShiftGroup = (className: string) => {
     if (!isStaffUser(usuarioAtual)) {
-      alert(" âš ï¸  OperaÃ§Ã£o Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o perÃ­odo letivo coletivo!");
+      alert(" âš   OperaÃ§Ã£o Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o perÃ­odo letivo coletivo!");
       return;
     }
     try {
@@ -3645,7 +3645,7 @@ Equipe Anjinho Escolar`;
   // 1. Double-Step Review Trigger
   const handleTriggerEndShiftReview = () => {
     if (!isStaffUser(usuarioAtual)) {
-      alert(" âš ï¸  OperaÃ§Ã£o Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o perÃ­odo letivo!");
+      alert(" âš   OperaÃ§Ã£o Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o perÃ­odo letivo!");
       return;
     }
     const currentStartTime = shiftStartTime || new Date().toISOString();
@@ -3820,7 +3820,7 @@ Equipe Anjinho Escolar`;
     }
 
     if (atrasadas.length > 0 || pendentes.length > 0) {
-      fullReportMsg += isEscolar ? `\n âš ï¸  *PENDÃŠNCIAS / NÃO CONCLUÃDOS:*\n` : `\n âš ï¸  *PENDÃŠNCIAS / NÃO ADMINISTRADOS:*\n`;
+      fullReportMsg += isEscolar ? `\n âš   *PENDÃŠNCIAS / NÃO CONCLUÃDOS:*\n` : `\n âš   *PENDÃŠNCIAS / NÃO ADMINISTRADOS:*\n`;
       if (atrasadas.length > 0) {
         atrasadas.forEach((a: any) => {
           fullReportMsg += `   [ATRASADO] ${a.titulo} prevista para ${a.horarioPrevisto}\n`;
@@ -4182,7 +4182,7 @@ As atividades e registros do dia permanecem salvos no relatÃ³rio escolar. Qualqu
     }
     const auth = checkFeedingCareAuthorization();
     if (!auth.isAuthorized) {
-      alert(` âš ï¸  OperaÃ§Ã£o NÃ£o Autorizada: Nenhum pai ou responsÃ¡vel autorizou "AlimentaÃ§Ã£o e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora nÃ£o pode registrar hidrataÃ§Ã£o.`);
+      alert(` âš   OperaÃ§Ã£o NÃ£o Autorizada: Nenhum pai ou responsÃ¡vel autorizou "AlimentaÃ§Ã£o e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora nÃ£o pode registrar hidrataÃ§Ã£o.`);
       return;
     }
     const defaultTime = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -4276,7 +4276,7 @@ As atividades e registros do dia permanecem salvos no relatÃ³rio escolar. Qualqu
     }
     const auth = checkFeedingCareAuthorization();
     if (!auth.isAuthorized) {
-      alert(` âš ï¸  OperaÃ§Ã£o NÃ£o Autorizada: Nenhum pai ou responsÃ¡vel autorizou "AlimentaÃ§Ã£o e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora nÃ£o pode registrar refeiÃ§Ãµes.`);
+      alert(` âš   OperaÃ§Ã£o NÃ£o Autorizada: Nenhum pai ou responsÃ¡vel autorizou "AlimentaÃ§Ã£o e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora nÃ£o pode registrar refeiÃ§Ãµes.`);
       return;
     }
 
@@ -4315,7 +4315,7 @@ As atividades e registros do dia permanecem salvos no relatÃ³rio escolar. Qualqu
           ceia: isEscolar ? ' ChÃ¡ ou Suco PÃ³s-Soneca' : ' Ceia / Repouso'
         };
         const label = mealLabelMap[quickMeal.refeicao] || quickMeal.refeicao;
-        const confirmSave = window.confirm(` âš ï¸  AtenÃ§Ã£o: VocÃª jÃ¡ registrou a refeiÃ§Ã£o "${label}" para ${idoso.nome} hoje!\n\nDeseja realmente salvar um NOVO registro para essa mesma refeiÃ§Ã£o?`);
+        const confirmSave = window.confirm(` âš   AtenÃ§Ã£o: VocÃª jÃ¡ registrou a refeiÃ§Ã£o "${label}" para ${idoso.nome} hoje!\n\nDeseja realmente salvar um NOVO registro para essa mesma refeiÃ§Ã£o?`);
         if (!confirmSave) return;
       }
     }
@@ -4409,13 +4409,13 @@ As atividades e registros do dia permanecem salvos no relatÃ³rio escolar. Qualqu
     }
     const auth = checkFeedingCareAuthorization();
     if (!auth.isAuthorized) {
-      alert(` âš ï¸  OperaÃ§Ã£o NÃ£o Autorizada: Nenhum pai ou responsÃ¡vel autorizou "AlimentaÃ§Ã£o e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora nÃ£o pode registrar cuidados de higiene.`);
+      alert(` âš   OperaÃ§Ã£o NÃ£o Autorizada: Nenhum pai ou responsÃ¡vel autorizou "AlimentaÃ§Ã£o e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora nÃ£o pode registrar cuidados de higiene.`);
       return;
     }
 
     const alreadyCompleted = tarefas.some(t => t.tipo === 'banho' && t.status === 'concluido');
     if (alreadyCompleted) {
-      const confirmSave = window.confirm(` âš ï¸  AtenÃ§Ã£o: O registro de Higiene para ${idoso.nome} jÃ¡ foi marcado como concluÃ­do hoje!\n\nDeseja realmente salvar um NOVO registro de higiene?`);
+      const confirmSave = window.confirm(` âš   AtenÃ§Ã£o: O registro de Higiene para ${idoso.nome} jÃ¡ foi marcado como concluÃ­do hoje!\n\nDeseja realmente salvar um NOVO registro de higiene?`);
       if (!confirmSave) return;
     }
 
@@ -4604,7 +4604,7 @@ As atividades e registros do dia permanecem salvos no relatÃ³rio escolar. Qualqu
 
       if (isDuplicateSleepWithSono || isDuplicateSleepWithSinais) {
         const sourceName = isDuplicateSleepWithSono ? 'FrequÃªncia (Rotina)' : 'DiÃ¡rio da Inf';
-        alert(` âš ï¸  Registro Duplicado Bloqueado: JÃ¡ existe um registro de soneca/sono para ${idoso.nome} no mesmo horÃ¡rio (${timeMatch ? `${timeMatch[1]} Ã€s ${timeMatch[2]}` : newSono}) lanÃ§ado hoje no ${sourceName}!\n\nNÃ£o Ã© permitido salvar mensagens/registros duplicados para el mesmo horÃ¡rio.`);
+        alert(` âš   Registro Duplicado Bloqueado: JÃ¡ existe um registro de soneca/sono para ${idoso.nome} no mesmo horÃ¡rio (${timeMatch ? `${timeMatch[1]} Ã€s ${timeMatch[2]}` : newSono}) lanÃ§ado hoje no ${sourceName}!\n\nNÃ£o Ã© permitido salvar mensagens/registros duplicados para el mesmo horÃ¡rio.`);
         return;
       }
 
@@ -4619,7 +4619,7 @@ As atividades e registros do dia permanecem salvos no relatÃ³rio escolar. Qualqu
                             ((Number(quickVitals.temp) || 36.5) === lastRecord.temperatura);
         
         if (isIdentical) {
-          alert(` âš ï¸  Registro IdÃªntico Bloqueado: VocÃª jÃ¡ salvou exatamente essas informaÃ§Ãµes no DiÃ¡rio da Inf para ${idoso.nome} hoje!\n\nNÃ£o Ã© permitido enviar duas mensagens idÃªnticas.`);
+          alert(` âš   Registro IdÃªntico Bloqueado: VocÃª jÃ¡ salvou exatamente essas informaÃ§Ãµes no DiÃ¡rio da Inf para ${idoso.nome} hoje!\n\nNÃ£o Ã© permitido enviar duas mensagens idÃªnticas.`);
           return;
         }
 
@@ -5295,7 +5295,7 @@ As atividades e registros do dia permanecem salvos no relatÃ³rio escolar. Qualqu
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          <span>{isEscolar ? 'ğŸ‘©â€ğŸ«' : 'ğŸ©º'}</span>
+          <span>{isEscolar ? 'AULA' : 'SaÃºde'}</span>
           <span>{isEscolar ? 'Painel da Professora' : 'Painel do Cuidador'}</span>
         </button>
         <button
@@ -5306,7 +5306,7 @@ As atividades e registros do dia permanecem salvos no relatÃ³rio escolar. Qualqu
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          <span>ğŸŒ¿</span>
+          <span>PAX</span>
           <span>{isEscolar ? 'Portal de Tranquilidade' : 'Portal de Tranquilidade'}</span>
         </button>
       </div>
@@ -5345,7 +5345,7 @@ As atividades e registros do dia permanecem salvos no relatÃ³rio escolar. Qualqu
                 onClick={() => setShowSimulationTools(!showSimulationTools)}
                 className="text-[10px] font-black text-slate-500 hover:text-slate-800 transition-colors uppercase tracking-widest bg-slate-200/60 px-2.5 py-1 rounded-md cursor-pointer flex items-center gap-1 select-none"
               >
-                 âš ï¸  {showSimulationTools ? 'Ocultar Simulador' : 'Simular Redes / Testes'}
+                 âš   {showSimulationTools ? 'Ocultar Simulador' : 'Simular Redes / Testes'}
               </button>
             )}
           </div>
@@ -6299,7 +6299,7 @@ As atividades e registros do dia permanecem salvos no relatÃ³rio escolar. Qualqu
                       <option value="calmo"> Calmo / Sereno</option>
                       <option value="feliz"> Feliz / Comunicativo</option>
                       <option value="sonolento"> Sonolento / Repousando</option>
-                      <option value="agitado"> âš ï¸  Agitado / Inquieto</option>
+                      <option value="agitado"> âš   Agitado / Inquieto</option>
                       <option value="confuso"> Desorientado / Confuso</option>
                       <option value="recusando"> Resiste Ã€s IntervenÃ§Ãµes</option>
                     </select>
@@ -6534,7 +6534,7 @@ As atividades e registros do dia permanecem salvos no relatÃ³rio escolar. Qualqu
                             onClick={() => setQuickVitals(prev => ({ ...prev, temp: '38.0' }))}
                             className="px-1.5 py-0.5 bg-rose-50 hover:bg-rose-100 border border-rose-100 text-rose-800 rounded text-[9px] font-extrabold transition-all cursor-pointer"
                           >
-                            38,0Â°C  âš ï¸ 
+                            38,0Â°C  âš  
                           </button>
                         </div>
                       )}
@@ -7747,7 +7747,7 @@ Segunda-feira:
 
                             {isRefused && (
                               <div className="text-[10px] font-semibold bg-amber-100 text-amber-800 p-2 rounded-xl mt-2 flex flex-col gap-0.5 border border-amber-200">
-                                <span className="flex items-center gap-1"> âš ï¸  RECUSADO / NÃO-ADMINISTRADO Ã€s {task.concluidaEm || task.horarioPrevisto} por {task.completadaPor}</span>
+                                <span className="flex items-center gap-1"> âš   RECUSADO / NÃO-ADMINISTRADO Ã€s {task.concluidaEm || task.horarioPrevisto} por {task.completadaPor}</span>
                                 {task.observacao && <span>Justificativa: "{task.observacao}"</span>}
                               </div>
                             )}
@@ -7790,7 +7790,7 @@ Segunda-feira:
                             }}
                             className="text-[9px] font-extrabold text-rose-600 uppercase tracking-wider bg-rose-50 border border-rose-200 px-2 py-1 rounded-lg hover:bg-rose-100 shrink-0"
                           >
-                             âš ï¸  Alerta CrÃ­tico
+                             âš   Alerta CrÃ­tico
                           </button>
                         )}
                         
@@ -7845,7 +7845,7 @@ Segunda-feira:
                   : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
-              <span>{isEscolar ? 'ğŸ‘©â€ğŸ«' : 'ğŸ©º'}</span>
+              <span>{isEscolar ? 'AULA' : 'SaÃºde'}</span>
               <span>{isEscolar ? 'Painel da Professora' : 'Painel do Cuidador'}</span>
             </button>
             <button
@@ -7856,7 +7856,7 @@ Segunda-feira:
                   : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
-              <span>ğŸŒ¿</span>
+              <span>PAX</span>
               <span>{isEscolar ? 'Portal de Tranquilidade' : 'Portal de Tranquilidade'}</span>
             </button>
           </div>
@@ -8055,7 +8055,7 @@ Segunda-feira:
                   {farol.status === 'verde' 
                     ? (isEscolar ? ' Tudo Sob Controle na Escola' : ' Tudo Sob Controle na ResidÃªncia') 
                     : farol.status === 'amarelo' 
-                      ? (isEscolar ? ' âš ï¸  Atividades e PendÃªncias Ativas' : ' âš ï¸  Cuidados e PendÃªncias Ativas') 
+                      ? (isEscolar ? ' âš   Atividades e PendÃªncias Ativas' : ' âš   Cuidados e PendÃªncias Ativas') 
                       : ' AtenÃ§Ã£o NecessÃ¡ria Para Atrasos!'}
                 </h3>
                 <p className="text-xs text-slate-600 leading-relaxed max-w-md">
@@ -8131,9 +8131,9 @@ Segunda-feira:
                         <div className="flex items-start justify-between gap-2">
                           <div>
                         <span className={isSuspended ? "px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-200 text-amber-900" : "px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-200 text-emerald-900"}>
-                              {isSuspended ? 'â¸ï¸ Suspenso' : 'âœ… Ativo (Autorizado)'}
+                              {isSuspended ? 'â¸ Suspenso' : 'âœ… Ativo (Autorizado)'}
                             </span>
-                            <h4 className="font-extrabold text-sm text-slate-850 mt-1">ğŸ’Š {m.nome}</h4>
+                            <h4 className="font-extrabold text-sm text-slate-850 mt-1">Med {m.nome}</h4>
                             <p className="text-xs text-slate-600 font-medium">{m.dosagem}</p>
                           </div>
                           <button
@@ -8489,7 +8489,7 @@ Segunda-feira:
                   case 'sonolento':
                     return { label: 'Sonolento / Repousando', emoji: '', bg: 'bg-indigo-50 text-indigo-800 border-indigo-200' };
                   case 'agitado':
-                    return { label: 'Agitado / Inquieto', emoji: ' âš ï¸ ', bg: 'bg-rose-50 text-rose-800 border-rose-200' };
+                    return { label: 'Agitado / Inquieto', emoji: ' âš  ', bg: 'bg-rose-50 text-rose-800 border-rose-200' };
                   case 'confuso':
                     return { label: 'Desorientado / Confuso', emoji: '', bg: 'bg-orange-50 text-orange-800 border-orange-200' };
                   case 'recusando':
@@ -8703,7 +8703,7 @@ Segunda-feira:
                   </strong>
                 </div>
                 <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded-sm self-start mt-2">
-                  {latestVitals ? (latestVitals.temperatura >= 37.8 ? 'Febre  âš ï¸ ' : 'Afebril') : 'Afebril'}
+                  {latestVitals ? (latestVitals.temperatura >= 37.8 ? 'Febre  âš  ' : 'Afebril') : 'Afebril'}
                 </span>
               </div>
 
@@ -8743,7 +8743,7 @@ Segunda-feira:
                 const humsToday = getFromDB<RegistroHumor[]>('anjo_humor', []).filter(h => h && h.idosoId === idoso.id && isTodayOrDemoDate(h.data));
                 const currentHum = humsToday.length > 0 ? humsToday[humsToday.length - 1] : null;
                 const stateDisplay = currentHum?.estado || quickHumor.estado || 'calmo';
-                const emoji = stateDisplay === 'feliz' ? '' : stateDisplay === 'sonolento' ? '' : stateDisplay === 'agitado' ? ' âš ï¸ ' : stateDisplay === 'confuso' ? '' : stateDisplay === 'recusando' ? '' : '';
+                const emoji = stateDisplay === 'feliz' ? '' : stateDisplay === 'sonolento' ? '' : stateDisplay === 'agitado' ? ' âš  ' : stateDisplay === 'confuso' ? '' : stateDisplay === 'recusando' ? '' : '';
                 const label = stateDisplay === 'feliz' ? 'Feliz' : stateDisplay === 'sonolento' ? 'Sonolento' : stateDisplay === 'agitado' ? 'Agitado' : stateDisplay === 'confuso' ? 'Confuso' : stateDisplay === 'recusando' ? 'Recusando' : 'Calmo / Sereno';
 
                 return (
@@ -9705,7 +9705,7 @@ Segunda-feira:
 
                   {shiftReviewPayload.recusadas.length > 0 && (
                     <div className="bg-amber-50/50 border border-amber-200 p-3 rounded-xl space-y-1">
-                      <span className="text-[10px] font-extrabold text-amber-800 flex items-center gap-1"> âš ï¸  RECUSAS REGISTRADAS ({shiftReviewPayload.recusadas.length})</span>
+                      <span className="text-[10px] font-extrabold text-amber-800 flex items-center gap-1"> âš   RECUSAS REGISTRADAS ({shiftReviewPayload.recusadas.length})</span>
                       <ul className="text-xs text-amber-950 space-y-1 pl-1.5 list-disc leading-normal">
                         {shiftReviewPayload.recusadas.map((r: any) => (
                           <li key={r.id}>*${r.titulo}* - Recusado: "{r.observacao || 'Recusa geral'}"</li>
@@ -9718,7 +9718,7 @@ Segunda-feira:
                     <p className="text-xs text-slate-500"> NÃ£o hÃ¡ pendÃªncias na escala neste turno.</p>
                   ) : (
                     <div className="bg-rose-50/50 border border-rose-200 p-3 rounded-xl space-y-1">
-                      <span className="text-[10px] font-extrabold text-rose-800 flex items-center gap-1"> âš ï¸  PENDÃŠNCIAS EM ABERTO ({shiftReviewPayload.atrasadas.length + shiftReviewPayload.pendentes.length})</span>
+                      <span className="text-[10px] font-extrabold text-rose-800 flex items-center gap-1"> âš   PENDÃŠNCIAS EM ABERTO ({shiftReviewPayload.atrasadas.length + shiftReviewPayload.pendentes.length})</span>
                       <ul className="text-xs text-rose-950 space-y-1 pl-1.5 list-disc leading-normal">
                         {shiftReviewPayload.atrasadas.map((a: any) => (
                           <li key={a.id}>*${a.titulo}* - Atrasada (Prevista: ${a.horarioPrevisto})</li>
@@ -9830,6 +9830,15 @@ Segunda-feira:
 
       {/* COMPLIANCE / LGPD STRICT CONSENT VIEW MODAL */}
       {!lgpdAccepted && (
-        <LgpdConsentxœ„TQoÚ0~çWœx¨Ê$
--j7`B¥š˜Z:U­úlb'ñêØ‘í”tˆ³ß²?¶Kp7x€Üq¹ûî»ïîN3*A«qòÌ—	ULòÛ8cµçZ§™ä¯Àr%´™Ñ”—‚i«ÛJ§èF¨>­Ucı´>ÁäéÇíôzüx÷OÓÙ<fÓÙ7¸»ŸŒoáS°ÚD³<“"¤?S£„Š¿¶m¢pr§ë€¯Jjm… ‰‚3ÊrG:ğ‹\t`+1¹êt‚>Ú4|aFgd.sC
-‘äÇSKB®7ğ3·NDo3#çÍÑ¶¤_+,L FçŠqFz…Ä—úÒ‚,HÊ`A¢\J°	ezAºø÷\†©ëŸ5À³NlFCNŞÈ98^¸ªDZFD”q"ÔÏ‚œu!)¿MçX L]%¬Í>š°²£¤¡¹Ó•±öXrã *–|EAô›ïJX¿ Üÿ7°!áÌ/—ôv«–d‘Vç‰“­»¬ù¼¼è4GãWa50<Ö“ZWL‚¤çÈ¼ü(‘¤%uU¹”3‘§ 9e(Nb¸¤¨=1À÷?¿X›Æ›Ã+j!£†Â t©xä‰¾m]Î0®Ä³ë°ö!ê ;¬ëgª0àÃTEz‹ş5‡ŒôŞ%T®ÒhkwwGJ¨ëz"<r°Ç]{uÀ]êH÷Â_ùÀ}MU‡çHŒw=Ê-ˆiFº[ùsÅ ûæ`;§•E«kDş2\¶`8Âóè&½œ*Ü¸–ßÄŞîT[™½‘nûâı‚]"‰~åæóîQ«®/PÅ.š†ÎµdÛì(ÌÕ†dZ”{İ<@áãÃÃËîI®&àÈr8öÌ5[_ëKcÕø  ÿÿ BäO
+        <LgpdConsentModal onAccept={handleLgpdAcceptComplete} seniorName={idoso.nome} />
+      )}
+
+      {/* DUPLICATE ROUTINE WARNING MODAL */}
+      {duplxœ””ÁrÚ0†ï<Å‡L8LÒLÓC{è¡Ó™…µ¶ÕÈ’G’ƒÓÓgé‹emÁVZ¦’—İOÿş+s?¸ÕR§Æ.3[¸¸€Ëì?K!!VÜ¹¯<ÇÕ0‘
+Ú¡gübó6)sŠ²°Û(š,hÍãaMÁ6ª´¬r(¬@zÌ‹Q{´ğ³t^&O‡eÁ®‡ëcÉ°(UØf” ¬)µ@Áf•¢?- çÛ²\À–%¥Rà2.Ì–MéõÆXA©Û¯=àU+xŒì‰]ƒÇÊ¸–y‘pLêMÈ³eWSÈê‘ñ|CêÔMÂv¹ å¶!;«A^1^zÓ«LµïZÿİJ®S…]ŠA,†0éÑN÷ß8ˆp–Ëf§Í‘T
+‰ÑúImOÙêy3†ë»Gé„o˜Jç­û²P2¦N,'Ù,(PùÉ"'Ikéšr9
+Yæ 2'³¨8y/ øòç7`Eµ(Ş0,6ÒBÁ-‡e½¥Óõ³há¦;_
+Š«yvËÉ>lÜ§ıºa¦†~|Ö‰éNÑßúP°Ù«…êQê˜¶İX‰|İvíÚØÛv¹gÓ7;¿ÁCOŒvÿë»f
+R^°éÑş¨oa.7¥÷F(F$ò‡ÕóåVk ‹è¾w–KM7
+Ñ™f*‹'6Ï_o°Ò/3hß^j­ÂíÔ¨KKË7F‰cN—ÖË
+#ë¹ö(Âf|¢0-¤0åZÎwo£³ÜkpÜ½ì/   ÿÿ ®xºª

@@ -224,7 +224,7 @@ export default function FinancePaywall({
     const isEscolar = idosoNome.toLowerCase().includes('infantil') || idosoId.startsWith('aluno_') || appMode === 'escolar_infantil' || appMode === 'escolar_fundamental';
     const appName = isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador';
     
-    const message = `Olá, *${usuarioAtual.nome}*! 🔔\n\nSua assinatura do aplicativo *${appName}* para acompanhar o(a) *${idosoNome}* está pendente.\n\n👉 *Plano Escolhido:* ${activePlan.nome} (${activePlan.economia ? activePlan.economia : 'Ativação imediata'})\n💵 *Valor:* R$ ${activePlan.preco.toFixed(2).replace('.', ',')}\n\n🔑 *Pix Copia e Cola:* \n\`${dynamicPixKey}\`\n\n_Copie o código acima e pague no app do seu banco. O desbloqueio do painel de familiares será feito em segundos após o pagamento!_`;
+    const message = `Olá, *${usuarioAtual.nome}*!  \n\nSua assinatura do aplicativo *${appName}* para acompanhar o(a) *${idosoNome}* está pendente.\n\n  *Plano Escolhido:* ${activePlan.nome} (${activePlan.economia ? activePlan.economia : 'Ativação imediata'})\n  *Valor:* R$ ${activePlan.preco.toFixed(2).replace('.', ',')}\n\n  *Pix Copia e Cola:* \n\`${dynamicPixKey}\`\n\n_Copie o código acima e pague no app do seu banco. O desbloqueio do painel de familiares será feito em segundos após o pagamento!_`;
     
     const cleanNum = formatWhatsAppNumber(usuarioAtual.telefone || '11999999999');
     const url = `https://wa.me/${cleanNum}?text=${encodeURIComponent(message)}`;
@@ -264,7 +264,7 @@ export default function FinancePaywall({
         </p>
       </div>
 
-      {/* 💸 ANCORAGEM COMERCIAL: ESCOLHA DE PLANOS */}
+      {/*   ANCORAGEM COMERCIAL: ESCOLHA DE PLANOS */}
       <div className="space-y-3 text-left">
         <span className="text-[10px] font-black uppercase tracking-wider text-indigo-600 flex items-center gap-1">
           <TrendingUp className="w-3.5 h-3.5" />
@@ -291,7 +291,7 @@ export default function FinancePaywall({
                     ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
                     : 'bg-indigo-100 text-indigo-800'
                 }`}>
-                  {customTipo === 'coletivo' ? '👥 Coletivo' : '👤 Individual'}
+                  {customTipo === 'coletivo' ? '  Coletivo' : '  Individual'}
                 </span>
               </div>
               <h4 className={`text-sm font-black ${isDark ? 'text-white' : 'text-slate-950'}`}>R$ {plans.mensal.preco.toFixed(2).replace('.', ',')} <span className="text-xs font-medium text-slate-500">/mês</span></h4>
@@ -314,7 +314,7 @@ export default function FinancePaywall({
             }`}
           >
             <div className="absolute -top-2 right-3 px-2 py-0.5 bg-indigo-600 text-white text-[9px] font-black rounded-full uppercase tracking-wider shadow-xs">
-              Popular 👑
+              Popular  
             </div>
             <div className="space-y-1">
               <div className="flex items-center justify-between">
@@ -340,7 +340,7 @@ export default function FinancePaywall({
             }`}
           >
             <div className="absolute -top-2 right-3 px-2 py-0.5 bg-emerald-600 text-white text-[9px] font-black rounded-full uppercase tracking-wider shadow-xs">
-              Economia Máxima 💰
+              Economia Máxima  
             </div>
             <div className="space-y-1">
               <div className="flex items-center justify-between">
@@ -358,7 +358,7 @@ export default function FinancePaywall({
         </div>
       </div>
 
-      {/* 💳 DADOS DO PAGAMENTO INTEGRADO & WEBHOOK AUTOMÁTICO */}
+      {/*   DADOS DO PAGAMENTO INTEGRADO & WEBHOOK AUTOMÁTICO */}
       <div className={`p-5 md:p-6 rounded-3xl border ${
         isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50/50 border-slate-200'
       } space-y-4`}>
@@ -400,7 +400,7 @@ export default function FinancePaywall({
             </div>
             {activePlan.economia && (
               <span className="text-[9px] text-emerald-600 font-extrabold bg-emerald-50 px-1.5 py-0.5 rounded inline-block uppercase">
-                🏷️ {activePlan.economia} obtido!
+                  {activePlan.economia} obtido!
               </span>
             )}
           </div>
@@ -487,7 +487,7 @@ export default function FinancePaywall({
                 )}
               </button>
 
-              {/* 📲 Automação Salvadora: WhatsApp dispatch button */}
+              {/*   Automação Salvadora: WhatsApp dispatch button */}
               <button
                 type="button"
                 onClick={handleSendReminderToWhatsApp}
@@ -504,7 +504,7 @@ export default function FinancePaywall({
             </div>
 
             <span className="text-[10px] text-slate-400 font-semibold block text-center sm:text-left">
-              💡 <strong>Dica de Teste:</strong> Clique em "Simular Pagamento" para escutar o aviso sonoro e desbloquear o aplicativo imediatamente por webhook simulado!
+                <strong>Dica de Teste:</strong> Clique em "Simular Pagamento" para escutar o aviso sonoro e desbloquear o aplicativo imediatamente por webhook simulado!
             </span>
           </div>
 
@@ -517,7 +517,7 @@ export default function FinancePaywall({
         isDark ? 'bg-slate-950/40 border-slate-850' : 'bg-slate-50 border-slate-200'
       }`}>
         <h4 className="font-bold text-slate-850 flex items-center gap-1.5 uppercase text-[10px] tracking-wider text-indigo-600">
-          🛡️ Como funciona a conciliação automática?
+            Como funciona a conciliação automática?
         </h4>
         <ul className="space-y-2 text-slate-600">
           <li className="flex items-start gap-1.5">
