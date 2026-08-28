@@ -10007,26 +10007,7 @@ Segunda-feira:
               <h3 className="text-lg font-black text-slate-850">Aviso de Registro Duplicado</h3>
               <p className="text-xs text-slate-600 font-medium leading-relaxed">
                 Ja existe um registro recente para <strong>{duplicateWarning.studentName}</strong>.
-              </p>
-              {duplicateWarning.existingInfo && (
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-left text-xs text-amber-900 font-medium mt-2">
-                  {duplicateWarning.existingInfo}
-                </div>
-              )}
-            </div>
-            <div className="flex gap-2 justify-end pt-2">
-              <button
-                type="button"
-                onClick={() => setDuplicateWarning(null)}
-                className="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-extrabold text-xs rounded-xl cursor-pointer"
-              >
-                Entendido
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-// Versao corrigida da Vercel - Estavel e limpa
+       xœ„QËnÂ0¼ó+ˆLP*¤>€KË¡—Û³o‚[Ç¶l‚ÿŞ… j­H^Ç›Ù€Óš§v9€›µU²à¿¸ÓRWl¥T¼ëÒÀhãèµr…âŞğCË ¯¯stl6…Ü8î¼ál:g-P°VAÀ60…eèªÖw{Ç}"nit`5
+ÙÔP–cáÿ‹?ô…§¤<n”ÜòîpâyK…-TÜ²¾ú]¹c¨Ø{2çy‚Ñ=)ag©Sw9ìİıJsı,öãKğŞ¢IÇºQ*éx%sËJâ€İ±l2;ä½gäîÚlĞ=_ £á'ÿ·k°óçF‰KBWñóÆ1k¤èbıı¨VDÓB
+»“v,ÿ ng.Xò28Ò>Ñyn 0ÎÉJ
+ôV +ø†*%kË¿   ÿÿ  ¤ØE
