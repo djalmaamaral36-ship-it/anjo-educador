@@ -428,7 +428,7 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
 
   // Routine sync
   const synchronizedRoutineEvents: JornadaEvent[] = [];
-  const isRoutineClearedInJornada = localStorage.getItem(`anjo_routine_cleared_${studentId}`) === 'true';
+  const isRoutineClearedInJornada = false;
   const resetTimeStrInJornada = localStorage.getItem(`anjo_routine_reset_${studentId}`) || localStorage.getItem(`anjo_shift_start_time_${studentId}`);
 
   const sonos = isRoutineClearedInJornada ? [] : getFromDB<any[]>('anjo_sono', []).filter(s => s.idosoId === studentId && !isRecordBeforeResetTimestamp(s, resetTimeStrInJornada));
@@ -558,7 +558,7 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
   });
 
   const hygLog = isRoutineClearedInJornada ? null : getHygieneLog(studentId);
-  if (hygLog && typeof hygLog === 'object' && !isRecordBeforeResetTimestamp(hygLog, resetTimeStrInJornada)) {
+  if (hygLog && typeof hygLog === 'object' ) {
     const time = hygLog.time || '11:00';
     const bath = hygLog.bath || hygLog.banho;
     const teeth = hygLog.teeth || hygLog.higieneBucal;
@@ -1662,15 +1662,15 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
     const allEvents = getFromDB<JornadaEvent[]>('anjo_jornada_events', []);
     const studentEvents = allEvents.filter(e => e.idosoId === student.id);
     
-    const isRoutineClearedStudent = localStorage.getItem(`anjo_routine_cleared_${student.id}`) === 'true';
+    const isRoutineClearedStudent = false;
     const resetTimeStrStudent = localStorage.getItem(`anjo_routine_reset_${student.id}`) || localStorage.getItem(`anjo_shift_start_time_${student.id}`);
 
-    const alimentacaoList = isRoutineClearedStudent ? [] : getFromDB<any[]>('anjo_alimentacao', []).filter(item => item.idosoId === student.id && !isRecordBeforeResetTimestamp(item, resetTimeStrStudent));
-    const hidratacaoList = isRoutineClearedStudent ? [] : getFromDB<any[]>('anjo_hidratacao', []).filter(item => item.idosoId === student.id && !isRecordBeforeResetTimestamp(item, resetTimeStrStudent));
-    const sonoList = isRoutineClearedStudent ? [] : getFromDB<any[]>('anjo_sono', []).filter(item => item.idosoId === student.id && !isRecordBeforeResetTimestamp(item, resetTimeStrStudent));
-    const humorList = isRoutineClearedStudent ? [] : getFromDB<any[]>('anjo_humor', []).filter(item => item.idosoId === student.id && !isRecordBeforeResetTimestamp(item, resetTimeStrStudent));
+    const alimentacaoList = isRoutineClearedStudent ? [] : getFromDB<any[]>('anjo_alimentacao', []).filter(item => item.idosoId === student.id );
+    const hidratacaoList = isRoutineClearedStudent ? [] : getFromDB<any[]>('anjo_hidratacao', []).filter(item => item.idosoId === student.id );
+    const sonoList = isRoutineClearedStudent ? [] : getFromDB<any[]>('anjo_sono', []).filter(item => item.idosoId === student.id );
+    const humorList = isRoutineClearedStudent ? [] : getFromDB<any[]>('anjo_humor', []).filter(item => item.idosoId === student.id );
     const isActCleared = localStorage.getItem(`anjo_activities_cleared_${student.id}`) === 'true';
-    const atividadesList = (isActCleared || isRoutineClearedStudent) ? [] : getFromDB<any[]>('anjo_atividades', []).filter(item => item.idosoId === student.id && !isRecordBeforeResetTimestamp(item, resetTimeStrStudent));
+    const atividadesList = (isActCleared || isRoutineClearedStudent) ? [] : getFromDB<any[]>('anjo_atividades', []).filter(item => item.idosoId === student.id );
 
     const routinePoints = (soilBonus === 0 || soilBonus === 20) ? 2.5 : 1.5;
     score += (alimentacaoList.length + hidratacaoList.length + sonoList.length + humorList.length) * routinePoints;

@@ -782,8 +782,10 @@ export function getHygieneLog(idosoId: string): any {
     if (studentLogs.length > 0) {
       // Return the most recent one based on time
       studentLogs.sort((a, b) => {
-        const timeA = new Date(a.date + 'T' + (a.time || '00:00') + ':00').getTime();
-        const timeB = new Date(b.date + 'T' + (b.time || '00:00') + ':00').getTime();
+        const dateA = a.date || getTodayIso();
+        const dateB = b.date || getTodayIso();
+        const timeA = new Date(dateA + 'T' + (a.time || '00:00') + ':00').getTime() || 0;
+        const timeB = new Date(dateB + 'T' + (b.time || '00:00') + ':00').getTime() || 0;
         return timeB - timeA;
       });
       return studentLogs[0];
@@ -895,19 +897,7 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
 
 
 
-// TTL-based local cache resolution utility
-const LOCAL_FLAG_TTL_MS = 15000;
-function getLocalShiftFlag(key: string): { active: boolean; isFresh: boolean; exists: boolean } {
-  const flag = localStorage.getItem(`anjo_shift_active_${key}`);
-  const timestamp = localStorage.getItem(`anjo_shift_active_${key}_ts`);
-  if (flag === null) return { active: false, isFresh: false, exists: false };
-  const elapsed = timestamp ? Date.now() - Number(timestamp) : Infinity;
-  return { active: flag === 'true', isFresh: elapsed < LOCAL_FLAG_TTL_MS, exists: true };
-}
-function setLocalShiftFlag(key: string, active: boolean): void {
-  localStorage.setItem(`anjo_shift_active_${key}`, String(active));
-  localStorage.setItem(`anjo_shift_active_${key}_ts`, String(Date.now()));
-}
+
   // Helper to find existing saved start time across possible keys
   const findExistingStartTime = (): string | null => {
     for (const k of possibleKeys) {
@@ -922,65 +912,23 @@ function setLocalShiftFlag(key: string, active: boolean): void {
   };
 
   // 1. Check shift states in DB (PRIMARY SOURCE OF TRUTH)
-  const isFromFirestoreListener = Boolean(customShiftStates && Array.isArray(customShiftStates));
   const shiftStates = customShiftStates && Array.isArray(customShiftStates) 
     ? customShiftStates 
     : getFromDB<ShiftState[]>('anjo_shift_states', []);
 
   let localActiveFlag = false;
-  let localActiveKey = '';
   let localAbsentFlag = false;
-  let hasFreshLocalOverride = false;
-  let freshLocalActiveValue = false;
 
   for (const k of possibleKeys) {
-    const remoteState = shiftStates.find(s => s && (s.id === k || keyMatches(s.id, k) || keyMatches(k, s.id)));
-    const local = getLocalShiftFlag(k);
-
-    // --- TRAVA DE SEGURANÇA ---
-    // Se o Firebase diz que o turno está inativo, MAS o cache local diz que está ativo
-    // e é um registro "fresco" (< 15s), nós forçamos a manutenção do estado ativo.
-    // Isso ignora dados remotos incompletos ou transitórios, preservando o turno atual.
-    let efetivamenteAtivo = remoteState?.active;
-    if (remoteState && !remoteState.active && local.active && local.isFresh) {
-        console.warn(`⚠️ [Data Trava] Ignorando Firebase (inativo) para ${k} pois o Local cache está fresco (ativo).`);
-        efetivamenteAtivo = true; 
+    if (localStorage.getItem(`anjo_shift_active_${k}`) === 'true') {
+      localActiveFlag = true;
     }
-    // --------------------------
-
-    // Only allow local override if NOT receiving explicit Firestore listener update AND local flag is very fresh (<15s)
-    if (!isFromFirestoreListener && local.isFresh && local.exists) {
-      hasFreshLocalOverride = true;
-      if (local.active) {
-        freshLocalActiveValue = true;
-        localActiveFlag = true;
-        localActiveKey = k;
-      }
-    } else if (remoteState) {
-      setLocalShiftFlag(k, efetivamenteAtivo || false);
-      if (efetivamenteAtivo) {
-        localActiveFlag = true;
-        localActiveKey = k;
-      }
-    }
-    
     if (localStorage.getItem(`anjo_is_absent_${k}`) === 'true') {
       localAbsentFlag = true;
     }
   }
 
-  // PRIORITY 0: FRESH LOCAL ACTION OVERRIDE (Only when not processing direct Firestore snapshot)
-  if (hasFreshLocalOverride && !isFromFirestoreListener) {
-    if (freshLocalActiveValue) {
-      const startTime = findExistingStartTime() || new Date().toISOString();
-      possibleKeys.forEach(k => localStorage.setItem(`anjo_shift_start_time_${k}`, startTime));
-      return { active: true, isAbsent: false, reason: null, startTime, lastResetTime: startTime };
-    } else {
-      return { active: false, isAbsent: localAbsentFlag, reason: null, startTime: null, lastResetTime: null };
-    }
-  }
-
-  const allRecords: { record: ShiftState; time: number }[] = [];
+const allRecords: { record: ShiftState; time: number }[] = [];
 
   shiftStates.forEach(s => {
     if (!s || !s.id) return;
@@ -1771,11 +1719,10 @@ export function setShiftActiveState(targetKey: string, active: boolean, startTim
 }
 
 export function getNowTimeBr(): string {
-  return new Date().toLocaleTimeString('pt-BR', {
-    timeZone: 'America/Sao_Paulo',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+  const d = new Date();
+  const h = String(d.getHours()).padStart(2, '0');
+  const m = String(d.getMinutes()).padStart(2, '0');
+  return `${h}:${m}`;
 }
 
 export function getTodayIsoBr(): string {

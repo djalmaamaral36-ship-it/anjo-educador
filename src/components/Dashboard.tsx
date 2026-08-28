@@ -928,7 +928,7 @@ Equipe Anjinho Escolar`
   const handleHygieneChange = (updatedFields: Partial<typeof quickHygiene>) => {
     setQuickHygiene(prev => {
       const next = { ...prev, ...updatedFields };
-      const defaultTime = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      const defaultTime = getNowTimeBr();
       const hygieneLog = {
         ...next,
         banho: next.hands || next.bath,
@@ -956,7 +956,7 @@ Equipe Anjinho Escolar`
       if (field === 'hands') { next.hands = !(prev.hands || prev.bath); next.bath = !(prev.hands || prev.bath); }
       if (field === 'cream') next.cream = !prev.cream;
       
-      const defaultTime = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      const defaultTime = getNowTimeBr();
       const hygieneLog = {
         ...next,
         banho: next.hands || next.bath,
@@ -1762,7 +1762,7 @@ Equipe Anjinho Escolar`
             idosoId: idoso.id,
             refeicao: mealType,
             aceitacao: commentText?.toLowerCase().includes('pouco') ? 'pouco' : commentText?.toLowerCase().includes('recus') ? 'recusou' : 'muito_bem',
-            horario: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            horario: getNowTimeBr(),
             data: todayIso,
             observacoes: commentText || 'Registrado pelo Painel de Atividades',
             registradoPor: usuarioAtual.nome
@@ -1784,7 +1784,7 @@ Equipe Anjinho Escolar`
           id: 'hid_dash_' + Date.now(),
           idosoId: idoso.id,
           quantidadeMl: amount,
-          horario: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+          horario: getNowTimeBr(),
           data: todayIso,
           registradoPor: usuarioAtual.nome
         });
@@ -1810,7 +1810,7 @@ Equipe Anjinho Escolar`
           idosoId: idoso.id,
           tipo: task.titulo,
           duracaoMinutos: 30,
-          horario: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+          horario: getNowTimeBr(),
           data: todayIso,
           observacoes: fullObs,
           fotoTrabalhinho: ''
@@ -1875,7 +1875,7 @@ Equipe Anjinho Escolar`
           return {
             ...t,
             status: targetStatus,
-            concluidaEm: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' (Aparelho Offline )',
+            concluidaEm: getNowTimeBr() + ' (Aparelho Offline )',
             completadaPor: usuarioAtual.nome,
             observacao: comment
           };
@@ -1920,7 +1920,7 @@ Equipe Anjinho Escolar`
         return {
           ...t,
           status: targetStatus,
-          concluidaEm: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+          concluidaEm: getNowTimeBr(),
           completadaPor: usuarioAtual.nome,
           observacao: comment,
           detalhes: {
@@ -1981,7 +1981,7 @@ Equipe Anjinho Escolar`
       tipo: occurrenceForm.tipo,
       criticidade: occurrenceForm.criticidade,
       descricao: occurrenceForm.descricao,
-      horario: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+      horario: getNowTimeBr(),
       data: new Date().toLocaleDateString('pt-BR'),
       responsavel: usuarioAtual.nome,
       statusEnvioWhatsApp: 'mensagem_gerada', // Estado inicial da auditoria de envio
@@ -3217,7 +3217,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
         saturacao: lastSat !== undefined ? lastSat : 0,
         peso: lastWeight,
         data: new Date().toISOString().split('T')[0],
-        horario: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+        horario: getNowTimeBr(),
         registradoPor: usuarioAtual?.nome || 'Sistema',
         observacoes: 'Registro do dia anterior preservado (Peso, Temp, Sat)',
         fralda: 'Sem trocas',
@@ -3275,7 +3275,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
     setLgpdLogs(logs);
 
     // Simulated notify
-    const msg = `Anjo Cuidador: O Turno de cuidados para ${idoso.nome} foi INICIADO por ${usuarioAtual.nome} Às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}. Acompanhando em tempo real.`;
+    const msg = `Anjo Cuidador: O Turno de cuidados para ${idoso.nome} foi INICIADO por ${usuarioAtual.nome} Às ${getNowTimeBr()}. Acompanhando em tempo real.`;
     triggerWhatsAppSim('Turno Iniciado', msg);
 
     if (typeof window !== 'undefined') {
@@ -3388,7 +3388,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
             saturacao: lastSat !== undefined ? lastSat : 0,
             peso: lastWeight,
             data: new Date().toISOString().split('T')[0],
-            horario: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+            horario: getNowTimeBr(),
             registradoPor: usuarioAtual?.nome || 'Sistema',
             observacoes: 'Registro do dia anterior preservado (Peso, Temp, Sat)',
             fralda: 'Sem trocas',
@@ -3463,7 +3463,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
       setLgpdLogs(logs);
 
       // Simulated notify for active student
-      const msg = `Anjo Escolar: O Período Letivo para todos os alunos presentes da classe ${targetClass} foi INICIADO por ${usuarioAtual?.nome || 'Educador(a)'} Às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} de forma coletiva.`;
+      const msg = `Anjo Escolar: O Período Letivo para todos os alunos presentes da classe ${targetClass} foi INICIADO por ${usuarioAtual?.nome || 'Educador(a)'} Às ${getNowTimeBr()} de forma coletiva.`;
       triggerWhatsAppSim('Aulas Iniciadas em Grupo', msg);
       
       showToast(`Aulas iniciadas com sucesso para todos os ${classmates.length} alunos presentes da classe ${targetClass}! Atividades do dia anterior foram zeradas, mantendo peso, temperatura e saturação.`, 'success');
@@ -3533,8 +3533,8 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
               const mateNameClean = (mate.nome || '').includes(' (') ? mate.nome.split(' (')[0] : (mate.nome || 'Aluno');
               
               const todayBr = new Date().toLocaleDateString('pt-BR');
-              const startHourStr = formatShiftTime(shiftStartTime, new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
-              const endHourStr = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+              const startHourStr = formatShiftTime(shiftStartTime, getNowTimeBr());
+              const endHourStr = getNowTimeBr();
 
               const mateMsg = ` A ÁRVORE DA INFÂNCIA HOJE:
 Hoje a árvore do(a) *${mateNameClean}* floresceu no Anjinho Escolar:
@@ -3639,7 +3639,7 @@ Equipe Anjinho Escolar`;
             setTarefas(updatedTasksCollective.filter(t => t.idosoId === idoso.id));
             
             // Simulated notify for active student
-            const endMsg = `Anjo Escolar: O Período Letivo para todos os alunos da classe ${targetClass} foi ENCERRADO por ${usuarioAtual?.nome || 'Educador(a)'} Às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })} de forma coletiva. Relatórios de rotina, sono e fraldas enviados para o WhatsApp dos responsáveis!`;
+            const endMsg = `Anjo Escolar: O Período Letivo para todos os alunos da classe ${targetClass} foi ENCERRADO por ${usuarioAtual?.nome || 'Educador(a)'} Às ${getNowTimeBr()} de forma coletiva. Relatórios de rotina, sono e fraldas enviados para o WhatsApp dos responsáveis!`;
             triggerWhatsAppSim('Aulas Encerradas em Grupo', endMsg);
 
             // Populate states to trigger the custom high-fidelity collective confirmation notification panel
@@ -3731,7 +3731,7 @@ Equipe Anjinho Escolar`;
     const taxaQ = Math.round(((numConcluidas + recusadas.length) / totalCalculado) * 100);
 
     const startHour = formatShiftTime(currentStartTime, '07:30');
-    const endHour = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const endHour = getNowTimeBr();
 
     const medChanges = getFromDB<any[]>(`anjo_historico_medicamentos_${idoso.id}`, [])
       .filter((ch: any) => {
@@ -3783,13 +3783,13 @@ Equipe Anjinho Escolar`;
         ultimoSinal = null,
         ultimoHumorText = 'Tranquilo',
         startHour = '07:30',
-        endHour = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+        endHour = getNowTimeBr(),
         ocorrencias = [],
         medChanges = []
       } = shiftReviewPayload || {};
 
     const todayBr = new Date().toLocaleDateString('pt-BR');
-    const nowTimeBr = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const nowTimeBr = getNowTimeBr();
     const profName = usuarioAtual?.nome ? (usuarioAtual.nome.includes('Prof') ? usuarioAtual.nome : `Profª ${usuarioAtual.nome}`) : 'Profª Nilva Amaral';
 
     const mealSummaryStr = meals && meals.length > 0
@@ -4079,7 +4079,7 @@ Acesse o boletim de cuidados completo pelo link seguro:
   const handleConfirmStopIndividualShift = () => {
     try {
       const finalReason = (stopShiftReason + (stopShiftNote ? ` - ${stopShiftNote}` : '')).trim() || 'Saída Antecipada / Ausência Temporária';
-      const horaStr = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      const horaStr = getNowTimeBr();
       const dataStr = new Date().toLocaleDateString('pt-BR');
       const cleanName = (idoso.nome || '').split(' (')[0].trim();
 
@@ -4222,7 +4222,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
       alert(` ⚠  Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar hidratação.`);
       return;
     }
-    const defaultTime = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const defaultTime = getNowTimeBr();
     
     if (!simulatedOnline) {
       // Offline queue it
@@ -4469,7 +4469,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
       if (!confirmSave) return;
     }
 
-    const defaultTime = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const defaultTime = getNowTimeBr();
 
     // Save interactive hygiene log for dashboard / family view integration
     const hygieneLog = {
@@ -4549,7 +4549,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
       return;
     }
 
-    const defaultTime = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const defaultTime = getNowTimeBr();
 
     if (!simulatedOnline) {
       adicionarItemFila({
@@ -4605,7 +4605,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     if (!ensureAuthorizedAndActiveShift(isEscolar ? "Saúde e Sono" : "Sinais Vitais")) {
       return;
     }
-    const defaultTime = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    const defaultTime = getNowTimeBr();
 
     if (!quickVitals.pressao && !quickVitals.glicemia && !quickVitals.temp && !quickVitals.sat && !quickVitals.peso && !quickVitals.fCard) {
       alert('Por favor, preencha pelo menos um sinal vital ou o peso para salvar!');
@@ -8353,7 +8353,7 @@ Segunda-feira:
                           idosoId: idoso.id,
                           refeicao: itemMeal.key as any,
                           aceitacao: nextAceitacao as any,
-                          horario: new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
+                          horario: getNowTimeBr(),
                           data: getTodayIso(),
                           observacoes: verified?.observacoes || 'Atualizado via painel',
                           registradoPor: usuarioAtual?.nome || 'Responsável / Educador'
