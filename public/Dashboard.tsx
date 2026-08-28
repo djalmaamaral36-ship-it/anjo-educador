@@ -1193,14 +1193,14 @@ Equipe Anjinho Escolar`
   // Live timer for active caregiver shift duration
   useEffect(() => {
     let intervalId: any;
-    if (isShiftActive) {
+    if (isShiftActive && shiftStartTime) {
       const updateTimer = () => {
         let startMs = 0;
-        const activeStartTime = shiftStartTime || localStorage.getItem(`anjo_shift_start_time_${idoso.id}`) || localStorage.getItem(`anjo_routine_reset_${idoso.id}`);
+        const activeStartTime = shiftStartTime || localStorage.getItem(`anjo_shift_start_time_${idoso.id}`);
         
         if (activeStartTime) {
           const parsed = new Date(activeStartTime).getTime();
-          if (!isNaN(parsed)) {
+          if (!isNaN(parsed) && parsed > 0) {
             startMs = parsed;
           } else if (typeof activeStartTime === 'string' && activeStartTime.includes(':')) {
             const parts = activeStartTime.split(':');
@@ -1211,7 +1211,8 @@ Equipe Anjinho Escolar`
         }
 
         if (startMs === 0 || isNaN(startMs)) {
-          startMs = Date.now() - 1000;
+          setElapsedShiftTime('00:00:00');
+          return;
         }
 
         const now = Date.now();
@@ -4090,22 +4091,34 @@ Acesse o boletim de cuidados completo pelo link seguro:
   // Direct 1-Click Stop Shift Handler (opens modal to record reason, preserve activities and log LGPD)
   const handleDirectStopShift = () => {
     try {
-      const horaStr = getNowTimeBr();
       const cleanName = (idoso.nome || '').split(' (')[0].trim();
+      const currentTargetId = idoso.id;
       
       const candidateKeysToClose = Array.from(new Set([
         ...getAllPossibleStudentKeys(idoso.id),
         idoso.id,
         idoso.nome,
-        cleanName
+        cleanName,
+        currentTargetId,
+        'aluno_1',
+        'aluno_2',
+        'idoso_maria',
+        'idoso_joao'
       ].filter(Boolean))) as string[];
 
+      // Clear all timer keys from localStorage
       candidateKeysToClose.forEach(k => {
-        localStorage.setItem('anjo_shift_active_' + k, 'false');
-        localStorage.removeItem('anjo_shift_start_time_' + k);
+        try {
+          localStorage.setItem('anjo_shift_active_' + k, 'false');
+          localStorage.removeItem('anjo_shift_start_time_' + k);
+          localStorage.removeItem('anjo_routine_reset_' + k);
+        } catch (e) {}
       });
 
+      // Update state batch
       setShiftActiveStatesBatch(candidateKeysToClose.map(k => ({ targetKey: k, active: false })));
+      
+      // Immediately zero out local state
       setIsShiftActive(false);
       setShiftStartTime(null);
       setElapsedShiftTime('00:00:00');
@@ -4114,9 +4127,10 @@ Acesse o boletim de cuidados completo pelo link seguro:
         window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
         window.dispatchEvent(new CustomEvent('anjo_user_updated'));
         window.dispatchEvent(new CustomEvent('db-vitals-update'));
+        window.dispatchEvent(new Event('storage'));
       }
 
-      showToast(' Cronometro desligado com sucesso!', 'success');
+      showToast('CronÃ´metro zerado e desligado com sucesso!', 'success');
     } catch (err) {
       console.error('Erro ao desligar cronometro:', err);
       setIsShiftActive(false);
@@ -5900,13 +5914,14 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                       <span className="text-[9px] font-bold text-slate-400 block uppercase tracking-wider">
                         {isEscolar ? 'TEMPO EM AULA' : 'DURACAO DO TURNO'}
                       </span>
-                      {isShiftActive && isStaffUser(usuarioAtual) && (
+                      {isStaffUser(usuarioAtual) && (
                         <button
+                          type="button"
                           onClick={handleDirectStopShift}
-                          className="text-[10px] font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-1.5 py-0.5 rounded cursor-pointer transition-all"
-                          title="Desligar cronometro imediatamente"
+                          className="text-[10px] font-black text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-2 py-0.5 rounded-md cursor-pointer transition-all border border-rose-200"
+                          title="Zerar cronÃ´metro e encerrar contagem imediatamente"
                         >
-                           Desligar
+                          â¹ Zerar / Desligar
                         </button>
                       )}
                     </div>
@@ -10015,15 +10030,8 @@ Segunda-feira:
 
       
       {!lgpdAccepted && (
-        <LgpdConsentModal onAccept={handleLgpdAcceptComplete} seniorName={idoso.nome} />
-      )}
-
-      
-      {duplicateWarning?.show && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-100 space-y-4 text-center animate-fade-in">
-            <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex itxœ”SMÚ0½ó+F9¬à`BA ~¤Uwí¡‡ªjÏ“xÜulËvØ ÿ½&a‰WZ5²ûùyæùÍ˜jÇ
-R,ümœåñuY·¯“İ_v/Éú_V ª$A!Ñ¹XÓ6yfØ³MéğL–rqA¹=êÄìCœn¿º%zj=“”Zy–K, ƒœDOìãz‘ìîÂià?©Î[‘¢@®³t¿Š˜(~ënƒn‹>]M\45HB.TÅ,Il‰GŠ¾#PRº}Ua©sZ„ì©j÷Â{mş U!ìÜù†ŞYÎ)K/´ùXtjÆiãH†0ù¦Jww0„Ë`Ø
-òŠa“eëäÚòĞ
-ıï/ƒV7Šg­ì’TzX×s?¬«=[¾á×{âO±ğ¸¥ f§ÿm»RR¶¼v?)æ-™YŞx¯U$ÅMˆÔo&Ñ®V_Ã½¶/ÓlwàÈ?Œn:U”³øŠƒ‡U˜#[Î×ç]º=¸»×²Ÿ¯ĞÙğÎÿç½­Öy–s-ùµB7å+ë´eF‹ó£ëKõhŠ®£†ìxçå€ÁòâÁ›}™œ&i
-¿É:ÔPhkE%8B+HƒGçñfRÔ'ÿ   ÿÿ ÒÁ[.
+        <Lgpxœ„TßoÚ0~ç¯8ñP•…µ0Um6m{˜¦íÙÄ—Ä«c[¶aˆÿ}—(àn ˆøÎ—»ï¾û!ö¨ÃW#¸£’m˜mr®…Â/™­æÑVaÀ-µ4î/p¶‘ÂxÓ×¦ ı`Şæ×Ûvv§İk#J«dÂşâNK}ìûÜ¬àê
+®w& S!—(î}ãº›Ê
+HØş°Û!,2æya÷Ãá`B2O^„3–-TéXå!UXXx–PNèàwéƒL×{Ñ²wİù!d”"¬rr Î”Z `ãJÑG(xÅV¬°bi©øœ³b#º^'ÈuûÚ¼Á[ [³w°
+{\Ë¢¶H¹@&õ	šÏŠİŒ ¯ÿ/ vİ8lÅ	‰{°²‹ãe0g‘)öƒB~8Éu¦ğÅ„@Lº¯%Ş}1 ¸ÿO`OÂM.6)©R£Õ“*ÛfÙòyw;ìÎ–Òß1“>8Om_	3äã(€üS‹9­©kÂ(dY€B.¨9™CÅ©÷"Ä Ÿ9`E¡ÈÜíQ8l˜Ë‡i­ÒÙ<êù¾¥ »Îv:Ø™õÏAìyØØSƒŸtjN‡è_e°lüÚAõ$ôl«uµu[LœP×ÚŞŸQW6zƒ¯Kà·1ğ¸¥š…rÁ&ZõdÜ²Ñ¡ûQ°oÁœ.ÊŒ „µ­7BsÙn~¤¼^f›ëÌæ´ÃÓY¦×šÆ±§x2XÍÈÚ5õo_×Û±››%º÷Ç¯å¿]O÷$:¾0J*tT¾¤tŞ8f¬‡ş\ªg2Ó‚öyÔ-&ÿLq"î88èz:ÛÎ` ?Ñyn 1ÎÉL
+ô.A}àK:!(YXŞù  ÿÿ šLó
