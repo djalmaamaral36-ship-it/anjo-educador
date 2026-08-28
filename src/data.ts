@@ -957,6 +957,16 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
 
   const allRecords = [...directRecords, ...classroomRecords];
 
+  // For collective shift synchronization: prioritize active classroom records if the student is not absent
+  const activeClassroom = classroomRecords.find(r => r.record.active === true || String(r.record.active) === 'true');
+  const isStudentAbsent = possibleKeys.some(k => localStorage.getItem(`anjo_is_absent_${k}`) === 'true') || 
+                          directRecords.some(r => r.record.isAbsent === true || String(r.record.isAbsent) === 'true');
+
+  let latestRecord: ShiftState | null = null;
+  if (activeClassroom && !isStudentAbsent) {
+    latestRecord = activeClassroom.record;
+  }
+
   if (allRecords.length > 0) {
     // Sort descending by timestamp (newest first). If timestamps are identical, direct records act as tie-breaker.
     allRecords.sort((a, b) => {
@@ -970,7 +980,7 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
       return 0;
     });
 
-    const latest = allRecords[0].record;
+    const latest = latestRecord || allRecords[0].record;
     const isActive = latest.active === true || String(latest.active) === 'true';
 
     if (isActive) {

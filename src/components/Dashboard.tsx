@@ -5937,13 +5937,14 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
           )}
 
           
-          <div className="space-y-4">
-            <h3 className="text-lg font-black text-slate-800 flex items-center gap-1.5">
-              <Plus className="w-5 h-5 text-blue-600" /> Painel "Um-Toque" de Registros Diários
-            </h3>
+          {isStaffUser(usuarioAtual) && visualMode !== 'familia' && (
+            <div className="space-y-4">
+              <h3 className="text-lg font-black text-slate-800 flex items-center gap-1.5">
+                <Plus className="w-5 h-5 text-blue-600" /> Painel "Um-Toque" de Registros Diários
+              </h3>
 
-            <div className="relative">
-              {renderDashboardAuthBadge()}
+              <div className="relative">
+                {renderDashboardAuthBadge()}
               {isAbsent && (
                 <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-900 shadow-xs animate-fade-in">
                   <div className="flex items-center gap-3">
@@ -6798,6 +6799,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
             )}
 
           </div>
+          )}
 
           
           <div className="relative">
