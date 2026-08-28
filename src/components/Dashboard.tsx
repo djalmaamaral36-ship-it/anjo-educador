@@ -3,7 +3,7 @@
 // Vercel build fix update: 514140926665909969
 import React, { useState, useEffect, useRef } from 'react';
 import { Idoso, TarefaDiaria, Usuario, TaskType, TaskStatus, RegistroAlimentacao, RegistroHidratacao, RegistroHumor, RegistroSono, RegistroAtividade, SinalVital, Medicamento, formatWhatsAppNumber, NotificacaoSimulada, Classroom, isStaffUser, isDirectorOrAdminUser, getRoleLabel } from '../types';
-import { getFromDB, saveToDB, checkFeedingCareAuthorization, SALAS_INICIAIS, getShiftActiveState, setShiftActiveState, setShiftActiveStatesBatch, getAssignedTeacherForRoom, getStudentRoomName, resetStudentDailyRoutine, checkBottleFeedingInterval, registerBottleAttemptNotice, purgeOrphanedStudentData, saveHygieneLog, getHygieneLog, saveMealRecord, getStudentMealsToday, isStudentIdMatch } from '../data';
+import { getFromDB, saveToDB, checkFeedingCareAuthorization, SALAS_INICIAIS, getShiftActiveState, setShiftActiveState, setShiftActiveStatesBatch, getAssignedTeacherForRoom, getStudentRoomName, resetStudentDailyRoutine, checkBottleFeedingInterval, registerBottleAttemptNotice, purgeOrphanedStudentData, saveHygieneLog, getHygieneLog, saveMealRecord, getStudentMealsToday, isStudentIdMatch, getAllPossibleStudentKeys } from '../data';
 import { deleteFromFirestore, deleteStudentDataFromFirestore } from '../firebase';
 import { 
   ItemFilaOffline, 
@@ -927,21 +927,24 @@ Equipe Anjinho Escolar`
   const handleHygieneChange = (updatedFields: Partial<typeof quickHygiene>) => {
     setQuickHygiene(prev => {
       const next = { ...prev, ...updatedFields };
-      const defaultTime = getNowTimeBr();
-      const hygieneLog = {
-        ...next,
-        banho: next.hands || next.bath,
-        higieneBucal: next.teeth,
-        trocaRoupa: next.clothes,
-        trocaFralda: next.diaper,
-        pele: next.cream,
-        observations: next.observations || '',
-        obs: next.observations || '',
-        time: defaultTime,
-        date: getTodayIso(),
-        registradoPor: usuarioAtual?.nome || 'Pai / ResponsÃ¡vel'
-      };
-      saveHygieneLog(idoso.id, hygieneLog);
+      // Only write to localStorage/trigger re-renders on checkbox changes, not on observations text field keystroke typing
+      if (!('observations' in updatedFields)) {
+        const defaultTime = getNowTimeBr();
+        const hygieneLog = {
+          ...next,
+          banho: next.hands || next.bath,
+          higieneBucal: next.teeth,
+          trocaRoupa: next.clothes,
+          trocaFralda: next.diaper,
+          pele: next.cream,
+          observations: next.observations || '',
+          obs: next.observations || '',
+          time: defaultTime,
+          date: getTodayIso(),
+          registradoPor: usuarioAtual?.nome || 'Pai / ResponsÃ¡vel'
+        };
+        saveHygieneLog(idoso.id, hygieneLog);
+      }
       return next;
     });
   };
@@ -949,7 +952,24 @@ Equipe Anjinho Escolar`
   const handleToggleHygieneCard = (field: 'diaper' | 'teeth' | 'clothes' | 'hands' | 'cream') => {
     setQuickHygiene(prev => {
       const next = { ...prev };
-      if (field === 'diaper') next.diaper = !prev.diaper;
+      if (field === 'diaper') {
+        // Cycle: Pendente -> Fez Xixi -> Fez CocÃ´ -> Ambos -> Seca -> Pendente
+        const currentText = prev.observations || '';
+        if (!prev.diaper) {
+          next.diaper = true;
+          next.observations = 'Fez Xixi';
+        } else if (currentText === 'Fez Xixi') {
+          next.observations = 'Fez CocÃ´';
+        } else if (currentText === 'Fez CocÃ´') {
+          next.observations = 'Xixi e CocÃ´';
+        } else if (currentText === 'Xixi e CocÃ´') {
+          next.observations = 'Fralda Seca / Limpa';
+        } else {
+          next.diaper = false;
+          next.observations = '';
+        }
+      }
+      if (field === 'diaper') { /* already handled above */ } else
       if (field === 'teeth') next.teeth = !prev.teeth;
       if (field === 'clothes') next.clothes = !prev.clothes;
       if (field === 'hands') { next.hands = !(prev.hands || prev.bath); next.bath = !(prev.hands || prev.bath); }
@@ -4114,6 +4134,7 @@ Acesse o boletim de cuidados completo pelo link seguro:
 
       // 3. Mark shift turned off and student absent
       const candidateKeysToClose = Array.from(new Set([
+        ...getAllPossibleStudentKeys(idoso.id),
         idoso.id,
         idoso.nome,
         cleanName
@@ -4735,6 +4756,29 @@ As atividades e registros do dia permanecem salvos no relatÃ³rio escolar. Qualqu
     vitalsStore.push(novoSinal);
     saveToDB('anjo_sinais', vitalsStore);
 
+    // Sync with hygiene log if diaper status is provided in school mode
+    if (isEscolar && quickVitals.glicemia && quickVitals.glicemia !== 'Sem trocas') {
+      const rawHygiene = getHygieneLog(idoso.id);
+      const hygieneLog = {
+        ...rawHygiene,
+        diaper: true,
+        trocaFralda: true,
+        observations: quickVitals.glicemia,
+        obs: quickVitals.glicemia,
+        time: defaultTime,
+        date: todayIso,
+        registradoPor: usuarioAtual.nome
+      };
+      saveHygieneLog(idoso.id, hygieneLog);
+      
+      // Also update the local checklist state so it matches instantly!
+      setQuickHygiene(prev => ({
+        ...prev,
+        diaper: true,
+        observations: quickVitals.glicemia
+      }));
+    }
+
     // Update weight on student/elder record if weight provided
     if (finalWeight) {
       const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
@@ -4918,6 +4962,12 @@ As atividades e registros do dia permanecem salvos no relatÃ³rio escolar. Qualqu
   const allVitalsList = getFromDB<SinalVital[]>('anjo_sinais', []).filter(s => isStudentIdMatch(s.idosoId, idoso.id));
   const latestVitals = allVitalsList.length > 0 ? allVitalsList[allVitalsList.length - 1] : null;
 
+  const diaperVitals = allVitalsList.filter(v => v.fralda && v.fralda !== 'Sem trocas' && !v.id?.startsWith('sin_base_'));
+  const latestDiaperVital = diaperVitals.length > 0 ? diaperVitals[diaperVitals.length - 1] : null;
+
+  const sleepVitals = allVitalsList.filter(v => v.soneca && v.soneca !== 'Sem registros' && !v.id?.startsWith('sin_base_'));
+  const latestSleepVital = sleepVitals.length > 0 ? sleepVitals[sleepVitals.length - 1] : null;
+
   const allSonoList = getFromDB<any[]>('anjo_sono', []).filter(s => isStudentIdMatch(s.idosoId, idoso.id));
   const latestSono = allSonoList.length > 0 ? allSonoList[allSonoList.length - 1] : null;
 
@@ -4949,8 +4999,8 @@ As atividades e registros do dia permanecem salvos no relatÃ³rio escolar. Qualqu
   );
 
   const hasVitalsToday = realVitalsToday.length > 0;
-  const hasSleepToday = (allSonoList.length > 0) || Boolean(latestVitals?.soneca && latestVitals.soneca !== 'Sem registros' && !latestVitals.id?.startsWith('sin_base_'));
-  const hasDiaperToday = Boolean(todayHygieneLog?.diaper) || Boolean(latestVitals?.fralda && latestVitals.fralda !== 'Sem trocas' && !latestVitals.id?.startsWith('sin_base_'));
+  const hasSleepToday = (allSonoList.length > 0) || Boolean(latestSleepVital?.soneca);
+  const hasDiaperToday = Boolean(todayHygieneLog?.diaper) || Boolean(latestDiaperVital?.fralda);
   const hasNutritionToday = todaysMealsList.length > 0 || todaysWaterList.length > 0;
 
   const totalCheckpoints = totalTasksCount + 4;
@@ -4966,8 +5016,8 @@ As atividades e registros do dia permanecem salvos no relatÃ³rio escolar. Qualqu
   const qualityRate = totalCheckpoints > 0 
     ? Math.min(100, Math.round(((completedCheckpoints + refusedTasksCount) / totalCheckpoints) * 100)) 
     : 0;
-  const sleepSummary = (latestVitals?.soneca && latestVitals.soneca !== 'Sem registros')
-    ? latestVitals.soneca 
+  const sleepSummary = latestSleepVital?.soneca
+    ? latestSleepVital.soneca 
     : (latestSono 
         ? (latestSono.observacoes && latestSono.observacoes.length > 0 
             ? latestSono.observacoes 
@@ -8427,7 +8477,9 @@ Segunda-feira:
                 >
                   <span className="text-xs block font-bold">{isEscolar ? ' Fralda / Toalete' : ' Fralda / Absorvente'}</span>
                   <span className="text-[10px] font-black uppercase">
-                    {todayHygieneLog?.diaper ? 'Trocada / Cuidada' : 'Pendente'}
+                    {todayHygieneLog?.diaper 
+                      ? (todayHygieneLog.observations || 'Trocada / Cuidada') 
+                      : 'Pendente'}
                   </span>
                 </button>
 
@@ -8706,8 +8758,8 @@ Segunda-feira:
                     {isFundamental 
                       ? (latestVitals?.fralda || 'Focado / Atento')
                       : (isEscolar 
-                        ? (latestVitals?.fralda && latestVitals.fralda !== 'Sem trocas'
-                            ? latestVitals.fralda
+                        ? (latestDiaperVital?.fralda
+                            ? latestDiaperVital.fralda
                             : (todayHygieneLog?.observations && todayHygieneLog.observations.length > 0
                                 ? todayHygieneLog.observations
                                 : (todayHygieneLog?.diaper 
@@ -9921,60 +9973,6 @@ Segunda-feira:
                 type="button"
                 onClick={() => {
                   setShowShiftReviewModal(false);
-                  setShiftReviewPayload(null);
-                }}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 font-bold text-xs rounded-xl cursor-pointer"
-              >
-                Voltar e Ajustar Relato
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmEndShift}
-                className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-extrabold text-xs rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
-              >
-                <CheckCircle2 className="w-4 h-4" /> Registrar PresenÃ§a & Enviar WhatsApp
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      
-      {!lgpdAccepted && (
-        <LgpdConsentModal onAccept={handleLgpdAcceptComplete} seniorName={idoso.nome} />
-      )}
-
-      
-      {duplicateWarning?.show && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-100 space-y-4 text-center animate-fade-in">
-            <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
-              <AlertTriangle className="w-6 h-6" />
-            </div>
-            <div className="space-y-1">
-              <h3 className="text-lg font-black text-slate-850">Aviso de Registro Duplicado</h3>
-              <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                JÃ¡ existe um registro recente para <strong>{duplicateWarning.studentName}</strong>.
-              </p>
-              {duplicateWarning.existingInfo && (
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-left text-xs text-amber-900 font-medium mt-2">
-                  {duplicateWarning.existingInfo}
-                </div>
-              )}
-            </div>
-            <div className="flex gap-2 justify-end pt-2">
-              <button
-                type="button"
-                onClick={() => setDuplicateWarning(null)}
-                className="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-extrabold text-xs rounded-xl cursor-pointer"
-              >
-                Entendido
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-// VersÃ£o corrigida da Vercel - EstÃ¡vel e limpa
+      xœ´VMÛ6½ï¯˜ú°Ø=ĞŸ±›M½g-Ò"H‹äL‹#‹YŠ$HÊ–»ğ	zèÙ?Ö‘d­mi7nPT0`ñi$>¾y3$Àáò~Od>âZâæß*ÃÅ•Î”ºşé×n×‚"Å½ÿ§xÛ±9{vË†°\1¯x@6è÷!1kto !A<
+rlDXÀ<ì‡ÆF¶4JTrÎdZ `¹‚(sŞ8fÔ]§AjÖ"ùÉ¨À Ì¿d¾¸ûˆ4‘iÄM{Ë,£›ïO+¸õÕ°µ´êêa“€Ñ%£ûÛ‡„k¡pat,]z§E)÷9!Ç¥İq!%¦è¸¥,ObÖà'rÖèëZĞM"VbÒĞñ—õ	fS€§ÚB¬0úFêY„%²â–ºãóªO	F÷é"…ÃãõmÈ'	{ÕŞŒ2±’ˆ9øàĞ£~ü›Ã%Üéµ$èsÂƒŸ[û¯5í	¹>†ÀÉğzw±¿Ûÿ=ü VVÌ£m@——puxó==¢½ğ«\Qr«È:»ïŸŞ]˜Ô*¸£ÊÒÒ¸rÅRoºÚ¤„÷^æ 2K¡øÌ–zõ¶ë³i¡U‹ËœøJ"Xşdãş¡ünúıŞ„Æ<ºÎX¶T™+rÜNjQ2ŞÖCKÙ9‘²1)ÍP9«¶Ğˆ<dÙR³KlXL=¤öÕ/ôéêï¨?xË#d[òDéË=®eZDÄ\ “ºÓÈuƒÏ††d©AÙzxº¤	u	TÃ¢xj²%³³¤9ãY0V;˜+tá'¹^)<e1!“Î!Å/8³½€Z„A{ºdtX.I­öıQQf;çëq¿3›¯¥7 °®-ï*_	3í%£Ö¶õ}²Èsí8E!³rAædš(y¯Åà—Ç¯€9Í@ñ®¦á°”,w¦¤W³–é»>d‚â
+>»ioÖmõ Ûœ·ı¥’İü¬csZE/åÁ²ÑÁBE)˜¶‚‡GV"_WÁ8À‰vUìMC»4°á3‚#ßŞ.ñTÙQÎÄ´ºGQEG>Ùµ ûÍÿ¸^]Ãí¬8o¼k¬´:m|sGÜw“Ã¸·{ûxqó½;ß÷%î(LjèÿË¦t‚Ñ	lwÑëÁ'tşñ/‘qN®¤à@?#TÀàÎ‡Ç¯kºEP2µüâ   ÿÿ ÀJ×õ

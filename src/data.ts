@@ -1643,6 +1643,7 @@ export function setShiftActiveStatesBatch(updates: { targetKey: string; active: 
         localStorage.setItem(`anjo_is_absent_${normalizedK}`, 'false');
       } else {
         localStorage.removeItem(`anjo_shift_start_time_${normalizedK}`);
+        localStorage.removeItem(`anjo_routine_reset_${normalizedK}`);
         localStorage.setItem(`anjo_shift_active_${normalizedK}`, 'false');
         localStorage.setItem(`anjo_shift_active_${normalizedK}_ts`, String(Date.now()));
         if (isAbsent || reason) {
