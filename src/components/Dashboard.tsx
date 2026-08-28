@@ -1,4 +1,3 @@
-// UTF-8 encoded: √°√©√≠√≥√∫√£√µ√ß
 // Vercel Production Build Commit: 1787865194
 // AI Studio Sync Version: 1787862757
 // Vercel build fix update: 514140926665909969
@@ -1193,14 +1192,14 @@ Equipe Anjinho Escolar`
   // Live timer for active caregiver shift duration
   useEffect(() => {
     let intervalId: any;
-    if (isShiftActive && shiftStartTime) {
+    if (isShiftActive) {
       const updateTimer = () => {
         let startMs = 0;
-        const activeStartTime = shiftStartTime || localStorage.getItem(`anjo_shift_start_time_${idoso.id}`);
+        const activeStartTime = shiftStartTime || localStorage.getItem(`anjo_shift_start_time_${idoso.id}`) || localStorage.getItem(`anjo_routine_reset_${idoso.id}`);
         
         if (activeStartTime) {
           const parsed = new Date(activeStartTime).getTime();
-          if (!isNaN(parsed) && parsed > 0) {
+          if (!isNaN(parsed)) {
             startMs = parsed;
           } else if (typeof activeStartTime === 'string' && activeStartTime.includes(':')) {
             const parts = activeStartTime.split(':');
@@ -1211,8 +1210,7 @@ Equipe Anjinho Escolar`
         }
 
         if (startMs === 0 || isNaN(startMs)) {
-          setElapsedShiftTime('00:00:00');
-          return;
+          startMs = Date.now() - 1000;
         }
 
         const now = Date.now();
@@ -4090,53 +4088,9 @@ Acesse o boletim de cuidados completo pelo link seguro:
 
   // Direct 1-Click Stop Shift Handler (opens modal to record reason, preserve activities and log LGPD)
   const handleDirectStopShift = () => {
-    try {
-      const cleanName = (idoso.nome || '').split(' (')[0].trim();
-      const currentTargetId = idoso.id;
-      
-      const candidateKeysToClose = Array.from(new Set([
-        ...getAllPossibleStudentKeys(idoso.id),
-        idoso.id,
-        idoso.nome,
-        cleanName,
-        currentTargetId,
-        'aluno_1',
-        'aluno_2',
-        'idoso_maria',
-        'idoso_joao'
-      ].filter(Boolean))) as string[];
-
-      // Clear all timer keys from localStorage
-      candidateKeysToClose.forEach(k => {
-        try {
-          localStorage.setItem('anjo_shift_active_' + k, 'false');
-          localStorage.removeItem('anjo_shift_start_time_' + k);
-          localStorage.removeItem('anjo_routine_reset_' + k);
-        } catch (e) {}
-      });
-
-      // Update state batch
-      setShiftActiveStatesBatch(candidateKeysToClose.map(k => ({ targetKey: k, active: false })));
-      
-      // Immediately zero out local state
-      setIsShiftActive(false);
-      setShiftStartTime(null);
-      setElapsedShiftTime('00:00:00');
-
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
-        window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-        window.dispatchEvent(new CustomEvent('db-vitals-update'));
-        window.dispatchEvent(new Event('storage'));
-      }
-
-      showToast('Cron√¥metro zerado e desligado com sucesso!', 'success');
-    } catch (err) {
-      console.error('Erro ao desligar cronometro:', err);
-      setIsShiftActive(false);
-      setShiftStartTime(null);
-      setElapsedShiftTime('00:00:00');
-    }
+    setStopShiftReason('Consulta Medica / Exame');
+    setStopShiftNote('');
+    setShowStopIndividualShiftModal(true);
   };
 
   const handleConfirmStopIndividualShift = () => {
@@ -5914,14 +5868,13 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                       <span className="text-[9px] font-bold text-slate-400 block uppercase tracking-wider">
                         {isEscolar ? 'TEMPO EM AULA' : 'DURACAO DO TURNO'}
                       </span>
-                      {isStaffUser(usuarioAtual) && (
+                      {isShiftActive && isStaffUser(usuarioAtual) && (
                         <button
-                          type="button"
                           onClick={handleDirectStopShift}
-                          className="text-[10px] font-black text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-2 py-0.5 rounded-md cursor-pointer transition-all border border-rose-200"
-                          title="Zerar cron√¥metro e encerrar contagem imediatamente"
+                          className="text-[10px] font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-1.5 py-0.5 rounded cursor-pointer transition-all"
+                          title="Desligar cronometro imediatamente"
                         >
-                          ‚èπ Zerar / Desligar
+                           Desligar
                         </button>
                       )}
                     </div>
@@ -6077,18 +6030,9 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Refeicao</label>
-                      <select
-                        value={quickMeal.refeicao}
-                        onChange={e => setQuickMeal({ ...quickMeal, refeicao: e.target.value })}
-                        className="w-full text-xs font-bold px-2.5 py-2 border border-[#cbd5e1] rounded-xl bg-white text-slate-800 focus:ring-1 focus:outline-hidden"
-                      >
-                        <option value="mamadeira">üçº Mamadeira de Leite</option>
-                        <option value="lanche_manha">ü•™ Lanche da Manha / Frutas</option>
-                        <option value="almoco">üç≤ Almoco Saudavel / Papinha</option>
-                        <option value="lanche_tarde">üçé Frutinhas / Lanche da Tarde</option>
-                        <option value="jantar">ü•£ Jantar / Sopinha</option>
-                        <option value="agua">üíß Garrafinha de Agua</option>
-                      </select>
+                      <div className="w-full text-xs font-extrabold px-3 py-2 border border-slate-300 rounded-xl bg-slate-100 text-slate-700">
+                           Mamadeira de Leite
+                      </div>
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Aceitacao</label>
@@ -6098,7 +6042,6 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                         className="w-full text-xs font-semibold px-2 py-2 border border-[#cbd5e1] rounded-xl bg-slate-50"
                       >
                         <option value="muito_bem">Tomou Tudo / Super Bem</option>
-                        <option value="metade">Tomou a Maior Parte</option>
                         <option value="pouco">Tomou Pouquinho</option>
                         <option value="recusou">Recusou</option>
                       </select>
@@ -6118,8 +6061,8 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                       </div>
 
                       
-                      <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5">
-                        {[60, 90, 120, 150, 180, 210, 240, 300].map(vol => (
+                      <div className="grid grid-cols-6 gap-1">
+                        {[90, 120, 150, 180, 210, 240].map(vol => (
                           <button
                             key={vol}
                             type="button"
@@ -8517,14 +8460,18 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    handleToggleHygieneCard('diaper');
+                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
+                      handleToggleHygieneCard('diaper');
+                    }
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
+                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
+                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
+                      : 'cursor-default opacity-95'
                   } ${
                     todayHygieneLog?.diaper 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Fralda / Toalete" : undefined}
                 >
@@ -8540,14 +8487,18 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    handleToggleHygieneCard('teeth');
+                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
+                      handleToggleHygieneCard('teeth');
+                    }
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
+                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
+                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
+                      : 'cursor-default opacity-95'
                   } ${
                     todayHygieneLog?.teeth 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Escovacao de Dentes" : undefined}
                 >
@@ -8561,14 +8512,18 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    handleToggleHygieneCard('clothes');
+                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
+                      handleToggleHygieneCard('clothes');
+                    }
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
+                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
+                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
+                      : 'cursor-default opacity-95'
                   } ${
                     todayHygieneLog?.clothes 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Troca de Roupa" : undefined}
                 >
@@ -8582,14 +8537,18 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    handleToggleHygieneCard('hands');
+                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
+                      handleToggleHygieneCard('hands');
+                    }
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
+                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
+                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
+                      : 'cursor-default opacity-95'
                   } ${
                     (todayHygieneLog?.hands || todayHygieneLog?.bath) 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Maos / Banho" : undefined}
                 >
@@ -8603,14 +8562,18 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    handleToggleHygieneCard('cream');
+                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
+                      handleToggleHygieneCard('cream');
+                    }
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all col-span-2 sm:col-span-1 ${
-                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
+                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
+                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
+                      : 'cursor-default opacity-95'
                   } ${
                     todayHygieneLog?.cream 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Pomada / Hidratacao" : undefined}
                 >
@@ -10030,8 +9993,40 @@ Segunda-feira:
 
       
       {!lgpdAccepted && (
-        <LgpxúÑTﬂo⁄0~ÁØ8ÒPïÖµ0Um6m{ò¶ÌŸƒóƒ´c[∂aàˇ}ó(‡n†à¯ŒóªÔæ˚!çˆ®√W#∏£ímòmrÆÖ¬/ô≠Ê—Va¿-êµ4Ó/p∂ë¬x”◊¶ ˝`ﬁÅÊ◊€vvß›k#J´d¬˛‚NKù}Ï˚‹¨‡Í
-Æw& S!óê(Ó}„∫õ 
-Hÿ˛∞€!,2Êya˜√·`B2O^Ñ3ñ-TÈXÂ!UXÅXxñPNË‡wÈÉL◊{—≤w›˘!dî"¨rr ŒîZ†`„J—G(x≈V¨∞bi©¯ú≥b#∫^'»u˚⁄º¡[û [≥w∞
-{\À¢∂Hπ@&ı	öœä›å Øˇ/†v›8l≈	â{∞≤ã„e0gë)ˆÉB~8…u¶≈Ñ@L∫Ø%ﬁ}1 ∏ˇO`O¬M.6)©R£’ì*€fŸÚyw;ÏŒñ“ﬂ1ì>8Om_	3‰„(Äç¸Sã9≠©k¬(dYÄB.®9ôC≈©˜"ƒ ü9`E°»‹ÌQ8lòÀái≠“Ÿ<Í˘æ• ªŒv:ÿôıœAÏyÿÿSÉÅütjNáË_e∞l¸⁄Aı$ùÙl´uµu[LúP◊⁄ﬁüQW6zÉØK‡∑1∏•öÖr¡&Zıd‹≤—°˚Q∞o¡ú. åé†Ñµ≠7BsŸçnç~§º^fõÎÃÊ¥√”Y¶◊ö∆±ßx2XÕ»⁄5ıo_◊€±õõ%∫˜«ØÂø]O˜$:æ0J*tTæ§tﬁ8fç¨á˛\™g2”Çˆy‘ê-&ˇLq"Ó88Ëz:€Œ` ?—yn 1Œ…L
-Ùê.Aû}‡K:!(YXﬁ˘  ˇˇ öLÛ
+        <LgpdConsentModal onAccept={handleLgpdAcceptComplete} seniorName={idoso.nome} />
+      )}
+
+      
+      {duplicateWarning?.show && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-100 space-y-4 text-center animate-fade-in">
+            <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
+              <AlertTriangle className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-lg font-black text-slate-850">Aviso de Registro Duplicado</h3>
+              <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                Ja existe um registro recente para <strong>{duplicateWarning.studentName}</strong>.
+              </p>
+              {duplicateWarning.existingInfo && (
+                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-left text-xs text-amber-900 font-medium mt-2">
+                  {duplicateWarning.existingInfo}
+                </div>
+              )}
+            </div>
+            <div className="flex gap-2 justify-end pt-2">
+              <button
+                type="button"
+                onClick={() => setDuplicateWarning(null)}
+                className="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-extrabold text-xs rounded-xl cursor-pointer"
+              >
+                Entendido
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+// Versao corrigida da Vercel - Estavel e limpa
