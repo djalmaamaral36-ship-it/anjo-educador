@@ -1,33 +1,58 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Download Arquivos Corrigidos</title>
-  <style>
-    body { font-family: sans-serif; background: #0f172a; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
-    .card { background: #1e293b; padding: 30px; border-radius: 16px; border: 1px solid #334155; max-width: 500px; text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
-    h1 { color: #38bdf8; margin-top: 0; font-size: 22px; }
-    p { color: #94a3b8; font-size: 14px; line-height: 1.5; }
-    .btn { display: block; background: #3b82f6; color: #fff; font-weight: bold; text-decoration: none; padding: 14px 20px; border-radius: 10px; margin: 12px 0; transition: 0.2s; font-size: 15px; }
-    .btn:hover { background: #2563eb; }
-    .btn-green { background: #10b981; }
-    .btn-green:hover { background: #059669; }
-  </style>
+    <meta charset="UTF-8">
+    <title>Baixar Dashboard Corrigido</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f8fafc;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            padding: 40px;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 450px;
+        }
+        h1 {
+            color: #0f172a;
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+        p {
+            color: #475569;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 30px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #2563eb;
+            color: white;
+            font-weight: bold;
+            padding: 16px 32px;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+    </style>
 </head>
 <body>
-  <div class="card">
-    <h1>📥 Baixar Arquivos 100% Corrigidos</h1>
-    <p>Clique nos botões abaixo para salvar os arquivos novos no seu computador sem cache:</p>
-    
-    <a href="/Dashboard.tsx" download="Dashboard.tsx" class="btn">
-      1. Baixar Dashboard.tsx
-    </a>
-
-    <a href="/FirebaseDiagnosticBar.tsx" download="FirebaseDiagnosticBar.tsx" class="btn">
-      2. Baixar FirebaseDiagnosticBar.tsx
-    </a>
-
-    <p style="margin-top: 20px; font-size: 12px; color: #64748b;">Depois de baixar, envie para o GitHub na pasta <b>src/components</b>.</p>
-  </div>
+    <div class="card">
+        <h1>Seu arquivo está pronto!</h1>
+        <p>Clique no botão abaixo para baixar o arquivo <strong>Dashboard.tsx</strong> limpo e corrigido diretamente no seu computador.</p>
+        <a href="/Dashboard.txt" download="Dashboard.tsx" class="btn">BAIXAR ARQUIVO</a>
+    </div>
 </body>
 </html>
