@@ -907,7 +907,7 @@ Equipe Anjinho Escolar`
   };
 
   // Quick Action form states
-  const [quickMeal, setQuickMeal] = useState<{ refeicao: string; aceitacao: string; observacao: string; quantidadeMl?: number }>({ refeicao: 'cafe_manha', aceitacao: 'muito_bem', observacao: '', quantidadeMl: 180 });
+  const [quickMeal, setQuickMeal] = useState<{ refeicao: string; aceitacao: string; observacao: string; quantidadeMl?: number }>({ refeicao: 'mamadeira', aceitacao: 'muito_bem', observacao: '', quantidadeMl: 180 });
   const [quickHygiene, setQuickHygiene] = useState(() => {
     const saved = getHygieneLog(idoso.id);
     if (saved) {
@@ -1037,7 +1037,20 @@ Equipe Anjinho Escolar`
     setShiftStartTime(activeShift.startTime);
     setIsAbsent(localStorage.getItem(`anjo_is_absent_${idoso.id}`) === 'true');
 
-    // Synchronize quick hygiene state from getHygieneLog
+    // Synchronize sleep state from localStorage
+    const sonos = getFromDB<any[]>('anjo_sono', []).filter(s => s.idosoId === idoso.id && isTodayOrDemoDate(s.data));
+    if (sonos.length > 0 && !quickVitals.pressao) {
+      const lastSono = sonos[sonos.length - 1];
+      if (lastSono.dormiuEm && lastSono.acordouEm) {
+        setSleepStart(lastSono.dormiuEm);
+        setSleepEnd(lastSono.acordouEm);
+        setQuickVitals(prev => (prev.pressao ? prev : { ...prev, pressao: `Dormiu das ${lastSono.dormiuEm} √Äs ${lastSono.acordouEm}` }));
+      }
+    }
+  }, [idoso, keyTrigger, appMode]);
+
+  // Synchronize quick hygiene state from getHygieneLog
+  useEffect(() => {
     const savedHyg = getHygieneLog(idoso.id);
     if (savedHyg) {
       setQuickHygiene({
@@ -1060,18 +1073,7 @@ Equipe Anjinho Escolar`
         observations: ''
       });
     }
-
-    // Synchronize sleep state from localStorage
-    const sonos = getFromDB<any[]>('anjo_sono', []).filter(s => s.idosoId === idoso.id && isTodayOrDemoDate(s.data));
-    if (sonos.length > 0 && !quickVitals.pressao) {
-      const lastSono = sonos[sonos.length - 1];
-      if (lastSono.dormiuEm && lastSono.acordouEm) {
-        setSleepStart(lastSono.dormiuEm);
-        setSleepEnd(lastSono.acordouEm);
-        setQuickVitals(prev => (prev.pressao ? prev : { ...prev, pressao: `Dormiu das ${lastSono.dormiuEm} √Äs ${lastSono.acordouEm}` }));
-      }
-    }
-  }, [idoso, keyTrigger, appMode, vitalsUpdateTrigger]);
+  }, [idoso?.id, vitalsUpdateTrigger]);
 
   // Initialize mood state only when changing selected student / senior
   useEffect(() => {
@@ -1143,9 +1145,7 @@ Equipe Anjinho Escolar`
     };
 
     window.addEventListener('anjo_shift_updated', syncShiftState);
-    window.addEventListener('anjo_user_updated', syncShiftState);
     window.addEventListener('storage', syncShiftState);
-    window.addEventListener('db-vitals-update', syncShiftState);
     window.addEventListener('db-vitals-update', handleVitalsChange);
     document.addEventListener('visibilitychange', syncShiftState);
 
@@ -1156,9 +1156,7 @@ Equipe Anjinho Escolar`
 
     return () => {
       window.removeEventListener('anjo_shift_updated', syncShiftState);
-      window.removeEventListener('anjo_user_updated', syncShiftState);
       window.removeEventListener('storage', syncShiftState);
-      window.removeEventListener('db-vitals-update', syncShiftState);
       window.removeEventListener('db-vitals-update', handleVitalsChange);
       document.removeEventListener('visibilitychange', syncShiftState);
       clearInterval(intervalId);
@@ -5976,35 +5974,26 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
               
               <div className="bg-white p-5 rounded-2xl border border-soft-gray space-y-4">
                 <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                  <Coffee className="text-amber-500 w-4.5 h-4.5" /> Registrar Refei√ß√£o R√°pida
+                  <Coffee className="text-amber-500 w-4.5 h-4.5" /> Registrar Mamadeira R√°pida
                 </h4>
                 <form onSubmit={handleQuickMealSubmit} className="space-y-3">
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Refei√ß√£o</label>
-                      <select 
-                        value={quickMeal.refeicao} 
-                        onChange={e => setQuickMeal({...quickMeal, refeicao: e.target.value})}
-                        className="w-full text-xs font-semibold px-2 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1"
-                      >
-                        {isEscolar && <option value="mamadeira"> Mamadeira de Leite / F√≥rmula</option>}
-                        <option value="cafe_manha">{isEscolar ? ' Lanchinho da Manh√£' : ' Caf√© da Manh√£'}</option>
-                        <option value="almoco">{isEscolar ? ' Papinha / Almocinho' : ' Almo√ßo'}</option>
-                        <option value="lanche">{isEscolar ? ' Frutinha / Lanchinho Tarde' : ' Lanche da Tarde'}</option>
-                        <option value="jantar">{isEscolar ? ' Jantinha Escolar' : ' Jantar'}</option>
-                        <option value="ceia">{isEscolar ? ' Ch√° ou Suco P√≥s-Soneca' : ' Ceia / Repouso'}</option>
-                      </select>
+                      <div className="w-full text-xs font-extrabold px-3 py-2 border border-slate-300 rounded-xl bg-slate-100 text-slate-700">
+                        ü•õ Mamadeira de Leite
+                      </div>
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Aceita√ß√£o</label>
                       <select 
                         value={quickMeal.aceitacao} 
                         onChange={e => setQuickMeal({...quickMeal, aceitacao: e.target.value})}
-                        className="w-full text-xs font-semibold px-2 py-2 border border-slate-300 rounded-xl bg-slate-50"
+                        className="w-full text-xs font-semibold px-2 py-2 border border-[#cbd5e1] rounded-xl bg-slate-50"
                       >
-                        <option value="muito_bem"> Comeu Super Bem</option>
-                        <option value="pouco"> Comeu Pouquinho</option>
-                        <option value="recusou"> Recusou / Sem Fome</option>
+                        <option value="muito_bem">Tomou Tudo / Super Bem</option>
+                        <option value="pouco">Tomou Pouquinho</option>
+                        <option value="recusou">Recusou</option>
                       </select>
                     </div>
                   </div>
@@ -6091,7 +6080,7 @@ As atividades e registros do dia permanecem salvos no relat√≥rio escolar. Qualqu
                     type="submit" 
                     className="w-full py-2 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer"
                   >
-                    Salvar Refei√ß√£o Instant
+                    Registrar Mamadeira
                   </button>
                 </form>
               </div>
@@ -7641,33 +7630,35 @@ Segunda-feira:
                   <div key={task.id} className={`flex flex-col border ${borderCol} ${bgCol} rounded-2xl p-5 shadow-xs transition-all duration-200 hover:-translate-y-0.5 relative group`}>
                     
                     
-                    <div className="absolute top-4 right-4 flex items-center gap-1">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setEditingTaskId(task.id);
-                          setEditingTaskForm({
-                            id: task.id,
-                            tipo: task.tipo,
-                            titulo: task.titulo,
-                            descricao: task.descricao,
-                            horarioPrevisto: task.horarioPrevisto
-                          });
-                        }}
-                        className="p-1 px-1.5 bg-slate-50 hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 rounded-lg border border-slate-200 transition-colors cursor-pointer"
-                        title={isEscolar ? "Editar esta atividade" : "Editar esta tarefa"}
-                      >
-                        <Pencil className="w-3 h-3" />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={(e) => handleDeleteTask(task.id, task.titulo, e)}
-                        className="p-1 px-1.5 bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-rose-600 rounded-lg border border-slate-200 transition-colors cursor-pointer"
-                        title={isEscolar ? "Remover atividade" : "Excluir tarefa"}
-                      >
-                        <Trash2 className="w-3 h-3" />
-                      </button>
-                    </div>
+                    {isStaffUser(usuarioAtual) && visualMode !== 'familia' && (
+                      <div className="absolute top-4 right-4 flex items-center gap-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setEditingTaskId(task.id);
+                            setEditingTaskForm({
+                              id: task.id,
+                              tipo: task.tipo,
+                              titulo: task.titulo,
+                              descricao: task.descricao,
+                              horarioPrevisto: task.horarioPrevisto
+                            });
+                          }}
+                          className="p-1 px-1.5 bg-slate-50 hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 rounded-lg border border-slate-200 transition-colors cursor-pointer"
+                          title={isEscolar ? "Editar esta atividade" : "Editar esta tarefa"}
+                        >
+                          <Pencil className="w-3 h-3" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={(e) => handleDeleteTask(task.id, task.titulo, e)}
+                          className="p-1 px-1.5 bg-slate-50 hover:bg-rose-50 text-slate-400 hover:text-rose-600 rounded-lg border border-slate-200 transition-colors cursor-pointer"
+                          title={isEscolar ? "Remover atividade" : "Excluir tarefa"}
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                    )}
 
                     {(() => {
                       const isMedTask = task.tipo === 'medicacao';
@@ -7784,69 +7775,71 @@ Segunda-feira:
                       );
                     })()}
 
-                    <div className="mt-4 pt-3 border-t border-slate-150 flex flex-col gap-2">
-                      {!isCompleted && !isRefused && (
-                        <div className="flex flex-col gap-1">
-                          <div className="flex items-center justify-between">
-                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-wide">
-                              {isEscolar ? 'Observa√ß√µes da Atividade' : 'Observa√ß√µes / Relato r√°pido da a√ß√£o'}
-                            </span>
-                            <VoiceInput 
-                              onTranscript={text => setObservacaoRapida(prev => ({ 
-                                ...prev, 
-                                [task.id]: (prev[task.id] ? prev[task.id] + ' ' + text : text) 
-                              }))} 
-                              size="sm"
+                    {isStaffUser(usuarioAtual) && visualMode !== 'familia' && (
+                      <div className="mt-4 pt-3 border-t border-slate-150 flex flex-col gap-2">
+                        {!isCompleted && !isRefused && (
+                          <div className="flex flex-col gap-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[9px] font-black text-slate-400 uppercase tracking-wide">
+                                {isEscolar ? 'Observa√ß√µes da Atividade' : 'Observa√ß√µes / Relato r√°pido da a√ß√£o'}
+                              </span>
+                              <VoiceInput 
+                                onTranscript={text => setObservacaoRapida(prev => ({ 
+                                  ...prev, 
+                                  [task.id]: (prev[task.id] ? prev[task.id] + ' ' + text : text) 
+                                }))} 
+                                size="sm"
+                              />
+                            </div>
+                            <input 
+                              type="text" 
+                              placeholder={isEscolar ? "Ex: Realizou a atividade com capricho e aten√ß√£o" : "Ex: Tomou com suco / Cuspiu comprimido / Recusou banho"}
+                              value={observacaoRapida[task.id] || ''}
+                              onChange={e => setObservacaoRapida({ ...observacaoRapida, [task.id]: e.target.value })}
+                              className="w-full px-3 py-1.5 border border-soft-gray rounded-xl bg-slate-50 text-xs focus:ring-1 focus:ring-blue-500 text-slate-800"
                             />
                           </div>
-                          <input 
-                            type="text" 
-                            placeholder={isEscolar ? "Ex: Realizou a atividade com capricho e aten√ß√£o" : "Ex: Tomou com suco / Cuspiu comprimido / Recusou banho"}
-                            value={observacaoRapida[task.id] || ''}
-                            onChange={e => setObservacaoRapida({ ...observacaoRapida, [task.id]: e.target.value })}
-                            className="w-full px-3 py-1.5 border border-soft-gray rounded-xl bg-slate-50 text-xs focus:ring-1 focus:ring-blue-500 text-slate-800"
-                          />
-                        </div>
-                      )}
+                        )}
 
-                      <div className="flex items-center justify-between gap-2 mt-1 w-full">
-                        {isDelayed && (
-                          <button 
-                            onClick={() => {
-                              const alertMsg = `Aviso Cr√≠tico: ${isEscolar ? 'O item de rotina de' : 'O rem√©dio de'} ${idoso.nome.split(' (')[0]} (${task.titulo}) previsto para ${task.horarioPrevisto} est√° pendente! Por favor verifique imediato.`;
-                              triggerWhatsAppSim('ALERTA ATRAZADO', alertMsg);
-                            }}
-                            className="text-[9px] font-extrabold text-rose-600 uppercase tracking-wider bg-rose-50 border border-rose-200 px-2 py-1 rounded-lg hover:bg-rose-100 shrink-0"
-                          >
-                             ‚ö†  Alerta Cr√≠tico
-                          </button>
-                        )}
-                        
-                        {isCompleted || isRefused ? (
-                          <button 
-                            onClick={() => handleResetTask(task.id)}
-                            className="ml-auto px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-500 font-extrabold text-xs rounded-xl transition-all cursor-pointer border border-slate-200 flex items-center gap-1 shrink-0"
-                          >
-                             Corrigir / Desfazer
-                          </button>
-                        ) : (
-                          <div className="flex items-center gap-2 ml-auto w-full justify-end">
+                        <div className="flex items-center justify-between gap-2 mt-1 w-full">
+                          {isDelayed && (
                             <button 
-                              onClick={() => handleRegisterTaskAction(task.id, 'recusado')}
-                              className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 active:bg-amber-200 text-amber-700 border border-amber-300 font-extrabold text-xs rounded-xl transition-all cursor-pointer flex items-center gap-1 shrink-0"
+                              onClick={() => {
+                                const alertMsg = `Aviso Cr√≠tico: ${isEscolar ? 'O item de rotina de' : 'O rem√©dio de'} ${idoso.nome.split(' (')[0]} (${task.titulo}) previsto para ${task.horarioPrevisto} est√° pendente! Por favor verifique imediato.`;
+                                triggerWhatsAppSim('ALERTA ATRAZADO', alertMsg);
+                              }}
+                              className="text-[9px] font-extrabold text-rose-600 uppercase tracking-wider bg-rose-50 border border-rose-200 px-2 py-1 rounded-lg hover:bg-rose-100 shrink-0"
                             >
-                               Recusou
+                               ‚ö†  Alerta Cr√≠tico
                             </button>
+                          )}
+                          
+                          {isCompleted || isRefused ? (
                             <button 
-                              onClick={() => handleRegisterTaskAction(task.id, 'concluido')}
-                              className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-extrabold text-xs rounded-xl transition-all cursor-pointer flex items-center gap-1 shadow-xs shrink-0"
+                              onClick={() => handleResetTask(task.id)}
+                              className="ml-auto px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-500 font-extrabold text-xs rounded-xl transition-all cursor-pointer border border-slate-200 flex items-center gap-1 shrink-0"
                             >
-                               Entregue
+                               Corrigir / Desfazer
                             </button>
-                          </div>
-                        )}
+                          ) : (
+                            <div className="flex items-center gap-2 ml-auto w-full justify-end">
+                              <button 
+                                onClick={() => handleRegisterTaskAction(task.id, 'recusado')}
+                                className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 active:bg-amber-200 text-amber-700 border border-amber-300 font-extrabold text-xs rounded-xl transition-all cursor-pointer flex items-center gap-1 shrink-0"
+                              >
+                                 Recusou
+                              </button>
+                              <button 
+                                onClick={() => handleRegisterTaskAction(task.id, 'concluido')}
+                                className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-extrabold text-xs rounded-xl transition-all cursor-pointer flex items-center gap-1 shadow-xs shrink-0"
+                              >
+                                 Entregue
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    )}
 
                   </div>
                 );
@@ -8348,6 +8341,7 @@ Segunda-feira:
                     <div 
                       key={itemMeal.key} 
                       onClick={() => {
+                        if (!isStaffUser(usuarioAtual) || visualMode === 'familia') return;
                         const nextAceitacao = !verified ? 'muito_bem' : verified.aceitacao === 'muito_bem' ? 'pouco' : verified.aceitacao === 'pouco' ? 'recusou' : 'muito_bem';
                         const newMealObj: RegistroAlimentacao = {
                           id: verified?.id || ('ali_' + Date.now()),
@@ -8361,19 +8355,23 @@ Segunda-feira:
                         };
                         saveMealRecord(newMealObj);
                         setVitalsUpdateTrigger(p => p + 1);
-                        alert(`Refei√ß√£o (${itemMeal.label}) atualizada com sucesso!`);
+                        showToast(`Refei√ß√£o (${itemMeal.label}) registrada com sucesso!`, 'success');
                       }}
-                      className="flex items-center justify-between text-xs font-bold p-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer border border-transparent hover:border-slate-200"
-                      title="Clique para registrar ou alternar aceita√ß√£o desta refei√ß√£o"
+                      className={`flex items-center justify-between text-xs font-bold p-2 rounded-xl transition-all border border-transparent ${
+                        isStaffUser(usuarioAtual) && visualMode !== 'familia'
+                          ? 'hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer hover:border-slate-200'
+                          : 'cursor-default'
+                      }`}
+                      title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para registrar ou alternar aceita√ß√£o desta refei√ß√£o" : undefined}
                     >
                       <span className="text-slate-600 dark:text-slate-300">{itemMeal.label}</span>
                       {verified ? (
                         <span className="px-2 py-0.5 bg-emerald-50 text-emerald-700 rounded-md border border-emerald-100 uppercase text-[9px] flex items-center gap-1 font-black">
-                           {verified.aceitacao === 'muito_bem' ? 'Comeu Super Bem' : verified.aceitacao === 'pouco' ? 'Comeu Pouco' : 'Recusou'}
+                           {verified.aceitacao === 'muito_bem' ? (isEscolar ? 'Tomou Tudo / Super Bem' : 'Comeu Super Bem') : verified.aceitacao === 'pouco' ? 'Comeu Pouco' : 'Recusou'}
                         </span>
                       ) : (
                         <span className="px-2 py-0.5 bg-slate-100 text-slate-500 rounded-md uppercase text-[9px] font-black">
-                          Clique para Registrar
+                          {isStaffUser(usuarioAtual) && visualMode !== 'familia' ? 'Clique para Registrar' : 'Sem Registro'}
                         </span>
                       )}
                     </div>
@@ -8411,13 +8409,21 @@ Segunda-feira:
                 
                 <button 
                   type="button"
-                  onClick={() => handleToggleHygieneCard('diaper')}
-                  className={`p-2.5 rounded-xl text-center border font-bold transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98] ${
+                  onClick={() => {
+                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
+                      handleToggleHygieneCard('diaper');
+                    }
+                  }}
+                  className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
+                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
+                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
+                      : 'cursor-default opacity-95'
+                  } ${
                     todayHygieneLog?.diaper 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
                   }`}
-                  title="Clique para alternar Fralda / Toalete"
+                  title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Fralda / Toalete" : undefined}
                 >
                   <span className="text-xs block font-bold">{isEscolar ? ' Fralda / Toalete' : ' Fralda / Absorvente'}</span>
                   <span className="text-[10px] font-black uppercase">
@@ -8428,13 +8434,21 @@ Segunda-feira:
                 
                 <button 
                   type="button"
-                  onClick={() => handleToggleHygieneCard('teeth')}
-                  className={`p-2.5 rounded-xl text-center border font-bold transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98] ${
+                  onClick={() => {
+                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
+                      handleToggleHygieneCard('teeth');
+                    }
+                  }}
+                  className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
+                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
+                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
+                      : 'cursor-default opacity-95'
+                  } ${
                     todayHygieneLog?.teeth 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
                   }`}
-                  title="Clique para alternar Escova√ß√£o de Dentes"
+                  title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Escova√ß√£o de Dentes" : undefined}
                 >
                   <span className="text-xs block font-bold">{isEscolar ? ' Escova√ß√£o Dentes' : ' Higiene Bucal'}</span>
                   <span className="text-[10px] font-black uppercase">
@@ -8445,13 +8459,21 @@ Segunda-feira:
                 
                 <button 
                   type="button"
-                  onClick={() => handleToggleHygieneCard('clothes')}
-                  className={`p-2.5 rounded-xl text-center border font-bold transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98] ${
+                  onClick={() => {
+                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
+                      handleToggleHygieneCard('clothes');
+                    }
+                  }}
+                  className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
+                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
+                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
+                      : 'cursor-default opacity-95'
+                  } ${
                     todayHygieneLog?.clothes 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
                   }`}
-                  title="Clique para alternar Troca de Roupa"
+                  title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Troca de Roupa" : undefined}
                 >
                   <span className="text-xs block font-bold">{isEscolar ? ' Troca de Roupa' : ' Roupa Limpa'}</span>
                   <span className="text-[10px] font-black uppercase">
@@ -8462,13 +8484,21 @@ Segunda-feira:
                 
                 <button 
                   type="button"
-                  onClick={() => handleToggleHygieneCard('hands')}
-                  className={`p-2.5 rounded-xl text-center border font-bold transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98] ${
+                  onClick={() => {
+                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
+                      handleToggleHygieneCard('hands');
+                    }
+                  }}
+                  className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
+                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
+                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
+                      : 'cursor-default opacity-95'
+                  } ${
                     (todayHygieneLog?.hands || todayHygieneLog?.bath) 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
                   }`}
-                  title="Clique para alternar M√£os / Banho"
+                  title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar M√£os / Banho" : undefined}
                 >
                   <span className="text-xs block font-bold">{isEscolar ? ' M√£os e Rosto' : ' Banho Chuveiro'}</span>
                   <span className="text-[10px] font-black uppercase">
@@ -8479,13 +8509,21 @@ Segunda-feira:
                 
                 <button 
                   type="button"
-                  onClick={() => handleToggleHygieneCard('cream')}
-                  className={`p-2.5 rounded-xl text-center border font-bold transition-all cursor-pointer hover:scale-[1.02] active:scale-[0.98] col-span-2 sm:col-span-1 ${
+                  onClick={() => {
+                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
+                      handleToggleHygieneCard('cream');
+                    }
+                  }}
+                  className={`p-2.5 rounded-xl text-center border font-bold transition-all col-span-2 sm:col-span-1 ${
+                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
+                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
+                      : 'cursor-default opacity-95'
+                  } ${
                     todayHygieneLog?.cream 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500 hover:bg-slate-100'
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
                   }`}
-                  title="Clique para alternar Pomada / Hidrata√ß√£o"
+                  title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Pomada / Hidrata√ß√£o" : undefined}
                 >
                   <span className="text-xs block font-bold">{isEscolar ? ' Pomada Antiassadura' : ' Hidrata√ß√£o Pele'}</span>
                   <span className="text-[10px] font-black uppercase">
@@ -9921,21 +9959,5 @@ Segunda-feira:
               {duplicateWarning.existingInfo && (
                 <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-left text-xs text-amber-900 font-medium mt-2">
                   {duplicateWarning.existingInfo}
-                </div>
-              )}
-            </div>
-            <div className="flex gap-2 justify-end pt-2">
-              <button
-                type="button"
-                onClick={() => setDuplicateWarning(null)}
-                className="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-extrabold text-xs rounded-xl cursor-pointer"
-              >
-                Entendido
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+                </divxú|ëOO√0≈Ô˝VOÎ¡l™Ñƒüµ‡ ïs⁄§]Fp¢ƒŸZ°}wÇä&$|ÛÔŸ÷”s[¿™™À
+Ï∑Rü⁄5Jz#Bx™)£&Ö√é1∞fT$¡1÷eõ]ﬂwëŸRFxvÈ“"ñTKOF˜ÔÕÁ¶Ç¶Ö†¯9∫D´7·I”∏°hLf˝ª~Ÿ<„êf¿ÕXﬂ‹B7b0iÔv;8ÿìÚWtü´âÒ|–¨`∞ƒòZ/:k‰¢Lºç$ïƒ…@}∞ù’ƒ Á˛Û ^“I-mûŒvI†˝ˇXµ?\YıX\ä/   ˇˇ Wzu

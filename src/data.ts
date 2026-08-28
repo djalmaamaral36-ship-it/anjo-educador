@@ -957,30 +957,71 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
 
   const allRecords = [...directRecords, ...classroomRecords];
 
-  // For collective shift synchronization: prioritize active classroom records if the student is not absent
-  const activeClassroom = classroomRecords.find(r => r.record.active === true || String(r.record.active) === 'true');
+  // For collective shift synchronization: prioritize the newest classroom record if it exists
+  classroomRecords.sort((a, b) => b.time - a.time);
+  const latestClassroom = classroomRecords[0]?.record;
   const isStudentAbsent = possibleKeys.some(k => localStorage.getItem(`anjo_is_absent_${k}`) === 'true') || 
                           directRecords.some(r => r.record.isAbsent === true || String(r.record.isAbsent) === 'true');
 
-  let latestRecord: ShiftState | null = null;
-  if (activeClassroom && !isStudentAbsent) {
-    latestRecord = activeClassroom.record;
+  if (latestClassroom) {
+    const isActive = latestClassroom.active === true || String(latestClassroom.active) === 'true';
+    if (isActive) {
+      if (isStudentAbsent) {
+        possibleKeys.forEach(k => {
+          localStorage.setItem(`anjo_shift_active_${k}`, 'false');
+          localStorage.removeItem(`anjo_shift_start_time_${k}`);
+          localStorage.setItem(`anjo_is_absent_${k}`, 'true');
+        });
+        if (studentRoom) {
+          localStorage.setItem(`anjo_shift_active_${studentRoom}`, 'true'); // classroom is still active
+        }
+        return { active: false, isAbsent: true, reason: 'Ausente', startTime: null, lastResetTime: null };
+      } else {
+        const startTime = latestClassroom.startTime || findExistingStartTime() || new Date().toISOString();
+        possibleKeys.forEach(k => {
+          localStorage.removeItem(`anjo_is_absent_${k}`);
+          localStorage.setItem(`anjo_is_absent_${k}`, 'false');
+          localStorage.setItem(`anjo_shift_active_${k}`, 'true');
+          localStorage.setItem(`anjo_shift_start_time_${k}`, startTime);
+        });
+        if (studentRoom) {
+          localStorage.setItem(`anjo_shift_active_${studentRoom}`, 'true');
+          localStorage.setItem(`anjo_shift_start_time_${studentRoom}`, startTime);
+        }
+        const lastResetTime = latestClassroom.lastResetTime || startTime;
+        return { active: true, isAbsent: false, reason: null, startTime, lastResetTime };
+      }
+    } else {
+      // Classroom shift is explicitly inactive, so student shift must be inactive!
+      const isAbsentBool = isStudentAbsent;
+      possibleKeys.forEach(k => {
+        localStorage.setItem(`anjo_shift_active_${k}`, 'false');
+        localStorage.removeItem(`anjo_shift_start_time_${k}`);
+        if (isAbsentBool) {
+          localStorage.setItem(`anjo_is_absent_${k}`, 'true');
+        } else {
+          localStorage.removeItem(`anjo_is_absent_${k}`);
+          localStorage.setItem(`anjo_is_absent_${k}`, 'false');
+        }
+      });
+      if (studentRoom) {
+        localStorage.setItem(`anjo_shift_active_${studentRoom}`, 'false');
+        localStorage.removeItem(`anjo_shift_start_time_${studentRoom}`);
+      }
+      return { 
+        active: false, 
+        isAbsent: isAbsentBool, 
+        reason: latestClassroom.reason || null, 
+        startTime: null, 
+        lastResetTime: latestClassroom.lastResetTime || null 
+      };
+    }
   }
 
-  if (allRecords.length > 0) {
-    // Sort descending by timestamp (newest first). If timestamps are identical, direct records act as tie-breaker.
-    allRecords.sort((a, b) => {
-      if (b.time !== a.time) {
-        return b.time - a.time;
-      }
-      const aIsDirect = directRecords.some(dr => dr.record.id === a.record.id);
-      const bIsDirect = directRecords.some(dr => dr.record.id === b.record.id);
-      if (aIsDirect && !bIsDirect) return -1;
-      if (!aIsDirect && bIsDirect) return 1;
-      return 0;
-    });
-
-    const latest = latestRecord || allRecords[0].record;
+  // Fallback to direct student records if no classroom record exists
+  if (directRecords.length > 0) {
+    directRecords.sort((a, b) => b.time - a.time);
+    const latest = directRecords[0].record;
     const isActive = latest.active === true || String(latest.active) === 'true';
 
     if (isActive) {
