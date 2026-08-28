@@ -96,11 +96,10 @@ const getTodayBr = () => {
 };
 
 const getNowTimeBr = () => {
-  return new Date().toLocaleTimeString('pt-BR', {
-    timeZone: 'America/Sao_Paulo',
-    hour: '2-digit',
-    minute: '2-digit'
-  });
+  const d = new Date();
+  const h = String(d.getHours()).padStart(2, '0');
+  const m = String(d.getMinutes()).padStart(2, '0');
+  return `${h}:${m}`;
 };
 
 const isTodayOrDemoDate = (d?: string) => {
@@ -146,7 +145,7 @@ const getTodayHydrationRecords = (idosoId: string): RegistroHidratacao[] => {
   [...globalWater, ...studentWater1, ...studentWater2].forEach(item => {
     if (!item) return;
     const itemStudentId = item.idosoId || idosoId;
-    if (itemStudentId !== idosoId) return;
+    if (!isStudentIdMatch(itemStudentId, idosoId)) return;
     combinedRaw.push(item);
   });
 
@@ -1038,8 +1037,8 @@ Equipe Anjinho Escolar`
     setShiftStartTime(activeShift.startTime);
     setIsAbsent(localStorage.getItem(`anjo_is_absent_${idoso.id}`) === 'true');
 
-    // Synchronize quick hygiene state from localStorage
-    const savedHyg = getFromDB<any>(`anjo_higiene_log_${idoso.id}`, null);
+    // Synchronize quick hygiene state from getHygieneLog
+    const savedHyg = getHygieneLog(idoso.id);
     if (savedHyg) {
       setQuickHygiene({
         bath: Boolean(savedHyg.bath ?? savedHyg.banho),

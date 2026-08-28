@@ -778,12 +778,12 @@ export function getHygieneLog(idosoId: string): any {
   
   const globalLogs = getFromDB<any[]>('anjo_higiene_global', []);
   if (globalLogs && globalLogs.length > 0) {
-    const studentLogs = globalLogs.filter(l => l.idosoId === idosoId);
+    const studentLogs = globalLogs.filter(l => isStudentIdMatch(l.idosoId, idosoId) && isTodayOrDemoDate(l.date || l.data, idosoId));
     if (studentLogs.length > 0) {
       // Return the most recent one based on time
       studentLogs.sort((a, b) => {
-        const dateA = a.date || getTodayIso();
-        const dateB = b.date || getTodayIso();
+        const dateA = a.date || getTodayIsoBr();
+        const dateB = b.date || getTodayIsoBr();
         const timeA = new Date(dateA + 'T' + (a.time || '00:00') + ':00').getTime() || 0;
         const timeB = new Date(dateB + 'T' + (b.time || '00:00') + ':00').getTime() || 0;
         return timeB - timeA;
@@ -928,7 +928,8 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
     }
   }
 
-const allRecords: { record: ShiftState; time: number }[] = [];
+  const directRecords: { record: ShiftState; time: number }[] = [];
+  const classroomRecords: { record: ShiftState; time: number }[] = [];
 
   shiftStates.forEach(s => {
     if (!s || !s.id) return;
@@ -947,13 +948,28 @@ const allRecords: { record: ShiftState; time: number }[] = [];
     const isDirectMatch = possibleKeys.some(pk => pk === sid || keyMatches(pk, sid) || keyMatches(sid, pk));
     const isClassroomMatch = studentRoom && keyMatches(sid, studentRoom);
 
-    if (isDirectMatch || isClassroomMatch) {
-      allRecords.push({ record: s, time });
+    if (isDirectMatch) {
+      directRecords.push({ record: s, time });
+    } else if (isClassroomMatch) {
+      classroomRecords.push({ record: s, time });
     }
   });
 
+  const allRecords = [...directRecords, ...classroomRecords];
+
   if (allRecords.length > 0) {
-    allRecords.sort((a, b) => b.time - a.time);
+    // Sort descending by timestamp (newest first). If timestamps are identical, direct records act as tie-breaker.
+    allRecords.sort((a, b) => {
+      if (b.time !== a.time) {
+        return b.time - a.time;
+      }
+      const aIsDirect = directRecords.some(dr => dr.record.id === a.record.id);
+      const bIsDirect = directRecords.some(dr => dr.record.id === b.record.id);
+      if (aIsDirect && !bIsDirect) return -1;
+      if (!aIsDirect && bIsDirect) return 1;
+      return 0;
+    });
+
     const latest = allRecords[0].record;
     const isActive = latest.active === true || String(latest.active) === 'true';
 
@@ -973,12 +989,15 @@ const allRecords: { record: ShiftState; time: number }[] = [];
       return { active: true, isAbsent: false, reason: null, startTime, lastResetTime };
     } else {
       const isAbsentBool = Boolean(latest.isAbsent || latest.reason);
-      if (isAbsentBool) {
-        possibleKeys.forEach(k => localStorage.setItem(`anjo_is_absent_${k}`, 'true'));
-      }
       possibleKeys.forEach(k => {
         localStorage.setItem(`anjo_shift_active_${k}`, 'false');
         localStorage.removeItem(`anjo_shift_start_time_${k}`);
+        if (isAbsentBool) {
+          localStorage.setItem(`anjo_is_absent_${k}`, 'true');
+        } else {
+          localStorage.removeItem(`anjo_is_absent_${k}`);
+          localStorage.setItem(`anjo_is_absent_${k}`, 'false');
+        }
       });
       if (studentRoom) {
         localStorage.setItem(`anjo_shift_active_${studentRoom}`, 'false');
@@ -1636,7 +1655,7 @@ export function setShiftActiveStatesBatch(updates: { targetKey: string; active: 
         });
 
         roomStudents.forEach(s => {
-          keysToUpdate.add(s.id);
+          getAllPossibleStudentKeys(s.id).forEach(k => keysToUpdate.add(k));
           if (s.nome) {
             keysToUpdate.add(s.nome);
             keysToUpdate.add(s.nome.split(' (')[0].trim());
@@ -1745,10 +1764,7 @@ export function isTodayOrDemoDate(d?: string, studentId?: string): boolean {
   const cleanD = d.split(' ')[0].split('T')[0];
 
   if (studentId) {
-    const isCleared = localStorage.getItem(`anjo_routine_cleared_${studentId}`) === 'true' ||
-                      localStorage.getItem(`anjo_activities_cleared_${studentId}`) === 'true' ||
-                      localStorage.getItem(`anjo_tasks_cleared_${studentId}`) === 'true';
-    if (isCleared) return false;
+// removed isCleared check to prevent hiding today's valid records
 
     const resetTimeStr = localStorage.getItem(`anjo_routine_reset_${studentId}`) || localStorage.getItem(`anjo_shift_start_time_${studentId}`);
     if (resetTimeStr) {
