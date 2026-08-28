@@ -96,15 +96,15 @@ export default function DailyRoutine({
     if (!auth.isAuthorized) {
       return (
         <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-start gap-3 shadow-xs mb-4">
-          <div className="text-xl">⚠</div>
+          <div className="text-xl">[!]</div>
           <div className="space-y-1">
             <h4 className="font-extrabold text-sm text-rose-950">
-              {isEscolar ? 'Falta de Autorização Escolar dos Pais' : 'Falta de Autorização de Cuidados'}
+              {isEscolar ? 'Falta de Autorizacao Escolar dos Pais' : 'Falta de Autorizacao de Cuidados'}
             </h4>
             <p className="text-xs text-rose-800 leading-relaxed">
               {isEscolar 
-                ? 'Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel de Pais & Autorizados para este aluno. A gravação e o registro desta rotina estão bloqueados.'
-                : 'Nenhum familiar responsável autorizou "Alimentação e Cuidados" no painel da Família. A gravação desta rotina está bloqueada.'}
+                ? 'Nenhum pai ou responsavel autorizou "Alimentacao e Cuidados" no painel de Pais & Autorizados para este aluno. A gravacao e o registro desta rotina estao bloqueados.'
+                : 'Nenhum familiar responsavel autorizou "Alimentacao e Cuidados" no painel da Familia. A gravacao desta rotina esta bloqueada.'}
             </p>
           </div>
         </div>
@@ -113,13 +113,13 @@ export default function DailyRoutine({
 
     return (
       <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-2.5 shadow-3xs mb-4">
-        <div className="text-emerald-600 bg-white p-1 rounded-full text-xs font-black shadow-3xs">✓</div>
+        <div className="text-emerald-600 bg-white p-1 rounded-full text-xs font-black shadow-3xs"> </div>
         <div className="text-xs font-semibold text-emerald-950">
-          {isEscolar ? 'Autorização Ativa dos Pais: ' : 'Autorização Ativa da Família: '}
+          {isEscolar ? 'Autorizacao Ativa dos Pais: ' : 'Autorizacao Ativa da Familia: '}
           <span className="font-extrabold text-emerald-800">
             {auth.authorizedNames.join(', ')}
           </span>
-          <span className="text-[10px] text-emerald-600 font-medium ml-1.5">(Permissão concedida via Painel)</span>
+          <span className="text-[10px] text-emerald-600 font-medium ml-1.5">(Permissao concedida via Painel)</span>
         </div>
       </div>
     );
@@ -181,8 +181,8 @@ export default function DailyRoutine({
     if (found) {
       return found.name;
     }
-    if (name.includes('Berçário I')) return 'Berçário I';
-    if (name.includes('Berçário II')) return 'Berçário II';
+    if (name.includes('Bercario I')) return 'Bercario I';
+    if (name.includes('Bercario II')) return 'Bercario II';
     if (name.includes('Maternal II')) return 'Maternal II';
     if (name.includes('Maternal I')) return 'Maternal I';
     if (name.includes('Jardim II')) return 'Jardim II';
@@ -246,7 +246,7 @@ export default function DailyRoutine({
       window.dispatchEvent(new CustomEvent('db-routine-update'));
       window.dispatchEvent(new CustomEvent('db-tasks-update'));
       window.dispatchEvent(new CustomEvent('db-jornada-update'));
-      alert("Atividade/trabalhinho excluído com sucesso!");
+      alert("Atividade/trabalhinho excluido com sucesso!");
     }
   };
 
@@ -542,7 +542,7 @@ export default function DailyRoutine({
     }
     const auth = checkFeedingCareAuthorization();
     if (!auth.isAuthorized) {
-      alert(`⚠ Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar ou realizar alimentação sem autorização ativa.`);
+      alert(`[!] Operacao Nao Autorizada: Nenhum pai ou responsavel autorizou "Alimentacao e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora nao pode registrar ou realizar alimentacao sem autorizacao ativa.`);
       return;
     }
     if (isAbsent) {
@@ -563,11 +563,11 @@ export default function DailyRoutine({
         );
 
         triggerWhatsAppSim(
-          '  Comunicado: Mamadeira Já Servida',
-          `Anjinho Escolar: ${idoso.nome} já tomou mamadeira às ${check.lastHorario}. A tentativa de novo registro foi feita às ${nowTime}. Para garantir a nutrição e o descanso digestivo de 2h, a próxima mamadeira estará liberada a partir das ${check.nextAllowedHorario}.`
+          '  Comunicado: Mamadeira Ja Servida',
+          `Anjinho Escolar: ${idoso.nome} ja tomou mamadeira as ${check.lastHorario}. A tentativa de novo registro foi feita as ${nowTime}. Para garantir a nutricao e o descanso digestivo de 2h, a proxima mamadeira estara liberada a partir das ${check.nextAllowedHorario}.`
         );
 
-        alert(`${check.message}\n\n  Foi gerado um comunicado oficial no mural e no diário do aluno informando os pais e a equipe.`);
+        alert(`${check.message}\n\n  Foi gerado um comunicado oficial no mural e no diario do aluno informando os pais e a equipe.`);
         return;
       }
     } else {
@@ -575,15 +575,15 @@ export default function DailyRoutine({
       const alreadyExists = feeds.some(f => f.idosoId === idoso.id && f.refeicao === mealForm.refeicao && isTodayOrDemoDate(f.data));
       if (alreadyExists) {
         const mealLabelMap: { [key: string]: string } = {
-          cafe_manha: 'Café da manhã',
-          almoco: 'Almoço',
+          cafe_manha: 'Cafe da manha',
+          almoco: 'Almoco',
           lanche: 'Lanche',
           lanche_tarde: 'Lanche',
           jantar: 'Jantar',
           ceia: 'Ceia'
         };
         const label = mealLabelMap[mealForm.refeicao] || mealForm.refeicao;
-        alert(`⚠ Registro Duplicado Bloqueado: A refeição "${label}" já foi registrada para ${idoso.nome} hoje!\n\nNão é permitido enviar duas refeições idênticas no mesmo dia.`);
+        alert(`[!] Registro Duplicado Bloqueado: A refeicao "${label}" ja foi registrada para ${idoso.nome} hoje!\n\nNao e permitido enviar duas refeicoes identicas no mesmo dia.`);
         return;
       }
     }
@@ -606,8 +606,8 @@ export default function DailyRoutine({
     // Sync task dashboard check
     const mealLabelMap: { [key: string]: string } = {
       mamadeira: 'Mamadeira de Leite',
-      cafe_manha: 'Café da manhã',
-      almoco: 'Almoço',
+      cafe_manha: 'Cafe da manha',
+      almoco: 'Almoco',
       lanche: 'Lanche',
       lanche_tarde: 'Lanche',
       jantar: 'Jantar',
@@ -626,7 +626,7 @@ export default function DailyRoutine({
             status: 'concluido' as const,
             concluidaEm: novoFeed.horario,
             completadaPor: usuarioAtual.nome,
-            observacao: `Aceitação: ${mealForm.aceitacao.replace('_', ' ')}. Obs: ${novoFeed.observacoes || ''}`
+            observacao: `Aceitacao: ${mealForm.aceitacao.replace('_', ' ')}. Obs: ${novoFeed.observacoes || ''}`
           };
         }
         return t;
@@ -638,13 +638,13 @@ export default function DailyRoutine({
     const totalBottlesToday = feeds.filter(f => f.idosoId === idoso.id && f.refeicao === 'mamadeira' && isTodayOrDemoDate(f.data)).length;
 
     // Simulated WhatsApp Alerts
-    const acceptText = mealForm.aceitacao === 'muito_bem' ? 'muito bem' : mealForm.aceitacao === 'pouco' ? 'muito pouco' : 'recusou a refeição';
+    const acceptText = mealForm.aceitacao === 'muito_bem' ? 'muito bem' : mealForm.aceitacao === 'pouco' ? 'muito pouco' : 'recusou a refeicao';
     const totalBottlesText = mealForm.refeicao === 'mamadeira' ? ` (Total do dia: ${totalBottlesToday} mamadeira(s))` : '';
-    const alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Registro de Alimentação para ${idoso.nome}. Refeição: ${mealLabelMap[mealForm.refeicao] || mealForm.refeicao}${novoFeed.quantidadeMl ? ` (${novoFeed.quantidadeMl}ml)` : ''} às ${novoFeed.horario}. Aceitação: ${acceptText}.${totalBottlesText} Nota: "${novoFeed.observacoes || 'Sem observações'}", registrado por ${usuarioAtual.nome}.`;
+    const alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Registro de Alimentacao para ${idoso.nome}. Refeicao: ${mealLabelMap[mealForm.refeicao] || mealForm.refeicao}${novoFeed.quantidadeMl ? ` (${novoFeed.quantidadeMl}ml)` : ''} as ${novoFeed.horario}. Aceitacao: ${acceptText}.${totalBottlesText} Nota: "${novoFeed.observacoes || 'Sem observacoes'}", registrado por ${usuarioAtual.nome}.`;
     triggerWhatsAppSim('Acompanhamento Alimentar', alertMsg);
 
     setMealForm({ refeicao: 'cafe_manha', aceitacao: 'muito_bem', observacoes: '', quantidadeMl: 180 });
-    alert('Alimentação registrada com sucesso!');
+    alert('Alimentacao registrada com sucesso!');
     
     // Dispatch global events to sync other screens (including Reports & dashboard)
     if (typeof window !== 'undefined') {
@@ -664,7 +664,7 @@ export default function DailyRoutine({
     }
     const auth = checkFeedingCareAuthorization();
     if (!auth.isAuthorized) {
-      alert(`⚠ Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar ou realizar cuidados de higiene sem autorização ativa.`);
+      alert(`[!] Operacao Nao Autorizada: Nenhum pai ou responsavel autorizou "Alimentacao e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora nao pode registrar ou realizar cuidados de higiene sem autorizacao ativa.`);
       return;
     }
     if (isAbsent) {
@@ -674,7 +674,7 @@ export default function DailyRoutine({
     const allTasksCheck = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
     const alreadyCompleted = allTasksCheck.some(t => t.idosoId === idoso.id && t.tipo === 'banho' && t.status === 'concluido');
     if (alreadyCompleted) {
-      const confirmSave = window.confirm(`⚠ Atenção: O registro de Higiene e Banho para ${idoso.nome} já foi marcado como concluído hoje!\n\nDeseja realmente registrar novamente?`);
+      const confirmSave = window.confirm(`[!] Atencao: O registro de Higiene e Banho para ${idoso.nome} ja foi marcado como concluido hoje!\n\nDeseja realmente registrar novamente?`);
       if (!confirmSave) return;
     }
     
@@ -721,7 +721,7 @@ export default function DailyRoutine({
     });
     saveToDB('anjo_tarefas_diarias', updatedTasks);
 
-    const alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Registro de Higiene para ${idoso.nome}. Banho realizado com sucesso assistido por ${usuarioAtual.nome}. Higiene bucal e hidratação da pele concluídas. Obs: ${hygieneForm.obs || 'Nenhuma anormalidade na pele.'}`;
+    const alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Registro de Higiene para ${idoso.nome}. Banho realizado com sucesso assistido por ${usuarioAtual.nome}. Higiene bucal e hidratacao da pele concluidas. Obs: ${hygieneForm.obs || 'Nenhuma anormalidade na pele.'}`;
     triggerWhatsAppSim('Higiene & Banho', alertMsg);
 
     setHygieneForm({ banho: true, higieneBucal: true, trocaRoupa: true, trocaFralda: false, pele: true, obs: '' });
@@ -738,7 +738,7 @@ export default function DailyRoutine({
     }
     const auth = checkFeedingCareAuthorization();
     if (!auth.isAuthorized) {
-      alert(`⚠ Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar ou administrar hidratação sem autorização ativa.`);
+      alert(`[!] Operacao Nao Autorizada: Nenhum pai ou responsavel autorizou "Alimentacao e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora nao pode registrar ou administrar hidratacao sem autorizacao ativa.`);
       return;
     }
     if (isAbsent) {
@@ -778,7 +778,7 @@ export default function DailyRoutine({
           status: totalMlNow >= 1500 ? ('concluido' as const) : ('em_andamento' as const),
           concluidaEm: totalMlNow >= 1500 ? getNowTimeBr() : undefined,
           completadaPor: usuarioAtual.nome,
-          observacao: `Total ingerido até agora: ${totalMlNow}ml de meta de 1500ml.`
+          observacao: `Total ingerido ate agora: ${totalMlNow}ml de meta de 1500ml.`
         };
       }
       return t;
@@ -787,8 +787,8 @@ export default function DailyRoutine({
 
     // simulated dispatch
     triggerWhatsAppSim(
-      'Hidratação Registrada',
-      `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: ${idoso.nome} bebeu mais um copo de água (${cupsMl}ml). Total acumulado hoje: ${totalMlNow}ml de uma meta de 1500ml. Registrado por ${usuarioAtual.nome}.`
+      'Hidratacao Registrada',
+      `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: ${idoso.nome} bebeu mais um copo de agua (${cupsMl}ml). Total acumulado hoje: ${totalMlNow}ml de uma meta de 1500ml. Registrado por ${usuarioAtual.nome}.`
     );
 
     // Dispatch global events to sync other screens (including Reports & dashboard)
@@ -831,7 +831,7 @@ export default function DailyRoutine({
     const startShort = startClean.replace(/^0/, '');
     const endShort = endClean.replace(/^0/, '');
 
-    // 1. Check duplicate in Frequência (anjo_sono)
+    // 1. Check duplicate in Frequencia (anjo_sono)
     const alreadyExistsInSono = sonos.some(s => {
       if (s.idosoId !== idoso.id || !isTodayOrDemoDate(s.data)) return false;
       const sStart = (s.dormiuEm || '').trim();
@@ -840,19 +840,19 @@ export default function DailyRoutine({
              (sStart.replace(/^0/, '') === startShort && sEnd.replace(/^0/, '') === endShort);
     });
 
-    // 2. Check duplicate in Diário da Inf (anjo_sinais)
+    // 2. Check duplicate in Diario da Inf (anjo_sinais)
     const alreadyExistsInSinais = vitals.some(v => {
       if (v.idosoId !== idoso.id || !isTodayOrDemoDate(v.data)) return false;
       const txt = (v.soneca || v.pressaoArterial || '').toLowerCase();
-      if (!txt || txt === 'sem registros' || txt === 'não dormiu / sesta' || txt === '120/80') return false;
+      if (!txt || txt === 'sem registros' || txt === 'nao dormiu / sesta' || txt === '120/80') return false;
       const hasStart = txt.includes(startClean) || txt.includes(startShort);
       const hasEnd = txt.includes(endClean) || txt.includes(endShort);
       return hasStart && hasEnd;
     });
 
     if (alreadyExistsInSono || alreadyExistsInSinais) {
-      const sourceName = alreadyExistsInSinais ? 'Diário da Inf' : 'Frequência';
-      alert(`⚠ Registro Duplicado Bloqueado: Já existe um registro de soneca/sono para ${idoso.nome} no mesmo horário (${sleepForm.dormiuEm} às ${sleepForm.acordouEm}) registrado hoje no ${sourceName}!\n\nNão é permitido salvar dois registros idênticos para o mesmo horário.`);
+      const sourceName = alreadyExistsInSinais ? 'Diario da Inf' : 'Frequencia';
+      alert(`[!] Registro Duplicado Bloqueado: Ja existe um registro de soneca/sono para ${idoso.nome} no mesmo horario (${sleepForm.dormiuEm} as ${sleepForm.acordouEm}) registrado hoje no ${sourceName}!\n\nNao e permitido salvar dois registros identicos para o mesmo horario.`);
       return;
     }
 
@@ -879,7 +879,7 @@ export default function DailyRoutine({
     }
 
     // Alerts
-    const alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Registro de Sono de ${idoso.nome}. Dormiu às ${sleepForm.dormiuEm}, acordou às ${sleepForm.acordouEm}. Total de ${horasProntas} horas sob qualidade "${sleepForm.qualidade.toUpperCase()}". ${sleepForm.interrupcoes} interrupções registradas. Nota: "${sleepForm.obs || 'Noite calma'}"`;
+    const alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Registro de Sono de ${idoso.nome}. Dormiu as ${sleepForm.dormiuEm}, acordou as ${sleepForm.acordouEm}. Total de ${horasProntas} horas sob qualidade "${sleepForm.qualidade.toUpperCase()}". ${sleepForm.interrupcoes} interrupcoes registradas. Nota: "${sleepForm.obs || 'Noite calma'}"`;
     triggerWhatsAppSim('Acompanhamento do Sono', alertMsg);
 
     setSleepForm({ 
@@ -906,7 +906,7 @@ export default function DailyRoutine({
     const humores = getFromDB<RegistroHumor[]>('anjo_humor', []);
     const alreadyExistsHumor = humores.some(h => h.idosoId === idoso.id && isTodayOrDemoDate(h.data) && h.estado === humorForm.estado);
     if (alreadyExistsHumor) {
-      const confirmSave = window.confirm(`⚠ Atenção: Você já registrou o humor "${humorForm.estado.toUpperCase()}" para ${idoso.nome} hoje!\n\nDeseja realmente salvar esse novo registro de humor?`);
+      const confirmSave = window.confirm(`[!] Atencao: Voce ja registrou o humor "${humorForm.estado.toUpperCase()}" para ${idoso.nome} hoje!\n\nDeseja realmente salvar esse novo registro de humor?`);
       if (!confirmSave) return;
     }
 
@@ -995,9 +995,9 @@ export default function DailyRoutine({
 
     if (duplicates.length > 0) {
       if (activityScope === 'coletivo') {
-        alert(`⚠ Registro Duplicado Bloqueado: A atividade "${activityForm.tipo}" já foi registrada para a turma hoje!\n\nNão é permitido enviar duas atividades iguais no mesmo dia.`);
+        alert(`[!] Registro Duplicado Bloqueado: A atividade "${activityForm.tipo}" ja foi registrada para a turma hoje!\n\nNao e permitido enviar duas atividades iguais no mesmo dia.`);
       } else {
-        alert(`⚠ Registro Duplicado Bloqueado: A atividade "${activityForm.tipo}" já foi registrada para ${idoso.nome} hoje!\n\nNão é permitido enviar duas atividades iguais no mesmo dia.`);
+        alert(`[!] Registro Duplicado Bloqueado: A atividade "${activityForm.tipo}" ja foi registrada para ${idoso.nome} hoje!\n\nNao e permitido enviar duas atividades iguais no mesmo dia.`);
       }
       return;
     }
@@ -1059,8 +1059,8 @@ export default function DailyRoutine({
         data: new Date().toLocaleString('pt-BR'),
         ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
         acao: isEscolar 
-          ? (activityScope === 'coletivo' ? `Registrou atividade pedagógica coletiva: ${activityForm.tipo}` : `Registrou atividade pedagógica individual: ${activityForm.tipo}`)
-          : `Registrou atividade diária: ${activityForm.tipo}`,
+          ? (activityScope === 'coletivo' ? `Registrou atividade pedagogica coletiva: ${activityForm.tipo}` : `Registrou atividade pedagogica individual: ${activityForm.tipo}`)
+          : `Registrou atividade diaria: ${activityForm.tipo}`,
         detalhes: `Atividade realizada por ${activityForm.duracao} minutos. Obs: ${activityForm.obs || 'Nenhuma'}`
       });
       saveToDB(`anjo_lgpd_auditoria_${student.id}`, logs);
@@ -1070,9 +1070,9 @@ export default function DailyRoutine({
     const detailsExtra = activityForm.fotoTrabalhinho ? " [Foto do trabalhinho registrada com sucesso!] " : "";
     let alertMsg = "";
     if (isEscolar && activityScope === 'coletivo') {
-      alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Atividade Coletiva de ${activityForm.tipo} realizada por toda a classe (${currentClassroom}) por ${activityForm.duracao} minutos. Obs: "${activityForm.obs || 'Realizado com esforço positivo'}"${detailsExtra}`;
+      alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Atividade Coletiva de ${activityForm.tipo} realizada por toda a classe (${currentClassroom}) por ${activityForm.duracao} minutos. Obs: "${activityForm.obs || 'Realizado com esforco positivo'}"${detailsExtra}`;
     } else {
-      alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Registro de Atividade para ${idoso.nome}. Realizou "${activityForm.tipo}" por ${activityForm.duracao} minutos. Obs: "${activityForm.obs || 'Realizado com esforço positivo'}"${detailsExtra}`;
+      alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Registro de Atividade para ${idoso.nome}. Realizou "${activityForm.tipo}" por ${activityForm.duracao} minutos. Obs: "${activityForm.obs || 'Realizado com esforco positivo'}"${detailsExtra}`;
     }
     triggerWhatsAppSim('Acompanhamento de Atividades', alertMsg);
 
@@ -1087,7 +1087,7 @@ export default function DailyRoutine({
     if (isEscolar && activityScope === 'coletivo') {
       alert(`  Atividade coletiva registrada com sucesso para todos os ${createdCount} alunos da sala!`);
     } else {
-      alert(isEscolar ? 'Atividade pedagógica e registro salvos com sucesso!' : 'Atividade diária salva com sucesso!');
+      alert(isEscolar ? 'Atividade pedagogica e registro salvos com sucesso!' : 'Atividade diaria salva com sucesso!');
     }
     loadTrackerData();
   };
@@ -1101,7 +1101,7 @@ export default function DailyRoutine({
     setIsParsingWeeklyPlan(true);
 
     try {
-      // 1. Extração local imediata e confiável (< 2ms)
+      // 1. Extracao local imediata e confiavel (< 2ms)
       const localParsed = parseAuraRawPlan(weeklyPlanText);
       if (localParsed.metadata) {
         setParsedAuraMeta(localParsed.metadata);
@@ -1123,7 +1123,7 @@ export default function DailyRoutine({
         return;
       }
 
-      // 2. Se não encontrou blocos locais, tenta a API com timeout rápido de 4s
+      // 2. Se nao encontrou blocos locais, tenta a API com timeout rapido de 4s
       const customKey = localStorage.getItem('aura_gemini_key') || undefined;
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 4000);
@@ -1153,7 +1153,7 @@ export default function DailyRoutine({
         }
 
         const formattedList = data.activities.map((a: any) => {
-          const rawTitle = typeof a.title === 'string' ? a.title : (typeof a.tipo === 'string' ? a.tipo : 'Atividade Pedagógica');
+          const rawTitle = typeof a.title === 'string' ? a.title : (typeof a.tipo === 'string' ? a.tipo : 'Atividade Pedagogica');
           const cleanTitle = formatAuraTaskTitle(rawTitle, '', '');
           const safeDuration = typeof a.duration === 'number' ? a.duration : (parseInt(String(a.duration || '30'), 10) || 30);
           
@@ -1166,7 +1166,7 @@ export default function DailyRoutine({
 
           const safeTime = typeof a.time === 'string' ? a.time : '09:00';
           
-          let safeBncc = 'Desenvolvimento Lúdico e Psicomotor';
+          let safeBncc = 'Desenvolvimento Ludico e Psicomotor';
           if (typeof a.bnccObjective === 'string') safeBncc = a.bnccObjective;
           else if (typeof a.bnccObjective === 'object') safeBncc = a.bnccObjective?.code || a.bnccObjective?.description || JSON.stringify(a.bnccObjective);
 
@@ -1242,11 +1242,11 @@ export default function DailyRoutine({
     const updated = [...baseAtivs, ...newAtivsBatch];
     saveToDB('anjo_atividades', updated);
 
-    // Também sincroniza diretamente com anjo_tarefas_diarias substituindo tarefas anteriores para exibir o planejamento oficial no checklist diário do Dashboard
+    // Tambem sincroniza diretamente com anjo_tarefas_diarias substituindo tarefas anteriores para exibir o planejamento oficial no checklist diario do Dashboard
     const allTasks = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
     const baseTasks = allTasks.filter(t => !targetStudentIds.has(t.idosoId));
 
-    const DAY_NAMES = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+    const DAY_NAMES = ['Domingo', 'Segunda-feira', 'Terca-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sabado'];
     const currentDayName = DAY_NAMES[new Date().getDay()];
 
     const distinctDays = Array.from(new Set(parsedWeeklyActivities.map(a => a.dia).filter(Boolean)));
@@ -1324,7 +1324,7 @@ export default function DailyRoutine({
       tipo: isUserTeacher ? 'prof_para_pais' : 'pais_para_prof',
       categoria: newRecadoForm.categoria,
       remetente: usuarioAtual.nome,
-      cargo: isUserTeacher ? getRoleLabel(usuarioAtual, isEscolar) : 'Pais / Responsáveis',
+      cargo: isUserTeacher ? getRoleLabel(usuarioAtual, isEscolar) : 'Pais / Responsaveis',
       mensagem: newRecadoForm.mensagem,
       dataHora: new Date().toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
       lido: false
@@ -1336,16 +1336,16 @@ export default function DailyRoutine({
 
     // Send mock WhatsApp notification to make the experience real & satisfying!
     const senderDescription = isEscolar 
-      ? (isUserTeacher ? `Profª. ${usuarioAtual.nome}` : `Pais de ${idoso.nome}`)
-      : (isUserTeacher ? `Cuidador(a) ${usuarioAtual.nome}` : `Família de ${idoso.nome}`);
+      ? (isUserTeacher ? `Profa. ${usuarioAtual.nome}` : `Pais de ${idoso.nome}`)
+      : (isUserTeacher ? `Cuidador(a) ${usuarioAtual.nome}` : `Familia de ${idoso.nome}`);
     
     const alertMsg = `${isEscolar ? 'Anjo Escolar' : 'Anjo Cuidador'}: Novo recado de ${senderDescription}. Categoria: ${newRecadoForm.categoria.toUpperCase()}. Mensagem: "${newRecadoForm.mensagem}"`;
-    triggerWhatsAppSim(isEscolar ? 'Diário Escolar / Recado' : 'Acompanhamento / Recado', alertMsg);
+    triggerWhatsAppSim(isEscolar ? 'Diario Escolar / Recado' : 'Acompanhamento / Recado', alertMsg);
 
     setNewRecadoForm({ mensagem: '', categoria: 'geral' });
     alert(isEscolar 
-      ? 'Seu recado foi adicionado à agenda escolar e notificado via WhatsApp!' 
-      : 'Anotação adicionada ao caderno de acompanhamento do idoso!');
+      ? 'Seu recado foi adicionado a agenda escolar e notificado via WhatsApp!' 
+      : 'Anotacao adicionada ao caderno de acompanhamento do idoso!');
     loadTrackerData();
   };
 
@@ -1405,11 +1405,11 @@ export default function DailyRoutine({
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-bold text-slate-850">
-            {isEscolar ? 'Diário Escolar & Mural de Recados' : 'Lançamento de Cuidados e Diários'}
+            {isEscolar ? 'Diario Escolar & Mural de Recados' : 'Lancamento de Cuidados e Diarios'}
           </h2>
           <p className="text-sm text-slate-500">
             {isEscolar 
-              ? 'Acompanhe as rotinas, atividades pedagógicas e recados do aluno em tempo real.' 
+              ? 'Acompanhe as rotinas, atividades pedagogicas e recados do aluno em tempo real.' 
               : 'Selecione uma rotina para registrar o andamento do idoso.'}
           </p>
         </div>
@@ -1426,17 +1426,17 @@ export default function DailyRoutine({
           />
           <div>
             <span className="text-[9px] font-black uppercase tracking-widest text-indigo-700 bg-indigo-100/60 px-2 py-0.5 rounded-md">
-              {isEscolar ? 'Aluno Selecionado' : 'Perfil em Monitoração'}
+              {isEscolar ? 'Aluno Selecionado' : 'Perfil em Monitoracao'}
             </span>
             <h3 className="text-base font-black text-slate-850 mt-1">{idoso.nome}</h3>
             <p className="text-xs text-slate-500 font-semibold">
-              {isEscolar ? 'Todas as anotações e atividades abaixo serão salvas nesta ficha escolar.' : 'Sessão ativa de lançamento de rotina diária.'}
+              {isEscolar ? 'Todas as anotacoes e atividades abaixo serao salvas nesta ficha escolar.' : 'Sessao ativa de lancamento de rotina diaria.'}
             </p>
           </div>
         </div>
         {isAbsent && (
           <div className="bg-rose-100 text-rose-800 border border-rose-200 rounded-xl px-3 py-1.5 text-[10px] font-black uppercase tracking-wider select-none shrink-0">
-            Ausente Hoje ❌
+            Ausente Hoje  
           </div>
         )}
       </div>
@@ -1446,10 +1446,10 @@ export default function DailyRoutine({
           <div className="text-xl"> </div>
           <div className="space-y-1">
             <h4 className="font-extrabold text-sm text-amber-900">
-              Modo Família / Leitura Ativo
+              Modo Familia / Leitura Ativo
             </h4>
             <p className="text-xs text-amber-800 leading-relaxed font-medium">
-              Você está visualizando a grade de atividades e rotinas diárias no modo de acompanhamento. Apenas educadores e cuidadores autorizados podem registrar, modificar ou salvar rotinas neste diário.
+              Voce esta visualizando a grade de atividades e rotinas diarias no modo de acompanhamento. Apenas educadores e cuidadores autorizados podem registrar, modificar ou salvar rotinas neste diario.
             </p>
           </div>
         </div>
@@ -1459,7 +1459,7 @@ export default function DailyRoutine({
       <div className="grid grid-cols-2 md:flex md:flex-wrap gap-2 w-full pb-2">
         <button onClick={() => setActiveTab('alimentacao')} className={getTabBtnClass('alimentacao')} id="btn-tab-alimentacao">
           <Coffee className="w-4 h-4 sm:w-5 h-5 shrink-0" /> 
-          <span className="truncate">{isEscolar ? 'Papa & Mamadeira' : 'Alimentação'}</span>
+          <span className="truncate">{isEscolar ? 'Papa & Mamadeira' : 'Alimentacao'}</span>
         </button>
         <button onClick={() => setActiveTab('banho')} className={getTabBtnClass('banho')} id="btn-tab-banho">
           <ShowerHead className="w-4 h-4 sm:w-5 h-5 shrink-0" /> 
@@ -1467,11 +1467,11 @@ export default function DailyRoutine({
         </button>
         <button onClick={() => setActiveTab('hidratacao')} className={getTabBtnClass('hidratacao')} id="btn-tab-hidratacao">
           <Droplets className="w-4 h-4 sm:w-5 h-5 shrink-0" /> 
-          <span className="truncate">{isEscolar ? 'Água (Hidratação)' : 'Hidratação'}</span>
+          <span className="truncate">{isEscolar ? 'Agua (Hidratacao)' : 'Hidratacao'}</span>
         </button>
         <button onClick={() => setActiveTab('sono')} className={getTabBtnClass('sono')} id="btn-tab-sono">
           <Moon className="w-4 h-4 sm:w-5 h-5 shrink-0" /> 
-          <span className="truncate">{isEscolar ? 'Sono/Soneca' : 'Diário de Sono'}</span>
+          <span className="truncate">{isEscolar ? 'Sono/Soneca' : 'Diario de Sono'}</span>
         </button>
         <button onClick={() => setActiveTab('humores')} className={getTabBtnClass('humores')} id="btn-tab-humores">
           <Smile className="w-4 h-4 sm:w-5 h-5 shrink-0" /> 
@@ -1479,11 +1479,11 @@ export default function DailyRoutine({
         </button>
         <button onClick={() => setActiveTab('atividades')} className={getTabBtnClass('atividades')} id="btn-tab-atividades">
           <Activity className="w-4 h-4 sm:w-5 h-5 shrink-0" /> 
-          <span className="truncate">{isEscolar ? 'Atividade Pedagógica' : 'Atividade Física/Mental'}</span>
+          <span className="truncate">{isEscolar ? 'Atividade Pedagogica' : 'Atividade Fisica/Mental'}</span>
         </button>
         <button onClick={() => setActiveTab('recados')} className={getTabBtnClass('recados')} id="btn-tab-recados">
           <MessageSquare className="w-4 h-4 sm:w-5 h-5 shrink-0" /> 
-          <span className="truncate font-black text-rose-650">{isEscolar ? 'Recados de Mão Dupla  ' : 'Caderno de Recados  '}</span>
+          <span className="truncate font-black text-rose-650">{isEscolar ? 'Recados de Mao Dupla  ' : 'Caderno de Recados  '}</span>
         </button>
       </div>
 
@@ -1507,13 +1507,13 @@ export default function DailyRoutine({
               </div>
               <div className="space-y-0.5">
                 <h4 className="text-xs font-black text-slate-900 flex items-center gap-2 flex-wrap">
-                  Hidratação de {idoso.nome}
+                  Hidratacao de {idoso.nome}
                   <span className="bg-cyan-600 text-white text-[9px] font-extrabold px-2.5 py-0.5 rounded-full uppercase shadow-3xs">
                     {percentJug}% da Meta ({totalStudentMl}/{targetGoal}ml)
                   </span>
                 </h4>
                 <p className="text-[11px] text-slate-600 font-semibold leading-tight">
-                  Você serviu <strong className="text-cyan-800">{totalTeacherMl}ml</strong> no total hoje. A jarrinha ao lado atualiza o nível da água instantaneamente!
+                  Voce serviu <strong className="text-cyan-800">{totalTeacherMl}ml</strong> no total hoje. A jarrinha ao lado atualiza o nivel da agua instantaneamente!
                 </p>
               </div>
             </div>
@@ -1553,7 +1553,7 @@ export default function DailyRoutine({
                 className="px-3 py-2 bg-cyan-600 hover:bg-cyan-700 active:bg-cyan-800 text-white font-extrabold text-xs rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-1.5"
                 title="Dar 1 copinho (100ml) e encher a jarrinha"
               >
-                <span>+100ml Água</span>
+                <span>+100ml Agua</span>
                 <span className="text-[10px] bg-cyan-800/40 px-1.5 py-0.5 rounded font-mono">  Sobe!</span>
               </button>
             </div>
@@ -1574,7 +1574,7 @@ export default function DailyRoutine({
                   {isEscolar ? 'Aluno(a) Marcado como Ausente Hoje' : 'Cliente Marcado como Ausente'}
                 </h4>
                 <p className="text-[11px] text-rose-800 leading-snug">
-                  Você pode preencher a rotina normalmente. Ao salvar, a presença será reativada automaticamente.
+                  Voce pode preencher a rotina normalmente. Ao salvar, a presenca sera reativada automaticamente.
                 </p>
               </div>
             </div>
@@ -1599,14 +1599,14 @@ export default function DailyRoutine({
               </div>
               <div>
                 <h3 className="text-lg font-bold text-slate-800">
-                  {isFundamental ? 'Acompanhamento de Alimentação / Lanche' : (isEscolar ? 'Acompanhamento Alimentar do Aluno' : 'Acompanhamento Alimentar Diário')}
+                  {isFundamental ? 'Acompanhamento de Alimentacao / Lanche' : (isEscolar ? 'Acompanhamento Alimentar do Aluno' : 'Acompanhamento Alimentar Diario')}
                 </h3>
                 <p className="text-xs text-slate-400">
                   {isFundamental 
-                    ? 'Insira os lanches, almoços ou sucos consumidos pelo aluno durante o período letivo.'
+                    ? 'Insira os lanches, almocos ou sucos consumidos pelo aluno durante o periodo letivo.'
                     : isEscolar 
                       ? 'Insira as mamadeiras, papinhas ou lanches escolares oferecidos hoje.' 
-                      : 'Insira as refeições, a aceitação geral e a qualidade alimentar.'}
+                      : 'Insira as refeicoes, a aceitacao geral e a qualidade alimentar.'}
                 </p>
               </div>
             </div>
@@ -1616,7 +1616,7 @@ export default function DailyRoutine({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
                 <label className="text-sm font-bold text-slate-705 block">
-                  {isFundamental ? 'Qual refeição/lanche foi consumido?' : (isEscolar ? 'Qual refeição/mamadeira foi servida?' : 'Qual refeição está sendo oferecida?')}
+                  {isFundamental ? 'Qual refeicao/lanche foi consumido?' : (isEscolar ? 'Qual refeicao/mamadeira foi servida?' : 'Qual refeicao esta sendo oferecida?')}
                 </label>
                 <select 
                   value={mealForm.refeicao}
@@ -1625,25 +1625,25 @@ export default function DailyRoutine({
                 >
                   {isFundamental ? (
                     <>
-                      <option value="lanche_manha">☕ Lanche do Recreio (Manhã)</option>
-                      <option value="almoco">  Almoço na Escola</option>
+                      <option value="lanche_manha">  Lanche do Recreio (Manha)</option>
+                      <option value="almoco">  Almoco na Escola</option>
                       <option value="lanche_tarde">  Lanche do Recreio (Tarde)</option>
                       <option value="outro">  Fruta / Outros Lanches</option>
                     </>
                   ) : isEscolar ? (
                     <>
-                      <option value="mamadeira">  Mamadeira de Leite / Fórmula</option>
-                      <option value="cafe_manha">☕ Café da Manhã</option>
-                      <option value="lanche">  Lanchinho da Manhã (Colação)</option>
-                      <option value="almoco">  Almoço Escolar</option>
+                      <option value="mamadeira">  Mamadeira de Leite / Formula</option>
+                      <option value="cafe_manha">  Cafe da Manha</option>
+                      <option value="lanche">  Lanchinho da Manha (Colacao)</option>
+                      <option value="almoco">  Almoco Escolar</option>
                       <option value="lanche_tarde">  Lanche da Tarde</option>
-                      <option value="ceia">  Colação do Final de Período</option>
+                      <option value="ceia">  Colacao do Final de Periodo</option>
                     </>
                   ) : (
                     <>
-                      <option value="cafe_manha">Café da Manhã</option>
-                      <option value="lanche">Lanche da Manhã / Tarde</option>
-                      <option value="almoco">Almoço</option>
+                      <option value="cafe_manha">Cafe da Manha</option>
+                      <option value="lanche">Lanche da Manha / Tarde</option>
+                      <option value="almoco">Almoco</option>
                       <option value="jantar">Jantar</option>
                       <option value="ceia">Ceia Noturna</option>
                     </>
@@ -1720,7 +1720,7 @@ export default function DailyRoutine({
 
               <div className="space-y-1">
                 <label className="text-sm font-bold text-slate-705 block">
-                  {isFundamental ? 'Aceitação do Aluno' : (isEscolar ? 'Aceitação da Criança' : 'Aceitação do Idoso')}
+                  {isFundamental ? 'Aceitacao do Aluno' : (isEscolar ? 'Aceitacao da Crianca' : 'Aceitacao do Idoso')}
                 </label>
                 <div className="flex gap-2 pt-1">
                   <button
@@ -1762,7 +1762,7 @@ export default function DailyRoutine({
               <div className="space-y-1 sm:col-span-2">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-bold text-slate-705 block">
-                    {isFundamental ? 'O que o aluno consumiu?' : 'Qual o cardápio ou observações adicionais?'}
+                    {isFundamental ? 'O que o aluno consumiu?' : 'Qual o cardapio ou observacoes adicionais?'}
                   </label>
                   <VoiceInput 
                     onTranscript={text => setMealForm(prev => ({ ...prev, observacoes: prev.observacoes ? prev.observacoes + ' ' + text : text }))} 
@@ -1770,7 +1770,7 @@ export default function DailyRoutine({
                   />
                 </div>
                 <textarea 
-                  placeholder={isFundamental ? "Ex: Comeu a salada de frutas que trouxe de casa, aceitou o suco de uva e dividiu biscoitos com colegas." : isEscolar ? "Ex: bebeu 150ml da mamadeira de leite integral, comeu pedacinhos de banana e maçã e rejeitou o miolo de pão." : "Ex: purê de batata, suco de pêssego, recusou os vegetais mas tomou bastante água."}
+                  placeholder={isFundamental ? "Ex: Comeu a salada de frutas que trouxe de casa, aceitou o suco de uva e dividiu biscoitos com colegas." : isEscolar ? "Ex: bebeu 150ml da mamadeira de leite integral, comeu pedacinhos de banana e maca e rejeitou o miolo de pao." : "Ex: pure de batata, suco de pessego, recusou os vegetais mas tomou bastante agua."}
                   rows={3}
                   value={mealForm.observacoes}
                   onChange={e => setMealForm({ ...mealForm, observacoes: e.target.value })}
@@ -1783,23 +1783,23 @@ export default function DailyRoutine({
             <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
               <span className="text-xs font-bold text-slate-500 block">Registros do dia ({alimentacaoToday.length}):</span>
               {alimentacaoToday.length === 0 ? (
-                <p className="text-xs text-slate-400">Nenhuma refeição registrada hoje ainda.</p>
+                <p className="text-xs text-slate-400">Nenhuma refeicao registrada hoje ainda.</p>
               ) : (
                 <div className="max-h-36 overflow-y-auto space-y-2 pr-1">
                   {alimentacaoToday.map(m => {
                     const mealLabels: Record<string, string> = {
-                      mamadeira: '  Mamadeira de Leite / Fórmula',
-                      cafe_manha: isEscolar ? '☕ Café da Manhã' : 'Café da Manhã',
-                      almoco: isEscolar ? '  Papinha / Almocinho' : 'Almoço Principal',
+                      mamadeira: '  Mamadeira de Leite / Formula',
+                      cafe_manha: isEscolar ? '  Cafe da Manha' : 'Cafe da Manha',
+                      almoco: isEscolar ? '  Papinha / Almocinho' : 'Almoco Principal',
                       lanche: isEscolar ? '  Frutinha / Lanchinho' : 'Lanche / Tarde',
                       lanche_tarde: isEscolar ? '  Lanchinho Tarde' : 'Lanche da Tarde',
-                      jantar: isEscolar ? '  Jantinha Escolar' : 'Jantar Sênior',
-                      ceia: isEscolar ? '  Colação Final' : 'Ceia / Repouso'
+                      jantar: isEscolar ? '  Jantinha Escolar' : 'Jantar Senior',
+                      ceia: isEscolar ? '  Colacao Final' : 'Ceia / Repouso'
                     };
-                    const label = mealLabels[m.refeicao] || m.refeicao || 'Refeição';
+                    const label = mealLabels[m.refeicao] || m.refeicao || 'Refeicao';
                     const volumeText = (m.quantidadeMl && m.refeicao !== 'mamadeira') 
                       ? ` (${m.quantidadeMl} ml)` 
-                      : (m.refeicao === 'mamadeira' ? ` (1 mamadeira • ${m.quantidadeMl || 180} ml)` : '');
+                      : (m.refeicao === 'mamadeira' ? ` (1 mamadeira   ${m.quantidadeMl || 180} ml)` : '');
                     const acceptBadge = m.aceitacao === 'muito_bem' 
                       ? 'bg-emerald-100 text-emerald-800 border-emerald-200' 
                       : m.aceitacao === 'pouco' 
@@ -1810,7 +1810,7 @@ export default function DailyRoutine({
                       <div key={m.id} className="p-2 bg-white rounded-xl border border-slate-200 text-xs flex flex-col gap-1 shadow-2xs">
                         <div className="flex justify-between items-center">
                           <span className="font-bold text-slate-800 flex items-center gap-1.5">
-                            <Utensils className="w-3.5 h-3.5 text-amber-500" /> {label}{volumeText} às {m.horario}
+                            <Utensils className="w-3.5 h-3.5 text-amber-500" /> {label}{volumeText} as {m.horario}
                           </span>
                           <span className={`px-2 py-0.5 rounded-md border text-[10px] font-bold ${acceptBadge}`}>
                             {acceptText}
@@ -1833,7 +1833,7 @@ export default function DailyRoutine({
               type="submit"
               className={`px-5 py-3 ${isEscolar ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-serene-blue hover:bg-blue-600'} text-white font-bold rounded-xl active:scale-95 transition-all text-sm block ml-auto cursor-pointer shadow-sm`}
             >
-              {isEscolar ? 'Salvar Alimentação (Notificar Pais)' : 'Salvar Alimentação (Avisar Família)'}
+              {isEscolar ? 'Salvar Alimentacao (Notificar Pais)' : 'Salvar Alimentacao (Avisar Familia)'}
             </button>
           </form>
         )}
@@ -1847,14 +1847,14 @@ export default function DailyRoutine({
               </div>
               <div>
                 <h3 className="text-lg font-bold text-slate-800">
-                  {isFundamental ? 'Acompanhamento de Foco, Conduta & Organização' : (isEscolar ? 'Controle de Trocas, Higiene e Desfralde' : 'Banho, Roupas e Cuidados Estéticos')}
+                  {isFundamental ? 'Acompanhamento de Foco, Conduta & Organizacao' : (isEscolar ? 'Controle de Trocas, Higiene e Desfralde' : 'Banho, Roupas e Cuidados Esteticos')}
                 </h3>
                 <p className="text-xs text-slate-400">
                   {isFundamental 
-                    ? 'Registre os aspectos comportamentais, atenção às aulas e convivência escolar do aluno.'
+                    ? 'Registre os aspectos comportamentais, atencao as aulas e convivencia escolar do aluno.'
                     : isEscolar 
-                      ? 'Assinale os rituais de troca de fraldas, lavagem de mãos e higiene escovar aplicados.' 
-                      : 'Assinale as atividades preventivas de higiene e proteção da pessoa idosa.'}
+                      ? 'Assinale os rituais de troca de fraldas, lavagem de maos e higiene escovar aplicados.' 
+                      : 'Assinale as atividades preventivas de higiene e protecao da pessoa idosa.'}
                 </p>
               </div>
             </div>
@@ -1862,7 +1862,7 @@ export default function DailyRoutine({
             {renderAuthBadge()}
 
             <div className="space-y-3">
-              <label className="text-sm font-bold text-slate-700 block">Atividades Concluídas nesta Sessão</label>
+              <label className="text-sm font-bold text-slate-700 block">Atividades Concluidas nesta Sessao</label>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <label className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
@@ -1874,10 +1874,10 @@ export default function DailyRoutine({
                   />
                   <div>
                     <strong className="text-sm font-bold block text-slate-750">
-                      {isFundamental ? 'Atenção & Concentração nas Aulas' : (isEscolar ? 'Troca de Fralda / Cuidado de Toalete' : 'Banho de Chuveiro Realizado')}
+                      {isFundamental ? 'Atencao & Concentracao nas Aulas' : (isEscolar ? 'Troca de Fralda / Cuidado de Toalete' : 'Banho de Chuveiro Realizado')}
                     </strong>
                     <span className="text-[11px] text-slate-500 font-medium">
-                      {isFundamental ? 'O aluno demonstrou bom foco nas explicações dos professores e participou das atividades.' : (isEscolar ? 'Fralda descartável checada/trocada ou incentivo de uso do toalete.' : 'Controle de temperatura de água e piso antiderrapante.')}
+                      {isFundamental ? 'O aluno demonstrou bom foco nas explicacoes dos professores e participou das atividades.' : (isEscolar ? 'Fralda descartavel checada/trocada ou incentivo de uso do toalete.' : 'Controle de temperatura de agua e piso antiderrapante.')}
                     </span>
                   </div>
                 </label>
@@ -1891,10 +1891,10 @@ export default function DailyRoutine({
                   />
                   <div>
                     <strong className="text-sm font-bold block text-slate-750">
-                      {isFundamental ? 'Respeito às Regras & Disciplina' : (isEscolar ? 'Escovação de Dentes Orientada' : 'Higiene Bucal Completa')}
+                      {isFundamental ? 'Respeito as Regras & Disciplina' : (isEscolar ? 'Escovacao de Dentes Orientada' : 'Higiene Bucal Completa')}
                     </strong>
                     <span className="text-[11px] text-slate-500 font-medium">
-                      {isFundamental ? 'Seguiu as orientações da equipe escolar, portando-se de maneira respeitosa e educada.' : (isEscolar ? 'Com escovinha individual e creme dental infantil de forma lúdica.' : 'Uso de escova macia, higienizador de língua ou solução protética.')}
+                      {isFundamental ? 'Seguiu as orientacoes da equipe escolar, portando-se de maneira respeitosa e educada.' : (isEscolar ? 'Com escovinha individual e creme dental infantil de forma ludica.' : 'Uso de escova macia, higienizador de lingua ou solucao protetica.')}
                     </span>
                   </div>
                 </label>
@@ -1908,10 +1908,10 @@ export default function DailyRoutine({
                   />
                   <div>
                     <strong className="text-sm font-bold block text-slate-750">
-                      {isFundamental ? 'Organização dos Materiais' : (isEscolar ? 'Troca de Roupa (Mochila)' : 'Troca de Roupa por Limpas')}
+                      {isFundamental ? 'Organizacao dos Materiais' : (isEscolar ? 'Troca de Roupa (Mochila)' : 'Troca de Roupa por Limpas')}
                     </strong>
                     <span className="text-[11px] text-slate-500 font-medium">
-                      {isFundamental ? 'Manteve cadernos, estojo e mochila organizados, guardando seus pertences após o uso.' : (isEscolar ? 'Criança vestida com roupas limpas enviadas pelos pais após sujar ou banho.' : 'Roupas frescas, fáceis de vestir e adequadas ao clima.')}
+                      {isFundamental ? 'Manteve cadernos, estojo e mochila organizados, guardando seus pertences apos o uso.' : (isEscolar ? 'Crianca vestida com roupas limpas enviadas pelos pais apos sujar ou banho.' : 'Roupas frescas, faceis de vestir e adequadas ao clima.')}
                     </span>
                   </div>
                 </label>
@@ -1925,10 +1925,10 @@ export default function DailyRoutine({
                   />
                   <div>
                     <strong className="text-sm font-bold block text-slate-750">
-                      {isFundamental ? 'Relações Sociais & Parceria' : (isEscolar ? 'Lavagem das Mãos e Rosto' : 'Troca de Fralda / Absorvente')}
+                      {isFundamental ? 'Relacoes Sociais & Parceria' : (isEscolar ? 'Lavagem das Maos e Rosto' : 'Troca de Fralda / Absorvente')}
                     </strong>
                     <span className="text-[11px] text-slate-500 font-medium">
-                      {isFundamental ? 'Colaborou com os colegas de classe, demonstrou empatia e trabalhou bem em equipe.' : (isEscolar ? 'Praticado antes e após refeições e depois das brincadeiras de artes/pátio.' : 'Se aplicável, ou verificação de vazamento urinário.')}
+                      {isFundamental ? 'Colaborou com os colegas de classe, demonstrou empatia e trabalhou bem em equipe.' : (isEscolar ? 'Praticado antes e apos refeicoes e depois das brincadeiras de artes/patio.' : 'Se aplicavel, ou verificacao de vazamento urinario.')}
                     </span>
                   </div>
                 </label>
@@ -1942,10 +1942,10 @@ export default function DailyRoutine({
                   />
                   <div>
                     <strong className="text-sm font-bold block text-slate-750">
-                      {isFundamental ? 'Zelo pelo Uniforme & Apresentação' : (isEscolar ? 'Pomada Antiassadura / Protetor' : 'Hidratação e Proteção da Pele')}
+                      {isFundamental ? 'Zelo pelo Uniforme & Apresentacao' : (isEscolar ? 'Pomada Antiassadura / Protetor' : 'Hidratacao e Protecao da Pele')}
                     </strong>
                     <span className="text-[11px] text-slate-500 font-medium">
-                      {isFundamental ? 'Zelou pelo próprio uniforme escolar e pertences pessoais com cuidado e asseio.' : (isEscolar ? 'Aplicação de pomada nas dobrinhas para prevenção de brotoejas ou assadura.' : 'Uso de cremes sênior preventivos para escaras e ressecamento.')}
+                      {isFundamental ? 'Zelou pelo proprio uniforme escolar e pertences pessoais com cuidado e asseio.' : (isEscolar ? 'Aplicacao de pomada nas dobrinhas para prevencao de brotoejas ou assadura.' : 'Uso de cremes senior preventivos para escaras e ressecamento.')}
                     </span>
                   </div>
                 </label>
@@ -1954,7 +1954,7 @@ export default function DailyRoutine({
               <div className="space-y-1 pt-2">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-bold text-slate-705 block">
-                    {isFundamental ? 'Observações adicionais de comportamento e participação' : (isEscolar ? 'Observações de higiene (assaduras detectadas, resistência no fraldário, etc.)' : 'Observações do cuidador (pele machucada, resistência para banhar etc.)')}
+                    {isFundamental ? 'Observacoes adicionais de comportamento e participacao' : (isEscolar ? 'Observacoes de higiene (assaduras detectadas, resistencia no fraldario, etc.)' : 'Observacoes do cuidador (pele machucada, resistencia para banhar etc.)')}
                   </label>
                   <VoiceInput 
                     onTranscript={text => setHygieneForm(prev => ({ ...prev, obs: prev.obs ? prev.obs + ' ' + text : text }))} 
@@ -1962,7 +1962,7 @@ export default function DailyRoutine({
                   />
                 </div>
                 <textarea 
-                  placeholder={isFundamental ? "Ex: Se comportou muito bem, prestou bastante atenção às aulas e interagiu com os amigos." : (isEscolar ? "Ex: sem assaduras hoje. Cooperou bastante cantando a musiquinha do sapo para lavar as mãos." : "Ex: sem queixas, pele saudável. Dona Maria cooperou ouvindo músicas antigas.")}
+                  placeholder={isFundamental ? "Ex: Se comportou muito bem, prestou bastante atencao as aulas e interagiu com os amigos." : (isEscolar ? "Ex: sem assaduras hoje. Cooperou bastante cantando a musiquinha do sapo para lavar as maos." : "Ex: sem queixas, pele saudavel. Dona Maria cooperou ouvindo musicas antigas.")}
                   rows={2.5}
                   value={hygieneForm.obs}
                   onChange={e => setHygieneForm({ ...hygieneForm, obs: e.target.value })}
@@ -1975,7 +1975,7 @@ export default function DailyRoutine({
               type="submit"
               className={`px-5 py-3 ${isEscolar ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-serene-blue hover:bg-blue-600'} text-white font-bold rounded-xl active:scale-95 transition-all text-sm block ml-auto cursor-pointer shadow-sm`}
             >
-              {isFundamental ? 'Confirmar Avaliação (Notificar Pais)' : (isEscolar ? 'Confirmar Higiene (Enviar para os Pais)' : 'Confirmar Banho & Higiene (Avisar Família)')}
+              {isFundamental ? 'Confirmar Avaliacao (Notificar Pais)' : (isEscolar ? 'Confirmar Higiene (Enviar para os Pais)' : 'Confirmar Banho & Higiene (Avisar Familia)')}
             </button>
           </form>
         )}
@@ -1989,12 +1989,12 @@ export default function DailyRoutine({
               </div>
               <div>
                 <h3 className="text-lg font-bold text-slate-800">
-                  {isEscolar ? 'Controle de Hidratação do Aluno' : 'Controle e Incentivo de Hidratação'}
+                  {isEscolar ? 'Controle de Hidratacao do Aluno' : 'Controle e Incentivo de Hidratacao'}
                 </h3>
                 <p className="text-xs text-slate-400">
                   {isEscolar 
-                    ? 'Copos de água filtrada consumidos. Toque nas opções para registrar cada porção.' 
-                    : 'Pessoas idosas sentem menos sede. Clique nos copos para registrar cada porção bebida.'}
+                    ? 'Copos de agua filtrada consumidos. Toque nas opcoes para registrar cada porcao.' 
+                    : 'Pessoas idosas sentem menos sede. Clique nos copos para registrar cada porcao bebida.'}
                 </p>
               </div>
             </div>
@@ -2017,13 +2017,13 @@ export default function DailyRoutine({
                     </div>
                     <div>
                       <h4 className="text-sm font-black flex items-center gap-2">
-                        Somatório de Água Servida por Você
+                        Somatorio de Agua Servida por Voce
                         <span className="bg-white/20 text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
                           Professora
                         </span>
                       </h4>
                       <p className="text-xs text-cyan-100 font-medium">
-                        Total acumulado servido por {usuarioAtual?.nome || 'você'} durante o turno de hoje.
+                        Total acumulado servido por {usuarioAtual?.nome || 'voce'} durante o turno de hoje.
                       </p>
                     </div>
                   </div>
@@ -2033,7 +2033,7 @@ export default function DailyRoutine({
                       <span className="text-xl font-black text-white">{totalTeacherMl} ml</span>
                     </div>
                     <div className="border-l border-white/20 pl-3">
-                      <span className="text-[10px] uppercase font-bold text-cyan-200 block">Porções/Copos</span>
+                      <span className="text-[10px] uppercase font-bold text-cyan-200 block">Porcoes/Copos</span>
                       <span className="text-xl font-black text-white">{totalTeacherCups}</span>
                     </div>
                   </div>
@@ -2071,7 +2071,7 @@ export default function DailyRoutine({
 
                 <div className="text-center">
                   <p className="text-sm font-bold text-slate-550">Progresso de Hoje</p>
-                  <p className="text-2xl font-black text-slate-800">{totalMl} ml <span className="text-base font-normal text-slate-400">de 1500 ml (Meta Diária)</span></p>
+                  <p className="text-2xl font-black text-slate-800">{totalMl} ml <span className="text-base font-normal text-slate-400">de 1500 ml (Meta Diaria)</span></p>
                 </div>
               </div>
 
@@ -2082,7 +2082,7 @@ export default function DailyRoutine({
                     <Award className="w-5 h-5 text-cyan-700" />
                   </div>
                   <div>
-                    <strong className="text-sm block font-bold leading-tight">Alerta de Hidratação Constante</strong>
+                    <strong className="text-sm block font-bold leading-tight">Alerta de Hidratacao Constante</strong>
                     <span className="text-[11px] leading-relaxed block font-medium">Oferecer pequenas doses ao longo do dia, idealmente a cada 2 horas.</span>
                   </div>
                 </div>
@@ -2112,7 +2112,7 @@ export default function DailyRoutine({
                       className="py-3 px-2 border rounded-2xl transition-all cursor-pointer text-center group flex flex-col items-center gap-1 focus:ring-2 border-cyan-300 hover:border-cyan-400 bg-cyan-50/20 hover:bg-cyan-100/50 focus:ring-cyan-400"
                     >
                       <Droplets className="w-4.5 h-4.5 text-cyan-500 group-hover:scale-110 transition-transform" />
-                      <span className="text-[11px] font-bold text-slate-700 block">Copo Médio</span>
+                      <span className="text-[11px] font-bold text-slate-700 block">Copo Medio</span>
                       <strong className="text-xs text-cyan-700 font-mono font-black">100 ml</strong>
                     </button>
 
@@ -2217,7 +2217,7 @@ export default function DailyRoutine({
                     <span className="text-xs font-black text-cyan-700 font-mono">{totalMl} ml total</span>
                   </div>
                   {hidratacaoToday.length === 0 ? (
-                    <p className="text-xs text-slate-400">Nenhum copo de água registrado hoje ainda.</p>
+                    <p className="text-xs text-slate-400">Nenhum copo de agua registrado hoje ainda.</p>
                   ) : (
                     <div className="max-h-32 overflow-y-auto space-y-1.5 pr-1">
                       {hidratacaoToday.map(h => (
@@ -2225,7 +2225,7 @@ export default function DailyRoutine({
                           <span className="flex items-center gap-1.5 font-bold">
                             <Droplets className="w-3.5 h-3.5 text-cyan-500" />
                             <span>{h.quantidadeMl} ml</span>
-                            <span className="text-[11px] font-normal text-slate-400">às {h.horario}</span>
+                            <span className="text-[11px] font-normal text-slate-400">as {h.horario}</span>
                           </span>
                           <span className="text-slate-400 text-[10px] bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200">{h.registradoPor || 'Professora'}</span>
                         </div>
@@ -2247,14 +2247,14 @@ export default function DailyRoutine({
               </div>
               <div>
                 <h3 className="text-lg font-bold text-slate-800">
-                  {isFundamental ? 'Controle de Tarefa / Dever de Casa' : (isEscolar ? 'Controle de Descanso e Soneca' : 'Diário e Qualidade de Sono')}
+                  {isFundamental ? 'Controle de Tarefa / Dever de Casa' : (isEscolar ? 'Controle de Descanso e Soneca' : 'Diario e Qualidade de Sono')}
                 </h3>
                 <p className="text-xs text-slate-400">
                   {isFundamental 
-                    ? 'Acompanhe as tarefas e deveres para casa dadas pelos professores e o andamento da sua realização.'
+                    ? 'Acompanhe as tarefas e deveres para casa dadas pelos professores e o andamento da sua realizacao.'
                     : isEscolar 
-                      ? 'Registre a soneca pós-almoço ou períodos de descanso do aluno na escola.' 
-                      : 'Preencha o padrão de descanso noturno ou sono da tarde.'}
+                      ? 'Registre a soneca pos-almoco ou periodos de descanso do aluno na escola.' 
+                      : 'Preencha o padrao de descanso noturno ou sono da tarde.'}
                 </p>
               </div>
             </div>
@@ -2262,27 +2262,27 @@ export default function DailyRoutine({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {isFundamental ? (
                 <div className="space-y-1">
-                  <label className="text-sm font-bold text-slate-705 block">Matéria / Disciplina</label>
+                  <label className="text-sm font-bold text-slate-705 block">Materia / Disciplina</label>
                   <select 
                     value={sleepForm.dormiuEm}
                     onChange={e => setSleepForm({ ...sleepForm, dormiuEm: e.target.value })}
                     className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-550/20 text-sm font-medium text-slate-800"
                   >
-                    <option value="">-- Selecione a Matéria --</option>
-                    <option value="Matemática">  Matemática</option>
-                    <option value="Português">✏ Língua Portuguesa / Redação</option>
-                    <option value="História">  História</option>
+                    <option value="">-- Selecione a Materia --</option>
+                    <option value="Matematica">  Matematica</option>
+                    <option value="Portugues">  Lingua Portuguesa / Redacao</option>
+                    <option value="Historia">  Historia</option>
                     <option value="Geografia">  Geografia</option>
-                    <option value="Ciências">  Ciências da Natureza</option>
-                    <option value="Inglês">  Língua Estrangeira (Inglês)</option>
+                    <option value="Ciencias">  Ciencias da Natureza</option>
+                    <option value="Ingles">  Lingua Estrangeira (Ingles)</option>
                     <option value="Artes">  Artes / Projetos</option>
-                    <option value="Outro">  Outra Matéria / Recado</option>
+                    <option value="Outro">  Outra Materia / Recado</option>
                   </select>
                 </div>
               ) : (
                 <div className="space-y-1">
                   <label className="text-sm font-bold text-slate-705 block">
-                    {isEscolar ? 'Início da soneca' : 'Que horas dormiu?'}
+                    {isEscolar ? 'Inicio da soneca' : 'Que horas dormiu?'}
                   </label>
                   <input 
                     type="time" 
@@ -2298,7 +2298,7 @@ export default function DailyRoutine({
                   <label className="text-sm font-bold text-slate-705 block">Prazo de Entrega / Data</label>
                   <input 
                     type="text" 
-                    placeholder="Ex: Próxima aula ou Amanhã (29/06)"
+                    placeholder="Ex: Proxima aula ou Amanha (29/06)"
                     value={sleepForm.acordouEm}
                     onChange={e => setSleepForm({ ...sleepForm, acordouEm: e.target.value })}
                     className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-550/20 text-sm font-bold text-slate-800"
@@ -2307,7 +2307,7 @@ export default function DailyRoutine({
               ) : (
                 <div className="space-y-1">
                   <label className="text-sm font-bold text-slate-705 block">
-                    {isEscolar ? 'Acordou às' : 'Que horas acordou?'}
+                    {isEscolar ? 'Acordou as' : 'Que horas acordou?'}
                   </label>
                   <input 
                     type="time" 
@@ -2320,7 +2320,7 @@ export default function DailyRoutine({
 
               <div className="space-y-1">
                 <label className="text-sm font-bold text-slate-750 block">
-                  {isFundamental ? 'Páginas / Exercícios Solicitados' : (isEscolar ? 'Acordou/Agitou durante o descanso?' : 'Despertares no meio da noite (interrupções)')}
+                  {isFundamental ? 'Paginas / Exercicios Solicitados' : (isEscolar ? 'Acordou/Agitou durante o descanso?' : 'Despertares no meio da noite (interrupcoes)')}
                 </label>
                 <input 
                   type="number" 
@@ -2334,7 +2334,7 @@ export default function DailyRoutine({
 
               <div className="space-y-1">
                 <label className="text-sm font-bold text-slate-750 block">
-                  {isFundamental ? 'Status de Realização' : 'Qualidade do descanso'}
+                  {isFundamental ? 'Status de Realizacao' : 'Qualidade do descanso'}
                 </label>
                 <div className="flex gap-2 pt-1">
                   {['excelente', 'boa', 'regular', 'ruim'].map(q => (
@@ -2349,7 +2349,7 @@ export default function DailyRoutine({
                       }`}
                     >
                       {isFundamental 
-                        ? (q === 'excelente' ? 'Completo' : q === 'boa' ? 'Em Andamento' : q === 'regular' ? 'Incomplete' : 'Não Fez')
+                        ? (q === 'excelente' ? 'Completo' : q === 'boa' ? 'Em Andamento' : q === 'regular' ? 'Incomplete' : 'Nao Fez')
                         : isEscolar 
                           ? (q === 'excelente' ? 'Tranquilo' : q === 'boa' ? 'Leve' : q === 'regular' ? 'Agitado' : 'Choroso') 
                           : q
@@ -2361,14 +2361,14 @@ export default function DailyRoutine({
 
               <div className="space-y-1 sm:col-span-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-bold text-slate-705 block">Observações do Dever / Atividade</label>
+                  <label className="text-sm font-bold text-slate-705 block">Observacoes do Dever / Atividade</label>
                   <VoiceInput 
                     onTranscript={text => setSleepForm(prev => ({ ...prev, obs: prev.obs ? prev.obs + ' ' + text : text }))} 
                     size="sm"
                   />
                 </div>
                 <textarea 
-                  placeholder={isFundamental ? "Ex: Fez todas as questões de frações. Apresentou dúvidas simples na divisão." : isEscolar ? "Ex: precisou de cafuné para acalmar mas descansou super bem por 1h30m." : "Ex: acordou confusa às 03:00, mas bebeu meio copo de água e voltou a descansar rapidamente."}
+                  placeholder={isFundamental ? "Ex: Fez todas as questoes de fracoes. Apresentou duvidas simples na divisao." : isEscolar ? "Ex: precisou de cafune para acalmar mas descansou super bem por 1h30m." : "Ex: acordou confusa as 03:00, mas bebeu meio copo de agua e voltou a descansar rapidamente."}
                   rows={2}
                   value={sleepForm.obs}
                   onChange={e => setSleepForm({ ...sleepForm, obs: e.target.value })}
@@ -2395,31 +2395,31 @@ export default function DailyRoutine({
               </div>
               <div>
                 <h3 className="text-lg font-bold text-slate-800">
-                  {isEscolar ? 'Estado de Humor & Convivência Social' : 'Estado Psicoemocional e Humor'}
+                  {isEscolar ? 'Estado de Humor & Convivencia Social' : 'Estado Psicoemocional e Humor'}
                 </h3>
                 <p className="text-xs text-slate-400">
                   {isEscolar 
-                    ? 'Registre como foi a socialização da criança e seu temperamento predominantemente.' 
-                    : 'Monitore as variações de comportamento e humor do idoso ao longo das visitas.'}
+                    ? 'Registre como foi a socializacao da crianca e seu temperamento predominantemente.' 
+                    : 'Monitore as variacoes de comportamento e humor do idoso ao longo das visitas.'}
                 </p>
               </div>
             </div>
 
             <div className="space-y-3">
               <label className="text-sm font-bold text-slate-705 block text-center">
-                {isEscolar ? 'Como o aluno se comportou e conviveu hoje?' : 'Como o idoso está se sentindo / comportando agora?'}
+                {isEscolar ? 'Como o aluno se comportou e conviveu hoje?' : 'Como o idoso esta se sentindo / comportando agora?'}
               </label>
               
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {isEscolar ? (
                   [
-                    { id: 'feliz', label: '  Alegre / Lúdico', bgSel: 'bg-emerald-500 text-white border-emerald-500' },
+                    { id: 'feliz', label: '  Alegre / Ludico', bgSel: 'bg-emerald-500 text-white border-emerald-500' },
                     { id: 'calmo', label: '  Calmo / Atento', bgSel: 'bg-indigo-600 text-white border-indigo-600' },
                     { id: 'choroso', label: '  Choroso / Manhoso', bgSel: 'bg-amber-500 text-white border-amber-500' },
-                    { id: 'timido', label: '  Tímido / Calado', bgSel: 'bg-blue-500 text-white border-blue-500' },
-                    { id: 'agitado', label: '  Muito Agitado / Elétrico', bgSel: 'bg-orange-500 text-white border-orange-500' },
+                    { id: 'timido', label: '  Timido / Calado', bgSel: 'bg-blue-500 text-white border-blue-500' },
+                    { id: 'agitado', label: '  Muito Agitado / Eletrico', bgSel: 'bg-orange-500 text-white border-orange-500' },
                     { id: 'birra', label: '  Birra / Teimosia', bgSel: 'bg-rose-500 text-white border-rose-500' },
-                    { id: 'sonolento', label: '  Preguiça / Sono', bgSel: 'bg-purple-500 text-white border-purple-500' }
+                    { id: 'sonolento', label: '  Preguica / Sono', bgSel: 'bg-purple-500 text-white border-purple-500' }
                   ].map(item => {
                     const active = humorForm.estado === item.id;
                     return (
@@ -2468,14 +2468,14 @@ export default function DailyRoutine({
 
               {ultimoHumor && (
                 <div className="p-3 bg-zinc-50 border border-zinc-200 rounded-xl text-xs text-zinc-650">
-                  ⚡ Último estado registrado: <strong className="uppercase">{ultimoHumor.estado}</strong> ({ultimoHumor.horario} do dia {ultimoHumor.data}) {ultimoHumor.observacoes ? ` - "${ultimoHumor.observacoes}"` : ''}
+                    Ultimo estado registrado: <strong className="uppercase">{ultimoHumor.estado}</strong> ({ultimoHumor.horario} do dia {ultimoHumor.data}) {ultimoHumor.observacoes ? ` - "${ultimoHumor.observacoes}"` : ''}
                 </div>
               )}
 
               <div className="space-y-1 pt-3">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-bold text-slate-705 block">
-                    {isEscolar ? 'Observações adicionais de convívio ou choro' : 'Observações do cuidador / gatilhos emocionais'}
+                    {isEscolar ? 'Observacoes adicionais de convivio ou choro' : 'Observacoes do cuidador / gatilhos emocionais'}
                   </label>
                   <VoiceInput 
                     onTranscript={text => setHumorForm(prev => ({ ...prev, obs: prev.obs ? prev.obs + ' ' + text : text }))} 
@@ -2483,7 +2483,7 @@ export default function DailyRoutine({
                   />
                 </div>
                 <textarea 
-                  placeholder={isEscolar ? "Ex: dividiu os brinquedos com o bento no pátio e deu risada, mas chorou um pouquinho na hora de entrar." : "Ex: Demonstrou teimosia benigna com os remédios, mas sorriu quando mostramos fotos da neta."}
+                  placeholder={isEscolar ? "Ex: dividiu os brinquedos com o bento no patio e deu risada, mas chorou um pouquinho na hora de entrar." : "Ex: Demonstrou teimosia benigna com os remedios, mas sorriu quando mostramos fotos da neta."}
                   rows={2}
                   value={humorForm.obs}
                   onChange={e => setHumorForm({ ...humorForm, obs: e.target.value })}
@@ -2496,7 +2496,7 @@ export default function DailyRoutine({
               type="submit"
               className={`px-5 py-3 ${isEscolar ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-serene-blue hover:bg-blue-600'} text-white font-bold rounded-xl active:scale-95 transition-all text-sm block ml-auto cursor-pointer shadow-sm`}
             >
-              {isEscolar ? 'Acompanhar Humor & Socialização' : 'Registrar Humor (Avisar Família)'}
+              {isEscolar ? 'Acompanhar Humor & Socializacao' : 'Registrar Humor (Avisar Familia)'}
             </button>
           </form>
         )}
@@ -2510,12 +2510,12 @@ export default function DailyRoutine({
               </div>
               <div>
                 <h3 className="text-lg font-bold text-slate-800">
-                  {isEscolar ? 'Atividades Pedagógicas, Psicomotoras e Lúdicas' : 'Atividades Físicas e Estimulação Cognitiva'}
+                  {isEscolar ? 'Atividades Pedagogicas, Psicomotoras e Ludicas' : 'Atividades Fisicas e Estimulacao Cognitiva'}
                 </h3>
                 <p className="text-xs text-slate-400">
                   {isEscolar 
-                    ? 'Registre as brincadeiras, artes, histórias e atividades psicomotoras realizadas hoje.' 
-                    : 'Atividades preservam a cognição e esticam músculos articulares.'}
+                    ? 'Registre as brincadeiras, artes, historias e atividades psicomotoras realizadas hoje.' 
+                    : 'Atividades preservam a cognicao e esticam musculos articulares.'}
                 </p>
               </div>
             </div>
@@ -2531,7 +2531,7 @@ export default function DailyRoutine({
                     : 'text-slate-500 hover:text-slate-800'
                 }`}
               >
-                  Registro Avulso Diário
+                  Registro Avulso Diario
               </button>
               <button
                 type="button"
@@ -2551,18 +2551,18 @@ export default function DailyRoutine({
                 <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 p-4 rounded-xl text-white shadow-xs space-y-2">
                   <div className="flex items-center gap-2 text-amber-300 font-black text-xs uppercase tracking-wider">
                     <Sparkles className="w-4 h-4 fill-amber-300/40" />
-                    <span>Padrão Oficial de Planejamento de Professores + Aura AI</span>
+                    <span>Padrao Oficial de Planejamento de Professores + Aura AI</span>
                   </div>
                   <p className="text-xs text-white/95 leading-relaxed font-medium">
-                    Cole qualquer texto bruto, relatório de aula ou planejamento semanal de professores. A <strong>Aura AI</strong> extrai e padroniza automaticamente todos os campos pedagógicos oficiais:
+                    Cole qualquer texto bruto, relatorio de aula ou planejamento semanal de professores. A <strong>Aura AI</strong> extrai e padroniza automaticamente todos os campos pedagogicos oficiais:
                   </p>
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-2 gap-y-1 text-[10px] pt-1 font-semibold text-amber-100">
                     <div>  <strong>Atividade / Tema</strong></div>
-                    <div>  <strong>Dia & Horário</strong></div>
-                    <div>⏱ <strong>Duração (min)</strong></div>
+                    <div>  <strong>Dia & Horario</strong></div>
+                    <div>  <strong>Duracao (min)</strong></div>
                     <div>  <strong>Objetivo BNCC</strong></div>
                     <div>  <strong>Materiais & Recursos</strong></div>
-                    <div>  <strong>Passo a Passo / Instruções</strong></div>
+                    <div>  <strong>Passo a Passo / Instrucoes</strong></div>
                   </div>
                 </div>
 
@@ -2577,11 +2577,11 @@ export default function DailyRoutine({
                     placeholder={`Cole aqui o texto do planejamento de aula. Exemplo:
 
 Segunda-feira:
-- 09:00: Roda de Leitura e Contos (30 min) - Objetivo: Linguagem e oralidade. Materiais: Livro de fábulas e fantoches. Passo a passo: Organizar roda e ler a fábula com entonação de voz.
+- 09:00: Roda de Leitura e Contos (30 min) - Objetivo: Linguagem e oralidade. Materiais: Livro de fabulas e fantoches. Passo a passo: Organizar roda e ler a fabula com entonacao de voz.
 - 14:00: Pintura de Dedos (45 min) - Materiais: Tinta guache e papel craft.
 
-Terça-feira:
-- 10:00: Musicalização e Bandinha (30 min) - Objetivo: Sons, cores e formas. Materiais: Chocalhos e tambores.`}
+Terca-feira:
+- 10:00: Musicalizacao e Bandinha (30 min) - Objetivo: Sons, cores e formas. Materiais: Chocalhos e tambores.`}
                     className="w-full p-4 bg-white border-2 border-indigo-300 focus:border-indigo-600 rounded-xl focus:ring-4 focus:ring-indigo-500/20 text-xs font-mono text-slate-800 shadow-inner"
                   ></textarea>
                 </div>
@@ -2612,7 +2612,7 @@ Terça-feira:
                     <div className="bg-white p-4 rounded-xl border-2 border-indigo-200 shadow-xs space-y-2">
                       <div className="flex items-center justify-between border-b border-indigo-100 pb-2">
                         <h4 className="text-sm font-black text-indigo-950 flex items-center gap-1.5">
-                          <span> </span> Planejamento Diário: {parsedAuraMeta?.tema || 'Rotina Pedagógica'}
+                          <span> </span> Planejamento Diario: {parsedAuraMeta?.tema || 'Rotina Pedagogica'}
                         </h4>
                         <span className="text-[10px] font-bold px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-200">
                           {parsedWeeklyActivities.length} Atividades
@@ -2639,9 +2639,9 @@ Terça-feira:
                       <table className="w-full text-left border-collapse text-xs">
                         <thead className="bg-slate-100 font-bold text-slate-700 border-b border-slate-200 text-[11px]">
                           <tr>
-                            <th className="p-2.5 w-20">Horário</th>
+                            <th className="p-2.5 w-20">Horario</th>
                             <th className="p-2.5 w-1/3">Atividade Padronizada</th>
-                            <th className="p-2.5">Objetivo BNCC & Descrição</th>
+                            <th className="p-2.5">Objetivo BNCC & Descricao</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -2651,7 +2651,7 @@ Terça-feira:
                               <td className="p-2.5">
                                 <span className="font-bold text-slate-900 block text-xs">{String(act.tipo || 'Atividade')}</span>
                                 {act.duracao ? (
-                                  <span className="text-[10px] text-slate-400 font-medium">⏱ {act.duracao} min</span>
+                                  <span className="text-[10px] text-slate-400 font-medium">  {act.duracao} min</span>
                                 ) : null}
                               </td>
                               <td className="p-2.5 space-y-1">
@@ -2681,7 +2681,7 @@ Terça-feira:
                         onClick={handleSaveParsedWeeklyPlan}
                         className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold rounded-xl text-xs transition-all cursor-pointer shadow-md flex items-center gap-1.5"
                       >
-                        <span>  Confirmar e Cadastrar no Padrão Escolar</span>
+                        <span>  Confirmar e Cadastrar no Padrao Escolar</span>
                       </button>
                     </div>
                   </div>
@@ -2693,10 +2693,10 @@ Terça-feira:
                 <div className="sm:col-span-2 bg-indigo-50/40 p-4 rounded-2xl border border-indigo-100/50 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
                     <span className="text-xs font-black text-indigo-900 uppercase tracking-wider block flex items-center gap-1">
-                        Alcance do Registro Pedagógico
+                        Alcance do Registro Pedagogico
                     </span>
                     <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                      Selecione se o registro é individual para <strong>{idoso.nome}</strong> ou coletivo para toda a turma <strong>{getStudentClassroomLocal(idoso.nome)}</strong>.
+                      Selecione se o registro e individual para <strong>{idoso.nome}</strong> ou coletivo para toda a turma <strong>{getStudentClassroomLocal(idoso.nome)}</strong>.
                     </p>
                   </div>
                   <div className="flex gap-2 shrink-0">
@@ -2744,7 +2744,7 @@ Terça-feira:
                     type="text"
                     value={activityForm.tipo}
                     onChange={e => setActivityForm({ ...activityForm, tipo: e.target.value })}
-                    placeholder={isEscolar ? "Ex: Pintura, Teatrinho, Recreação..." : "Ex: Alongamento, Caminhada..."}
+                    placeholder={isEscolar ? "Ex: Pintura, Teatrinho, Recreacao..." : "Ex: Alongamento, Caminhada..."}
                     className="w-full pl-3 pr-10 py-2.5 bg-slate-50 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500/20 text-sm font-medium text-slate-800"
                   />
                   <div className="absolute right-3 text-slate-400">
@@ -2754,29 +2754,29 @@ Terça-feira:
                 
                 
                 <div className="pt-1.5">
-                  <span className="text-[10px] font-bold text-slate-400 block mb-1">Sugestões rápidas (Clique para selecionar):</span>
+                  <span className="text-[10px] font-bold text-slate-400 block mb-1">Sugestoes rapidas (Clique para selecionar):</span>
                   <div className="flex flex-wrap gap-1.5">
                     {(isFundamental ? [
-                      { label: "  Aulas & Explicações", val: "Aulas e Matérias Regulares" },
-                      { label: "  Provas / Testes", val: "Provas e Avaliações" },
-                      { label: "⚽ Ed. Física", val: "Educação Física e Esportes" },
-                      { label: "  Oficina de Artes", val: "Artes e Expressão Gráfica" },
-                      { label: "  Ciências", val: "Laboratório / Ciências" },
-                      { label: "  Leitura / Redação", val: "Leitura e Produção de Texto" }
+                      { label: "  Aulas & Explicacoes", val: "Aulas e Materias Regulares" },
+                      { label: "  Provas / Testes", val: "Provas e Avaliacoes" },
+                      { label: "  Ed. Fisica", val: "Educacao Fisica e Esportes" },
+                      { label: "  Oficina de Artes", val: "Artes e Expressao Grafica" },
+                      { label: "  Ciencias", val: "Laboratorio / Ciencias" },
+                      { label: "  Leitura / Redacao", val: "Leitura e Producao de Texto" }
                     ] : isEscolar ? [
                       { label: "  Pintura & Desenho", val: "Pintura e Artes Visuais" },
-                      { label: "  Contação de Histórias", val: "Roda de Leitura e Contos" },
-                      { label: "  Musicalização", val: "Musicalização Infantil" },
-                      { label: " ♂ Psicomotricidade", val: "Psicomotricidade no Parque" },
-                      { label: "  Peças de Encaixe", val: "Peças de Encaixe e Blocos" },
-                      { label: "  Prática de Inglês", val: "Atividade de Linguagem/Inglês" }
+                      { label: "  Contacao de Historias", val: "Roda de Leitura e Contos" },
+                      { label: "  Musicalizacao", val: "Musicalizacao Infantil" },
+                      { label: "   Psicomotricidade", val: "Psicomotricidade no Parque" },
+                      { label: "  Pecas de Encaixe", val: "Pecas de Encaixe e Blocos" },
+                      { label: "  Pratica de Ingles", val: "Atividade de Linguagem/Ingles" }
                     ] : [
                       { label: "  Alongamento", val: "Alongamento Leve" },
                       { label: "  Caminhada", val: "Caminhada Assistida" },
                       { label: "  Atv. Cognitiva", val: "Atividade Cognitiva" },
-                      { label: "  Recreação no Jardim", val: "Recreação no Jardim" },
+                      { label: "  Recreacao no Jardim", val: "Recreacao no Jardim" },
                       { label: "  Leitura", val: "Leitura ou Conversa" },
-                      { label: "🩺 Fisioterapia", val: "Fisioterapia" }
+                      { label: "   Fisioterapia", val: "Fisioterapia" }
                     ]).map((sug) => (
                       <button
                         key={sug.val}
@@ -2797,7 +2797,7 @@ Terça-feira:
 
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-bold text-slate-750 block">Duração (Minutos)</label>
+                  <label className="text-sm font-bold text-slate-750 block">Duracao (Minutos)</label>
                   <span className="text-[10px] text-amber-600 font-extrabold uppercase bg-amber-50 px-2 py-0.5 rounded-md flex items-center gap-1">
                     <Clock className="w-3 h-3" /> Reloginho
                   </span>
@@ -2834,7 +2834,7 @@ Terça-feira:
 
                 
                 <div className="pt-1.5">
-                  <span className="text-[10px] font-bold text-slate-400 block mb-1">Durações comuns:</span>
+                  <span className="text-[10px] font-bold text-slate-400 block mb-1">Duracoes comuns:</span>
                   <div className="flex flex-wrap gap-1.5">
                     {[15, 20, 30, 45, 60, 90].map((mins) => (
                       <button
@@ -2858,7 +2858,7 @@ Terça-feira:
               <div className="space-y-1 sm:col-span-2">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-bold text-slate-705 block">
-                    {isEscolar ? 'Observações do Rendimento Pedagógico' : 'Observações do Rendimento e Reação Física/Mental'}
+                    {isEscolar ? 'Observacoes do Rendimento Pedagogico' : 'Observacoes do Rendimento e Reacao Fisica/Mental'}
                   </label>
                   <VoiceInput 
                     onTranscript={text => setActivityForm(prev => ({ ...prev, obs: prev.obs ? prev.obs + ' ' + text : text }))} 
@@ -2866,7 +2866,7 @@ Terça-feira:
                   />
                 </div>
                 <textarea 
-                  placeholder={isFundamental ? "Ex: Resolveu os exercícios de frações com facilidade e prestou bastante atenção na explicação de Ciências por 40 min." : isEscolar ? "Ex: Adorou pintar a folha com tinta guache azul e demonstrou excelente foco por 25 min." : "Ex: aceitou muito bem fazer os exercícios cognitivos de reconhecer nomes, mas cansou rápida em 15min."}
+                  placeholder={isFundamental ? "Ex: Resolveu os exercicios de fracoes com facilidade e prestou bastante atencao na explicacao de Ciencias por 40 min." : isEscolar ? "Ex: Adorou pintar a folha com tinta guache azul e demonstrou excelente foco por 25 min." : "Ex: aceitou muito bem fazer os exercicios cognitivos de reconhecer nomes, mas cansou rapida em 15min."}
                   rows={2}
                   value={activityForm.obs}
                   onChange={e => setActivityForm({ ...activityForm, obs: e.target.value })}
@@ -2877,7 +2877,7 @@ Terça-feira:
               
               <div className="space-y-4 sm:col-span-2 bg-indigo-50/20 p-4 rounded-2xl border border-indigo-100/60 font-sans">
                 <label className="text-xs font-black text-slate-700 block uppercase tracking-wider">
-                    {isEscolar ? 'Fotos dos Trabalhinhos / Atividade do Aluno' : 'Fotos de Comprovação da Atividade'}
+                    {isEscolar ? 'Fotos dos Trabalhinhos / Atividade do Aluno' : 'Fotos de Comprovacao da Atividade'}
                 </label>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   
@@ -2898,8 +2898,8 @@ Terça-feira:
                     <span className="text-[10px] uppercase font-black tracking-wider text-indigo-900/60 block">{isFundamental ? 'Prefere simular uma tarefa do aluno?' : 'Prefere simular um desenho do aluno?'}</span>
                     <div className="grid grid-cols-2 gap-1.5">
                       {(isFundamental ? [
-                        { name: "  Redação Feita", url: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=440&auto=format&fit=crop&q=60" },
-                        { name: "  Conta Matemática", url: "https://images.unsplash.com/photo-1453733190148-c44698c265a8?w=440&auto=format&fit=crop&q=60" },
+                        { name: "  Redacao Feita", url: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=440&auto=format&fit=crop&q=60" },
+                        { name: "  Conta Matematica", url: "https://images.unsplash.com/photo-1453733190148-c44698c265a8?w=440&auto=format&fit=crop&q=60" },
                         { name: "  Experimento", url: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?w=440&auto=format&fit=crop&q=60" },
                         { name: "  Trabalho Artes", url: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=440&auto=format&fit=crop&q=60" }
                       ] : [
@@ -2932,15 +2932,15 @@ Terça-feira:
                       referrerPolicy="no-referrer"
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="text-[11px] font-black text-slate-800 truncate">✓ Trabalhinho Anexado</p>
-                      <p className="text-[9px] text-indigo-550 font-semibold">Salvar para enviar à galeria do dia</p>
+                      <p className="text-[11px] font-black text-slate-800 truncate">  Trabalhinho Anexado</p>
+                      <p className="text-[9px] text-indigo-550 font-semibold">Salvar para enviar a galeria do dia</p>
                     </div>
                     <button
                       type="button"
                       onClick={() => setActivityForm(prev => ({ ...prev, fotoTrabalhinho: '' }))}
                       className="px-2.5 py-1 text-[10px] font-extrabold text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-lg transition-colors cursor-pointer border border-transparent"
                     >
-                      Remover ✕
+                      Remover  
                     </button>
                   </div>
                 )}
@@ -2953,7 +2953,7 @@ Terça-feira:
                 type="submit"
                 className={`px-5 py-3 ${isEscolar ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-serene-blue hover:bg-blue-600'} text-white font-bold rounded-xl active:scale-95 transition-all text-sm block ml-auto cursor-pointer shadow-sm`}
               >
-                {isEscolar ? '  + Registrar Nova Lembrança na Jornada' : 'Registrar Atividade Diária'}
+                {isEscolar ? '  + Registrar Nova Lembranca na Jornada' : 'Registrar Atividade Diaria'}
               </button>
             )}
 
@@ -2961,7 +2961,7 @@ Terça-feira:
             <div className="mt-8 pt-6 border-t border-slate-200 space-y-4 font-sans">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-50/50 p-3 rounded-2xl border border-slate-100">
                 <h4 className="text-sm font-black text-slate-800 flex items-center gap-2">
-                    {isEscolar ? 'Trabalhinhos e Atividades Registradas Hoje' : 'Registro de Exercícios e Atividades Recentes'}
+                    {isEscolar ? 'Trabalhinhos e Atividades Registradas Hoje' : 'Registro de Exercicios e Atividades Recentes'}
                 </h4>
                 <div className="flex items-center gap-2 flex-wrap">
                   {atividadesToday.length > 0 && isStaffUser(usuarioAtual) && (
@@ -2985,7 +2985,7 @@ Terça-feira:
                       }}
                       className="px-3.5 py-1.5 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white rounded-xl text-xs font-black shadow-xs hover:shadow-md flex items-center gap-1.5 transition-all hover:scale-102 active:scale-95 cursor-pointer"
                     >
-                        Apresentação de Trabalhinhos (Slideshow)
+                        Apresentacao de Trabalhinhos (Slideshow)
                     </button>
                   )}
                 </div>
@@ -2993,7 +2993,7 @@ Terça-feira:
               
               {atividadesToday.length === 0 ? (
                 <div className="p-8 text-center border border-dashed border-slate-200 rounded-2xl text-slate-400 text-xs">
-                  Ainda não há atividades registradas para hoje. Preencha o formulário acima para registrar e anexar fotos dos trabalhinhos.
+                  Ainda nao ha atividades registradas para hoje. Preencha o formulario acima para registrar e anexar fotos dos trabalhinhos.
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -3002,7 +3002,7 @@ Terça-feira:
                       <div className="space-y-1.5 min-w-0">
                         <div className="flex items-center justify-between text-[11px] font-semibold text-slate-400">
                           <span className="bg-slate-100 px-2 py-0.5 rounded border border-slate-200 text-slate-700 font-mono">
-                            ⏱ {ati.horario}
+                              {ati.horario}
                           </span>
                           <div className="flex items-center gap-2">
                             <span className={`${isEscolar ? 'text-indigo-600' : 'text-emerald-600'} font-bold`}>
@@ -3056,23 +3056,23 @@ Terça-feira:
               </div>
               <div>
                 <h3 className="text-lg font-bold text-slate-800">
-                  {isEscolar ? 'Mural de Recados (Mão Dupla Pais & Professores)' : 'Caderno de Recados do Idoso'}
+                  {isEscolar ? 'Mural de Recados (Mao Dupla Pais & Professores)' : 'Caderno de Recados do Idoso'}
                 </h3>
                 <p className="text-xs text-slate-400">
                   {isEscolar 
-                    ? 'Canal ágil de recados entre pais, professora e coordenação. Notificações imediatas integradas.' 
-                    : 'Anotações rápidas de acompanhamento, solicitações da família ou comunicações da equipe médica.'}
+                    ? 'Canal agil de recados entre pais, professora e coordenacao. Notificacoes imediatas integradas.' 
+                    : 'Anotacoes rapidas de acompanhamento, solicitacoes da familia ou comunicacoes da equipe medica.'}
                 </p>
               </div>
             </div>
 
             
             <div className={`p-4 rounded-2xl border text-sm ${isEscolar ? 'bg-indigo-50/50 border-indigo-100 text-indigo-900' : 'bg-emerald-50/50 border-emerald-100 text-emerald-900'}`}>
-              <p className="font-semibold mb-1">  Como funciona este Mural de Mão Dupla?</p>
+              <p className="font-semibold mb-1">  Como funciona este Mural de Mao Dupla?</p>
               <p className="text-xs leading-relaxed text-slate-600">
-                Se os <strong>Pais</strong> escreverem, a <strong>Professora</strong> receberá um alerta em tempo real e dará visto. 
-                Se a <strong>Professora</strong> registrar uma tarefa pedagógica ou comportamento, os <strong>Pais</strong> receberão no WhatsApp! 
-                Seu perfil atual é: <span className="bg-white/80 px-2 py-0.5 rounded border font-bold text-slate-800 uppercase text-[10px]">{usuarioAtual.tipo} ({usuarioAtual.nome})</span>
+                Se os <strong>Pais</strong> escreverem, a <strong>Professora</strong> recebera um alerta em tempo real e dara visto. 
+                Se a <strong>Professora</strong> registrar uma tarefa pedagogica ou comportamento, os <strong>Pais</strong> receberao no WhatsApp! 
+                Seu perfil atual e: <span className="bg-white/80 px-2 py-0.5 rounded border font-bold text-slate-800 uppercase text-[10px]">{usuarioAtual.tipo} ({usuarioAtual.nome})</span>
               </p>
             </div>
 
@@ -3091,16 +3091,16 @@ Terça-feira:
                     {isEscolar ? (
                       <>
                         <option value="geral">  Recado Geral / Comunicado</option>
-                        <option value="alimentacao">  Material ou Alimentação</option>
-                        <option value="saude_sono">💊 Vacina ou Remédio</option>
-                        <option value="pedagogico">  Feedback Pedagógico</option>
+                        <option value="alimentacao">  Material ou Alimentacao</option>
+                        <option value="saude_sono">   Vacina ou Remedio</option>
+                        <option value="pedagogico">  Feedback Pedagogico</option>
                       </>
                     ) : (
                       <>
                         <option value="geral">  Recado Geral</option>
-                        <option value="saude_remedios">💊 Saúde / Remédios</option>
-                        <option value="alimentacao">  Alimentação / Compras</option>
-                        <option value="intercorrencia">  Intercorrência / Alerta</option>
+                        <option value="saude_remedios">   Saude / Remedios</option>
+                        <option value="alimentacao">  Alimentacao / Compras</option>
+                        <option value="intercorrencia">  Intercorrencia / Alerta</option>
                       </>
                     )}
                   </select>
@@ -3113,7 +3113,7 @@ Terça-feira:
                       type="text"
                       value={newRecadoForm.mensagem}
                       onChange={e => setNewRecadoForm({ ...newRecadoForm, mensagem: e.target.value })}
-                      placeholder={isEscolar ? "Ex: Professora, favor administrar o xarope às 14:00 que deixei na mochila." : "Ex: Acabou as fraldas G, favor trazer novo fardo na visita de amanhã."}
+                      placeholder={isEscolar ? "Ex: Professora, favor administrar o xarope as 14:00 que deixei na mochila." : "Ex: Acabou as fraldas G, favor trazer novo fardo na visita de amanha."}
                       className="w-full pl-3 pr-20 py-2 bg-white border border-slate-250 rounded-xl focus:ring-2 focus:ring-rose-450/20 text-xs text-slate-800 animate-none"
                     />
                     <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1.5">
@@ -3138,7 +3138,7 @@ Terça-feira:
             
             <div className="space-y-4">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-450 uppercase tracking-widest block">Mural de Mensagens Históricas ({recados.length})</span>
+                <span className="text-xs font-bold text-slate-450 uppercase tracking-widest block">Mural de Mensagens Historicas ({recados.length})</span>
                 <div className="flex items-center gap-2">
                   {recados.length > 0 && (
                     <button
@@ -3169,13 +3169,13 @@ Terça-feira:
                     const getCategoryBadge = (cat: string) => {
                       switch(cat) {
                         case 'saude_remedios': case 'saude_sono':
-                          return <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">💊 Saúde</span>;
+                          return <span className="bg-purple-100 text-purple-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">   Saude</span>;
                         case 'alimentacao':
-                          return <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">  Alimentação</span>;
+                          return <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">  Alimentacao</span>;
                         case 'pedagogico':
-                          return <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">  Pedagógico</span>;
+                          return <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">  Pedagogico</span>;
                         case 'intercorrencia':
-                          return <span className="bg-rose-100 text-rose-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">  Intercorrência</span>;
+                          return <span className="bg-rose-100 text-rose-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">  Intercorrencia</span>;
                         default:
                           return <span className="bg-slate-100 text-slate-650 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">  Comunicado</span>;
                       }
@@ -3196,7 +3196,7 @@ Terça-feira:
                             <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold ${
                               isSystemOrProf ? 'bg-indigo-100 text-indigo-800' : 'bg-emerald-100 text-emerald-800'
                             }`}>
-                              {rec.cargo || (isSystemOrProf ? 'Equipe Profissional' : 'Família')}
+                              {rec.cargo || (isSystemOrProf ? 'Equipe Profissional' : 'Familia')}
                             </span>
                           </div>
                           
@@ -3225,12 +3225,12 @@ Terça-feira:
                           {rec.lido ? (
                             <div className="flex items-center gap-1.5 text-[10px] text-slate-450 font-bold">
                               <CheckCheck className="w-3.5 h-3.5 text-emerald-500" />
-                              <span>Visto por {rec.lidoPor || 'Coordenação'}</span>
+                              <span>Visto por {rec.lidoPor || 'Coordenacao'}</span>
                             </div>
                           ) : (
                             <div className="flex items-center justify-between w-full">
                               <span className="inline-flex items-center gap-1 text-[10px] text-rose-550 font-black animate-pulse">
-                                ● Novo Recado
+                                  Novo Recado
                               </span>
                               
                               <button
@@ -3238,7 +3238,7 @@ Terça-feira:
                                 onClick={() => handleMarkRecadoAsRead(rec.id)}
                                 className="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 text-slate-650 hover:text-slate-800 text-[10px] font-bold rounded-lg transition-colors cursor-pointer"
                               >
-                                Marcar como Lido ✓
+                                Marcar como Lido  
                               </button>
                             </div>
                           )}
@@ -3264,7 +3264,7 @@ Terça-feira:
                       Expositor e Galeria de Arte Digital
                   </h3>
                   <p className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    Anjinho Escolar • Exposição de Trabalhinhos e Atividades
+                    Anjinho Escolar   Exposicao de Trabalhinhos e Atividades
                   </p>
                 </div>
 
@@ -3340,10 +3340,10 @@ Terça-feira:
                         </div>
                         <h4 className="font-extrabold text-white text-base">Nenhum trabalhinho encontrado</h4>
                         <p className="text-xs text-slate-400 leading-relaxed">
-                          Não existem fotos de trabalhinhos registradas {galleryFilter === 'aluno' ? `para ${idoso.nome}` : `para a sala ${currentClassroom}`} até o momento. 
+                          Nao existem fotos de trabalhinhos registradas {galleryFilter === 'aluno' ? `para ${idoso.nome}` : `para a sala ${currentClassroom}`} ate o momento. 
                         </p>
                         <p className="text-[11px] text-indigo-400 font-semibold bg-indigo-950/50 p-3 rounded-2xl border border-indigo-900/30">
-                            Dica: Ao registrar uma atividade pedagógica ou lúdica na aba ao lado, você pode bater foto do desenho ou pintura para que apareça nesta galeria!
+                            Dica: Ao registrar uma atividade pedagogica ou ludica na aba ao lado, voce pode bater foto do desenho ou pintura para que apareca nesta galeria!
                         </p>
                       </div>
                     );
@@ -3376,7 +3376,7 @@ Terça-feira:
                           type="button"
                           onClick={() => setCurrentSlideIndex(prev => (prev + 1) % galleryItems.length)}
                           className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/60 hover:bg-black/80 text-white transition-all cursor-pointer border border-transparent shadow-md"
-                          title="Próximo"
+                          title="Proximo"
                         >
                           <ChevronRight className="w-5 h-5" />
                         </button>
@@ -3419,14 +3419,14 @@ Terça-feira:
                         {currentItem.observacoes ? (
                           <div className="space-y-1">
                             <span className="text-[10px] font-black uppercase text-indigo-600 tracking-widest block">
-                                Observação Pedagógica
+                                Observacao Pedagogica
                             </span>
                             <p className="text-xs text-slate-650 italic bg-indigo-50/30 p-2.5 rounded-xl border border-dashed border-indigo-100 leading-relaxed">
                               "{currentItem.observacoes}"
                             </p>
                           </div>
                         ) : (
-                          <p className="text-xs text-slate-400 text-center italic py-2">Sem observações adicionadas para este trabalhinho.</p>
+                          <p className="text-xs text-slate-400 text-center italic py-2">Sem observacoes adicionadas para este trabalhinho.</p>
                         )}
                       </div>
                     </div>
@@ -3465,7 +3465,7 @@ Terça-feira:
                       >
                         {slideshowActive ? (
                           <>
-                            <Pause className="w-3.5 h-3.5 fill-white" /> Pausar Apresentação
+                            <Pause className="w-3.5 h-3.5 fill-white" /> Pausar Apresentacao
                           </>
                         ) : (
                           <>
@@ -3476,13 +3476,13 @@ Terça-feira:
 
                       {slideshowActive && (
                         <span className="text-[10px] text-indigo-600 font-bold bg-indigo-50 px-2 py-1 rounded-lg animate-pulse">
-                          ▶ Avanço Automático Ativo (3s)
+                            Avanco Automatico Ativo (3s)
                         </span>
                       )}
                     </div>
 
                     <div className="text-[11px] font-black text-slate-500 uppercase tracking-widest">
-                      {galleryFilter === 'aluno' ? 'Portfólio Individual' : `Mural da Classe - ${currentClassroom}`}
+                      {galleryFilter === 'aluno' ? 'Portfolio Individual' : `Mural da Classe - ${currentClassroom}`}
                     </div>
                   </div>
                 );

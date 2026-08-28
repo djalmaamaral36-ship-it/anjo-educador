@@ -23,13 +23,13 @@ import {
 } from 'lucide-react';
 
 const getStudentClassroom = (studentObj: any): string => {
-  if (!studentObj) return 'Berçário I - A';
+  if (!studentObj) return 'Bercario I - A';
   if (typeof studentObj === 'object') {
     if (studentObj.salaAula && studentObj.salaAula !== 'Todas') return studentObj.salaAula;
     if (studentObj.quarto && studentObj.quarto !== 'Todas') return studentObj.quarto;
     if (studentObj.sala && studentObj.sala !== 'Todas') return studentObj.sala;
     if (studentObj.nome) return getStudentClassroom(studentObj.nome);
-    return 'Berçário I - A';
+    return 'Bercario I - A';
   }
   const name = String(studentObj);
   const rooms = getFromDB<Classroom[]>('anjo_salas', SALAS_INICIAIS);
@@ -53,18 +53,18 @@ const getStudentClassroom = (studentObj: any): string => {
     }
   }
 
-  if (name.toLowerCase().includes('berçário i') || name.toLowerCase().includes('bercario i')) return 'Berçário I - A';
-  if (name.toLowerCase().includes('berçário ii') || name.toLowerCase().includes('bercario ii')) return 'Berçário II';
+  if (name.toLowerCase().includes('bercario i') || name.toLowerCase().includes('bercario i')) return 'Bercario I - A';
+  if (name.toLowerCase().includes('bercario ii') || name.toLowerCase().includes('bercario ii')) return 'Bercario II';
   if (name.toLowerCase().includes('maternal ii') || name.toLowerCase().includes('maternal 2')) return 'Maternal II - A';
   if (name.toLowerCase().includes('maternal i') || name.toLowerCase().includes('maternal 1')) return 'Maternal I - A';
   if (name.toLowerCase().includes('jardim ii') || name.toLowerCase().includes('jardim 2')) return 'Jardim II - A';
   if (name.toLowerCase().includes('jardim i') || name.toLowerCase().includes('jardim 1')) return 'Jardim I - A';
-  if (name.includes('1º Ano')) return '1º Ano - A';
-  if (name.includes('2º Ano')) return '2º Ano - A';
-  if (name.includes('3º Ano')) return '3º Ano - A';
-  if (name.includes('4º Ano')) return '4º Ano - A';
-  if (name.includes('5º Ano')) return '5º Ano - A';
-  return 'Berçário I - A';
+  if (name.includes('1o Ano')) return '1o Ano - A';
+  if (name.includes('2o Ano')) return '2o Ano - A';
+  if (name.includes('3o Ano')) return '3o Ano - A';
+  if (name.includes('4o Ano')) return '4o Ano - A';
+  if (name.includes('5o Ano')) return '5o Ano - A';
+  return 'Bercario I - A';
 };
 
 interface MedicalAgendaProps {
@@ -178,13 +178,13 @@ export default function MedicalAgenda({
       return 'Toda a Escola (Todas as Turmas)';
     }
 
-    const bercarioSalas = activeSalas.filter(s => s.name.toLowerCase().includes('berçário') || s.name.toLowerCase().includes('lactente')).map(s => s.name);
+    const bercarioSalas = activeSalas.filter(s => s.name.toLowerCase().includes('bercario') || s.name.toLowerCase().includes('lactente')).map(s => s.name);
     const maternalSalas = activeSalas.filter(s => s.name.toLowerCase().includes('maternal')).map(s => s.name);
-    const jardimSalas = activeSalas.filter(s => s.name.toLowerCase().includes('jardim') || s.name.toLowerCase().includes('pré')).map(s => s.name);
+    const jardimSalas = activeSalas.filter(s => s.name.toLowerCase().includes('jardim') || s.name.toLowerCase().includes('pre')).map(s => s.name);
     const fundamentalSalas = activeSalas.filter(s => s.name.toLowerCase().includes('ano') || s.name.toLowerCase().includes('fundamental')).map(s => s.name);
 
     if (bercarioSalas.length > 0 && bercarioSalas.length === rooms.length && bercarioSalas.every(r => rooms.includes(r))) {
-      return 'Todo o Berçário';
+      return 'Todo o Bercario';
     }
     if (maternalSalas.length > 0 && maternalSalas.length === rooms.length && maternalSalas.every(r => rooms.includes(r))) {
       return 'Todo o Maternal';
@@ -204,9 +204,9 @@ export default function MedicalAgenda({
   const classroomCategories = useMemo(() => {
     if (!isEscolar) return [];
     
-    const bercarioSalas = activeSalas.filter(s => s.name.toLowerCase().includes('berçário') || s.name.toLowerCase().includes('lactente')).map(s => s.name);
+    const bercarioSalas = activeSalas.filter(s => s.name.toLowerCase().includes('bercario') || s.name.toLowerCase().includes('lactente')).map(s => s.name);
     const maternalSalas = activeSalas.filter(s => s.name.toLowerCase().includes('maternal')).map(s => s.name);
-    const jardimSalas = activeSalas.filter(s => s.name.toLowerCase().includes('jardim') || s.name.toLowerCase().includes('pré')).map(s => s.name);
+    const jardimSalas = activeSalas.filter(s => s.name.toLowerCase().includes('jardim') || s.name.toLowerCase().includes('pre')).map(s => s.name);
     const fundamentalSalas = activeSalas.filter(s => s.name.toLowerCase().includes('ano') || s.name.toLowerCase().includes('fundamental')).map(s => s.name);
 
     const cats = [];
@@ -214,7 +214,7 @@ export default function MedicalAgenda({
     // Escola Toda
     cats.push({
       id: 'escola_toda',
-      label: '🏫 Toda a Escola',
+      label: '   Toda a Escola',
       salas: activeSalas.map(s => s.name),
       count: totalSchoolStudentsCount
     });
@@ -222,7 +222,7 @@ export default function MedicalAgenda({
     if (bercarioSalas.length > 0) {
       cats.push({
         id: 'bercario',
-        label: '  Todo o Berçário',
+        label: '  Todo o Bercario',
         salas: bercarioSalas,
         count: getStudentsCountForClasses(bercarioSalas)
       });
@@ -332,15 +332,15 @@ export default function MedicalAgenda({
     if (isEscolar) {
       switch (tipo) {
         case 'consulta':
-          return 'Reunião de Pais / Conselho';
+          return 'Reuniao de Pais / Conselho';
         case 'exame':
           return 'Festa ou Evento Especial';
         case 'retorno':
           return 'Passeio / Atividade Externa';
         case 'fisioterapia':
-          return 'Apresentação / Atendimento';
+          return 'Apresentacao / Atendimento';
         case 'vacina':
-          return 'Campanha de Vacinação';
+          return 'Campanha de Vacinacao';
         default:
           return 'Outros Eventos';
       }
@@ -349,13 +349,13 @@ export default function MedicalAgenda({
       case 'consulta':
         return 'Consulta';
       case 'exame':
-        return 'Exame Clínico';
+        return 'Exame Clinico';
       case 'retorno':
         return 'Retorno';
       case 'fisioterapia':
         return 'Fisioterapia';
       case 'vacina':
-        return 'Vacinação';
+        return 'Vacinacao';
       default:
         return 'Outros compromissos';
     }
@@ -383,8 +383,8 @@ export default function MedicalAgenda({
 
     if (!newAppt.titulo || !newAppt.medico) {
       alert(isEscolar 
-        ? 'Por favor, preencha o título do evento/reunião e o responsável.' 
-        : 'Por favor preencha o título do compromisso e o nome do profissional.');
+        ? 'Por favor, preencha o titulo do evento/reuniao e o responsavel.' 
+        : 'Por favor preencha o titulo do compromisso e o nome do profissional.');
       return;
     }
 
@@ -465,7 +465,7 @@ export default function MedicalAgenda({
             idosoId: aluno.id,
             tipo: 'consulta',
             titulo: `${labelTipo}: ${copyAppt.titulo}`,
-            descricao: `Com ${copyAppt.medico} em ${copyAppt.local} às ${copyAppt.horario}.`,
+            descricao: `Com ${copyAppt.medico} em ${copyAppt.local} as ${copyAppt.horario}.`,
             horarioPrevisto: copyAppt.horario,
             status: 'pendente'
           };
@@ -476,7 +476,7 @@ export default function MedicalAgenda({
       saveToDB('anjo_agenda', allComp);
       saveToDB('anjo_tarefas_diarias', allTasks);
 
-      const msg = `  COMUNICADO DE EVENTO ESCOLAR\n\n  Público-Alvo: ${summaryText}\n  Evento: ${newAppt.titulo}\n  Responsável: ${newAppt.medico}\n  Data: ${dateFormatted} às ${newAppt.horario}\n  Local: ${newAppt.local || 'Escolinha'}\n\nAgendado para ${todosAlunos.length} alunos (${targetRooms.length} turma(s) selecionada(s)).`;
+      const msg = `  COMUNICADO DE EVENTO ESCOLAR\n\n  Publico-Alvo: ${summaryText}\n  Evento: ${newAppt.titulo}\n  Responsavel: ${newAppt.medico}\n  Data: ${dateFormatted} as ${newAppt.horario}\n  Local: ${newAppt.local || 'Escolinha'}\n\nAgendado para ${todosAlunos.length} alunos (${targetRooms.length} turma(s) selecionada(s)).`;
       triggerWhatsAppSim(`Comunicado Enviado (${summaryText})`, msg, todosAlunos);
     } else {
       const novoCompromisso: CompromissoMedico = {
@@ -485,7 +485,7 @@ export default function MedicalAgenda({
         tipo: newAppt.tipo,
         titulo: newAppt.titulo,
         medico: newAppt.medico,
-        especialidade: newAppt.especialidade || (isEscolar ? 'Geral' : 'Inespecífico'),
+        especialidade: newAppt.especialidade || (isEscolar ? 'Geral' : 'Inespecifico'),
         local: newAppt.local || (isEscolar ? 'Escolinha' : 'Domiciliar'),
         data: newAppt.data,
         horario: newAppt.horario,
@@ -507,8 +507,8 @@ export default function MedicalAgenda({
           tipo: 'consulta',
           titulo: `${labelTipo}: ${novoCompromisso.titulo}`,
           descricao: isEscolar
-            ? `Com ${novoCompromisso.medico} em ${novoCompromisso.local} às ${novoCompromisso.horario}.`
-            : `Com Dr(a). ${novoCompromisso.medico} em ${novoCompromisso.local} às ${novoCompromisso.horario}.`,
+            ? `Com ${novoCompromisso.medico} em ${novoCompromisso.local} as ${novoCompromisso.horario}.`
+            : `Com Dr(a). ${novoCompromisso.medico} em ${novoCompromisso.local} as ${novoCompromisso.horario}.`,
           horarioPrevisto: novoCompromisso.horario,
           status: 'pendente'
         };
@@ -517,8 +517,8 @@ export default function MedicalAgenda({
       }
 
       const msg = isEscolar
-        ? `Anjinho Escolar: Novo evento/reunião escolar agendado para o(a) aluno(a) ${idoso.nome}. Compromisso: "${novoCompromisso.titulo}" com ${novoCompromisso.medico} em ${dateFormatted} às ${novoCompromisso.horario}. Local: ${novoCompromisso.local}. Detalhes: ${novoCompromisso.observacoes || 'Sem observações.'}`
-        : `Anjo Cuidador: Novo compromisso médico agendado para ${idoso.nome}. Compromisso: "${novoCompromisso.titulo}" com Dr(a). ${novoCompromisso.medico} em ${dateFormatted} às ${novoCompromisso.horario}. Local: ${novoCompromisso.local}.`;
+        ? `Anjinho Escolar: Novo evento/reuniao escolar agendado para o(a) aluno(a) ${idoso.nome}. Compromisso: "${novoCompromisso.titulo}" com ${novoCompromisso.medico} em ${dateFormatted} as ${novoCompromisso.horario}. Local: ${novoCompromisso.local}. Detalhes: ${novoCompromisso.observacoes || 'Sem observacoes.'}`
+        : `Anjo Cuidador: Novo compromisso medico agendado para ${idoso.nome}. Compromisso: "${novoCompromisso.titulo}" com Dr(a). ${novoCompromisso.medico} em ${dateFormatted} as ${novoCompromisso.horario}. Local: ${novoCompromisso.local}.`;
       triggerWhatsAppSim(isEscolar ? 'Evento Escolar Agendado' : 'Compromisso Agendado', msg);
     }
 
@@ -556,8 +556,8 @@ export default function MedicalAgenda({
     const allComp = getFromDB<CompromissoMedico[]>('anjo_agenda', []);
     const nextStatus = tgt.status === 'realizado' ? 'agendado' : 'realizado';
     const systemName = isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador';
-    const labelTerm = isEscolar ? 'Evento/Reunião' : 'Compromisso';
-    const actionTerm = nextStatus === 'realizado' ? 'concluído' : 'agendado';
+    const labelTerm = isEscolar ? 'Evento/Reuniao' : 'Compromisso';
+    const actionTerm = nextStatus === 'realizado' ? 'concluido' : 'agendado';
 
     const updated = allComp.map(c => {
       if (toggleAll && tgt.broadcastGroupId) {
@@ -579,7 +579,7 @@ export default function MedicalAgenda({
       );
     } else {
       triggerWhatsAppSim(
-        isEscolar ? 'Evento/Reunião Atualizado' : 'Compromisso Atualizado',
+        isEscolar ? 'Evento/Reuniao Atualizado' : 'Compromisso Atualizado',
         `${systemName}: O ${labelTerm} "${tgt.titulo}" de ${idoso.nome} foi marcado como ${actionTerm} por ${usuarioAtual.nome}.`
       );
     }
@@ -593,8 +593,8 @@ export default function MedicalAgenda({
     const dateFormatted = new Date(appt.data + 'T00:00:00').toLocaleDateString('pt-BR');
     
     const msg = isEscolar
-      ? `Anjinho Escolar: Lembrete de compromisso/reunião escolar sobre o(a) aluno(a) ${idoso.nome}. Próximo dia (${dateFormatted}) às ${appt.horario} haverá "${appt.titulo}" sob coordenação de ${appt.medico}. Local: ${appt.local}. Informações: ${appt.observacoes || 'Sem observações.'}`
-      : `Anjo Cuidador: Lembrete de compromisso de ${idoso.nome}. Amanhã (${dateFormatted}) às ${appt.horario} há "${appt.titulo}" com Dr(a). ${appt.medico}. Local: ${appt.local}. Notas: ${appt.observacoes || 'Sem notas.'}`;
+      ? `Anjinho Escolar: Lembrete de compromisso/reuniao escolar sobre o(a) aluno(a) ${idoso.nome}. Proximo dia (${dateFormatted}) as ${appt.horario} havera "${appt.titulo}" sob coordenacao de ${appt.medico}. Local: ${appt.local}. Informacoes: ${appt.observacoes || 'Sem observacoes.'}`
+      : `Anjo Cuidador: Lembrete de compromisso de ${idoso.nome}. Amanha (${dateFormatted}) as ${appt.horario} ha "${appt.titulo}" com Dr(a). ${appt.medico}. Local: ${appt.local}. Notas: ${appt.observacoes || 'Sem notas.'}`;
     
     triggerWhatsAppSim(isEscolar ? 'Lembrete de Evento' : 'Lembrete de Compromisso', msg);
   };
@@ -617,15 +617,15 @@ export default function MedicalAgenda({
     if (deleteAll && deleteConfirmTarget.broadcastGroupId) {
       updated = allComp.filter(c => c.broadcastGroupId !== deleteConfirmTarget.broadcastGroupId);
       triggerWhatsAppSim(
-        'Geral: Comunicado Excluído',
+        'Geral: Comunicado Excluido',
         `Anjinho Escolar: O comunicado geral "${deleteConfirmTarget.titulo}" foi apagado da agenda de toda a classe de uma vez.`
       );
     } else {
       updated = allComp.filter(c => c.id !== deleteConfirmTarget.id);
       triggerWhatsAppSim(
-        isEscolar ? 'Evento Excluído' : 'Compromisso Excluído',
+        isEscolar ? 'Evento Excluido' : 'Compromisso Excluido',
         isEscolar
-          ? `Anjinho Escolar: O evento/reunião "${deleteConfirmTarget.titulo}" de ${idoso.nome} foi removido da agenda.`
+          ? `Anjinho Escolar: O evento/reuniao "${deleteConfirmTarget.titulo}" de ${idoso.nome} foi removido da agenda.`
           : `Anjo Cuidador: O compromisso "${deleteConfirmTarget.titulo}" de ${idoso.nome} foi removido por ${usuarioAtual.nome}.`
       );
     }
@@ -642,12 +642,12 @@ export default function MedicalAgenda({
         <div>
           <h2 className="text-xl font-black text-slate-800 flex items-center gap-2">
             <Calendar className="w-6 h-6 text-indigo-600" />
-            {isEscolar ? 'Eventos, Reuniões e Avisos Escolares' : 'Agenda de Consultas e Compromissos'}
+            {isEscolar ? 'Eventos, Reunioes e Avisos Escolares' : 'Agenda de Consultas e Compromissos'}
           </h2>
           <p className="text-sm text-slate-500 font-medium">
             {isEscolar 
-              ? 'Planeje reuniões de pais, conselhos, eventos comemorativos, passeios pedagógicos e avaliações lúdicas.'
-              : 'Acompanhamento de exames, retornos médicos, vacinas, fisioterapia e terapias integradas.'}
+              ? 'Planeje reunioes de pais, conselhos, eventos comemorativos, passeios pedagogicos e avaliacoes ludicas.'
+              : 'Acompanhamento de exames, retornos medicos, vacinas, fisioterapia e terapias integradas.'}
           </p>
         </div>
 
@@ -656,7 +656,7 @@ export default function MedicalAgenda({
           className="px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-xs hover:shadow-md transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer text-sm"
         >
           <Plus className="w-5 h-5" />
-          {isEscolar ? 'Agendar Reunião ou Evento' : 'Agendar Compromisso'}
+          {isEscolar ? 'Agendar Reuniao ou Evento' : 'Agendar Compromisso'}
         </button>
       </div>
 
@@ -666,7 +666,7 @@ export default function MedicalAgenda({
           <div className="space-y-1">
             <h4 className="font-extrabold text-sm text-indigo-900">Mapeamento e Comunicados por Classe da Escolinha</h4>
             <p className="text-xs text-indigo-700 leading-relaxed">
-              <strong>Como professora ou coordenadora</strong>, você não precisa cadastrar uma reunião aluno por aluno! Ao criar um compromisso ou aviso na agenda, marque a opção para <strong>Replicar para a classe toda de uma vez</strong>. O comunicado será publicado instantaneamente nas carteiras da turma. Você também pode apagar em massa diretamente da lixeira ao lado.
+              <strong>Como professora ou coordenadora</strong>, voce nao precisa cadastrar uma reuniao aluno por aluno! Ao criar um compromisso ou aviso na agenda, marque a opcao para <strong>Replicar para a classe toda de uma vez</strong>. O comunicado sera publicado instantaneamente nas carteiras da turma. Voce tambem pode apagar em massa diretamente da lixeira ao lado.
             </p>
           </div>
         </div>
@@ -678,13 +678,13 @@ export default function MedicalAgenda({
           <p className="text-slate-400">
             {isEscolar
               ? `Nenhum evento ou compromisso escolar cadastrado para o(a) aluno(a) ${idoso.nome}.`
-              : `Nenhum compromisso médico cadastrado para ${idoso.nome}.`}
+              : `Nenhum compromisso medico cadastrado para ${idoso.nome}.`}
           </p>
           <button 
             onClick={() => setShowAddModal(true)}
             className="text-xs font-bold text-indigo-600 hover:underline cursor-pointer"
           >
-            {isEscolar ? 'Agendar o primeiro evento da escolinha' : 'Adicionar o primeiro compromisso de saúde'}
+            {isEscolar ? 'Agendar o primeiro evento da escolinha' : 'Adicionar o primeiro compromisso de saude'}
           </button>
         </div>
       ) : (
@@ -752,7 +752,7 @@ export default function MedicalAgenda({
                         {isEscolar ? (
                           <>
                             <User className="w-3.5 h-3.5 text-slate-400" />
-                            <strong>Responsável:</strong> {appt.medico} {appt.especialidade ? `(${appt.especialidade})` : ''}
+                            <strong>Responsavel:</strong> {appt.medico} {appt.especialidade ? `(${appt.especialidade})` : ''}
                           </>
                         ) : (
                           <>
@@ -769,7 +769,7 @@ export default function MedicalAgenda({
 
                     {appt.observacoes && (
                       <p className="text-xs text-slate-500 bg-slate-50 p-2.5 rounded-xl border border-slate-100 max-w-xl">
-                        <strong>{isEscolar ? 'Recomendação / Nota:' : 'Nota:'}</strong> "{appt.observacoes}"
+                        <strong>{isEscolar ? 'Recomendacao / Nota:' : 'Nota:'}</strong> "{appt.observacoes}"
                       </p>
                     )}
                   </div>
@@ -781,7 +781,7 @@ export default function MedicalAgenda({
                     <button 
                       onClick={() => handleShareWhatsAppReminder(appt)}
                       className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl transition-all cursor-pointer border border-slate-200"
-                      title={isEscolar ? "Compartilhar lembrete com os pais no WhatsApp" : "Enviar lembrete para a família via WhatsApp"}
+                      title={isEscolar ? "Compartilhar lembrete com os pais no WhatsApp" : "Enviar lembrete para a familia via WhatsApp"}
                     >
                       <Share2 className="w-4.5 h-4.5" />
                     </button>
@@ -789,13 +789,13 @@ export default function MedicalAgenda({
                       <button
                         onClick={() => handleDeleteAppointment(appt.id, appt.titulo)}
                         className="p-2 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl transition-all cursor-pointer border border-rose-200"
-                        title={isEscolar ? "Excluir reunião/evento concluído" : "Excluir compromisso concluído"}
+                        title={isEscolar ? "Excluir reuniao/evento concluido" : "Excluir compromisso concluido"}
                       >
                         <Trash2 className="w-4.5 h-4.5" />
                       </button>
                     )}
                     {!isDone && (
-                      <span className="text-[10px] font-bold text-slate-400 flex items-center gap-0.5 select-none bg-slate-100 px-2 py-1 rounded" title="Notificação Ativa">
+                      <span className="text-[10px] font-bold text-slate-400 flex items-center gap-0.5 select-none bg-slate-100 px-2 py-1 rounded" title="Notificacao Ativa">
                         <Bell className="w-3 h-3 text-emerald-500 fill-emerald-500" /> Alerta Ativo
                       </span>
                     )}
@@ -811,7 +811,7 @@ export default function MedicalAgenda({
                   >
                     {isDone 
                       ? (isEscolar ? 'Reabrir Evento' : 'Reordenar Agenda') 
-                      : (isEscolar ? 'Marcar como Concluído' : 'Marcar como Realizado')}
+                      : (isEscolar ? 'Marcar como Concluido' : 'Marcar como Realizado')}
                   </button>
                 </div>
               </div>
@@ -826,7 +826,7 @@ export default function MedicalAgenda({
           <div className="bg-white rounded-3xl p-6 border border-soft-gray max-w-lg w-full shadow-2xl relative max-h-[90vh] overflow-y-auto space-y-4">
             <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
               <Calendar className="w-6 h-6 text-indigo-600" />
-              {isEscolar ? 'Agendar Reunião ou Evento Escolar' : 'Agendar Novo Compromisso Médico'}
+              {isEscolar ? 'Agendar Reuniao ou Evento Escolar' : 'Agendar Novo Compromisso Medico'}
             </h3>
 
             <form onSubmit={handleSaveAppointment} className="space-y-4 text-xs font-semibold">
@@ -834,7 +834,7 @@ export default function MedicalAgenda({
                 <div className="space-y-1 sm:col-span-2">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-bold text-slate-600 block">
-                      {isEscolar ? 'Título do Evento ou Reunião *' : 'Título do Compromisso *'}
+                      {isEscolar ? 'Titulo do Evento ou Reuniao *' : 'Titulo do Compromisso *'}
                     </label>
                     <VoiceInput 
                       onTranscript={text => setNewAppt(prev => ({ ...prev, titulo: prev.titulo ? prev.titulo + ' ' + text : text }))} 
@@ -843,7 +843,7 @@ export default function MedicalAgenda({
                   </div>
                   <input 
                     type="text" 
-                    placeholder={isEscolar ? 'Ex: Reunião de Pais Trimestral, Festa da Primavera, Passeio Pedagógico' : 'Ex: Consulta de Rotina Trimestral, Exame Laboratorial'} 
+                    placeholder={isEscolar ? 'Ex: Reuniao de Pais Trimestral, Festa da Primavera, Passeio Pedagogico' : 'Ex: Consulta de Rotina Trimestral, Exame Laboratorial'} 
                     value={newAppt.titulo}
                     onChange={e => setNewAppt({ ...newAppt, titulo: e.target.value })}
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500/20 bg-slate-50 text-sm"
@@ -860,20 +860,20 @@ export default function MedicalAgenda({
                   >
                     {isEscolar ? (
                       <>
-                        <option value="consulta">Reunião de Pais / Conselho</option>
+                        <option value="consulta">Reuniao de Pais / Conselho</option>
                         <option value="exame">Festa ou Evento Especial</option>
                         <option value="retorno">Passeio / Atividade Externa</option>
-                        <option value="fisioterapia">Apresentação / Atendimento</option>
-                        <option value="vacina">Campanha de Vacinação</option>
+                        <option value="fisioterapia">Apresentacao / Atendimento</option>
+                        <option value="vacina">Campanha de Vacinacao</option>
                         <option value="outros">Outros Eventos</option>
                       </>
                     ) : (
                       <>
                         <option value="consulta">Consulta</option>
-                        <option value="exame">Exame Clínico</option>
+                        <option value="exame">Exame Clinico</option>
                         <option value="retorno">Retorno</option>
                         <option value="fisioterapia">Fisioterapia</option>
-                        <option value="vacina">Vacinação</option>
+                        <option value="vacina">Vacinacao</option>
                         <option value="outros">Outros compromissos</option>
                       </>
                     )}
@@ -883,7 +883,7 @@ export default function MedicalAgenda({
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-bold text-slate-600 block">
-                      {isEscolar ? 'Professor / Orientador Responsável *' : 'Médico / Especialista Responsável *'}
+                      {isEscolar ? 'Professor / Orientador Responsavel *' : 'Medico / Especialista Responsavel *'}
                     </label>
                     <VoiceInput 
                       onTranscript={text => setNewAppt(prev => ({ ...prev, medico: prev.medico ? prev.medico + ' ' + text : text }))} 
@@ -892,7 +892,7 @@ export default function MedicalAgenda({
                   </div>
                   <input 
                     type="text" 
-                    placeholder={isEscolar ? 'Ex: Coordenadora Ana Cláudia ou Profª Helenice' : 'Ex: Dr. Roberto Kardec'} 
+                    placeholder={isEscolar ? 'Ex: Coordenadora Ana Claudia ou Profa Helenice' : 'Ex: Dr. Roberto Kardec'} 
                     value={newAppt.medico}
                     onChange={e => setNewAppt({ ...newAppt, medico: e.target.value })}
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500/20 bg-slate-50 text-sm"
@@ -903,7 +903,7 @@ export default function MedicalAgenda({
                 <div className={`space-y-1 ${isEscolar ? 'sm:col-span-2' : ''}`}>
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-bold text-slate-600 block">
-                      {isEscolar ? 'Turma / Público-Alvo do Evento *' : 'Especialidade Clínica'}
+                      {isEscolar ? 'Turma / Publico-Alvo do Evento *' : 'Especialidade Clinica'}
                     </label>
                     <VoiceInput 
                       onTranscript={text => setNewAppt(prev => ({ ...prev, especialidade: prev.especialidade ? prev.especialidade + ' ' + text : text }))} 
@@ -912,7 +912,7 @@ export default function MedicalAgenda({
                   </div>
                   <input 
                     type="text" 
-                    placeholder={isEscolar ? 'Ex: Todo o Maternal, Berçário I - A, Toda a Escola' : 'Ex: Geriatria, Cardiologia'} 
+                    placeholder={isEscolar ? 'Ex: Todo o Maternal, Bercario I - A, Toda a Escola' : 'Ex: Geriatria, Cardiologia'} 
                     value={newAppt.especialidade}
                     onChange={e => setNewAppt({ ...newAppt, especialidade: e.target.value })}
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500/20 bg-slate-50 text-sm font-semibold text-slate-800"
@@ -971,7 +971,7 @@ export default function MedicalAgenda({
                             <span>Salas de Aula (Selecione uma ou mais turmas):</span>
                           </span>
                           <span className="text-[10px] text-indigo-600 font-extrabold">
-                            {selectedTargetClassrooms.length} turma(s) • {getStudentsCountForClasses(selectedTargetClassrooms)} alunos
+                            {selectedTargetClassrooms.length} turma(s)   {getStudentsCountForClasses(selectedTargetClassrooms)} alunos
                           </span>
                         </div>
 
@@ -993,7 +993,7 @@ export default function MedicalAgenda({
                                 {isSelected ? (
                                   <Check className="w-3.5 h-3.5 text-white stroke-[3]" />
                                 ) : (
-                                  <span className="text-sm">{sala.emoji || '🏫'}</span>
+                                  <span className="text-sm">{sala.emoji || '  '}</span>
                                 )}
                                 <span>{sala.name}</span>
                                 <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-black ${isSelected ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-600'}`}>
@@ -1008,7 +1008,7 @@ export default function MedicalAgenda({
                         <div className="p-2.5 bg-indigo-100/70 border border-indigo-200 rounded-xl text-xs text-indigo-950 font-bold flex items-center justify-between gap-2">
                           <span className="flex items-center gap-1.5">
                             <Users className="w-4 h-4 text-indigo-700 shrink-0" />
-                            <span>Público Alvo Selecionado: <strong>{getTargetSummaryText(selectedTargetClassrooms)}</strong></span>
+                            <span>Publico Alvo Selecionado: <strong>{getTargetSummaryText(selectedTargetClassrooms)}</strong></span>
                           </span>
                           <span className="px-2 py-0.5 bg-indigo-600 text-white font-extrabold rounded-lg text-[10px] shrink-0">
                             {getStudentsCountForClasses(selectedTargetClassrooms)} alunos
@@ -1022,7 +1022,7 @@ export default function MedicalAgenda({
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-bold text-slate-600 block">
-                      {isEscolar ? 'Local na Escolinha *' : 'Localização / Clínica *'}
+                      {isEscolar ? 'Local na Escolinha *' : 'Localizacao / Clinica *'}
                     </label>
                     <VoiceInput 
                       onTranscript={text => setNewAppt(prev => ({ ...prev, local: prev.local ? prev.local + ' ' + text : text }))} 
@@ -1031,7 +1031,7 @@ export default function MedicalAgenda({
                   </div>
                   <input 
                     type="text" 
-                    placeholder={isEscolar ? 'Ex: Pátio do Berçário, Sala Temática, Auditório' : 'Ex: Consultório, Moema, Domicílio'} 
+                    placeholder={isEscolar ? 'Ex: Patio do Bercario, Sala Tematica, Auditorio' : 'Ex: Consultorio, Moema, Domicilio'} 
                     value={newAppt.local}
                     onChange={e => setNewAppt({ ...newAppt, local: e.target.value })}
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-indigo-500/20 bg-slate-50 text-sm"
@@ -1051,7 +1051,7 @@ export default function MedicalAgenda({
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-600 block">Horário Previsto *</label>
+                  <label className="text-xs font-bold text-slate-600 block">Horario Previsto *</label>
                   <input 
                     type="time" 
                     value={newAppt.horario}
@@ -1064,7 +1064,7 @@ export default function MedicalAgenda({
                 <div className="space-y-1 sm:col-span-2">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-bold text-slate-600 block">
-                      {isEscolar ? 'Observações e Avisos aos Pais' : 'Instruções Prévias / Observações'}
+                      {isEscolar ? 'Observacoes e Avisos aos Pais' : 'Instrucoes Previas / Observacoes'}
                     </label>
                     <VoiceInput 
                       onTranscript={text => setNewAppt(prev => ({ ...prev, observacoes: prev.observacoes ? prev.observacoes + ' ' + text : text }))} 
@@ -1072,7 +1072,7 @@ export default function MedicalAgenda({
                     />
                   </div>
                   <textarea 
-                    placeholder={isEscolar ? 'Ex: Trazer autorização preenchida e assinada pela coordenação, lanche saudável para compartilhar...' : 'Ex: Ir em jejum de 8 horas, levar exames de sangue antigos.'}
+                    placeholder={isEscolar ? 'Ex: Trazer autorizacao preenchida e assinada pela coordenacao, lanche saudavel para compartilhar...' : 'Ex: Ir em jejum de 8 horas, levar exames de sangue antigos.'}
                     rows={2.5}
                     value={newAppt.observacoes}
                     onChange={e => setNewAppt({ ...newAppt, observacoes: e.target.value })}
@@ -1112,8 +1112,8 @@ export default function MedicalAgenda({
                   />
                   <label htmlFor="newAppt_alerts" className="text-xs font-bold text-slate-600 cursor-pointer select-none whitespace-normal">
                     {isEscolar 
-                      ? 'Notificar envio deste evento no mural/WhatsApp dos pais ou responsáveis.'
-                      : 'Ativar alertas automáticos e avisar família por WhatsApp.'}
+                      ? 'Notificar envio deste evento no mural/WhatsApp dos pais ou responsaveis.'
+                      : 'Ativar alertas automaticos e avisar familia por WhatsApp.'}
                   </label>
                 </div>
               </div>
@@ -1147,8 +1147,8 @@ export default function MedicalAgenda({
                 <Trash2 className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="font-extrabold text-slate-800 text-base">Confirmar Exclusão</h4>
-                <p className="text-[9px] text-slate-400 font-mono font-bold uppercase tracking-wider">Ação Irreversível</p>
+                <h4 className="font-extrabold text-slate-800 text-base">Confirmar Exclusao</h4>
+                <p className="text-[9px] text-slate-400 font-mono font-bold uppercase tracking-wider">Acao Irreversivel</p>
               </div>
             </div>
 
@@ -1221,12 +1221,12 @@ export default function MedicalAgenda({
             </div>
 
             <p className="text-xs text-slate-600 leading-relaxed">
-              O evento <strong>"{toggleConfirmTarget.titulo}"</strong> é um comunicado geral de classe. Deseja atualizar o status dele para {toggleConfirmTarget.status === 'realizado' ? 'pendente' : 'realizado'}?
+              O evento <strong>"{toggleConfirmTarget.titulo}"</strong> e um comunicado geral de classe. Deseja atualizar o status dele para {toggleConfirmTarget.status === 'realizado' ? 'pendente' : 'realizado'}?
             </p>
 
             <div className="p-3.5 bg-indigo-50 rounded-2xl border border-indigo-150 text-xs font-semibold space-y-1">
-              <p className="text-indigo-900">Selecione o escopo da alteração:</p>
-              <p className="text-[11px] text-slate-500 font-medium">Você quer aplicar isso para todos os alunos ou apenas para {idoso.nome}?</p>
+              <p className="text-indigo-900">Selecione o escopo da alteracao:</p>
+              <p className="text-[11px] text-slate-500 font-medium">Voce quer aplicar isso para todos os alunos ou apenas para {idoso.nome}?</p>
             </div>
 
             <div className="flex gap-2 justify-end pt-2 text-xs font-bold flex-wrap">

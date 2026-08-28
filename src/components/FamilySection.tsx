@@ -109,7 +109,7 @@ export default function FamilySection({
   const [copiedLink, setCopiedLink] = useState(false);
   const [inviteRole, setInviteRole] = useState<string>('familiar');
   const [inviteClass, setInviteClass] = useState<string>('Todas');
-  const [inviteParentesco, setInviteParentesco] = useState<string>('Mãe / Responsável');
+  const [inviteParentesco, setInviteParentesco] = useState<string>('Mae / Responsavel');
   const [inviteRecipientName, setInviteRecipientName] = useState<string>('');
   const [inviteRecipientPhone, setInviteRecipientPhone] = useState<string>('');
   const [inviteSimulateActive, setInviteSimulateActive] = useState(false);
@@ -164,19 +164,19 @@ export default function FamilySection({
       return '  Diretor(a) Geral';
     }
     if (inviteRole === 'coordenador') {
-      return ' 🏫 Coordenador(a) Escolar' + (inviteClass !== 'Todas' ? ` (${inviteClass})` : '');
+      return '    Coordenador(a) Escolar' + (inviteClass !== 'Todas' ? ` (${inviteClass})` : '');
     }
     if (inviteRole === 'cuidador' || inviteRole === 'professor') {
-      return (isEscolar ? ' 🏫 Professor(a) Titular' : 'Cuidador de Plantão') + (inviteClass !== 'Todas' ? ` (${inviteClass})` : '');
+      return (isEscolar ? '    Professor(a) Titular' : 'Cuidador de Plantao') + (inviteClass !== 'Todas' ? ` (${inviteClass})` : '');
     }
     if (inviteRole === 'profissional') {
-      return '🩺 Profissional de Saúde / Especialista (Médico, Fonoaudiólogo, Psicólogo, Pediatra, Terapeuta)';
+      return '   Profissional de Saude / Especialista (Medico, Fonoaudiologo, Psicologo, Pediatra, Terapeuta)';
     }
     if (inviteRole === 'familiar' || inviteRole === 'familiar_admin') {
-      return (inviteParentesco || 'Responsável') + ' •     Familiar Admin (Com Autorizações)';
+      return (inviteParentesco || 'Responsavel') + '       Familiar Admin (Com Autorizacoes)';
     }
     if (inviteRole === 'familiar_convidado') {
-      return (inviteParentesco || 'Parente') + ' •   Familiar Convidado (Somente Leitura)';
+      return (inviteParentesco || 'Parente') + '     Familiar Convidado (Somente Leitura)';
     }
     return 'Profissional / Convidado';
   };
@@ -184,7 +184,7 @@ export default function FamilySection({
   const handleCompleteInviteSimulation = (e: React.FormEvent) => {
     e.preventDefault();
     if (!simulationForm.nome.trim() || !simulationForm.telefone.trim()) {
-      alert('Por favor, preencha o nome e o celular de quem está aceitando o convite.');
+      alert('Por favor, preencha o nome e o celular de quem esta aceitando o convite.');
       return;
     }
 
@@ -194,7 +194,7 @@ export default function FamilySection({
     // Validate PIN uniqueness
     const pinCheck = isPinUnique(fallbackPin);
     if (!pinCheck.isUnique) {
-      alert(`⚠ O PIN "${fallbackPin}" já pertence a outro integrante (${pinCheck.conflictingUser?.nome}). Cada pessoa deve possuir um PIN exclusivo de 4 dígitos. Por favor, escolha outro PIN.`);
+      alert(`[!] O PIN "${fallbackPin}" ja pertence a outro integrante (${pinCheck.conflictingUser?.nome}). Cada pessoa deve possuir um PIN exclusivo de 4 digitos. Por favor, escolha outro PIN.`);
       return;
     }
 
@@ -206,19 +206,19 @@ export default function FamilySection({
       finalParentesco = 'Desenvolvedor';
     } else if (inviteRole === 'diretor') {
       finalType = 'diretor';
-      finalParentesco = 'Direção Geral';
+      finalParentesco = 'Direcao Geral';
     } else if (inviteRole === 'coordenador') {
       finalType = 'coordenador';
-      finalParentesco = 'Coordenação Pedagógica';
+      finalParentesco = 'Coordenacao Pedagogica';
     } else if (inviteRole === 'cuidador' || inviteRole === 'professor') {
       finalType = 'professor';
       finalParentesco = isEscolar ? 'Professor(a) / Educador(a)' : 'Cuidador(a)';
     } else if (inviteRole === 'profissional') {
       finalType = 'profissional';
-      finalParentesco = simulationForm.parentesco || 'Especialista de Saúde (Médico/Fono/Psico/Terapeuta)';
+      finalParentesco = simulationForm.parentesco || 'Especialista de Saude (Medico/Fono/Psico/Terapeuta)';
     } else if (inviteRole === 'familiar' || inviteRole === 'familiar_admin') {
       finalType = 'familiar_admin';
-      finalParentesco = simulationForm.parentesco || inviteParentesco || 'Mãe / Responsável';
+      finalParentesco = simulationForm.parentesco || inviteParentesco || 'Mae / Responsavel';
     } else if (inviteRole === 'familiar_convidado') {
       finalType = 'familiar_convidado';
       finalParentesco = (simulationForm.parentesco || inviteParentesco || 'Outro Parente') + ' (Convidado)';
@@ -234,7 +234,7 @@ export default function FamilySection({
       foto: mockAvatars[Math.floor(Math.random() * mockAvatars.length)],
       pin: fallbackPin,
       salaAula: (finalType === 'professor' || finalType === 'coordenador') ? inviteClass : 'Todas',
-      observacoes: `Cadastrado via link de convite rápido por ${usuarioAtual.nome}.`
+      observacoes: `Cadastrado via link de convite rapido por ${usuarioAtual.nome}.`
     };
 
     const allUsers = getFromDB<Usuario[]>('anjo_usuarios', []);
@@ -260,7 +260,7 @@ export default function FamilySection({
 
     // Dispatch global sync event
     window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-    alert(`  Sucesso! O perfil de ${novoUsuario.nome} (${finalParentesco || finalType}) foi ativado e já está vinculado ao aluno(a) ${cleanStudentName}!`);
+    alert(`  Sucesso! O perfil de ${novoUsuario.nome} (${finalParentesco || finalType}) foi ativado e ja esta vinculado ao aluno(a) ${cleanStudentName}!`);
   };
 
   useEffect(() => {
@@ -357,7 +357,7 @@ export default function FamilySection({
     // Validate PIN uniqueness
     const pinCheck = isPinUnique(fallbackPin);
     if (!pinCheck.isUnique) {
-      alert(`⚠ O PIN "${fallbackPin}" já pertence a outro integrante (${pinCheck.conflictingUser?.nome}). Cada pessoa deve ter seu próprio PIN exclusivo. Por favor, escolha outro PIN.`);
+      alert(`[!] O PIN "${fallbackPin}" ja pertence a outro integrante (${pinCheck.conflictingUser?.nome}). Cada pessoa deve ter seu proprio PIN exclusivo. Por favor, escolha outro PIN.`);
       return;
     }
 
@@ -431,7 +431,7 @@ export default function FamilySection({
 
   const handleRemoveMember = (userId: string) => {
     if (userId === usuarioAtual.id) {
-      alert('Você não pode apagar o seu próprio usuário de simulação ativo!');
+      alert('Voce nao pode apagar o seu proprio usuario de simulacao ativo!');
       return;
     }
     if (confirm(isEscolar ? 'Tem certeza que deseja desvincular este integrante do plano escolar do aluno?' : 'Tem certeza que deseja desvincular este integrante do plano do idoso?')) {
@@ -477,7 +477,7 @@ export default function FamilySection({
     // Validate PIN uniqueness excluding current member
     const pinCheck = isPinUnique(editFallbackPin, editingMemberId || undefined);
     if (!pinCheck.isUnique) {
-      alert(`⚠ O PIN "${editFallbackPin}" já está em uso por ${pinCheck.conflictingUser?.nome}. Cada integrante deve possuir seu próprio PIN de acesso. Por favor, digite um PIN exclusivo.`);
+      alert(`[!] O PIN "${editFallbackPin}" ja esta em uso por ${pinCheck.conflictingUser?.nome}. Cada integrante deve possuir seu proprio PIN de acesso. Por favor, digite um PIN exclusivo.`);
       return;
     }
 
@@ -531,33 +531,33 @@ export default function FamilySection({
     if (isEscolar) {
       switch (tipo) {
         case 'admin':
-          return { text: 'Responsável Financeiro / Admin', desc: 'Pode visualizar tudo, cadastrar professores, editar agenda escolar e receber todos os comunicados.', color: 'text-indigo-700 bg-indigo-50 border-indigo-250' };
+          return { text: 'Responsavel Financeiro / Admin', desc: 'Pode visualizar tudo, cadastrar professores, editar agenda escolar e receber todos os comunicados.', color: 'text-indigo-700 bg-indigo-50 border-indigo-250' };
         case 'familiar':
-          return { text: 'Pais / Responsáveis', desc: 'Pode acompanhar o diário de aula, receber comunicados via WhatsApp e acompanhar a rotina escolar diária.', color: 'text-emerald-700 bg-emerald-50 border-emerald-250' };
+          return { text: 'Pais / Responsaveis', desc: 'Pode acompanhar o diario de aula, receber comunicados via WhatsApp e acompanhar a rotina escolar diaria.', color: 'text-emerald-700 bg-emerald-50 border-emerald-250' };
         case 'cuidador':
-          return { text: 'Professor(a) Titular', desc: 'Pode registrar a agenda diária de sono, alimentação, trocas de fralda, mamadeiras e fotos da classe.', color: 'text-amber-700 bg-amber-50 border-amber-250' };
+          return { text: 'Professor(a) Titular', desc: 'Pode registrar a agenda diaria de sono, alimentacao, trocas de fralda, mamadeiras e fotos da classe.', color: 'text-amber-700 bg-amber-50 border-amber-250' };
         case 'profissional':
           if (sala === 'Todas') {
-            return { text: 'Diretor(a) Geral', desc: 'Acesso total e irrestrito a todas as turmas, relatórios de saúde, agendamentos pedagógicos e avisos no mural.', color: 'text-violet-700 bg-violet-50 border-violet-200' };
+            return { text: 'Diretor(a) Geral', desc: 'Acesso total e irrestrito a todas as turmas, relatorios de saude, agendamentos pedagogicos e avisos no mural.', color: 'text-violet-700 bg-violet-50 border-violet-200' };
           } else {
-            return { text: 'Coordenador(a) Escolar', desc: 'Acesso completo a relatórios, agendamentos e diários das salas específicas de sua coordenação.', color: 'text-sky-700 bg-sky-50 border-sky-150' };
+            return { text: 'Coordenador(a) Escolar', desc: 'Acesso completo a relatorios, agendamentos e diarios das salas especificas de sua coordenacao.', color: 'text-sky-700 bg-sky-50 border-sky-150' };
           }
         default:
-          return { text: 'Responsável Secundário', desc: 'Visualização parcial da rotina do aluno.', color: 'text-slate-700 bg-slate-50 border-slate-200' };
+          return { text: 'Responsavel Secundario', desc: 'Visualizacao parcial da rotina do aluno.', color: 'text-slate-700 bg-slate-50 border-slate-200' };
       }
     }
 
     switch (tipo) {
       case 'admin':
-        return { text: 'Administrador da Família', desc: 'Pode visualizar tudo, cadastrar cuidadores, editar medicação e receber todos os alertas.', color: 'text-indigo-700 bg-indigo-50 border-indigo-250' };
+        return { text: 'Administrador da Familia', desc: 'Pode visualizar tudo, cadastrar cuidadores, editar medicacao e receber todos os alertas.', color: 'text-indigo-700 bg-indigo-50 border-indigo-250' };
       case 'familiar':
-        return { text: 'Familiar Acompanhante', desc: 'Pode visualizar relatórios da rotina, receber alertas de WhatsApp e acompanhar o dia.', color: 'text-emerald-700 bg-emerald-50 border-emerald-250' };
+        return { text: 'Familiar Acompanhante', desc: 'Pode visualizar relatorios da rotina, receber alertas de WhatsApp e acompanhar o dia.', color: 'text-emerald-700 bg-emerald-50 border-emerald-250' };
       case 'cuidador':
-        return { text: 'Cuidador de Plantão', desc: 'Pode registrar medicamentos tomados, banhos, refeições, hidratação e notas de humor.', color: 'text-amber-700 bg-amber-50 border-amber-250' };
+        return { text: 'Cuidador de Plantao', desc: 'Pode registrar medicamentos tomados, banhos, refeicoes, hidratacao e notas de humor.', color: 'text-amber-700 bg-amber-50 border-amber-250' };
       case 'profissional':
-        return { text: 'Profissional de Saúde', desc: 'Acesso cirúrgico a relatórios vitais históricos, medicação ativa e agenda de consultas.', color: 'text-sky-700 bg-sky-50 border-sky-150' };
+        return { text: 'Profissional de Saude', desc: 'Acesso cirurgico a relatorios vitais historicos, medicacao ativa e agenda de consultas.', color: 'text-sky-700 bg-sky-50 border-sky-150' };
       default:
-        return { text: 'Acompanhante Simples', desc: 'Visualização parcial.', color: 'text-slate-700 bg-slate-50 border-slate-200' };
+        return { text: 'Acompanhante Simples', desc: 'Visualizacao parcial.', color: 'text-slate-700 bg-slate-50 border-slate-200' };
     }
   };
 
@@ -568,14 +568,14 @@ export default function FamilySection({
         <div className="space-y-1.5 max-w-2xl">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 backdrop-blur-md rounded-full text-indigo-200 text-xs font-black uppercase tracking-wider">
             <Users className="w-3.5 h-3.5 text-indigo-300" />
-            {isEscolar ? 'Rede de Confiança & Diário Escolar' : 'Rede de Apoio & Cuidados'}
+            {isEscolar ? 'Rede de Confianca & Diario Escolar' : 'Rede de Apoio & Cuidados'}
           </div>
           <h2 className="text-xl sm:text-2xl font-black text-white flex items-center gap-2">
-            {isEscolar ? 'Vínculo Familiar, Pais e Equipe Escolar' : 'Vínculo Familiar e Cuidadores'}
+            {isEscolar ? 'Vinculo Familiar, Pais e Equipe Escolar' : 'Vinculo Familiar e Cuidadores'}
           </h2>
           <p className="text-xs sm:text-sm text-indigo-100/80 leading-relaxed">
             {isEscolar
-              ? `Cadastre pais, mães, responsáveis, educadoras e coordenação para acompanhar o diário de ${cleanStudentName} em tempo real.`
+              ? `Cadastre pais, maes, responsaveis, educadoras e coordenacao para acompanhar o diario de ${cleanStudentName} em tempo real.`
               : `Cadastre familiares e cuidadores autorizados para acompanhar a rotina e o plano de cuidados de ${idoso.nome}.`}
           </p>
         </div>
@@ -614,7 +614,7 @@ export default function FamilySection({
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-500 pointer-events-none" />
             <input
               type="text"
-              placeholder={isEscolar ? "Busca rápida: digite nome, cargo, parentesco, sala ou telefone..." : "Busca rápida: digite nome, parentesco ou telefone..."}
+              placeholder={isEscolar ? "Busca rapida: digite nome, cargo, parentesco, sala ou telefone..." : "Busca rapida: digite nome, parentesco ou telefone..."}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={`w-full pl-10 pr-20 py-2.5 text-xs font-bold rounded-xl border focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all ${
@@ -736,7 +736,7 @@ export default function FamilySection({
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
                 }`}
               >
-                <span> 🏫 Educadores</span>
+                <span>    Educadores</span>
                 <span className="text-[10px] opacity-80">({countEducador})</span>
               </button>
 
@@ -749,7 +749,7 @@ export default function FamilySection({
                     : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
                 }`}
               >
-                <span>  Direção & Coord.</span>
+                <span>  Direcao & Coord.</span>
                 <span className="text-[10px] opacity-80">({countDirecao})</span>
               </button>
 
@@ -763,7 +763,7 @@ export default function FamilySection({
                       : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
                   }`}
                 >
-                  <span>🩺 Especialistas</span>
+                  <span>   Especialistas</span>
                   <span className="text-[10px] opacity-80">({countEspecialistas})</span>
                 </button>
               )}
@@ -832,7 +832,7 @@ export default function FamilySection({
               </div>
               <h4 className="font-bold text-slate-800 dark:text-white">Nenhum integrante encontrado</h4>
               <p className="text-xs text-slate-500 max-w-sm mx-auto">
-                Sua busca por "{searchTerm}" não retornou nenhum familiar, professor ou cuidador{selectedRoleFilter !== 'todos' ? ` na categoria "${selectedRoleFilter}"` : ''}. Tente buscar por outro termo ou limpe os filtros.
+                Sua busca por "{searchTerm}" nao retornou nenhum familiar, professor ou cuidador{selectedRoleFilter !== 'todos' ? ` na categoria "${selectedRoleFilter}"` : ''}. Tente buscar por outro termo ou limpe os filtros.
               </p>
               <div className="flex items-center justify-center gap-3">
                 {searchTerm && (
@@ -914,11 +914,11 @@ export default function FamilySection({
                         {isEscolar && (
                           user.salaAula && user.salaAula !== 'Todas' ? (
                             <span className="inline-flex items-center gap-1 text-[9px] bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-400 font-black px-2 py-0.5 rounded-md border border-indigo-150 uppercase tracking-wider">
-                              🏫 {user.salaAula.split(',')[0]} {user.salaAula.split(',').length > 1 ? `+${user.salaAula.split(',').length - 1}` : ''}
+                                 {user.salaAula.split(',')[0]} {user.salaAula.split(',').length > 1 ? `+${user.salaAula.split(',').length - 1}` : ''}
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1 text-[9px] bg-slate-100 dark:bg-slate-850 text-slate-600 dark:text-slate-450 font-extrabold px-2 py-0.5 rounded-md border border-slate-200/60 uppercase tracking-wider">
-                              🏫 Geral
+                                 Geral
                             </span>
                           )
                         )}
@@ -940,7 +940,7 @@ export default function FamilySection({
                         <button 
                           onClick={() => handleEditClick(user)}
                           className="p-1.5 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-400 hover:text-indigo-600 rounded-lg transition-colors cursor-pointer flex items-center justify-center"
-                          title="Editar informações do integrante"
+                          title="Editar informacoes do integrante"
                           id={`btn-edit-compact-${user.id}`}
                         >
                           <Edit2 className="w-3.5 h-3.5" />
@@ -988,11 +988,11 @@ export default function FamilySection({
                         <div className="flex flex-wrap gap-1 mt-1">
                           {user.salaAula && user.salaAula !== 'Todas' ? (
                             <span className="inline-flex items-center gap-1 text-[10px] bg-indigo-50 text-indigo-700 font-black px-2 py-0.5 rounded-full border border-indigo-150 uppercase tracking-wider">
-                              🏫 Salas: {user.salaAula.split(',').join(' | ')}
+                                 Salas: {user.salaAula.split(',').join(' | ')}
                             </span>
                           ) : (
                             <span className="inline-flex items-center gap-1 text-[10px] bg-slate-100 text-slate-600 font-extrabold px-2 py-0.5 rounded-full border border-slate-200/60 uppercase tracking-wider">
-                              🏫 Todas as Salas / Geral
+                                 Todas as Salas / Geral
                             </span>
                           )}
                         </div>
@@ -1046,7 +1046,7 @@ export default function FamilySection({
                           />
                         </label>
                         <label className="flex items-center justify-between text-slate-700 p-1 hover:bg-slate-50 rounded cursor-pointer select-none">
-                          <span>{isEscolar ? 'Alimentação e Cuidados' : 'Medicamentos Tomados'}</span>
+                          <span>{isEscolar ? 'Alimentacao e Cuidados' : 'Medicamentos Tomados'}</span>
                           <input 
                             type="checkbox" 
                             checked={!!alerts.medicamentos}
@@ -1055,7 +1055,7 @@ export default function FamilySection({
                           />
                         </label>
                         <label className="flex items-center justify-between text-slate-700 p-1 hover:bg-slate-50 rounded cursor-pointer select-none">
-                          <span>{isEscolar ? 'Saúde, Sono e Fralda' : 'Aferição de Vitais'}</span>
+                          <span>{isEscolar ? 'Saude, Sono e Fralda' : 'Afericao de Vitais'}</span>
                           <input 
                             type="checkbox" 
                             checked={!!alerts.vitais}
@@ -1064,7 +1064,7 @@ export default function FamilySection({
                           />
                         </label>
                         <label className="flex items-center justify-between text-slate-700 p-1 hover:bg-slate-50 rounded cursor-pointer select-none">
-                          <span>{isEscolar ? 'Diário de Aula / Resumo' : 'Resumos diários'}</span>
+                          <span>{isEscolar ? 'Diario de Aula / Resumo' : 'Resumos diarios'}</span>
                           <input 
                             type="checkbox" 
                             checked={!!alerts.resumo}
@@ -1079,7 +1079,7 @@ export default function FamilySection({
                       <button 
                         onClick={() => handleEditClick(user)}
                         className="p-1.5 hover:bg-slate-100 text-slate-450 hover:text-serene-blue rounded-lg transition-colors cursor-pointer flex items-center justify-center"
-                        title="Editar informações do integrante"
+                        title="Editar informacoes do integrante"
                         id={`btn-edit-${user.id}`}
                       >
                         <Edit2 className="w-4 h-4" />
@@ -1135,7 +1135,7 @@ export default function FamilySection({
                   
                   
                   <div className="space-y-1">
-                    <span className="text-[10px] font-medium text-slate-500 block">Opção 1: Selecionar avatar rápido</span>
+                    <span className="text-[10px] font-medium text-slate-500 block">Opcao 1: Selecionar avatar rapido</span>
                     <div className="flex items-center gap-2">
                       {mockAvatars.map((img, idx) => {
                         const isSel = newMember.foto === img;
@@ -1158,7 +1158,7 @@ export default function FamilySection({
                   
                   <div className="grid grid-cols-2 gap-2 pt-1.55">
                     <div className="space-y-1">
-                      <span className="text-[10px] font-medium text-slate-500 block">Opção 2: Enviar foto</span>
+                      <span className="text-[10px] font-medium text-slate-500 block">Opcao 2: Enviar foto</span>
                       <label className="flex items-center justify-center gap-1 px-2.5 py-1.5 border border-dashed border-slate-300 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer text-[11px] font-bold text-slate-600">
                         <Camera className="w-3.5 h-3.5 text-slate-500" />
                         <span>Tirar Foto / Anexar</span>
@@ -1173,7 +1173,7 @@ export default function FamilySection({
                     </div>
 
                     <div className="space-y-1">
-                      <span className="text-[10px] font-medium text-slate-500 block">Opção 3: Link da imagem URL</span>
+                      <span className="text-[10px] font-medium text-slate-500 block">Opcao 3: Link da imagem URL</span>
                       <input 
                         type="text" 
                         placeholder="Ex: https://site.com/foto.jpg" 
@@ -1242,7 +1242,7 @@ export default function FamilySection({
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-600 block">Tipo/Nível de Acesso *</label>
+                    <label className="text-xs font-bold text-slate-600 block">Tipo/Nivel de Acesso *</label>
                     <select 
                       value={
                         isEscolar && newMember.tipo === 'profissional'
@@ -1269,25 +1269,25 @@ export default function FamilySection({
                         <>
                           {canInviteDev && <option value="desenvolvedor">  Desenvolvedor (Dev)</option>}
                           {canInviteDiretor && <option value="diretor">  Diretor(a) Geral (Acesso Completo)</option>}
-                          {canInviteCoordenador && <option value="coordenador"> 🏫 Coordenador(a) Escolar (Salas Vinculadas)</option>}
+                          {canInviteCoordenador && <option value="coordenador">    Coordenador(a) Escolar (Salas Vinculadas)</option>}
                           {canInviteProfessor && (
                             <>
-                              <option value="cuidador"> 🏫 Professor(a) / Educador(a) Titular</option>
-                              <option value="profissional">🩺 Profissional de Saúde / Especialista (Médico, Fono, Psicólogo, Terapeuta, Pediatra)</option>
+                              <option value="cuidador">    Professor(a) / Educador(a) Titular</option>
+                              <option value="profissional">   Profissional de Saude / Especialista (Medico, Fono, Psicologo, Terapeuta, Pediatra)</option>
                             </>
                           )}
-                          {canInviteFamiliarAdmin && <option value="familiar">    Familiar Admin (Pais / Responsáveis com Autorização)</option>}
+                          {canInviteFamiliarAdmin && <option value="familiar">    Familiar Admin (Pais / Responsaveis com Autorizacao)</option>}
                           <option value="familiar_convidado">  Familiar Convidado (Somente Leitura)</option>
                         </>
                       ) : (
                         <>
                           {canInviteDev && <option value="desenvolvedor">  Desenvolvedor (Dev)</option>}
-                          {canInviteDiretor && <option value="admin">  Administrador Geral / Responsável</option>}
-                          {canInviteCoordenador && <option value="coordenador"> ⚕ Coordenador(a)</option>}
+                          {canInviteDiretor && <option value="admin">  Administrador Geral / Responsavel</option>}
+                          {canInviteCoordenador && <option value="coordenador">   Coordenador(a)</option>}
                           {canInviteProfessor && (
                             <>
-                              <option value="cuidador"> ⚕ Cuidador Profissional / Plantonista</option>
-                              <option value="profissional">🩺 Profissional de Saúde / Especialista (Médico, Fono, Psicólogo, Terapeuta)</option>
+                              <option value="cuidador">   Cuidador Profissional / Plantonista</option>
+                              <option value="profissional">   Profissional de Saude / Especialista (Medico, Fono, Psicologo, Terapeuta)</option>
                             </>
                           )}
                           {canInviteFamiliarAdmin && <option value="familiar">    Familiar Admin</option>}
@@ -1299,11 +1299,11 @@ export default function FamilySection({
 
                   <div className="space-y-1">
                     <label className="text-xs font-bold text-slate-600 block">
-                      {isEscolar ? 'Parentesco ou Função' : 'Parentesco ou Vínculo'}
+                      {isEscolar ? 'Parentesco ou Funcao' : 'Parentesco ou Vinculo'}
                     </label>
                     <input 
                       type="text" 
-                      placeholder={isEscolar ? "Ex: Mãe, Pai, Prof de Música, Tia" : "Ex: Filho, Cuidador Noturno, Fisio"} 
+                      placeholder={isEscolar ? "Ex: Mae, Pai, Prof de Musica, Tia" : "Ex: Filho, Cuidador Noturno, Fisio"} 
                       value={newMember.parentesco}
                       onChange={e => setNewMember({ ...newMember, parentesco: e.target.value })}
                       className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-serene-blue/20 bg-slate-50 text-sm"
@@ -1321,10 +1321,10 @@ export default function FamilySection({
                       className="w-full px-3 py-2 border border-pink-300 rounded-xl focus:ring-2 focus:ring-pink-300/20 bg-[#FFF5F7] text-sm font-bold font-mono text-center tracking-widest text-[#9C27B0]"
                       required
                     />
-                    <span className="text-[9px] text-pink-500 font-bold leading-tight block">Sugerido: últimos 4 dígitos do celular</span>
+                    <span className="text-[9px] text-pink-500 font-bold leading-tight block">Sugerido: ultimos 4 digitos do celular</span>
                     {newMember.pin && integrantes.some(m => (m.pin || (m.telefone ? m.telefone.replace(/\D/g, '').slice(-4) : '1234')) === newMember.pin) && (
                       <div className="text-[10px] text-amber-800 bg-amber-50 border border-amber-200 p-1.5 rounded-lg font-bold mt-1 text-left leading-tight">
-                        ⚠ Atenção: Os últimos dígitos coincidem com outro usuário cadastrado. Você pode personalizar este PIN com qualquer número único.
+                        [!] Atencao: Os ultimos digitos coincidem com outro usuario cadastrado. Voce pode personalizar este PIN com qualquer numero unico.
                       </div>
                     )}
                   </div>
@@ -1332,15 +1332,15 @@ export default function FamilySection({
 
                 <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/60 space-y-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-lg">🏫</span>
+                    <span className="text-lg">  </span>
                     <label className="text-xs font-black text-slate-700 block uppercase tracking-wide">
                       {isEscolar ? 'Classe / Sala de Aula Vinculada' : 'Ala / Setor de Cuidados'}
                     </label>
                   </div>
                   <p className="text-[10px] text-slate-500 leading-relaxed font-semibold">
                     {isEscolar 
-                      ? 'Ao atrelar os profissionais às salas correspondentes, eles visualizarão preferencialmente as crianças sob sua responsabilidade. Coordenadores podem ter acesso a múltiplas salas de uma vez.'
-                      : 'Define qual o setor de atuação do cuidador para direcionamento de chamados e fluxo de rotina.'
+                      ? 'Ao atrelar os profissionais as salas correspondentes, eles visualizarao preferencialmente as criancas sob sua responsabilidade. Coordenadores podem ter acesso a multiplas salas de uma vez.'
+                      : 'Define qual o setor de atuacao do cuidador para direcionamento de chamados e fluxo de rotina.'
                     }
                   </p>
                   
@@ -1348,10 +1348,10 @@ export default function FamilySection({
                     newMember.tipo === 'profissional' && selectedAddRooms.length === 0 ? (
                       <div className="p-4 bg-indigo-50/60 border border-indigo-200 rounded-2xl text-xs text-indigo-950 font-semibold space-y-1 animate-fade-in">
                         <p className="font-extrabold flex items-center gap-1.5 text-indigo-900 text-sm">
-                            Acesso de Direção Geral Ativo
+                            Acesso de Direcao Geral Ativo
                         </p>
                         <p className="text-[11px] text-slate-600 leading-relaxed font-bold">
-                          Como <strong>Diretor(a) Geral</strong>, este usuário tem permissões administrativas globais e visualizará todas as salas da creche de forma irrestrita. O controle individual de turmas está desativado para esta função.
+                          Como <strong>Diretor(a) Geral</strong>, este usuario tem permissoes administrativas globais e visualizara todas as salas da creche de forma irrestrita. O controle individual de turmas esta desativado para esta funcao.
                         </p>
                         <button
                           type="button"
@@ -1362,7 +1362,7 @@ export default function FamilySection({
                           }}
                           className="text-[10px] text-indigo-600 font-extrabold hover:underline block pt-1.5 cursor-pointer"
                         >
-                          ⚙ Alterar para Coordenador(a) Escolar (Selecionar turmas)
+                            Alterar para Coordenador(a) Escolar (Selecionar turmas)
                         </button>
                       </div>
                     ) : (
@@ -1432,7 +1432,7 @@ export default function FamilySection({
                       onChange={e => setNewMember({ ...newMember, salaAula: e.target.value })}
                       className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-serene-blue/20 bg-white text-xs font-bold text-slate-750"
                     >
-                      <option value="Todas">  Todas as Salas / Visão Geral</option>
+                      <option value="Todas">  Todas as Salas / Visao Geral</option>
                       {classrooms.map(room => (
                         <option key={room.id} value={room.name}>{room.emoji} {room.name}</option>
                       ))}
@@ -1461,7 +1461,7 @@ export default function FamilySection({
                         onChange={e => setNewMember({ ...newMember, alertaMedica: e.target.checked })}
                         className="w-3.5 h-3.5 text-serene-blue rounded"
                       />
-                      <span>{isEscolar ? 'Alimentação e Cuidados' : 'Medicamentos Feitos'}</span>
+                      <span>{isEscolar ? 'Alimentacao e Cuidados' : 'Medicamentos Feitos'}</span>
                     </label>
                     <label className="flex items-center gap-1.5 cursor-pointer">
                       <input 
@@ -1470,7 +1470,7 @@ export default function FamilySection({
                         onChange={e => setNewMember({ ...newMember, alertaVitas: e.target.checked })}
                         className="w-3.5 h-3.5 text-serene-blue rounded"
                       />
-                      <span>{isEscolar ? 'Saúde, Sono e Fralda' : 'Novos Sinais Vitais'}</span>
+                      <span>{isEscolar ? 'Saude, Sono e Fralda' : 'Novos Sinais Vitais'}</span>
                     </label>
                     <label className="flex items-center gap-1.5 cursor-pointer">
                       <input 
@@ -1479,15 +1479,15 @@ export default function FamilySection({
                         onChange={e => setNewMember({ ...newMember, alertaCheck: e.target.checked })}
                         className="w-3.5 h-3.5 text-serene-blue rounded"
                       />
-                      <span>{isEscolar ? 'Diário de Aula / Resumo' : 'Resumos diários'}</span>
+                      <span>{isEscolar ? 'Diario de Aula / Resumo' : 'Resumos diarios'}</span>
                     </label>
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-600 block">Observação Explicativa</label>
+                  <label className="text-xs font-bold text-slate-600 block">Observacao Explicativa</label>
                   <textarea 
-                    placeholder="Ex: Só mandar notificações de dia. Liga em emergências."
+                    placeholder="Ex: So mandar notificacoes de dia. Liga em emergencias."
                     rows={2}
                     value={newMember.observacoes}
                     onChange={e => setNewMember({ ...newMember, observacoes: e.target.value })}
@@ -1549,7 +1549,7 @@ export default function FamilySection({
                   
                   
                   <div className="space-y-1">
-                    <span className="text-[10px] font-medium text-slate-500 block">Opção 1: Selecionar avatar rápido</span>
+                    <span className="text-[10px] font-medium text-slate-500 block">Opcao 1: Selecionar avatar rapido</span>
                     <div className="flex items-center gap-2">
                       {mockAvatars.map((img, idx) => {
                         const isSel = editMemberForm.foto === img;
@@ -1572,7 +1572,7 @@ export default function FamilySection({
                   
                   <div className="grid grid-cols-2 gap-2 pt-1.5">
                     <div className="space-y-1">
-                      <span className="text-[10px] font-medium text-slate-500 block">Opção 2: Enviar foto</span>
+                      <span className="text-[10px] font-medium text-slate-500 block">Opcao 2: Enviar foto</span>
                       <label className="flex items-center justify-center gap-1 px-2.5 py-1.5 border border-dashed border-slate-300 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer text-[11px] font-bold text-slate-600">
                         <Camera className="w-3.5 h-3.5 text-slate-500" />
                         <span>Tirar Foto / Anexar</span>
@@ -1587,7 +1587,7 @@ export default function FamilySection({
                     </div>
 
                     <div className="space-y-1">
-                      <span className="text-[10px] font-medium text-slate-500 block">Opção 3: Link da imagem URL</span>
+                      <span className="text-[10px] font-medium text-slate-500 block">Opcao 3: Link da imagem URL</span>
                       <input 
                         type="text" 
                         placeholder="Ex: https://site.com/foto.jpg" 
@@ -1656,7 +1656,7 @@ export default function FamilySection({
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                   <div className="space-y-1">
-                    <label className="text-xs font-bold text-slate-600 block">Tipo/Nível de Acesso *</label>
+                    <label className="text-xs font-bold text-slate-600 block">Tipo/Nivel de Acesso *</label>
                     <select 
                       value={
                         isEscolar && editMemberForm.tipo === 'profissional'
@@ -1681,8 +1681,8 @@ export default function FamilySection({
                     >
                       {isEscolar ? (
                         <>
-                          <option value="admin">Responsável Financeiro/Admin</option>
-                          <option value="familiar">Pais / Responsável</option>
+                          <option value="admin">Responsavel Financeiro/Admin</option>
+                          <option value="familiar">Pais / Responsavel</option>
                           <option value="cuidador">Professor(a) Titular</option>
                           <option value="diretor">Diretor(a) Geral (Acesso Completo)</option>
                           <option value="coordenador">Coordenador(a) Escolar (Salas Vinculadas)</option>
@@ -1692,7 +1692,7 @@ export default function FamilySection({
                           <option value="admin">Administrador Familiar</option>
                           <option value="familiar">Familiar Acompanhante</option>
                           <option value="cuidador">Cuidador Profissional</option>
-                          <option value="profissional">Médico ou Terapeuta</option>
+                          <option value="profissional">Medico ou Terapeuta</option>
                         </>
                       )}
                     </select>
@@ -1700,11 +1700,11 @@ export default function FamilySection({
 
                   <div className="space-y-1">
                     <label className="text-xs font-bold text-slate-600 block">
-                      {isEscolar ? 'Parentesco ou Função' : 'Parentesco ou Vínculo'}
+                      {isEscolar ? 'Parentesco ou Funcao' : 'Parentesco ou Vinculo'}
                     </label>
                     <input 
                       type="text" 
-                      placeholder={isEscolar ? "Ex: Mãe, Pai, Prof de Música, Tia" : "Ex: Filho, Cuidador Noturno, Fisio"} 
+                      placeholder={isEscolar ? "Ex: Mae, Pai, Prof de Musica, Tia" : "Ex: Filho, Cuidador Noturno, Fisio"} 
                       value={editMemberForm.parentesco}
                       onChange={e => setEditMemberForm({ ...editMemberForm, parentesco: e.target.value })}
                       className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-serene-blue/20 bg-slate-50 text-sm text-slate-800"
@@ -1722,10 +1722,10 @@ export default function FamilySection({
                       className="w-full px-3 py-2 border border-pink-300 rounded-xl focus:ring-2 focus:ring-pink-300/20 bg-[#FFF5F7] text-sm font-bold font-mono text-center tracking-widest text-[#9C27B0]"
                       required
                     />
-                    <span className="text-[9px] text-pink-500 font-bold leading-tight block">Sugerido: últimos 4 dígitos do celular</span>
+                    <span className="text-[9px] text-pink-500 font-bold leading-tight block">Sugerido: ultimos 4 digitos do celular</span>
                     {editMemberForm.pin && integrantes.some(m => m.id !== editMemberForm.id && (m.pin || (m.telefone ? m.telefone.replace(/\D/g, '').slice(-4) : '1234')) === editMemberForm.pin) && (
                       <div className="text-[10px] text-amber-800 bg-amber-50 border border-amber-200 p-1.5 rounded-lg font-bold mt-1 text-left leading-tight">
-                        ⚠ Atenção: Os últimos dígitos coincidem com outro usuário cadastrado. Você pode personalizar este PIN com qualquer número único.
+                        [!] Atencao: Os ultimos digitos coincidem com outro usuario cadastrado. Voce pode personalizar este PIN com qualquer numero unico.
                       </div>
                     )}
                   </div>
@@ -1733,15 +1733,15 @@ export default function FamilySection({
 
                 <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/60 space-y-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-lg">🏫</span>
+                    <span className="text-lg">  </span>
                     <label className="text-xs font-black text-slate-700 block uppercase tracking-wide">
                       {isEscolar ? 'Classe / Sala de Aula Vinculada' : 'Ala / Setor de Cuidados'}
                     </label>
                   </div>
                   <p className="text-[10px] text-slate-500 leading-relaxed font-semibold">
                     {isEscolar 
-                      ? 'Ao atrelar os profissionais às salas correspondentes, eles visualizarão preferencialmente as crianças sob sua responsabilidade. Coordenadores podem ter acesso a múltiplas salas de uma vez.'
-                      : 'Define qual o setor de atuação do cuidador para direcionamento de chamados e fluxo de rotina.'
+                      ? 'Ao atrelar os profissionais as salas correspondentes, eles visualizarao preferencialmente as criancas sob sua responsabilidade. Coordenadores podem ter acesso a multiplas salas de uma vez.'
+                      : 'Define qual o setor de atuacao do cuidador para direcionamento de chamados e fluxo de rotina.'
                     }
                   </p>
                   
@@ -1749,10 +1749,10 @@ export default function FamilySection({
                     editMemberForm.tipo === 'profissional' && selectedEditRooms.length === 0 ? (
                       <div className="p-4 bg-indigo-50/60 border border-indigo-200 rounded-2xl text-xs text-indigo-950 font-semibold space-y-1 animate-fade-in">
                         <p className="font-extrabold flex items-center gap-1.5 text-indigo-900 text-sm">
-                            Acesso de Direção Geral Ativo
+                            Acesso de Direcao Geral Ativo
                         </p>
                         <p className="text-[11px] text-slate-600 leading-relaxed font-bold">
-                          Como <strong>Diretor(a) Geral</strong>, este usuário tem permissões administrativas globais e visualizará todas as salas da creche de forma irrestrita. O controle individual de turmas está desativado para esta função.
+                          Como <strong>Diretor(a) Geral</strong>, este usuario tem permissoes administrativas globais e visualizara todas as salas da creche de forma irrestrita. O controle individual de turmas esta desativado para esta funcao.
                         </p>
                         <button
                           type="button"
@@ -1763,7 +1763,7 @@ export default function FamilySection({
                           }}
                           className="text-[10px] text-indigo-600 font-extrabold hover:underline block pt-1.5 cursor-pointer"
                         >
-                          ⚙ Alterar para Coordenador(a) Escolar (Selecionar turmas)
+                            Alterar para Coordenador(a) Escolar (Selecionar turmas)
                         </button>
                       </div>
                     ) : (
@@ -1833,7 +1833,7 @@ export default function FamilySection({
                       onChange={e => setEditMemberForm({ ...editMemberForm, salaAula: e.target.value })}
                       className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-serene-blue/20 bg-white text-xs font-bold text-slate-750"
                     >
-                      <option value="Todas">  Todas as Salas / Visão Geral</option>
+                      <option value="Todas">  Todas as Salas / Visao Geral</option>
                       {classrooms.map(room => (
                         <option key={room.id} value={room.name}>{room.emoji} {room.name}</option>
                       ))}
@@ -1842,9 +1842,9 @@ export default function FamilySection({
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-xs font-bold text-slate-600 block">Observação Explicativa</label>
+                  <label className="text-xs font-bold text-slate-600 block">Observacao Explicativa</label>
                   <textarea 
-                    placeholder="Ex: Só mandar notificações de dia. Liga em emergências."
+                    placeholder="Ex: So mandar notificacoes de dia. Liga em emergencias."
                     rows={2}
                     value={editMemberForm.observacoes}
                     onChange={e => setEditMemberForm({ ...editMemberForm, observacoes: e.target.value })}
@@ -1868,7 +1868,7 @@ export default function FamilySection({
                   type="submit" 
                   className="px-4 py-2 bg-serene-blue hover:bg-blue-600 text-white font-bold rounded-xl cursor-pointer"
                 >
-                  Salvar Alterações
+                  Salvar Alteracoes
                 </button>
               </div>
             </form>
@@ -1893,7 +1893,7 @@ export default function FamilySection({
                 <div>
                   <h3 className="text-lg font-bold">Criar Convite por WhatsApp</h3>
                   <p className="text-xs text-emerald-100">
-                    Gere um link inteligente para que o próprio familiar ou professor se cadastre.
+                    Gere um link inteligente para que o proprio familiar ou professor se cadastre.
                   </p>
                 </div>
               </div>
@@ -1917,29 +1917,29 @@ export default function FamilySection({
                   : 'bg-indigo-50 border-indigo-200 text-slate-800'
               }`}>
                 <div className="w-11 h-11 bg-indigo-600 rounded-full flex items-center justify-center text-xl shrink-0 shadow-xs">
-                  {inviteRole === 'diretor' || inviteRole === 'desenvolvedor' ? ' ' : inviteRole === 'coordenador' ? ' 🏫' : inviteRole === 'cuidador' || inviteRole === 'professor' ? ' 🏫' : inviteRole === 'profissional' ? '🩺' : (isEscolar ? ' ' : ' ')}
+                  {inviteRole === 'diretor' || inviteRole === 'desenvolvedor' ? ' ' : inviteRole === 'coordenador' ? '   ' : inviteRole === 'cuidador' || inviteRole === 'professor' ? '   ' : inviteRole === 'profissional' ? '  ' : (isEscolar ? ' ' : ' ')}
                 </div>
                 <div className="space-y-0.5">
                   <span className={`text-[10px] font-black uppercase tracking-wider block ${
                     accessibilitySettings.darkMode ? 'text-indigo-400' : 'text-indigo-700'
                   }`}>
                     {inviteRole === 'diretor' || inviteRole === 'coordenador' || inviteRole === 'cuidador' || inviteRole === 'desenvolvedor' || inviteRole === 'profissional'
-                      ? 'Nível de Permissão e Acesso Escolar'
-                      : (isEscolar ? 'Criança / Aluno(a) Vinculado(a)' : 'Acompanhado(a) Vinculado(a)')}
+                      ? 'Nivel de Permissao e Acesso Escolar'
+                      : (isEscolar ? 'Crianca / Aluno(a) Vinculado(a)' : 'Acompanhado(a) Vinculado(a)')}
                   </span>
                   <h4 className={`text-base font-black ${
                     accessibilitySettings.darkMode ? 'text-white' : 'text-indigo-950'
                   }`}>
-                    {inviteRole === 'diretor' ? '  Direção Geral (Todas as Turmas)' : inviteRole === 'coordenador' ? ' 🏫 Coordenação Pedagógica' : inviteRole === 'cuidador' || inviteRole === 'professor' ? ' 🏫 Equipe Pedagógica / Docente' : inviteRole === 'profissional' ? '🩺 Profissional Especialista / Saúde' : cleanStudentName}
+                    {inviteRole === 'diretor' ? '  Direcao Geral (Todas as Turmas)' : inviteRole === 'coordenador' ? '    Coordenacao Pedagogica' : inviteRole === 'cuidador' || inviteRole === 'professor' ? '    Equipe Pedagogica / Docente' : inviteRole === 'profissional' ? '   Profissional Especialista / Saude' : cleanStudentName}
                   </h4>
                   <p className={`text-xs ${
                     accessibilitySettings.darkMode ? 'text-indigo-300' : 'text-indigo-850'
                   } font-medium`}>
                     {inviteRole === 'diretor' || inviteRole === 'coordenador' || inviteRole === 'desenvolvedor'
-                      ? 'O link concederá acesso administrativo amplo para gestão de turmas, alunos e equipe.'
+                      ? 'O link concedera acesso administrativo amplo para gestao de turmas, alunos e equipe.'
                       : (inviteRole === 'cuidador' || inviteRole === 'professor' || inviteRole === 'profissional'
-                        ? 'O link concederá acesso pedagógico para preenchimento de diários e rotina.'
-                        : (isEscolar ? `Este convite dará acesso exclusivo à rotina escolar de ${cleanStudentName}.` : `Este convite dará acesso aos cuidados de ${cleanStudentName}.`))}
+                        ? 'O link concedera acesso pedagogico para preenchimento de diarios e rotina.'
+                        : (isEscolar ? `Este convite dara acesso exclusivo a rotina escolar de ${cleanStudentName}.` : `Este convite dara acesso aos cuidados de ${cleanStudentName}.`))}
                   </p>
                 </div>
               </div>
@@ -1956,7 +1956,7 @@ export default function FamilySection({
                       </h4>
 
                       <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-500 block">Função do Convidado (Hierarquia Top-Down)</label>
+                        <label className="text-xs font-bold text-slate-500 block">Funcao do Convidado (Hierarquia Top-Down)</label>
                         <select
                           value={inviteRole}
                           onChange={(e: any) => {
@@ -1965,7 +1965,7 @@ export default function FamilySection({
                             if (val === 'diretor' || val === 'desenvolvedor') {
                               setInviteClass('Todas');
                             } else if (val === 'coordenador' && inviteClass === 'Todas') {
-                              setInviteClass('Berçário I');
+                              setInviteClass('Bercario I');
                             }
                           }}
                           className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500/20 bg-slate-50 text-xs font-extrabold text-slate-750"
@@ -1974,32 +1974,32 @@ export default function FamilySection({
                             <option value="desenvolvedor">  Desenvolvedor do Sistema (Dev Total)</option>
                           )}
                           {canInviteDiretor && (
-                            <option value="diretor">{isEscolar ? '  Diretor(a) Geral (Gestão Escolar)' : '  Administrador Geral'}</option>
+                            <option value="diretor">{isEscolar ? '  Diretor(a) Geral (Gestao Escolar)' : '  Administrador Geral'}</option>
                           )}
                           {canInviteCoordenador && (
-                            <option value="coordenador">{isEscolar ? ' 🏫 Coordenador(a) Pedagógico(a)' : ' ⚕ Coordenador de Equipe'}</option>
+                            <option value="coordenador">{isEscolar ? '    Coordenador(a) Pedagogico(a)' : '   Coordenador de Equipe'}</option>
                           )}
                           {canInviteProfessor && (
                             <>
-                              <option value="cuidador">{isEscolar ? ' 🏫 Professor(a) / Educador(a) Titular' : ' ⚕ Cuidador(a) / Plantonista'}</option>
-                              <option value="profissional">🩺 Profissional de Saúde / Especialista (Médico, Fono, Psicólogo, Terapeuta, Pediatra)</option>
+                              <option value="cuidador">{isEscolar ? '    Professor(a) / Educador(a) Titular' : '   Cuidador(a) / Plantonista'}</option>
+                              <option value="profissional">   Profissional de Saude / Especialista (Medico, Fono, Psicologo, Terapeuta, Pediatra)</option>
                             </>
                           )}
                           {canInviteFamiliarAdmin && (
-                            <option value="familiar">{isEscolar ? '    Familiar Admin (Mãe/Pai com Autorizações)' : '    Familiar Admin'}</option>
+                            <option value="familiar">{isEscolar ? '    Familiar Admin (Mae/Pai com Autorizacoes)' : '    Familiar Admin'}</option>
                           )}
                           {canInviteFamiliarConvidado && (
-                            <option value="familiar_convidado">{isEscolar ? '  Familiar Convidado (Outro Parente - Leitor Sem Autorizações)' : '  Familiar Convidado (Somente Leitura)'}</option>
+                            <option value="familiar_convidado">{isEscolar ? '  Familiar Convidado (Outro Parente - Leitor Sem Autorizacoes)' : '  Familiar Convidado (Somente Leitura)'}</option>
                           )}
                         </select>
                         <span className="text-[10px] text-slate-400 font-semibold block pt-0.5">
-                            Convidando como <strong>{usuarioAtual.nome}</strong>. Opções filtradas conforme sua hierarquia de acesso.
+                            Convidando como <strong>{usuarioAtual.nome}</strong>. Opcoes filtradas conforme sua hierarquia de acesso.
                         </span>
                       </div>
 
                       {(inviteRole === 'familiar' || inviteRole === 'familiar_convidado') && (
                         <div className="space-y-1 animate-fade-in">
-                          <label className="text-xs font-bold text-slate-500 block">Grau de Parentesco / Relação</label>
+                          <label className="text-xs font-bold text-slate-500 block">Grau de Parentesco / Relacao</label>
                           <select
                             value={inviteParentesco}
                             onChange={e => setInviteParentesco(e.target.value)}
@@ -2007,17 +2007,17 @@ export default function FamilySection({
                           >
                             {isEscolar ? (
                               <>
-                                <option value="Mãe / Responsável">Mãe / Responsável</option>
-                                <option value="Pai / Responsável">Pai / Responsável</option>
-                                <option value="Responsável Legal">Responsável Legal</option>
+                                <option value="Mae / Responsavel">Mae / Responsavel</option>
+                                <option value="Pai / Responsavel">Pai / Responsavel</option>
+                                <option value="Responsavel Legal">Responsavel Legal</option>
                                 <option value="Tio(a)">Tio(a)</option>
-                                <option value="Avô / Avó">Avô / Avó</option>
+                                <option value="Avo / Avo">Avo / Avo</option>
                               </>
                             ) : (
                               <>
                                 <option value="Filho(a)">Filho(a)</option>
-                                <option value="Cônjuge">Cônjuge</option>
-                                <option value="Irmão / Irmã">Irmão / Irmã</option>
+                                <option value="Conjuge">Conjuge</option>
+                                <option value="Irmao / Irma">Irmao / Irma</option>
                                 <option value="Neto(a)">Neto(a)</option>
                                 <option value="Sobrinho(a)">Sobrinho(a)</option>
                                 <option value="Outro Familiar">Outro Familiar</option>
@@ -2029,15 +2029,15 @@ export default function FamilySection({
 
                       {(inviteRole === 'cuidador' || inviteRole === 'profissional') && (
                         <div className="space-y-1 animate-fade-in">
-                          <label className="text-xs font-bold text-slate-500 block">Restrição de Turma / Sala</label>
+                          <label className="text-xs font-bold text-slate-500 block">Restricao de Turma / Sala</label>
                           <select
                             value={inviteClass}
                             onChange={e => setInviteClass(e.target.value)}
                             className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500/20 bg-slate-50 text-xs font-bold text-slate-705"
                           >
-                            <option value="Todas">  Todas as Salas / Visão Geral</option>
-                            <option value="Berçário I">  Berçário I (0-1 ano)</option>
-                            <option value="Berçário II">  Berçário II (1-2 anos)</option>
+                            <option value="Todas">  Todas as Salas / Visao Geral</option>
+                            <option value="Bercario I">  Bercario I (0-1 ano)</option>
+                            <option value="Bercario II">  Bercario II (1-2 anos)</option>
                             <option value="Maternal I">  Maternal I (2-3 anos)</option>
                             <option value="Maternal II">  Maternal II (3-4 anos)</option>
                             <option value="Jardim I">  Jardim I (4-5 anos)</option>
@@ -2055,7 +2055,7 @@ export default function FamilySection({
                           onChange={e => setInviteRecipientName(e.target.value)}
                           className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-emerald-500/20 bg-slate-50 text-xs text-slate-800 font-bold"
                         />
-                        <p className="text-[10px] text-slate-400">Usado para personalizar a mensagem automática.</p>
+                        <p className="text-[10px] text-slate-400">Usado para personalizar a mensagem automatica.</p>
                       </div>
 
                       <div className="space-y-1">
@@ -2084,7 +2084,7 @@ export default function FamilySection({
                     <div className="space-y-4">
                       <h4 className="text-sm font-black text-slate-550 uppercase tracking-wider flex items-center gap-1.5">
                         <MessageSquare className="w-4 h-4 text-emerald-600" />
-                        2. Pré-visualização do Envio
+                        2. Pre-visualizacao do Envio
                       </h4>
 
                       
@@ -2093,7 +2093,7 @@ export default function FamilySection({
                           MENSAGEM WHATSAPP
                         </div>
                         <div className="font-sans text-slate-700 leading-relaxed whitespace-pre-wrap mt-2 select-all">
-                          {`*Convite de Acesso - ${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}*  \n\nOlá${inviteRecipientName ? ' ' + inviteRecipientName : ''}! Você foi convidado(a) por *${usuarioAtual.nome}* para acessar e acompanhar a rotina diária de *${cleanStudentName}* no aplicativo Anjo.\n\n*Acesso:* ${getInviteAcessoLabel()}\n\nPara ativar seu perfil com segurança e cadastrar seu PIN pessoal de acesso rápido, clique no link oficial abaixo:\n\n  ${window.location.origin}/entrar?token=convite_${Date.now().toString(36)}&ref=${idoso.id}&role=${inviteRole}`}
+                          {`*Convite de Acesso - ${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}*  \n\nOla${inviteRecipientName ? ' ' + inviteRecipientName : ''}! Voce foi convidado(a) por *${usuarioAtual.nome}* para acessar e acompanhar a rotina diaria de *${cleanStudentName}* no aplicativo Anjo.\n\n*Acesso:* ${getInviteAcessoLabel()}\n\nPara ativar seu perfil com seguranca e cadastrar seu PIN pessoal de acesso rapido, clique no link oficial abaixo:\n\n  ${window.location.origin}/entrar?token=convite_${Date.now().toString(36)}&ref=${idoso.id}&role=${inviteRole}`}
                         </div>
                       </div>
 
@@ -2102,7 +2102,7 @@ export default function FamilySection({
                         {inviteRecipientPhone.replace(/\D/g, "").length >= 10 ? (
                           <button
                             onClick={() => {
-                              const linkMsg = `*Convite de Acesso - ${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}*  \n\nOlá${inviteRecipientName ? ' ' + inviteRecipientName : ''}! Você foi convidado(a) por *${usuarioAtual.nome}* para acessar e acompanhar a rotina diária de *${cleanStudentName}* no aplicativo Anjo.\n\n*Acesso:* ${getInviteAcessoLabel()}\n\nPara ativar seu perfil com segurança e cadastrar seu PIN pessoal de acesso rápido, clique no link oficial abaixo:\n\n  ${window.location.origin}/entrar?token=convite_${Date.now().toString(36)}&ref=${idoso.id}&role=${inviteRole}`;
+                              const linkMsg = `*Convite de Acesso - ${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}*  \n\nOla${inviteRecipientName ? ' ' + inviteRecipientName : ''}! Voce foi convidado(a) por *${usuarioAtual.nome}* para acessar e acompanhar a rotina diaria de *${cleanStudentName}* no aplicativo Anjo.\n\n*Acesso:* ${getInviteAcessoLabel()}\n\nPara ativar seu perfil com seguranca e cadastrar seu PIN pessoal de acesso rapido, clique no link oficial abaixo:\n\n  ${window.location.origin}/entrar?token=convite_${Date.now().toString(36)}&ref=${idoso.id}&role=${inviteRole}`;
                               const cleanNum = inviteRecipientPhone.replace(/\D/g, "");
                               window.open(`https://api.whatsapp.com/send?phone=55${cleanNum}&text=${encodeURIComponent(linkMsg)}`, '_blank');
                             }}
@@ -2112,7 +2112,7 @@ export default function FamilySection({
                           </button>
                         ) : (
                           <div className="bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-center text-[11px] text-slate-550 font-medium">
-                              Digite o celular no campo ao lado para habilitar o <strong>disparo automático direto</strong> para o WhatsApp!
+                              Digite o celular no campo ao lado para habilitar o <strong>disparo automatico direto</strong> para o WhatsApp!
                           </div>
                         )}
 
@@ -2120,7 +2120,7 @@ export default function FamilySection({
                         <button
                           type="button"
                           onClick={() => {
-                            const linkMsg = `*Convite de Acesso - ${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}*  \n\nOlá${inviteRecipientName ? ' ' + inviteRecipientName : ''}! Você foi convidado(a) por *${usuarioAtual.nome}* para acessar e acompanhar a rotina diária de *${cleanStudentName}* no aplicativo Anjo.\n\n*Acesso:* ${getInviteAcessoLabel()}\n\nPara ativar seu perfil com segurança e cadastrar seu PIN pessoal de acesso rápido, clique no link oficial abaixo:\n\n  ${window.location.origin}/entrar?token=convite_${Date.now().toString(36)}&ref=${idoso.id}&role=${inviteRole}`;
+                            const linkMsg = `*Convite de Acesso - ${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}*  \n\nOla${inviteRecipientName ? ' ' + inviteRecipientName : ''}! Voce foi convidado(a) por *${usuarioAtual.nome}* para acessar e acompanhar a rotina diaria de *${cleanStudentName}* no aplicativo Anjo.\n\n*Acesso:* ${getInviteAcessoLabel()}\n\nPara ativar seu perfil com seguranca e cadastrar seu PIN pessoal de acesso rapido, clique no link oficial abaixo:\n\n  ${window.location.origin}/entrar?token=convite_${Date.now().toString(36)}&ref=${idoso.id}&role=${inviteRole}`;
                             handleCopyInviteLink(linkMsg);
                           }}
                           className={`w-full py-2.5 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all ${
@@ -2141,7 +2141,7 @@ export default function FamilySection({
                         </button>
 
                         <div className="text-[10px] text-slate-450 leading-relaxed text-center">
-                          O link gerado é único para este acompanhado. Você deve enviá-lo <strong>diretamente para o celular ou e-mail de quem deseja convidar</strong>. Ao clicar, a pessoa definirá a senha/PIN dela e já entrará conectada ao acompanhado com segurança!
+                          O link gerado e unico para este acompanhado. Voce deve envia-lo <strong>diretamente para o celular ou e-mail de quem deseja convidar</strong>. Ao clicar, a pessoa definira a senha/PIN dela e ja entrara conectada ao acompanhado com seguranca!
                         </div>
                       </div>
                     </div>
@@ -2154,7 +2154,7 @@ export default function FamilySection({
                       <span>Deseja testar este fluxo agora mesmo?</span>
                     </div>
                     <p className="text-xs text-slate-600 leading-relaxed">
-                      Como estamos no ambiente de testes, você pode <strong>simular exatamente</strong> o que o convidado verá no celular dele ao clicar no link de convite gerado. Clique no botão abaixo para preencher os dados do convidado e concluir o teste de ativação de perfil!
+                      Como estamos no ambiente de testes, voce pode <strong>simular exatamente</strong> o que o convidado vera no celular dele ao clicar no link de convite gerado. Clique no botao abaixo para preencher os dados do convidado e concluir o teste de ativacao de perfil!
                     </p>
                     <button
                       onClick={() => {
@@ -2192,16 +2192,16 @@ export default function FamilySection({
                         <Users className="w-6 h-6" />
                       </div>
                       <h4 className="font-black text-sm tracking-tight text-emerald-800">
-                        Anjo • Registro de Integrante
+                        Anjo   Registro de Integrante
                       </h4>
                       <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest">
-                        {isEscolar ? 'Portal do Responsável & Educador' : 'Portal da Família & Cuidador'}
+                        {isEscolar ? 'Portal do Responsavel & Educador' : 'Portal da Familia & Cuidador'}
                       </p>
                     </div>
 
                     
                     <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-3 text-[11px] leading-relaxed text-emerald-900">
-                        Olá! <strong>{usuarioAtual.nome}</strong> convidou você para fazer parte do plano de acompanhamento de <strong>{cleanStudentName}</strong>. 
+                        Ola! <strong>{usuarioAtual.nome}</strong> convidou voce para fazer parte do plano de acompanhamento de <strong>{cleanStudentName}</strong>. 
                       Preencha os campos abaixo para ativar seu perfil:
                     </div>
 
@@ -2212,7 +2212,7 @@ export default function FamilySection({
                         <input
                           type="text"
                           required
-                          placeholder="Ex: Júlia Maria Silva"
+                          placeholder="Ex: Julia Maria Silva"
                           value={simulationForm.nome}
                           onChange={e => setSimulationForm({ ...simulationForm, nome: e.target.value })}
                           className="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500/25 bg-slate-50 font-bold text-slate-850"
@@ -2250,11 +2250,11 @@ export default function FamilySection({
 
                       {inviteRole === 'familiar' && (
                         <div className="space-y-0.5">
-                          <label className="text-[10px] font-bold text-slate-500 block">Sua Relação com {cleanStudentName} *</label>
+                          <label className="text-[10px] font-bold text-slate-500 block">Sua Relacao com {cleanStudentName} *</label>
                           <input
                             type="text"
                             required
-                            placeholder="Ex: Mãe, Pai, Avó"
+                            placeholder="Ex: Mae, Pai, Avo"
                             value={simulationForm.parentesco}
                             onChange={e => setSimulationForm({ ...simulationForm, parentesco: e.target.value })}
                             className="w-full px-2.5 py-1.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500/25 bg-slate-50 font-semibold"
@@ -2287,7 +2287,7 @@ export default function FamilySection({
                       onClick={() => setInviteSimulateActive(false)}
                       className="text-center text-[11px] text-slate-400 hover:text-slate-600 underline font-semibold block w-full mt-2"
                     >
-                      ← Voltar para a Tela do Convite
+                        Voltar para a Tela do Convite
                     </button>
                   </div>
                 </div>

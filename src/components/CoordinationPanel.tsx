@@ -73,7 +73,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
         </div>
         <h2 className="text-lg font-black text-slate-800">Acesso Restrito</h2>
         <p className="text-sm text-slate-500 max-w-md leading-relaxed">
-          Esta tela é exclusiva para a equipe de Coordenação Pedagógica. Responsáveis têm acesso aos dados individuais de seus filhos através do Diário da Inf
+          Esta tela e exclusiva para a equipe de Coordenacao Pedagogica. Responsaveis tem acesso aos dados individuais de seus filhos atraves do Diario da Inf
         </p>
       </div>
     );
@@ -156,27 +156,27 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
           classroomName: 'Maternal I',
           studentName: 'Arthur Silva',
           tipo: 'pedagogico_geral',
-          reason: 'Dificuldade de socialização em grupo e choro persistente na hora da despedida.',
+          reason: 'Dificuldade de socializacao em grupo e choro persistente na hora da despedida.',
           data: '2026-05-10',
-          registeredBy: 'Coordenação Pedagógica'
+          registeredBy: 'Coordenacao Pedagogica'
         },
         {
           id: 'ref_2',
           classroomName: 'Maternal II',
           studentName: 'Beatriz Souza',
           tipo: 'fonoaudiologia',
-          reason: 'Atraso de fala expressiva identificado no diário pedagógico e conversado com a coordenação.',
+          reason: 'Atraso de fala expressiva identificado no diario pedagogico e conversado com a coordenacao.',
           data: '2026-05-12',
-          registeredBy: 'Profª Estela Pinto'
+          registeredBy: 'Profa Estela Pinto'
         },
         {
           id: 'ref_3',
           classroomName: 'Maternal II',
           studentName: 'Guilherme Santos',
           tipo: 'terapia_ocupacional',
-          reason: 'Hipersensibilidade tátil severa relatada no momento do banho e resistência a texturas de massinha.',
+          reason: 'Hipersensibilidade tatil severa relatada no momento do banho e resistencia a texturas de massinha.',
           data: '2026-05-14',
-          registeredBy: 'Profª Estela Pinto'
+          registeredBy: 'Profa Estela Pinto'
         }
       ];
       saveToDB('anjo_encaminhamentos_pedagogicos', defaultReferrals);
@@ -195,11 +195,11 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
           studentName: 'Maria Eduarda',
           classroomName: 'Maternal I',
           category: 'fala',
-          indicator: 'Ausência de fala espont ou tentativas de comunicação aos 2 anos e meio.',
+          indicator: 'Ausencia de fala espont ou tentativas de comunicacao aos 2 anos e meio.',
           intensity: 'moderada',
           date: '2026-05-11',
-          observations: 'Notado em interações na roda de música. Prefere apontar ou puxar o braço da professora.',
-          registeredBy: 'Coordenação Pedagógica'
+          observations: 'Notado em interacoes na roda de musica. Prefere apontar ou puxar o braco da professora.',
+          registeredBy: 'Coordenacao Pedagogica'
         },
         {
           id: 'alert_2',
@@ -207,11 +207,11 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
           studentName: 'Enzo Gabriel',
           classroomName: 'Maternal II',
           category: 'socioemocional',
-          indicator: 'Isolamento contínuo durante o brincar livre e recusa em participar de atividades coletivas.',
+          indicator: 'Isolamento continuo durante o brincar livre e recusa em participar de atividades coletivas.',
           intensity: 'recorrente',
           date: '2026-05-15',
           observations: 'Brinca apenas no canto da sala enfileirando carrinhos de brinquedo na mesma ordem.',
-          registeredBy: 'Coordenação Pedagógica'
+          registeredBy: 'Coordenacao Pedagogica'
         }
       ];
       saveToDB('anjo_alertas_desenvolvimento', defaultAlerts);
@@ -228,11 +228,11 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
           id: 'log_1',
           date: '2026-05-18',
           classroomName: 'Maternal II',
-          studentsInvolved: 'João e Lucas',
-          description: 'Disputa física por um urso de pelúcia na transição para o lanche. Ocorreu uma mordida leve no braço de João.',
-          actionTaken: 'Separados de forma neutra. Aplicado gelo em João. Realizado círculo de sentimentos sobre morder. Pais de ambos informados confidencialmente.',
+          studentsInvolved: 'Joao e Lucas',
+          description: 'Disputa fisica por um urso de pelucia na transicao para o lanche. Ocorreu uma mordida leve no braco de Joao.',
+          actionTaken: 'Separados de forma neutra. Aplicado gelo em Joao. Realizado circulo de sentimentos sobre morder. Pais de ambos informados confidencialmente.',
           familyNotified: true,
-          registeredBy: 'Coordenação'
+          registeredBy: 'Coordenacao'
         }
       ];
       saveToDB('anjo_mediacao_conflitos', defaultLogs);
@@ -244,7 +244,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
 
   // Filter students by selected classroom
   const getCleanClassName = (roomName: string) => {
-    return roomName.replace(/ | |🏫| | | |⭐| /g, '').trim().toLowerCase();
+    return roomName.replace(/ | |  | | | | | /g, '').trim().toLowerCase();
   };
 
   const filteredStudents = students.filter(s => {
@@ -258,14 +258,14 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
     switch (cat) {
       case 'fala': return '  Fala & Linguagem';
       case 'socioemocional': return '  Socioemocional';
-      case 'sensorial': return '  Integração Sensorial';
+      case 'sensorial': return '  Integracao Sensorial';
       default: return cat;
     }
   };
 
   const getIntensityLabel = (intensity: string) => {
     switch (intensity) {
-      case 'leve': return '  Leve / Início';
+      case 'leve': return '  Leve / Inicio';
       case 'moderada': return '  Moderada / Frequente';
       case 'recorrente': return '  Recorrente / Severa';
       default: return intensity;
@@ -301,7 +301,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
       date: new Date().toISOString().split('T')[0],
       time: newAlertForm.time || getCurrentTime(),
       observations: newAlertForm.observations,
-      registeredBy: usuarioAtual?.nome || 'Coordenação Pedagógica'
+      registeredBy: usuarioAtual?.nome || 'Coordenacao Pedagogica'
     };
 
     const updated = [newAlert, ...milestoneAlerts];
@@ -352,7 +352,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
       reason: newReferralForm.reason,
       data: new Date().toISOString().split('T')[0],
       time: newReferralForm.time || getCurrentTime(),
-      registeredBy: usuarioAtual?.nome || 'Coordenação Pedagógica'
+      registeredBy: usuarioAtual?.nome || 'Coordenacao Pedagogica'
     };
 
     const updated = [newRef, ...pedagogicalReferrals];
@@ -383,7 +383,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
   const handleAddMediation = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newMediationForm.studentsInvolved || !newMediationForm.description) {
-      alert('Preencha os campos obrigatórios.');
+      alert('Preencha os campos obrigatorios.');
       return;
     }
 
@@ -396,7 +396,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
       description: newMediationForm.description,
       actionTaken: newMediationForm.actionTaken,
       familyNotified: newMediationForm.familyNotified,
-      registeredBy: usuarioAtual?.nome || 'Coordenação'
+      registeredBy: usuarioAtual?.nome || 'Coordenacao'
     };
 
     const updated = [newLog, ...mediationLogs];
@@ -424,7 +424,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
 
   // Generate generic message
   const generateWelcomingMessage = (student: string, obs: string, cat: string) => {
-    return `"Olá, responsável por ${student}! Esperamos que esteja bem. Observando o desenvolvimento de ${student} em nossas vivências de ${cat} e interações pedagógicas, notamos que ela/ele tem demonstrado ${obs}. Gostaríamos de convidar vocês para um café com nossa coordenação na próxima quarta-feira para conversarmos em parceria sobre como podemos potencializar o desenvolvimento infantil de forma integral. Contem conosco!"`;
+    return `"Ola, responsavel por ${student}! Esperamos que esteja bem. Observando o desenvolvimento de ${student} em nossas vivencias de ${cat} e interacoes pedagogicas, notamos que ela/ele tem demonstrado ${obs}. Gostariamos de convidar voces para um cafe com nossa coordenacao na proxima quarta-feira para conversarmos em parceria sobre como podemos potencializar o desenvolvimento infantil de forma integral. Contem conosco!"`;
   };
 
   const getReferralTipoLabel = (tipo: string) => {
@@ -432,7 +432,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
       case 'fonoaudiologia': return '  Fonoaudiologia';
       case 'psicologia': return '  Psicologia';
       case 'terapia_ocupacional': return '  Terapia Ocupacional';
-      default: return '  Geral / Coordenação';
+      default: return '  Geral / Coordenacao';
     }
   };
 
@@ -448,15 +448,15 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-100/60 dark:bg-indigo-950/40 rounded-full text-[10px] font-black uppercase tracking-widest text-indigo-700 dark:text-indigo-400">
-               🏫 Portal Confidencial da Coordenação Pedagógica
+                  Portal Confidencial da Coordenacao Pedagogica
             </div>
             <h2 className="text-xl md:text-2xl font-black font-display tracking-tight flex items-center gap-2">
               <GraduationCap className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
-              Painel de Coordenação & Acompanhamento
+              Painel de Coordenacao & Acompanhamento
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 max-w-3xl leading-relaxed font-semibold">
-              Espaço de monitoramento específico da coordenação pedagógica. Ao contrário do Diretor (gestão global e financeira), 
-              o Coordenador atua na orientação das turmas, identificação precoce de marcos de desenvolvimento de alunos e mediação de conflitos.
+              Espaco de monitoramento especifico da coordenacao pedagogica. Ao contrario do Diretor (gestao global e financeira), 
+              o Coordenador atua na orientacao das turmas, identificacao precoce de marcos de desenvolvimento de alunos e mediacao de conflitos.
             </p>
           </div>
         </div>
@@ -509,7 +509,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
               : 'border-transparent text-slate-400 hover:text-slate-600'
           }`}
         >
-            Identificação Precoce ({milestoneAlerts.filter(a => selectedClassroom === 'Todas' || a.classroomName === selectedClassroom).length})
+            Identificacao Precoce ({milestoneAlerts.filter(a => selectedClassroom === 'Todas' || a.classroomName === selectedClassroom).length})
         </button>
         <button
           onClick={() => setActiveTab('referrals')}
@@ -529,7 +529,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
               : 'border-transparent text-slate-400 hover:text-slate-600'
           }`}
         >
-            Mediação de Conflitos ({mediationLogs.filter(m => selectedClassroom === 'Todas' || m.classroomName === selectedClassroom).length})
+            Mediacao de Conflitos ({mediationLogs.filter(m => selectedClassroom === 'Todas' || m.classroomName === selectedClassroom).length})
         </button>
       </div>
 
@@ -541,36 +541,36 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
           <div className="lg:col-span-4 space-y-4">
             <div className={`p-4 rounded-3xl border space-y-3.5 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-100'}`}>
               <h4 className="text-xs font-extrabold uppercase text-indigo-600 flex items-center gap-1.5">
-                <AlertTriangle className="w-4 h-4 text-amber-500" /> Diretrizes de Identificação
+                <AlertTriangle className="w-4 h-4 text-amber-500" /> Diretrizes de Identificacao
               </h4>
               <p className="text-[11px] leading-relaxed text-slate-500 font-semibold">
-                O Anjinho atua no rastreamento passivo da rotina pedagógica diária. A coordenação deve revisar e 
-                registrar sinais formais de atenção.
+                O Anjinho atua no rastreamento passivo da rotina pedagogica diaria. A coordenacao deve revisar e 
+                registrar sinais formais de atencao.
               </p>
               
               <div className="space-y-2.5">
                 <div className="p-3 bg-white dark:bg-slate-950/40 rounded-xl border border-slate-100 dark:border-slate-800 space-y-1">
                   <span className="text-[10px] font-black text-slate-800 dark:text-slate-300 block">  Fala & Linguagem:</span>
                   <p className="text-[9px] text-slate-400 font-semibold leading-normal">
-                    Ausência de palavras inteligíveis aos 2 anos; ecolalia persistente ou perda de vocabulário prévio.
+                    Ausencia de palavras inteligiveis aos 2 anos; ecolalia persistente ou perda de vocabulario previo.
                   </p>
                 </div>
                 <div className="p-3 bg-white dark:bg-slate-950/40 rounded-xl border border-slate-100 dark:border-slate-800 space-y-1">
                   <span className="text-[10px] font-black text-slate-800 dark:text-slate-300 block">  Socioemocional:</span>
                   <p className="text-[9px] text-slate-400 font-semibold leading-normal">
-                    Falta de contato visual ou compartilhamento de atenção; isolamento intencional persistente no pátio.
+                    Falta de contato visual ou compartilhamento de atencao; isolamento intencional persistente no patio.
                   </p>
                 </div>
                 <div className="p-3 bg-white dark:bg-slate-950/40 rounded-xl border border-slate-100 dark:border-slate-800 space-y-1">
-                  <span className="text-[10px] font-black text-slate-800 dark:text-slate-300 block">  Integração Sensorial:</span>
+                  <span className="text-[10px] font-black text-slate-800 dark:text-slate-300 block">  Integracao Sensorial:</span>
                   <p className="text-[9px] text-slate-400 font-semibold leading-normal">
-                    P ou reações severas de choro com barulhos de sala de aula; recusa alimentar extrema por texturas.
+                    P ou reacoes severas de choro com barulhos de sala de aula; recusa alimentar extrema por texturas.
                   </p>
                 </div>
               </div>
 
               <div className="bg-amber-50 dark:bg-amber-950/10 p-3 rounded-2xl border border-amber-200/50 text-amber-800 dark:text-amber-400 text-[10px] font-semibold leading-relaxed">
-                  <strong>Conduta Ética:</strong> Nunca afirme diagnósticos (ex: &quot;Este aluno tem Autismo&quot;). Registre fatos objetivos observados (ex: &quot;O aluno enfileira brinquedos e não atende a comandos verbais de roda&quot;).
+                  <strong>Conduta Etica:</strong> Nunca afirme diagnosticos (ex: &quot;Este aluno tem Autismo&quot;). Registre fatos objetivos observados (ex: &quot;O aluno enfileira brinquedos e nao atende a comandos verbais de roda&quot;).
               </div>
             </div>
           </div>
@@ -615,12 +615,12 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                       >
                         <option value="fala">  Fala & Linguagem</option>
                         <option value="socioemocional">  Socioemocional</option>
-                        <option value="sensorial">  Integração Sensorial</option>
+                        <option value="sensorial">  Integracao Sensorial</option>
                       </select>
                     </div>
 
                     <div className="space-y-1 text-left">
-                      <label className="text-[10px] font-black text-slate-400 uppercase">Intensidade / Frequência</label>
+                      <label className="text-[10px] font-black text-slate-400 uppercase">Intensidade / Frequencia</label>
                       <select
                         className={`w-full p-2.5 rounded-xl border text-xs font-semibold focus:ring-2 focus:ring-indigo-500/20 outline-none ${
                           isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
@@ -628,7 +628,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                         value={newAlertForm.intensity}
                         onChange={(e) => setNewAlertForm({ ...newAlertForm, intensity: e.target.value as any })}
                       >
-                        <option value="leve">Leve / Início</option>
+                        <option value="leve">Leve / Inicio</option>
                         <option value="moderada">Moderada / Frequente</option>
                         <option value="recorrente">Recorrente / Severa</option>
                       </select>
@@ -647,32 +647,32 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                         <option value="">-- Selecione o Sinal --</option>
                         {newAlertForm.category === 'fala' && (
                           <>
-                            <option value="Ausência de fala espont ou tentativas de comunicação aos 2 anos e meio.">Ausência de fala expressiva espont</option>
-                            <option value="Ecolalia imediata ou tardia sistemática em vez de responder perguntas simples.">Ecolalia persistente</option>
-                            <option value="Não atende a comandos verbais de rotina nem responde ao próprio nome.">Não atende ao próprio nome</option>
+                            <option value="Ausencia de fala espont ou tentativas de comunicacao aos 2 anos e meio.">Ausencia de fala expressiva espont</option>
+                            <option value="Ecolalia imediata ou tardia sistematica em vez de responder perguntas simples.">Ecolalia persistente</option>
+                            <option value="Nao atende a comandos verbais de rotina nem responde ao proprio nome.">Nao atende ao proprio nome</option>
                           </>
                         )}
                         {newAlertForm.category === 'socioemocional' && (
                           <>
-                            <option value="Isolamento contínuo durante o brincar livre e recusa em participar de atividades coletivas.">Isolamento voluntário persistente</option>
-                            <option value="Choro ou angústia extrema incontrolável sem motivos claros ou gatilhos.">Choro inconsolável diário</option>
-                            <option value="Resistência severa a transições simples de rotina e apego rígido a regras de objetos.">Aversão rígida a transições</option>
+                            <option value="Isolamento continuo durante o brincar livre e recusa em participar de atividades coletivas.">Isolamento voluntario persistente</option>
+                            <option value="Choro ou angustia extrema incontrolavel sem motivos claros ou gatilhos.">Choro inconsolavel diario</option>
+                            <option value="Resistencia severa a transicoes simples de rotina e apego rigido a regras de objetos.">Aversao rigida a transicoes</option>
                           </>
                         )}
                         {newAlertForm.category === 'sensorial' && (
                           <>
-                            <option value="Irritabilidade severa ou p com barulhos cotidianos (liquidificador, portão, recreio).">Hipersensibilidade auditiva</option>
-                            <option value="Recusa total de alimentos sólidos ou de determinadas cores e texturas.">Seletividade alimentar extrema</option>
-                            <option value="Choro e asco corporal ao tocar massinha, tintas ou alimentos úmidos.">Aversão a texturas e toques</option>
+                            <option value="Irritabilidade severa ou p com barulhos cotidianos (liquidificador, portao, recreio).">Hipersensibilidade auditiva</option>
+                            <option value="Recusa total de alimentos solidos ou de determinadas cores e texturas.">Seletividade alimentar extrema</option>
+                            <option value="Choro e asco corporal ao tocar massinha, tintas ou alimentos umidos.">Aversao a texturas e toques</option>
                           </>
                         )}
-                        <option value="Outro sinal atípico observado detalhado nas notas abaixo...">✍ Outro sinal (especificar nas observações)...</option>
+                        <option value="Outro sinal atipico observado detalhado nas notas abaixo...">  Outro sinal (especificar nas observacoes)...</option>
                       </select>
                     </div>
 
                     <div className="space-y-1 text-left">
                       <label className="text-[10px] font-black text-slate-400 uppercase flex items-center gap-1">
-                        <Clock className="w-3.5 h-3.5 text-indigo-500" /> Horário do Fato
+                        <Clock className="w-3.5 h-3.5 text-indigo-500" /> Horario do Fato
                       </label>
                       <input
                         type="time"
@@ -688,14 +688,14 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
 
                   <div className="space-y-1 text-left">
                     <div className="flex items-center justify-between">
-                      <label className="text-[10px] font-black text-slate-400 uppercase">Observações Detalhadas (Confidencial)</label>
+                      <label className="text-[10px] font-black text-slate-400 uppercase">Observacoes Detalhadas (Confidencial)</label>
                       <VoiceInput 
                         onTranscript={(text) => setNewAlertForm(prev => ({ ...prev, observations: prev.observations ? prev.observations + ' ' + text : text }))} 
                         size="sm"
                       />
                     </div>
                     <textarea
-                      placeholder="Descreva fatos específicos observados na sala de aula ou pátio, incluindo datas e reações da criança..."
+                      placeholder="Descreva fatos especificos observados na sala de aula ou patio, incluindo datas e reacoes da crianca..."
                       className={`w-full p-2.5 rounded-xl border text-xs font-semibold h-20 focus:ring-2 focus:ring-indigo-500/20 outline-none ${
                         isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
                       }`}
@@ -772,7 +772,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                             >
                               <span className="block truncate text-slate-850 dark:text-slate-100">  {st.nome.split(' (')[0]}</span>
                               <span className={`text-[8px] font-semibold mt-1 block ${hasAlerts ? 'text-amber-600' : 'text-slate-400'}`}>
-                                {hasAlerts ? '⚠ Sinais Registrados' : '✅ Monitorado'}
+                                {hasAlerts ? '[!] Sinais Registrados' : '[OK] Monitorado'}
                               </span>
                             </button>
                           );
@@ -815,8 +815,8 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                 if (filtered.length === 0) {
                   return (
                     <div className="p-8 border border-dashed border-slate-200 dark:border-slate-800 rounded-3xl text-center space-y-2">
-                      <p className="text-xs font-black text-slate-400">Nenhum sinal crítico registrado para os filtros aplicados.</p>
-                      <p className="text-[10px] text-slate-500">Isso indica que as crianças estão atingindo os marcos esperados para a idade ou estão sob monitoramento discreto das professoras.</p>
+                      <p className="text-xs font-black text-slate-400">Nenhum sinal critico registrado para os filtros aplicados.</p>
+                      <p className="text-[10px] text-slate-500">Isso indica que as criancas estao atingindo os marcos esperados para a idade ou estao sob monitoramento discreto das professoras.</p>
                     </div>
                   );
                 }
@@ -880,17 +880,17 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                         <div className="bg-indigo-50/50 dark:bg-indigo-950/20 p-2.5 rounded-xl border border-indigo-100/10 text-left space-y-1.5">
                           <span className="text-[8px] font-black uppercase text-indigo-600 dark:text-indigo-400 tracking-wider">  Mensagem de Acolhimento Sugerida</span>
                           <p className="text-[8.5px] leading-relaxed text-slate-500 italic">
-                            {generateWelcomingMessage(alertItem.studentName, 'comportamentos de foco atípicos', alertItem.category === 'fala' ? 'comunicação' : 'convivência social')}
+                            {generateWelcomingMessage(alertItem.studentName, 'comportamentos de foco atipicos', alertItem.category === 'fala' ? 'comunicacao' : 'convivencia social')}
                           </p>
                           <button
                             onClick={() => handleCopyText(
-                              generateWelcomingMessage(alertItem.studentName, 'comportamentos de foco atípicos', alertItem.category === 'fala' ? 'comunicação' : 'convivência social'),
+                              generateWelcomingMessage(alertItem.studentName, 'comportamentos de foco atipicos', alertItem.category === 'fala' ? 'comunicacao' : 'convivencia social'),
                               alertItem.id
                             )}
                             className="w-full py-1 bg-white hover:bg-slate-100 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-[8px] font-black rounded-lg flex items-center justify-center gap-1 cursor-pointer"
                           >
                             <Copy className="w-2.5 h-2.5 text-indigo-500" />
-                            {copiedText === alertItem.id ? '✓ Copiado!' : 'Copiar Texto para WhatsApp'}
+                            {copiedText === alertItem.id ? '  Copiado!' : 'Copiar Texto para WhatsApp'}
                           </button>
                         </div>
                       </div>
@@ -909,8 +909,8 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="space-y-0.5">
-              <h4 className="text-sm font-black text-slate-850 dark:text-slate-100">Prontuário de Encaminhamentos Confidenciais</h4>
-              <p className="text-[10px] text-slate-400 font-bold uppercase">Direcionamento para especialistas externos em conjunto com a família</p>
+              <h4 className="text-sm font-black text-slate-850 dark:text-slate-100">Prontuario de Encaminhamentos Confidenciais</h4>
+              <p className="text-[10px] text-slate-400 font-bold uppercase">Direcionamento para especialistas externos em conjunto com a familia</p>
             </div>
             
             <button
@@ -918,7 +918,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
               className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-xl cursor-pointer flex items-center gap-1.5 transition-all active:scale-95 shadow-sm"
             >
               {showReferralForm ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-              {showReferralForm ? 'Fechar Formulário' : 'Novo Encaminhamento'}
+              {showReferralForm ? 'Fechar Formulario' : 'Novo Encaminhamento'}
             </button>
           </div>
 
@@ -928,7 +928,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
               isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-150 text-slate-800'
             }`}>
               <h5 className="text-xs font-extrabold uppercase text-indigo-600 flex items-center gap-1">
-                  Lançar Novo Registro de Encaminhamento
+                  Lancar Novo Registro de Encaminhamento
               </h5>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -981,7 +981,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                                 isDark ? 'border-slate-800 text-slate-400 hover:bg-slate-800/40' : 'border-slate-200 text-slate-600 hover:bg-slate-50'
                               }`}
                             >
-                              ✍ Digitar nome manualmente...
+                                Digitar nome manualmente...
                             </button>
                           );
                         }
@@ -1010,7 +1010,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                               }}
                               className="w-full p-1.5 rounded-lg text-left text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50/20"
                             >
-                              ✍ Outro Aluno (Digitar nome)...
+                                Outro Aluno (Digitar nome)...
                             </button>
                           </div>
                         );
@@ -1029,7 +1029,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                      value={newReferralForm.tipo}
                      onChange={(e) => setNewReferralForm({ ...newReferralForm, tipo: e.target.value })}
                    >
-                     <option value="pedagogico_geral">  Geral / Coordenação</option>
+                     <option value="pedagogico_geral">  Geral / Coordenacao</option>
                      <option value="fonoaudiologia">  Fonoaudiologia</option>
                      <option value="psicologia">  Psicologia (Socioemocional)</option>
                      <option value="terapia_ocupacional">  Terapia Ocupacional</option>
@@ -1038,7 +1038,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
  
                  <div className="space-y-1.5">
                    <label className="text-[10px] font-black text-slate-400 uppercase flex items-center gap-1">
-                     <Clock className="w-3.5 h-3.5 text-indigo-500" /> Horário
+                     <Clock className="w-3.5 h-3.5 text-indigo-500" /> Horario
                    </label>
                    <input
                      type="time"
@@ -1078,7 +1078,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                    />
                  </div>
                  <textarea
-                   placeholder="Descreva de forma ética os comportamentos observados, reações físicas e justificativa do encaminhamento..."
+                   placeholder="Descreva de forma etica os comportamentos observados, reacoes fisicas e justificativa do encaminhamento..."
                    className={`w-full p-2.5 rounded-xl border text-xs font-semibold h-24 focus:ring-2 focus:ring-indigo-500/20 outline-none ${
                      isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
                    }`}
@@ -1115,7 +1115,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
                <input
                  type="text"
-                 placeholder="Pesquisar por aluno no prontuário ou buscar alunos na escola..."
+                 placeholder="Pesquisar por aluno no prontuario ou buscar alunos na escola..."
                  className={`w-full pl-9 pr-4 py-2.5 rounded-full text-xs font-semibold focus:ring-2 focus:ring-indigo-500/20 outline-none border ${
                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-800'
                  }`}
@@ -1216,7 +1216,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                                 {ref.studentName}
                             </span>
                             <span className="text-[9px] text-slate-400 font-extrabold uppercase">
-                              🏫 {ref.classroomName}
+                                 {ref.classroomName}
                             </span>
                           </div>
                           <button
@@ -1270,30 +1270,30 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
           <div className="lg:col-span-4 space-y-4 text-left">
             <div className={`p-5 rounded-3xl border space-y-4 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-rose-50/50 border-rose-100'}`}>
               <h4 className="text-xs font-extrabold uppercase text-rose-600 flex items-center gap-1.5">
-                <Smile className="w-4 h-4 text-rose-500" /> Protocolo de Mediação
+                <Smile className="w-4 h-4 text-rose-500" /> Protocolo de Mediacao
               </h4>
               <p className="text-[11px] leading-relaxed text-slate-500 font-semibold">
-                Pequenas agressões físicas (mordidas, puxões) e disputas territoriais de brinquedos são comuns na primeira inf 
-                Nossa atuação deve ser focada no desenvolvimento socioemocional e mediação assertiva.
+                Pequenas agressoes fisicas (mordidas, puxoes) e disputas territoriais de brinquedos sao comuns na primeira inf 
+                Nossa atuacao deve ser focada no desenvolvimento socioemocional e mediacao assertiva.
               </p>
 
               <div className="space-y-3">
                 <div className="p-3 bg-white dark:bg-slate-950/40 rounded-2xl border border-rose-100/35 space-y-1">
-                  <span className="text-[10px] font-extrabold uppercase text-rose-600 block">  Eixo 1: Proteção e Limite</span>
+                  <span className="text-[10px] font-extrabold uppercase text-rose-600 block">  Eixo 1: Protecao e Limite</span>
                   <p className="text-[9px] text-slate-400 leading-normal font-medium">
-                    Separar fisicamente e acolher imediatamente a criança atingida de forma carinhosa e neutra. Sem gritos.
+                    Separar fisicamente e acolher imediatamente a crianca atingida de forma carinhosa e neutra. Sem gritos.
                   </p>
                 </div>
                 <div className="p-3 bg-white dark:bg-slate-950/40 rounded-2xl border border-rose-100/35 space-y-1">
                   <span className="text-[10px] font-extrabold uppercase text-rose-600 block">  Eixo 2: Empatia e Cuidado</span>
                   <p className="text-[9px] text-slate-400 leading-normal font-medium">
-                    Envolver a criança que bateu/mordeu no cuidado ao amigo (ajudar com o gelo, dar o urso). Estimular a responsabilidade social.
+                    Envolver a crianca que bateu/mordeu no cuidado ao amigo (ajudar com o gelo, dar o urso). Estimular a responsabilidade social.
                   </p>
                 </div>
                 <div className="p-3 bg-white dark:bg-slate-950/40 rounded-2xl border border-rose-100/35 space-y-1">
-                  <span className="text-[10px] font-extrabold uppercase text-rose-600 block">  Eixo 3: Sigilo & Comunicação</span>
+                  <span className="text-[10px] font-extrabold uppercase text-rose-600 block">  Eixo 3: Sigilo & Comunicacao</span>
                   <p className="text-[9px] text-slate-400 leading-normal font-medium">
-                    Informar os responsáveis no privado de maneira discreta, resguardando sempre a identidade da outra criança envolvida.
+                    Informar os responsaveis no privado de maneira discreta, resguardando sempre a identidade da outra crianca envolvida.
                   </p>
                 </div>
               </div>
@@ -1305,13 +1305,13 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
             
             <div className="flex items-center justify-between">
               <h4 className="text-xs font-extrabold uppercase text-slate-400 tracking-wider">
-                Livro de Ocorrências e Mediações Realizadas
+                Livro de Ocorrencias e Mediacoes Realizadas
               </h4>
               <button
                 onClick={() => setShowMediationForm(!showMediationForm)}
                 className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-750 text-white text-[10px] font-black rounded-xl cursor-pointer transition-all active:scale-95 shadow-3xs"
               >
-                {showMediationForm ? 'Fechar Registro' : '+ Registrar Ocorrência'}
+                {showMediationForm ? 'Fechar Registro' : '+ Registrar Ocorrencia'}
               </button>
             </div>
 
@@ -1320,7 +1320,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
               <form onSubmit={handleAddMediation} className={`p-5 rounded-3xl border text-left space-y-3.5 animate-slide-down ${
                 isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-150'
               }`}>
-                <h5 className="text-xs font-extrabold uppercase text-rose-600">✍ Registrar Mediação Ativa</h5>
+                <h5 className="text-xs font-extrabold uppercase text-rose-600">  Registrar Mediacao Ativa</h5>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-1">
@@ -1344,7 +1344,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                     <label className="text-[10px] font-black text-slate-400 uppercase">Alunos Envolvidos</label>
                     <input
                       type="text"
-                      placeholder="Ex: João e Lucas Santos"
+                      placeholder="Ex: Joao e Lucas Santos"
                       className={`w-full p-2.5 rounded-xl border text-xs font-semibold focus:ring-2 focus:ring-rose-500/20 outline-none ${
                         isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
                       }`}
@@ -1356,7 +1356,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
 
                   <div className="space-y-1">
                     <label className="text-[10px] font-black text-slate-400 uppercase flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5 text-rose-500" /> Horário do Ocorrido
+                      <Clock className="w-3.5 h-3.5 text-rose-500" /> Horario do Ocorrido
                     </label>
                     <input
                       type="time"
@@ -1372,14 +1372,14 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
 
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <label className="text-[10px] font-black text-slate-400 uppercase">Descrição da Ocorrência / Conflito</label>
+                    <label className="text-[10px] font-black text-slate-400 uppercase">Descricao da Ocorrencia / Conflito</label>
                     <VoiceInput 
                       onTranscript={(text) => setNewMediationForm(prev => ({ ...prev, description: prev.description ? prev.description + ' ' + text : text }))} 
                       size="sm"
                     />
                   </div>
                   <textarea
-                    placeholder="Relate os fatos de forma imparcial (ex: disputa de brinquedo, agressão física, mordida, etc.)"
+                    placeholder="Relate os fatos de forma imparcial (ex: disputa de brinquedo, agressao fisica, mordida, etc.)"
                     className={`w-full p-2.5 rounded-xl border text-xs font-semibold h-20 focus:ring-2 focus:ring-rose-500/20 outline-none ${
                       isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
                     }`}
@@ -1391,14 +1391,14 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
 
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <label className="text-[10px] font-black text-slate-400 uppercase">Medidas Pedagógicas de Resolução Adotadas</label>
+                    <label className="text-[10px] font-black text-slate-400 uppercase">Medidas Pedagogicas de Resolucao Adotadas</label>
                     <VoiceInput 
                       onTranscript={(text) => setNewMediationForm(prev => ({ ...prev, actionTaken: prev.actionTaken ? prev.actionTaken + ' ' + text : text }))} 
                       size="sm"
                     />
                   </div>
                   <textarea
-                    placeholder="Ex: Diálogo sobre sentimentos, círculo de empatia com a turma, entrega de brinquedo compartilhado..."
+                    placeholder="Ex: Dialogo sobre sentimentos, circulo de empatia com a turma, entrega de brinquedo compartilhado..."
                     className={`w-full p-2.5 rounded-xl border text-xs font-semibold h-20 focus:ring-2 focus:ring-rose-500/20 outline-none ${
                       isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
                     }`}
@@ -1417,7 +1417,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                     onChange={(e) => setNewMediationForm({ ...newMediationForm, familyNotified: e.target.checked })}
                   />
                   <label htmlFor="familyNotifiedCheck" className="text-[10px] font-black text-slate-500 uppercase cursor-pointer select-none">
-                    Pais/Responsáveis foram notificados confidencialmente
+                    Pais/Responsaveis foram notificados confidencialmente
                   </label>
                 </div>
 
@@ -1453,7 +1453,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
             <div className="space-y-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <h4 className="text-xs font-extrabold uppercase text-slate-400 tracking-wider">
-                  Livro de Ocorrências e Mediações Realizadas
+                  Livro de Ocorrencias e Mediacoes Realizadas
                 </h4>
                 <div className="relative max-w-xs w-full">
                   <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2" />
@@ -1480,7 +1480,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                 if (filtered.length === 0) {
                   return (
                     <div className="p-8 border border-dashed border-slate-200 dark:border-slate-800 rounded-3xl text-center space-y-2 text-slate-400">
-                      <p className="text-xs font-black">Nenhuma ocorrência mediada encontrada para os filtros aplicados.</p>
+                      <p className="text-xs font-black">Nenhuma ocorrencia mediada encontrada para os filtros aplicados.</p>
                     </div>
                   );
                 }
@@ -1500,7 +1500,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                                 Envolvidos: {log.studentsInvolved}
                             </span>
                             <span className="text-[9px] text-indigo-600 dark:text-indigo-400 font-extrabold uppercase">
-                              🏫 {log.classroomName}
+                                 {log.classroomName}
                             </span>
                           </div>
                           <div className="text-right">
@@ -1517,7 +1517,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                                 ? 'bg-emerald-50 text-emerald-700 border border-emerald-100 dark:bg-emerald-950/20 dark:text-emerald-400' 
                                 : 'bg-amber-50 text-amber-700 border border-amber-100 dark:bg-amber-950/20 dark:text-amber-400'
                             }`}>
-                              {log.familyNotified ? '✓ Pais Notificados' : '⚠ Notificação Pendente'}
+                              {log.familyNotified ? '  Pais Notificados' : '[!] Notificacao Pendente'}
                             </span>
                           </div>
                         </div>
@@ -1530,7 +1530,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                             </p>
                           </div>
                           <div>
-                            <span className="text-[9px] font-black uppercase text-rose-500 block">Mediação Realizada:</span>
+                            <span className="text-[9px] font-black uppercase text-rose-500 block">Mediacao Realizada:</span>
                             <p className="text-[10px] text-slate-700 dark:text-slate-200">
                               {log.actionTaken}
                             </p>

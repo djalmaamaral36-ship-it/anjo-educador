@@ -44,7 +44,7 @@ interface ThemeConfig {
 
 const THEMES: Record<ThemeType, ThemeConfig> = {
   candy: {
-    name: 'Doce Algodão',
+    name: 'Doce Algodao',
     gradient: 'from-pink-100 via-purple-50 to-sky-100',
     canvasBg: ['#FFDEE9', '#B5FFFC'],
     textColor: '#4A154B',
@@ -55,7 +55,7 @@ const THEMES: Record<ThemeType, ThemeConfig> = {
     emoji: ' '
   },
   sunset: {
-    name: 'Pôr do Sol',
+    name: 'Por do Sol',
     gradient: 'from-amber-100 via-orange-50 to-rose-100',
     canvasBg: ['#FFE259', '#FFA751'],
     textColor: '#7C2D12',
@@ -77,7 +77,7 @@ const THEMES: Record<ThemeType, ThemeConfig> = {
     emoji: ' '
   },
   cosmic: {
-    name: 'Estrela Cósmica',
+    name: 'Estrela Cosmica',
     gradient: 'from-slate-900 via-indigo-950 to-purple-900',
     canvasBg: ['#0F2027', '#203A43', '#2C5364'],
     textColor: '#FFFFFF',
@@ -85,10 +85,10 @@ const THEMES: Record<ThemeType, ThemeConfig> = {
     badgeBg: '#312E81',
     badgeText: '#C7D2FE',
     accentColor: '#818CF8',
-    emoji: '✨'
+    emoji: ' '
   },
   classroom: {
-    name: 'Clássico Escola',
+    name: 'Classico Escola',
     gradient: 'from-amber-50 to-yellow-100/50',
     canvasBg: ['#FFFDF6', '#FFF9E6'],
     textColor: '#1E293B',
@@ -181,7 +181,7 @@ export function SocialShareModal({ isOpen, onClose, event, studentName }: Social
     
     const categoryEmoji = emojiMap[event.tipo] || ' ';
     
-    return `✨ MOMENTO INESQUECÍVEL NO ANJINHO ESCOLAR ✨
+    return `  MOMENTO INESQUECIVEL NO ANJINHO ESCOLAR  
 
 Hoje o(a) ${cleanStudentName} brilhou muito na escola!
 
@@ -189,9 +189,9 @@ ${categoryEmoji} *${event.titulo}*
 "${event.descricao}"
 ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
 
-🏫 Compartilhado pelo Anjinho Escolar, aproximando as famílias do dia a dia pedagógico com amor e transparência.
+   Compartilhado pelo Anjinho Escolar, aproximando as familias do dia a dia pedagogico com amor e transparencia.
 
-  Ative suas notificações e participe das conquistas do seu pequeno!
+  Ative suas notificacoes e participe das conquistas do seu pequeno!
 
 #AnjinhoEscolar #EducacaoInfantil #AmorPedagogico #MomentosEscolares #DesenvolvimentoInfantil #EscolaParceira #${cleanStudentName.replace(/\s+/g, '')}`;
   };
@@ -215,7 +215,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
 
     try {
       const ctx = canvas.getContext('2d');
-      if (!ctx) throw new Error('Não foi possível obter contexto 2D');
+      if (!ctx) throw new Error('Nao foi possivel obter contexto 2D');
 
       // Set canvas size based on aspect ratio
       const width = aspect === 'feed' ? 1080 : 1080;
@@ -250,7 +250,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
       ctx.fillStyle = activeTheme === 'cosmic' ? 'rgba(255, 255, 255, 0.9)' : currentTheme.textColor;
       ctx.font = 'bold 36px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('✨ Anjinho Escolar ✨', width / 2, aspect === 'feed' ? 100 : 180);
+      ctx.fillText('  Anjinho Escolar  ', width / 2, aspect === 'feed' ? 100 : 180);
 
       // 3. Draw Main Polaroid Box Frame
       const boxWidth = width - 160;
@@ -289,7 +289,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
       const catText = event.tipo === 'conquista' ? '  CONQUISTA' :
                      event.tipo === 'atividade' ? '  ATIVIDADE' :
                      event.tipo === 'foto' ? '  FOTO DO DIA' :
-                     event.tipo === 'evolucao' ? '  EVOLUÇÁO' : '  ROTINA';
+                     event.tipo === 'evolucao' ? '  EVOLUCAO' : '  ROTINA';
       ctx.fillText(catText, tagX + 160, tagY + 36);
 
       // Student name highlight
@@ -466,7 +466,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
       // 10. Outer bottom footer
       ctx.fillStyle = activeTheme === 'cosmic' ? '#94A3B8' : '#475569';
       ctx.font = 'bold 22px sans-serif';
-      ctx.fillText('  Conectando famílias e escolas todos os dias  ', width / 2, height - (aspect === 'feed' ? 45 : 120));
+      ctx.fillText('  Conectando familias e escolas todos os dias  ', width / 2, height - (aspect === 'feed' ? 45 : 120));
 
       // Trigger download
       const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
@@ -477,7 +477,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
 
     } catch (err) {
       console.error('Erro ao gerar imagem:', err);
-      alert('Não foi possível gerar a imagem devido às restrições de segurança de imagens hospedadas. Você ainda pode copiar a legenda para colar no Instagram!');
+      alert('Nao foi possivel gerar a imagem devido as restricoes de seguranca de imagens hospedadas. Voce ainda pode copiar a legenda para colar no Instagram!');
     } finally {
       setDownloading(false);
     }
@@ -522,7 +522,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
       
       {toastMessage && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-60 bg-slate-900 dark:bg-indigo-950 text-white font-black text-xs px-5 py-3 rounded-2xl shadow-xl flex items-center gap-2 border border-slate-800 dark:border-indigo-800 animate-bounce">
-          <span className="text-emerald-400 font-bold">✓</span>
+          <span className="text-emerald-400 font-bold"> </span>
           <span>{toastMessage}</span>
         </div>
       )}
@@ -609,7 +609,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                   
                   
                   <div className="text-center font-black tracking-wide text-xs text-indigo-950/80 dark:text-white/80 mb-1.5">
-                    ✨ Anjinho Escolar {currentTheme.emoji}
+                      Anjinho Escolar {currentTheme.emoji}
                   </div>
 
                   
@@ -622,7 +622,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                           {event.tipo === 'conquista' ? '  Conquista' :
                            event.tipo === 'atividade' ? '  Atividade' :
                            event.tipo === 'foto' ? '  Foto' :
-                           event.tipo === 'evolucao' ? '  Evolução' : '  Rotina'}
+                           event.tipo === 'evolucao' ? '  Evolucao' : '  Rotina'}
                         </span>
                         <span className="text-[9px] sm:text-[10px] font-black text-slate-800 dark:text-slate-100 truncate max-w-[130px]">
                             {cleanStudentName}
@@ -643,10 +643,10 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                         <div className="w-full py-5 sm:py-6 rounded-xl bg-indigo-50/50 dark:bg-slate-800/50 border border-dashed border-indigo-200 dark:border-slate-700 flex flex-col items-center justify-center text-indigo-400 gap-1">
                           <span className="text-2xl animate-bounce">{currentTheme.emoji}</span>
                           <span className="text-[9px] font-black tracking-wider uppercase text-indigo-600 dark:text-indigo-400">
-                            {hidePhoto ? 'Proteção de Imagem Ativa  ' : 'Momento Pedagógico'}
+                            {hidePhoto ? 'Protecao de Imagem Ativa  ' : 'Momento Pedagogico'}
                           </span>
                           <span className="text-[7px] sm:text-[8px] text-slate-500 text-center px-4 font-semibold">
-                            {hidePhoto ? 'Foto oculta para proteção de privacidade.' : 'Aproximando com amor.'}
+                            {hidePhoto ? 'Foto oculta para protecao de privacidade.' : 'Aproximando com amor.'}
                           </span>
                         </div>
                       )}
@@ -774,7 +774,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                       Ocultar Foto do(a) Aluno(a)
                   </span>
                   <p className="text-[9px] text-slate-600 dark:text-slate-400 font-semibold">
-                    Garante conformidade com a LGPD sem expor o rosto da criança.
+                    Garante conformidade com a LGPD sem expor o rosto da crianca.
                   </p>
                 </div>
                 <button
@@ -794,7 +794,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
               
               <div className="space-y-2">
                 <label className="text-xs font-extrabold text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-                  <Layout className="w-3.5 h-3.5 text-indigo-500" /> Formato da Publicação
+                  <Layout className="w-3.5 h-3.5 text-indigo-500" /> Formato da Publicacao
                 </label>
                 <div className="grid grid-cols-2 gap-2.5">
                   <button
@@ -867,7 +867,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                     type="text"
                     value={customNote}
                     onChange={(e) => setCustomNote(e.target.value.slice(0, 60))}
-                    placeholder="Ex: Orgulho do papai e da mamãe! ❤"
+                    placeholder="Ex: Orgulho do papai e da mamae!  "
                     className="flex-1 min-w-0 border px-3 py-2 rounded-xl text-xs font-semibold focus:outline-indigo-500 bg-white text-slate-900 border-slate-200 dark:bg-slate-850 dark:text-white dark:border-slate-700"
                   />
                   <VoiceInput
@@ -887,10 +887,10 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
               <div className="rounded-2xl bg-amber-50/90 dark:bg-amber-950/20 border border-amber-200/80 dark:border-amber-900/40 p-3 sm:p-3.5 space-y-1">
                 <div className="flex items-center gap-2 text-amber-950 dark:text-amber-300">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <span className="text-[10px] font-black uppercase tracking-wider">Segurança & Legislação (LGPD)</span>
+                  <span className="text-[10px] font-black uppercase tracking-wider">Seguranca & Legislacao (LGPD)</span>
                 </div>
                 <p className="text-[10px] text-slate-700 dark:text-slate-300 leading-relaxed font-semibold">
-                  <strong>Sim, é 100% permitido</strong> divulgar conquistas escolares com a autorização do responsável (Artigo 14 da LGPD).
+                  <strong>Sim, e 100% permitido</strong> divulgar conquistas escolares com a autorizacao do responsavel (Artigo 14 da LGPD).
                 </p>
               </div>
 
@@ -900,7 +900,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
             <div className="border-t border-slate-100 dark:border-slate-800 pt-4 mt-5 space-y-3">
               <div className="rounded-xl bg-[#FFFDF6] dark:bg-slate-950 p-3 border border-amber-100 dark:border-slate-800">
                 <div className="flex justify-between items-center mb-1">
-                  <span className="text-[9px] font-black text-amber-900 dark:text-amber-300 uppercase">Sugestão de Legenda p/ Instagram:</span>
+                  <span className="text-[9px] font-black text-amber-900 dark:text-amber-300 uppercase">Sugestao de Legenda p/ Instagram:</span>
                   <button
                     type="button"
                     onClick={handleCopyCaption}

@@ -193,7 +193,7 @@ const formatShiftTime = (rawTime?: string | null, fallback = '07:30') => {
   if (!rawTime) return fallback;
   if (/^\d{2}:\d{2}$/.test(rawTime)) return rawTime;
   if (/^\d{2}:\d{2}:\d{2}$/.test(rawTime)) return rawTime.substring(0, 5);
-  if (rawTime === 'Início do Turno' || rawTime.includes('Invalid')) return fallback;
+  if (rawTime === 'Inicio do Turno' || rawTime.includes('Invalid')) return fallback;
   try {
     const d = new Date(rawTime);
     if (!isNaN(d.getTime())) {
@@ -225,25 +225,25 @@ export default function Dashboard({
   const isFundamental = false;
   const labelIdoso = isEscolar ? 'Aluno' : 'Idoso';
   const labelCuidador = isEscolar ? 'Professora' : 'Cuidador';
-  const labelSinaisVitais = isEscolar ? 'Sinais de Saúde & Temperatura' : 'Sinais Vitais';
-  const labelPlanoCuidado = isEscolar ? 'Instruções da Classe & Rotina' : 'Plano de Cuidado';
-  const labelObservacoes = isEscolar ? 'Observações Gerais & Rotina' : 'Observações de Rotina';
-  const labelMedicamento = isEscolar ? 'Medicação Encomendada' : 'Medicamento';
+  const labelSinaisVitais = isEscolar ? 'Sinais de Saude & Temperatura' : 'Sinais Vitais';
+  const labelPlanoCuidado = isEscolar ? 'Instrucoes da Classe & Rotina' : 'Plano de Cuidado';
+  const labelObservacoes = isEscolar ? 'Observacoes Gerais & Rotina' : 'Observacoes de Rotina';
+  const labelMedicamento = isEscolar ? 'Medicacao Encomendada' : 'Medicamento';
 
   const renderDashboardAuthBadge = () => {
     const auth = checkFeedingCareAuthorization();
     if (!auth.isAuthorized) {
       return (
         <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-start gap-3 shadow-xs mb-3">
-          <div className="text-xl"> ⚠ </div>
+          <div className="text-xl"> [!] </div>
           <div className="space-y-1">
             <h4 className="font-extrabold text-sm text-rose-950">
-              {isEscolar ? 'Alimentação e Cuidados Não Autorizados' : 'Sem Autorização de Cuidados'}
+              {isEscolar ? 'Alimentacao e Cuidados Nao Autorizados' : 'Sem Autorizacao de Cuidados'}
             </h4>
             <p className="text-xs text-rose-800 leading-relaxed">
               {isEscolar 
-                ? 'Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel de Pais & Autorizados para este aluno. Registros e ações rápidas estão bloqueados para cuidadoras e professoras.'
-                : 'Nenhum familiar autorizou "Alimentação e Cuidados" no painel. Registros rápidos estão bloqueados para os cuidadores.'}
+                ? 'Nenhum pai ou responsavel autorizou "Alimentacao e Cuidados" no painel de Pais & Autorizados para este aluno. Registros e acoes rapidas estao bloqueados para cuidadoras e professoras.'
+                : 'Nenhum familiar autorizou "Alimentacao e Cuidados" no painel. Registros rapidos estao bloqueados para os cuidadores.'}
             </p>
           </div>
         </div>
@@ -254,7 +254,7 @@ export default function Dashboard({
       <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-2.5 shadow-3xs mb-3">
         <div className="text-emerald-600 bg-white p-1 rounded-full text-xs font-black shadow-3xs"></div>
         <div className="text-xs font-semibold text-emerald-950">
-          {isEscolar ? 'Autorização Ativa dos Pais: ' : 'Autorização Ativa da Família: '}
+          {isEscolar ? 'Autorizacao Ativa dos Pais: ' : 'Autorizacao Ativa da Familia: '}
           <span className="font-extrabold text-emerald-800">
             {auth.authorizedNames.join(', ')}
           </span>
@@ -273,12 +273,12 @@ export default function Dashboard({
     // Adapt caregiver name
     if (completadaPor) {
       completadaPor = completadaPor
-        .replace(/Ana Silva \(Cuidadora\)/g, 'Profª Ana Silva (Educadora)')
+        .replace(/Ana Silva \(Cuidadora\)/g, 'Profa Ana Silva (Educadora)')
         .replace(/cuidador/gi, 'professor')
         .replace(/cuidadora/gi, 'professora');
     }
 
-    // Se já for uma atividade escolar própria, de planejamento (Aura), manual ou se já possuir descrição personalizada, NÃO reescreve o título nem a descrição
+    // Se ja for uma atividade escolar propria, de planejamento (Aura), manual ou se ja possuir descricao personalizada, NAO reescreve o titulo nem a descricao
     const isExplicitSchoolTask = 
       task.id.startsWith('task_s_') || 
       task.id.startsWith('task_aura_') || 
@@ -298,34 +298,34 @@ export default function Dashboard({
       };
     }
 
-    // Legacy Elderly Title adaptations (apenas para tarefas legadas do modo idoso sem descrição prévia)
+    // Legacy Elderly Title adaptations (apenas para tarefas legadas do modo idoso sem descricao previa)
     if (titulo.includes('Losartana')) {
-      titulo = 'Soro / Inalação de Rotina ';
-      descricao = 'Fazer inalação com 3ml de soro fisiológico mandado na mala (prevenção de tempo seco)';
-    } else if (titulo.includes('Cálcio + Vitamina D') || titulo.includes('Cálcio')) {
+      titulo = 'Soro / Inalacao de Rotina ';
+      descricao = 'Fazer inalacao com 3ml de soro fisiologico mandado na mala (prevencao de tempo seco)';
+    } else if (titulo.includes('Calcio + Vitamina D') || titulo.includes('Calcio')) {
       titulo = 'Vitaminas / Suplemento da Tarde ';
       descricao = 'Dar 1 sachet de gostinho de laranja (mandado na mochila para o lanche)';
     } else if (titulo.includes('Metformina')) {
-      titulo = 'Remédio da Gripe / Amoxicilina ';
-      descricao = 'Dar 5ml da Amoxicilina de acordo com a autorização assinada na mochila.';
+      titulo = 'Remedio da Gripe / Amoxicilina ';
+      descricao = 'Dar 5ml da Amoxicilina de acordo com a autorizacao assinada na mochila.';
     } else if (titulo.includes('Donepezila') || titulo.includes('Aricept')) {
       titulo = 'Alergika Preventivo / Gotas ';
-      descricao = 'Dar 5 gotinhas do antialérgico preventivo antes da soneca da classe.';
-    } else if (titulo.includes('Café da manhã') || titulo.includes('Café')) {
-      titulo = 'Lanche da Manhã & Frutinhas ';
-      descricao = 'Frutas frescas da estação, biscoito integral e incentivo À hidratação.';
-    } else if (titulo.includes('Almoço')) {
-      titulo = 'Almoço Saudável / Papinha ';
-      descricao = 'Pratinho balanceado, introdução de novos sabores, verduras e carninha desfiada.';
-    } else if (titulo.includes('Banho de Sol') || titulo.includes('Alongamento') || titulo.includes('Exercício') || titulo.includes('Fisioterapia')) {
-      titulo = 'Recreação no Pátio & Parquinho ';
-      descricao = 'Brincadeiras ao ar livre, estimulação física e interação na rodinha pedagógica.';
+      descricao = 'Dar 5 gotinhas do antialergico preventivo antes da soneca da classe.';
+    } else if (titulo.includes('Cafe da manha') || titulo.includes('Cafe')) {
+      titulo = 'Lanche da Manha & Frutinhas ';
+      descricao = 'Frutas frescas da estacao, biscoito integral e incentivo A hidratacao.';
+    } else if (titulo.includes('Almoco')) {
+      titulo = 'Almoco Saudavel / Papinha ';
+      descricao = 'Pratinho balanceado, introducao de novos sabores, verduras e carninha desfiada.';
+    } else if (titulo.includes('Banho de Sol') || titulo.includes('Alongamento') || titulo.includes('Exercicio') || titulo.includes('Fisioterapia')) {
+      titulo = 'Recreacao no Patio & Parquinho ';
+      descricao = 'Brincadeiras ao ar livre, estimulacao fisica e interacao na rodinha pedagogica.';
     } else if (titulo.includes('Banho &') || titulo.includes('Higiene')) {
       titulo = 'Fralda & Higiene Geral ';
-      descricao = 'Acompanhar no banheiro, verificar fralda e trocar se necessário. Lavar mãos.';
-    } else if (titulo.includes('Copos d\'Água') || titulo.includes('Hidratação')) {
-      titulo = 'Hora da Garrafinha de Água ';
-      descricao = 'Estimular o aluno a beber água na sua garrafinha com canudo.';
+      descricao = 'Acompanhar no banheiro, verificar fralda e trocar se necessario. Lavar maos.';
+    } else if (titulo.includes('Copos d\'Agua') || titulo.includes('Hidratacao')) {
+      titulo = 'Hora da Garrafinha de Agua ';
+      descricao = 'Estimular o aluno a beber agua na sua garrafinha com canudo.';
     }
 
     return {
@@ -443,7 +443,7 @@ export default function Dashboard({
 
     const pin = roomPinInput.trim();
     if (!pin) {
-      setRoomPinError('Digite o PIN de 4 dígitos para prosseguir.');
+      setRoomPinError('Digite o PIN de 4 digitos para prosseguir.');
       return;
     }
 
@@ -535,8 +535,8 @@ export default function Dashboard({
     setTurnSummaries(list);
     setOccurrencesList(getFromDB<any[]>(`anjo_ocorrencias_${idoso.id}`, []));
     setLgpdLogs(getFromDB<any[]>(`anjo_lgpd_auditoria_${idoso.id}`, [
-      { id: '1', autor: 'Ana Silva (Cuidadora)', acao: 'Consulta do Histórico de Rotina', data: 'Hoje Às 18:10', ip: '192.168.1.13', detalhes: 'Carimbo de conformidade de escala' },
-      { id: '2', autor: 'Djalma (Familiar)', acao: 'Visualização do Painel de Tranquilidade', data: 'Hoje Às 18:15', ip: '200.41.52.12', detalhes: 'Acesso seguro ponta a ponta' }
+      { id: '1', autor: 'Ana Silva (Cuidadora)', acao: 'Consulta do Historico de Rotina', data: 'Hoje As 18:10', ip: '192.168.1.13', detalhes: 'Carimbo de conformidade de escala' },
+      { id: '2', autor: 'Djalma (Familiar)', acao: 'Visualizacao do Painel de Tranquilidade', data: 'Hoje As 18:15', ip: '200.41.52.12', detalhes: 'Acesso seguro ponta a ponta' }
     ]));
     if (typeof loadTasks === 'function') {
       loadTasks();
@@ -549,27 +549,27 @@ export default function Dashboard({
       if (relatorioId) {
         const foundReport = list.find((r: any) => r.id === relatorioId) || {
           id: relatorioId,
-          cuidador: 'Profª Nilva Amaral',
+          cuidador: 'Profa Nilva Amaral',
           data: new Date().toLocaleDateString('pt-BR'),
-          duracao: 'Período Completo',
+          duracao: 'Periodo Completo',
           inicio: '07:30',
           fim: '17:30',
           taxaConformidade: 98,
           taxaQualidade: 100,
-          mensagemCompleta: ` A ÁRVORE DA INFÂNCIA HOJE:
-Hoje a árvore do(a) *${idoso.nome.split(' (')[0]}* floresceu no Anjinho Escolar:
-  *Folhas verdes:* Nutrição balanceada e hidratação regular (100ml);
+          mensagemCompleta: ` A ARVORE DA INFANCIA HOJE:
+Hoje a arvore do(a) *${idoso.nome.split(' (')[0]}* floresceu no Anjinho Escolar:
+  *Folhas verdes:* Nutricao balanceada e hidratacao regular (100ml);
   *Flores e borboletas:* Momento acolhedor de soneca e descanso (45min);
-  *Frutos e passarinhos:* Atividades pedagógicas e trabalhinhos manuais;
-  *Tronco forte:* Cuidados diários, higiene e saúde acompanhados de perto (36.5°C).
+  *Frutos e passarinhos:* Atividades pedagogicas e trabalhinhos manuais;
+  *Tronco forte:* Cuidados diarios, higiene e saude acompanhados de perto (36.5oC).
 
  *PARTICIPE DA JORNADA DO(A) ${idoso.nome.split(' (')[0].toUpperCase()}!*
-Abra as fotos no aplicativo e regue a árvore do seu filho enviando uma das manifestações de afeto:
+Abra as fotos no aplicativo e regue a arvore do seu filho enviando uma das manifestacoes de afeto:
  *Que encanto!*   *Feito com amor*   *Puro brilho!*   *Orgulho da gente*   *Um tesouro!*
 
-_(Cada manifestação sua ilumina e rega a árvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
+_(Cada manifestacao sua ilumina e rega a arvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
 
-Acesse o diário de rotina escolar completo pelo link seguro:
+Acesse o diario de rotina escolar completo pelo link seguro:
  ${window.location.origin}/?relatorio=${relatorioId}
 
 Com carinho,
@@ -600,7 +600,7 @@ Equipe Anjinho Escolar`
       e.stopPropagation();
     }
     if (!isStaffUser(usuarioAtual)) {
-      alert(" ⚠  Operação Bloqueada: Familiares não têm permissão para excluir informações!");
+      alert(" [!]  Operacao Bloqueada: Familiares nao tem permissao para excluir informacoes!");
       return;
     }
     const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
@@ -615,7 +615,7 @@ Equipe Anjinho Escolar`
     });
     saveToDB('anjo_idosos', updated);
     window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-    showToast(' Rotina/condição removida com sucesso!', 'success');
+    showToast(' Rotina/condicao removida com sucesso!', 'success');
   };
 
   const handleDeleteAlergia = (alergToRemove: string, e?: React.MouseEvent) => {
@@ -624,7 +624,7 @@ Equipe Anjinho Escolar`
       e.stopPropagation();
     }
     if (!isStaffUser(usuarioAtual)) {
-      alert(" ⚠  Operação Bloqueada: Familiares não têm permissão para excluir informações!");
+      alert(" [!]  Operacao Bloqueada: Familiares nao tem permissao para excluir informacoes!");
       return;
     }
     const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
@@ -648,12 +648,12 @@ Equipe Anjinho Escolar`
       e.stopPropagation();
     }
     if (!isStaffUser(usuarioAtual)) {
-      alert(" ⚠  Operação Bloqueada: Familiares não têm permissão para excluir observações!");
+      alert(" [!]  Operacao Bloqueada: Familiares nao tem permissao para excluir observacoes!");
       return;
     }
     triggerConfirm(
-      'Excluir Observação de Higiene',
-      'Tem certeza de que deseja apagar a observação de higiene gravada hoje para este aluno/criança?',
+      'Excluir Observacao de Higiene',
+      'Tem certeza de que deseja apagar a observacao de higiene gravada hoje para este aluno/crianca?',
       () => {
         const existingHyg = getFromDB<any>(`anjo_higiene_log_${idoso.id}`, {});
         const updatedHyg = {
@@ -664,7 +664,7 @@ Equipe Anjinho Escolar`
         saveHygieneLog(idoso.id, updatedHyg);
         setQuickHygiene(prev => ({ ...prev, observations: '' }));
         setVitalsUpdateTrigger(prev => prev + 1);
-        showToast(' Observação de higiene apagada com sucesso!', 'success');
+        showToast(' Observacao de higiene apagada com sucesso!', 'success');
       }
     );
   };
@@ -675,12 +675,12 @@ Equipe Anjinho Escolar`
       e.stopPropagation();
     }
     if (!isStaffUser(usuarioAtual)) {
-      alert(" ⚠  Operação Bloqueada: Familiares não têm permissão para limpar ou excluir registros!");
+      alert(" [!]  Operacao Bloqueada: Familiares nao tem permissao para limpar ou excluir registros!");
       return;
     }
     triggerConfirm(
       'Limpar Registros de Higiene',
-      'Tem certeza de que deseja desmarcar os itens e apagar a observação de higiene de hoje?',
+      'Tem certeza de que deseja desmarcar os itens e apagar a observacao de higiene de hoje?',
       () => {
         const resetHyg = {
           bath: false,
@@ -706,12 +706,12 @@ Equipe Anjinho Escolar`
       e.stopPropagation();
     }
     if (!isStaffUser(usuarioAtual)) {
-      alert(" ⚠  Operação Bloqueada: Familiares não têm permissão para excluir ocorrências!");
+      alert(" [!]  Operacao Bloqueada: Familiares nao tem permissao para excluir ocorrencias!");
       return;
     }
     triggerConfirm(
-      'Excluir Ocorrência / Registro de Cuidado',
-      'Tem certeza de que deseja apagar esta ocorrência/anotação de cuidado registrada hoje?',
+      'Excluir Ocorrencia / Registro de Cuidado',
+      'Tem certeza de que deseja apagar esta ocorrencia/anotacao de cuidado registrada hoje?',
       () => {
         const updated = occurrencesList.filter(o => o.id !== occurrenceId);
         setOccurrencesList(updated);
@@ -719,7 +719,7 @@ Equipe Anjinho Escolar`
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: { localKey: `anjo_ocorrencias_${idoso.id}` } }));
         }
-        showToast(' Ocorrência/Registro de cuidado removido com sucesso!', 'success');
+        showToast(' Ocorrencia/Registro de cuidado removido com sucesso!', 'success');
       }
     );
   };
@@ -757,7 +757,7 @@ Equipe Anjinho Escolar`
 
   useEffect(() => {
     const handleUpdate = (e: any) => {
-      console.log(' [Dashboard Component] Evento db-vitals-update / anjo_user_updated recebido na tela do Responsável/Família!', { timestamp: new Date().toISOString(), detail: e?.detail });
+      console.log(' [Dashboard Component] Evento db-vitals-update / anjo_user_updated recebido na tela do Responsavel/Familia!', { timestamp: new Date().toISOString(), detail: e?.detail });
       setVitalsUpdateTrigger(prev => prev + 1);
     };
     window.addEventListener('db-vitals-update', handleUpdate);
@@ -777,20 +777,20 @@ Equipe Anjinho Escolar`
     };
   }, []);
 
-  // LGPD Auditoria e Governança de acessos
+  // LGPD Auditoria e Governanca de acessos
   const [lgpdLogs, setLgpdLogs] = useState<any[]>(() => {
     return getFromDB<any[]>(`anjo_lgpd_auditoria_${idoso.id}`, [
-      { id: '1', autor: 'Ana Silva (Cuidadora)', acao: 'Consulta do Histórico de Rotina', data: 'Hoje Às 18:10', ip: '192.168.1.13', detalhes: 'Carimbo de conformidade de escala' },
-      { id: '2', autor: 'Djalma (Familiar)', acao: 'Visualização do Painel de Tranquilidade', data: 'Hoje Às 18:15', ip: '200.41.52.12', detalhes: 'Acesso seguro ponta a ponta' }
+      { id: '1', autor: 'Ana Silva (Cuidadora)', acao: 'Consulta do Historico de Rotina', data: 'Hoje As 18:10', ip: '192.168.1.13', detalhes: 'Carimbo de conformidade de escala' },
+      { id: '2', autor: 'Djalma (Familiar)', acao: 'Visualizacao do Painel de Tranquilidade', data: 'Hoje As 18:15', ip: '200.41.52.12', detalhes: 'Acesso seguro ponta a ponta' }
     ]);
   });
 
-  // Ocorrências registradas no turno
+  // Ocorrencias registradas no turno
   const [occurrencesList, setOccurrencesList] = useState<any[]>(() => {
     return getFromDB<any[]>(`anjo_ocorrencias_${idoso.id}`, []);
   });
 
-  // Compartilhamento manual via WhatsApp para ocorrências
+  // Compartilhamento manual via WhatsApp para ocorrencias
   const [showManualOccurrenceShareModal, setShowManualOccurrenceShareModal] = useState(false);
   const [manualShareOccurrenceMessage, setManualShareOccurrenceMessage] = useState<string | null>(null);
   const [activeSharingOccurrenceId, setActiveSharingOccurrenceId] = useState<string | null>(null);
@@ -798,7 +798,7 @@ Equipe Anjinho Escolar`
   const [familiarShareStatuses, setFamiliarShareStatuses] = useState<{ [key: string]: 'pendente' | 'aberto' | 'confirmado' }>({});
   const [customPhoneInput, setCustomPhoneInput] = useState('');
 
-  // Compartilhamento coletivo via WhatsApp para encerramento de período letivo
+  // Compartilhamento coletivo via WhatsApp para encerramento de periodo letivo
   const [showCollectiveShareModal, setShowCollectiveShareModal] = useState(false);
   const [collectiveShareList, setCollectiveShareList] = useState<any[]>([]);
   const [copiedCollectiveIndex, setCopiedCollectiveIndex] = useState<number | null>(null);
@@ -841,7 +841,7 @@ Equipe Anjinho Escolar`
 
   // Stop Shift Reason Modal states
   const [showStopIndividualShiftModal, setShowStopIndividualShiftModal] = useState(false);
-  const [stopShiftReason, setStopShiftReason] = useState('Consulta Médica / Exame');
+  const [stopShiftReason, setStopShiftReason] = useState('Consulta Medica / Exame');
   const [stopShiftNote, setStopShiftNote] = useState('');
 
   // Caregiver/Educator access restriction states for family members
@@ -881,7 +881,7 @@ Equipe Anjinho Escolar`
         osc.stop(ctx.currentTime + 0.4);
       } catch (err) {}
     } else {
-      setCaregiverPinError('PIN incorreto ou não pertence a um profissional de plantão.');
+      setCaregiverPinError('PIN incorreto ou nao pertence a um profissional de plantao.');
       // Play error tone
       try {
         const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -941,7 +941,7 @@ Equipe Anjinho Escolar`
           obs: next.observations || '',
           time: defaultTime,
           date: getTodayIso(),
-          registradoPor: usuarioAtual?.nome || 'Pai / Responsável'
+          registradoPor: usuarioAtual?.nome || 'Pai / Responsavel'
         };
         saveHygieneLog(idoso.id, hygieneLog);
       }
@@ -953,16 +953,16 @@ Equipe Anjinho Escolar`
     setQuickHygiene(prev => {
       const next = { ...prev };
       if (field === 'diaper') {
-        // Cycle: Pendente -> Fez Xixi -> Fez Cocô -> Ambos -> Seca -> Pendente
+        // Cycle: Pendente -> Fez Xixi -> Fez Coco -> Ambos -> Seca -> Pendente
         const currentText = prev.observations || '';
         if (!prev.diaper) {
           next.diaper = true;
           next.observations = 'Fez Xixi';
         } else if (currentText === 'Fez Xixi') {
-          next.observations = 'Fez Cocô';
-        } else if (currentText === 'Fez Cocô') {
-          next.observations = 'Xixi e Cocô';
-        } else if (currentText === 'Xixi e Cocô') {
+          next.observations = 'Fez Coco';
+        } else if (currentText === 'Fez Coco') {
+          next.observations = 'Xixi e Coco';
+        } else if (currentText === 'Xixi e Coco') {
           next.observations = 'Fralda Seca / Limpa';
         } else {
           next.diaper = false;
@@ -987,7 +987,7 @@ Equipe Anjinho Escolar`
         obs: next.observations || '',
         time: defaultTime,
         date: getTodayIso(),
-        registradoPor: usuarioAtual?.nome || 'Pai / Responsável'
+        registradoPor: usuarioAtual?.nome || 'Pai / Responsavel'
       };
       saveHygieneLog(idoso.id, hygieneLog);
       setVitalsUpdateTrigger(p => p + 1);
@@ -1064,7 +1064,7 @@ Equipe Anjinho Escolar`
       if (lastSono.dormiuEm && lastSono.acordouEm) {
         setSleepStart(lastSono.dormiuEm);
         setSleepEnd(lastSono.acordouEm);
-        setQuickVitals(prev => (prev.pressao ? prev : { ...prev, pressao: `Dormiu das ${lastSono.dormiuEm} Às ${lastSono.acordouEm}` }));
+        setQuickVitals(prev => (prev.pressao ? prev : { ...prev, pressao: `Dormiu das ${lastSono.dormiuEm} As ${lastSono.acordouEm}` }));
       }
     }
   }, [idoso, keyTrigger, appMode]);
@@ -1133,7 +1133,7 @@ Equipe Anjinho Escolar`
       }
 
       const activeShift = getShiftActiveState(targetId, remoteItems);
-      console.log(` [Dashboard Component] syncShiftState executado para idoso/aluno: ${targetId} (${idoso.nome}) | Ativo: ${activeShift.active} | Início: ${activeShift.startTime}`);
+      console.log(` [Dashboard Component] syncShiftState executado para idoso/aluno: ${targetId} (${idoso.nome}) | Ativo: ${activeShift.active} | Inicio: ${activeShift.startTime}`);
       setIsShiftActive(prevActive => {
         if (prevActive !== activeShift.active) {
           console.log(` [Dashboard State] Alterando isShiftActive de ${prevActive} para ${activeShift.active}`);
@@ -1259,12 +1259,12 @@ Equipe Anjinho Escolar`
           baseTitle.includes(baseName) ||
           baseName.includes(baseTitle) ||
           (cleanTitle.includes('losartana') && cleanName.includes('losartana')) ||
-          (cleanTitle.includes('cálcio') && cleanName.includes('cálcio')) ||
+          (cleanTitle.includes('calcio') && cleanName.includes('calcio')) ||
           (cleanTitle.includes('calcio') && cleanName.includes('calcio')) ||
           (cleanTitle.includes('donepezila') && cleanName.includes('donepezila')) ||
           (cleanTitle.includes('aricept') && cleanName.includes('aricept')) ||
           (cleanTitle.includes('soro') && cleanName.includes('soro')) ||
-          (cleanTitle.includes('inalação') && cleanName.includes('inalação')) ||
+          (cleanTitle.includes('inalacao') && cleanName.includes('inalacao')) ||
           (cleanTitle.includes('vitamina') && cleanName.includes('vitamina')) ||
           (cleanTitle.includes('suplemento') && cleanName.includes('suplemento')) ||
           (cleanTitle.includes('metformina') && cleanName.includes('metformina')) ||
@@ -1285,18 +1285,18 @@ Equipe Anjinho Escolar`
       t.titulo.toLowerCase().includes('daflon') || 
       t.titulo.toLowerCase().includes('metformina') ||
       t.titulo.toLowerCase().includes('losartana') ||
-      t.titulo.toLowerCase().includes('cálcio')
+      t.titulo.toLowerCase().includes('calcio')
     );
 
-    // Contar quantas tarefas de almoço/papinha padrão existem para este aluno
+    // Contar quantas tarefas de almoco/papinha padrao existem para este aluno
     const lunchTasksCount = seniorTasks.filter(t => {
       const tit = (t.titulo || '').toLowerCase();
-      // Não conta atividades personalizadas da Aura como almoço duplicado
+      // Nao conta atividades personalizadas da Aura como almoco duplicado
       if (t.id.startsWith('task_aura_')) return false;
-      return tit.includes('almoço') || tit.includes('almocinho') || tit.includes('papinha') || tit.includes('sopinha');
+      return tit.includes('almoco') || tit.includes('almocinho') || tit.includes('papinha') || tit.includes('sopinha');
     }).length;
 
-    // Se o usuário limpou explicitamente as tarefas/atividades deste perfil, respeita e mantém limpo
+    // Se o usuario limpou explicitamente as tarefas/atividades deste perfil, respeita e mantem limpo
     const isExplicitlyCleared = localStorage.getItem(`anjo_tasks_cleared_${idoso.id}`) === 'true' || localStorage.getItem(`anjo_activities_cleared_${idoso.id}`) === 'true';
     if (isExplicitlyCleared) {
       if (seniorTasks.length > 0) {
@@ -1313,7 +1313,7 @@ Equipe Anjinho Escolar`
       return;
     }
 
-    // Se houver tarefas de idoso indevidas ou comentários conversacionais da IA salvos como tarefa, limpa automaticamente
+    // Se houver tarefas de idoso indevidas ou comentarios conversacionais da IA salvos como tarefa, limpa automaticamente
     if (isEscolar || idoso.id.startsWith('aluno_')) {
       const sanitized = seniorTasks.filter(t => 
         !t.id.startsWith('task_j_') && 
@@ -1323,7 +1323,7 @@ Equipe Anjinho Escolar`
         !t.titulo.toLowerCase().includes('daflon') && 
         !t.titulo.toLowerCase().includes('metformina') && 
         !t.titulo.toLowerCase().includes('losartana') && 
-        !t.titulo.toLowerCase().includes('cálcio') &&
+        !t.titulo.toLowerCase().includes('calcio') &&
         !isConversationalChatNoise(t.titulo || '') &&
         !isConversationalChatNoise(t.descricao || '')
       );
@@ -1336,7 +1336,7 @@ Equipe Anjinho Escolar`
       }
     }
 
-    // Realinha automaticamente tarefas que possuem conflito sem ou deslocamento de horário
+    // Realinha automaticamente tarefas que possuem conflito sem ou deslocamento de horario
     let hasRealigned = false;
     const realignedSeniorTasks = seniorTasks.map(t => {
       const { title: alignedTitle, tipo: alignedType } = realignPedagogicalActivity(t.titulo, t.descricao || '', t.horarioPrevisto || '', t.tipo);
@@ -1360,17 +1360,17 @@ Equipe Anjinho Escolar`
       if (t.tipo === 'medicacao' && !isMedActive(t.titulo)) return;
       
       const tit = (t.titulo || '').toLowerCase();
-      const isLunch = tit.includes('almoço') || tit.includes('almocinho') || tit.includes('papinha') || tit.includes('sopinha');
+      const isLunch = tit.includes('almoco') || tit.includes('almocinho') || tit.includes('papinha') || tit.includes('sopinha');
 
       if (isEscolar && isLunch) {
         if (seenLunch) {
-          // Ignora qualquer almoço/papinha duplicado em outro horário
+          // Ignora qualquer almoco/papinha duplicado em outro horario
           return;
         }
         seenLunch = true;
       }
 
-      // Normaliza o título para detectar repetições do mesmo horário
+      // Normaliza o titulo para detectar repeticoes do mesmo horario
       const normTitle = t.titulo
         .toLowerCase()
         .replace(/troca de fralda[s]?|higiene/g, 'fralda')
@@ -1404,7 +1404,7 @@ Equipe Anjinho Escolar`
           idosoId,
           tipo: 'atividade_fisica',
           titulo: 'Acolhida & Entrada Afetiva ',
-          descricao: 'Recepção carinhosa dos alunos, acolhimento individual e organização de pertences.',
+          descricao: 'Recepcao carinhosa dos alunos, acolhimento individual e organizacao de pertences.',
           horarioPrevisto: '07:00',
           status: 'pendente'
         },
@@ -1413,7 +1413,7 @@ Equipe Anjinho Escolar`
           idosoId,
           tipo: 'atividade_fisica',
           titulo: 'Roda de Conversa: Tema do Dia ',
-          descricao: 'Apresentação do tema diário, musicalização, chamada divertida e expressão das crianças.',
+          descricao: 'Apresentacao do tema diario, musicalizacao, chamada divertida e expressao das criancas.',
           horarioPrevisto: '08:00',
           status: 'pendente'
         },
@@ -1421,8 +1421,8 @@ Equipe Anjinho Escolar`
           id: 'task_s_lanche_manha_' + idosoId,
           idosoId,
           tipo: 'alimentacao',
-          titulo: 'Lanche da Manhã & Frutinhas ',
-          descricao: 'Frutas frescas da estação, biscoito integral e incentivo À hidratação.',
+          titulo: 'Lanche da Manha & Frutinhas ',
+          descricao: 'Frutas frescas da estacao, biscoito integral e incentivo A hidratacao.',
           horarioPrevisto: '09:00',
           status: 'pendente'
         },
@@ -1430,8 +1430,8 @@ Equipe Anjinho Escolar`
           id: 'task_s_parque_' + idosoId,
           idosoId,
           tipo: 'atividade_fisica',
-          titulo: 'Recreação no Pátio & Parquinho ',
-          descricao: 'Brincadeiras ao ar livre para estímulo motor, socialização e banho de sol adequado.',
+          titulo: 'Recreacao no Patio & Parquinho ',
+          descricao: 'Brincadeiras ao ar livre para estimulo motor, socializacao e banho de sol adequado.',
           horarioPrevisto: '09:45',
           status: 'pendente'
         },
@@ -1439,8 +1439,8 @@ Equipe Anjinho Escolar`
           id: 'task_s_dirigida_' + idosoId,
           idosoId,
           tipo: 'atividade_fisica',
-          titulo: 'Atividade Dirigida Temática (BNCC) ',
-          descricao: 'Atividade prática pedagógica com foco no desenvolvimento cognitivo e sensorial.',
+          titulo: 'Atividade Dirigida Tematica (BNCC) ',
+          descricao: 'Atividade pratica pedagogica com foco no desenvolvimento cognitivo e sensorial.',
           horarioPrevisto: '10:30',
           status: 'pendente'
         },
@@ -1448,8 +1448,8 @@ Equipe Anjinho Escolar`
           id: 'task_s_almoco_' + idosoId,
           idosoId,
           tipo: 'alimentacao',
-          titulo: 'Almoço Saudável / Papinha ',
-          descricao: 'Pratinho balanceado, introdução de novos sabores, verduras e carninha desfiada.',
+          titulo: 'Almoco Saudavel / Papinha ',
+          descricao: 'Pratinho balanceado, introducao de novos sabores, verduras e carninha desfiada.',
           horarioPrevisto: '11:30',
           status: 'pendente'
         },
@@ -1457,8 +1457,8 @@ Equipe Anjinho Escolar`
           id: 'task_s_higiene_escovacao_' + idosoId,
           idosoId,
           tipo: 'banho',
-          titulo: 'Higiene, Fraldas & Escovação ',
-          descricao: 'Troca de fraldas, lavagem das mãos e estímulo À escovação dental com carinho.',
+          titulo: 'Higiene, Fraldas & Escovacao ',
+          descricao: 'Troca de fraldas, lavagem das maos e estimulo A escovacao dental com carinho.',
           horarioPrevisto: '12:15',
           status: 'pendente'
         },
@@ -1467,7 +1467,7 @@ Equipe Anjinho Escolar`
           idosoId,
           tipo: 'sono',
           titulo: 'Soneca & Repouso Restaurador ',
-          descricao: 'Descanso nos colchonetes individuais com ambiente calmo, iluminação suave e música relaxante.',
+          descricao: 'Descanso nos colchonetes individuais com ambiente calmo, iluminacao suave e musica relaxante.',
           horarioPrevisto: '12:30',
           status: 'pendente'
         },
@@ -1476,7 +1476,7 @@ Equipe Anjinho Escolar`
           idosoId,
           tipo: 'alimentacao',
           titulo: 'Lanche da Tarde & Frutinhas ',
-          descricao: 'Frutas frescas da época fatiadas, biscoito integral e hidratação da tarde.',
+          descricao: 'Frutas frescas da epoca fatiadas, biscoito integral e hidratacao da tarde.',
           horarioPrevisto: '14:15',
           status: 'pendente'
         },
@@ -1484,8 +1484,8 @@ Equipe Anjinho Escolar`
           id: 'task_s_brincadeira_livre_' + idosoId,
           idosoId,
           tipo: 'atividade_fisica',
-          titulo: 'Brincadeira Livre & Socialização ',
-          descricao: 'Cantinhos temáticos com brinquedos educativos, blocos de montar e autonomia.',
+          titulo: 'Brincadeira Livre & Socializacao ',
+          descricao: 'Cantinhos tematicos com brinquedos educativos, blocos de montar e autonomia.',
           horarioPrevisto: '14:45',
           status: 'pendente'
         },
@@ -1493,7 +1493,7 @@ Equipe Anjinho Escolar`
           id: 'task_s_historias_' + idosoId,
           idosoId,
           tipo: 'atividade_fisica',
-          titulo: 'Contação de Histórias & Música ',
+          titulo: 'Contacao de Historias & Musica ',
           descricao: 'Leitura de livros ilustrados, fantoches e cantigas de roda.',
           horarioPrevisto: '15:30',
           status: 'pendente'
@@ -1502,8 +1502,8 @@ Equipe Anjinho Escolar`
           id: 'task_s_saida_' + idosoId,
           idosoId,
           tipo: 'atividade_fisica',
-          titulo: 'Preparação para Saída & Despedida Afetiva ',
-          descricao: 'Organização das mochilinhas, fechamento da agenda do dia e entrega afetiva aos familiares.',
+          titulo: 'Preparacao para Saida & Despedida Afetiva ',
+          descricao: 'Organizacao das mochilinhas, fechamento da agenda do dia e entrega afetiva aos familiares.',
           horarioPrevisto: '16:00',
           status: 'pendente'
         }
@@ -1514,8 +1514,8 @@ Equipe Anjinho Escolar`
           id: 'task_m_losartana',
           idosoId,
           tipo: 'medicacao',
-          titulo: 'Losartana Potássica (Pressão)',
-          descricao: 'Dosagem: 50mg - 1 comprimido. Dar com meio copo d\'água.',
+          titulo: 'Losartana Potassica (Pressao)',
+          descricao: 'Dosagem: 50mg - 1 comprimido. Dar com meio copo d\'agua.',
           horarioPrevisto: '08:00',
           status: 'pendente'
         },
@@ -1523,8 +1523,8 @@ Equipe Anjinho Escolar`
           id: 'task_m_cafe',
           idosoId,
           tipo: 'alimentacao',
-          titulo: 'Café da manhã',
-          descricao: 'Geleia sem açúcar com pão integral + café com leite descascar.',
+          titulo: 'Cafe da manha',
+          descricao: 'Geleia sem acucar com pao integral + cafe com leite descascar.',
           horarioPrevisto: '08:30',
           status: 'pendente'
         },
@@ -1532,8 +1532,8 @@ Equipe Anjinho Escolar`
           id: 'task_m_alongamento',
           idosoId,
           tipo: 'atividade_fisica',
-          titulo: 'Alongamento Leve e Exercício Funcional',
-          descricao: '20 a 30 minutos de alongamento guiado e exercícios de mobilidade funcional.',
+          titulo: 'Alongamento Leve e Exercicio Funcional',
+          descricao: '20 a 30 minutos de alongamento guiado e exercicios de mobilidade funcional.',
           horarioPrevisto: '09:30',
           status: 'pendente'
         },
@@ -1542,7 +1542,7 @@ Equipe Anjinho Escolar`
           idosoId,
           tipo: 'banho',
           titulo: 'Banho & Higiene Geral',
-          descricao: 'Banho morno assistido, hidratação da pele e troca de roupas limpas.',
+          descricao: 'Banho morno assistido, hidratacao da pele e troca de roupas limpas.',
           horarioPrevisto: '10:00',
           status: 'pendente',
           observacao: ''
@@ -1551,8 +1551,8 @@ Equipe Anjinho Escolar`
           id: 'task_m_calcio',
           idosoId,
           tipo: 'medicacao',
-          titulo: 'Cálcio + Vitamina D',
-          descricao: 'Dosagem: 1 sachet diluído em 100ml de água ou suco junto ao almoço.',
+          titulo: 'Calcio + Vitamina D',
+          descricao: 'Dosagem: 1 sachet diluido em 100ml de agua ou suco junto ao almoco.',
           horarioPrevisto: '12:30',
           status: 'pendente',
           observacao: ''
@@ -1561,8 +1561,8 @@ Equipe Anjinho Escolar`
           id: 'task_m_almoco',
           idosoId,
           tipo: 'alimentacao',
-          titulo: 'Almoço',
-          descricao: 'Arroz integral, purê de abóbora, filé de frango desfiado e brócolis cozido ao vapor.',
+          titulo: 'Almoco',
+          descricao: 'Arroz integral, pure de abobora, file de frango desfiado e brocolis cozido ao vapor.',
           horarioPrevisto: '12:30',
           status: 'pendente',
           observacao: ''
@@ -1571,8 +1571,8 @@ Equipe Anjinho Escolar`
           id: 'task_m_hidra_tarde',
           idosoId,
           tipo: 'hidratacao',
-          titulo: 'Copos d\'Água da Tarde',
-          descricao: 'Oferecer 250ml de água gelada.',
+          titulo: 'Copos d\'Agua da Tarde',
+          descricao: 'Oferecer 250ml de agua gelada.',
           horarioPrevisto: '15:00',
           status: 'pendente',
           observacao: ''
@@ -1595,7 +1595,7 @@ Equipe Anjinho Escolar`
           idosoId,
           tipo: 'medicacao',
           titulo: 'Metformina (Glicofage)',
-          descricao: 'Dosagem: 850mg após o café da manhã.',
+          descricao: 'Dosagem: 850mg apos o cafe da manha.',
           horarioPrevisto: '08:00',
           status: 'pendente'
         },
@@ -1603,8 +1603,8 @@ Equipe Anjinho Escolar`
           id: 'task_j_cafe',
           idosoId,
           tipo: 'alimentacao',
-          titulo: 'Café da manhã',
-          descricao: 'Ovos mexidos sem óleo, torrada de centeio e café preto adoçado.',
+          titulo: 'Cafe da manha',
+          descricao: 'Ovos mexidos sem oleo, torrada de centeio e cafe preto adocado.',
           horarioPrevisto: '08:00',
           status: 'pendente'
         },
@@ -1613,7 +1613,7 @@ Equipe Anjinho Escolar`
           idosoId,
           tipo: 'medicacao',
           titulo: 'Daflon 1000mg',
-          descricao: '1 comprimido para circulação.',
+          descricao: '1 comprimido para circulacao.',
           horarioPrevisto: '09:00',
           status: 'pendente'
         },
@@ -1631,7 +1631,7 @@ Equipe Anjinho Escolar`
           id: 'task_j_hidratacao',
           idosoId,
           tipo: 'hidratacao',
-          titulo: 'Insistir na Água Sênior',
+          titulo: 'Insistir na Agua Senior',
           descricao: 'Oferecer copo de 300ml.',
           horarioPrevisto: '11:00',
           status: 'pendente',
@@ -1641,7 +1641,7 @@ Equipe Anjinho Escolar`
           id: 'task_j_almoco',
           idosoId,
           tipo: 'alimentacao',
-          titulo: 'Almoço Balanceado',
+          titulo: 'Almoco Balanceado',
           descricao: 'Salada de folhas verdes, batata doce assada, peixe grelhado.',
           horarioPrevisto: '12:15',
           status: 'pendente',
@@ -1664,21 +1664,21 @@ Equipe Anjinho Escolar`
     if (criticalOccurrences.length > 0) {
       return {
         color: '#EB5757',
-        label: isEscolar ? 'Ocorrência escolar crítica' : 'Ocorrência crítica registrada',
+        label: isEscolar ? 'Ocorrencia escolar critica' : 'Ocorrencia critica registrada',
         bg: 'bg-rose-50 border-rose-350',
         text: 'text-rose-900',
-        details: `Há ${criticalOccurrences.length} ocorrência(s) crítica(s) registrada(s) neste turno. Recomenda-se atenção imediata.`,
+        details: `Ha ${criticalOccurrences.length} ocorrencia(s) critica(s) registrada(s) neste turno. Recomenda-se atencao imediata.`,
         status: 'vermelho'
       };
     } else if (atrasadas > 0 || recusadas > 0 || occurrencesList.some(o => o.criticidade === 'amarelo')) {
       return {
         color: '#F2C94C',
-        label: isEscolar ? 'Atenção necessária' : 'Atenção necessária',
+        label: isEscolar ? 'Atencao necessaria' : 'Atencao necessaria',
         bg: 'bg-amber-50 border-amber-300',
         text: 'text-amber-900',
         details: isEscolar
           ? `Rotina sob monitoramento. Registramos ${atrasadas} atividade(s) pendente(s) ou ${recusadas} recusa(s) para acompanhamento dos pais.`
-          : `Rotina sob monitoramento. Registramos ${atrasadas} item(ns) pendente(s) ou ${recusadas} recusa(s) de cuidado para acompanhamento da família.`,
+          : `Rotina sob monitoramento. Registramos ${atrasadas} item(ns) pendente(s) ou ${recusadas} recusa(s) de cuidado para acompanhamento da familia.`,
         status: 'amarelo'
       };
     } else {
@@ -1755,9 +1755,9 @@ Equipe Anjinho Escolar`
 
   const getRefeicaoFromTitle = (title: string): 'cafe_manha' | 'almoco' | 'lanche' | 'lanche_tarde' | 'jantar' | 'ceia' | 'mamadeira' => {
     const lower = (title || '').toLowerCase();
-    if (lower.includes('mamadeira') || lower.includes('fórmula') || lower.includes('formula')) return 'mamadeira';
-    if (lower.includes('café') || lower.includes('cafe') || lower.includes('desjejum') || lower.includes('manhã') || lower.includes('manha')) return 'cafe_manha';
-    if (lower.includes('almoço') || lower.includes('almoco') || lower.includes('papinha')) return 'almoco';
+    if (lower.includes('mamadeira') || lower.includes('formula') || lower.includes('formula')) return 'mamadeira';
+    if (lower.includes('cafe') || lower.includes('cafe') || lower.includes('desjejum') || lower.includes('manha') || lower.includes('manha')) return 'cafe_manha';
+    if (lower.includes('almoco') || lower.includes('almoco') || lower.includes('papinha')) return 'almoco';
     if (lower.includes('tarde') || lower.includes('merenda') || lower.includes('lanche da tarde') || lower.includes('lanchinho')) return 'lanche_tarde';
     if (lower.includes('jantar') || lower.includes('janta')) return 'jantar';
     if (lower.includes('ceia')) return 'ceia';
@@ -1820,7 +1820,7 @@ Equipe Anjinho Escolar`
       const ativs = getFromDB<RegistroAtividade[]>('anjo_atividades', []);
       if (action === 'concluido') {
         const fullObs = task.descricao 
-          ? (commentText ? `${task.descricao}\n\nObservação do Educador: ${commentText}` : task.descricao)
+          ? (commentText ? `${task.descricao}\n\nObservacao do Educador: ${commentText}` : task.descricao)
           : (commentText || 'Atividade realizada com sucesso.');
         ativs.push({
           id: 'ati_dash_' + Date.now(),
@@ -1850,24 +1850,24 @@ Equipe Anjinho Escolar`
     if (['alimentacao', 'banho', 'medicacao', 'hidratacao'].includes(task.tipo)) {
       const auth = checkFeedingCareAuthorization();
       if (!auth.isAuthorized) {
-        alert(` ⚠  Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não tem permissão para registrar ou realizar esta atividade.`);
+        alert(` [!]  Operacao Nao Autorizada: Nenhum pai ou responsavel autorizou "Alimentacao e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora nao tem permissao para registrar ou realizar esta atividade.`);
         return;
       }
     }
 
     if (isAbsent) {
       unlockAndMarkPresent();
-      showToast(`Presença ativada para ${idoso.nome}!`, 'success');
+      showToast(`Presenca ativada para ${idoso.nome}!`, 'success');
     }
 
     // Check if refusal and comment is blank
     if (targetStatus === 'recusado' && !comment.trim()) {
-      alert(" ⚠  Atenção: Por favor, preencha o campo de observações com a justificativa técnica para a recusa ou não-administração do cuidado!");
+      alert(" [!]  Atencao: Por favor, preencha o campo de observacoes com a justificativa tecnica para a recusa ou nao-administracao do cuidado!");
       return;
     }
 
     if (!simulatedOnline) {
-      //  REGISTRO OFFLINE: Salvar na Fila com segurança
+      //  REGISTRO OFFLINE: Salvar na Fila com seguranca
       const novoItemOffline: ItemFilaOffline = {
         id_local: 'offline_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
         idoso_id: idoso.id,
@@ -1913,7 +1913,7 @@ Equipe Anjinho Escolar`
       logs.unshift({
         id: 'log_' + Date.now(),
         autor: usuarioAtual.nome,
-        acao: `Registro de Saúde Offline - ID: ${taskId} [${targetStatus.toUpperCase()}]`,
+        acao: `Registro de Saude Offline - ID: ${taskId} [${targetStatus.toUpperCase()}]`,
         data: new Date().toLocaleString('pt-BR'),
         ip: '10.0.2.15 (Celular Cuidador - em fila local)',
         detalhes: `Registros salvos localmente no IndexedDB e pendentes de sincronismo.`
@@ -1929,10 +1929,10 @@ Equipe Anjinho Escolar`
     const updated = tarefas.map(t => {
       if (t.id === taskId) {
         const detailStr = comment ? ` Relato: "${comment}".` : '';
-        const actionText = targetStatus === 'concluido' ? 'concluída' : ' ⚠  RECUSADA (Registrado com Justificativa)';
+        const actionText = targetStatus === 'concluido' ? 'concluida' : ' [!]  RECUSADA (Registrado com Justificativa)';
         const msg = `Anjo Cuidador: A atividade "${t.titulo}" de ${idoso.nome} foi registrada como ${actionText} por ${usuarioAtual.nome}.${detailStr}`;
         
-        triggerWhatsAppSim(t.titulo + ' ' + (targetStatus === 'concluido' ? 'Concluído' : 'Recusado'), msg);
+        triggerWhatsAppSim(t.titulo + ' ' + (targetStatus === 'concluido' ? 'Concluido' : 'Recusado'), msg);
 
         return {
           ...t,
@@ -1966,8 +1966,8 @@ Equipe Anjinho Escolar`
       autor: usuarioAtual.nome,
       acao: `Registro de Rastreabilidade Online - ID: ${taskId} [${targetStatus.toUpperCase()}]`,
       data: new Date().toLocaleString('pt-BR'),
-      ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1) + ' (IP Móvel)',
-      detalhes: `Ação transmitida via HTTPS com segurança de ponta a ponta.`
+      ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1) + ' (IP Movel)',
+      detalhes: `Acao transmitida via HTTPS com seguranca de ponta a ponta.`
     });
     saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
     setLgpdLogs(logs);
@@ -2014,10 +2014,10 @@ Equipe Anjinho Escolar`
       queda: 'Queda',
       febre: 'Febre',
       dor: 'Dor',
-      recusa_medicacao: 'Recusa de medicação',
+      recusa_medicacao: 'Recusa de medicacao',
       recusa_alimentar: 'Recusa alimentar',
-      comportamento: 'Alteração de comportamento',
-      pressao: 'Pressão alterada',
+      comportamento: 'Alteracao de comportamento',
+      pressao: 'Pressao alterada',
       outro: 'Outro'
     };
     const tipoLabel = tipoMap[occurrenceForm.tipo] || occurrenceForm.tipo;
@@ -2027,30 +2027,30 @@ Equipe Anjinho Escolar`
     logs.unshift({
       id: 'log_' + Date.now(),
       autor: usuarioAtual.nome,
-      acao: `Registro de Ocorrência Atípica - [${tipoLabel}]`,
+      acao: `Registro de Ocorrencia Atipica - [${tipoLabel}]`,
       data: new Date().toLocaleString('pt-BR'),
       ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-      detalhes: `Intercorrência salva no histórico de cuidado de ${idoso.nome}: "${occurrenceForm.descricao}".`
+      detalhes: `Intercorrencia salva no historico de cuidado de ${idoso.nome}: "${occurrenceForm.descricao}".`
     });
     saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
     setLgpdLogs(logs);
 
     // Custom High-Fidelity message design layout requested by the user
-    const msg = ` *Anjo Cuidador  Intercorrência registrada* 
+    const msg = ` *Anjo Cuidador  Intercorrencia registrada* 
 
-Olá, família.
-Foi registrada uma intercorrência com *${idoso.nome}*.
+Ola, familia.
+Foi registrada uma intercorrencia com *${idoso.nome}*.
 
 *Tipo:* ${tipoLabel}
-*Horário:* ${novaOcorrencia.horario}
+*Horario:* ${novaOcorrencia.horario}
 *Cuidador(a):* ${usuarioAtual.nome}
-*Descrição:* ${occurrenceForm.descricao}
+*Descricao:* ${occurrenceForm.descricao}
 
-*Recomendação:* entrar em contato com a cuidadora para alinhamento.
+*Recomendacao:* entrar em contato com a cuidadora para alinhamento.
 
 _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
 
-    triggerWhatsAppSim('ALERTA ATÍPICO', msg);
+    triggerWhatsAppSim('ALERTA ATIPICO', msg);
 
     // Reset status fields
     setOccurrenceForm({ tipo: 'queda', criticidade: 'amarelo', descricao: '' });
@@ -2078,8 +2078,8 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
         const logs = getFromDB<any[]>(`anjo_lgpd_auditoria_${idoso.id}`, []);
         const tipoMap: { [key: string]: string } = {
           queda: 'Queda', febre: 'Febre', dor: 'Dor',
-          recusa_medicacao: 'Recusa de medicação', recusa_alimentar: 'Recusa alimentar',
-          comportamento: 'Alteração de comportamento', pressao: 'Pressão alterada', outro: 'Outro'
+          recusa_medicacao: 'Recusa de medicacao', recusa_alimentar: 'Recusa alimentar',
+          comportamento: 'Alteracao de comportamento', pressao: 'Pressao alterada', outro: 'Outro'
         };
         const label = tipoMap[list[idx].tipo] || list[idx].tipo;
 
@@ -2089,7 +2089,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
           acao: `WhatsApp aberto (Envio Assistido)`,
           data: new Date().toLocaleString('pt-BR'),
           ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-          detalhes: `Direcionado para o WhatsApp com rascunho de intercorrênciatipo de "${label}".`
+          detalhes: `Direcionado para o WhatsApp com rascunho de intercorrenciatipo de "${label}".`
         });
         saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
         setLgpdLogs(logs);
@@ -2110,8 +2110,8 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
 
         const tipoMap: { [key: string]: string } = {
           queda: 'Queda', febre: 'Febre', dor: 'Dor',
-          recusa_medicacao: 'Recusa de medicação', recusa_alimentar: 'Recusa alimentar',
-          comportamento: 'Alteração de comportamento', pressao: 'Pressão alterada', outro: 'Outro'
+          recusa_medicacao: 'Recusa de medicacao', recusa_alimentar: 'Recusa alimentar',
+          comportamento: 'Alteracao de comportamento', pressao: 'Pressao alterada', outro: 'Outro'
         };
         const label = tipoMap[list[idx].tipo] || list[idx].tipo;
 
@@ -2123,12 +2123,12 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
           acao: `Envio confirmado pelo cuidador`,
           data: new Date().toLocaleString('pt-BR'),
           ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-          detalhes: `Cuidador confirmou o envio correto da mensagem de intercorrência [${label}] para os familiares.`
+          detalhes: `Cuidador confirmou o envio correto da mensagem de intercorrencia [${label}] para os familiares.`
         });
         saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
         setLgpdLogs(logs);
 
-        // Alimentar o Feed de Logs do Simulador para transparência visual
+        // Alimentar o Feed de Logs do Simulador para transparencia visual
         const allNotif = getFromDB<any[]>('anjo_notificacoes', []);
         allNotif.push({
           id: 'notif_wa_' + Date.now(),
@@ -2148,14 +2148,14 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     alert('Auditoria atualizada! O status de envio confirmado pelo cuidador foi salvo no registro de rastreabilidade.');
   };
 
-  // Helper para o caso de não ter enviado
+  // Helper para o caso de nao ter enviado
   const handleNotSentYet = () => {
     setShowManualOccurrenceShareModal(false);
     setManualShareOccurrenceMessage(null);
     setActiveSharingOccurrenceId(null);
   };
 
-  // Copiar mensagem para área de transferência
+  // Copiar mensagem para area de transferencia
   const handleCopyMessage = () => {
     if (manualShareOccurrenceMessage) {
       navigator.clipboard.writeText(manualShareOccurrenceMessage).then(() => {
@@ -2177,7 +2177,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
   // Reset task execution back to pending
   const handleResetTask = async (taskId: string) => {
     if (!isStaffUser(usuarioAtual)) {
-      alert(" ⚠  Operação Bloqueada: Familiares não têm permissão para desfazer ou alterar atividades!");
+      alert(" [!]  Operacao Bloqueada: Familiares nao tem permissao para desfazer ou alterar atividades!");
       return;
     }
     if (!isShiftActive) {
@@ -2215,7 +2215,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     logs.unshift({
       id: 'log_' + Date.now(),
       autor: usuarioAtual.nome,
-      acao: `Anulação de Ação de Cuidado - ID: ${taskId}`,
+      acao: `Anulacao de Acao de Cuidado - ID: ${taskId}`,
       data: new Date().toLocaleString('pt-BR'),
       ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
       detalhes: `Status retornado para PENDENTE por auditoria direta do cuidador.`
@@ -2276,8 +2276,8 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
         else if (item.titulo.includes('ceia')) parsedRefeicao = 'ceia';
         
         if (item.titulo.toLowerCase().includes('mamadeira')) parsedRefeicao = 'mamadeira';
-        else if (item.titulo.toLowerCase().includes('café') || item.titulo.toLowerCase().includes('cafe') || item.titulo.toLowerCase().includes('desjejum') || item.titulo.toLowerCase().includes('lanchinho')) parsedRefeicao = 'cafe_manha';
-        else if (item.titulo.toLowerCase().includes('almoço') || item.titulo.toLowerCase().includes('papinha') || item.titulo.toLowerCase().includes('almocinho')) parsedRefeicao = 'almoco';
+        else if (item.titulo.toLowerCase().includes('cafe') || item.titulo.toLowerCase().includes('cafe') || item.titulo.toLowerCase().includes('desjejum') || item.titulo.toLowerCase().includes('lanchinho')) parsedRefeicao = 'cafe_manha';
+        else if (item.titulo.toLowerCase().includes('almoco') || item.titulo.toLowerCase().includes('papinha') || item.titulo.toLowerCase().includes('almocinho')) parsedRefeicao = 'almoco';
         else if (item.titulo.toLowerCase().includes('lanche') || item.titulo.toLowerCase().includes('frutinha')) parsedRefeicao = 'lanche';
         else if (item.titulo.toLowerCase().includes('jantar') || item.titulo.toLowerCase().includes('jantinha')) parsedRefeicao = 'jantar';
         else if (item.titulo.toLowerCase().includes('ceia')) parsedRefeicao = 'ceia';
@@ -2285,7 +2285,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
         // Parse aceitacao dynamically from observacao
         let parsedAceitacao = 'muito_bem';
         if (item.observacao.includes('muito_bem')) parsedAceitacao = 'muito_bem';
-        else if (item.observacao.includes('aceitacao: pouco') || item.observacao.includes('Aceitação: pouco') || item.observacao.includes('pouco')) parsedAceitacao = 'pouco';
+        else if (item.observacao.includes('aceitacao: pouco') || item.observacao.includes('Aceitacao: pouco') || item.observacao.includes('pouco')) parsedAceitacao = 'pouco';
         else if (item.observacao.includes('recusou')) parsedAceitacao = 'recusou';
         else if (item.status === 'recusado') parsedAceitacao = 'recusou';
 
@@ -2325,17 +2325,17 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     logs.unshift({
       id: 'log_' + Date.now(),
       autor: usuarioAtual.nome,
-      acao: `Sincronismo Coletivo de Banco Offline (Fila: ${pendentes.length} ações)`,
+      acao: `Sincronismo Coletivo de Banco Offline (Fila: ${pendentes.length} acoes)`,
       data: new Date().toLocaleString('pt-BR'),
-      ip: '177.10.150.12 (Sincronismo Móvel)',
-      detalhes: `Dados integrados com sucesso. Auditoria de registros de segurança concluída sem quebras de integridade.`
+      ip: '177.10.150.12 (Sincronismo Movel)',
+      detalhes: `Dados integrados com sucesso. Auditoria de registros de seguranca concluida sem quebras de integridade.`
     });
     saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
     setLgpdLogs(logs);
     
     // Notify Server simulated WhatsApp of sync batch
-    const msg = `Anjo Cuidador: Sincronização offline concluída com sucesso! ${pendentes.length} ações salvas pelo cuidador foram enviadas com integridade auditável ao servidor.`;
-    triggerWhatsAppSim('Sincronização Offline Auditoria', msg);
+    const msg = `Anjo Cuidador: Sincronizacao offline concluida com sucesso! ${pendentes.length} acoes salvas pelo cuidador foram enviadas com integridade auditavel ao servidor.`;
+    triggerWhatsAppSim('Sincronizacao Offline Auditoria', msg);
 
     // Refresh view
     loadTasks();
@@ -2350,8 +2350,8 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     if (found) {
       return found.name;
     }
-    if (name.includes('Berçário I')) return 'Berçário I';
-    if (name.includes('Berçário II')) return 'Berçário II';
+    if (name.includes('Bercario I')) return 'Bercario I';
+    if (name.includes('Bercario II')) return 'Bercario II';
     if (name.includes('Maternal II')) return 'Maternal II';
     if (name.includes('Maternal I')) return 'Maternal I';
     if (name.includes('Jardim II')) return 'Jardim II';
@@ -2363,7 +2363,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
   const handleAddCustomTask = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isStaffUser(usuarioAtual)) {
-      alert(" ⚠  Operação Bloqueada: Familiares não têm permissão para criar atividades ou alterar a rotina!");
+      alert(" [!]  Operacao Bloqueada: Familiares nao tem permissao para criar atividades ou alterar a rotina!");
       return;
     }
     if (!isShiftActive) {
@@ -2371,10 +2371,10 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     }
     if (isAbsent) {
       unlockAndMarkPresent();
-      showToast(`Presença ativada para ${idoso.nome}!`, 'success');
+      showToast(`Presenca ativada para ${idoso.nome}!`, 'success');
     }
     if (!newTaskForm.titulo.trim() || !newTaskForm.horarioPrevisto.trim()) {
-      alert("Por favor, preencha o título e o horário previsto!");
+      alert("Por favor, preencha o titulo e o horario previsto!");
       return;
     }
     
@@ -2412,7 +2412,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
           acao: `Atividade Coletiva adicionada por ${usuarioAtual.nome}: ${newTaskForm.titulo}`,
           data: new Date().toLocaleString('pt-BR'),
           ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-          detalhes: `Atividade coletiva de tipo ${newTaskForm.tipo} para toda a classe (${currentClassroom}) agendada para Às ${newTaskForm.horarioPrevisto}.`
+          detalhes: `Atividade coletiva de tipo ${newTaskForm.tipo} para toda a classe (${currentClassroom}) agendada para As ${newTaskForm.horarioPrevisto}.`
         });
         saveToDB(`anjo_lgpd_auditoria_${student.id}`, studentLogs);
       });
@@ -2435,7 +2435,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
       logs.unshift({
         id: 'log_' + Date.now(),
         autor: usuarioAtual.nome,
-        acao: isEscolar ? `Adicionou atividade À agenda escolar: ${newTask.titulo}` : `Adicionou nova tarefa de cuidado: ${newTask.titulo}`,
+        acao: isEscolar ? `Adicionou atividade A agenda escolar: ${newTask.titulo}` : `Adicionou nova tarefa de cuidado: ${newTask.titulo}`,
         data: new Date().toLocaleString('pt-BR'),
         ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
         detalhes: `Atividade de tipo ${newTask.tipo} agendada para ${newTask.horarioPrevisto}`
@@ -2466,7 +2466,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     if (isEscolar && taskScope === 'coletivo') {
       alert(` Atividade coletiva adicionada com sucesso para todos os ${createdCount} alunos da sala!`);
     } else {
-      alert("Atividade adicionada À agenda do turno com sucesso!");
+      alert("Atividade adicionada A agenda do turno com sucesso!");
     }
   };
 
@@ -2479,7 +2479,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     setIsParsingAuraWeekly(true);
 
     try {
-      // 1. Extração Local Imediata de Ultra-Velocidade (< 2ms)
+      // 1. Extracao Local Imediata de Ultra-Velocidade (< 2ms)
       const localParsed = parseAuraRawPlan(auraWeeklyText);
       if (localParsed.metadata) {
         setAuraDetectedMeta(localParsed.metadata);
@@ -2496,7 +2496,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
           titulo: act.titulo,
           descricao: act.descricao,
           horario: act.horario,
-          objetivoBNCC: act.objetivoBNCC || 'BNCC Educação Infantil',
+          objetivoBNCC: act.objetivoBNCC || 'BNCC Educacao Infantil',
           materiais: act.materiais || []
         }));
         setParsedAuraTasks(list);
@@ -2505,7 +2505,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
         return;
       }
 
-      // 2. Se o parser local não encontrou blocos padrões, tenta a API com timeout rápido de 4s
+      // 2. Se o parser local nao encontrou blocos padroes, tenta a API com timeout rapido de 4s
       const customKey = localStorage.getItem('aura_gemini_key') || undefined;
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 4000);
@@ -2536,7 +2536,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
         }
 
         const formattedList = data.activities.map((a: any) => {
-          const rawTitle = typeof a.title === 'string' ? a.title : 'Atividade Pedagógica';
+          const rawTitle = typeof a.title === 'string' ? a.title : 'Atividade Pedagogica';
           const instStr = typeof a.instructions === 'string' && a.instructions.trim().length > 0
             ? a.instructions
             : (typeof a.descricao === 'string' && a.descricao.trim().length > 0
@@ -2559,9 +2559,9 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
             turma: a.targetClass || data.metadata?.targetClass || localParsed.metadata.turma,
             tipo: cat,
             titulo: cleanTitle,
-            descricao: instStr || `Atividade pedagógica planejada para as ${timeStr}.`,
+            descricao: instStr || `Atividade pedagogica planejada para as ${timeStr}.`,
             horario: timeStr,
-            objetivoBNCC: a.bnccObjective || 'BNCC Educação Infantil',
+            objetivoBNCC: a.bnccObjective || 'BNCC Educacao Infantil',
             materiais: Array.isArray(a.materials) ? a.materials : []
           };
         });
@@ -2602,9 +2602,9 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     if (count > 0) {
       saveToDB('anjo_tarefas_diarias', fixed);
       setTarefas(fixed.filter(t => t.idosoId === idoso.id));
-      alert(` Perfeito! ${count} atividade(s) foram corrigidas e realinhadas automaticamente com seus horários e nomes pedagógicos corretos!`);
+      alert(` Perfeito! ${count} atividade(s) foram corrigidas e realinhadas automaticamente com seus horarios e nomes pedagogicos corretos!`);
     } else {
-      alert(' Todas as atividades já estão 100% alinhadas com seus nomes e horários corretos!');
+      alert(' Todas as atividades ja estao 100% alinhadas com seus nomes e horarios corretos!');
     }
   };
 
@@ -2651,7 +2651,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     if (parsedAuraTasks.length === 0) return;
 
     if (!isStaffUser(usuarioAtual)) {
-      alert(" ⚠  Operação Bloqueada: Familiares não têm permissão para criar atividades!");
+      alert(" [!]  Operacao Bloqueada: Familiares nao tem permissao para criar atividades!");
       return;
     }
 
@@ -2683,14 +2683,14 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
       baseAtivs = allAtivs.filter(a => !targetStudentIds.has(a.idosoId));
     }
 
-    // Todas as atividades de todos os dias vão para o histórico/registro pedagógico completo (anjo_atividades)
+    // Todas as atividades de todos os dias vao para o historico/registro pedagogico completo (anjo_atividades)
     const newAtivsBatch: RegistroAtividade[] = [];
     const todayIso = getTodayIso();
 
-    // Determina quais tarefas entram na rotina diária do dia de hoje (anjo_tarefas_diarias)
-    // Se o usuário selecionou uma aba específica, usa aquele dia.
-    // Se selecionou "todos" ou não especificou, escolhe as tarefas do dia de hoje (ou primeiro dia) para a rotina diária sem repetição!
-    const DAY_NAMES = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
+    // Determina quais tarefas entram na rotina diaria do dia de hoje (anjo_tarefas_diarias)
+    // Se o usuario selecionou uma aba especifica, usa aquele dia.
+    // Se selecionou "todos" ou nao especificou, escolhe as tarefas do dia de hoje (ou primeiro dia) para a rotina diaria sem repeticao!
+    const DAY_NAMES = ['Domingo', 'Segunda-feira', 'Terca-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sabado'];
     const currentDayName = DAY_NAMES[new Date().getDay()];
     
     let dailyTasksToApply = tasksToApply;
@@ -2701,14 +2701,14 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
         if (todayMatch.length > 0) {
           dailyTasksToApply = todayMatch;
         } else {
-          // Se hoje não estiver no plano, usa o primeiro dia do plano como rotina diária
+          // Se hoje nao estiver no plano, usa o primeiro dia do plano como rotina diaria
           const firstDay = distinctDays[0];
           dailyTasksToApply = tasksToApply.filter(t => t.dia === firstDay || t.dataStr === firstDay);
         }
       }
     }
 
-    // Cria as atividades no histórico completo
+    // Cria as atividades no historico completo
     tasksToApply.forEach((pItem, pIdx) => {
       const taskDate = pItem.dataIso || todayIso;
       targetStudents.forEach((st, stIdx) => {
@@ -2733,7 +2733,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
       });
     });
 
-    // Cria as tarefas diárias para a agenda do dia, garantindo NUNCA duplicar mesmo horário + título
+    // Cria as tarefas diarias para a agenda do dia, garantindo NUNCA duplicar mesmo horario + titulo
     const newBatch: TarefaDiaria[] = [];
     const seenDailyKeys = new Set<string>();
 
@@ -2751,7 +2751,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
       const key = `${normTime}_${normTitle}`;
 
       if (seenDailyKeys.has(key)) {
-        return; // Pula duplicatas no mesmo horário
+        return; // Pula duplicatas no mesmo horario
       }
       seenDailyKeys.add(key);
 
@@ -2790,17 +2790,17 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     setIsAddingTask(false);
 
     const dayLabel = dayFilterOnly && dayFilterOnly !== 'todos' ? `do dia "${dayFilterOnly}"` : 'do Planejamento Semanal';
-    alert(` Sucesso! ${tasksToApply.length} atividade(s) ${dayLabel} foram agendadas com todas as informações completas (data, horário, título, descrição detalhada, BNCC e materiais) para ${targetStudents.length} aluno(s)!`);
+    alert(` Sucesso! ${tasksToApply.length} atividade(s) ${dayLabel} foram agendadas com todas as informacoes completas (data, horario, titulo, descricao detalhada, BNCC e materiais) para ${targetStudents.length} aluno(s)!`);
   };
 
   const handleEditTaskSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isStaffUser(usuarioAtual)) {
-      alert(" ⚠  Operação Bloqueada: Familiares não têm permissão para editar atividades!");
+      alert(" [!]  Operacao Bloqueada: Familiares nao tem permissao para editar atividades!");
       return;
     }
     if (!editingTaskForm.titulo.trim() || !editingTaskForm.horarioPrevisto.trim()) {
-      alert("Por favor, preencha o título e o horário previsto!");
+      alert("Por favor, preencha o titulo e o horario previsto!");
       return;
     }
 
@@ -2831,7 +2831,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
       acao: isEscolar ? `Editou atividade da agenda escolar: ${editingTaskForm.titulo}` : `Editou tarefa de cuidado: ${editingTaskForm.titulo}`,
       data: new Date().toLocaleString('pt-BR'),
       ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-      detalhes: `Novos dados - Título: ${editingTaskForm.titulo}, Horário: ${editingTaskForm.horarioPrevisto}`
+      detalhes: `Novos dados - Titulo: ${editingTaskForm.titulo}, Horario: ${editingTaskForm.horarioPrevisto}`
     });
     saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
 
@@ -2844,7 +2844,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
       e.stopPropagation();
     }
     if (!isStaffUser(usuarioAtual)) {
-      alert(" ⚠  Operação Bloqueada: Familiares não têm permissão para excluir atividades!");
+      alert(" [!]  Operacao Bloqueada: Familiares nao tem permissao para excluir atividades!");
       return;
     }
     const description = isEscolar 
@@ -2852,7 +2852,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
       : `Deseja realmente excluir permanentemente a tarefa "${taskTitle}"?`;
 
     triggerConfirm(
-      'Confirmar Remoção',
+      'Confirmar Remocao',
       description,
       () => {
         const allTasks = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
@@ -2878,7 +2878,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
           acao: isEscolar ? `Removeu atividade da agenda escolar: ${taskTitle}` : `Excluiu tarefa de cuidado: ${taskTitle}`,
           data: new Date().toLocaleString('pt-BR'),
           ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-          detalhes: `A tarefa foi removida da agenda diária.`
+          detalhes: `A tarefa foi removida da agenda diaria.`
         });
         saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
 
@@ -2895,7 +2895,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     const studentTasks = allTasks.filter(t => t.idosoId === idoso.id);
 
     if (studentTasks.length === 0) {
-      alert("Não há atividades na agenda deste aluno para verificar.");
+      alert("Nao ha atividades na agenda deste aluno para verificar.");
       return;
     }
 
@@ -2917,8 +2917,8 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
         removedCount++;
         const ex = dedupedStudentTasks[existingIndex];
         const isGeneric = (title: string) => 
-          /^(atividade|atividade dirigida|atividade pedagógica|refeição|lanche|tarefa)$/i.test((title || '').replace(/[^\w\s]/gi, '').trim()) ||
-          (title || '').toLowerCase().includes('temática (bncc)');
+          /^(atividade|atividade dirigida|atividade pedagogica|refeicao|lanche|tarefa)$/i.test((title || '').replace(/[^\w\s]/gi, '').trim()) ||
+          (title || '').toLowerCase().includes('tematica (bncc)');
 
         let bestTitle = ex.titulo;
         if (isGeneric(ex.titulo) && !isGeneric(t.titulo)) {
@@ -2946,7 +2946,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     });
 
     if (removedCount === 0) {
-      alert(" Nenhuma tarefa duplicada encontrada! Todas as atividades possuem horários ou títulos distintos.");
+      alert(" Nenhuma tarefa duplicada encontrada! Todas as atividades possuem horarios ou titulos distintos.");
       return;
     }
 
@@ -2959,7 +2959,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
   };
 
   const handleResetToDefaultTasks = () => {
-    if (!confirm('Deseja restaurar a rotina padrão recomendada de horários? As atividades atuais serão substituídas pelo cronograma padrão da turma.')) {
+    if (!confirm('Deseja restaurar a rotina padrao recomendada de horarios? As atividades atuais serao substituidas pelo cronograma padrao da turma.')) {
       return;
     }
     const allTasks = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
@@ -2971,7 +2971,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
     setTarefas(generated);
     window.dispatchEvent(new CustomEvent('anjo_user_updated'));
     window.dispatchEvent(new CustomEvent('db-routine-update'));
-    alert(' Rotina padrão restaurada com sucesso!');
+    alert(' Rotina padrao restaurada com sucesso!');
   };
 
   const handleClearAllTasks = () => {
@@ -2988,7 +2988,7 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
         targetStudents = roomStudents;
       }
     } else {
-      if (!confirm(`Deseja realmente limpar TODAS as atividades da agenda de ${idoso.nome} hoje? Você poderá adicionar novas atividades manuais ou importar o planejamento da Aura quando quiser.`)) {
+      if (!confirm(`Deseja realmente limpar TODAS as atividades da agenda de ${idoso.nome} hoje? Voce podera adicionar novas atividades manuais ou importar o planejamento da Aura quando quiser.`)) {
         return;
       }
     }
@@ -3068,18 +3068,18 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
 
   const handleToggleAbsence = () => {
     if (!isStaffUser(usuarioAtual)) {
-      alert(" ⚠  Operação Bloqueada: Apenas educadores/cuidadores autorizados podem registrar ou alterar faltas/ausências de alunos!");
+      alert(" [!]  Operacao Bloqueada: Apenas educadores/cuidadores autorizados podem registrar ou alterar faltas/ausencias de alunos!");
       return;
     }
     const nextAbsent = !isAbsent;
     
     if (nextAbsent) {
       const confirmMsg = isShiftActive 
-        ? `Tem certeza que deseja registrar Falta/Ausência para ${idoso.nome}? Como as aulas já foram iniciadas, marcar a falta irá limpar todo o histórico de atividades registrado hoje para ele e enviará o aviso de ausência aos pais.`
-        : `Deseja registrar Falta/Ausência para ${idoso.nome}? Isso enviará uma notificação de aviso de ausência aos pais.`;
+        ? `Tem certeza que deseja registrar Falta/Ausencia para ${idoso.nome}? Como as aulas ja foram iniciadas, marcar a falta ira limpar todo o historico de atividades registrado hoje para ele e enviara o aviso de ausencia aos pais.`
+        : `Deseja registrar Falta/Ausencia para ${idoso.nome}? Isso enviara uma notificacao de aviso de ausencia aos pais.`;
         
       triggerConfirm(
-        isEscolar ? 'Confirmar Registro de Falta' : 'Confirmar Registro de Ausência',
+        isEscolar ? 'Confirmar Registro de Falta' : 'Confirmar Registro de Ausencia',
         confirmMsg,
         () => {
           setIsAbsent(true);
@@ -3134,31 +3134,31 @@ _Mensagem preparada pelo aplicativo Anjo Cuidador._`;
           logs.unshift({
             id: 'log_' + Date.now(),
             autor: usuarioAtual.nome,
-            acao: `Registrado Falta / Ausência de Aluno`,
+            acao: `Registrado Falta / Ausencia de Aluno`,
             data: new Date().toLocaleString('pt-BR'),
             ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-            detalhes: `Aluno marcado como ausente hoje. O período ativo foi encerrado e os dados correntes foram limpos por solicitação.`
+            detalhes: `Aluno marcado como ausente hoje. O periodo ativo foi encerrado e os dados correntes foram limpos por solicitacao.`
           });
           saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
           setLgpdLogs(logs);
 
           // Trigger simulated WhatsApp message to parents
           const cleanName = idoso.nome.includes(' (') ? idoso.nome.split(' (')[0] : idoso.nome;
-          const abMsg = `Anjo Escolar  Aviso de Ausência
+          const abMsg = `Anjo Escolar  Aviso de Ausencia
           
-Olá. Registramos que o(a) aluno(a) *${cleanName}* não compareceu hoje Às atividades / aulas (Falta Justificada). 
+Ola. Registramos que o(a) aluno(a) *${cleanName}* nao compareceu hoje As atividades / aulas (Falta Justificada). 
 
-Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dúvida, estamos À disposição.`;
+Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvida, estamos A disposicao.`;
           
-          triggerWhatsAppSim('Aviso de Ausência e Falta Corrente', abMsg);
+          triggerWhatsAppSim('Aviso de Ausencia e Falta Corrente', abMsg);
           showToast(`Falta hoje registrada para ${cleanName}!`);
           window.dispatchEvent(new CustomEvent('anjo_user_updated'));
         }
       );
     } else {
       triggerConfirm(
-        isEscolar ? 'Confirmar Presença do Aluno(a)' : 'Confirmar Presença do Cliente',
-        `Tem certeza que deseja remover o registro de falta/ausência de hoje para ${idoso.nome}?`,
+        isEscolar ? 'Confirmar Presenca do Aluno(a)' : 'Confirmar Presenca do Cliente',
+        `Tem certeza que deseja remover o registro de falta/ausencia de hoje para ${idoso.nome}?`,
         () => {
           unlockAndMarkPresent(idoso.id);
           
@@ -3184,8 +3184,8 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
       e.preventDefault();
       e.stopPropagation();
       alert(isEscolar 
-        ? " ⚠  Período Letivo Não Iniciado!\n\nPor favor, clique no botão 'Iniciar Período' ou 'Iniciar Coletivo' no topo da página antes de lançar qualquer refeição, higiene, comportamento, medicamento ou saúde do aluno!" 
-        : " ⚠  Turno de Cuidados Não Iniciado!\n\nPor favor, clique no botão 'Iniciar Meu Turno de Cuidados' no topo da página antes de lançar qualquer controle de rotina, refeição, higiene ou saúde!"
+        ? " [!]  Periodo Letivo Nao Iniciado!\n\nPor favor, clique no botao 'Iniciar Periodo' ou 'Iniciar Coletivo' no topo da pagina antes de lancar qualquer refeicao, higiene, comportamento, medicamento ou saude do aluno!" 
+        : " [!]  Turno de Cuidados Nao Iniciado!\n\nPor favor, clique no botao 'Iniciar Meu Turno de Cuidados' no topo da pagina antes de lancar qualquer controle de rotina, refeicao, higiene ou saude!"
       );
     }
   };
@@ -3283,16 +3283,16 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
     logs.unshift({
       id: 'log_' + Date.now(),
       autor: usuarioAtual.nome,
-      acao: `Abertura oficial de Escala de Turno (Início do Plantão)`,
+      acao: `Abertura oficial de Escala de Turno (Inicio do Plantao)`,
       data: new Date().toLocaleString('pt-BR'),
       ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-      detalhes: `Escala de trabalho vinculada para provar presença e responsabilidade contratual.`
+      detalhes: `Escala de trabalho vinculada para provar presenca e responsabilidade contratual.`
     });
     saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
     setLgpdLogs(logs);
 
     // Simulated notify
-    const msg = `Anjo Cuidador: O Turno de cuidados para ${idoso.nome} foi INICIADO por ${usuarioAtual.nome} Às ${getNowTimeBr()}. Acompanhando em tempo real.`;
+    const msg = `Anjo Cuidador: O Turno de cuidados para ${idoso.nome} foi INICIADO por ${usuarioAtual.nome} As ${getNowTimeBr()}. Acompanhando em tempo real.`;
     triggerWhatsAppSim('Turno Iniciado', msg);
 
     if (typeof window !== 'undefined') {
@@ -3305,13 +3305,13 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
       window.dispatchEvent(new CustomEvent('db-activities-update'));
     }
 
-    showToast(` Cronômetro e período iniciados para ${idoso.nome.split(' (')[0]}! Todas as atividades do dia anterior foram zeradas para o novo dia.`, 'success');
+    showToast(` Cronometro e periodo iniciados para ${idoso.nome.split(' (')[0]}! Todas as atividades do dia anterior foram zeradas para o novo dia.`, 'success');
   };
 
   const handleStartShiftGroup = (className: string) => {
     try {
       const startTimeStamp = new Date().toISOString();
-      const targetClass = getStudentClassName(idoso) || className || (usuarioAtual?.salaAula && usuarioAtual.salaAula !== 'Todas' ? usuarioAtual.salaAula : 'Berçário I - A');
+      const targetClass = getStudentClassName(idoso) || className || (usuarioAtual?.salaAula && usuarioAtual.salaAula !== 'Todas' ? usuarioAtual.salaAula : 'Bercario I - A');
       
       // Unconditionally remove absence for the current selected senior since they are initiating a shift active state on their screen
       setIsAbsent(false);
@@ -3353,7 +3353,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
         startShiftUpdates.push({ targetKey: mate.id, active: true, startTime: startTimeStamp });
 
         saveToDB(`anjo_ocorrencias_${mate.id}`, []);
-        localStorage.removeItem(`anjo_almoço_pct_${mate.id}`);
+        localStorage.removeItem(`anjo_almoco_pct_${mate.id}`);
         localStorage.removeItem(`anjo_sleep_hr_${mate.id}`);
 
         saveToDB(`anjo_higiene_log_${mate.id}`, {
@@ -3420,10 +3420,10 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
         logs.unshift({
           id: 'log_' + Date.now() + '_' + Math.floor(Math.random() * 1000),
           autor: usuarioAtual?.nome || 'Educador(a)',
-          acao: `Abertura oficial de Período Letivo Coletivo (Iniciado para toda a Classe ${targetClass})`,
+          acao: `Abertura oficial de Periodo Letivo Coletivo (Iniciado para toda a Classe ${targetClass})`,
           data: new Date().toLocaleString('pt-BR'),
           ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-          detalhes: `Registro de aula sincronizado com todos os alunos da classe ${targetClass}. Atividades do dia anterior reiniciadas zeradas (preservados peso, temp e saturação).`
+          detalhes: `Registro de aula sincronizado com todos os alunos da classe ${targetClass}. Atividades do dia anterior reiniciadas zeradas (preservados peso, temp e saturacao).`
         });
         saveToDB(`anjo_lgpd_auditoria_${mate.id}`, logs);
       });
@@ -3480,23 +3480,23 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
       setLgpdLogs(logs);
 
       // Simulated notify for active student
-      const msg = `Anjo Escolar: O Período Letivo para todos os alunos presentes da classe ${targetClass} foi INICIADO por ${usuarioAtual?.nome || 'Educador(a)'} Às ${getNowTimeBr()} de forma coletiva.`;
+      const msg = `Anjo Escolar: O Periodo Letivo para todos os alunos presentes da classe ${targetClass} foi INICIADO por ${usuarioAtual?.nome || 'Educador(a)'} As ${getNowTimeBr()} de forma coletiva.`;
       triggerWhatsAppSim('Aulas Iniciadas em Grupo', msg);
       
-      showToast(`Aulas iniciadas com sucesso para todos os ${classmates.length} alunos presentes da classe ${targetClass}! Atividades do dia anterior foram zeradas, mantendo peso, temperatura e saturação.`, 'success');
+      showToast(`Aulas iniciadas com sucesso para todos os ${classmates.length} alunos presentes da classe ${targetClass}! Atividades do dia anterior foram zeradas, mantendo peso, temperatura e saturacao.`, 'success');
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('anjo_user_updated'));
         window.dispatchEvent(new CustomEvent('db-vitals-update'));
       }
     } catch (e: any) {
-      console.error('Erro ao iniciar período coletivo:', e);
+      console.error('Erro ao iniciar periodo coletivo:', e);
       showToast(`Erro ao iniciar aulas: ${e.message || e}`, 'warning');
     }
   };
 
   const handleEndShiftGroup = (className: string) => {
     if (!isStaffUser(usuarioAtual)) {
-      alert(" ⚠  Operação Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o período letivo coletivo!");
+      alert(" [!]  Operacao Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o periodo letivo coletivo!");
       return;
     }
     try {
@@ -3504,7 +3504,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
 
       triggerConfirm(
         'Encerrar Aulas Coletivo',
-        `Você tem certeza que deseja encerrar as aulas de todos os alunos da classe ${targetClass} ao mesmo tempo? Todos os diários de rotina serão finalizados.`,
+        `Voce tem certeza que deseja encerrar as aulas de todos os alunos da classe ${targetClass} ao mesmo tempo? Todos os diarios de rotina serao finalizados.`,
         () => {
           try {
             const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
@@ -3553,34 +3553,34 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
               const startHourStr = formatShiftTime(shiftStartTime, getNowTimeBr());
               const endHourStr = getNowTimeBr();
 
-              const mateMsg = ` A ÁRVORE DA INFÂNCIA HOJE:
-Hoje a árvore do(a) *${mateNameClean}* floresceu no Anjinho Escolar:
-  *Folhas verdes:* Nutrição balanceada e hidratação regular (${mateTotalMl}ml);
+              const mateMsg = ` A ARVORE DA INFANCIA HOJE:
+Hoje a arvore do(a) *${mateNameClean}* floresceu no Anjinho Escolar:
+  *Folhas verdes:* Nutricao balanceada e hidratacao regular (${mateTotalMl}ml);
   *Flores e borboletas:* Momento acolhedor de sono e descanso tranquilo;
-  *Frutos e passarinhos:* Atividades pedagógicas, trabalhinhos e aprendizados;
-  *Tronco forte:* Cuidados diários, higiene completa e saúde acompanhada de perto (36.5°C).
+  *Frutos e passarinhos:* Atividades pedagogicas, trabalhinhos e aprendizados;
+  *Tronco forte:* Cuidados diarios, higiene completa e saude acompanhada de perto (36.5oC).
 
  *PARTICIPE DA JORNADA DO(A) ${mateNameClean.toUpperCase()}!*
-Abra as fotos no aplicativo e regue a árvore do seu filho enviando uma das manifestações de afeto:
+Abra as fotos no aplicativo e regue a arvore do seu filho enviando uma das manifestacoes de afeto:
  *Que encanto!*   *Feito com amor*   *Puro brilho!*   *Orgulho da gente*   *Um tesouro!*
 
-_(Cada manifestação sua ilumina e rega a árvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
+_(Cada manifestacao sua ilumina e rega a arvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
 
-Acesse o diário de rotina escolar completo de hoje pelo link seguro:
+Acesse o diario de rotina escolar completo de hoje pelo link seguro:
  ${window.location.origin}/?relatorio=${summaryId}
 
 Com carinho,
 Equipe Anjinho Escolar`;
      
               // Ingest simulated WhatsApp log for this child individually
-              const primaryContact = mate.contatoEmergencia || { nome: 'Responsáveis', telefone: '11999999999' };
+              const primaryContact = mate.contatoEmergencia || { nome: 'Responsaveis', telefone: '11999999999' };
               
               const newLog: NotificacaoSimulada = {
                 id: 'log_coletivo_' + Date.now() + '_' + mate.id,
                 idosoId: mate.id,
-                familiarNome: primaryContact.nome || 'Responsáveis',
+                familiarNome: primaryContact.nome || 'Responsaveis',
                 telefoneDestino: primaryContact.telefone || '11999999999',
-                tipoCompromisso: 'Resumo Diário da Aula (Coletivo)',
+                tipoCompromisso: 'Resumo Diario da Aula (Coletivo)',
                 mensagem: mateMsg,
                 status: 'enviada_whatsapp',
                 dataEnvio: new Date().toISOString(),
@@ -3592,7 +3592,7 @@ Equipe Anjinho Escolar`;
               shareList.push({
                 id: mate.id,
                 nome: mateNameClean,
-                contatoNome: primaryContact.nome || 'Responsáveis',
+                contatoNome: primaryContact.nome || 'Responsaveis',
                 contatoTelefone: primaryContact.telefone || '11999999999',
                 mensagem: mateMsg
               });
@@ -3605,7 +3605,7 @@ Equipe Anjinho Escolar`;
                 id: summaryId,
                 cuidador: usuarioAtual?.nome || 'Educador(a)',
                 data: new Date().toLocaleDateString('pt-BR'),
-                duracao: 'Período Completo',
+                duracao: 'Periodo Completo',
                 inicio: startHourStr,
                 fim: endHourStr,
                 taxaConformidade: taxaConformidadeCalc,
@@ -3621,10 +3621,10 @@ Equipe Anjinho Escolar`;
               logs.unshift({
                 id: 'log_' + Date.now() + '_' + mate.id,
                 autor: usuarioAtual?.nome || 'Educador(a)',
-                acao: `Encerramento de Período Escolar Coletivo da Classe ${targetClass}`,
+                acao: `Encerramento de Periodo Escolar Coletivo da Classe ${targetClass}`,
                 data: new Date().toLocaleString('pt-BR'),
                 ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-                detalhes: `Fechamento sincronizado com toda a classe. Boletim do aluno gerado e registrado no histórico.`
+                detalhes: `Fechamento sincronizado com toda a classe. Boletim do aluno gerado e registrado no historico.`
               });
               saveToDB(`anjo_lgpd_auditoria_${mate.id}`, logs);
             });
@@ -3656,7 +3656,7 @@ Equipe Anjinho Escolar`;
             setTarefas(updatedTasksCollective.filter(t => t.idosoId === idoso.id));
             
             // Simulated notify for active student
-            const endMsg = `Anjo Escolar: O Período Letivo para todos os alunos da classe ${targetClass} foi ENCERRADO por ${usuarioAtual?.nome || 'Educador(a)'} Às ${getNowTimeBr()} de forma coletiva. Relatórios de rotina, sono e fraldas enviados para o WhatsApp dos responsáveis!`;
+            const endMsg = `Anjo Escolar: O Periodo Letivo para todos os alunos da classe ${targetClass} foi ENCERRADO por ${usuarioAtual?.nome || 'Educador(a)'} As ${getNowTimeBr()} de forma coletiva. Relatorios de rotina, sono e fraldas enviados para o WhatsApp dos responsaveis!`;
             triggerWhatsAppSim('Aulas Encerradas em Grupo', endMsg);
 
             // Populate states to trigger the custom high-fidelity collective confirmation notification panel
@@ -3664,7 +3664,7 @@ Equipe Anjinho Escolar`;
             setCollectiveShareStatuses(initialStatuses);
             setShowCollectiveShareModal(true);
  
-            showToast(`Período Escolar da classe ${targetClass} foi encerrado com sucesso para todos os alunos sincronizados!`, 'success');
+            showToast(`Periodo Escolar da classe ${targetClass} foi encerrado com sucesso para todos os alunos sincronizados!`, 'success');
             if (typeof window !== 'undefined') {
               window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
               window.dispatchEvent(new CustomEvent('anjo_user_updated'));
@@ -3699,7 +3699,7 @@ Equipe Anjinho Escolar`;
   // 1. Double-Step Review Trigger
   const handleTriggerEndShiftReview = () => {
     if (!isStaffUser(usuarioAtual)) {
-      alert(" ⚠  Operação Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o período letivo!");
+      alert(" [!]  Operacao Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o periodo letivo!");
       return;
     }
     const currentStartTime = shiftStartTime || new Date().toISOString();
@@ -3735,7 +3735,7 @@ Equipe Anjinho Escolar`;
     const ultimoSinal = vitals.length > 0 ? vitals[vitals.length - 1] : null;
 
     const humors = getFromDB<RegistroHumor[]>('anjo_humor', []).filter(hu => hu && hu.idosoId === idoso.id && isTodayOrDemoDate(hu.data));
-    const ultimoHumorText = humors.length > 0 ? humors[humors.length - 1].estado : 'Estável';
+    const ultimoHumorText = humors.length > 0 ? humors[humors.length - 1].estado : 'Estavel';
 
     if (pendentes.length > 0 && (concluidas.length > 0 || meals.length > 0 || totalMl > 0)) {
       concluidas = seniorTasks.filter(t => t.status !== 'recusado');
@@ -3807,74 +3807,74 @@ Equipe Anjinho Escolar`;
 
     const todayBr = new Date().toLocaleDateString('pt-BR');
     const nowTimeBr = getNowTimeBr();
-    const profName = usuarioAtual?.nome ? (usuarioAtual.nome.includes('Prof') ? usuarioAtual.nome : `Profª ${usuarioAtual.nome}`) : 'Profª Nilva Amaral';
+    const profName = usuarioAtual?.nome ? (usuarioAtual.nome.includes('Prof') ? usuarioAtual.nome : `Profa ${usuarioAtual.nome}`) : 'Profa Nilva Amaral';
 
     const mealSummaryStr = meals && meals.length > 0
-      ? meals.map((m: any) => `${m.refeicao === 'almoco' ? 'Almoço' : m.refeicao === 'cafe_manha' ? 'Café da Manhã' : m.refeicao === 'lanche' ? 'Lanche' : 'Refeição'} (${m.aceitacao === 'muito_bem' ? 'Comeu Tudo' : m.aceitacao === 'pouco' ? 'Comeu Pouco' : 'Recusou'})`).join(', ')
-      : 'Mamadeira / Refeição (Comeu Tudo)';
+      ? meals.map((m: any) => `${m.refeicao === 'almoco' ? 'Almoco' : m.refeicao === 'cafe_manha' ? 'Cafe da Manha' : m.refeicao === 'lanche' ? 'Lanche' : 'Refeicao'} (${m.aceitacao === 'muito_bem' ? 'Comeu Tudo' : m.aceitacao === 'pouco' ? 'Comeu Pouco' : 'Recusou'})`).join(', ')
+      : 'Mamadeira / Refeicao (Comeu Tudo)';
 
     const hygieneSummaryStr = (ultimoSinal && ultimoSinal.fralda) 
       ? ultimoSinal.fralda 
-      : 'Xixi, Cocô (normal), Dentes Escovados, Banho Tomado, Roupa Trocada';
+      : 'Xixi, Coco (normal), Dentes Escovados, Banho Tomado, Roupa Trocada';
 
     const sleepSummaryStr = (ultimoSinal && ultimoSinal.pressaoArterial)
       ? ultimoSinal.pressaoArterial
       : 'Dormiu 45min';
 
     const healthTempStr = (ultimoSinal && ultimoSinal.temperatura) 
-      ? `${ultimoSinal.temperatura}°C` 
-      : '36.5°C';
+      ? `${ultimoSinal.temperatura}oC` 
+      : '36.5oC';
 
     // A. Compilation of complete pre-formatted dashboard report (Available securely in Family history logs)
     let fullReportMsg = isEscolar 
       ? ` Anjo Escolar: Registro de ${idoso.nome} confirmed por ${profName}:
- Data: ${todayBr}     Horário: ${nowTimeBr}
+ Data: ${todayBr}     Horario: ${nowTimeBr}
 
- Água: ${totalMl}ml
-  Refeição: ${mealSummaryStr}
+ Agua: ${totalMl}ml
+  Refeicao: ${mealSummaryStr}
  Sono: ${sleepSummaryStr}
  Higiene: ${hygieneSummaryStr}
  Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}
-  Saúde: ${healthTempStr}
+  Saude: ${healthTempStr}
  Peso: ${idoso.peso || '15.5'} kg
 
 `
       : ` Anjo Cuidador: Registro de ${idoso.nome} confirmado por ${profName}:
- Data: ${todayBr}     Horário: ${nowTimeBr}
+ Data: ${todayBr}     Horario: ${nowTimeBr}
 
- Água / Hidratação: ${totalMl}ml
-  Alimentação: ${mealSummaryStr}
+ Agua / Hidratacao: ${totalMl}ml
+  Alimentacao: ${mealSummaryStr}
  Repouso: ${sleepSummaryStr}
  Higiene / Cuidados: ${hygieneSummaryStr}
  Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}
-  Saúde / Sinais: ${healthTempStr}
+  Saude / Sinais: ${healthTempStr}
  Peso: ${idoso.peso || '65'} kg
 
 `;
 
-    fullReportMsg += ` *Período:* das ${startHour} Às ${endHour} (Duração: ${elapsedShiftTime})\n`;
+    fullReportMsg += ` *Periodo:* das ${startHour} As ${endHour} (Duracao: ${elapsedShiftTime})\n`;
     fullReportMsg += ` *Taxa de Conformidade hoje:* ${taxaC}%    *Qualidade de Registro:* ${taxaQ}%\n\n`;
 
-    fullReportMsg += isEscolar ? ` *ATIVIDADES & ROTINAS CONCLUÍDAS:*\n` : ` *MEDICAÇÕES & CUIDADOS CONCLUÍDOS:*\n`;
+    fullReportMsg += isEscolar ? ` *ATIVIDADES & ROTINAS CONCLUIDAS:*\n` : ` *MEDICACOES & CUIDADOS CONCLUIDOS:*\n`;
     if (concluidas.length > 0) {
       concluidas.forEach((m: any) => {
-        fullReportMsg += `   ${m.titulo} Às ${m.concluidaEm || m.horarioPrevisto}${m.observacao ? ` ("${m.observacao}")` : ''}\n`;
+        fullReportMsg += `   ${m.titulo} As ${m.concluidaEm || m.horarioPrevisto}${m.observacao ? ` ("${m.observacao}")` : ''}\n`;
       });
     } else {
       fullReportMsg += isEscolar 
-        ? `  - Nenhuma atividade ou rotina concluída neste período.\n`
-        : `  - Nenhuma medicação ou cuidado administrado neste turno.\n`;
+        ? `  - Nenhuma atividade ou rotina concluida neste periodo.\n`
+        : `  - Nenhuma medicacao ou cuidado administrado neste turno.\n`;
     }
 
     if (recusadas.length > 0) {
       fullReportMsg += isEscolar ? `\n *RECUSAS / JUSTIFICATIVAS:*\n` : `\n *RECUSAS JUSTIFICADAS:*\n`;
       recusadas.forEach((r: any) => {
-        fullReportMsg += `  Á ${r.titulo} Às ${r.concluidaEm || r.horarioPrevisto}. Justificativa: "${r.observacao || 'Recusa geral'}"\n`;
+        fullReportMsg += `  A ${r.titulo} As ${r.concluidaEm || r.horarioPrevisto}. Justificativa: "${r.observacao || 'Recusa geral'}"\n`;
       });
     }
 
     if (atrasadas.length > 0 || pendentes.length > 0) {
-      fullReportMsg += isEscolar ? `\n ⚠  *PENDÊNCIAS / NÁO CONCLUÍDOS:*\n` : `\n ⚠  *PENDÊNCIAS / NÁO ADMINISTRADOS:*\n`;
+      fullReportMsg += isEscolar ? `\n [!]  *PENDENCIAS / NAO CONCLUIDOS:*\n` : `\n [!]  *PENDENCIAS / NAO ADMINISTRADOS:*\n`;
       if (atrasadas.length > 0) {
         atrasadas.forEach((a: any) => {
           fullReportMsg += `   [ATRASADO] ${a.titulo} prevista para ${a.horarioPrevisto}\n`;
@@ -3887,23 +3887,23 @@ Equipe Anjinho Escolar`;
       }
     }
 
-    fullReportMsg += `\n *ALIMENTAÇÁO:*\n`;
+    fullReportMsg += `\n *ALIMENTACAO:*\n`;
     if (meals.length > 0) {
       meals.forEach((meal: any) => {
-        const mealTitle = meal.refeicao === 'cafe_manha' ? 'Café da manhã' : meal.refeicao === 'almoco' ? 'Almoço' : meal.refeicao === 'lanche' ? 'Lanche da Tarde' : meal.refeicao === 'jantar' ? 'Jantar' : 'Ceia';
+        const mealTitle = meal.refeicao === 'cafe_manha' ? 'Cafe da manha' : meal.refeicao === 'almoco' ? 'Almoco' : meal.refeicao === 'lanche' ? 'Lanche da Tarde' : meal.refeicao === 'jantar' ? 'Jantar' : 'Ceia';
         const accepts = meal.aceitacao === 'muito_bem' ? (isEscolar ? 'Comeu/Tomou tudo' : 'Aceitou muito bem') : meal.aceitacao === 'pouco' ? 'Comeu pouco' : 'Recusou';
         fullReportMsg += `   ${mealTitle} (${meal.horario}): ${accepts}.${meal.observacoes ? ` Obs: "${meal.observacoes}"` : ''}\n`;
       });
     } else {
-      fullReportMsg += isEscolar ? `  - Sem refeições cadastradas neste período.\n` : `  - Sem refeições cadastradas neste turno.\n`;
+      fullReportMsg += isEscolar ? `  - Sem refeicoes cadastradas neste periodo.\n` : `  - Sem refeicoes cadastradas neste turno.\n`;
     }
 
     const actualWaterCount = waterCount;
-    fullReportMsg += `\n *HIDRATAÇÁO:*\n`;
+    fullReportMsg += `\n *HIDRATACAO:*\n`;
     if (isEscolar) {
-      fullReportMsg += `   Copos de Água Ingeridos: ${actualWaterCount > 0 ? actualWaterCount : Math.max(1, Math.round(totalMl/250))} copo(s) (${totalMl}ml de água)\n`;
+      fullReportMsg += `   Copos de Agua Ingeridos: ${actualWaterCount > 0 ? actualWaterCount : Math.max(1, Math.round(totalMl/250))} copo(s) (${totalMl}ml de agua)\n`;
     } else {
-      fullReportMsg += `   Copos d'água registrados: ${actualWaterCount > 0 ? actualWaterCount : Math.max(1, Math.round(totalMl/250))} copo(s) (totalizado: ${totalMl}ml de água ingerida)\n`;
+      fullReportMsg += `   Copos d'agua registrados: ${actualWaterCount > 0 ? actualWaterCount : Math.max(1, Math.round(totalMl/250))} copo(s) (totalizado: ${totalMl}ml de agua ingerida)\n`;
     }
 
     fullReportMsg += isEscolar ? `\n  *HUMOR & COMPORTAMENTO:*\n` : `\n  *HUMOR & BEM ESTAR:*\n`;
@@ -3911,38 +3911,38 @@ Equipe Anjinho Escolar`;
 
     if (ultimoSinal) {
       if (isEscolar) {
-        fullReportMsg += `\n *SAÚDE & SONECA RECENTES:*\n`;
-        fullReportMsg += `   Período de Sono/Soneca: ${ultimoSinal.pressaoArterial}\n`;
+        fullReportMsg += `\n *SAUDE & SONECA RECENTES:*\n`;
+        fullReportMsg += `   Periodo de Sono/Soneca: ${ultimoSinal.pressaoArterial}\n`;
         fullReportMsg += `   Fraldas e Trocas: ${ultimoSinal.fralda || 'Verificada e limpa'}\n`;
-        fullReportMsg += `   Temperatura Corporal: ${ultimoSinal.temperatura}°C\n`;
+        fullReportMsg += `   Temperatura Corporal: ${ultimoSinal.temperatura}oC\n`;
       } else {
-        fullReportMsg += `\n *ÚLTIMOS SINAIS VITAIS AFERIDOS:*\n`;
-        fullReportMsg += `   Pressão Arterial: ${ultimoSinal.pressaoArterial}\n`;
+        fullReportMsg += `\n *ULTIMOS SINAIS VITAIS AFERIDOS:*\n`;
+        fullReportMsg += `   Pressao Arterial: ${ultimoSinal.pressaoArterial}\n`;
         fullReportMsg += `   Glicemia: ${ultimoSinal.glicemia} mg/dL\n`;
-        fullReportMsg += `   Oxigenação O2: ${ultimoSinal.saturacao}%\n`;
-        fullReportMsg += `   Temperatura: ${ultimoSinal.temperatura}°C\n`;
+        fullReportMsg += `   Oxigenacao O2: ${ultimoSinal.saturacao}%\n`;
+        fullReportMsg += `   Temperatura: ${ultimoSinal.temperatura}oC\n`;
       }
     }
 
     if (ocorrencias.length > 0) {
-      fullReportMsg += isEscolar ? `\n *OCORRÊNCIAS / OBSERVAÇÕES ATÍPICAS NO PERÍODO:*\n` : `\n *OCORRÊNCIAS / ANOTAÇÕES ATÍPICAS NO PLANTONISMO:*\n`;
+      fullReportMsg += isEscolar ? `\n *OCORRENCIAS / OBSERVACOES ATIPICAS NO PERIODO:*\n` : `\n *OCORRENCIAS / ANOTACOES ATIPICAS NO PLANTONISMO:*\n`;
       ocorrencias.forEach((o: any) => {
-        fullReportMsg += `   [${(o.criticidade || 'informacao').toUpperCase()}] ${(o.tipo || 'ocorrencia').toUpperCase()} Às ${o.horario || ''}: ${o.descricao || ''}\n`;
+        fullReportMsg += `   [${(o.criticidade || 'informacao').toUpperCase()}] ${(o.tipo || 'ocorrencia').toUpperCase()} As ${o.horario || ''}: ${o.descricao || ''}\n`;
       });
     }
 
     // Include modifications of medications during the shift
-    fullReportMsg += isEscolar ? `\n *ALTERAÇÕES DE ROTINA/AGENDA (Inclusões / Exclusões):*\n` : `\n *ALTERAÇÕES DE MEDICAMENTOS (Inclusões / Exclusões):*\n`;
+    fullReportMsg += isEscolar ? `\n *ALTERACOES DE ROTINA/AGENDA (Inclusoes / Exclusoes):*\n` : `\n *ALTERACOES DE MEDICAMENTOS (Inclusoes / Exclusoes):*\n`;
     if (medChanges && medChanges.length > 0) {
       medChanges.forEach((ch: any) => {
-        const actionLabel = ch.tipo === 'cadastro' ? 'NOVO CADASTRADO' : ch.tipo === 'exclusao' ? 'EXCLUÍDO' : ch.tipo === 'suspensao' ? 'SUSPENSO' : 'REATIVADO';
+        const actionLabel = ch.tipo === 'cadastro' ? 'NOVO CADASTRADO' : ch.tipo === 'exclusao' ? 'EXCLUIDO' : ch.tipo === 'suspensao' ? 'SUSPENSO' : 'REATIVADO';
         fullReportMsg += `   [${actionLabel}] ${ch.nome}: ${ch.detalhes} (por ${ch.autor || 'Educador(a)'})\n`;
       });
     } else {
-      fullReportMsg += `  - Nenhuma alteração feita neste período.\n`;
+      fullReportMsg += `  - Nenhuma alteracao feita neste periodo.\n`;
     }
 
-    fullReportMsg += `\n\n *Relatório processado de maneira segura e em conformidade estrita com LGPD.*`;
+    fullReportMsg += `\n\n *Relatorio processado de maneira segura e em conformidade estrita com LGPD.*`;
 
     // B. Generate unique report key
     const summaryId = 'summary_id_' + Date.now();
@@ -3950,39 +3950,39 @@ Equipe Anjinho Escolar`;
     // C. Composition of the revised SHORT WhatsApp direct alert
     const studentCleanName = (idoso.nome || '').split(' (')[0];
     const shortWaMsg = isEscolar
-      ? ` A ÁRVORE DA INFÂNCIA HOJE:
-Hoje a árvore do(a) *${studentCleanName}* floresceu no Anjinho Escolar:
-  *Folhas verdes:* Nutrição (${mealSummaryStr}) e hidratação regular (${totalMl}ml);
+      ? ` A ARVORE DA INFANCIA HOJE:
+Hoje a arvore do(a) *${studentCleanName}* floresceu no Anjinho Escolar:
+  *Folhas verdes:* Nutricao (${mealSummaryStr}) e hidratacao regular (${totalMl}ml);
   *Flores e borboletas:* Momento acolhedor de soneca e descanso (${sleepSummaryStr});
-  *Frutos e passarinhos:* Atividades pedagógicas e trabalhinhos manuais;
-  *Tronco forte:* Cuidados diários, higiene (${hygieneSummaryStr}) e saúde (${healthTempStr}).
+  *Frutos e passarinhos:* Atividades pedagogicas e trabalhinhos manuais;
+  *Tronco forte:* Cuidados diarios, higiene (${hygieneSummaryStr}) e saude (${healthTempStr}).
 
  *PARTICIPE DA JORNADA DO(A) ${studentCleanName.toUpperCase()}!*
-Abra as fotos no aplicativo e regue a árvore do seu filho enviando uma das manifestações de afeto:
+Abra as fotos no aplicativo e regue a arvore do seu filho enviando uma das manifestacoes de afeto:
  *Que encanto!*   *Feito com amor*   *Puro brilho!*   *Orgulho da gente*   *Um tesouro!*
 
-_(Cada manifestação sua ilumina e rega a árvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
+_(Cada manifestacao sua ilumina e rega a arvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
 
-Acesse o diário de rotina escolar completo pelo link seguro:
+Acesse o diario de rotina escolar completo pelo link seguro:
  ${window.location.origin}/?relatorio=${summaryId}
 
 Com carinho,
 Equipe Anjinho Escolar`
       : ` Anjo Cuidador: Registro de ${idoso.nome} confirmado por ${profName}:
- Data: ${todayBr}     Horário: ${nowTimeBr}
- Água: ${totalMl}ml
-  Alimentação: ${mealSummaryStr}
+ Data: ${todayBr}     Horario: ${nowTimeBr}
+ Agua: ${totalMl}ml
+  Alimentacao: ${mealSummaryStr}
  Repouso: ${sleepSummaryStr}
  Higiene: ${hygieneSummaryStr}
  Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}
-  Saúde: ${healthTempStr}
+  Saude: ${healthTempStr}
  Peso: ${idoso.peso || '65'} kg
 
 Acesse o boletim de cuidados completo pelo link seguro:
  ${window.location.origin}/?relatorio=${summaryId}`;
 
     // Dispatch concise WA alarm
-    triggerWhatsAppSim(isEscolar ? 'Encerramento de Período Letivo Curto para Pais' : 'Encerramento de Turno Curto para Família', shortWaMsg);
+    triggerWhatsAppSim(isEscolar ? 'Encerramento de Periodo Letivo Curto para Pais' : 'Encerramento de Turno Curto para Familia', shortWaMsg);
 
     // Save full shift history logs into local database for family portal visibility
     const pastSummaries = getFromDB<any[]>(`anjo_turn_summaries_${idoso.id}`, []);
@@ -4006,7 +4006,7 @@ Acesse o boletim de cuidados completo pelo link seguro:
     logs.unshift({
       id: 'log_' + Date.now(),
       autor: usuarioAtual?.nome || 'Educador(a)',
-      acao: `Encerramento de Turno e Relatório Seguro do Boletim de Cuidados (${summaryId})`,
+      acao: `Encerramento de Turno e Relatorio Seguro do Boletim de Cuidados (${summaryId})`,
       data: new Date().toLocaleString('pt-BR'),
       ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
       detalhes: `Calculado Conformidade de ${taxaC}% e Qualidade de Registro de ${taxaQ}%. Link compartilhado com familiares autorizados.`
@@ -4082,20 +4082,20 @@ Acesse o boletim de cuidados completo pelo link seguro:
         window.dispatchEvent(new CustomEvent('anjo_user_updated'));
         window.dispatchEvent(new CustomEvent('db-vitals-update'));
       }
-      showToast('Período/Turno encerrado com sucesso!', 'success');
+      showToast('Periodo/Turno encerrado com sucesso!', 'success');
     }
   };
 
   // Direct 1-Click Stop Shift Handler (opens modal to record reason, preserve activities and log LGPD)
   const handleDirectStopShift = () => {
-    setStopShiftReason('Consulta Médica / Exame');
+    setStopShiftReason('Consulta Medica / Exame');
     setStopShiftNote('');
     setShowStopIndividualShiftModal(true);
   };
 
   const handleConfirmStopIndividualShift = () => {
     try {
-      const finalReason = (stopShiftReason + (stopShiftNote ? ` - ${stopShiftNote}` : '')).trim() || 'Saída Antecipada / Ausência Temporária';
+      const finalReason = (stopShiftReason + (stopShiftNote ? ` - ${stopShiftNote}` : '')).trim() || 'Saida Antecipada / Ausencia Temporaria';
       const horaStr = getNowTimeBr();
       const dataStr = new Date().toLocaleDateString('pt-BR');
       const cleanName = (idoso.nome || '').split(' (')[0].trim();
@@ -4105,8 +4105,8 @@ Acesse o boletim de cuidados completo pelo link seguro:
         id: 'oc_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4),
         tipo: 'saida_ausencia',
         criticidade: 'amarelo',
-        titulo: 'Saída Antecipada / Ausência Registrada',
-        descricao: `Aluno ${cleanName} se ausentou Às ${horaStr}. Motivo: ${finalReason}`,
+        titulo: 'Saida Antecipada / Ausencia Registrada',
+        descricao: `Aluno ${cleanName} se ausentou As ${horaStr}. Motivo: ${finalReason}`,
         horario: horaStr,
         data: dataStr,
         responsavel: usuarioAtual?.nome || 'Educador',
@@ -4124,10 +4124,10 @@ Acesse o boletim de cuidados completo pelo link seguro:
       logs.unshift({
         id: 'log_' + Date.now(),
         autor: usuarioAtual?.nome || 'Educador',
-        acao: 'Saída / Ausência de Aluno Registrada',
+        acao: 'Saida / Ausencia de Aluno Registrada',
         data: new Date().toLocaleString('pt-BR'),
         ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-        detalhes: `Horário de saída: ${horaStr} | Motivo: ${finalReason}. Atividades preservadas no diário.`
+        detalhes: `Horario de saida: ${horaStr} | Motivo: ${finalReason}. Atividades preservadas no diario.`
       });
       saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
       setLgpdLogs(logs);
@@ -4151,14 +4151,14 @@ Acesse o boletim de cuidados completo pelo link seguro:
       setShowStopIndividualShiftModal(false);
 
       // 4. Simulated WhatsApp notification
-      const abMsg = `Anjo Escolar  Aviso de Saída / Ausência
+      const abMsg = `Anjo Escolar  Aviso de Saida / Ausencia
   
-Olá. Registramos que o(a) aluno(a) *${cleanName}* teve saída/ausência registrada Às *${horaStr}*.
+Ola. Registramos que o(a) aluno(a) *${cleanName}* teve saida/ausencia registrada As *${horaStr}*.
 Motivo: *${finalReason}*
 
-As atividades e registros do dia permanecem salvos no relatório escolar. Qualquer dúvida, estamos À disposição!`;
+As atividades e registros do dia permanecem salvos no relatorio escolar. Qualquer duvida, estamos A disposicao!`;
 
-      triggerWhatsAppSim('Aviso de Saída / Ausência do Aluno', abMsg);
+      triggerWhatsAppSim('Aviso de Saida / Ausencia do Aluno', abMsg);
 
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
@@ -4166,9 +4166,9 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
         window.dispatchEvent(new CustomEvent('db-vitals-update'));
       }
 
-      showToast(` Saída de ${cleanName} registrada Às ${horaStr}. Motivo salvo no relatório e LGPD.`, 'success');
+      showToast(` Saida de ${cleanName} registrada As ${horaStr}. Motivo salvo no relatorio e LGPD.`, 'success');
     } catch (err) {
-      console.error('Erro ao registrar saída de aluno:', err);
+      console.error('Erro ao registrar saida de aluno:', err);
     }
   };
 
@@ -4193,7 +4193,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
       }
     } catch (e) {}
 
-    showToast(' Diário/relatório de rotina excluído permanentemente!');
+    showToast(' Diario/relatorio de rotina excluido permanentemente!');
   };
 
   // Reusable helper to check role permissions and activate shift automatically if needed
@@ -4215,9 +4215,9 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
         usuarioId: usuarioAtual.id,
         usuarioNome: usuarioAtual.nome,
         usuarioTipo: usuarioAtual.tipo,
-        acao: isEscolar ? 'Início de Período Letivo da Classe' : 'Ativação de Turno de Atendimento Individual',
+        acao: isEscolar ? 'Inicio de Periodo Letivo da Classe' : 'Ativacao de Turno de Atendimento Individual',
         data: new Date().toLocaleString('pt-BR'),
-        ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1) + ' (IP Móvel)',
+        ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1) + ' (IP Movel)',
         detalhes: `Turno de cuidados iniciado automaticamente ao registrar: ${actionName}.`
       });
       saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, auditLogs);
@@ -4230,14 +4230,14 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
   const handleQuickHydrate = () => {
     if (isAbsent) {
       unlockAndMarkPresent();
-      showToast(`Presença ativada para ${idoso.nome}!`, 'success');
+      showToast(`Presenca ativada para ${idoso.nome}!`, 'success');
     }
-    if (!ensureAuthorizedAndActiveShift("Hidratação")) {
+    if (!ensureAuthorizedAndActiveShift("Hidratacao")) {
       return;
     }
     const auth = checkFeedingCareAuthorization();
     if (!auth.isAuthorized) {
-      alert(` ⚠  Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar hidratação.`);
+      alert(` [!]  Operacao Nao Autorizada: Nenhum pai ou responsavel autorizou "Alimentacao e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora nao pode registrar hidratacao.`);
       return;
     }
     const defaultTime = getNowTimeBr();
@@ -4251,7 +4251,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
         cuidador_id: usuarioAtual.id,
         atividade_id: 'quick_hid_' + Date.now(),
         tipo: 'hidratacao',
-        titulo: `Copinho de Água +${quickHydrationAmount}ml`,
+        titulo: `Copinho de Agua +${quickHydrationAmount}ml`,
         status: 'realizado',
         horario_planejado: defaultTime,
         horario_registrado_dispositivo: new Date().toISOString(),
@@ -4260,7 +4260,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
         status_sincronizacao: 'pendente'
       }).then(() => {
         loadOfflineQueue();
-        alert(`Copinho de água (+${quickHydrationAmount}ml) registrado off-line! Será sincronizado quando reativar a rede.`);
+        alert(`Copinho de agua (+${quickHydrationAmount}ml) registrado off-line! Sera sincronizado quando reativar a rede.`);
       });
       return;
     }
@@ -4299,7 +4299,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
           status: 'concluido' as const,
           concluidaEm: defaultTime,
           completadaPor: usuarioAtual.nome,
-          observacao: `Oferecido copo rápido de ${quickHydrationAmount}ml.`
+          observacao: `Oferecido copo rapido de ${quickHydrationAmount}ml.`
         };
       }
       return t;
@@ -4309,8 +4309,8 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     const otherSeniorsTasks = allTasksInDB.filter(t => t.idosoId !== idoso.id);
     saveToDB('anjo_tarefas_diarias', [...otherSeniorsTasks, ...updated]);
 
-    triggerWhatsAppSim('Hidratação Registrada', `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Copo de água (+${quickHydrationAmount}ml) oferecido com sucesso para ${idoso.nome} por ${usuarioAtual.nome}.`);
-    alert(`Hidratação registrada com facilidade (+${quickHydrationAmount}ml)!`);
+    triggerWhatsAppSim('Hidratacao Registrada', `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Copo de agua (+${quickHydrationAmount}ml) oferecido com sucesso para ${idoso.nome} por ${usuarioAtual.nome}.`);
+    alert(`Hidratacao registrada com facilidade (+${quickHydrationAmount}ml)!`);
 
     // Dispatch global events to sync other screens (including Reports & dashboard & routine)
     if (typeof window !== 'undefined') {
@@ -4324,14 +4324,14 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     e.preventDefault();
     if (isAbsent) {
       unlockAndMarkPresent();
-      showToast(`Presença ativada para ${idoso.nome}!`, 'success');
+      showToast(`Presenca ativada para ${idoso.nome}!`, 'success');
     }
-    if (!ensureAuthorizedAndActiveShift("Refeição")) {
+    if (!ensureAuthorizedAndActiveShift("Refeicao")) {
       return;
     }
     const auth = checkFeedingCareAuthorization();
     if (!auth.isAuthorized) {
-      alert(` ⚠  Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar refeições.`);
+      alert(` [!]  Operacao Nao Autorizada: Nenhum pai ou responsavel autorizou "Alimentacao e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora nao pode registrar refeicoes.`);
       return;
     }
 
@@ -4350,11 +4350,11 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
         );
 
         triggerWhatsAppSim(
-          ' Comunicado: Mamadeira Já Servida',
-          `Anjinho Escolar: ${idoso.nome} já tomou mamadeira Às ${check.lastHorario}. A tentativa de novo registro foi feita Às ${defaultTime}. Por questões de segurança alimentar e intervalo mínimo de 2h, a próxima mamadeira estará liberada a partir das ${check.nextAllowedHorario}.`
+          ' Comunicado: Mamadeira Ja Servida',
+          `Anjinho Escolar: ${idoso.nome} ja tomou mamadeira As ${check.lastHorario}. A tentativa de novo registro foi feita As ${defaultTime}. Por questoes de seguranca alimentar e intervalo minimo de 2h, a proxima mamadeira estara liberada a partir das ${check.nextAllowedHorario}.`
         );
 
-        alert(`${check.message}\n\n Um comunicado oficial foi gerado no mural e enviado aos responsáveis informando que a criança já tomou mamadeira recentemente.`);
+        alert(`${check.message}\n\n Um comunicado oficial foi gerado no mural e enviado aos responsaveis informando que a crianca ja tomou mamadeira recentemente.`);
         return;
       }
     } else {
@@ -4362,15 +4362,15 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
       const alreadyExists = mealsStoreCheck.some(f => f.idosoId === idoso.id && f.refeicao === quickMeal.refeicao && isTodayOrDemoDate(f.data));
       if (alreadyExists) {
         const mealLabelMap: { [key: string]: string } = {
-          mamadeira: ' Mamadeira de Leite / Fórmula',
-          cafe_manha: isEscolar ? ' Lanchinho da Manhã / Café' : ' Café da Manhã',
-          almoco: isEscolar ? ' Papinha / Almocinho' : ' Almoço',
+          mamadeira: ' Mamadeira de Leite / Formula',
+          cafe_manha: isEscolar ? ' Lanchinho da Manha / Cafe' : ' Cafe da Manha',
+          almoco: isEscolar ? ' Papinha / Almocinho' : ' Almoco',
           lanche: isEscolar ? ' Frutinha / Lanchinho Tarde' : ' Lanche da Tarde',
           jantar: isEscolar ? ' Jantinha Escolar' : ' Jantar',
-          ceia: isEscolar ? ' Chá ou Suco Pós-Soneca' : ' Ceia / Repouso'
+          ceia: isEscolar ? ' Cha ou Suco Pos-Soneca' : ' Ceia / Repouso'
         };
         const label = mealLabelMap[quickMeal.refeicao] || quickMeal.refeicao;
-        const confirmSave = window.confirm(` ⚠  Atenção: Você já registrou a refeição "${label}" para ${idoso.nome} hoje!\n\nDeseja realmente salvar um NOVO registro para essa mesma refeição?`);
+        const confirmSave = window.confirm(` [!]  Atencao: Voce ja registrou a refeicao "${label}" para ${idoso.nome} hoje!\n\nDeseja realmente salvar um NOVO registro para essa mesma refeicao?`);
         if (!confirmSave) return;
       }
     }
@@ -4382,16 +4382,16 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
         cuidador_id: usuarioAtual.id,
         atividade_id: 'quick_meal_' + Date.now(),
         tipo: 'alimentacao',
-        titulo: `Refeição: ${quickMeal.refeicao}`,
+        titulo: `Refeicao: ${quickMeal.refeicao}`,
         status: 'realizado',
         horario_planejado: defaultTime,
         horario_registrado_dispositivo: new Date().toISOString(),
-        observacao: `Aceitação: ${quickMeal.aceitacao}. Obs: ${quickMeal.observacao}`,
+        observacao: `Aceitacao: ${quickMeal.aceitacao}. Obs: ${quickMeal.observacao}`,
         modo_registro: 'offline',
         status_sincronizacao: 'pendente'
       }).then(() => {
         loadOfflineQueue();
-        alert('Refeição registrada offline com sucesso!');
+        alert('Refeicao registrada offline com sucesso!');
         setQuickMeal({ refeicao: 'cafe_manha', aceitacao: 'muito_bem', observacao: '' });
       });
       return;
@@ -4410,11 +4410,11 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     };
     saveMealRecord(newMealObj);
 
-    // Sync tasks - vincula estritamente por palavra E horário do registro
+    // Sync tasks - vincula estritamente por palavra E horario do registro
     const labelMap: { [key: string]: string } = {
       mamadeira: 'Mamadeira',
-      cafe_manha: 'Lanchinho da Manhã / Café',
-      almoco: 'Almoço',
+      cafe_manha: 'Lanchinho da Manha / Cafe',
+      almoco: 'Almoco',
       lanche: 'Frutinha / Lanche',
       jantar: 'Jantar'
     };
@@ -4430,7 +4430,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
             status: 'concluido' as const,
             concluidaEm: defaultTime,
             completadaPor: usuarioAtual.nome,
-            observacao: `Aceitação: ${quickMeal.aceitacao === 'muito_bem' ? 'Comeu tudo' : quickMeal.aceitacao === 'pouco' ? 'Comeu pouco' : 'Recusou'}. ${quickMeal.observacao || ''}`
+            observacao: `Aceitacao: ${quickMeal.aceitacao === 'muito_bem' ? 'Comeu tudo' : quickMeal.aceitacao === 'pouco' ? 'Comeu pouco' : 'Recusou'}. ${quickMeal.observacao || ''}`
           };
         }
         return t;
@@ -4441,19 +4441,19 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
       saveToDB('anjo_tarefas_diarias', [...otherSeniorsTasks, ...updated]);
     }
 
-    triggerWhatsAppSim('Refeição Registrada', `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: ${idoso.nome} realizou a refeição ${labelMap[quickMeal.refeicao] || quickMeal.refeicao}. Grau de Aceitação: ${quickMeal.aceitacao === 'muito_bem' ? (isEscolar ? 'Comeu/Tomou tudo' : 'Comeu muito bem') : 'Comeu pouco'}. Por: ${usuarioAtual.nome}`);
+    triggerWhatsAppSim('Refeicao Registrada', `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: ${idoso.nome} realizou a refeicao ${labelMap[quickMeal.refeicao] || quickMeal.refeicao}. Grau de Aceitacao: ${quickMeal.aceitacao === 'muito_bem' ? (isEscolar ? 'Comeu/Tomou tudo' : 'Comeu muito bem') : 'Comeu pouco'}. Por: ${usuarioAtual.nome}`);
     
     const allNotifs = getFromDB<any[]>('anjo_notificacoes', []);
     allNotifs.push({
       id: 'notif_meal_' + Date.now(),
       idosoId: idoso.id,
-      titulo: 'Refeição Registrada',
-      mensagem: `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: ${idoso.nome} realizou a refeição ${labelMap[quickMeal.refeicao] || quickMeal.refeicao}.`,
+      titulo: 'Refeicao Registrada',
+      mensagem: `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: ${idoso.nome} realizou a refeicao ${labelMap[quickMeal.refeicao] || quickMeal.refeicao}.`,
       dataEnvio: new Date().toISOString()
     });
     saveToDB('anjo_notificacoes', allNotifs);
 
-    alert('Refeição registrada com sucesso via canal on-line!');
+    alert('Refeicao registrada com sucesso via canal on-line!');
     setQuickMeal({ refeicao: 'cafe_manha', aceitacao: 'muito_bem', observacao: '' });
 
     // Dispatch global events to sync other screens (including Reports & dashboard)
@@ -4470,20 +4470,20 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     e.preventDefault();
     if (isAbsent) {
       unlockAndMarkPresent();
-      showToast(`Presença ativada para ${idoso.nome}!`, 'success');
+      showToast(`Presenca ativada para ${idoso.nome}!`, 'success');
     }
     if (!ensureAuthorizedAndActiveShift("Higiene")) {
       return;
     }
     const auth = checkFeedingCareAuthorization();
     if (!auth.isAuthorized) {
-      alert(` ⚠  Operação Não Autorizada: Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora não pode registrar cuidados de higiene.`);
+      alert(` [!]  Operacao Nao Autorizada: Nenhum pai ou responsavel autorizou "Alimentacao e Cuidados" no painel "Pais & Autorizados" para este aluno. A professora/cuidadora nao pode registrar cuidados de higiene.`);
       return;
     }
 
     const alreadyCompleted = tarefas.some(t => t.tipo === 'banho' && t.status === 'concluido');
     if (alreadyCompleted) {
-      const confirmSave = window.confirm(` ⚠  Atenção: O registro de Higiene para ${idoso.nome} já foi marcado como concluído hoje!\n\nDeseja realmente salvar um NOVO registro de higiene?`);
+      const confirmSave = window.confirm(` [!]  Atencao: O registro de Higiene para ${idoso.nome} ja foi marcado como concluido hoje!\n\nDeseja realmente salvar um NOVO registro de higiene?`);
       if (!confirmSave) return;
     }
 
@@ -4526,7 +4526,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
         status: 'realizado',
         horario_planejado: defaultTime,
         horario_registrado_dispositivo: new Date().toISOString(),
-        observacao: `Banho: ${quickHygiene.bath ? 'Sim' : 'Não'}, Dentes: ${quickHygiene.teeth ? 'Sim' : 'Não'}, Roupa: ${quickHygiene.clothes ? 'Sim' : 'Não'}`,
+        observacao: `Banho: ${quickHygiene.bath ? 'Sim' : 'Nao'}, Dentes: ${quickHygiene.teeth ? 'Sim' : 'Nao'}, Roupa: ${quickHygiene.clothes ? 'Sim' : 'Nao'}`,
         modo_registro: 'offline',
         status_sincronizacao: 'pendente'
       }).then(() => {
@@ -4543,7 +4543,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
           status: 'concluido' as const,
           concluidaEm: defaultTime,
           completadaPor: usuarioAtual.nome,
-          observacao: `Higiene realizada em lote: Banho: ${quickHygiene.bath ? 'Sim' : 'Não'}. Troca de roupa: ${quickHygiene.clothes ? 'Sim' : 'Não'}.`
+          observacao: `Higiene realizada em lote: Banho: ${quickHygiene.bath ? 'Sim' : 'Nao'}. Troca de roupa: ${quickHygiene.clothes ? 'Sim' : 'Nao'}.`
         };
       }
       return t;
@@ -4553,7 +4553,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     const otherSeniorsTasks = allTasksInDB.filter(t => t.idosoId !== idoso.id);
     saveToDB('anjo_tarefas_diarias', [...otherSeniorsTasks, ...updated]);
 
-    triggerWhatsAppSim('Cuidados de Higiene Concluídos', `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Serviços de Higiene e Conforto concluídos para ${idoso.nome} Às ${defaultTime}: Banho/Fralda: ${quickHygiene.bath ? 'Sim' : 'Não'}, Troca de Roupa: ${quickHygiene.clothes ? 'Sim' : 'Não'}, Escovação Bucal: ${quickHygiene.teeth ? 'Sim' : 'Não'}.`);
+    triggerWhatsAppSim('Cuidados de Higiene Concluidos', `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Servicos de Higiene e Conforto concluidos para ${idoso.nome} As ${defaultTime}: Banho/Fralda: ${quickHygiene.bath ? 'Sim' : 'Nao'}, Troca de Roupa: ${quickHygiene.clothes ? 'Sim' : 'Nao'}, Escovacao Bucal: ${quickHygiene.teeth ? 'Sim' : 'Nao'}.`);
     alert('Higiene registrada com sucesso!');
   };
 
@@ -4561,7 +4561,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     e.preventDefault();
     if (isAbsent) {
       unlockAndMarkPresent();
-      showToast(`Presença ativada para ${idoso.nome}!`, 'success');
+      showToast(`Presenca ativada para ${idoso.nome}!`, 'success');
     }
     if (!ensureAuthorizedAndActiveShift("Humor")) {
       return;
@@ -4576,7 +4576,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
         cuidador_id: usuarioAtual.id,
         atividade_id: 'quick_humor_' + Date.now(),
         tipo: 'outros',
-        titulo: `Anotação humor: ${quickHumor.estado}`,
+        titulo: `Anotacao humor: ${quickHumor.estado}`,
         status: 'realizado',
         horario_planejado: defaultTime,
         horario_registrado_dispositivo: new Date().toISOString(),
@@ -4609,7 +4609,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     window.dispatchEvent(new CustomEvent('db-vitals-update', { detail: { localKey: 'anjo_humor' } }));
     setVitalsUpdateTrigger(prev => prev + 1);
 
-    triggerWhatsAppSim('Humor Observado', `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: ${isEscolar ? 'A educadora' : 'O cuidador'} ${usuarioAtual.nome} registrou que ${idoso.nome} encontra-se com o humor "${quickHumor.estado.toUpperCase()}". Observações: "${quickHumor.observacao || 'Nenhuma'}"`);
+    triggerWhatsAppSim('Humor Observado', `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: ${isEscolar ? 'A educadora' : 'O cuidador'} ${usuarioAtual.nome} registrou que ${idoso.nome} encontra-se com o humor "${quickHumor.estado.toUpperCase()}". Observacoes: "${quickHumor.observacao || 'Nenhuma'}"`);
     showToast('Humor e estado comportamental salvos com sucesso!', 'success');
     setQuickHumor({ estado: 'calmo', observacao: '' });
   };
@@ -4618,9 +4618,9 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     if (e) e.preventDefault();
     if (isAbsent) {
       unlockAndMarkPresent();
-      showToast(`Presença ativada para ${idoso.nome}!`, 'success');
+      showToast(`Presenca ativada para ${idoso.nome}!`, 'success');
     }
-    if (!ensureAuthorizedAndActiveShift(isEscolar ? "Saúde e Sono" : "Sinais Vitais")) {
+    if (!ensureAuthorizedAndActiveShift(isEscolar ? "Saude e Sono" : "Sinais Vitais")) {
       return;
     }
     const defaultTime = getNowTimeBr();
@@ -4637,10 +4637,10 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
       
       const newSono = quickVitals.pressao || 'Sem registros';
       const newFralda = quickVitals.glicemia || 'Sem trocas';
-      const newTemp = quickVitals.temp ? `${quickVitals.temp}°C` : 'Normal / Não medida';
+      const newTemp = quickVitals.temp ? `${quickVitals.temp}oC` : 'Normal / Nao medida';
 
-      // 1. Cross-module duplicate check for sleep (Sono/Soneca) between Diário da Inf and Frequência
-      const timeMatch = newSono.match(/(\d{1,2}:\d{2})\s*(?:Às|as|-|até)\s*(\d{1,2}:\d{2})/i) || 
+      // 1. Cross-module duplicate check for sleep (Sono/Soneca) between Diario da Inf and Frequencia
+      const timeMatch = newSono.match(/(\d{1,2}:\d{2})\s*(?:As|as|-|ate)\s*(\d{1,2}:\d{2})/i) || 
                         (sleepStart && sleepEnd && newSono.toLowerCase().includes('dormiu') ? [null, sleepStart, sleepEnd] : null);
 
       let isDuplicateSleepWithSono = false;
@@ -4652,7 +4652,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
         const startShort = startStr.replace(/^0/, '');
         const endShort = endStr.replace(/^0/, '');
 
-        // Check against Frequência (anjo_sono)
+        // Check against Frequencia (anjo_sono)
         isDuplicateSleepWithSono = sonosStore.some(s => {
           if (s.idosoId !== idoso.id || !isTodayOrDemoDate(s.data)) return false;
           const sStart = (s.dormiuEm || '').trim();
@@ -4661,18 +4661,18 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                  (sStart.replace(/^0/, '') === startShort && sEnd.replace(/^0/, '') === endShort);
         });
 
-        // Check against Diário da Inf (anjo_sinais)
+        // Check against Diario da Inf (anjo_sinais)
         isDuplicateSleepWithSinais = vitalsStore.some(v => {
           if (v.idosoId !== idoso.id || !isTodayOrDemoDate(v.data)) return false;
           const old = (v.soneca || v.pressaoArterial || '').toLowerCase();
-          if (!old || old === 'sem registros' || old === 'não dormiu / sesta') return false;
+          if (!old || old === 'sem registros' || old === 'nao dormiu / sesta') return false;
           return (old.includes(startStr) || old.includes(startShort)) && (old.includes(endStr) || old.includes(endShort));
         });
       }
 
       if (isDuplicateSleepWithSono || isDuplicateSleepWithSinais) {
-        const sourceName = isDuplicateSleepWithSono ? 'Frequência (Rotina)' : 'Diário da Inf';
-        alert(` ⚠  Registro Duplicado Bloqueado: Já existe um registro de soneca/sono para ${idoso.nome} no mesmo horário (${timeMatch ? `${timeMatch[1]} Às ${timeMatch[2]}` : newSono}) lançado hoje no ${sourceName}!\n\nNão é permitido salvar mensagens/registros duplicados para el mesmo horário.`);
+        const sourceName = isDuplicateSleepWithSono ? 'Frequencia (Rotina)' : 'Diario da Inf';
+        alert(` [!]  Registro Duplicado Bloqueado: Ja existe um registro de soneca/sono para ${idoso.nome} no mesmo horario (${timeMatch ? `${timeMatch[1]} As ${timeMatch[2]}` : newSono}) lancado hoje no ${sourceName}!\n\nNao e permitido salvar mensagens/registros duplicados para el mesmo horario.`);
         return;
       }
 
@@ -4680,14 +4680,14 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
         const lastRecord = todayRecords[todayRecords.length - 1];
         const oldSono = lastRecord.soneca || 'Sem registros';
         const oldFralda = lastRecord.fralda || 'Sem trocas';
-        const oldTemp = lastRecord.temperatura ? `${lastRecord.temperatura}°C` : 'Não medida';
+        const oldTemp = lastRecord.temperatura ? `${lastRecord.temperatura}oC` : 'Nao medida';
         
         const isIdentical = (newSono === oldSono) && 
                             (newFralda === oldFralda) &&
                             ((Number(quickVitals.temp) || 36.5) === lastRecord.temperatura);
         
         if (isIdentical) {
-          alert(` ⚠  Registro Idêntico Bloqueado: Você já salvou exatamente essas informações no Diário da Inf para ${idoso.nome} hoje!\n\nNão é permitido enviar duas mensagens idênticas.`);
+          alert(` [!]  Registro Identico Bloqueado: Voce ja salvou exatamente essas informacoes no Diario da Inf para ${idoso.nome} hoje!\n\nNao e permitido enviar duas mensagens identicas.`);
           return;
         }
 
@@ -4713,18 +4713,18 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
         cuidador_id: usuarioAtual.id,
         atividade_id: 'quick_vitals_' + Date.now(),
         tipo: 'sinal_vital',
-        titulo: isEscolar ? 'Saúde, Sono & Fralda do Aluno' : 'Sinais Vitais e Peso',
+        titulo: isEscolar ? 'Saude, Sono & Fralda do Aluno' : 'Sinais Vitais e Peso',
         status: 'realizado',
         horario_planejado: defaultTime,
         horario_registrado_dispositivo: new Date().toISOString(),
         observacao: isEscolar
-          ? `Sono: ${quickVitals.pressao || 'Sem registros'}, Fralda: ${quickVitals.glicemia || 'Sem registros'}, Temp: ${quickVitals.temp || 'Sem Temp'}°C, Água/Copos: ${quickVitals.fCard || '0'}, Sat: ${quickVitals.sat || 'Normal'} copos, Peso: ${quickVitals.peso || 'Sem Peso'} kg.`
-          : `Aferido PA: ${quickVitals.pressao || 'Sem PA'}, Glicemia: ${quickVitals.glicemia || 'Sem Glicemia'} mg/dL, Sat: ${quickVitals.sat || 'Sem O2'}%, Temp: ${quickVitals.temp || 'Sem Temp'}°C, FC: ${quickVitals.fCard || 'Sem FC'} bpm, Peso: ${quickVitals.peso || 'Sem Peso'} kg.`,
+          ? `Sono: ${quickVitals.pressao || 'Sem registros'}, Fralda: ${quickVitals.glicemia || 'Sem registros'}, Temp: ${quickVitals.temp || 'Sem Temp'}oC, Agua/Copos: ${quickVitals.fCard || '0'}, Sat: ${quickVitals.sat || 'Normal'} copos, Peso: ${quickVitals.peso || 'Sem Peso'} kg.`
+          : `Aferido PA: ${quickVitals.pressao || 'Sem PA'}, Glicemia: ${quickVitals.glicemia || 'Sem Glicemia'} mg/dL, Sat: ${quickVitals.sat || 'Sem O2'}%, Temp: ${quickVitals.temp || 'Sem Temp'}oC, FC: ${quickVitals.fCard || 'Sem FC'} bpm, Peso: ${quickVitals.peso || 'Sem Peso'} kg.`,
         modo_registro: 'offline',
         status_sincronizacao: 'pendente'
       }).then(() => {
         loadOfflineQueue();
-        alert(isEscolar ? 'Rotina escolar e saúde registradas offline!' : 'Sinais vitais e Peso registrados offline com sucesso!');
+        alert(isEscolar ? 'Rotina escolar e saude registradas offline!' : 'Sinais vitais e Peso registrados offline com sucesso!');
         setQuickVitals({ pressao: '', glicemia: '', temp: '', fCard: '', sat: '', peso: '', obs: '' });
       });
       return;
@@ -4814,7 +4814,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                 status: 'concluido' as const,
                 concluidaEm: defaultTime,
                 completadaPor: usuarioAtual.nome,
-                observacao: `Copos de água registrados: ${valCupsOrMl} (${mlAdded}ml total).`
+                observacao: `Copos de agua registrados: ${valCupsOrMl} (${mlAdded}ml total).`
               };
             }
             return t;
@@ -4825,7 +4825,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     }
 
     if ((isEscolar || quickVitals.pressao) && quickVitals.pressao && quickVitals.pressao !== 'Sem registros') {
-      const timeMatch = quickVitals.pressao.match(/(\d{1,2}(?::\d{2}|h\d{0,2}))\s*(?:Às|as|-|até)\s*(\d{1,2}(?::\d{2}|h\d{0,2}))/i);
+      const timeMatch = quickVitals.pressao.match(/(\d{1,2}(?::\d{2}|h\d{0,2}))\s*(?:As|as|-|ate)\s*(\d{1,2}(?::\d{2}|h\d{0,2}))/i);
       const extractedStart = timeMatch ? timeMatch[1] : (sleepStart || '13:00');
       const extractedEnd = timeMatch ? timeMatch[2] : (sleepEnd || '14:30');
 
@@ -4866,31 +4866,31 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
 
     // Save WhatsApp notification log
     const whatsMsg = isFundamental
-      ? `Anjinho Fundamental: Relatório de Acompanhamento Escolar aferido para o(a) aluno(a) ${idoso.nome} pela Profª ${usuarioAtual.nome}:
- Dever de Casa / Lição: ${quickVitals.pressao || 'Sem tarefas registradas'}
+      ? `Anjinho Fundamental: Relatorio de Acompanhamento Escolar aferido para o(a) aluno(a) ${idoso.nome} pela Profa ${usuarioAtual.nome}:
+ Dever de Casa / Licao: ${quickVitals.pressao || 'Sem tarefas registradas'}
  Foco / Comportamento: ${quickVitals.glicemia || 'Focado e excelente comportamento'}
- Temperatura: ${quickVitals.temp ? `${quickVitals.temp}°C` : 'Normal / Não medida'}
+ Temperatura: ${quickVitals.temp ? `${quickVitals.temp}oC` : 'Normal / Nao medida'}
  Material / Cadernos: ${quickVitals.sat || 'Cadernos e estojo completos'}
- Hidratação / Garrafinha: ${quickVitals.fCard ? `${quickVitals.fCard} copos` : 'Normal'}
- Peso: ${quickVitals.peso ? `${quickVitals.peso} kg` : 'Não aferido'}`
+ Hidratacao / Garrafinha: ${quickVitals.fCard ? `${quickVitals.fCard} copos` : 'Normal'}
+ Peso: ${quickVitals.peso ? `${quickVitals.peso} kg` : 'Nao aferido'}`
       : isEscolar
-        ? `Anjinho Escolar: Relatório de Saúde aferido para o(a) aluno(a) ${idoso.nome} pela Profª ${usuarioAtual.nome}:
- Período de Sono: ${quickVitals.pressao || 'Não dormiu / Não se aplica'}
- Fralda (Xixi/Cocô): ${quickVitals.glicemia || 'Verificada e sem assaduras'}
- Temperatura: ${quickVitals.temp ? `${quickVitals.temp}°C` : 'Normal / Não medida'}
+        ? `Anjinho Escolar: Relatorio de Saude aferido para o(a) aluno(a) ${idoso.nome} pela Profa ${usuarioAtual.nome}:
+ Periodo de Sono: ${quickVitals.pressao || 'Nao dormiu / Nao se aplica'}
+ Fralda (Xixi/Coco): ${quickVitals.glicemia || 'Verificada e sem assaduras'}
+ Temperatura: ${quickVitals.temp ? `${quickVitals.temp}oC` : 'Normal / Nao medida'}
   Mamadeiras: ${quickVitals.sat ? `${quickVitals.sat} mamadeira(s)` : 'Nenhuma no momento'}
-  Copos d'Água: ${quickVitals.fCard ? `${quickVitals.fCard} copo(s)` : 'Normal'}
- Peso: ${quickVitals.peso ? `${quickVitals.peso} kg` : 'Não aferido'}`
+  Copos d'Agua: ${quickVitals.fCard ? `${quickVitals.fCard} copo(s)` : 'Normal'}
+ Peso: ${quickVitals.peso ? `${quickVitals.peso} kg` : 'Nao aferido'}`
         : `Anjo Cuidador: Sinais vitais aferidos para ${idoso.nome} por ${usuarioAtual.nome}:
- Pressão: ${novoSinal.pressaoArterial} mmHg
+ Pressao: ${novoSinal.pressaoArterial} mmHg
  Glicemia: ${novoSinal.glicemia} mg/dL
- Temp: ${novoSinal.temperatura}°C
+ Temp: ${novoSinal.temperatura}oC
  Sat. O2: ${novoSinal.saturacao}%
- Freq. Cardíaca: ${novoSinal.frequenciaCardiaca} bpm
- Peso: ${novoSinal.peso ? `${novoSinal.peso} kg` : 'Não aferido'}`;
+ Freq. Cardiaca: ${novoSinal.frequenciaCardiaca} bpm
+ Peso: ${novoSinal.peso ? `${novoSinal.peso} kg` : 'Nao aferido'}`;
 
-    triggerWhatsAppSim(isEscolar ? 'Saúde e Sono do Aluno Registrados' : 'Sinais Vitais e Peso Registrados', whatsMsg);
-    alert(isEscolar ? 'Situação de saúde e rotina do aluno registradas com sucesso!' : 'Sinais vitais e controle de Peso registrados com sucesso!');
+    triggerWhatsAppSim(isEscolar ? 'Saude e Sono do Aluno Registrados' : 'Sinais Vitais e Peso Registrados', whatsMsg);
+    alert(isEscolar ? 'Situacao de saude e rotina do aluno registradas com sucesso!' : 'Sinais vitais e controle de Peso registrados com sucesso!');
     setQuickVitals({ pressao: '', glicemia: '', temp: '', fCard: '', sat: '', peso: '', obs: '' });
     
     // Refresh page state triggers
@@ -4917,11 +4917,11 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
       const newConsent = {
         id: 'consent_' + Date.now(),
         usuarioId: usuarioAtual?.id || 'usr_unknown',
-        usuarioNome: usuarioAtual?.nome || 'Usuário Desconhecido',
+        usuarioNome: usuarioAtual?.nome || 'Usuario Desconhecido',
         usuarioEmail: usuarioAtual?.email || 'Sem e-mail',
         usuarioTelefone: usuarioAtual?.telefone || 'Sem telefone',
         usuarioTipo: usuarioAtual?.tipo || 'familiar',
-        idosoNome: idoso?.nome || 'Paciente não especificado',
+        idosoNome: idoso?.nome || 'Paciente nao especificado',
         dataConsentimento: new Date().toLocaleDateString('pt-BR') + ' ' + new Date().toLocaleTimeString('pt-BR'),
         modoApp: appMode === 'escolar_infantil' ? ' Anjinho Escolar' : ' Anjo Cuidador',
         deviceFingerprint: `IP 177.104.${Math.floor(Math.random() * 200 + 40)}.${Math.floor(Math.random() * 254)} (HTTPS Secured - Chrome Mobile)`,
@@ -5021,7 +5021,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     : (latestSono 
         ? (latestSono.observacoes && latestSono.observacoes.length > 0 
             ? latestSono.observacoes 
-            : (latestSono.dormiuEm && latestSono.acordouEm ? `Dormiu das ${latestSono.dormiuEm} Às ${latestSono.acordouEm}` : 'Soneca registrada'))
+            : (latestSono.dormiuEm && latestSono.acordouEm ? `Dormiu das ${latestSono.dormiuEm} As ${latestSono.acordouEm}` : 'Soneca registrada'))
         : (latestVitals?.pressaoArterial && (latestVitals.pressaoArterial.includes(':') || latestVitals.pressaoArterial.toLowerCase().includes('dormiu') || latestVitals.pressaoArterial.toLowerCase().includes('soneca')) ? latestVitals.pressaoArterial : null));
 
   const weightedVitals = allVitalsList.filter(s => s.peso && s.peso > 0);
@@ -5043,7 +5043,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
     }));
 
   const currentModeStr = appMode === 'escolar_infantil' ? 'escolar_infantil' : 'idoso';
-  const instName = localStorage.getItem(`anjo_brand_name_${currentModeStr}`) || (isEscolar ? 'Colégio Pequeno Anjo' : 'Clínica Recanto Feliz');
+  const instName = localStorage.getItem(`anjo_brand_name_${currentModeStr}`) || (isEscolar ? 'Colegio Pequeno Anjo' : 'Clinica Recanto Feliz');
   const instLogo = localStorage.getItem(`anjo_brand_logo_${currentModeStr}`) || '';
   const instSlogan = localStorage.getItem(`anjo_brand_slogan_${currentModeStr}`) || '';
 
@@ -5096,7 +5096,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                 Boletins de Acompanhamento Familiar
               </h4>
               <p className="text-[10px] text-slate-500 font-semibold leading-relaxed">
-                Você possui <strong className="text-slate-700 dark:text-slate-300">{myChildren.length} assistidos</strong> registrados com o telefone <strong className="text-indigo-600">{usuarioAtual.telefone}</strong>. Selecione qual deseja monitorar:
+                Voce possui <strong className="text-slate-700 dark:text-slate-300">{myChildren.length} assistidos</strong> registrados com o telefone <strong className="text-indigo-600">{usuarioAtual.telefone}</strong>. Selecione qual deseja monitorar:
               </p>
             </div>
             
@@ -5146,13 +5146,13 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
           </div>
           <div className="space-y-0.5">
             <span className="text-[9px] font-black uppercase text-indigo-600 tracking-wider flex items-center gap-1">
-               Instituição Credenciada & Patrocinadora
+               Instituicao Credenciada & Patrocinadora
             </span>
             <h4 className="text-sm font-black text-slate-900 tracking-tight leading-none">
               {instName}
             </h4>
             <p className="text-[11px] text-slate-600 dark:text-slate-300 font-semibold leading-snug">
-              {instSlogan || (isEscolar ? 'Onde a inf é registrada para sempre  Transparência e segurança diária.' : 'Acompanhamento Sênior Inteligente  Cuidado e transparência em tempo real.')}
+              {instSlogan || (isEscolar ? 'Onde a inf e registrada para sempre  Transparencia e seguranca diaria.' : 'Acompanhamento Senior Inteligente  Cuidado e transparencia em tempo real.')}
             </p>
           </div>
         </div>
@@ -5179,10 +5179,10 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                  Busca Direta por Nome
               </span>
               <h3 className="text-sm font-black text-slate-900 dark:text-white flex items-center gap-2">
-                <span></span> Busca Rápida de {isEscolar ? 'Alunos & Crianças' : 'Assistidos'}
+                <span></span> Busca Rapida de {isEscolar ? 'Alunos & Criancas' : 'Assistidos'}
               </h3>
               <p className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold leading-relaxed">
-                Digite o nome de qualquer {isEscolar ? 'aluno, turma ou responsável' : 'assistido'} para alternar o diário e boletim em 1 clique:
+                Digite o nome de qualquer {isEscolar ? 'aluno, turma ou responsavel' : 'assistido'} para alternar o diario e boletim em 1 clique:
               </p>
             </div>
 
@@ -5214,7 +5214,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                 <span></span> Central de Salas & Professoras <span className="bg-amber-100 text-amber-800 text-[9px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">Ambiente de Testes</span>
               </h3>
               <p className="text-[11px] text-slate-500 font-semibold leading-relaxed">
-                Mude de sala e professora com 1 clique. O painel se adaptará por completo para carregar as informações e diários da sala selecionada.
+                Mude de sala e professora com 1 clique. O painel se adaptara por completo para carregar as informacoes e diarios da sala selecionada.
               </p>
             </div>
             {usuarioAtual && (
@@ -5310,12 +5310,12 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
               <h3 className={`text-sm font-extrabold ${accessibilitySettings?.darkMode ? 'text-white' : 'text-slate-850'}`}>
                 {appMode === 'escolar_infantil'
                   ? 'Modo Agenda Escolar Infantil Ativo (Maternal & Creche)!'
-                  : 'Acompanhamento Sênior Inteligente Ativo!'}
+                  : 'Acompanhamento Senior Inteligente Ativo!'}
               </h3>
               <p className={`text-xs leading-relaxed ${accessibilitySettings?.darkMode ? 'text-slate-300' : 'text-slate-600'}`}>
                 {appMode === 'escolar_infantil'
-                  ? 'Você está simulando o aplicativo voltado para creches e berçários. As abas do Diário foram configuradas para o bem-estar lúdico, higiene e rotina da primeira inf'
-                  : 'Nossa tecnologia de cuidado integrado oferece duas versões super otimizadas: Anjo Cuidador (Acompanhamento Sênior) e Anjinho Escolar (Educação Infantil). Conheça as abas correspondentes:'}
+                  ? 'Voce esta simulando o aplicativo voltado para creches e bercarios. As abas do Diario foram configuradas para o bem-estar ludico, higiene e rotina da primeira inf'
+                  : 'Nossa tecnologia de cuidado integrado oferece duas versoes super otimizadas: Anjo Cuidador (Acompanhamento Senior) e Anjinho Escolar (Educacao Infantil). Conheca as abas correspondentes:'}
               </p>
 
               
@@ -5324,19 +5324,19 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                   <>
                     <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg"> Papa & Mamadeira</div>
                     <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg"> Trocas & Higiene</div>
-                    <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg"> Copos de Água</div>
+                    <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg"> Copos de Agua</div>
                     <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg"> Sono / Soneca</div>
                     <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg"> Humor & Social</div>
-                    <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg"> Atividade Pedagógica</div>
+                    <div className="text-[10px] font-extrabold bg-teal-100/50 dark:bg-teal-950/40 text-teal-850 dark:text-teal-300 px-2 py-1 rounded-lg"> Atividade Pedagogica</div>
                   </>
                 ) : (
                   <>
-                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg"> Alimentação</div>
+                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg"> Alimentacao</div>
                     <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg"> Banho e Higiene</div>
-                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg"> Hidratação</div>
-                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg"> Diário de Sono</div>
+                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg"> Hidratacao</div>
+                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg"> Diario de Sono</div>
                     <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg"> Humor/Comportamento</div>
-                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg"> Exercícios/Atividades</div>
+                    <div className="text-[10px] font-extrabold bg-amber-100/50 dark:bg-amber-950/40 text-amber-900 dark:text-amber-300 px-2 py-1 rounded-lg"> Exercicios/Atividades</div>
                   </>
                 )}
               </div>
@@ -5369,7 +5369,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
               : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
-          <span>{isEscolar ? 'AULA' : 'Saúde'}</span>
+          <span>{isEscolar ? 'AULA' : 'Saude'}</span>
           <span>{isEscolar ? 'Painel da Professora' : 'Painel do Cuidador'}</span>
         </button>
         <button
@@ -5395,7 +5395,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
               <span className={`relative inline-flex rounded-full h-2.5 w-2.5 ${simulatedOnline ? 'bg-emerald-500' : 'bg-rose-500'}`}></span>
             </span>
             <span className="text-xs font-bold text-slate-700">
-              Dispositivo {simulatedOnline ? 'Conectado À Nuvem (Servidor)' : 'Operando em Fila Local (IndexedDB)'}
+              Dispositivo {simulatedOnline ? 'Conectado A Nuvem (Servidor)' : 'Operando em Fila Local (IndexedDB)'}
             </span>
             {filaOffline.length > 0 && (
               <span className="text-[10px] font-black uppercase text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
@@ -5419,7 +5419,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                 onClick={() => setShowSimulationTools(!showSimulationTools)}
                 className="text-[10px] font-black text-slate-500 hover:text-slate-800 transition-colors uppercase tracking-widest bg-slate-200/60 px-2.5 py-1 rounded-md cursor-pointer flex items-center gap-1 select-none"
               >
-                 ⚠  {showSimulationTools ? 'Ocultar Simulador' : 'Simular Redes / Testes'}
+                 [!]  {showSimulationTools ? 'Ocultar Simulador' : 'Simular Redes / Testes'}
               </button>
             )}
           </div>
@@ -5433,7 +5433,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
               <div className="space-y-1 leading-normal">
                 <strong className="text-xs font-black text-slate-700 uppercase tracking-wide block">Ambiente de Testes / Simulador de Perda de Sinal</strong>
                 <p className="text-[11px] text-slate-500">
-                  Use os botões de simulação abaixo para colocar o dispositivo cooperativamente em modo offline. O aplicativo guardará os horários exatos dos toques no IndexedDB, e efetuará logs de auditoria de sincronização retroativa integrados ao perfil de auditoria LGPD no momento que a rede re-estabilizar.
+                  Use os botoes de simulacao abaixo para colocar o dispositivo cooperativamente em modo offline. O aplicativo guardara os horarios exatos dos toques no IndexedDB, e efetuara logs de auditoria de sincronizacao retroativa integrados ao perfil de auditoria LGPD no momento que a rede re-estabilizar.
                 </p>
               </div>
             </div>
@@ -5447,7 +5447,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     : 'bg-emerald-50 text-emerald-600 border-emerald-200'
                 }`}
               >
-                {simulatedOnline ? ' Forçar Queda de Internet (Simular Offline)' : ' Restaurar Conexão de Internet (Simular Online)'}
+                {simulatedOnline ? ' Forcar Queda de Internet (Simular Offline)' : ' Restaurar Conexao de Internet (Simular Online)'}
               </button>
             </div>
           </div>
@@ -5495,7 +5495,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
           <button 
             onClick={() => onNavigate('classroom')}
             className="px-3.5 py-2 bg-white hover:bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold rounded-xl text-xs transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs"
-            title={isEscolar ? 'Ver salas de aula e trocar a criança/aluno em acompanhamento' : 'Ver lista de pessoas assistidas'}
+            title={isEscolar ? 'Ver salas de aula e trocar a crianca/aluno em acompanhamento' : 'Ver lista de pessoas assistidas'}
           >
             <Users className="w-3.5 h-3.5" />
             {isEscolar ? 'Trocar Sala / Aluno' : 'Trocar Idoso'}
@@ -5517,13 +5517,13 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
           />
           <div className="text-center md:text-left flex-1 space-y-2">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-serene-blue/10 text-serene-blue">
-              <Heart className="w-3.5 h-3.5 fill-current text-serene-blue" /> {isEscolar ? 'Aluno Verificado' : 'Visão Geral Ativa'}
+              <Heart className="w-3.5 h-3.5 fill-current text-serene-blue" /> {isEscolar ? 'Aluno Verificado' : 'Visao Geral Ativa'}
             </span>
             <h1 className={`${titleClass} text-slate-800`}>{idoso.nome}</h1>
             {idoso.contatoEmergencia?.nome && (
               <div className="flex items-center justify-center md:justify-start gap-1.5 text-xs text-indigo-900 bg-indigo-50 border border-indigo-200/80 px-3 py-1 rounded-xl font-bold w-fit mx-auto md:mx-0 shadow-2xs">
                 <span></span>
-                <span>Resp: <strong className="font-extrabold text-indigo-950">{idoso.contatoEmergencia.nome}</strong> ({idoso.contatoEmergencia.parentesco || 'Mãe/Pai'})</span>
+                <span>Resp: <strong className="font-extrabold text-indigo-950">{idoso.contatoEmergencia.nome}</strong> ({idoso.contatoEmergencia.parentesco || 'Mae/Pai'})</span>
                 {idoso.contatoEmergencia.telefone && (
                   <span className="text-[11px] font-mono font-semibold text-indigo-600">({idoso.contatoEmergencia.telefone})</span>
                 )}
@@ -5539,7 +5539,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                 <span className="text-xs text-indigo-800 dark:text-indigo-300 font-extrabold">Professora Titular:</span>
                 <span className="text-xs font-black text-indigo-950 dark:text-white">
                   {(() => {
-                    const studentRoom = getStudentClassName(idoso) || idoso.salaAula || idoso.quarto || 'Berçário I - A';
+                    const studentRoom = getStudentClassName(idoso) || idoso.salaAula || idoso.quarto || 'Bercario I - A';
                     const assignedTeacher = getAssignedTeacherForRoom(studentRoom, usuarioAtual);
                     return assignedTeacher ? assignedTeacher.nome.replace(/\s*\([^)]*\)/g, '').trim() : 'Sem Professora Cadastrada';
                   })()}
@@ -5551,7 +5551,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
             ) : (
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-1.5 mt-1 bg-amber-50/70 dark:bg-amber-950/40 border border-amber-100/50 dark:border-amber-900/30 px-3 py-1.5 rounded-xl w-fit mx-auto md:mx-0">
                 <span className="text-sm"></span>
-                <span className="text-xs text-amber-800 dark:text-amber-300 font-extrabold">Cuidador Responsável:</span>
+                <span className="text-xs text-amber-800 dark:text-amber-300 font-extrabold">Cuidador Responsavel:</span>
                 <span className="text-xs font-black text-amber-950 dark:text-white">
                   {usuarioAtual ? usuarioAtual.nome.replace(' (Cuidadora)', '') : 'Sem Cuidador'}
                 </span>
@@ -5569,7 +5569,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         type="button"
                         onClick={(e) => handleDeleteCondicao(cond, e)}
                         className="p-0.5 text-slate-400 hover:text-rose-600 rounded-sm transition-colors hover:bg-rose-50 cursor-pointer"
-                        title="Excluir rotina/condição"
+                        title="Excluir rotina/condicao"
                         id={`delete-cond-${i}`}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -5601,7 +5601,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                   className="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold rounded-md border border-indigo-200 flex items-center gap-1 transition-colors cursor-pointer"
                   id="toggle-add-special-btn"
                 >
-                  <Plus className="w-3.5 h-3.5" /> {isEscolar ? 'Novo Alerta/Alergia' : 'Nova Condição/Alergia'}
+                  <Plus className="w-3.5 h-3.5" /> {isEscolar ? 'Novo Alerta/Alergia' : 'Nova Condicao/Alergia'}
                 </button>
               </div>
 
@@ -5616,12 +5616,12 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                       onChange={e => setNewSpecialType(e.target.value as 'condicao' | 'alergia')}
                       className="text-xs px-2 py-1.5 bg-white border border-indigo-200 rounded-lg text-slate-755 outline-hidden focus:border-indigo-500 font-bold"
                     >
-                      <option value="condicao">{isEscolar ? 'Rotina/Restrição' : 'Condição Médica'}</option>
+                      <option value="condicao">{isEscolar ? 'Rotina/Restricao' : 'Condicao Medica'}</option>
                       <option value="alergia">Alergia Grave</option>
                     </select>
                     <input
                       type="text"
-                      placeholder={newSpecialType === 'condicao' ? (isEscolar ? 'Ex: Soneca após almoço' : 'Ex: Diabetes Tipo 2') : 'Ex: Amendoim, Lactose'}
+                      placeholder={newSpecialType === 'condicao' ? (isEscolar ? 'Ex: Soneca apos almoco' : 'Ex: Diabetes Tipo 2') : 'Ex: Amendoim, Lactose'}
                       value={newSpecialValue}
                       onChange={e => setNewSpecialValue(e.target.value)}
                       className="flex-1 text-xs px-2.5 py-1.5 bg-white border border-indigo-200 rounded-lg text-slate-800 placeholder-indigo-300 outline-hidden focus:border-indigo-500 font-semibold"
@@ -5656,7 +5656,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                   <div>
                     <p className="text-xs font-bold text-indigo-950 leading-none mb-1">Painel da Sala e Switcher</p>
                     <p className="text-[10px] text-indigo-800 leading-normal">
-                      Você está visualizando a ficha de <strong>{idoso.nome}</strong>. Cadastramos todos os 25 alunos da sala.
+                      Voce esta visualizando a ficha de <strong>{idoso.nome}</strong>. Cadastramos todos os 25 alunos da sala.
                     </p>
                   </div>
                 </div>
@@ -5686,20 +5686,20 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
             <div className="space-y-1">
               <div className="flex items-center gap-1.5">
                 <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 rounded-full text-[10px] font-black uppercase tracking-wider">
-                  Período de Experiência
+                  Periodo de Experiencia
                 </span>
                 <span className={`text-xs font-bold ${accessibilitySettings?.darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Dia 15 de 30</span>
               </div>
               <h4 className={`text-base font-black ${accessibilitySettings?.darkMode ? 'text-white' : 'text-slate-950'}`}>
                 {isEscolar 
-                  ? ' Seu Período de Testes Gratuitos (30 Dias) está Ativo!' 
-                  : ' Período de Experiência Grátis (30 Dias) Ativo!'
+                  ? ' Seu Periodo de Testes Gratuitos (30 Dias) esta Ativo!' 
+                  : ' Periodo de Experiencia Gratis (30 Dias) Ativo!'
                 }
               </h4>
               <p className={`text-xs max-w-2xl font-semibold leading-relaxed ${accessibilitySettings?.darkMode ? 'text-slate-300' : 'text-slate-500'}`}>
                 {isEscolar
-                  ? `Já faz 15 dias que você está mais perto da rotina escolar de ${idoso.nome}. Viu como a aba de Medicamentos Encomendados e o Diário Lúdico facilitam seu dia e trazem tranquilidade?`
-                  : `Já faz 15 dias que você está mais perto do acompanhamento preventivo de ${idoso.nome}. Viu como a aba de Medicamentos e os registros de Sinais Vitais trazem paz e segurança?`
+                  ? `Ja faz 15 dias que voce esta mais perto da rotina escolar de ${idoso.nome}. Viu como a aba de Medicamentos Encomendados e o Diario Ludico facilitam seu dia e trazem tranquilidade?`
+                  : `Ja faz 15 dias que voce esta mais perto do acompanhamento preventivo de ${idoso.nome}. Viu como a aba de Medicamentos e os registros de Sinais Vitais trazem paz e seguranca?`
                 }
               </p>
             </div>
@@ -5759,7 +5759,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     
                   </div>
                   <span className={`text-[10px] font-black ${accessibilitySettings?.darkMode ? 'text-emerald-400' : 'text-emerald-600'}`}>Dia 15</span>
-                  <span className={`text-[9px] font-extrabold ${accessibilitySettings?.darkMode ? 'text-emerald-400' : 'text-emerald-500'}`}>Você está aqui</span>
+                  <span className={`text-[9px] font-extrabold ${accessibilitySettings?.darkMode ? 'text-emerald-400' : 'text-emerald-500'}`}>Voce esta aqui</span>
                 </div>
 
                 
@@ -5768,7 +5768,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     3
                   </div>
                   <span className={`text-[10px] font-black ${accessibilitySettings?.darkMode ? 'text-slate-400' : 'text-slate-500'}`}>Dia 25</span>
-                  <span className={`text-[9px] font-bold block ${accessibilitySettings?.darkMode ? 'text-slate-400' : 'text-slate-400'}`}>Aviso Prévio</span>
+                  <span className={`text-[9px] font-bold block ${accessibilitySettings?.darkMode ? 'text-slate-400' : 'text-slate-400'}`}>Aviso Previo</span>
                 </div>
 
                 
@@ -5800,14 +5800,14 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
               
               <div className="space-y-4 max-w-xl">
                 <div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-rose-600 font-sans">{isEscolar ? 'Controle de Presença Escolar' : 'Acompanhamento de Cuidados'}</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-rose-600 font-sans">{isEscolar ? 'Controle de Presenca Escolar' : 'Acompanhamento de Cuidados'}</span>
                   <h2 className="text-xl font-bold text-rose-950">
                     {isEscolar ? ' Aluno Ausente Hoje (Falta)' : ' Cliente Ausente'}
                   </h2>
                   <p className="text-xs text-rose-700 mt-1 leading-normal">
                     {isEscolar 
-                      ? 'Este aluno foi marcado como ausente hoje. Nenhuma notificação ou relatório de rotina será cobrado ou emitido para os pais, e os lembretes de atraso para este diário estão desativados.'
-                      : 'Este idoso foi marcado como ausente hoje. Nenhuma atividade ou tarefa de rotina do dia será cobrada ou marcada.'
+                      ? 'Este aluno foi marcado como ausente hoje. Nenhuma notificacao ou relatorio de rotina sera cobrado ou emitido para os pais, e os lembretes de atraso para este diario estao desativados.'
+                      : 'Este idoso foi marcado como ausente hoje. Nenhuma atividade ou tarefa de rotina do dia sera cobrada ou marcada.'
                     }
                   </p>
                 </div>
@@ -5822,7 +5822,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     </button>
                   ) : (
                     <span className="text-xs font-semibold text-rose-700 bg-rose-100/50 px-3 py-2 rounded-xl border border-rose-200">
-                       Apenas educadores/cuidadores autorizados podem alterar a presença do aluno.
+                       Apenas educadores/cuidadores autorizados podem alterar a presenca do aluno.
                     </span>
                   )}
                 </div>
@@ -5837,7 +5837,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
               <div className="space-y-4 max-w-xl">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{isEscolar ? 'Classe e Presença do Aluno' : 'Controle de Horas'}</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{isEscolar ? 'Classe e Presenca do Aluno' : 'Controle de Horas'}</span>
                     {isShiftActive && (
                       <span className="inline-flex items-center gap-1 text-[9px] font-black px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 animate-pulse">
                         <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> AO VIVO
@@ -5846,16 +5846,16 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                   </div>
                   <h2 className="text-xl font-bold text-slate-800">
                     {isShiftActive 
-                      ? (isEscolar ? ` Período Letivo em Andamento (${idoso.nome.split(' (')[0]})` : ` Turno Ativo no Celular!`) 
-                      : (isEscolar ? `Aulas Não Iniciadas (${idoso.nome.split(' (')[0]})` : 'Seu Turno Não Está Ativo')}
+                      ? (isEscolar ? ` Periodo Letivo em Andamento (${idoso.nome.split(' (')[0]})` : ` Turno Ativo no Celular!`) 
+                      : (isEscolar ? `Aulas Nao Iniciadas (${idoso.nome.split(' (')[0]})` : 'Seu Turno Nao Esta Ativo')}
                   </h2>
                   <p className="text-xs text-slate-500 mt-1 leading-normal">
                     {isEscolar 
                       ? (isStaffUser(usuarioAtual)
-                          ? 'Inicie o diário de classe do aluno para registrar sonecas, xixi/cocô, mamadeiras e saúde. No final do período, termine a aula para disparar o relatório automático via WhatsApp para os pais!'
+                          ? 'Inicie o diario de classe do aluno para registrar sonecas, xixi/coco, mamadeiras e saude. No final do periodo, termine a aula para disparar o relatorio automatico via WhatsApp para os pais!'
                           : (isShiftActive 
-                              ? ` ${idoso.nome.split(' (')[0]} está presente na escola e o diário de classe está aberto em tempo real pela equipe pedagógica.` 
-                              : `Aguardando a professora/educadora iniciar o período letivo para ${idoso.nome.split(' (')[0]}. Assim que a entrada for confirmada, o cronômetro iniciará aqui automaticamente.`))
+                              ? ` ${idoso.nome.split(' (')[0]} esta presente na escola e o diario de classe esta aberto em tempo real pela equipe pedagogica.` 
+                              : `Aguardando a professora/educadora iniciar o periodo letivo para ${idoso.nome.split(' (')[0]}. Assim que a entrada for confirmada, o cronometro iniciara aqui automaticamente.`))
                       : 'Inicie seu turno para acompanhar a rotina e as atividades. Ao final, clique em Encerrar para compilar o resumo e enviar os disparos de auditoria aos familiares interessados.'
                     }
                   </p>
@@ -5866,13 +5866,13 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                   <div className={`px-4 py-2.5 rounded-xl border leading-none transition-all duration-300 ${isShiftActive ? 'bg-white border-emerald-300 shadow-xs' : 'bg-slate-100 border-slate-200'}`}>
                     <div className="flex items-center justify-between gap-3 mb-1">
                       <span className="text-[9px] font-bold text-slate-400 block uppercase tracking-wider">
-                        {isEscolar ? 'TEMPO EM AULA' : 'DURAÇÁO DO TURNO'}
+                        {isEscolar ? 'TEMPO EM AULA' : 'DURACAO DO TURNO'}
                       </span>
                       {isShiftActive && isStaffUser(usuarioAtual) && (
                         <button
                           onClick={handleDirectStopShift}
                           className="text-[10px] font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-1.5 py-0.5 rounded cursor-pointer transition-all"
-                          title="Desligar cronômetro imediatamente"
+                          title="Desligar cronometro imediatamente"
                         >
                            Desligar
                         </button>
@@ -5893,30 +5893,30 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                               setShowOccurrenceModal(true);
                             }}
                             className="px-3.5 py-2.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-black text-xs rounded-xl transition-all cursor-pointer shadow-md flex items-center justify-center gap-1.5 border border-red-500 hover:scale-102"
-                            title="Registrar intercorrência médica ou ocorrência do dia"
+                            title="Registrar intercorrencia medica ou ocorrencia do dia"
                           >
-                            <ShieldAlert className="w-4 h-4 text-white animate-pulse" />  Registrar Ocorrência
+                            <ShieldAlert className="w-4 h-4 text-white animate-pulse" />  Registrar Ocorrencia
                           </button>
                           <button
                             onClick={handleDirectStopShift}
                             className="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 hover:scale-102"
-                            title="Desligar cronômetro deste aluno individualmente"
+                            title="Desligar cronometro deste aluno individualmente"
                           >
                             <Square className="w-3.5 h-3.5 fill-current" /> {isEscolar ? ' Desligar Individual' : ' Desligar Turno'}
                           </button>
                           <button
                             onClick={() => handleEndShiftGroup(teacherClassroom)}
                             className="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 hover:scale-102"
-                            title={`Desligar cronômetro de todos os alunos da turma ${teacherClassroom} ao mesmo tempo`}
+                            title={`Desligar cronometro de todos os alunos da turma ${teacherClassroom} ao mesmo tempo`}
                           >
                             <Users className="w-3.5 h-3.5" />  Desligar Coletivo ({teacherClassroom})
                           </button>
                           <button
                             onClick={handleToggleAbsence}
                             className="px-3.5 py-2.5 bg-white hover:bg-rose-50/50 hover:border-rose-250 hover:text-rose-700 active:scale-95 border border-slate-300 text-slate-700 font-bold text-xs sm:text-sm rounded-xl transition-all duration-200 cursor-pointer shadow-xs flex items-center justify-center gap-1.5"
-                            title={isEscolar ? 'Sinalizar ausência do aluno hoje' : 'Registrar não comparecimento'}
+                            title={isEscolar ? 'Sinalizar ausencia do aluno hoje' : 'Registrar nao comparecimento'}
                           >
-                            <UserX className="w-4 h-4 text-rose-500" /> {isEscolar ? 'Sinalizar Ausência' : 'Registrar Não Comparecimento'}
+                            <UserX className="w-4 h-4 text-rose-500" /> {isEscolar ? 'Sinalizar Ausencia' : 'Registrar Nao Comparecimento'}
                           </button>
                         </>
                       ) : (
@@ -5924,23 +5924,23 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                           <button
                             onClick={handleStartShift}
                             className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-1.5 hover:scale-102"
-                            title={isAbsent ? "Religar cronômetro registrando o retorno do aluno (mantendo atividades salvas)" : "Ligar cronômetro para este aluno"}
+                            title={isAbsent ? "Religar cronometro registrando o retorno do aluno (mantendo atividades salvas)" : "Ligar cronometro para este aluno"}
                           >
-                            <Play className="w-3.5 h-3.5 fill-current" /> {isAbsent ? ' Religar Cronômetro' : (isEscolar ? ' Ligar Individual' : ' Iniciar Turno Individual')}
+                            <Play className="w-3.5 h-3.5 fill-current" /> {isAbsent ? ' Religar Cronometro' : (isEscolar ? ' Ligar Individual' : ' Iniciar Turno Individual')}
                           </button>
                           <button
                             onClick={() => handleStartShiftGroup(teacherClassroom)}
                             className="px-4 py-2.5 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center gap-1.5 hover:scale-102"
-                            title={`Ligar cronômetro de todos os alunos da turma ${teacherClassroom} e zerar as atividades de todos`}
+                            title={`Ligar cronometro de todos os alunos da turma ${teacherClassroom} e zerar as atividades de todos`}
                           >
                             <Users className="w-3.5 h-3.5" />  Ligar Coletivo ({teacherClassroom})
                           </button>
                           <button
                             onClick={handleToggleAbsence}
                             className="px-3.5 py-2.5 bg-white hover:bg-rose-50/50 hover:border-rose-250 hover:text-rose-700 active:scale-95 border border-slate-300 text-slate-700 font-bold text-xs sm:text-sm rounded-xl transition-all duration-200 cursor-pointer shadow-xs flex items-center justify-center gap-1.5"
-                            title={isEscolar ? 'Sinalizar ausência do aluno hoje' : 'Registrar não comparecimento'}
+                            title={isEscolar ? 'Sinalizar ausencia do aluno hoje' : 'Registrar nao comparecimento'}
                           >
-                            <UserX className="w-4 h-4 text-rose-500" /> {isEscolar ? 'Sinalizar Ausência' : 'Registrar Não Comparecimento'}
+                            <UserX className="w-4 h-4 text-rose-500" /> {isEscolar ? 'Sinalizar Ausencia' : 'Registrar Nao Comparecimento'}
                           </button>
                         </>
                       )
@@ -5949,7 +5949,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
                         {isShiftActive 
                           ? 'Sincronizado com a escola via nuvem em tempo real.'
-                          : ' Visualização dos responsáveis. Controles exclusivos dos educadores.'}
+                          : ' Visualizacao dos responsaveis. Controles exclusivos dos educadores.'}
                       </span>
                     )}
                   </div>
@@ -5966,7 +5966,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                 <h3 className="text-sm font-bold text-amber-950">Dispositivo Offline: Itens na Fila Local ({filaOffline.length})</h3>
               </div>
               <p className="text-xs text-amber-800 leading-normal">
-                Você registrou tarefas enquanto estava sem internet. O sistema guardou o horário real do seu celular. Quando sua internet voltar, mude no simulador acima para "Online" e sincronize os registros de auditoria.
+                Voce registrou tarefas enquanto estava sem internet. O sistema guardou o horario real do seu celular. Quando sua internet voltar, mude no simulador acima para "Online" e sincronize os registros de auditoria.
               </p>
               <div className="space-y-1.5 pt-1.5">
                 {filaOffline.map(oItem => (
@@ -5988,7 +5988,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
           {isStaffUser(usuarioAtual) && visualMode !== 'familia' && (
             <div className="space-y-4">
               <h3 className="text-lg font-black text-slate-800 flex items-center gap-1.5">
-                <Plus className="w-5 h-5 text-blue-600" /> Painel "Um-Toque" de Registros Diários
+                <Plus className="w-5 h-5 text-blue-600" /> Painel "Um-Toque" de Registros Diarios
               </h3>
 
               <div className="relative">
@@ -6001,10 +6001,10 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     </div>
                     <div>
                       <h4 className="text-xs font-black uppercase tracking-wider text-amber-950">
-                        {isEscolar ? 'Aluno com Falta / Ausência Registrada' : 'Cliente Marcado como Ausente'}
+                        {isEscolar ? 'Aluno com Falta / Ausencia Registrada' : 'Cliente Marcado como Ausente'}
                       </h4>
                       <p className="text-[11px] text-amber-800 leading-snug">
-                        Para registrar alimentação, hidratação ou cuidados normalmente, clique no botão ao lado ou use qualquer registro rápido.
+                        Para registrar alimentacao, hidratacao ou cuidados normalmente, clique no botao ao lado ou use qualquer registro rapido.
                       </p>
                     </div>
                   </div>
@@ -6024,18 +6024,18 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
               
               <div className="bg-white p-5 rounded-2xl border border-soft-gray space-y-4">
                 <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                  <Coffee className="text-amber-500 w-4.5 h-4.5" /> Registrar Mamadeira Rápida
+                  <Coffee className="text-amber-500 w-4.5 h-4.5" /> Registrar Mamadeira Rapida
                 </h4>
                 <form onSubmit={handleQuickMealSubmit} className="space-y-3">
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Refeição</label>
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Refeicao</label>
                       <div className="w-full text-xs font-extrabold px-3 py-2 border border-slate-300 rounded-xl bg-slate-100 text-slate-700">
-                        🥛 Mamadeira de Leite
+                           Mamadeira de Leite
                       </div>
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Aceitação</label>
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Aceitacao</label>
                       <select 
                         value={quickMeal.aceitacao} 
                         onChange={e => setQuickMeal({...quickMeal, aceitacao: e.target.value})}
@@ -6112,7 +6112,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
 
                   <div className="space-y-1">
                     <div className="flex items-center justify-between">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Observação / Cardápio</label>
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Observacao / Cardapio</label>
                       <VoiceInput 
                         onTranscript={text => setQuickMeal(prev => ({ ...prev, observacao: prev.observacao ? prev.observacao + ' ' + text : text }))} 
                         size="sm"
@@ -6120,7 +6120,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     </div>
                     <input 
                       type="text" 
-                      placeholder="Observação rápida (ex: Amou a banana cozida)"
+                      placeholder="Observacao rapida (ex: Amou a banana cozida)"
                       value={quickMeal.observacao}
                       onChange={e => setQuickMeal({...quickMeal, observacao: e.target.value})}
                       className="w-full text-xs px-3 py-2 border border-[#cbd5e1] rounded-xl focus:ring-1 focus:outline-hidden"
@@ -6142,7 +6142,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     <div className="flex items-center justify-between">
                       <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2 mb-1">
                         <Droplets className="text-cyan-500 w-4.5 h-4.5 animate-pulse" /> 
-                        {isEscolar ? 'Hidratação Rápida (Água)' : 'Hidratação Instant'}
+                        {isEscolar ? 'Hidratacao Rapida (Agua)' : 'Hidratacao Instant'}
                       </h4>
                       <span className="text-[10px] font-black bg-cyan-100 text-cyan-800 px-2 py-0.5 rounded-md">
                         {quickHydrationAmount} ml
@@ -6150,8 +6150,8 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     </div>
                     <p className="text-xs text-slate-400 leading-normal mb-3">
                       {isEscolar 
-                        ? `Escolha a quantidade de água servida em mL para ${idoso.nome}. Registra o copo e atualiza a jarrinha.`
-                        : `Basta um clique para salvar o consumo de água de ${idoso.nome}. O aplicativo cuida de atualizar a rotina e sincronizar.`}
+                        ? `Escolha a quantidade de agua servida em mL para ${idoso.nome}. Registra o copo e atualiza a jarrinha.`
+                        : `Basta um clique para salvar o consumo de agua de ${idoso.nome}. O aplicativo cuida de atualizar a rotina e sincronizar.`}
                     </p>
                     
                     <div className="space-y-2">
@@ -6209,7 +6209,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     const targetGoal = isEscolar ? 600 : 1500;
                     const percentJug = Math.min(100, Math.round((totalWaterMl / targetGoal) * 100));
                     return (
-                      <div className="flex flex-col items-center bg-cyan-50/70 p-2.5 rounded-2xl border border-cyan-200 shrink-0 shadow-3xs" title="Jarrinha de hidratação: o conteúdo sobe conforme a água é oferecida!">
+                      <div className="flex flex-col items-center bg-cyan-50/70 p-2.5 rounded-2xl border border-cyan-200 shrink-0 shadow-3xs" title="Jarrinha de hidratacao: o conteudo sobe conforme a agua e oferecida!">
                         <div className="relative my-0.5">
                           
                           <div className="relative w-10 h-16 border-2 border-cyan-600 rounded-b-xl rounded-t-xs bg-white/90 overflow-hidden shadow-inner flex flex-col justify-end">
@@ -6252,7 +6252,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
               
               <div className="bg-white p-5 rounded-2xl border border-soft-gray space-y-4">
                 <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                  <Heart className="text-rose-500 w-4.5 h-4.5" /> {isEscolar ? 'Higiene & Cuidados da Criança ' : 'Higiene & Cuidados de Conforto'}
+                  <Heart className="text-rose-500 w-4.5 h-4.5" /> {isEscolar ? 'Higiene & Cuidados da Crianca ' : 'Higiene & Cuidados de Conforto'}
                 </h4>
                 <form onSubmit={handleQuickHygieneSubmit} className="space-y-3">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
@@ -6265,7 +6265,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                       />
                       <div>
                         <span className="block font-bold text-slate-800">{isEscolar ? ' Troca de Fralda / Cuidado de Toalete' : ' Troca de Fralda / Absorvente'}</span>
-                        <span className="text-[10px] text-slate-500 font-normal block leading-tight">{isEscolar ? 'Fralda descartável checada/trocada ou incentivo de uso do toalete.' : 'Se aplicável, ou verificação de vazamento urinário.'}</span>
+                        <span className="text-[10px] text-slate-500 font-normal block leading-tight">{isEscolar ? 'Fralda descartavel checada/trocada ou incentivo de uso do toalete.' : 'Se aplicavel, ou verificacao de vazamento urinario.'}</span>
                       </div>
                     </label>
 
@@ -6277,8 +6277,8 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         className="w-4 h-4 text-serene-blue rounded focus:ring-serene-blue mt-0.5"
                       />
                       <div>
-                        <span className="block font-bold text-slate-800">{isEscolar ? ' Escovação de Dentes Orientada' : ' Higiene Bucal Completa'}</span>
-                        <span className="text-[10px] text-slate-500 font-normal block leading-tight">{isEscolar ? 'Com escovinha individual e creme dental infantil de forma lúdica.' : 'Uso de escova macia, higienizador de língua ou solução protética.'}</span>
+                        <span className="block font-bold text-slate-800">{isEscolar ? ' Escovacao de Dentes Orientada' : ' Higiene Bucal Completa'}</span>
+                        <span className="text-[10px] text-slate-500 font-normal block leading-tight">{isEscolar ? 'Com escovinha individual e creme dental infantil de forma ludica.' : 'Uso de escova macia, higienizador de lingua ou solucao protetica.'}</span>
                       </div>
                     </label>
 
@@ -6291,7 +6291,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                       />
                       <div>
                         <span className="block font-bold text-slate-800">{isEscolar ? ' Troca de Roupa (Mochila)' : ' Troca de Roupa por Limpas'}</span>
-                        <span className="text-[10px] text-slate-500 font-normal block leading-tight">{isEscolar ? 'Criança vestida com roupas limpas enviadas pelos pais após sujar ou banho.' : 'Roupas frescas, fáceis de vestir e adequadas ao clima.'}</span>
+                        <span className="text-[10px] text-slate-500 font-normal block leading-tight">{isEscolar ? 'Crianca vestida com roupas limpas enviadas pelos pais apos sujar ou banho.' : 'Roupas frescas, faceis de vestir e adequadas ao clima.'}</span>
                       </div>
                     </label>
 
@@ -6303,8 +6303,8 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         className="w-4 h-4 text-serene-blue rounded focus:ring-serene-blue mt-0.5"
                       />
                       <div>
-                        <span className="block font-bold text-slate-800">{isEscolar ? ' Lavagem das Mãos e Rosto' : ' Banho de Chuveiro Realizado'}</span>
-                        <span className="text-[10px] text-slate-500 font-normal block leading-tight">{isEscolar ? 'Praticado antes e após refeições e depois das brincadeiras de artes/pátio.' : 'Controle de temperatura de água e piso antiderrapante.'}</span>
+                        <span className="block font-bold text-slate-800">{isEscolar ? ' Lavagem das Maos e Rosto' : ' Banho de Chuveiro Realizado'}</span>
+                        <span className="text-[10px] text-slate-500 font-normal block leading-tight">{isEscolar ? 'Praticado antes e apos refeicoes e depois das brincadeiras de artes/patio.' : 'Controle de temperatura de agua e piso antiderrapante.'}</span>
                       </div>
                     </label>
 
@@ -6316,15 +6316,15 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         className="w-4 h-4 text-serene-blue rounded focus:ring-serene-blue mt-0.5"
                       />
                       <div>
-                        <span className="block font-bold text-slate-800">{isEscolar ? ' Pomada Antiassadura / Protetor' : ' Hidratação e Proteção da Pele'}</span>
-                        <span className="text-[10px] text-slate-500 font-normal block leading-tight">{isEscolar ? 'Aplicação de pomada nas dobrinhas para prevenção de brotoejas ou assadura.' : 'Uso de cremes sênior preventivos para escaras e ressecamento.'}</span>
+                        <span className="block font-bold text-slate-800">{isEscolar ? ' Pomada Antiassadura / Protetor' : ' Hidratacao e Protecao da Pele'}</span>
+                        <span className="text-[10px] text-slate-500 font-normal block leading-tight">{isEscolar ? 'Aplicacao de pomada nas dobrinhas para prevencao de brotoejas ou assadura.' : 'Uso de cremes senior preventivos para escaras e ressecamento.'}</span>
                       </div>
                     </label>
                   </div>
 
                   <div className="space-y-1">
                     <div className="flex items-center justify-between">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Observação de Higiene</label>
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Observacao de Higiene</label>
                       <VoiceInput 
                         onTranscript={text => handleHygieneChange({ observations: quickHygiene.observations ? quickHygiene.observations + ' ' + text : text })} 
                         size="sm"
@@ -6332,7 +6332,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     </div>
                     <input 
                       type="text" 
-                      placeholder={isEscolar ? "Ex: Sem assaduras. Cooperou cantando a musiquinha do sapo para lavar as mãos." : "Ex: Sem assaduras, pele limpa e bem cuidada."}
+                      placeholder={isEscolar ? "Ex: Sem assaduras. Cooperou cantando a musiquinha do sapo para lavar as maos." : "Ex: Sem assaduras, pele limpa e bem cuidada."}
                       value={quickHygiene.observations}
                       onChange={e => handleHygieneChange({ observations: e.target.value })}
                       className="w-full text-xs px-3 py-2 border border-[#cbd5e1] bg-slate-50 rounded-xl focus:ring-1 focus:outline-hidden"
@@ -6365,14 +6365,14 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                       <option value="calmo"> Calmo / Sereno</option>
                       <option value="feliz"> Feliz / Comunicativo</option>
                       <option value="sonolento"> Sonolento / Repousando</option>
-                      <option value="agitado"> ⚠  Agitado / Inquieto</option>
+                      <option value="agitado"> [!]  Agitado / Inquieto</option>
                       <option value="confuso"> Desorientado / Confuso</option>
-                      <option value="recusando"> Resiste Às Intervenções</option>
+                      <option value="recusando"> Resiste As Intervencoes</option>
                     </select>
                   </div>
                   <div className="space-y-1">
                     <div className="flex items-center justify-between">
-                      <label htmlFor="quick-humor-observacao" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Observação do Humor / Estado</label>
+                      <label htmlFor="quick-humor-observacao" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Observacao do Humor / Estado</label>
                       <VoiceInput 
                         onTranscript={text => {
                           if (!text || !text.trim()) return;
@@ -6389,7 +6389,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     <textarea 
                       id="quick-humor-observacao"
                       rows={2}
-                      placeholder="Nota rápida (ex: Dormiu bem À tarde, descansou no soninho e acordou bem disposto)"
+                      placeholder="Nota rapida (ex: Dormiu bem A tarde, descansou no soninho e acordou bem disposto)"
                       value={quickHumor.observacao}
                       onChange={e => setQuickHumor({...quickHumor, observacao: e.target.value})}
                       className="w-full text-xs px-3 py-2 border border-[#cbd5e1] rounded-xl focus:ring-1 focus:outline-hidden resize-none bg-slate-50 text-slate-800"
@@ -6408,16 +6408,16 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
               
               <div className="bg-white p-5 rounded-2xl border border-soft-gray space-y-4">
                 <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                  <Activity className="text-rose-500 w-4.5 h-4.5 animate-pulse" /> {isEscolar ? 'Saúde, Sono & Fralda do Aluno ' : 'Sinais Vitais & Peso do Idoso '}
+                  <Activity className="text-rose-500 w-4.5 h-4.5 animate-pulse" /> {isEscolar ? 'Saude, Sono & Fralda do Aluno ' : 'Sinais Vitais & Peso do Idoso '}
                 </h4>
                 <form id="quick-vitals-form" onSubmit={handleQuickVitalsSubmit} className="space-y-3">
                   <div className="grid grid-cols-2 gap-2 text-xs">
                     <div className={`space-y-1 ${isEscolar ? 'col-span-2 md:col-span-1' : ''}`}>
-                      <label htmlFor="vital-pressao" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{isEscolar ? ' Soneca / Descanso' : 'PA (Pressão)'}</label>
+                      <label htmlFor="vital-pressao" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{isEscolar ? ' Soneca / Descanso' : 'PA (Pressao)'}</label>
                       <input 
                         id="vital-pressao"
                         type="text" 
-                        placeholder={isEscolar ? 'Ex: Dormiu das 13:00 Às 14:30' : 'Ex: 120/80'}
+                        placeholder={isEscolar ? 'Ex: Dormiu das 13:00 As 14:30' : 'Ex: 120/80'}
                         value={quickVitals.pressao}
                         onChange={e => setQuickVitals({...quickVitals, pressao: e.target.value})}
                         className="w-full text-xs px-2.5 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1 focus:outline-hidden text-slate-800 font-bold"
@@ -6425,7 +6425,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                       {isEscolar && (
                         <div className="mt-1.5 space-y-1.5 bg-indigo-50/50 p-2 rounded-xl border border-indigo-100/80">
                           <div className="flex items-center justify-between">
-                            <span className="text-[9px] font-extrabold text-indigo-700 flex items-center gap-1 uppercase tracking-wider"> Toque Rápido (Soneca):</span>
+                            <span className="text-[9px] font-extrabold text-indigo-700 flex items-center gap-1 uppercase tracking-wider"> Toque Rapido (Soneca):</span>
                           </div>
                           <div className="flex flex-wrap gap-1">
                             <button
@@ -6458,10 +6458,10 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                             </button>
                             <button
                               type="button"
-                              onClick={() => setQuickVitals(prev => ({ ...prev, pressao: 'Não dormiu / sesta' }))}
+                              onClick={() => setQuickVitals(prev => ({ ...prev, pressao: 'Nao dormiu / sesta' }))}
                               className="px-2 py-1 bg-rose-50 hover:bg-rose-100 border border-rose-100 active:scale-95 text-rose-700 rounded-lg text-[9px] font-extrabold transition-all cursor-pointer shadow-2xs"
                             >
-                              Não dormiu
+                              Nao dormiu
                             </button>
                           </div>
 
@@ -6475,10 +6475,10 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                                 onChange={e => {
                                   const val = e.target.value;
                                   setSleepStart(val);
-                                  setQuickVitals(prev => ({ ...prev, pressao: `Dormiu das ${val} Às ${sleepEnd}` }));
+                                  setQuickVitals(prev => ({ ...prev, pressao: `Dormiu das ${val} As ${sleepEnd}` }));
                                 }}
                               />
-                              <span className="text-[9px] font-bold text-slate-400">Às</span>
+                              <span className="text-[9px] font-bold text-slate-400">As</span>
                               <input 
                                 type="time" 
                                 value={sleepEnd}
@@ -6486,7 +6486,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                                 onChange={e => {
                                   const val = e.target.value;
                                   setSleepEnd(val);
-                                  setQuickVitals(prev => ({ ...prev, pressao: `Dormiu das ${sleepStart} Às ${val}` }));
+                                  setQuickVitals(prev => ({ ...prev, pressao: `Dormiu das ${sleepStart} As ${val}` }));
                                 }}
                               />
                             </div>
@@ -6496,7 +6496,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     </div>
                     <div className={`space-y-1 ${isEscolar ? 'col-span-2 md:col-span-1' : ''}`}>
                       <div className="flex items-center justify-between">
-                        <label htmlFor="vital-glicemia" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{isEscolar ? ' Fralda (Xixi ou Cocô)' : 'Glicemia (mg/dL)'}</label>
+                        <label htmlFor="vital-glicemia" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{isEscolar ? ' Fralda (Xixi ou Coco)' : 'Glicemia (mg/dL)'}</label>
                         {isEscolar && (
                           <div className="flex items-center gap-1.5">
                             <span className="text-[9px] font-extrabold text-slate-400 uppercase">Falar:</span>
@@ -6510,14 +6510,14 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                       <input 
                         id="vital-glicemia"
                         type="text" 
-                        placeholder={isEscolar ? 'Ex: Fez Cocô / Pomada' : 'Ex: 104'}
+                        placeholder={isEscolar ? 'Ex: Fez Coco / Pomada' : 'Ex: 104'}
                         value={quickVitals.glicemia}
                         onChange={e => setQuickVitals({...quickVitals, glicemia: e.target.value})}
                         className="w-full text-xs px-2.5 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1 focus:outline-hidden text-slate-800 font-bold"
                       />
                       {isEscolar && (
                         <div className="mt-1.5 space-y-1.5 bg-emerald-50/50 p-2 rounded-xl border border-emerald-100/80">
-                          <span className="text-[9px] font-extrabold text-emerald-700 block uppercase tracking-wider"> Toque Rápido (Fralda):</span>
+                          <span className="text-[9px] font-extrabold text-emerald-700 block uppercase tracking-wider"> Toque Rapido (Fralda):</span>
                           <div className="flex flex-wrap gap-1">
                             <button
                               type="button"
@@ -6528,14 +6528,14 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                             </button>
                             <button
                               type="button"
-                              onClick={() => setQuickVitals(prev => ({ ...prev, glicemia: 'Fez Cocô' }))}
+                              onClick={() => setQuickVitals(prev => ({ ...prev, glicemia: 'Fez Coco' }))}
                               className="px-2 py-1 bg-white hover:bg-amber-50 border border-amber-100 active:scale-95 text-amber-800 rounded-lg text-[9px] font-extrabold transition-all cursor-pointer shadow-2xs flex items-center gap-0.5"
                             >
-                               Cocô
+                               Coco
                             </button>
                             <button
                               type="button"
-                              onClick={() => setQuickVitals(prev => ({ ...prev, glicemia: 'Xixi e Cocô' }))}
+                              onClick={() => setQuickVitals(prev => ({ ...prev, glicemia: 'Xixi e Coco' }))}
                               className="px-2 py-1 bg-white hover:bg-purple-50 border border-purple-100 active:scale-95 text-purple-700 rounded-lg text-[9px] font-extrabold transition-all cursor-pointer shadow-2xs flex items-center gap-0.5"
                             >
                                Ambos
@@ -6562,7 +6562,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                       )}
                     </div>
                     <div className="space-y-1">
-                      <label htmlFor="vital-temperatura" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block font-bold text-orange-650">{isEscolar ? '  Febre / Temp (°C)' : 'Temp (°C)'}</label>
+                      <label htmlFor="vital-temperatura" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block font-bold text-orange-650">{isEscolar ? '  Febre / Temp (oC)' : 'Temp (oC)'}</label>
                       <input 
                         id="vital-temperatura"
                         type="number" 
@@ -6579,28 +6579,28 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                             onClick={() => setQuickVitals(prev => ({ ...prev, temp: '36.5' }))}
                             className="px-1.5 py-0.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 text-emerald-800 rounded text-[9px] font-extrabold transition-all cursor-pointer"
                           >
-                            36,5°C
+                            36,5oC
                           </button>
                           <button
                             type="button"
                             onClick={() => setQuickVitals(prev => ({ ...prev, temp: '37.0' }))}
                             className="px-1.5 py-0.5 bg-amber-50 hover:bg-amber-100 border border-amber-100 text-amber-800 rounded text-[9px] font-extrabold transition-all cursor-pointer"
                           >
-                            37,0°C
+                            37,0oC
                           </button>
                           <button
                             type="button"
                             onClick={() => setQuickVitals(prev => ({ ...prev, temp: '37.5' }))}
                             className="px-1.5 py-0.5 bg-orange-50 hover:bg-orange-100 border border-orange-100 text-orange-800 rounded text-[9px] font-extrabold transition-all cursor-pointer"
                           >
-                            37,5°C
+                            37,5oC
                           </button>
                           <button
                             type="button"
                             onClick={() => setQuickVitals(prev => ({ ...prev, temp: '38.0' }))}
                             className="px-1.5 py-0.5 bg-rose-50 hover:bg-rose-100 border border-rose-100 text-rose-800 rounded text-[9px] font-extrabold transition-all cursor-pointer"
                           >
-                            38,0°C  ⚠ 
+                            38,0oC  [!] 
                           </button>
                         </div>
                       )}
@@ -6609,7 +6609,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                       <>
                         <div className="space-y-1">
                           <label htmlFor="vital-oxigenio" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
-                            O2 (Saturação %)
+                            O2 (Saturacao %)
                           </label>
                           <input 
                             id="vital-oxigenio"
@@ -6622,7 +6622,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         </div>
                         <div className="space-y-1">
                           <label htmlFor="vital-fcardiaca" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
-                            F. Cardíaca (bpm)
+                            F. Cardiaca (bpm)
                           </label>
                           <input 
                             id="vital-fcardiaca"
@@ -6666,7 +6666,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                           </span>
                           <span className="text-slate-300"></span>
                           <span className="flex items-center gap-1">
-                            <span> Hidratação Total:</span>
+                            <span> Hidratacao Total:</span>
                             <strong className="text-cyan-800 font-black">{totalWaterMl} ml</strong>
                           </span>
                         </div>
@@ -6678,7 +6678,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                   })()}
                   <div className="space-y-1">
                     <div className="flex items-center justify-between">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{isEscolar ? 'Notas Gerais de Saúde / Rotina do Bebê' : 'Notas Gerais de Saúde / Rotina'}</label>
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{isEscolar ? 'Notas Gerais de Saude / Rotina do Bebe' : 'Notas Gerais de Saude / Rotina'}</label>
                       <VoiceInput 
                         onTranscript={text => setQuickVitals(prev => ({ ...prev, obs: prev.obs ? prev.obs + ' ' + text : text }))} 
                         size="sm"
@@ -6687,7 +6687,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     <input 
                       id="vital-observacoes"
                       type="text" 
-                      placeholder={isEscolar ? 'Notas do dia (ex: Brincou muito na areia, comeu toda papinha, dormiu tranquilo no colinho...)' : 'Notas ou observações adicionais...'}
+                      placeholder={isEscolar ? 'Notas do dia (ex: Brincou muito na areia, comeu toda papinha, dormiu tranquilo no colinho...)' : 'Notas ou observacoes adicionais...'}
                       value={quickVitals.obs}
                       onChange={e => setQuickVitals({...quickVitals, obs: e.target.value})}
                       className="w-full text-xs px-3 py-2 border border-[#cbd5e1] rounded-xl focus:ring-1 focus:outline-hidden"
@@ -6698,7 +6698,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     type="submit" 
                     className="w-full py-2 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-black text-xs rounded-xl shadow-xs transition-colors cursor-pointer"
                   >
-                    {isEscolar ? 'Salvar Situação de Saúde & Alertar Pais' : 'Salvar Sinais Vitais & Peso Corporal + Notificar'}
+                    {isEscolar ? 'Salvar Situacao de Saude & Alertar Pais' : 'Salvar Sinais Vitais & Peso Corporal + Notificar'}
                   </button>
                 </form>
               </div>
@@ -6716,10 +6716,10 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     setShowOccurrenceModal(true);
                   }}
                   className="px-4 py-2.5 bg-red-650 hover:bg-red-750 active:bg-red-850 text-white font-black text-xs rounded-full shadow-xl transition-all cursor-pointer flex items-center gap-1.5 border border-red-550 animate-pulse hover:scale-105"
-                  title="Registrar Intercorrência Médica Urgente"
+                  title="Registrar Intercorrencia Medica Urgente"
                 >
                   <ShieldAlert className="w-4 h-4 text-white shrink-0" />
-                  <span> Intercorrência Urgente</span>
+                  <span> Intercorrencia Urgente</span>
                 </button>
 
                 <button
@@ -6728,16 +6728,16 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     setShowOccurrenceModal(true);
                   }}
                   className="px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-black text-xs rounded-full shadow-xl transition-all cursor-pointer flex items-center gap-1.5 border border-amber-400 hover:scale-105"
-                  title="Registrar Ocorrência do Dia / Rotina"
+                  title="Registrar Ocorrencia do Dia / Rotina"
                 >
                   <FileText className="w-4 h-4 text-white shrink-0" />
-                  <span> Ocorrência do Dia</span>
+                  <span> Ocorrencia do Dia</span>
                 </button>
 
                 <button
                   onClick={() => setEmergencyMinimized(false)}
                   className="p-2 bg-slate-800/80 hover:bg-slate-900 text-white text-xs rounded-full shadow-md cursor-pointer"
-                  title="Expandir Painel de Emergência"
+                  title="Expandir Painel de Emergencia"
                 >
                   <ChevronDown className="w-4 h-4 rotate-180" />
                 </button>
@@ -6749,7 +6749,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                 <button 
                   onClick={() => setEmergencyMinimized(true)}
                   className="absolute top-3 right-3 text-slate-400 hover:text-red-600 dark:text-slate-500 hover:bg-red-50 dark:hover:bg-red-950/40 p-1 rounded-lg transition-colors cursor-pointer flex"
-                  title="Minimizar Painel de Emergência"
+                  title="Minimizar Painel de Emergencia"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -6773,7 +6773,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                   >
                     <span className="flex items-center gap-1.5">
                       <ShieldAlert className="w-4 h-4 text-white animate-bounce shrink-0" />
-                      <span> Intercorrência Urgente</span>
+                      <span> Intercorrencia Urgente</span>
                     </span>
                     <span className="text-[10px] bg-red-700 px-2 py-0.5 rounded-md font-bold">Febre/Queda</span>
                   </button>
@@ -6787,7 +6787,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                   >
                     <span className="flex items-center gap-1.5">
                       <FileText className="w-4 h-4 text-white shrink-0" />
-                      <span> Ocorrência do Dia</span>
+                      <span> Ocorrencia do Dia</span>
                     </span>
                     <span className="text-[10px] bg-amber-600 px-2 py-0.5 rounded-md font-bold">Mordida/Choro</span>
                   </button>
@@ -6796,7 +6796,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                 {idoso.contatoEmergencia && (
                   <div className="pt-3 border-t border-red-200/60 lg:border-slate-200/80 space-y-2">
                     <span className="text-[10px] font-black uppercase text-red-900 lg:text-slate-500 block tracking-wider">
-                       Contato de Emergência Rápido:
+                       Contato de Emergencia Rapido:
                     </span>
                     <div className="flex items-center justify-between bg-white/80 dark:bg-slate-900/40 p-2.5 rounded-xl border border-red-100 lg:border-slate-200 shadow-3xs">
                       <div className="min-w-0 flex-1 pr-2">
@@ -6850,10 +6850,10 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                   </div>
                   <div>
                     <h4 className="text-xs font-black uppercase tracking-wider text-rose-950">
-                      {isEscolar ? 'Aluno(a) com Falta Registrada Hoje' : 'Cliente com Ausência Registrada'}
+                      {isEscolar ? 'Aluno(a) com Falta Registrada Hoje' : 'Cliente com Ausencia Registrada'}
                     </h4>
                     <p className="text-[11px] text-rose-800 leading-snug">
-                      Você pode visualizar as atividades planejadas ou reativar a presença para dar baixa nos itens.
+                      Voce pode visualizar as atividades planejadas ou reativar a presenca para dar baixa nos itens.
                     </p>
                   </div>
                 </div>
@@ -6862,7 +6862,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                   onClick={() => unlockAndMarkPresent()}
                   className="shrink-0 px-4 py-2 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white text-xs font-black rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
                 >
-                  <Check className="w-4 h-4" /> Reativar Presença
+                  <Check className="w-4 h-4" /> Reativar Presenca
                 </button>
               </div>
             )}
@@ -6889,7 +6889,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         type="button"
                         onClick={handleDeduplicateTasks}
                         className="px-2.5 py-1.5 text-[11px] font-bold text-slate-700 hover:text-indigo-700 hover:bg-white rounded-lg transition-all cursor-pointer flex items-center gap-1"
-                        title="Remove tarefas com o mesmo título ou horário repetido"
+                        title="Remove tarefas com o mesmo titulo ou horario repetido"
                       >
                          <span>Repetidas</span>
                       </button>
@@ -6934,7 +6934,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                     type="button"
                     onClick={handleResetToDefaultTasks}
                     className="p-2 text-slate-500 hover:text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all cursor-pointer border border-slate-200"
-                    title="Restaurar rotina padrão recomendada"
+                    title="Restaurar rotina padrao recomendada"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
                   </button>
@@ -6985,21 +6985,21 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         <span>PASSO A PASSO: COMO ADICIONAR ATIVIDADES COM A AURA</span>
                       </div>
                       <p className="text-xs text-white/95 leading-relaxed font-medium">
-                        1. Abra a <strong>Anjinha Aura </strong> no topo da tela, peça a ela para criar a rotina/planejamento de aulas da semana e <strong>copie o texto gerado</strong>.<br/>
+                        1. Abra a <strong>Anjinha Aura </strong> no topo da tela, peca a ela para criar a rotina/planejamento de aulas da semana e <strong>copie o texto gerado</strong>.<br/>
                         2. <strong>Cole todo o texto</strong> da Aura na caixa branca abaixo.<br/>
-                        3. Clique no botão <strong>"  Extrair e Processar Atividades"</strong> para agendar tudo de uma vez!
+                        3. Clique no botao <strong>"  Extrair e Processar Atividades"</strong> para agendar tudo de uma vez!
                       </p>
                       <div className="pt-1 flex flex-wrap items-center gap-2">
                         <button
                           type="button"
                           onClick={() => {
-                            const promptText = `Por favor, crie o planejamento de rotina pedagógica escolar começando com a Acolhida das Crianças Às 07:00 e finalizando com a Saída Às 16:00.\n\nUse o formato por linha:\nHH:MM: [Título da Atividade] - [Descrição pedagógica detalhada]\n\nExemplo:\n- 07:00: Acolhida e Entrada Afetiva - Recepção carinhosa dos alunos e cantigas de bom dia.\n- 08:00: Roda de Conversa - Apresentação do tema diário e musicalização.\n- 09:00: Lanche da Manhã - Frutas da estação e hidratação.\n- 09:45: Recreação e Banho de Sol - Brincadeiras ao ar livre no pátio sombreado.\n- 10:30: Atividade Dirigida BNCC - Exploração sensorial com tintas e texturas.\n- 11:30: Almoço Saudável - Papinha balanceada e legumes.\n- 12:15: Higiene e Fraldas - Troca de fraldas e escovação dental.\n- 12:30: Soneca Restauradora - Descanso em colchonetes com som suave.\n- 14:15: Lanche da Tarde - Mamadeira ou fruta fresca.\n- 14:45: Brincadeira Livre - Blocos pedagógicos e autonomia.\n- 15:30: Contação de Histórias - Livros ilustrados e fantoches.\n- 16:00: Preparação para Saída - Entrega afetiva aos familiares.`;
+                            const promptText = `Por favor, crie o planejamento de rotina pedagogica escolar comecando com a Acolhida das Criancas As 07:00 e finalizando com a Saida As 16:00.\n\nUse o formato por linha:\nHH:MM: [Titulo da Atividade] - [Descricao pedagogica detalhada]\n\nExemplo:\n- 07:00: Acolhida e Entrada Afetiva - Recepcao carinhosa dos alunos e cantigas de bom dia.\n- 08:00: Roda de Conversa - Apresentacao do tema diario e musicalizacao.\n- 09:00: Lanche da Manha - Frutas da estacao e hidratacao.\n- 09:45: Recreacao e Banho de Sol - Brincadeiras ao ar livre no patio sombreado.\n- 10:30: Atividade Dirigida BNCC - Exploracao sensorial com tintas e texturas.\n- 11:30: Almoco Saudavel - Papinha balanceada e legumes.\n- 12:15: Higiene e Fraldas - Troca de fraldas e escovacao dental.\n- 12:30: Soneca Restauradora - Descanso em colchonetes com som suave.\n- 14:15: Lanche da Tarde - Mamadeira ou fruta fresca.\n- 14:45: Brincadeira Livre - Blocos pedagogicos e autonomia.\n- 15:30: Contacao de Historias - Livros ilustrados e fantoches.\n- 16:00: Preparacao para Saida - Entrega afetiva aos familiares.`;
                             navigator.clipboard.writeText(promptText);
-                            alert(' Comando copiado com sucesso! Agora é só colar no chat da Aura.');
+                            alert(' Comando copiado com sucesso! Agora e so colar no chat da Aura.');
                           }}
                           className="px-3 py-1.5 bg-amber-400 hover:bg-amber-300 text-indigo-950 font-black text-[11px] rounded-lg shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
                         >
-                           Copiar Modelo de Comando para a Aura (07:00 Às 16:00)
+                           Copiar Modelo de Comando para a Aura (07:00 As 16:00)
                         </button>
                       </div>
                     </div>
@@ -7014,7 +7014,7 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                             type="button"
                             onClick={handleAutoFixAllTasks}
                             className="text-[11px] text-indigo-700 hover:text-indigo-800 font-bold flex items-center gap-1 cursor-pointer bg-indigo-50 hover:bg-indigo-100 px-2 py-1 rounded-lg transition-colors border border-indigo-200 shadow-2xs"
-                            title="Auto-corrige nomes e horários de atividades que possam ter ficado deslocados"
+                            title="Auto-corrige nomes e horarios de atividades que possam ter ficado deslocados"
                           >
                              Auto-Realinhar Atividades
                           </button>
@@ -7044,18 +7044,18 @@ As atividades e registros do dia permanecem salvos no relatório escolar. Qualqu
                         placeholder={`Cole aqui o texto copiado da Aura. Exemplo:
 
 Segunda-feira:
-- 07:00: Acolhida e Entrada Afetiva - Recepção carinhosa dos alunos e cantigas de bom dia.
-- 08:00: Roda de Conversa - Tema do dia e musicalização.
-- 09:00: Lanche da Manhã - Frutas da estação e hidratação.
-- 09:45: Banho de Sol com Exploradores - Levar os bebês para ambiente externo seguro e sombreado.
-- 10:30: Atividade Dirigida BNCC - Exploração sensorial e artes.
-- 11:30: Almoço Saudável - Refeição balanceada.
-- 12:15: Higiene e Fraldas - Troca e escovação dental.
+- 07:00: Acolhida e Entrada Afetiva - Recepcao carinhosa dos alunos e cantigas de bom dia.
+- 08:00: Roda de Conversa - Tema do dia e musicalizacao.
+- 09:00: Lanche da Manha - Frutas da estacao e hidratacao.
+- 09:45: Banho de Sol com Exploradores - Levar os bebes para ambiente externo seguro e sombreado.
+- 10:30: Atividade Dirigida BNCC - Exploracao sensorial e artes.
+- 11:30: Almoco Saudavel - Refeicao balanceada.
+- 12:15: Higiene e Fraldas - Troca e escovacao dental.
 - 12:30: Soneca Restauradora - Descanso nos colchonetes.
 - 14:15: Lanche da Tarde - Mamadeira ou lanche equilibrado.
-- 14:45: Brincadeira Livre - Brinquedos pedagógicos e socialização.
-- 15:30: Contação de Histórias - Livros ilustrados e fantoches.
-- 16:00: Saída e Despedida - Entrega afetiva aos responsáveis.`}
+- 14:45: Brincadeira Livre - Brinquedos pedagogicos e socializacao.
+- 15:30: Contacao de Historias - Livros ilustrados e fantoches.
+- 16:00: Saida e Despedida - Entrega afetiva aos responsaveis.`}
                         className="w-full p-4 bg-white border-2 border-indigo-300 focus:border-indigo-600 rounded-xl focus:ring-4 focus:ring-indigo-500/20 text-xs font-mono text-slate-800 shadow-inner"
                       ></textarea>
                     </div>
@@ -7124,7 +7124,7 @@ Segunda-feira:
                           <div className="bg-white p-4 rounded-xl border-2 border-indigo-200 shadow-xs space-y-2">
                             <div className="flex items-center justify-between border-b border-indigo-100 pb-2">
                               <h4 className="text-sm font-black text-indigo-950 flex items-center gap-1.5">
-                                <span></span> Planejamento Extraído: {auraDetectedMeta?.tema || 'Rotina Escolar Padronizada'}
+                                <span></span> Planejamento Extraido: {auraDetectedMeta?.tema || 'Rotina Escolar Padronizada'}
                               </h4>
                               <span className="text-[10px] font-bold px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-200">
                                 {parsedAuraTasks.length} Atividades no Total
@@ -7133,17 +7133,17 @@ Segunda-feira:
 
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
                               <div className="bg-slate-50 p-2 rounded-lg border border-slate-200">
-                                <span className="text-[10px] font-bold text-slate-500 block uppercase"> Período / Dias Detectados</span>
+                                <span className="text-[10px] font-bold text-slate-500 block uppercase"> Periodo / Dias Detectados</span>
                                 <span className="font-extrabold text-slate-800">
                                   {distinctDays.length > 1 ? `${distinctDays.length} Dias (${distinctDays[0]} a ${distinctDays[distinctDays.length - 1]})` : (auraDetectedMeta?.dataStr || auraDetectedMeta?.dia || 'Segunda-feira')}
                                 </span>
                               </div>
                               <div className="bg-slate-50 p-2 rounded-lg border border-slate-200">
                                 <span className="text-[10px] font-bold text-slate-500 block uppercase"> Tema do Planejamento</span>
-                                <span className="font-extrabold text-indigo-900">{auraDetectedMeta?.tema || 'Desenvolvimento e Rotina Pedagógica'}</span>
+                                <span className="font-extrabold text-indigo-900">{auraDetectedMeta?.tema || 'Desenvolvimento e Rotina Pedagogica'}</span>
                               </div>
                               <div className="bg-slate-50 p-2 rounded-lg border border-slate-200">
-                                <span className="text-[10px] font-bold text-slate-500 block uppercase"> Turma de Aplicação</span>
+                                <span className="text-[10px] font-bold text-slate-500 block uppercase"> Turma de Aplicacao</span>
                                 <span className="font-extrabold text-purple-900">{auraDetectedMeta?.turma || getStudentClassroomLocal(idoso.nome)}</span>
                               </div>
                             </div>
@@ -7198,12 +7198,12 @@ Segunda-feira:
                           <div className="bg-amber-50/80 p-3 rounded-xl border border-amber-200 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
                             <div className="space-y-0.5">
                               <span className="font-bold text-amber-950 flex items-center gap-1">
-                                <span></span> Modo de Aplicação na Agenda:
+                                <span></span> Modo de Aplicacao na Agenda:
                               </span>
                               <p className="text-[11px] text-amber-800">
                                 {auraMergeMode === 'substituir' 
-                                  ? 'Substituirá as tarefas pendentes pelo planejamento selecionado.' 
-                                  : 'Manterá as tarefas atuais e adicionará as novas ao final.'}
+                                  ? 'Substituira as tarefas pendentes pelo planejamento selecionado.' 
+                                  : 'Mantera as tarefas atuais e adicionara as novas ao final.'}
                               </p>
                             </div>
                             <div className="flex gap-1 bg-white p-1 rounded-lg border border-amber-200 shrink-0">
@@ -7238,9 +7238,9 @@ Segunda-feira:
                               <thead className="bg-slate-100 font-bold text-slate-700 border-b border-slate-200 sticky top-0 z-10">
                                 <tr>
                                   <th className="p-2.5 w-24">Data / Dia</th>
-                                  <th className="p-2.5 w-20">Horário</th>
+                                  <th className="p-2.5 w-20">Horario</th>
                                   <th className="p-2.5 w-1/3">Atividade Completa</th>
-                                  <th className="p-2.5">Descrição Pedagógica & BNCC</th>
+                                  <th className="p-2.5">Descricao Pedagogica & BNCC</th>
                                 </tr>
                               </thead>
                               <tbody className="divide-y divide-slate-100">
@@ -7327,23 +7327,23 @@ Segunda-feira:
                 
                 <div className="space-y-2 border-b border-blue-150/60 pb-3" id="quick-task-templates-container">
                   <span className="text-[10px] font-black text-blue-800 uppercase tracking-wider block">
-                     {isEscolar ? 'Modelos Rápidos de Atividades Escolares' : 'Modelos Rápidos de Cuidados Sênior'}
+                     {isEscolar ? 'Modelos Rapidos de Atividades Escolares' : 'Modelos Rapidos de Cuidados Senior'}
                   </span>
                   <div className="flex flex-wrap gap-1.5">
                     {(isEscolar 
                       ? [
-                          { tipo: 'atividade_fisica', titulo: 'Aula de Artes & Pintura ', horarioPrevisto: '14:00', descricao: 'Atividade pedagógica de desenho com guache, lápis de cor e colagens.' },
-                          { tipo: 'humor', titulo: 'Hora do Conto & Leitura ', horarioPrevisto: '16:00', descricao: 'Contação de história lúdica em círculo com fantoches e livros ilustrados.' },
-                          { tipo: 'atividade_fisica', titulo: 'Brincadeiras no Parquinho ', horarioPrevisto: '10:30', descricao: 'Circuito de coordenação motora ampla com túneis, bambolês e corrida leve.' },
-                          { tipo: 'alimentacao', titulo: 'Hora da Frutinha & Hidratação ', horarioPrevisto: '15:00', descricao: 'Oferecer melancia, mação picada ou mamadeira de suco natural.' },
-                          { tipo: 'sono', titulo: 'Soneca Pós-Almoço ', horarioPrevisto: '13:00', descricao: 'Preparar colchonete, iluminação suave e música instrumental relaxante.' },
-                          { tipo: 'banho', titulo: 'Higiene Oral & Escovar Dentes ', horarioPrevisto: '12:00', descricao: 'Escovação de dentes assistida e lavagem das mãos pós-alimentação.' }
+                          { tipo: 'atividade_fisica', titulo: 'Aula de Artes & Pintura ', horarioPrevisto: '14:00', descricao: 'Atividade pedagogica de desenho com guache, lapis de cor e colagens.' },
+                          { tipo: 'humor', titulo: 'Hora do Conto & Leitura ', horarioPrevisto: '16:00', descricao: 'Contacao de historia ludica em circulo com fantoches e livros ilustrados.' },
+                          { tipo: 'atividade_fisica', titulo: 'Brincadeiras no Parquinho ', horarioPrevisto: '10:30', descricao: 'Circuito de coordenacao motora ampla com tuneis, bamboles e corrida leve.' },
+                          { tipo: 'alimentacao', titulo: 'Hora da Frutinha & Hidratacao ', horarioPrevisto: '15:00', descricao: 'Oferecer melancia, macao picada ou mamadeira de suco natural.' },
+                          { tipo: 'sono', titulo: 'Soneca Pos-Almoco ', horarioPrevisto: '13:00', descricao: 'Preparar colchonete, iluminacao suave e musica instrumental relaxante.' },
+                          { tipo: 'banho', titulo: 'Higiene Oral & Escovar Dentes ', horarioPrevisto: '12:00', descricao: 'Escovacao de dentes assistida e lavagem das maos pos-alimentacao.' }
                         ]
                       : [
-                          { tipo: 'sinais_vitais', titulo: 'Verificar Sinais Vitais ', horarioPrevisto: '09:00', descricao: 'Aferir pressão arterial, saturação e batimentos cardíacos.' },
-                          { tipo: 'medicacao', titulo: 'Medicação de Uso Contínuo ', horarioPrevisto: '08:00', descricao: 'Administrar medicamentos prescritos da manhã com água.' },
-                          { tipo: 'atividade_fisica', titulo: 'Alongamento Leve & Caminhada ', horarioPrevisto: '17:00', descricao: 'Caminhada leve de 15 minutos e exercícios de mobilidade.' },
-                          { tipo: 'alimentacao', titulo: 'Chá da Tarde & Biscoitos ', horarioPrevisto: '16:30', descricao: 'Oferecer chá morno com duas torradas e garantir ingestão de líquidos.' }
+                          { tipo: 'sinais_vitais', titulo: 'Verificar Sinais Vitais ', horarioPrevisto: '09:00', descricao: 'Aferir pressao arterial, saturacao e batimentos cardiacos.' },
+                          { tipo: 'medicacao', titulo: 'Medicacao de Uso Continuo ', horarioPrevisto: '08:00', descricao: 'Administrar medicamentos prescritos da manha com agua.' },
+                          { tipo: 'atividade_fisica', titulo: 'Alongamento Leve & Caminhada ', horarioPrevisto: '17:00', descricao: 'Caminhada leve de 15 minutos e exercicios de mobilidade.' },
+                          { tipo: 'alimentacao', titulo: 'Cha da Tarde & Biscoitos ', horarioPrevisto: '16:30', descricao: 'Oferecer cha morno com duas torradas e garantir ingestao de liquidos.' }
                         ]
                     ).map((model, idx) => (
                       <button
@@ -7372,20 +7372,20 @@ Segunda-feira:
                       onChange={e => setNewTaskForm({ ...newTaskForm, tipo: e.target.value as TaskType })}
                       className="w-full text-xs font-semibold px-2 py-2 border border-slate-300 rounded-xl bg-white focus:ring-1 text-slate-800"
                     >
-                      <option value="alimentacao">{isEscolar ? ' Alimentação / Lanche' : ' Alimentação'}</option>
+                      <option value="alimentacao">{isEscolar ? ' Alimentacao / Lanche' : ' Alimentacao'}</option>
                       <option value="medicacao">{isEscolar ? ' Medicamento Autorizado' : ' Medicamento'}</option>
                       <option value="banho">{isEscolar ? ' Banho / Higiene / Fralda' : ' Banho / Higiene'}</option>
-                      <option value="hidratacao"> Hidratação / Líquidos</option>
+                      <option value="hidratacao"> Hidratacao / Liquidos</option>
                       <option value="sono">{isEscolar ? ' Soneca / Descanso' : ' Sono / Repouso'}</option>
-                      <option value="humor">{isEscolar ? ' Humor / Socialização' : ' Humor / Estado Interno'}</option>
-                      <option value="atividade_fisica">{isEscolar ? ' Recreação / Aula de Física' : ' Atividade Física / Passeio'}</option>
-                      <option value="sinais_vitais">{isEscolar ? '  Sinais de Saúde / Febre' : '  Sinais Vitais / Triagem'}</option>
+                      <option value="humor">{isEscolar ? ' Humor / Socializacao' : ' Humor / Estado Interno'}</option>
+                      <option value="atividade_fisica">{isEscolar ? ' Recreacao / Aula de Fisica' : ' Atividade Fisica / Passeio'}</option>
+                      <option value="sinais_vitais">{isEscolar ? '  Sinais de Saude / Febre' : '  Sinais Vitais / Triagem'}</option>
                     </select>
                   </div>
                   
                   <div className="space-y-1 md:col-span-2">
                     <div className="flex items-center justify-between">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Título / Nome do Cuidado / Atividade</label>
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Titulo / Nome do Cuidado / Atividade</label>
                       <VoiceInput 
                         onTranscript={text => setNewTaskForm(prev => ({ ...prev, titulo: prev.titulo ? prev.titulo + ' ' + text : text }))} 
                         size="sm"
@@ -7393,7 +7393,7 @@ Segunda-feira:
                     </div>
                     <input
                       type="text"
-                      placeholder={isEscolar ? "Ex: Aula de pintura guache ou contação de história" : "Ex: Oferecer chá de erva cidreira ou verificar curativo"}
+                      placeholder={isEscolar ? "Ex: Aula de pintura guache ou contacao de historia" : "Ex: Oferecer cha de erva cidreira ou verificar curativo"}
                       value={newTaskForm.titulo}
                       onChange={e => setNewTaskForm({ ...newTaskForm, titulo: e.target.value })}
                       className="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl focus:ring-1 focus:outline-hidden bg-white text-slate-800"
@@ -7403,7 +7403,7 @@ Segunda-feira:
                   <div className="space-y-1">
                     <div className="flex items-center justify-between">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block flex items-center gap-1">
-                         Horário
+                         Horario
                       </label>
                       <span className="text-[9px] text-amber-600 font-extrabold uppercase bg-amber-50 px-1.5 py-0.5 rounded flex items-center gap-0.5">
                         <Clock className="w-2.5 h-2.5" /> Reloginho
@@ -7426,7 +7426,7 @@ Segunda-feira:
                           setNewTaskForm(prev => ({ ...prev, horarioPrevisto: `${hh}:${mm}` }));
                         }}
                         className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 p-0.5 rounded transition-all cursor-pointer"
-                        title="Inserir horário atual"
+                        title="Inserir horario atual"
                       >
                         <Clock className="w-3.5 h-3.5" />
                       </button>
@@ -7456,7 +7456,7 @@ Segunda-feira:
                            Alcance da Atividade
                         </span>
                         <p className="text-[10px] text-slate-500 font-semibold leading-relaxed">
-                          Escolha se a atividade é individual para <strong>{idoso.nome}</strong> ou coletiva para toda a sala de aula <strong>{getStudentClassroomLocal(idoso.nome)}</strong>.
+                          Escolha se a atividade e individual para <strong>{idoso.nome}</strong> ou coletiva para toda a sala de aula <strong>{getStudentClassroomLocal(idoso.nome)}</strong>.
                         </p>
                       </div>
                       <div className="flex gap-2">
@@ -7488,7 +7488,7 @@ Segunda-feira:
 
                   <div className="space-y-1 md:col-span-3">
                     <div className="flex items-center justify-between">
-                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Instrução / Descrição Detalhada</label>
+                      <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Instrucao / Descricao Detalhada</label>
                       <div className="flex items-center gap-1">
                         <span className="text-[9px] text-indigo-600 font-bold uppercase bg-indigo-50 px-1 py-0.5 rounded flex items-center gap-0.5">
                             Voz
@@ -7501,7 +7501,7 @@ Segunda-feira:
                     </div>
                     <textarea
                       rows={2}
-                      placeholder={isEscolar ? "Ex: Estimular coordenação de motricidade fina nas mãozinhas" : "Ex: Oferecer morno com 2 biscoitos de água e sal"}
+                      placeholder={isEscolar ? "Ex: Estimular coordenacao de motricidade fina nas maozinhas" : "Ex: Oferecer morno com 2 biscoitos de agua e sal"}
                       value={newTaskForm.descricao}
                       onChange={e => setNewTaskForm({ ...newTaskForm, descricao: e.target.value })}
                       className="w-full text-xs px-3 py-2 border border-slate-300 rounded-xl focus:ring-1 focus:outline-hidden bg-white text-slate-800 resize-none"
@@ -7571,19 +7571,19 @@ Segunda-feira:
                               onChange={e => setEditingTaskForm({ ...editingTaskForm, tipo: e.target.value as TaskType })}
                               className="w-full text-xs font-semibold px-2 py-1.5 border border-slate-300 rounded-xl bg-white text-slate-800"
                             >
-                              <option value="alimentacao">Alimentação</option>
+                              <option value="alimentacao">Alimentacao</option>
                               <option value="medicacao">Medicamento</option>
                               <option value="banho">Banho / Higiene</option>
-                              <option value="hidratacao">Hidratação</option>
+                              <option value="hidratacao">Hidratacao</option>
                               <option value="sono">Sono</option>
                               <option value="humor">Humor / Estado</option>
-                              <option value="atividade_fisica">Atividade Física</option>
-                              <option value="sinais_vitais">Sinais de Saúde</option>
+                              <option value="atividade_fisica">Atividade Fisica</option>
+                              <option value="sinais_vitais">Sinais de Saude</option>
                             </select>
                           </div>
                           <div className="space-y-0.5">
                             <div className="flex items-center justify-between">
-                              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Horário Previsto</label>
+                              <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Horario Previsto</label>
                               <button
                                 type="button"
                                 onClick={() => {
@@ -7593,7 +7593,7 @@ Segunda-feira:
                                   setEditingTaskForm(prev => ({ ...prev, horarioPrevisto: `${hh}:${mm}` }));
                                 }}
                                 className="text-slate-400 hover:text-indigo-600 p-0.5 rounded transition-all cursor-pointer"
-                                title="Inserir horário atual"
+                                title="Inserir horario atual"
                               >
                                 <Clock className="w-3 h-3" />
                               </button>
@@ -7626,7 +7626,7 @@ Segunda-feira:
 
                         <div className="space-y-0.5">
                           <div className="flex items-center justify-between">
-                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Título / Nome</label>
+                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Titulo / Nome</label>
                             <VoiceInput 
                               onTranscript={text => setEditingTaskForm(prev => ({ ...prev, titulo: prev.titulo ? prev.titulo + ' ' + text : text }))} 
                               size="sm"
@@ -7642,7 +7642,7 @@ Segunda-feira:
 
                         <div className="space-y-0.5">
                           <div className="flex items-center justify-between">
-                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Descrição / Instrução</label>
+                            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Descricao / Instrucao</label>
                             <VoiceInput 
                               onTranscript={text => setEditingTaskForm(prev => ({ ...prev, descricao: prev.descricao ? prev.descricao + ' ' + text : text }))} 
                               size="sm"
@@ -7668,7 +7668,7 @@ Segunda-feira:
                             type="submit"
                             className="flex-1 py-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl transition-all cursor-pointer border border-transparent"
                           >
-                            Salvar Alterações
+                            Salvar Alteracoes
                           </button>
                         </div>
                       </form>
@@ -7736,7 +7736,7 @@ Segunda-feira:
                                 url: matchingMed.fotoEmbalagem!,
                                 title: matchingMed.nome,
                                 dosagem: matchingMed.dosagem,
-                                frequencia: matchingMed.frequência,
+                                frequencia: matchingMed.frequencia,
                                 horarios: matchingMed.horarios,
                                 obs: matchingMed.observacoes
                               })}
@@ -7765,7 +7765,7 @@ Segunda-feira:
                                 {task.horarioPrevisto}
                               </span>
                               <span className="text-[10px] font-black uppercase text-slate-400">
-                                {isCompleted ? ' Concluído' : isRefused ? ' Recusado' : isDelayed ? ' Atrasado' : ' Pendente'}
+                                {isCompleted ? ' Concluido' : isRefused ? ' Recusado' : isDelayed ? ' Atrasado' : ' Pendente'}
                               </span>
                             </div>
                             <h4 className={`text-sm font-bold text-slate-800 ${textCol}`}>{task.titulo}</h4>
@@ -7779,11 +7779,11 @@ Segunda-feira:
                                   <span className="text-base shrink-0"></span>
                                   <div className="leading-tight">
                                     <span className="font-bold text-rose-950 block">
-                                      Dosagem: {matchingMed?.dosagem || 'Conforme instrução'}
+                                      Dosagem: {matchingMed?.dosagem || 'Conforme instrucao'}
                                     </span>
                                     {matchingMed?.observacoes && (
                                       <span className="text-[11px] text-rose-700 block italic">
-                                        Obs da família: "{matchingMed.observacoes}"
+                                        Obs da familia: "{matchingMed.observacoes}"
                                       </span>
                                     )}
                                   </div>
@@ -7795,7 +7795,7 @@ Segunda-feira:
                                       url: matchingMed.fotoEmbalagem!,
                                       title: matchingMed.nome,
                                       dosagem: matchingMed.dosagem,
-                                      frequencia: matchingMed.frequência,
+                                      frequencia: matchingMed.frequencia,
                                       horarios: matchingMed.horarios,
                                       obs: matchingMed.observacoes
                                     })}
@@ -7809,14 +7809,14 @@ Segunda-feira:
 
                             {isCompleted && (
                               <div className="text-[10px] font-semibold bg-emerald-100 text-emerald-800 p-2 rounded-xl mt-2 flex flex-col gap-0.5">
-                                <span className="flex items-center gap-1"><Check className="w-3.5 h-3.5" /> Concluído Às {task.concluidaEm} por {task.completadaPor}</span>
+                                <span className="flex items-center gap-1"><Check className="w-3.5 h-3.5" /> Concluido As {task.concluidaEm} por {task.completadaPor}</span>
                                 {task.observacao && <span>Relato cuidador: "{task.observacao}"</span>}
                               </div>
                             )}
 
                             {isRefused && (
                               <div className="text-[10px] font-semibold bg-amber-100 text-amber-800 p-2 rounded-xl mt-2 flex flex-col gap-0.5 border border-amber-200">
-                                <span className="flex items-center gap-1"> ⚠  RECUSADO / NÁO-ADMINISTRADO Às {task.concluidaEm || task.horarioPrevisto} por {task.completadaPor}</span>
+                                <span className="flex items-center gap-1"> [!]  RECUSADO / NAO-ADMINISTRADO As {task.concluidaEm || task.horarioPrevisto} por {task.completadaPor}</span>
                                 {task.observacao && <span>Justificativa: "{task.observacao}"</span>}
                               </div>
                             )}
@@ -7831,7 +7831,7 @@ Segunda-feira:
                           <div className="flex flex-col gap-1">
                             <div className="flex items-center justify-between">
                               <span className="text-[9px] font-black text-slate-400 uppercase tracking-wide">
-                                {isEscolar ? 'Observações da Atividade' : 'Observações / Relato rápido da ação'}
+                                {isEscolar ? 'Observacoes da Atividade' : 'Observacoes / Relato rapido da acao'}
                               </span>
                               <VoiceInput 
                                 onTranscript={text => setObservacaoRapida(prev => ({ 
@@ -7843,7 +7843,7 @@ Segunda-feira:
                             </div>
                             <input 
                               type="text" 
-                              placeholder={isEscolar ? "Ex: Realizou a atividade com capricho e atenção" : "Ex: Tomou com suco / Cuspiu comprimido / Recusou banho"}
+                              placeholder={isEscolar ? "Ex: Realizou a atividade com capricho e atencao" : "Ex: Tomou com suco / Cuspiu comprimido / Recusou banho"}
                               value={observacaoRapida[task.id] || ''}
                               onChange={e => setObservacaoRapida({ ...observacaoRapida, [task.id]: e.target.value })}
                               className="w-full px-3 py-1.5 border border-soft-gray rounded-xl bg-slate-50 text-xs focus:ring-1 focus:ring-blue-500 text-slate-800"
@@ -7855,12 +7855,12 @@ Segunda-feira:
                           {isDelayed && (
                             <button 
                               onClick={() => {
-                                const alertMsg = `Aviso Crítico: ${isEscolar ? 'O item de rotina de' : 'O remédio de'} ${idoso.nome.split(' (')[0]} (${task.titulo}) previsto para ${task.horarioPrevisto} está pendente! Por favor verifique imediato.`;
+                                const alertMsg = `Aviso Critico: ${isEscolar ? 'O item de rotina de' : 'O remedio de'} ${idoso.nome.split(' (')[0]} (${task.titulo}) previsto para ${task.horarioPrevisto} esta pendente! Por favor verifique imediato.`;
                                 triggerWhatsAppSim('ALERTA ATRAZADO', alertMsg);
                               }}
                               className="text-[9px] font-extrabold text-rose-600 uppercase tracking-wider bg-rose-50 border border-rose-200 px-2 py-1 rounded-lg hover:bg-rose-100 shrink-0"
                             >
-                               ⚠  Alerta Crítico
+                               [!]  Alerta Critico
                             </button>
                           )}
                           
@@ -7916,7 +7916,7 @@ Segunda-feira:
                   : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
-              <span>{isEscolar ? 'AULA' : 'Saúde'}</span>
+              <span>{isEscolar ? 'AULA' : 'Saude'}</span>
               <span>{isEscolar ? 'Painel da Professora' : 'Painel do Cuidador'}</span>
             </button>
             <button
@@ -7945,17 +7945,17 @@ Segunda-feira:
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="px-2 py-0.5 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-300 rounded-full text-[9px] font-black uppercase tracking-wider">
-                      Período de Experiência Ativo
+                      Periodo de Experiencia Ativo
                     </span>
                     <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">Dia 15 de 30</span>
                   </div>
                   <h4 className={`text-xs font-black leading-tight ${accessibilitySettings?.darkMode ? 'text-white' : 'text-slate-900'}`}>
-                    Seu período de teste gratuito está ativo no Painel de Acompanhamento Familiar.
+                    Seu periodo de teste gratuito esta ativo no Painel de Acompanhamento Familiar.
                   </h4>
                   <p className={`text-[10px] font-semibold leading-relaxed ${accessibilitySettings?.darkMode ? 'text-slate-400' : 'text-slate-500'}`}>
                     {isEscolar
-                      ? `Você pode monitorar as refeições, sono, agenda e diário escolar de ${idoso.nome} com total transparência e segurança.`
-                      : `Acompanhe em tempo real os sinais vitais, medicamentos, humor e rotina diária de ${idoso.nome} sem qualquer custo.`
+                      ? `Voce pode monitorar as refeicoes, sono, agenda e diario escolar de ${idoso.nome} com total transparencia e seguranca.`
+                      : `Acompanhe em tempo real os sinais vitais, medicamentos, humor e rotina diaria de ${idoso.nome} sem qualquer custo.`
                     }
                   </p>
                 </div>
@@ -7986,20 +7986,20 @@ Segunda-feira:
               
               <div className="space-y-2 max-w-xl">
                 <span className="text-[10px] font-black uppercase tracking-widest text-rose-600 font-sans">
-                  {isEscolar ? 'Controle de Presença Escolar' : 'Acompanhamento de Cuidados'}
+                  {isEscolar ? 'Controle de Presenca Escolar' : 'Acompanhamento de Cuidados'}
                 </span>
                 <h2 className="text-xl font-bold text-rose-950">
                   {isEscolar ? ' Aluno Ausente Hoje (Falta)' : ' Cliente Ausente'}
                 </h2>
                 <p className="text-xs text-rose-700 leading-normal">
                   {isEscolar 
-                    ? 'Este aluno foi marcado como ausente hoje pelo educador responsável. Nenhuma atividade ou diário letivo será exigido.'
-                    : 'Este idoso foi marcado como ausente hoje. Nenhuma rotina ou tarefa de cuidados será cobrada.'
+                    ? 'Este aluno foi marcado como ausente hoje pelo educador responsavel. Nenhuma atividade ou diario letivo sera exigido.'
+                    : 'Este idoso foi marcado como ausente hoje. Nenhuma rotina ou tarefa de cuidados sera cobrada.'
                   }
                 </p>
                 <div className="pt-2">
                   <span className="text-[10px] font-bold text-rose-800 bg-white/70 border border-rose-200 px-3 py-1.5 rounded-xl">
-                     Modo Família: Acesso apenas para leitura e acompanhamento.
+                     Modo Familia: Acesso apenas para leitura e acompanhamento.
                   </span>
                 </div>
               </div>
@@ -8013,23 +8013,23 @@ Segunda-feira:
               <div className="space-y-4 max-w-xl">
                 <div>
                   <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">
-                    {isEscolar ? 'Classe e Presença em Tempo Real' : 'Acompanhamento do Turno em Tempo Real'}
+                    {isEscolar ? 'Classe e Presenca em Tempo Real' : 'Acompanhamento do Turno em Tempo Real'}
                   </span>
                   <h2 className="text-xl font-bold text-slate-800">
                     {isShiftActive 
-                      ? (isEscolar ? ' Período Letivo em Andamento!' : ' Cuidador em Turno Ativo!') 
+                      ? (isEscolar ? ' Periodo Letivo em Andamento!' : ' Cuidador em Turno Ativo!') 
                       : (isEscolar ? 'Sem Aula no Momento' : 'Sem Turno de Cuidados Ativo')
                     }
                   </h2>
                   <p className="text-xs text-slate-500 mt-1 leading-normal">
                     {isShiftActive
                       ? (isEscolar 
-                          ? 'O diário do aluno está ativo! Acompanhe as sonecas, aceitação alimentar, fraldas e recados atualizados em tempo real.'
-                          : 'As rotinas, medicações e sinais vitais estão sendo acompanhados pelo cuidador de escala.'
+                          ? 'O diario do aluno esta ativo! Acompanhe as sonecas, aceitacao alimentar, fraldas e recados atualizados em tempo real.'
+                          : 'As rotinas, medicacoes e sinais vitais estao sendo acompanhados pelo cuidador de escala.'
                         )
                       : (isEscolar 
-                          ? 'O diário de classe do aluno ainda não foi iniciado pelo corpo educacional.'
-                          : 'O início do plantão de cuidados ainda não foi registrado pelo cuidador de escala.'
+                          ? 'O diario de classe do aluno ainda nao foi iniciado pelo corpo educacional.'
+                          : 'O inicio do plantao de cuidados ainda nao foi registrado pelo cuidador de escala.'
                         )
                     }
                   </p>
@@ -8038,7 +8038,7 @@ Segunda-feira:
                 <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                   <div className="bg-white px-4 py-2.5 rounded-xl border border-slate-200 shadow-xs leading-none">
                     <span className="text-[9px] font-black text-slate-400 block uppercase tracking-wider mb-1">
-                      {isEscolar ? 'TEMPO EM AULA' : 'DECIDIDO / DURAÇÁO DO TURNO'}
+                      {isEscolar ? 'TEMPO EM AULA' : 'DECIDIDO / DURACAO DO TURNO'}
                     </span>
                     <strong className={`text-2xl font-mono tracking-tight ${isShiftActive ? 'text-emerald-700' : 'text-slate-400'}`}>
                       {isShiftActive ? elapsedShiftTime : '00:00:00'}
@@ -8046,7 +8046,7 @@ Segunda-feira:
                   </div>
                   
                   <span className="text-xs font-semibold text-slate-500 bg-white/60 px-3 py-2 rounded-xl border border-slate-200/80">
-                     Modo Família: Acesso de acompanhamento configurado (botões de controle de turno, término e faltas desabilitados).
+                     Modo Familia: Acesso de acompanhamento configurado (botoes de controle de turno, termino e faltas desabilitados).
                   </span>
                 </div>
               </div>
@@ -8058,7 +8058,7 @@ Segunda-feira:
             
             
             <div className="bg-white p-6 rounded-3xl border border-[#cbd5e1] shadow-xs flex flex-col justify-center text-center space-y-4">
-              <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block">Métricas de Governança</strong>
+              <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block">Metricas de Governanca</strong>
               
               <div className="flex gap-4 items-center justify-around">
                 
@@ -8105,7 +8105,7 @@ Segunda-feira:
               </div>
 
               <div className="text-[11px] font-semibold text-slate-500 leading-normal border-t border-slate-100 pt-3">
-                {completedTasksCount} rotina(s) realizada(s) e {refusedTasksCount} recusa(s) com registro técnico hoje.
+                {completedTasksCount} rotina(s) realizada(s) e {refusedTasksCount} recusa(s) com registro tecnico hoje.
               </div>
             </div>
 
@@ -8121,22 +8121,22 @@ Segunda-feira:
               </div>
 
               <div className="space-y-2">
-                <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block">SEGURANÇA DA ROTINA hoje</strong>
+                <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block">SEGURANCA DA ROTINA hoje</strong>
                 <h3 className="text-lg font-black text-slate-850">
                   {farol.status === 'verde' 
-                    ? (isEscolar ? ' Tudo Sob Controle na Escola' : ' Tudo Sob Controle na Residência') 
+                    ? (isEscolar ? ' Tudo Sob Controle na Escola' : ' Tudo Sob Controle na Residencia') 
                     : farol.status === 'amarelo' 
-                      ? (isEscolar ? ' ⚠  Atividades e Pendências Ativas' : ' ⚠  Cuidados e Pendências Ativas') 
-                      : ' Atenção Necessária Para Atrasos!'}
+                      ? (isEscolar ? ' [!]  Atividades e Pendencias Ativas' : ' [!]  Cuidados e Pendencias Ativas') 
+                      : ' Atencao Necessaria Para Atrasos!'}
                 </h3>
                 <p className="text-xs text-slate-600 leading-relaxed max-w-md">
-                  {farol.details} {isEscolar ? 'O Anjinho Escolar' : 'O Anjo Cuidador'} audita e monitora cada ação. Fique despreocupado: qualquer falha séria gerará um alerta imediato de urgência para o seu celular.
+                  {farol.details} {isEscolar ? 'O Anjinho Escolar' : 'O Anjo Cuidador'} audita e monitora cada acao. Fique despreocupado: qualquer falha seria gerara um alerta imediato de urgencia para o seu celular.
                 </p>
               </div>
 
               <div className="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-slate-500">
-                <span>{isEscolar ? `Responsável da Classe: ${usuarioAtual.nome}` : `Responsável da Escala: ${usuarioAtual.nome}`}</span>
-                <span>Último Contato Realizado via API: Agora mesmo</span>
+                <span>{isEscolar ? `Responsavel da Classe: ${usuarioAtual.nome}` : `Responsavel da Escala: ${usuarioAtual.nome}`}</span>
+                <span>Ultimo Contato Realizado via API: Agora mesmo</span>
               </div>
             </div>
 
@@ -8151,14 +8151,14 @@ Segunda-feira:
                 </div>
                 <div>
                   <h3 className="text-base font-black text-slate-850 flex items-center gap-2">
-                    {isEscolar ? 'Medicações & Autorizações do Aluno' : 'Medicamentos & Autorizações da Família'}
+                    {isEscolar ? 'Medicacoes & Autorizacoes do Aluno' : 'Medicamentos & Autorizacoes da Familia'}
                     <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-extrabold rounded-full">
                       Exclusivo dos Pais
                     </span>
                   </h3>
                   <p className="text-xs text-slate-500 font-medium">
                     {isEscolar 
-                      ? 'Cadastre, suspenda ou exclua os medicamentos e autorizações que a professora deve ministrar.'
+                      ? 'Cadastre, suspenda ou exclua os medicamentos e autorizacoes que a professora deve ministrar.'
                       : 'Cadastre, suspenda ou exclua os medicamentos que o cuidador de escala deve ministrar.'}
                   </p>
                 </div>
@@ -8167,7 +8167,7 @@ Segunda-feira:
                 onClick={() => onNavigate && onNavigate('medicacoes')}
                 className="px-4 py-2.5 bg-serene-blue hover:bg-blue-600 text-white font-black text-xs rounded-xl shadow-xs transition-all active:scale-95 flex items-center justify-center gap-2 cursor-pointer shrink-0"
               >
-                <Plus className="w-4 h-4" /> Cadastrar / Gerenciar Autorizações
+                <Plus className="w-4 h-4" /> Cadastrar / Gerenciar Autorizacoes
               </button>
             </div>
 
@@ -8202,7 +8202,7 @@ Segunda-feira:
                         <div className="flex items-start justify-between gap-2">
                           <div>
                         <span className={isSuspended ? "px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-200 text-amber-900" : "px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-emerald-200 text-emerald-900"}>
-                              {isSuspended ? '⏸ Suspenso' : '✅ Ativo (Autorizado)'}
+                              {isSuspended ? '  Suspenso' : '[OK] Ativo (Autorizado)'}
                             </span>
                             <h4 className="font-extrabold text-sm text-slate-850 mt-1">Med {m.nome}</h4>
                             <p className="text-xs text-slate-600 font-medium">{m.dosagem}</p>
@@ -8210,13 +8210,13 @@ Segunda-feira:
                           <button
                             onClick={() => onNavigate && onNavigate('medicacoes')}
                             className="p-1.5 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-slate-600 text-[10px] font-bold cursor-pointer shrink-0"
-                            title="Gerenciar medicamento na página dedicada"
+                            title="Gerenciar medicamento na pagina dedicada"
                           >
                             Editar
                           </button>
                         </div>
                         <div className="mt-2 pt-2 border-t border-slate-200/60 flex items-center justify-between text-[10px] text-slate-500 font-semibold">
-                          <span>⏰ {Array.isArray(m.horarios) ? m.horarios.join(', ') : m.horarios}</span>
+                          <span>[T] {Array.isArray(m.horarios) ? m.horarios.join(', ') : m.horarios}</span>
                           <span>{(m as any).via || 'Via oral'}</span>
                         </div>
                       </div>
@@ -8233,7 +8233,7 @@ Segunda-feira:
             
             <div className="bg-white p-5 rounded-2xl border border-[#cbd5e1] space-y-4 shadow-sm relative overflow-hidden">
               <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block"> CONSUMO DE ÁGUA HOJE</strong>
+                <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block"> CONSUMO DE AGUA HOJE</strong>
                 <span className="text-[10px] font-black bg-cyan-100 text-cyan-800 px-2 py-0.5 rounded-full flex items-center gap-1">
                    Jarrinha Animada
                 </span>
@@ -8248,7 +8248,7 @@ Segunda-feira:
                     </span>
                   </div>
                   <span className="text-xs text-slate-400 block font-semibold">
-                    Meta Diária: {isEscolar ? '600ml' : '1.500ml'}
+                    Meta Diaria: {isEscolar ? '600ml' : '1.500ml'}
                   </span>
                 </div>
 
@@ -8257,7 +8257,7 @@ Segunda-feira:
                   const targetGoal = isEscolar ? 600 : 1500;
                   const percentJug = Math.min(100, Math.round((totalWaterMl / targetGoal) * 100));
                   return (
-                    <div className="flex items-center gap-2 bg-gradient-to-b from-cyan-50 to-sky-50/60 p-2.5 rounded-2xl border border-cyan-200 shrink-0 shadow-3xs" title="Jarrinha de hidratação: sobe À medida que a água é servida!">
+                    <div className="flex items-center gap-2 bg-gradient-to-b from-cyan-50 to-sky-50/60 p-2.5 rounded-2xl border border-cyan-200 shrink-0 shadow-3xs" title="Jarrinha de hidratacao: sobe A medida que a agua e servida!">
                       <div className="relative my-0.5">
                         
                         <div className="relative w-11 h-16 border-2 border-cyan-600 rounded-b-xl rounded-t-xs bg-white/80 overflow-hidden shadow-inner flex flex-col justify-end">
@@ -8310,14 +8310,14 @@ Segunda-feira:
               <p className="text-[10px] font-semibold text-slate-400">
                 {isEscolar 
                   ? 'Cada barra preenchida representa o consumo acumulado de copos ou mamadeiras graduadas (50ml, 100ml ou 150ml).' 
-                  : 'Cada barra preenchida representa um copinho de 250ml oferecido com segurança ao idoso.'}
+                  : 'Cada barra preenchida representa um copinho de 250ml oferecido com seguranca ao idoso.'}
               </p>
             </div>
 
             
             <div className="bg-white p-5 rounded-2xl border border-[#cbd5e1] space-y-4 shadow-sm">
               <div className="flex items-center justify-between border-b border-slate-100 pb-2">
-                <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block">  NUTRIÇÁO / ALIMENTAÇÁO</strong>
+                <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block">  NUTRICAO / ALIMENTACAO</strong>
                 {isEscolar && (() => {
                   const studentBottlesToday = todaysMealsList.filter(m => {
                     if (!m || !m.refeicao) return false;
@@ -8347,9 +8347,9 @@ Segunda-feira:
                       <div className="flex items-center gap-2">
                         <span className="text-base"></span>
                         <div>
-                          <span className="block text-xs font-extrabold">Mamadeiras de Leite / Fórmula</span>
+                          <span className="block text-xs font-extrabold">Mamadeiras de Leite / Formula</span>
                           <span className="text-[10px] text-amber-800 font-normal block">
-                            {lastBottle?.horario ? `Última servida Às ${lastBottle.horario}` : 'Controle de mamadeiras diárias'}
+                            {lastBottle?.horario ? `Ultima servida As ${lastBottle.horario}` : 'Controle de mamadeiras diarias'}
                           </span>
                         </div>
                       </div>
@@ -8361,26 +8361,26 @@ Segunda-feira:
                 })()}
 
                 {[
-                  { key: 'cafe_manha', label: isEscolar ? ' Lanchinho da Manhã' : 'Café da Manhã' },
-                  { key: 'almoco', label: isEscolar ? ' Papinha / Almocinho' : 'Almoço Principal' },
+                  { key: 'cafe_manha', label: isEscolar ? ' Lanchinho da Manha' : 'Cafe da Manha' },
+                  { key: 'almoco', label: isEscolar ? ' Papinha / Almocinho' : 'Almoco Principal' },
                   { key: 'lanche', label: isEscolar ? ' Frutinha / Lanchinho' : 'Lanche / Tarde' },
-                  { key: 'jantar', label: isEscolar ? ' Jantinha Escolar' : 'Jantar Sênior' }
+                  { key: 'jantar', label: isEscolar ? ' Jantinha Escolar' : 'Jantar Senior' }
                 ].map(itemMeal => {
                   const verified = [...todaysMealsList].reverse().find(m => {
                     if (!m || !m.refeicao) return false;
                     const ref = String(m.refeicao).toLowerCase().trim();
-                    // Mamadeiras são refeições lácteas separadas e gerenciadas no bloco de mamadeiras acima
+                    // Mamadeiras sao refeicoes lacteas separadas e gerenciadas no bloco de mamadeiras acima
                     if (ref === 'mamadeira' || ref.includes('mamad')) return false;
 
                     if (ref === itemMeal.key) return true;
                     if (itemMeal.key === 'cafe_manha') {
-                      return (ref.includes('cafe') || ref.includes('café') || ref.includes('desjejum')) && !ref.includes('mamad') && !ref.includes('lanche da tarde');
+                      return (ref.includes('cafe') || ref.includes('cafe') || ref.includes('desjejum')) && !ref.includes('mamad') && !ref.includes('lanche da tarde');
                     }
                     if (itemMeal.key === 'almoco') {
-                      return ref.includes('almoc') || ref.includes('almoç') || ref.includes('papi') || ref.includes('principal');
+                      return ref.includes('almoc') || ref.includes('almoc') || ref.includes('papi') || ref.includes('principal');
                     }
                     if (itemMeal.key === 'lanche') {
-                      return (ref.includes('lanche') || ref.includes('frut') || ref.includes('tarde') || ref.includes('snack')) && !ref.includes('manhã') && !ref.includes('manha');
+                      return (ref.includes('lanche') || ref.includes('frut') || ref.includes('tarde') || ref.includes('snack')) && !ref.includes('manha') && !ref.includes('manha');
                     }
                     if (itemMeal.key === 'jantar') {
                       return ref.includes('jantar') || ref.includes('ceia') || ref.includes('noturn');
@@ -8401,18 +8401,18 @@ Segunda-feira:
                           horario: getNowTimeBr(),
                           data: getTodayIso(),
                           observacoes: verified?.observacoes || 'Atualizado via painel',
-                          registradoPor: usuarioAtual?.nome || 'Responsável / Educador'
+                          registradoPor: usuarioAtual?.nome || 'Responsavel / Educador'
                         };
                         saveMealRecord(newMealObj);
                         setVitalsUpdateTrigger(p => p + 1);
-                        showToast(`Refeição (${itemMeal.label}) registrada com sucesso!`, 'success');
+                        showToast(`Refeicao (${itemMeal.label}) registrada com sucesso!`, 'success');
                       }}
                       className={`flex items-center justify-between text-xs font-bold p-2 rounded-xl transition-all border border-transparent ${
                         isStaffUser(usuarioAtual) && visualMode !== 'familia'
                           ? 'hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer hover:border-slate-200'
                           : 'cursor-default'
                       }`}
-                      title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para registrar ou alternar aceitação desta refeição" : undefined}
+                      title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para registrar ou alternar aceitacao desta refeicao" : undefined}
                     >
                       <span className="text-slate-600 dark:text-slate-300">{itemMeal.label}</span>
                       {verified ? (
@@ -8437,8 +8437,8 @@ Segunda-feira:
                   <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block"> HIGIENE & BEM ESTAR</strong>
                   <p className="text-xs text-slate-500 leading-normal mt-1 font-sans">
                     {isEscolar 
-                      ? 'Acompanhamento diário de conforto e asseio do aluno. Frequência de trocas de fralda, dentes, roupas e higiene.' 
-                      : 'Acompanhamento diário de conforto corporal. Focar na prevenção de escaras e infecções.'}
+                      ? 'Acompanhamento diario de conforto e asseio do aluno. Frequencia de trocas de fralda, dentes, roupas e higiene.' 
+                      : 'Acompanhamento diario de conforto corporal. Focar na prevencao de escaras e infeccoes.'}
                   </p>
                 </div>
 
@@ -8447,7 +8447,7 @@ Segunda-feira:
                     type="button"
                     onClick={(e) => handleResetAllHygiene(e)}
                     className="px-2.5 py-1.5 bg-rose-50 hover:bg-rose-100 active:bg-rose-200 text-rose-700 text-[11px] font-bold rounded-xl border border-rose-200 transition-all cursor-pointer flex items-center gap-1 shrink-0 shadow-3xs"
-                    title="Desmarcar itens e apagar a observação de higiene de hoje"
+                    title="Desmarcar itens e apagar a observacao de higiene de hoje"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
                     <span>Limpar Tudo</span>
@@ -8500,9 +8500,9 @@ Segunda-feira:
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
                       : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
                   }`}
-                  title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Escovação de Dentes" : undefined}
+                  title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Escovacao de Dentes" : undefined}
                 >
-                  <span className="text-xs block font-bold">{isEscolar ? ' Escovação Dentes' : ' Higiene Bucal'}</span>
+                  <span className="text-xs block font-bold">{isEscolar ? ' Escovacao Dentes' : ' Higiene Bucal'}</span>
                   <span className="text-[10px] font-black uppercase">
                     {todayHygieneLog?.teeth ? 'Realizada' : 'Pendente'}
                   </span>
@@ -8550,11 +8550,11 @@ Segunda-feira:
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
                       : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
                   }`}
-                  title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Mãos / Banho" : undefined}
+                  title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Maos / Banho" : undefined}
                 >
-                  <span className="text-xs block font-bold">{isEscolar ? ' Mãos e Rosto' : ' Banho Chuveiro'}</span>
+                  <span className="text-xs block font-bold">{isEscolar ? ' Maos e Rosto' : ' Banho Chuveiro'}</span>
                   <span className="text-[10px] font-black uppercase">
-                    {(todayHygieneLog?.hands || todayHygieneLog?.bath) ? (isEscolar ? 'Lavados' : 'Concluído') : 'Pendente'}
+                    {(todayHygieneLog?.hands || todayHygieneLog?.bath) ? (isEscolar ? 'Lavados' : 'Concluido') : 'Pendente'}
                   </span>
                 </button>
 
@@ -8575,9 +8575,9 @@ Segunda-feira:
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
                       : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
                   }`}
-                  title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Pomada / Hidratação" : undefined}
+                  title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Pomada / Hidratacao" : undefined}
                 >
-                  <span className="text-xs block font-bold">{isEscolar ? ' Pomada Antiassadura' : ' Hidratação Pele'}</span>
+                  <span className="text-xs block font-bold">{isEscolar ? ' Pomada Antiassadura' : ' Hidratacao Pele'}</span>
                   <span className="text-[10px] font-black uppercase">
                     {todayHygieneLog?.cream ? 'Aplicada' : 'Pendente'}
                   </span>
@@ -8587,7 +8587,7 @@ Segunda-feira:
               {todayHygieneLog?.observations && (
                 <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs text-slate-600 flex items-start justify-between gap-2">
                   <div className="space-y-0.5">
-                    <span className="font-bold text-slate-700 block">Observação de Higiene:</span>
+                    <span className="font-bold text-slate-700 block">Observacao de Higiene:</span>
                     <p className="text-slate-800 leading-relaxed">{todayHygieneLog.observations}</p>
                   </div>
                   {isStaffUser(usuarioAtual) && visualMode !== 'familia' && (
@@ -8595,7 +8595,7 @@ Segunda-feira:
                       type="button"
                       onClick={(e) => handleDeleteHygieneObservation(e)}
                       className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer shrink-0"
-                      title="Apagar observação de higiene"
+                      title="Apagar observacao de higiene"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -8607,7 +8607,7 @@ Segunda-feira:
               {occurrencesList && occurrencesList.length > 0 && (
                 <div className="pt-2 border-t border-slate-100 space-y-2">
                   <span className="text-[11px] font-black text-slate-500 uppercase tracking-wider block">
-                     Ocorrências / Registros de Cuidados do Dia ({occurrencesList.length})
+                     Ocorrencias / Registros de Cuidados do Dia ({occurrencesList.length})
                   </span>
                   <div className="space-y-1.5">
                     {occurrencesList.map(occ => (
@@ -8615,7 +8615,7 @@ Segunda-feira:
                         <div className="space-y-0.5">
                           <div className="flex items-center gap-1.5 font-bold text-amber-900">
                             <span className="px-1.5 py-0.5 bg-amber-200/80 text-amber-950 rounded-md text-[10px] uppercase font-black">
-                              {occ.tipo || 'Ocorrência'}
+                              {occ.tipo || 'Ocorrencia'}
                             </span>
                             <span className="text-slate-500 text-[10px]">{occ.horario || ''}</span>
                           </div>
@@ -8626,7 +8626,7 @@ Segunda-feira:
                             type="button"
                             onClick={(e) => handleDeleteOccurrence(occ.id, e)}
                             className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-100 rounded-lg transition-colors cursor-pointer shrink-0"
-                            title="Apagar este registro de ocorrência/cuidado"
+                            title="Apagar este registro de ocorrencia/cuidado"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
@@ -8652,11 +8652,11 @@ Segunda-feira:
                   case 'sonolento':
                     return { label: 'Sonolento / Repousando', emoji: '', bg: 'bg-indigo-50 text-indigo-800 border-indigo-200' };
                   case 'agitado':
-                    return { label: 'Agitado / Inquieto', emoji: ' ⚠ ', bg: 'bg-rose-50 text-rose-800 border-rose-200' };
+                    return { label: 'Agitado / Inquieto', emoji: ' [!] ', bg: 'bg-rose-50 text-rose-800 border-rose-200' };
                   case 'confuso':
                     return { label: 'Desorientado / Confuso', emoji: '', bg: 'bg-orange-50 text-orange-800 border-orange-200' };
                   case 'recusando':
-                    return { label: 'Resiste Às Intervenções', emoji: '', bg: 'bg-red-50 text-red-800 border-red-200' };
+                    return { label: 'Resiste As Intervencoes', emoji: '', bg: 'bg-red-50 text-red-800 border-red-200' };
                   default:
                     return { label: estado ? estado.toUpperCase() : 'Calmo / Sereno', emoji: '', bg: 'bg-emerald-50 text-emerald-800 border-emerald-200' };
                 }
@@ -8672,7 +8672,7 @@ Segunda-feira:
                          {isEscolar ? 'HUMOR & NOTA DA EDUCADORA' : 'ESTADO DE HUMOR / NOTA'}
                       </strong>
                       <span className="text-[10px] font-black bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-full flex items-center gap-1">
-                        Sócio-Emocional
+                        Socio-Emocional
                       </span>
                     </div>
 
@@ -8685,7 +8685,7 @@ Segunda-feira:
                         <div>
                           <strong className="text-xs block leading-tight">{moodInfo.label}</strong>
                           <span className="text-[9px] opacity-80 block font-semibold">
-                            {currentHum?.horario ? `Registrado Às ${currentHum.horario}` : 'Registrado no Turno'}
+                            {currentHum?.horario ? `Registrado As ${currentHum.horario}` : 'Registrado no Turno'}
                           </span>
                         </div>
                       </div>
@@ -8693,14 +8693,14 @@ Segunda-feira:
 
                     <div className="pt-0.5">
                       <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block mb-1">
-                        {isEscolar ? 'Nota / Observação da Educadora:' : 'Nota / Observação do Cuidador:'}
+                        {isEscolar ? 'Nota / Observacao da Educadora:' : 'Nota / Observacao do Cuidador:'}
                       </span>
                       <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-xs text-slate-700 leading-relaxed italic min-h-[60px] flex items-center">
                         {currentHum?.observacoes || quickHumor.observacao ? (
                           <span>"{currentHum?.observacoes || quickHumor.observacao}"</span>
                         ) : (
                           <span className="text-slate-400 not-italic text-[11px]">
-                            {isEscolar ? 'Nenhuma observação comportamental anotada no momento.' : 'Nenhuma observação anotada no momento.'}
+                            {isEscolar ? 'Nenhuma observacao comportamental anotada no momento.' : 'Nenhuma observacao anotada no momento.'}
                           </span>
                         )}
                       </div>
@@ -8722,7 +8722,7 @@ Segunda-feira:
           
           <div className="space-y-3">
             <strong className="text-xs font-black text-slate-400 uppercase tracking-wider block">
-              {isFundamental ? ' DIÁRIO DE ACOMPANHAMENTO PEDAGÓGICO & FOCO' : (isEscolar ? ' DIÁRIO DE SAÚDE, SONO & FRALDA' : ' MONITORAMENTO DE SINAIS VITAIS')}
+              {isFundamental ? ' DIARIO DE ACOMPANHAMENTO PEDAGOGICO & FOCO' : (isEscolar ? ' DIARIO DE SAUDE, SONO & FRALDA' : ' MONITORAMENTO DE SINAIS VITAIS')}
             </strong>
             
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4">
@@ -8745,7 +8745,7 @@ Segunda-feira:
                   </strong>
                 </div>
                 <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded-sm self-start mt-2">
-                  {isFundamental ? 'Deveres' : (isEscolar ? 'Período' : (latestVitals ? 'Aferido Hoje' : 'Excelente'))}
+                  {isFundamental ? 'Deveres' : (isEscolar ? 'Periodo' : (latestVitals ? 'Aferido Hoje' : 'Excelente'))}
                 </span>
               </div>
 
@@ -8769,7 +8769,7 @@ Segunda-feira:
                   </strong>
                 </div>
                 <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded-sm self-start mt-2">
-                  {isFundamental ? 'Comportamento' : (isEscolar ? 'Registro' : (latestVitals ? `Tipo: ${latestVitals.tipoGlicemia || 'casual'}` : 'Jejum Estável'))}
+                  {isFundamental ? 'Comportamento' : (isEscolar ? 'Registro' : (latestVitals ? `Tipo: ${latestVitals.tipoGlicemia || 'casual'}` : 'Jejum Estavel'))}
                 </span>
               </div>
 
@@ -8790,7 +8790,7 @@ Segunda-feira:
                   <span className="text-[10px] text-amber-700 font-bold bg-amber-50 px-1.5 py-0.5 rounded-sm self-start mt-2 border border-amber-150">
                     {studentBottlesToday.length > 0 
                       ? (studentBottlesToday[studentBottlesToday.length - 1]?.horario 
-                          ? `Última Às ${studentBottlesToday[studentBottlesToday.length - 1].horario} (${totalBottlesMl} ml total)` 
+                          ? `Ultima As ${studentBottlesToday[studentBottlesToday.length - 1].horario} (${totalBottlesMl} ml total)` 
                           : `${totalBottlesMl} ml total`) 
                       : 'Nenhuma hoje'}
                   </span>
@@ -8818,7 +8818,7 @@ Segunda-feira:
                 <div className="flex flex-col justify-between h-full">
                   <div>
                     <span className="text-[10px] font-bold text-slate-400 block uppercase">
-                      {isFundamental ? ' Hidratação / Copos' : (isEscolar ? ' Hidratação (Água)' : 'Oxigenação (SpO2)')}
+                      {isFundamental ? ' Hidratacao / Copos' : (isEscolar ? ' Hidratacao (Agua)' : 'Oxigenacao (SpO2)')}
                     </span>
                     <strong className="text-xl font-bold text-slate-800">
                       {isEscolar 
@@ -8827,7 +8827,7 @@ Segunda-feira:
                     </strong>
                   </div>
                   <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded-sm self-start mt-2">
-                    {isEscolar ? 'Consumo' : (latestVitals ? (latestVitals.saturacao >= 95 ? 'Excelente (Normal)' : 'Atenção Baixo') : 'Excelente (Normal)')}
+                    {isEscolar ? 'Consumo' : (latestVitals ? (latestVitals.saturacao >= 95 ? 'Excelente (Normal)' : 'Atencao Baixo') : 'Excelente (Normal)')}
                   </span>
                 </div>
 
@@ -8836,7 +8836,7 @@ Segunda-feira:
                   const targetGoal = isEscolar ? 600 : 1500;
                   const percentJug = Math.min(100, Math.round((totalWaterMl / targetGoal) * 100));
                   return (
-                    <div className="flex items-center gap-1.5 bg-cyan-50/80 px-2 py-1 rounded-xl border border-cyan-200 shrink-0 shadow-3xs" title="Jarrinha de Hidratação">
+                    <div className="flex items-center gap-1.5 bg-cyan-50/80 px-2 py-1 rounded-xl border border-cyan-200 shrink-0 shadow-3xs" title="Jarrinha de Hidratacao">
                       <div className="relative my-0.5">
                         <div className="relative w-7 h-10 border-2 border-cyan-600 rounded-b-lg rounded-t-xs bg-white/90 overflow-hidden shadow-inner flex flex-col justify-end">
                           <div 
@@ -8862,11 +8862,11 @@ Segunda-feira:
                 <div>
                   <span className="text-[10px] font-bold text-slate-400 block uppercase">Temperatura</span>
                   <strong className="text-xl font-bold text-slate-800">
-                    {latestVitals ? `${latestVitals.temperatura.toFixed(1).replace('.', ',')} °C` : '36,5 °C'}
+                    {latestVitals ? `${latestVitals.temperatura.toFixed(1).replace('.', ',')} oC` : '36,5 oC'}
                   </strong>
                 </div>
                 <span className="text-[10px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded-sm self-start mt-2">
-                  {latestVitals ? (latestVitals.temperatura >= 37.8 ? 'Febre  ⚠ ' : 'Afebril') : 'Afebril'}
+                  {latestVitals ? (latestVitals.temperatura >= 37.8 ? 'Febre  [!] ' : 'Afebril') : 'Afebril'}
                 </span>
               </div>
 
@@ -8875,12 +8875,12 @@ Segunda-feira:
                 id="clinical-weight-card"
                 onClick={() => onNavigate('reports')} 
                 className="bg-indigo-50/70 p-4 rounded-xl border border-indigo-200 flex flex-col justify-between hover:bg-indigo-100/80 active:scale-98 transition-all cursor-pointer group"
-                title="Clique para ir ao Gráfico de Evolução de Peso nos Relatórios"
+                title="Clique para ir ao Grafico de Evolucao de Peso nos Relatorios"
               >
                 <div>
                   <span className="text-[10px] font-black text-indigo-500 block uppercase flex items-center justify-between">
                     <span>{isEscolar ? ' Peso Escolar' : ' Peso (Controle Semanal)'}</span>
-                    <span className="text-indigo-600 bg-white border border-indigo-150 px-1 py-0.2 text-[8px] rounded-xs group-hover:scale-105 transition-transform">Ver Histórico</span>
+                    <span className="text-indigo-600 bg-white border border-indigo-150 px-1 py-0.2 text-[8px] rounded-xs group-hover:scale-105 transition-transform">Ver Historico</span>
                   </span>
                   <strong className="text-xl font-bold text-slate-800">
                     {latestWeight ? `${latestWeight} kg` : (isEscolar ? '12,5 kg' : '72,4 kg')}
@@ -8889,7 +8889,7 @@ Segunda-feira:
                 <div className="text-[10px] font-bold mt-2">
                   {latestWeight && previousWeight ? (
                     weightDiff === 0 ? (
-                      <span className="text-emerald-750 bg-white px-1.5 py-0.5 rounded-md border border-emerald-100">Estável (0.0 kg)</span>
+                      <span className="text-emerald-750 bg-white px-1.5 py-0.5 rounded-md border border-emerald-100">Estavel (0.0 kg)</span>
                     ) : weightDiff > 0 ? (
                       <span className="text-indigo-700 bg-white px-1.5 py-0.5 rounded-md border border-indigo-150">+{weightDiff.toFixed(1)} kg (Ganho)</span>
                     ) : (
@@ -8906,7 +8906,7 @@ Segunda-feira:
                 const humsToday = getFromDB<RegistroHumor[]>('anjo_humor', []).filter(h => h && h.idosoId === idoso.id && isTodayOrDemoDate(h.data));
                 const currentHum = humsToday.length > 0 ? humsToday[humsToday.length - 1] : null;
                 const stateDisplay = currentHum?.estado || quickHumor.estado || 'calmo';
-                const emoji = stateDisplay === 'feliz' ? '' : stateDisplay === 'sonolento' ? '' : stateDisplay === 'agitado' ? ' ⚠ ' : stateDisplay === 'confuso' ? '' : stateDisplay === 'recusando' ? '' : '';
+                const emoji = stateDisplay === 'feliz' ? '' : stateDisplay === 'sonolento' ? '' : stateDisplay === 'agitado' ? ' [!] ' : stateDisplay === 'confuso' ? '' : stateDisplay === 'recusando' ? '' : '';
                 const label = stateDisplay === 'feliz' ? 'Feliz' : stateDisplay === 'sonolento' ? 'Sonolento' : stateDisplay === 'agitado' ? 'Agitado' : stateDisplay === 'confuso' ? 'Confuso' : stateDisplay === 'recusando' ? 'Recusando' : 'Calmo / Sereno';
 
                 return (
@@ -8920,7 +8920,7 @@ Segunda-feira:
                       </strong>
                     </div>
                     <span className="text-[10px] text-indigo-600 font-bold bg-indigo-50 px-1.5 py-0.5 rounded-sm self-start mt-2">
-                      {currentHum?.observacoes || quickHumor.observacao ? 'Com Nota da Profª' : 'Observado no Dia'}
+                      {currentHum?.observacoes || quickHumor.observacao ? 'Com Nota da Profa' : 'Observado no Dia'}
                     </span>
                   </div>
                 );
@@ -8932,12 +8932,12 @@ Segunda-feira:
           
           <div className="space-y-4">
             <h3 className="text-md font-black text-slate-800 flex items-center gap-1.5">
-              <Layers className="text-emerald-600 w-5 h-5" /> Linha do Tempo e Auditoria de Saúde
+              <Layers className="text-emerald-600 w-5 h-5" /> Linha do Tempo e Auditoria de Saude
             </h3>
 
             {timelineItems.length === 0 ? (
               <div className="p-6 border border-dashed rounded-2xl bg-white text-center text-slate-400 text-xs font-semibold">
-                Nenhuma ação concluída na data de hoje até o momento.
+                Nenhuma acao concluida na data de hoje ate o momento.
               </div>
             ) : (
               <div className="relative border-l border-emerald-300 ml-4 pl-6 space-y-5">
@@ -8953,12 +8953,12 @@ Segunda-feira:
                       <div className="bg-white p-4 rounded-2xl border border-[#cbd5e1] space-y-1.5 shadow-2xs leading-normal">
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
                           <span className="text-[10px] font-black uppercase text-emerald-600 bg-emerald-50/70 border border-emerald-100 px-2 py-0.5 rounded-full">
-                             Horário Registrado: {tItem.horario}
+                             Horario Registrado: {tItem.horario}
                           </span>
                           
                           {tieneDobleTiempo && (
                             <span className="text-[9px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
-                               Registrado Offline no Celular Às {new Date(tItem.meta.horario_registrado_dispositivo).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}  |  Servidor: {new Date(tItem.meta.horario_sincronizado_servidor).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                               Registrado Offline no Celular As {new Date(tItem.meta.horario_registrado_dispositivo).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}  |  Servidor: {new Date(tItem.meta.horario_sincronizado_servidor).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                             </span>
                           )}
                         </div>
@@ -8967,7 +8967,7 @@ Segunda-feira:
                         {tItem.nota && <p className="text-xs text-slate-600 italic">" {tItem.nota} "</p>}
                         
                         <div className="text-[10px] font-bold text-slate-400 pt-1 flex items-center gap-1.5">
-                          <User className="w-3 w-3" /> Executor Responsável: {tItem.autor}
+                          <User className="w-3 w-3" /> Executor Responsavel: {tItem.autor}
                         </div>
                       </div>
                     </div>
@@ -8980,14 +8980,14 @@ Segunda-feira:
           
           <div className="space-y-4">
             <h3 className="text-md font-black text-slate-850 flex items-center gap-1.5">
-              <FileText className="text-indigo-505 w-5 h-5" /> {isEscolar ? 'Diários de Rotina Escolar Recebidos' : 'Relatórios e Resumos de Turno Recebidos (WhatsApp)'}
+              <FileText className="text-indigo-505 w-5 h-5" /> {isEscolar ? 'Diarios de Rotina Escolar Recebidos' : 'Relatorios e Resumos de Turno Recebidos (WhatsApp)'}
             </h3>
 
             {turnSummaries.length === 0 ? (
               <div className="p-6 border border-dashed rounded-2xl bg-white text-center text-slate-400 text-xs font-semibold">
                 {isEscolar 
-                  ? 'Nenhum diário de rotina escolar enviado hoje ainda. Os diários aparecem aqui assim que a professora encerra o período letivo da criança no aplicativo.'
-                  : 'Nenhum relatório de encerramento de turno enviado hoje ainda. Os relatórios aparecem aqui assim que o cuidador clica em "Encerrar Turno" no aplicativo.'}
+                  ? 'Nenhum diario de rotina escolar enviado hoje ainda. Os diarios aparecem aqui assim que a professora encerra o periodo letivo da crianca no aplicativo.'
+                  : 'Nenhum relatorio de encerramento de turno enviado hoje ainda. Os relatorios aparecem aqui assim que o cuidador clica em "Encerrar Turno" no aplicativo.'}
               </div>
             ) : (
               <div className="space-y-3.5">
@@ -8996,10 +8996,10 @@ Segunda-feira:
                     <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
                       <div>
                         <strong className="text-xs text-slate-800 block">
-                          {isEscolar ? `Diário Escolar de ${report.cuidador}` : `Resumo do Turno de ${report.cuidador}`}
+                          {isEscolar ? `Diario Escolar de ${report.cuidador}` : `Resumo do Turno de ${report.cuidador}`}
                         </strong>
                         <span className="text-[10px] text-slate-400 font-bold uppercase">
-                          {report.timestamp ? new Date(report.timestamp).toLocaleDateString('pt-BR') : (report.data || getTodayBr())}    Período: {formatShiftTime(report.inicio, '07:30')} Às {formatShiftTime(report.fim, '17:30')}
+                          {report.timestamp ? new Date(report.timestamp).toLocaleDateString('pt-BR') : (report.data || getTodayBr())}    Periodo: {formatShiftTime(report.inicio, '07:30')} As {formatShiftTime(report.fim, '17:30')}
                         </span>
                       </div>
                       <div className="text-right leading-none">
@@ -9018,7 +9018,7 @@ Segunda-feira:
                         <span className="text-base shrink-0"></span>
                         <div className="min-w-0">
                           <span className="block font-black text-[11px] text-indigo-900 dark:text-indigo-100">
-                            Link Seguro do Diário Digital:
+                            Link Seguro do Diario Digital:
                           </span>
                           <span className="text-[10px] font-mono text-indigo-600 dark:text-indigo-300 underline underline-offset-2 truncate block">
                             {window.location.origin}/?relatorio={report.id}
@@ -9032,7 +9032,7 @@ Segunda-feira:
                           onClick={() => setSelectedReportModal(report)}
                           className="px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-extrabold flex items-center gap-1 shadow-xs transition-all cursor-pointer"
                         >
-                          <span> </span> Abrir Diário Digital 360º
+                          <span> </span> Abrir Diario Digital 360o
                         </button>
                         
                         <button
@@ -9040,7 +9040,7 @@ Segunda-feira:
                           onClick={() => {
                             const link = `${window.location.origin}/?relatorio=${report.id}`;
                             navigator.clipboard.writeText(link);
-                            showToast(' Link do diário escolar copiado para a área de transferência!');
+                            showToast(' Link do diario escolar copiado para a area de transferencia!');
                           }}
                           className="px-2.5 py-1.5 rounded-lg bg-white dark:bg-slate-800 hover:bg-slate-100 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-bold flex items-center gap-1 cursor-pointer"
                         >
@@ -9051,7 +9051,7 @@ Segunda-feira:
                           type="button"
                           onClick={() => handleDeleteReport(report.id)}
                           className="px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-xs font-bold flex items-center gap-1 cursor-pointer transition-all"
-                          title="Excluir este diário de rotina permanentemente"
+                          title="Excluir este diario de rotina permanentemente"
                         >
                           <Trash2 className="w-3.5 h-3.5" /> Excluir
                         </button>
@@ -9071,7 +9071,7 @@ Segunda-feira:
                         >
                           <span></span> Compartilhar WhatsApp
                         </button>
-                        <span>Duração: {report.duracao}</span>
+                        <span>Duracao: {report.duracao}</span>
                       </div>
                     </div>
                   </div>
@@ -9092,7 +9092,7 @@ Segunda-feira:
               </div>
               <div>
                 <h3 className="text-base sm:text-lg font-black text-slate-800">
-                   Registrar Saída / Ausência de Aluno
+                   Registrar Saida / Ausencia de Aluno
                 </h3>
                 <p className="text-xs text-slate-500 font-medium">
                   Aluno: <strong className="text-slate-800">{(idoso.nome || '').split(' (')[0]}</strong>
@@ -9103,24 +9103,24 @@ Segunda-feira:
             <div className="bg-amber-50/70 border border-amber-200 p-3.5 rounded-2xl text-xs text-amber-900 leading-relaxed font-medium flex items-start gap-2.5">
               <Info className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
               <div>
-                <strong className="block font-bold mb-0.5">Informação LGPD e Relatórios:</strong>
-                O cronômetro deste aluno será desligado e o registro de saída será salvo no relatório com data, horário e motivo. <span className="underline font-bold">As atividades do dia permanecem salvas e salvas intactas.</span>
+                <strong className="block font-bold mb-0.5">Informacao LGPD e Relatorios:</strong>
+                O cronometro deste aluno sera desligado e o registro de saida sera salvo no relatorio com data, horario e motivo. <span className="underline font-bold">As atividades do dia permanecem salvas e salvas intactas.</span>
               </div>
             </div>
 
             <div className="space-y-3">
               <label className="text-[11px] font-black uppercase tracking-wider text-slate-400 block">
-                Selecione ou digite o motivo da saída:
+                Selecione ou digite o motivo da saida:
               </label>
 
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {[
-                  ' Consulta Médica / Exame',
-                  ' Pais / Responsáveis buscaram mais cedo',
-                  ' Mal-estar / Sintomas de Saúde',
-                  '  Ausência Temporária / Particular',
-                  ' Fim das Aulas / Saída Normal'
+                  ' Consulta Medica / Exame',
+                  ' Pais / Responsaveis buscaram mais cedo',
+                  ' Mal-estar / Sintomas de Saude',
+                  '  Ausencia Temporaria / Particular',
+                  ' Fim das Aulas / Saida Normal'
                 ].map((reasonOption) => {
                   const isSelected = stopShiftReason === reasonOption;
                   return (
@@ -9142,13 +9142,13 @@ Segunda-feira:
 
               <div>
                 <label className="text-[10px] font-black uppercase text-slate-400 block mb-1">
-                  Observação Adicional / Detalhes (Opcional):
+                  Observacao Adicional / Detalhes (Opcional):
                 </label>
                 <textarea
                   rows={2}
                   value={stopShiftNote}
                   onChange={e => setStopShiftNote(e.target.value)}
-                  placeholder="Ex: Mãe veio buscar Às 14:30 para ir ao dentista..."
+                  placeholder="Ex: Mae veio buscar As 14:30 para ir ao dentista..."
                   className="w-full px-3 py-2 border border-slate-300 rounded-xl text-xs font-medium text-slate-800 bg-white focus:outline-none focus:ring-2 focus:ring-amber-500"
                 />
               </div>
@@ -9167,7 +9167,7 @@ Segunda-feira:
                 onClick={handleConfirmStopIndividualShift}
                 className="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl transition-all cursor-pointer shadow-md flex items-center gap-1.5"
               >
-                <Square className="w-3.5 h-3.5 fill-current" /> Confirmar Saída e Desligar
+                <Square className="w-3.5 h-3.5 fill-current" /> Confirmar Saida e Desligar
               </button>
             </div>
           </div>
@@ -9185,19 +9185,19 @@ Segunda-feira:
               )}
               <div>
                 <h3 className="text-base sm:text-lg font-black text-slate-800">
-                  {occurrenceForm.criticidade === 'vermelho' ? ' Registrar Intercorrência Urgente' : ' Registrar Ocorrência do Dia'}
+                  {occurrenceForm.criticidade === 'vermelho' ? ' Registrar Intercorrencia Urgente' : ' Registrar Ocorrencia do Dia'}
                 </h3>
                 <p className="text-xs text-slate-500">
                   {occurrenceForm.criticidade === 'vermelho'
-                    ? 'Alerta crítico para emergências de saúde, febre, quedas ou incidentes'
-                    : 'Registro de rotina para comportamento, desentendimento ou observações'}
+                    ? 'Alerta critico para emergencias de saude, febre, quedas ou incidentes'
+                    : 'Registro de rotina para comportamento, desentendimento ou observacoes'}
                 </p>
               </div>
             </div>
 
             <form onSubmit={handleConfirmOccurrence} className="space-y-4">
               <div>
-                <label className="text-[10px] font-black uppercase text-slate-400 block mb-1">Tipo de Ocorrência</label>
+                <label className="text-[10px] font-black uppercase text-slate-400 block mb-1">Tipo de Ocorrencia</label>
                 <select 
                   value={occurrenceForm.tipo}
                   onChange={e => setOccurrenceForm({ ...occurrenceForm, tipo: e.target.value })}
@@ -9206,16 +9206,16 @@ Segunda-feira:
                   <option value="queda">Queda </option>
                   <option value="febre">Febre  </option>
                   <option value="dor">Dor </option>
-                  <option value="recusa_medicacao">Recusa de medicação </option>
+                  <option value="recusa_medicacao">Recusa de medicacao </option>
                   <option value="recusa_alimentar">Recusa alimentar  </option>
-                  <option value="comportamento">Alteração de comportamento  </option>
-                  <option value="pressao">Pressão alterada </option>
+                  <option value="comportamento">Alteracao de comportamento  </option>
+                  <option value="pressao">Pressao alterada </option>
                   <option value="outro">Outro (Relatar) </option>
                 </select>
               </div>
 
               <div>
-                <label className="text-[10px] font-black uppercase text-slate-400 block mb-1">Nível de Criticidade</label>
+                <label className="text-[10px] font-black uppercase text-slate-400 block mb-1">Nivel de Criticidade</label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
@@ -9226,7 +9226,7 @@ Segunda-feira:
                         : 'border-slate-200 bg-slate-50 text-slate-500 text-xs font-semibold'
                     }`}
                   >
-                     Atenção recomendável
+                     Atencao recomendavel
                   </button>
                   <button
                     type="button"
@@ -9237,7 +9237,7 @@ Segunda-feira:
                         : 'border-slate-200 bg-slate-50 text-slate-500 text-xs font-semibold'
                     }`}
                   >
-                     Urgência Crítica
+                     Urgencia Critica
                   </button>
                 </div>
               </div>
@@ -9251,7 +9251,7 @@ Segunda-feira:
                         Contatar Imediatamente os Familiares!
                       </h4>
                       <p className="text-[10px] text-red-700 leading-normal font-bold">
-                        Como você selecionou Urgência Crítica, ligue ou mande mensagem agora mesmo para o responsável legal.
+                        Como voce selecionou Urgencia Critica, ligue ou mande mensagem agora mesmo para o responsavel legal.
                       </p>
                     </div>
                   </div>
@@ -9271,7 +9271,7 @@ Segunda-feira:
                       <a 
                         href={`tel:${idoso.contatoEmergencia.telefone}`}
                         className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-[11px] rounded-lg flex items-center gap-1 transition-colors cursor-pointer shadow-3xs"
-                        title="Fazer ligação comum por telefone"
+                        title="Fazer ligacao comum por telefone"
                       >
                         <Phone className="w-3.5 h-3.5" />
                         <span>Ligar</span>
@@ -9308,7 +9308,7 @@ Segunda-feira:
                   rows={3}
                   value={occurrenceForm.descricao}
                   onChange={e => setOccurrenceForm({ ...occurrenceForm, descricao: e.target.value })}
-                  placeholder="Seja descritivo. Ex: Se desequilibrou ao levantar da cama, caiu sentado no tapete. Sem sinais de fratura, pressão aferida 12/8 estável. Queixou leve dor nas costas."
+                  placeholder="Seja descritivo. Ex: Se desequilibrou ao levantar da cama, caiu sentado no tapete. Sem sinais de fratura, pressao aferida 12/8 estavel. Queixou leve dor nas costas."
                   className="w-full px-3 py-2 border border-[#cbd5e1] rounded-xl text-xs text-slate-800 leading-normal focus:outline-none focus:ring-1 focus:ring-blue-500"
                 ></textarea>
               </div>
@@ -9359,7 +9359,7 @@ Segunda-feira:
               
               {activeSharingOccurrenceId && (
                 <div className="bg-slate-50 border border-slate-150 rounded-2xl p-4 space-y-3">
-                  <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Histórico de Auditoria do Alerta</span>
+                  <span className="text-[10px] font-black uppercase text-slate-400 block tracking-wider">Historico de Auditoria do Alerta</span>
                   <div className="grid grid-cols-3 gap-2">
                     <div className="text-center space-y-1">
                       <div className="mx-auto w-6 h-6 flex items-center justify-center rounded-full bg-emerald-100 text-emerald-700 text-xs font-black">
@@ -9426,8 +9426,8 @@ Segunda-feira:
               
               {(() => {
                 const primaryRecipient = idoso.contatoEmergencia?.telefone
-                  ? { nome: idoso.contatoEmergencia.nome || 'Responsável', telefone: idoso.contatoEmergencia.telefone, parentesco: idoso.contatoEmergencia.parentesco || 'Responsável' }
-                  : (getFromDB<Usuario[]>('anjo_usuarios', []).find(u => u.tipo === 'familiar' || u.tipo === 'admin') || { nome: 'Responsáveis da Família', telefone: '(11) 98765-4321', parentesco: 'Família' });
+                  ? { nome: idoso.contatoEmergencia.nome || 'Responsavel', telefone: idoso.contatoEmergencia.telefone, parentesco: idoso.contatoEmergencia.parentesco || 'Responsavel' }
+                  : (getFromDB<Usuario[]>('anjo_usuarios', []).find(u => u.tipo === 'familiar' || u.tipo === 'admin') || { nome: 'Responsaveis da Familia', telefone: '(11) 98765-4321', parentesco: 'Familia' });
 
                 const primaryNumberFormatted = formatWhatsAppNumber(primaryRecipient.telefone || '(11) 98765-4321');
                 const textEncoded = encodeURIComponent(manualShareOccurrenceMessage);
@@ -9437,7 +9437,7 @@ Segunda-feira:
                   <div className="space-y-2.5 bg-emerald-50/60 border border-emerald-200/80 rounded-2xl p-3.5">
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-[11px] font-black uppercase text-emerald-900 tracking-wider">
-                         Ação Rápida de Envio Direto
+                         Acao Rapida de Envio Direto
                       </span>
                       <span className="text-[10px] text-emerald-700 font-bold">
                         Para: {primaryRecipient.nome} ({primaryRecipient.telefone})
@@ -9462,7 +9462,7 @@ Segunda-feira:
                         onClick={async () => {
                           try {
                             await (navigator as any).share({
-                              title: isEscolar ? `Diário Escolar de ${idoso.nome}` : `Boletim de Cuidados de ${idoso.nome}`,
+                              title: isEscolar ? `Diario Escolar de ${idoso.nome}` : `Boletim de Cuidados de ${idoso.nome}`,
                               text: manualShareOccurrenceMessage,
                             });
                           } catch (e) {
@@ -9483,7 +9483,7 @@ Segunda-feira:
                 
                 <div className="bg-slate-50 border border-slate-200 rounded-2xl p-3 space-y-2">
                   <span className="text-[10px] font-black uppercase text-slate-500 block">
-                    Enviar para outro número de celular/WhatsApp:
+                    Enviar para outro numero de celular/WhatsApp:
                   </span>
                   <div className="flex items-center gap-2">
                     <input
@@ -9500,7 +9500,7 @@ Segunda-feira:
                       onClick={(e) => {
                         if (!customPhoneInput) {
                           e.preventDefault();
-                          alert('Por favor, informe o número de telefone com DDD para abrir o WhatsApp.');
+                          alert('Por favor, informe o numero de telefone com DDD para abrir o WhatsApp.');
                           return;
                         }
                         handleWhatsAppClicked(activeSharingOccurrenceId);
@@ -9559,7 +9559,7 @@ Segunda-feira:
                                   status === 'pendente' ? 'bg-slate-200 text-slate-700 font-bold border border-slate-300' : 'bg-slate-100/50 text-slate-400 hover:bg-slate-100'
                                 }`}
                               >
-                                Ainda não enviado 
+                                Ainda nao enviado 
                               </button>
                               <button
                                 type="button"
@@ -9596,7 +9596,7 @@ Segunda-feira:
                       <div className="flex flex-col gap-2 p-3 bg-red-50/20 hover:bg-red-50/40 rounded-xl border border-red-150 transition-colors">
                         <div className="flex items-center justify-between gap-3">
                           <div className="min-w-0">
-                            <strong className="text-xs font-bold text-slate-700 block truncate">{idoso.contatoEmergencia.nome} (Contato Responsável / Emergência)</strong>
+                            <strong className="text-xs font-bold text-slate-700 block truncate">{idoso.contatoEmergencia.nome} (Contato Responsavel / Emergencia)</strong>
                             <span className="text-[10px] font-mono text-slate-400 font-bold block">{idoso.contatoEmergencia.telefone} ({idoso.contatoEmergencia.parentesco})</span>
                           </div>
                           <a
@@ -9624,7 +9624,7 @@ Segunda-feira:
                                 status === 'pendente' ? 'bg-slate-200 text-slate-700 font-bold border border-slate-350' : 'bg-slate-100/50 text-slate-400 hover:bg-slate-100'
                               }`}
                             >
-                              Ainda não enviado 
+                              Ainda nao enviado 
                             </button>
                             <button
                               type="button"
@@ -9656,7 +9656,7 @@ Segunda-feira:
               <div className="border-t border-slate-150 pt-4 space-y-4">
                 <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center space-y-3.5">
                   <span className="text-xs font-black text-slate-800 block">
-                    {activeSharingOccurrenceId ? 'Passo 2: Você enviou esta mensagem para a família?' : 'Confirmação do Compartilhamento'}
+                    {activeSharingOccurrenceId ? 'Passo 2: Voce enviou esta mensagem para a familia?' : 'Confirmacao do Compartilhamento'}
                   </span>
                   
                   <div className="flex flex-col sm:flex-row gap-2.5 justify-center">
@@ -9673,7 +9673,7 @@ Segunda-feira:
                       onClick={handleNotSentYet}
                       className="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold text-xs rounded-xl cursor-pointer transition-all text-center leading-normal"
                     >
-                      Ainda não enviei
+                      Ainda nao enviei
                     </button>
                   </div>
                 </div>
@@ -9694,11 +9694,11 @@ Segunda-feira:
                 <Users className="w-6 h-6" />
               </div>
               <div className="min-w-0">
-                <h3 className="text-lg font-black text-slate-800">Confirmação de Encerramento Coletivo</h3>
+                <h3 className="text-lg font-black text-slate-800">Confirmacao de Encerramento Coletivo</h3>
                 <p className="text-xs text-slate-500">
                   {isEscolar
-                    ? 'Diários gerados com sucesso! Revise e abra o WhatsApp para os familiares de cada aluno da classe.'
-                    : 'Relatórios gerados! Compartilhe o boletim de cuidados com a família de cada assistido.'}
+                    ? 'Diarios gerados com sucesso! Revise e abra o WhatsApp para os familiares de cada aluno da classe.'
+                    : 'Relatorios gerados! Compartilhe o boletim de cuidados com a familia de cada assistido.'}
                 </p>
               </div>
             </div>
@@ -9717,7 +9717,7 @@ Segunda-feira:
                       <div>
                         <h4 className="text-sm font-black text-slate-800">{item.nome}</h4>
                         <span className="text-[10px] font-mono text-slate-400 font-bold block">
-                          Responsável: {item.contatoNome} ({item.contatoTelefone})
+                          Responsavel: {item.contatoNome} ({item.contatoTelefone})
                         </span>
                       </div>
                       
@@ -9806,13 +9806,13 @@ Segunda-feira:
             
             <div className="border-t border-slate-100 pt-4 flex justify-between items-center">
               <p className="text-[10px] text-slate-400 font-medium">
-                Marque cada diário como enviado À medida que concluir as transmissões.
+                Marque cada diario como enviado A medida que concluir as transmissoes.
               </p>
               <button
                 type="button"
                 onClick={() => {
                   setShowCollectiveShareModal(false);
-                  showToast('Fechamento de diários finalizado com sucesso!', 'success');
+                  showToast('Fechamento de diarios finalizado com sucesso!', 'success');
                 }}
                 className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer hover:scale-101"
               >
@@ -9830,8 +9830,8 @@ Segunda-feira:
             <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
               <FileText className="text-blue-600 w-6 h-6" />
               <div>
-                <h3 className="text-lg font-black text-slate-800">Revisão do Relatório de Turno</h3>
-                <p className="text-xs text-slate-500">Revise os registros do seu plantão antes de enviar para os familiares</p>
+                <h3 className="text-lg font-black text-slate-800">Revisao do Relatorio de Turno</h3>
+                <p className="text-xs text-slate-500">Revise os registros do seu plantao antes de enviar para os familiares</p>
               </div>
             </div>
 
@@ -9847,20 +9847,20 @@ Segunda-feira:
                 <div className="border-l border-slate-200 text-center">
                   <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider block">QUALIDADE DO REGISTRO</span>
                   <strong className="text-2xl font-black text-indigo-600 font-mono">{shiftReviewPayload.taxaQ}%</strong>
-                  <p className="text-[10px] text-slate-500 mt-1">Auditoria de registro correto (mesmo em recusa justificável)</p>
+                  <p className="text-[10px] text-slate-500 mt-1">Auditoria de registro correto (mesmo em recusa justificavel)</p>
                 </div>
               </div>
 
               
               <div className="space-y-2">
-                <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1.5"> Status das medicações & Rotinas de Cuidado</h4>
+                <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1.5"> Status das medicacoes & Rotinas de Cuidado</h4>
                 <div className="space-y-1.5">
                   {shiftReviewPayload.concluidas.length > 0 && (
                     <div className="bg-emerald-50/50 border border-emerald-200/50 p-3 rounded-xl space-y-1">
-                      <span className="text-[10px] font-extrabold text-emerald-800 flex items-center gap-1"> CONCLUÍDOS ({shiftReviewPayload.concluidas.length})</span>
+                      <span className="text-[10px] font-extrabold text-emerald-800 flex items-center gap-1"> CONCLUIDOS ({shiftReviewPayload.concluidas.length})</span>
                       <ul className="text-xs text-emerald-950 space-y-1 pl-1.5 list-disc leading-normal">
                         {shiftReviewPayload.concluidas.map((m: any) => (
-                          <li key={m.id}>{m.titulo} Às {m.concluidaEm || m.horarioPrevisto}</li>
+                          <li key={m.id}>{m.titulo} As {m.concluidaEm || m.horarioPrevisto}</li>
                         ))}
                       </ul>
                     </div>
@@ -9868,7 +9868,7 @@ Segunda-feira:
 
                   {shiftReviewPayload.recusadas.length > 0 && (
                     <div className="bg-amber-50/50 border border-amber-200 p-3 rounded-xl space-y-1">
-                      <span className="text-[10px] font-extrabold text-amber-800 flex items-center gap-1"> ⚠  RECUSAS REGISTRADAS ({shiftReviewPayload.recusadas.length})</span>
+                      <span className="text-[10px] font-extrabold text-amber-800 flex items-center gap-1"> [!]  RECUSAS REGISTRADAS ({shiftReviewPayload.recusadas.length})</span>
                       <ul className="text-xs text-amber-950 space-y-1 pl-1.5 list-disc leading-normal">
                         {shiftReviewPayload.recusadas.map((r: any) => (
                           <li key={r.id}>*${r.titulo}* - Recusado: "{r.observacao || 'Recusa geral'}"</li>
@@ -9878,16 +9878,16 @@ Segunda-feira:
                   )}
 
                   {shiftReviewPayload.atrasadas.length === 0 && shiftReviewPayload.pendentes.length === 0 ? (
-                    <p className="text-xs text-slate-500"> Não há pendências na escala neste turno.</p>
+                    <p className="text-xs text-slate-500"> Nao ha pendencias na escala neste turno.</p>
                   ) : (
                     <div className="bg-rose-50/50 border border-rose-200 p-3 rounded-xl space-y-1">
-                      <span className="text-[10px] font-extrabold text-rose-800 flex items-center gap-1"> ⚠  PENDÊNCIAS EM ABERTO ({shiftReviewPayload.atrasadas.length + shiftReviewPayload.pendentes.length})</span>
+                      <span className="text-[10px] font-extrabold text-rose-800 flex items-center gap-1"> [!]  PENDENCIAS EM ABERTO ({shiftReviewPayload.atrasadas.length + shiftReviewPayload.pendentes.length})</span>
                       <ul className="text-xs text-rose-950 space-y-1 pl-1.5 list-disc leading-normal">
                         {shiftReviewPayload.atrasadas.map((a: any) => (
                           <li key={a.id}>*${a.titulo}* - Atrasada (Prevista: ${a.horarioPrevisto})</li>
                         ))}
                         {shiftReviewPayload.pendentes.map((p: any) => (
-                          <li key={p.id}>{p.titulo} - Não preenchido (Previsto: {p.horarioPrevisto})</li>
+                          <li key={p.id}>{p.titulo} - Nao preenchido (Previsto: {p.horarioPrevisto})</li>
                         ))}
                       </ul>
                     </div>
@@ -9898,14 +9898,14 @@ Segunda-feira:
               
               <div className="grid grid-cols-2 gap-4">
                 <div className="border border-slate-150 p-3.5 rounded-xl">
-                  <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1"> Líquidos Consumidos</h5>
-                  <strong className="text-sm font-bold text-slate-800">{shiftReviewPayload.totalMl}ml de água</strong>
+                  <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1"> Liquidos Consumidos</h5>
+                  <strong className="text-sm font-bold text-slate-800">{shiftReviewPayload.totalMl}ml de agua</strong>
                   <p className="text-[10px] text-slate-500 mt-1">{Math.round(shiftReviewPayload.totalMl/250)} copos oferecidos.</p>
                 </div>
                 <div className="border border-slate-150 p-3.5 rounded-xl">
                   <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">  Estado de Humor</h5>
                   <strong className="text-sm font-bold text-slate-800">{shiftReviewPayload.ultimoHumorText.toUpperCase()}</strong>
-                  <p className="text-[10px] text-slate-500 mt-1">Último humor reportado na escala.</p>
+                  <p className="text-[10px] text-slate-500 mt-1">Ultimo humor reportado na escala.</p>
                 </div>
               </div>
 
@@ -9917,14 +9917,14 @@ Segunda-feira:
                     <div>PA: {shiftReviewPayload.ultimoSinal.pressaoArterial}</div>
                     <div>Glicemia: {shiftReviewPayload.ultimoSinal.glicemia}</div>
                     <div>O2: {shiftReviewPayload.ultimoSinal.saturacao}%</div>
-                    <div>Temp: {shiftReviewPayload.ultimoSinal.temperatura}°C</div>
+                    <div>Temp: {shiftReviewPayload.ultimoSinal.temperatura}oC</div>
                   </div>
                 </div>
               )}
 
               
               <div className="space-y-1.5">
-                <h5 className="text-xs font-black text-slate-400 uppercase tracking-wider"> Ocorrências registradas ({shiftReviewPayload.ocorrencias.length})</h5>
+                <h5 className="text-xs font-black text-slate-400 uppercase tracking-wider"> Ocorrencias registradas ({shiftReviewPayload.ocorrencias.length})</h5>
                 {shiftReviewPayload.ocorrencias.length > 0 ? (
                   <div className="space-y-1.5">
                     {shiftReviewPayload.ocorrencias.map((o: any) => (
@@ -9935,13 +9935,13 @@ Segunda-feira:
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-500"> Nenhuma intercorrência física registrada neste turno.</p>
+                  <p className="text-xs text-slate-500"> Nenhuma intercorrencia fisica registrada neste turno.</p>
                 )}
               </div>
 
               
               <div className="space-y-1.5 pt-1.5 border-t border-slate-100">
-                <h5 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1"> Alterações de Medicamentos ({shiftReviewPayload.medChanges?.length || 0})</h5>
+                <h5 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1"> Alteracoes de Medicamentos ({shiftReviewPayload.medChanges?.length || 0})</h5>
                 {shiftReviewPayload.medChanges && shiftReviewPayload.medChanges.length > 0 ? (
                   <div className="space-y-1.5">
                     {shiftReviewPayload.medChanges.map((ch: any) => (
@@ -9952,7 +9952,7 @@ Segunda-feira:
                             ch.tipo === 'exclusao' ? 'bg-rose-100 text-rose-800' :
                             'bg-amber-100 text-amber-800'
                           }`}>
-                            {ch.tipo === 'cadastro' ? 'Novo Cadastro' : ch.tipo === 'exclusao' ? 'Excluído' : ch.tipo === 'suspensao' ? 'Suspenso' : 'Reativado'}
+                            {ch.tipo === 'cadastro' ? 'Novo Cadastro' : ch.tipo === 'exclusao' ? 'Excluido' : ch.tipo === 'suspensao' ? 'Suspenso' : 'Reativado'}
                           </span>
                           <span className="text-[10px] text-slate-405 font-semibold">por {ch.autor}</span>
                         </div>
@@ -9962,7 +9962,7 @@ Segunda-feira:
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-500"> Nenhuma alteração (Inclusão ou Exclusão) feita neste turno.</p>
+                  <p className="text-xs text-slate-500"> Nenhuma alteracao (Inclusao ou Exclusao) feita neste turno.</p>
                 )}
               </div>
 
@@ -9973,6 +9973,41 @@ Segunda-feira:
                 type="button"
                 onClick={() => {
                   setShowShiftReviewModal(false);
-      x��VM��6�ﯘ���=П��M�g-�"H��L�#�Y�$Hʖ���	z��?֑d�mi7nPT0`�i$>�y3$���~Od>�Z���*�ŕΔ����nׂ"Ž���x۱9{vˆ�\1�x@6��!1kto��!A<
-r�lDX�<��F�4JTr�dZ�`��(s�8f��]�Aj�"�ɨ� ̿d����4�i�M{�,���O+��հ����a���%��ۇ�k�pat,]z�E)�9!ǥ��q!%���,Ob���'r���Z�M"Vb����	fS���B�0�F�Y�%�����O	F��"����m�'	{Ձތ2����9��У~���%��$�s�[��5�	�>����zw����=��VṾm@��pux�==���\Qr��:���]��*����Ҹr�Ro�ڤ��^� 2K���̝�z����i��U�˜�J"X�d����n��ބ�<��X�T�+r�NjQ2��CK�9��1)�P9��Ј<d�R��KlXL=��Ր/�����?x�#d[�D��=�eZD�\ ����u�φ�d�A�zx��	u	Tâxj�%���9�Y0�V;�+t�'�^)<e1!��!�/8���Z�A{�dtX.I���QQf�;��q�3���7 ��-�*_	3�%����}��s�8E!�rA�d��(y����ǯ�9͍@�ᰔ,w��W���>d��
->�io�m� ۜ�������csZE/�����BE)�����GV"_W�8��vU�MC�4��3��#��.��T�Q�Ĵ�GQEG>�� ����^]���8o�k��:m|sG�w�Þ��{�xq�;���%�(Lj��˦t��	lw���'t��/�qN���@?#T��·ǯk�EP2���   �� �J��
+                  setShiftReviewPayload(null);
+                }}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 font-bold text-xs rounded-xl cursor-pointer"
+              >
+                Voltar e Ajustar Relato
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmEndShift}
+                className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-extrabold text-xs rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
+              >
+                <CheckCircle2 className="w-4 h-4" /> Registrar Presenca & Enviar WhatsApp
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      
+      {!lgpdAccepted && (
+        <LgpdConsentModal onAccept={handleLgpdAcceptComplete} seniorName={idoso.nome} />
+      )}
+
+      
+      {duplicateWarning?.show && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-100 space-y-4 text-center animate-fade-in">
+            <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
+              <AlertTriangle className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-lg font-black text-slate-850">Aviso de Registro Duplicado</h3>
+              <p className="text-xs text-slate-600 font-medium leading-relaxed">
+                Ja existe um registro recente para <strong>{duplicateWarning.studentName}</strong>.
+       x��Q�n�0��+�LP*�>�Kˡ�۳o�[Ƕl��ޅ j�H^�Ǜ��Ӛ�v9����U�����RWl�T����h���r����C� ��stl6��8��l:g-P�VA�60�e��w{�}"nit`5
+��P�c���?􅧤<n����p�yK�-Tܲ��]�c��{2�y��=)ag�Sw9���Js�,��K�ޢIǺQ*�x%s�J�ݱl2;��g����l�=_���'��k�󞎎�F�KBW����1k��b���VD�B
+��v,�� n�g.X�28�>�yn�0��J
+�V�+��*%k��   ��  ��E

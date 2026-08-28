@@ -144,7 +144,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
     setErrorMsg(null);
 
     if (!supported) {
-      setErrorMsg("Navegador incompatível. Use Google Chrome ou Safari.");
+      setErrorMsg("Navegador incompativel. Use Google Chrome ou Safari.");
       setShowStatus(true);
       setTimeout(() => setShowStatus(false), 5000);
       return;
@@ -232,12 +232,12 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
             shouldBeListeningRef.current = false;
             setIsListening(false);
             cleanupTimers();
-            setErrorMsg("Permissão negada! Ative o microfone no seu navegador.");
+            setErrorMsg("Permissao negada! Ative o microfone no seu navegador.");
             setShowStatus(true);
             setTimeout(() => setShowStatus(false), 5000);
           } else if (event.error === 'network') {
             if (!fullTranscriptRef.current && !latestCombinedRef.current && shouldBeListeningRef.current) {
-              setErrorMsg("Erro de conexão com o serviço de voz. Tente novamente.");
+              setErrorMsg("Erro de conexao com o servico de voz. Tente novamente.");
               setShowStatus(true);
               setTimeout(() => setShowStatus(false), 4000);
             }
@@ -296,7 +296,7 @@ export const VoiceInput: React.FC<VoiceInputProps> = ({
         } ${size === 'sm' ? 'p-1.5' : 'p-2.5'} ${className}`}
         title={
           !supported 
-            ? "O ditado por voz não é suportado neste navegador (Recomendado: Chrome/Safari)" 
+            ? "O ditado por voz nao e suportado neste navegador (Recomendado: Chrome/Safari)" 
             : isListening 
             ? "Microfone Ativo (Tempo estendido)! Clique para finalizar e enviar." 
             : "Falar e Transcrever (Clique para ditar por voz)"

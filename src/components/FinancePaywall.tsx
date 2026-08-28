@@ -144,7 +144,7 @@ export default function FinancePaywall({
       preco: 250.00,
       precoMensal: 20.83,
       economia: 'Economize 30%',
-      tag: 'Melhor Custo-Benefício',
+      tag: 'Melhor Custo-Beneficio',
       codigoPix: dynamicPixAnual
     }
   };
@@ -224,7 +224,7 @@ export default function FinancePaywall({
     const isEscolar = idosoNome.toLowerCase().includes('infantil') || idosoId.startsWith('aluno_') || appMode === 'escolar_infantil' || appMode === 'escolar_fundamental';
     const appName = isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador';
     
-    const message = `Olá, *${usuarioAtual.nome}*!  \n\nSua assinatura do aplicativo *${appName}* para acompanhar o(a) *${idosoNome}* está pendente.\n\n  *Plano Escolhido:* ${activePlan.nome} (${activePlan.economia ? activePlan.economia : 'Ativação imediata'})\n  *Valor:* R$ ${activePlan.preco.toFixed(2).replace('.', ',')}\n\n  *Pix Copia e Cola:* \n\`${dynamicPixKey}\`\n\n_Copie o código acima e pague no app do seu banco. O desbloqueio do painel de familiares será feito em segundos após o pagamento!_`;
+    const message = `Ola, *${usuarioAtual.nome}*!  \n\nSua assinatura do aplicativo *${appName}* para acompanhar o(a) *${idosoNome}* esta pendente.\n\n  *Plano Escolhido:* ${activePlan.nome} (${activePlan.economia ? activePlan.economia : 'Ativacao imediata'})\n  *Valor:* R$ ${activePlan.preco.toFixed(2).replace('.', ',')}\n\n  *Pix Copia e Cola:* \n\`${dynamicPixKey}\`\n\n_Copie o codigo acima e pague no app do seu banco. O desbloqueio do painel de familiares sera feito em segundos apos o pagamento!_`;
     
     const cleanNum = formatWhatsAppNumber(usuarioAtual.telefone || '11999999999');
     const url = `https://wa.me/${cleanNum}?text=${encodeURIComponent(message)}`;
@@ -257,10 +257,10 @@ export default function FinancePaywall({
 
       <div className="space-y-2">
         <h3 className={`text-xl md:text-2xl font-black font-display tracking-tight ${isDark ? 'text-white' : 'text-slate-900'}`}>
-          Seu Período de Testes Expirou ou Assinatura Pendente
+          Seu Periodo de Testes Expirou ou Assinatura Pendente
         </h3>
         <p className={`text-xs md:text-sm max-w-lg mx-auto leading-relaxed font-semibold ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-          Olá, <strong>{usuarioAtual.nome}</strong>! Para continuar acompanhando em tempo real a rotina diária, mamadeiras, sinais vitais, medicamentos e relatórios do(a) <strong>{idoso.nome}</strong>, regularize sua assinatura mensal no Pix.
+          Ola, <strong>{usuarioAtual.nome}</strong>! Para continuar acompanhando em tempo real a rotina diaria, mamadeiras, sinais vitais, medicamentos e relatorios do(a) <strong>{idoso.nome}</strong>, regularize sua assinatura mensal no Pix.
         </p>
       </div>
 
@@ -294,12 +294,12 @@ export default function FinancePaywall({
                   {customTipo === 'coletivo' ? '  Coletivo' : '  Individual'}
                 </span>
               </div>
-              <h4 className={`text-sm font-black ${isDark ? 'text-white' : 'text-slate-950'}`}>R$ {plans.mensal.preco.toFixed(2).replace('.', ',')} <span className="text-xs font-medium text-slate-500">/mês</span></h4>
+              <h4 className={`text-sm font-black ${isDark ? 'text-white' : 'text-slate-950'}`}>R$ {plans.mensal.preco.toFixed(2).replace('.', ',')} <span className="text-xs font-medium text-slate-500">/mes</span></h4>
             </div>
             <p className="text-[10px] text-slate-500 font-semibold mt-4 leading-relaxed">
               {customTipo === 'coletivo'
-                ? 'Desconto Coletivo Irmãos ativado para esta mensalidade!'
-                : 'Tarifa mensal integral para um único aluno cadastrado.'}
+                ? 'Desconto Coletivo Irmaos ativado para esta mensalidade!'
+                : 'Tarifa mensal integral para um unico aluno cadastrado.'}
             </p>
           </button>
 
@@ -322,10 +322,10 @@ export default function FinancePaywall({
                 <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[9px] font-black rounded-md uppercase">Salva 16%</span>
               </div>
               <h4 className={`text-sm font-black ${isDark ? 'text-white' : 'text-slate-950'}`}>R$ 150,00 <span className="text-xs font-medium text-slate-500">/semestre</span></h4>
-              <p className="text-[10px] font-black text-indigo-600">Equivale a R$ 25,00/mês</p>
+              <p className="text-[10px] font-black text-indigo-600">Equivale a R$ 25,00/mes</p>
             </div>
             <p className="text-[10px] text-slate-500 font-semibold mt-2 leading-relaxed">
-              Evite esquecimentos e cobranças recorrentes por 6 meses seguidos.
+              Evite esquecimentos e cobrancas recorrentes por 6 meses seguidos.
             </p>
           </button>
 
@@ -340,7 +340,7 @@ export default function FinancePaywall({
             }`}
           >
             <div className="absolute -top-2 right-3 px-2 py-0.5 bg-emerald-600 text-white text-[9px] font-black rounded-full uppercase tracking-wider shadow-xs">
-              Economia Máxima  
+              Economia Maxima  
             </div>
             <div className="space-y-1">
               <div className="flex items-center justify-between">
@@ -348,10 +348,10 @@ export default function FinancePaywall({
                 <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[9px] font-black rounded-md uppercase">Salva 30%</span>
               </div>
               <h4 className={`text-sm font-black ${isDark ? 'text-white' : 'text-slate-950'}`}>R$ 250,00 <span className="text-xs font-medium text-slate-500">/ano</span></h4>
-              <p className="text-[10px] font-black text-emerald-600">Equivale a R$ 20,83/mês</p>
+              <p className="text-[10px] font-black text-emerald-600">Equivale a R$ 20,83/mes</p>
             </div>
             <p className="text-[10px] text-slate-500 font-semibold mt-2 leading-relaxed">
-              O preferido dos pais no início do ano letivo. Tranquilidade garantida!
+              O preferido dos pais no inicio do ano letivo. Tranquilidade garantida!
             </p>
           </button>
 
@@ -370,7 +370,7 @@ export default function FinancePaywall({
           </span>
           <span className="text-[9px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded uppercase tracking-wider flex items-center gap-1">
             <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></span>
-            Liberação por Webhook em Segundos
+            Liberacao por Webhook em Segundos
           </span>
         </div>
 
@@ -387,7 +387,7 @@ export default function FinancePaywall({
                 isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-250 text-slate-800'
               }`}
             />
-            <span className="text-[9px] text-slate-400 font-medium block">Necessário para conciliação automática via Webhook</span>
+            <span className="text-[9px] text-slate-400 font-medium block">Necessario para conciliacao automatica via Webhook</span>
           </div>
 
           <div className="space-y-1">
@@ -444,7 +444,7 @@ export default function FinancePaywall({
                   readOnly 
                   value={dynamicPixKey}
                   className="px-2 flex-1 text-[10px] font-mono text-slate-400 select-all truncate bg-transparent focus:outline-none"
-                  title="Código Pix gerado dinamicamente"
+                  title="Codigo Pix gerado dinamicamente"
                 />
                 <button
                   type="button"
@@ -482,7 +482,7 @@ export default function FinancePaywall({
                 ) : (
                   <>
                     <ShieldCheck className="w-4 h-4 text-emerald-25" />
-                    Simular Pagamento Prático (Liberar App)
+                    Simular Pagamento Pratico (Liberar App)
                   </>
                 )}
               </button>
@@ -496,7 +496,7 @@ export default function FinancePaywall({
                     ? 'border-slate-800 hover:bg-slate-850 text-slate-300' 
                     : 'border-slate-200 hover:bg-slate-100 text-slate-650 bg-white'
                 }`}
-                title="A Automação Salvadora: Envia o Pix Copia e Cola diretamente no celular do pai por WhatsApp"
+                title="A Automacao Salvadora: Envia o Pix Copia e Cola diretamente no celular do pai por WhatsApp"
               >
                 <MessageSquare className="w-4 h-4 text-emerald-600" />
                 <span>Enviar p/ WhatsApp</span>
@@ -517,27 +517,27 @@ export default function FinancePaywall({
         isDark ? 'bg-slate-950/40 border-slate-850' : 'bg-slate-50 border-slate-200'
       }`}>
         <h4 className="font-bold text-slate-850 flex items-center gap-1.5 uppercase text-[10px] tracking-wider text-indigo-600">
-            Como funciona a conciliação automática?
+            Como funciona a conciliacao automatica?
         </h4>
         <ul className="space-y-2 text-slate-600">
           <li className="flex items-start gap-1.5">
-            <span className="text-emerald-500 font-bold shrink-0">✓</span>
+            <span className="text-emerald-500 font-bold shrink-0"> </span>
             <span>O sistema gera o Pix customizado com o seu identificador de tutor.</span>
           </li>
           <li className="flex items-start gap-1.5">
-            <span className="text-emerald-500 font-bold shrink-0">✓</span>
-            <span>Assim que o pagamento é feito, o banco envia um aviso (Webhook) para nossa API.</span>
+            <span className="text-emerald-500 font-bold shrink-0"> </span>
+            <span>Assim que o pagamento e feito, o banco envia um aviso (Webhook) para nossa API.</span>
           </li>
           <li className="flex items-start gap-1.5">
-            <span className="text-emerald-500 font-bold shrink-0">✓</span>
-            <span>O sistema libera na hora todos os acessos dos familiares (cônjuges, avós, tios) de forma 100% autônoma!</span>
+            <span className="text-emerald-500 font-bold shrink-0"> </span>
+            <span>O sistema libera na hora todos os acessos dos familiares (conjuges, avos, tios) de forma 100% autonoma!</span>
           </li>
         </ul>
       </div>
 
       <div className="text-[10px] text-slate-400 flex items-center justify-center gap-1.5 p-2 bg-slate-50 border border-slate-100 rounded-xl font-bold">
         <HelpCircle className="w-4 h-4 text-slate-400" />
-        <span>Dúvidas com o financeiro? Fale com o suporte da administração da instituição escolar ou asilo de acolhimento.</span>
+        <span>Duvidas com o financeiro? Fale com o suporte da administracao da instituicao escolar ou asilo de acolhimento.</span>
       </div>
     </div>
   );

@@ -46,15 +46,15 @@ export default function Medications({
     if (!auth.isAuthorized) {
       return (
         <div className="p-4 bg-rose-50 border border-rose-200 rounded-2xl flex items-start gap-3 shadow-xs">
-          <div className="text-xl">⚠</div>
+          <div className="text-xl">[!]</div>
           <div className="space-y-1">
             <h4 className="font-extrabold text-sm text-rose-950">
-              {isEscolar ? 'Falta de Autorização Escolar dos Pais' : 'Falta de Autorização de Cuidados'}
+              {isEscolar ? 'Falta de Autorizacao Escolar dos Pais' : 'Falta de Autorizacao de Cuidados'}
             </h4>
             <p className="text-xs text-rose-800 leading-relaxed">
               {isEscolar 
-                ? 'Nenhum pai ou responsável autorizou "Alimentação e Cuidados" no painel de Pais & Autorizados para este aluno. A gravação e a aplicação de novas medicações estão bloqueadas.'
-                : 'Nenhum familiar responsável autorizou "Alimentação e Cuidados" no painel da Família. O registro e aplicação de medicações estão bloqueados.'}
+                ? 'Nenhum pai ou responsavel autorizou "Alimentacao e Cuidados" no painel de Pais & Autorizados para este aluno. A gravacao e a aplicacao de novas medicacoes estao bloqueadas.'
+                : 'Nenhum familiar responsavel autorizou "Alimentacao e Cuidados" no painel da Familia. O registro e aplicacao de medicacoes estao bloqueados.'}
             </p>
           </div>
         </div>
@@ -63,13 +63,13 @@ export default function Medications({
 
     return (
       <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-center gap-2.5 shadow-3xs">
-        <div className="text-emerald-600 bg-white p-1 rounded-full text-xs font-black shadow-3xs">✓</div>
+        <div className="text-emerald-600 bg-white p-1 rounded-full text-xs font-black shadow-3xs"> </div>
         <div className="text-xs font-semibold text-emerald-950">
-          {isEscolar ? 'Autorização Ativa dos Pais: ' : 'Autorização Ativa da Família: '}
+          {isEscolar ? 'Autorizacao Ativa dos Pais: ' : 'Autorizacao Ativa da Familia: '}
           <span className="font-extrabold text-emerald-800">
             {auth.authorizedNames.join(', ')}
           </span>
-          <span className="text-[10px] text-emerald-600 font-medium ml-1.5">(Permissão concedida via Painel)</span>
+          <span className="text-[10px] text-emerald-600 font-medium ml-1.5">(Permissao concedida via Painel)</span>
         </div>
       </div>
     );
@@ -79,7 +79,7 @@ export default function Medications({
   const [historicoDeHoje, setHistoricoDeHoje] = useState<TarefaDiaria[]>([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedShift, setSelectedShift] = useState<'todos' | 'Manhã' | 'Tarde' | 'Noite' | 'Madrugada'>('todos');
+  const [selectedShift, setSelectedShift] = useState<'todos' | 'Manha' | 'Tarde' | 'Noite' | 'Madrugada'>('todos');
   const [deleteConfirmation, setDeleteConfirmation] = useState<{ id: string; nome: string } | null>(null);
   const [validationError, setValidationError] = useState<string | null>(null);
   const [localAlert, setLocalAlert] = useState<{ message: string; title?: string } | null>(null);
@@ -88,9 +88,9 @@ export default function Medications({
     setLocalAlert({ message, title: title || 'Aviso' });
   };
   
-  const getTurno = (horarioStr: string): 'Manhã' | 'Tarde' | 'Noite' | 'Madrugada' => {
+  const getTurno = (horarioStr: string): 'Manha' | 'Tarde' | 'Noite' | 'Madrugada' => {
     const hora = Number(horarioStr?.split(':')[0] || '0');
-    if (hora >= 6 && hora < 12) return 'Manhã';
+    if (hora >= 6 && hora < 12) return 'Manha';
     if (hora >= 12 && hora < 18) return 'Tarde';
     if (hora >= 18 && hora < 24) return 'Noite';
     return 'Madrugada';
@@ -100,7 +100,7 @@ export default function Medications({
   const [newMed, setNewMed] = useState({
     nome: '',
     dosagem: '',
-    frequência: 'Diário',
+    frequencia: 'Diario',
     horarioManha: '08:00',
     horarioTarde: '',
     horarioNoite: '',
@@ -110,7 +110,7 @@ export default function Medications({
     fotoEmbalagem: ''
   });
 
-  const diasSemanaLong = ['Todos', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
+  const diasSemanaLong = ['Todos', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'];
 
   // Mock Package Image Selections
   const mockPackImages = [
@@ -143,14 +143,14 @@ export default function Medications({
     const isConvidado = uType === 'familiar_convidado' || uType === 'convidado' || uParentesco.includes('convidado') || uObs.includes('convidado');
 
     if (isConvidado) {
-      showAlert("⚠ Operação Não Autorizada: O Familiar Convidado tem acesso apenas de leitura ao diário. O cadastro de medicamentos e autorizações é exclusivo do Familiar Admin (mãe/pai responsável).", "Acesso Restrito");
+      showAlert("[!] Operacao Nao Autorizada: O Familiar Convidado tem acesso apenas de leitura ao diario. O cadastro de medicamentos e autorizacoes e exclusivo do Familiar Admin (mae/pai responsavel).", "Acesso Restrito");
       return;
     }
 
     if (isStaffUser(usuarioAtual) && usuarioAtual.tipo !== 'admin' && !isMaster) {
       showAlert(isEscolar 
-        ? "⚠ Operação Não Autorizada: A inclusão de medicamentos é de responsabilidade exclusiva dos pais ou responsáveis (mãe/família)."
-        : "⚠ Operação Não Autorizada: A inclusão de medicamentos é de responsabilidade exclusiva da família ou responsáveis.", "Acesso Restrito");
+        ? "[!] Operacao Nao Autorizada: A inclusao de medicamentos e de responsabilidade exclusiva dos pais ou responsaveis (mae/familia)."
+        : "[!] Operacao Nao Autorizada: A inclusao de medicamentos e de responsabilidade exclusiva da familia ou responsaveis.", "Acesso Restrito");
       return;
     }
     if (!newMed.nome || !newMed.dosagem) {
@@ -165,14 +165,14 @@ export default function Medications({
     if (!isEscolar && newMed.horarioMadrugada) compiledHorarios.push(newMed.horarioMadrugada);
 
     if (compiledHorarios.length === 0) {
-      setValidationError('Por favor, defina o horário de pelo menos um turno!');
+      setValidationError('Por favor, defina o horario de pelo menos um turno!');
       return;
     }
 
     const allMeds = getFromDB<Medicamento[]>('anjo_medicamentos', []);
     const alreadyExistsMed = allMeds.some(m => m.idosoId === idoso.id && m.nome.toLowerCase().trim() === newMed.nome.toLowerCase().trim() && m.status === 'ativo');
     if (alreadyExistsMed) {
-      const confirmSave = window.confirm(`⚠ Atenção: Já existe um medicamento ativo com o nome "${newMed.nome}" cadastrado para ${idoso.nome}!\n\nDeseja cadastrar outro perfil/prescrição para este mesmo medicamento?`);
+      const confirmSave = window.confirm(`[!] Atencao: Ja existe um medicamento ativo com o nome "${newMed.nome}" cadastrado para ${idoso.nome}!\n\nDeseja cadastrar outro perfil/prescricao para este mesmo medicamento?`);
       if (!confirmSave) return;
     }
 
@@ -181,7 +181,7 @@ export default function Medications({
       idosoId: idoso.id,
       nome: newMed.nome,
       dosagem: newMed.dosagem,
-      frequência: newMed.frequência,
+      frequencia: newMed.frequencia,
       horarios: compiledHorarios,
       diasSemana: newMed.selectedDias,
       observacoes: newMed.observacoes,
@@ -200,7 +200,7 @@ export default function Medications({
       id: 'hist_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
       tipo: 'cadastro',
       nome: novoMedicamento.nome,
-      detalhes: `Dosagem: ${novoMedicamento.dosagem || 'Sem dosagem'}, Frequência: ${novoMedicamento.frequência}, Horários: ${compiledHorarios.join(', ')}`,
+      detalhes: `Dosagem: ${novoMedicamento.dosagem || 'Sem dosagem'}, Frequencia: ${novoMedicamento.frequencia}, Horarios: ${compiledHorarios.join(', ')}`,
       timestamp: new Date().toISOString(),
       autor: usuarioAtual.nome
     });
@@ -223,7 +223,7 @@ export default function Medications({
     saveToDB('anjo_tarefas_diarias', allTasks);
 
     // WhatsApp Simulation dispatch
-    const alertMsg = `${prefixApp}: Novo medicamento "${novoMedicamento.nome}" (${novoMedicamento.dosagem}) programado por ${isEscolar && usuarioAtual.tipo !== 'familiar' && usuarioAtual.tipo !== 'admin' ? 'Profª ' : ''}${usuarioAtual.nome} para os horários ${compiledHorarios.join(' e ')}.`;
+    const alertMsg = `${prefixApp}: Novo medicamento "${novoMedicamento.nome}" (${novoMedicamento.dosagem}) programado por ${isEscolar && usuarioAtual.tipo !== 'familiar' && usuarioAtual.tipo !== 'admin' ? 'Profa ' : ''}${usuarioAtual.nome} para os horarios ${compiledHorarios.join(' e ')}.`;
     triggerWhatsAppSim('Novo Medicamento Cadastrado', alertMsg);
 
     // Dispatch global sync events so Professor / Caregiver Dashboard reloads immediately
@@ -236,7 +236,7 @@ export default function Medications({
     setNewMed({
       nome: '',
       dosagem: '',
-      frequência: 'Diário',
+      frequencia: 'Diario',
       horarioManha: '08:00',
       horarioTarde: '',
       horarioNoite: '',
@@ -289,8 +289,8 @@ export default function Medications({
     const isMaster = localStorage.getItem('anjo_master_demonstracao_ativo') === 'true';
     if (isStaffUser(usuarioAtual) && usuarioAtual.tipo !== 'admin' && !isMaster) {
       showAlert(isEscolar 
-        ? "⚠ Operação Não Autorizada: A suspensão ou reativação de medicamentos é de responsabilidade exclusiva dos pais ou responsáveis."
-        : "⚠ Operação Não Autorizada: A suspensão ou reativação de medicamentos é de responsabilidade exclusiva da família ou responsáveis.", "Acesso Restrito");
+        ? "[!] Operacao Nao Autorizada: A suspensao ou reativacao de medicamentos e de responsabilidade exclusiva dos pais ou responsaveis."
+        : "[!] Operacao Nao Autorizada: A suspensao ou reativacao de medicamentos e de responsabilidade exclusiva da familia ou responsaveis.", "Acesso Restrito");
       return;
     }
 
@@ -307,8 +307,8 @@ export default function Medications({
         targetMed = { ...m, status: nextStatus as 'ativo' | 'suspenso' };
         // Sim WhatsApp message
         triggerWhatsAppSim(
-          `${isEscolar ? 'Remédio' : 'Medicamento'} ${nextStatus === 'suspenso' ? 'Suspenso' : 'Reativado'}`,
-          `${prefixApp}: O medicamento "${m.nome}" de ${idoso.nome} foi marcado como ${nextStatus} por ${isEscolar && usuarioAtual.tipo !== 'familiar' && usuarioAtual.tipo !== 'admin' ? 'Profª ' : ''}${usuarioAtual.nome}.`
+          `${isEscolar ? 'Remedio' : 'Medicamento'} ${nextStatus === 'suspenso' ? 'Suspenso' : 'Reativado'}`,
+          `${prefixApp}: O medicamento "${m.nome}" de ${idoso.nome} foi marcado como ${nextStatus} por ${isEscolar && usuarioAtual.tipo !== 'familiar' && usuarioAtual.tipo !== 'admin' ? 'Profa ' : ''}${usuarioAtual.nome}.`
         );
         return targetMed;
       }
@@ -392,8 +392,8 @@ export default function Medications({
     const isMaster = localStorage.getItem('anjo_master_demonstracao_ativo') === 'true';
     if (isStaffUser(usuarioAtual) && usuarioAtual.tipo !== 'admin' && !isMaster) {
       showAlert(isEscolar 
-        ? "⚠ Operação Não Autorizada: A exclusão de medicamentos é de responsabilidade exclusiva dos pais ou responsáveis."
-        : "⚠ Operação Não Autorizada: A exclusão de medicamentos é de responsabilidade exclusiva da família ou responsáveis.", "Acesso Restrito");
+        ? "[!] Operacao Nao Autorizada: A exclusao de medicamentos e de responsabilidade exclusiva dos pais ou responsaveis."
+        : "[!] Operacao Nao Autorizada: A exclusao de medicamentos e de responsabilidade exclusiva da familia ou responsaveis.", "Acesso Restrito");
       return;
     }
     setDeleteConfirmation({ id: medId, nome: name });
@@ -415,7 +415,7 @@ export default function Medications({
       id: 'hist_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
       tipo: 'exclusao',
       nome: name,
-      detalhes: `Medicamento excluído definitivamente e tarefas pendentes removidas.`,
+      detalhes: `Medicamento excluido definitivamente e tarefas pendentes removidas.`,
       timestamp: new Date().toISOString(),
       autor: usuarioAtual.nome
     });
@@ -438,7 +438,7 @@ export default function Medications({
       const cleanTitle = t.titulo.toLowerCase().trim();
       const cleanName = name.toLowerCase().trim();
 
-      // Remove specific suffixes like "(Pressão)", "(Glicofage)", "(Aricept)"
+      // Remove specific suffixes like "(Pressao)", "(Glicofage)", "(Aricept)"
       const baseTitle = cleanTitle.split('(')[0].trim();
       const baseName = cleanName.split('(')[0].trim();
 
@@ -458,8 +458,8 @@ export default function Medications({
 
     // 3. Dispatch WhatsApp Notification simulator
     triggerWhatsAppSim(
-      isEscolar ? 'Remédio Retirado' : 'Medicamento Excluído',
-      `${prefixApp}: O medicamento "${name}" de ${idoso.nome} foi EXCLUÍDO definitivamente do app por ${isEscolar && usuarioAtual.tipo !== 'familiar' && usuarioAtual.tipo !== 'admin' ? 'Profª ' : ''}${usuarioAtual.nome}.`
+      isEscolar ? 'Remedio Retirado' : 'Medicamento Excluido',
+      `${prefixApp}: O medicamento "${name}" de ${idoso.nome} foi EXCLUIDO definitivamente do app por ${isEscolar && usuarioAtual.tipo !== 'familiar' && usuarioAtual.tipo !== 'admin' ? 'Profa ' : ''}${usuarioAtual.nome}.`
     );
 
     // Dispatch global sync events for teacher / caregiver dashboard
@@ -477,14 +477,14 @@ export default function Medications({
   const handleToggleChecklistStatus = (taskId: string, titleName: string) => {
     const isShiftActive = getShiftActiveState(idoso.id).active;
     if (usuarioAtual.tipo !== 'familiar' && usuarioAtual.tipo !== 'admin' && !isShiftActive) {
-      showAlert(isEscolar ? "⚠ Operação Bloqueada: Por favor, inicie o período letivo antes de registrar medicações!" : "⚠ Operação Bloqueada: Por favor, inicie o seu turno de cuidados antes de registrar medicações!", "Período Não Iniciado");
+      showAlert(isEscolar ? "[!] Operacao Bloqueada: Por favor, inicie o periodo letivo antes de registrar medicacoes!" : "[!] Operacao Bloqueada: Por favor, inicie o seu turno de cuidados antes de registrar medicacoes!", "Periodo Nao Iniciado");
       return;
     }
     const auth = checkFeedingCareAuthorization();
     if (usuarioAtual.tipo !== 'familiar' && usuarioAtual.tipo !== 'admin' && !auth.isAuthorized) {
       showAlert(isEscolar 
-        ? "⚠ Operação Não Autorizada: Nenhum pai ou responsável autorizou \"Alimentação e Cuidados\" no painel \"Pais & Autorizados\" para este aluno. A professora/cuidadora não pode registrar a administração de medicamentos."
-        : "⚠ Operação Não Autorizada: Nenhum familiar responsável autorizou \"Alimentação e Cuidados\" no painel \"Família\". O cuidador não pode registrar a administração de medicamentos.", "Sem Autorização");
+        ? "[!] Operacao Nao Autorizada: Nenhum pai ou responsavel autorizou \"Alimentacao e Cuidados\" no painel \"Pais & Autorizados\" para este aluno. A professora/cuidadora nao pode registrar a administracao de medicamentos."
+        : "[!] Operacao Nao Autorizada: Nenhum familiar responsavel autorizou \"Alimentacao e Cuidados\" no painel \"Familia\". O cuidador nao pode registrar a administracao de medicamentos.", "Sem Autorizacao");
       return;
     }
     const allTasks = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
@@ -495,8 +495,8 @@ export default function Medications({
         
         if (nextStatus === 'concluido') {
           triggerWhatsAppSim(
-            isEscolar ? 'Remédio Administrado' : 'Medicação Confirmada',
-            `${prefixApp}: ${idoso.nome} tomou o medicamento "${titleName}" às ${getNowTimeBr()}, confirmado por ${usuarioAtual.nome}.`
+            isEscolar ? 'Remedio Administrado' : 'Medicacao Confirmada',
+            `${prefixApp}: ${idoso.nome} tomou o medicamento "${titleName}" as ${getNowTimeBr()}, confirmado por ${usuarioAtual.nome}.`
           );
         }
 
@@ -528,7 +528,7 @@ export default function Medications({
             Controle de Medicamentos
           </h2>
           <p className="text-sm text-slate-500">
-            Estoque, horários previstos e históricos de ingestão diária de remédios.
+            Estoque, horarios previstos e historicos de ingestao diaria de remedios.
           </p>
         </div>
 
@@ -560,7 +560,7 @@ export default function Medications({
 
           return (
             <div className="px-4 py-2 bg-slate-100 border border-slate-200 rounded-xl text-xs font-semibold text-slate-500 flex items-center gap-1.5 shadow-xs">
-              <span>  Gestão restrita aos Pais/Responsáveis</span>
+              <span>  Gestao restrita aos Pais/Responsaveis</span>
             </div>
           );
         })()}
@@ -573,10 +573,10 @@ export default function Medications({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
           <h3 className="text-base font-bold text-slate-700 flex items-center gap-2">
             <Clock className="w-5 h-5 text-amber-500 animate-pulse" />
-            Organizador de Pílulas por Turnos (Hoje)
+            Organizador de Pilulas por Turnos (Hoje)
           </h3>
           <span className="text-xs bg-slate-100 text-slate-500 font-bold px-2 py-0.5 rounded-md">
-            Visualizador Rápido de Cuidados
+            Visualizador Rapido de Cuidados
           </span>
         </div>
 
@@ -591,18 +591,18 @@ export default function Medications({
                 : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
             }`}
           >
-            <span className="font-bold text-xs">✨ Todos os Turnos</span>
+            <span className="font-bold text-xs">  Todos os Turnos</span>
             <span className={`text-[10px] font-semibold ${selectedShift === 'todos' ? 'text-white/80' : 'text-slate-400'}`}>
               ({historicoDeHoje.filter(t => t.status === 'concluido').length}/{historicoDeHoje.length})
             </span>
           </button>
 
-          {(['Manhã', 'Tarde', 'Noite', 'Madrugada'] as const).map(turnoId => {
+          {(['Manha', 'Tarde', 'Noite', 'Madrugada'] as const).map(turnoId => {
             const shiftTasks = historicoDeHoje.filter(t => getTurno(t.horarioPrevisto) === turnoId);
             const shiftDone = shiftTasks.filter(t => t.status === 'concluido').length;
             const shiftTotal = shiftTasks.length;
             
-            const icon = turnoId === 'Manhã' ? ' ' : turnoId === 'Tarde' ? '☀' : turnoId === 'Noite' ? ' ' : ' ';
+            const icon = turnoId === 'Manha' ? ' ' : turnoId === 'Tarde' ? ' ' : turnoId === 'Noite' ? ' ' : ' ';
             const isActive = selectedShift === turnoId;
 
             return (
@@ -627,10 +627,10 @@ export default function Medications({
 
         
         {historicoDeHoje.length === 0 ? (
-          <p className="text-sm text-slate-400 py-4 text-center">Nenhum controle de remédio programado para hoje.</p>
+          <p className="text-sm text-slate-400 py-4 text-center">Nenhum controle de remedio programado para hoje.</p>
         ) : (
           <div className="space-y-6 pt-2">
-            {(['Manhã', 'Tarde', 'Noite', 'Madrugada'] as const).map(turnoId => {
+            {(['Manha', 'Tarde', 'Noite', 'Madrugada'] as const).map(turnoId => {
               // If not looking at todos and not matching active turn, bypass
               if (selectedShift !== 'todos' && selectedShift !== turnoId) return null;
 
@@ -640,15 +640,15 @@ export default function Medications({
                 if (selectedShift === turnoId) {
                   return (
                     <div key={turnoId} className="p-6 border border-dashed rounded-2xl bg-slate-50 text-center text-slate-400 text-xs font-semibold">
-                      Sem medicações programadas para o período da {turnoId} ({turnoId === 'Manhã' ? '06:00 - 12:00' : turnoId === 'Tarde' ? '12:00 - 18:00' : turnoId === 'Noite' ? '18:00 - 00:00' : '00:00 - 06:00'}).
+                      Sem medicacoes programadas para o periodo da {turnoId} ({turnoId === 'Manha' ? '06:00 - 12:00' : turnoId === 'Tarde' ? '12:00 - 18:00' : turnoId === 'Noite' ? '18:00 - 00:00' : '00:00 - 06:00'}).
                     </div>
                   );
                 }
                 return null;
               }
 
-              const icon = turnoId === 'Manhã' ? ' ' : turnoId === 'Tarde' ? '☀' : turnoId === 'Noite' ? ' ' : ' ';
-              const labelRange = turnoId === 'Manhã' ? '06h às 12h' : turnoId === 'Tarde' ? '12h às 18h' : turnoId === 'Noite' ? '18h às 00h' : '00h às 06h';
+              const icon = turnoId === 'Manha' ? ' ' : turnoId === 'Tarde' ? ' ' : turnoId === 'Noite' ? ' ' : ' ';
+              const labelRange = turnoId === 'Manha' ? '06h as 12h' : turnoId === 'Tarde' ? '12h as 18h' : turnoId === 'Noite' ? '18h as 00h' : '00h as 06h';
 
               return (
                 <div key={turnoId} className="space-y-2.5">
@@ -696,7 +696,7 @@ export default function Medications({
                             </p>
                             {isChecked && (
                               <p className="text-[11px] font-semibold text-emerald-705 flex items-center gap-1 mt-0.5">
-                                <Check className="w-3.5 h-3.5 text-emerald-600" /> Tomado às {task.concluidaEm} por {task.completadaPor}
+                                <Check className="w-3.5 h-3.5 text-emerald-600" /> Tomado as {task.concluidaEm} por {task.completadaPor}
                               </p>
                             )}
                           </div>
@@ -725,14 +725,14 @@ export default function Medications({
       
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          <h3 className="text-lg font-bold text-zinc-800">Remédios Cadastrados</h3>
+          <h3 className="text-lg font-bold text-zinc-800">Remedios Cadastrados</h3>
           
           
           <div className="bg-white border border-soft-gray rounded-xl flex items-center px-3 py-1.5 focus-within:ring-2 focus-within:ring-serene-blue/20">
             <Search className="w-4 h-4 text-slate-400 mr-2" />
             <input 
               type="text" 
-              placeholder="Buscar remédio..." 
+              placeholder="Buscar remedio..." 
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               className="text-sm outline-hidden text-slate-700 w-full md:w-48 placeholder:text-slate-400 bg-transparent"
@@ -742,7 +742,7 @@ export default function Medications({
 
         {filteredMeds.length === 0 ? (
           <div className="bg-white rounded-2xl p-8 border border-soft-gray text-center space-y-2">
-            <p className="text-slate-500">Nenhum medicamento encontrado para os critérios de busca.</p>
+            <p className="text-slate-500">Nenhum medicamento encontrado para os criterios de busca.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -783,11 +783,11 @@ export default function Medications({
                       </p>
                       <p className="flex items-center gap-1.5">
                         <Calendar className="w-4 h-4 text-slate-400" />
-                        Freq: {med.frequência} ({med.diasSemana.join(', ')})
+                        Freq: {med.frequencia} ({med.diasSemana.join(', ')})
                       </p>
                       <p className="flex items-center gap-1.5">
                         <Clock className="w-4 h-4 text-slate-400" />
-                        Horários: <span className="font-mono bg-zinc-100 px-1.5 py-0.5 rounded text-xs font-bold text-zinc-750">{med.horarios.join(', ')}</span>
+                        Horarios: <span className="font-mono bg-zinc-100 px-1.5 py-0.5 rounded text-xs font-bold text-zinc-750">{med.horarios.join(', ')}</span>
                       </p>
                     </div>
 
@@ -825,7 +825,7 @@ export default function Medications({
                     </div>
                   ) : (
                     <div className="pt-3 border-t border-slate-150 flex items-center justify-between text-slate-400 text-[11px] font-semibold">
-                      <span className="flex items-center gap-1">  Gestão restrita aos pais</span>
+                      <span className="flex items-center gap-1">  Gestao restrita aos pais</span>
                       <span className="text-slate-400 text-[10px] font-mono font-semibold bg-slate-50 px-2 py-0.5 rounded-md border border-slate-200">ID: {med.id.slice(0, 8)}</span>
                     </div>
                   )}
@@ -848,7 +848,7 @@ export default function Medications({
             <form onSubmit={handleSaveMedicine} className="space-y-4">
               {validationError && (
                 <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-800 font-extrabold flex items-center gap-2 animate-fade-in" id="med-form-validation-error">
-                  <span className="text-sm shrink-0">⚠</span>
+                  <span className="text-sm shrink-0">[!]</span>
                   <span>{validationError}</span>
                 </div>
               )}
@@ -857,7 +857,7 @@ export default function Medications({
                   <label className="text-xs font-bold text-slate-600 block">Nome do Medicamento *</label>
                   <input 
                     type="text" 
-                    placeholder="Ex: Losartana Potássica" 
+                    placeholder="Ex: Losartana Potassica" 
                     value={newMed.nome}
                     onChange={e => setNewMed({ ...newMed, nome: e.target.value })}
                     className="w-full px-3 py-2 border border-slate-300 rounded-xl focus:ring-2 focus:ring-serene-blue/20 bg-slate-50 text-sm"
@@ -878,10 +878,10 @@ export default function Medications({
                 </div>
 
                 <div className="space-y-2 sm:col-span-2 border-t border-slate-100 pt-3">
-                  <span className="text-xs font-bold text-slate-700 block mb-1">Horários por Turno (Preencha os horários que se aplicam)</span>
+                  <span className="text-xs font-bold text-slate-700 block mb-1">Horarios por Turno (Preencha os horarios que se aplicam)</span>
                   <div className={`grid ${isEscolar ? 'grid-cols-1 sm:grid-cols-2' : 'grid-cols-2'} gap-3`}>
                     <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
-                      <label className="text-[11px] font-bold text-amber-600 block flex items-center gap-1">  Manhã (06h - 12h)</label>
+                      <label className="text-[11px] font-bold text-amber-600 block flex items-center gap-1">  Manha (06h - 12h)</label>
                       <input 
                         type="time" 
                         value={newMed.horarioManha}
@@ -890,7 +890,7 @@ export default function Medications({
                       />
                     </div>
                     <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
-                      <label className="text-[11px] font-bold text-orange-600 block flex items-center gap-1">☀ Tarde (12h - 18h)</label>
+                      <label className="text-[11px] font-bold text-orange-600 block flex items-center gap-1">  Tarde (12h - 18h)</label>
                       <input 
                         type="time" 
                         value={newMed.horarioTarde}
@@ -951,7 +951,7 @@ export default function Medications({
                   
                   
                   <div className="space-y-1">
-                    <span className="text-[11px] font-medium text-slate-500 block">Opção 1: Selecionar modelo rápido</span>
+                    <span className="text-[11px] font-medium text-slate-500 block">Opcao 1: Selecionar modelo rapido</span>
                     <div className="flex items-center gap-3">
                       {mockPackImages.map((img, idx) => {
                         const isSel = newMed.fotoEmbalagem === img;
@@ -974,7 +974,7 @@ export default function Medications({
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                     <div className="space-y-1">
-                      <span className="text-[11px] font-medium text-slate-500 block">Opção 2: Enviar foto do celular/computador</span>
+                      <span className="text-[11px] font-medium text-slate-500 block">Opcao 2: Enviar foto do celular/computador</span>
                       <label className="flex items-center justify-center gap-2 px-3 py-2 border-2 border-dashed border-slate-300 rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer text-xs font-bold text-slate-600">
                         <Camera className="w-4 h-4 text-slate-500" />
                         <span>Tirar Foto / Anexar</span>
@@ -989,7 +989,7 @@ export default function Medications({
                     </div>
 
                     <div className="space-y-1">
-                      <span className="text-[11px] font-medium text-slate-500 block">Opção 3: Inserir link da imagem (URL)</span>
+                      <span className="text-[11px] font-medium text-slate-500 block">Opcao 3: Inserir link da imagem (URL)</span>
                       <input 
                         type="text" 
                         placeholder="Ex: https://site.com/remedio.png" 
@@ -1024,14 +1024,14 @@ export default function Medications({
 
                 <div className="space-y-1 sm:col-span-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-xs font-bold text-slate-600 block">Instruções de administração / Observações</label>
+                    <label className="text-xs font-bold text-slate-600 block">Instrucoes de administracao / Observacoes</label>
                     <VoiceInput 
                       onTranscript={text => setNewMed(prev => ({ ...prev, observacoes: prev.observacoes ? prev.observacoes + ' ' + text : text }))} 
                       size="sm"
                     />
                   </div>
                   <textarea 
-                    placeholder="Ex: Tomar com estômago cheio. Diluir saco em 100ml de suco."
+                    placeholder="Ex: Tomar com estomago cheio. Diluir saco em 100ml de suco."
                     rows={2}
                     value={newMed.observacoes}
                     onChange={e => setNewMed({ ...newMed, observacoes: e.target.value })}
@@ -1072,28 +1072,28 @@ export default function Medications({
                 <h3 className="text-base font-extrabold text-slate-800">
                   Excluir Medicamento?
                 </h3>
-                <p className="text-[10px] text-slate-400 font-mono">Esta ação é irreversível</p>
+                <p className="text-[10px] text-slate-400 font-mono">Esta acao e irreversivel</p>
               </div>
             </div>
 
             <div className="text-xs text-slate-600 space-y-2.5 leading-relaxed">
               <p>
-                Você está prestes a excluir definitivamente o medicamento:
+                Voce esta prestes a excluir definitivamente o medicamento:
               </p>
               <div className="p-3 bg-rose-50/40 rounded-2xl border border-rose-100/50 flex items-center justify-between">
                 <div>
                   <span className="text-[10px] uppercase font-black tracking-wider text-rose-500 block">Identificado</span>
-                  <strong className="text-sm font-bold text-slate-800">💊 {deleteConfirmation.nome}</strong>
+                  <strong className="text-sm font-bold text-slate-800">   {deleteConfirmation.nome}</strong>
                 </div>
                 <span className="text-[10px] font-mono text-slate-400">ID: {deleteConfirmation.id.slice(0, 8)}</span>
               </div>
               <p className="font-medium text-slate-500">
-                ⚠ <strong className="text-slate-800">O que acontece ao confirmar?</strong>
+                [!] <strong className="text-slate-800">O que acontece ao confirmar?</strong>
               </p>
               <ul className="list-disc pl-5 space-y-1 text-[11px] text-slate-500">
-                <li>O remédio será removido da listagem de estoque de medicamentos.</li>
-                <li>Todas as tarefas <strong className="text-slate-705">pendentes</strong> vinculadas a ele hoje serão eliminadas do checklist do cuidador para não poluir o painel de rotinas do turno atual.</li>
-                <li>Uma simulação de aviso via WhatsApp será disparada para controle.</li>
+                <li>O remedio sera removido da listagem de estoque de medicamentos.</li>
+                <li>Todas as tarefas <strong className="text-slate-705">pendentes</strong> vinculadas a ele hoje serao eliminadas do checklist do cuidador para nao poluir o painel de rotinas do turno atual.</li>
+                <li>Uma simulacao de aviso via WhatsApp sera disparada para controle.</li>
               </ul>
             </div>
 

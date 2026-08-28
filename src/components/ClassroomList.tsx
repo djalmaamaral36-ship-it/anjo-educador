@@ -54,7 +54,7 @@ const AVATAR_OPTIONS = [
   { url: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&q=80&w=150', label: 'Menina Ruiva' },
   { url: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?auto=format&fit=crop&q=80&w=150', label: 'Menina Olhar Doce' },
   { url: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=150', label: 'Menino de Touca Amarela' },
-  { url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150', label: 'Menino de Óculos' }
+  { url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=150', label: 'Menino de Oculos' }
 ];
 
 interface ClassroomListProps {
@@ -92,7 +92,7 @@ export default function ClassroomList({
         </div>
         <h2 className="text-lg font-black text-slate-800">Acesso Restrito</h2>
         <p className="text-sm text-slate-500 max-w-md leading-relaxed">
-          Por motivos de segurança e privacidade dos alunos, esta tela é restrita aos educadores e equipe da escola. Você só pode acompanhar as informações do seu próprio filho através do Diário da Inf
+          Por motivos de seguranca e privacidade dos alunos, esta tela e restrita aos educadores e equipe da escola. Voce so pode acompanhar as informacoes do seu proprio filho atraves do Diario da Inf
         </p>
       </div>
     );
@@ -133,7 +133,7 @@ export default function ClassroomList({
   const [newStudentClassroom, setNewStudentClassroom] = useState('Maternal I');
   const [newStudentBirthDate, setNewStudentBirthDate] = useState('15/10/2023');
   const [newStudentResponsibleName, setNewStudentResponsibleName] = useState('');
-  const [newStudentResponsibleParentesco, setNewStudentResponsibleParentesco] = useState('Mãe');
+  const [newStudentResponsibleParentesco, setNewStudentResponsibleParentesco] = useState('Mae');
   const [newStudentResponsiblePhone, setNewStudentResponsiblePhone] = useState('');
   const [newStudentAllergiesInput, setNewStudentAllergiesInput] = useState('');
   const [newStudentConditionsInput, setNewStudentConditionsInput] = useState('');
@@ -161,7 +161,7 @@ export default function ClassroomList({
     dataNascimento: '',
     responsavelNome: '',
     responsavelFone: '',
-    responsavelParentesco: 'Mãe',
+    responsavelParentesco: 'Mae',
     medicoNome: '',
     medicoFone: '',
     planoCuidado: '',
@@ -201,7 +201,7 @@ export default function ClassroomList({
       }, 100);
     } catch (err: any) {
       console.error("Erro ao acessar a c", err);
-      setCameraError("Não foi possível acessar a c do dispositivo. Verifique as permissões de acesso.");
+      setCameraError("Nao foi possivel acessar a c do dispositivo. Verifique as permissoes de acesso.");
     }
   };
 
@@ -303,7 +303,7 @@ export default function ClassroomList({
       dataNascimento: student.dataNascimento || '',
       responsavelNome: student.contatoEmergencia?.nome || '',
       responsavelFone: student.contatoEmergencia?.telefone || '',
-      responsavelParentesco: student.contatoEmergencia?.parentesco || 'Mãe',
+      responsavelParentesco: student.contatoEmergencia?.parentesco || 'Mae',
       medicoNome: student.medicoResponsavel?.nome || '',
       medicoFone: student.medicoResponsavel?.telefone || '',
       planoCuidado: student.planoCuidado || '',
@@ -355,14 +355,14 @@ export default function ClassroomList({
   };
 
   const handleDeleteStudentFromDB = (studentId: string, studentName: string) => {
-    if (!window.confirm(`Tem certeza de que deseja excluir permanentemente o cadastro de ${getStudentCleanName(studentName)} do sistema? Essa ação não pode ser desfeita.`)) return;
+    if (!window.confirm(`Tem certeza de que deseja excluir permanentemente o cadastro de ${getStudentCleanName(studentName)} do sistema? Essa acao nao pode ser desfeita.`)) return;
     
     deleteStudentEverywhere(studentId);
     const allPeople = getFromDB<Idoso[]>('anjo_idosos', []);
     setStudents(loadStudentsFromDB(allPeople));
     setSelectedStudentForDetail(null);
     setIsEditingStudentProfile(false);
-    showToast(`Cadastro de ${getStudentCleanName(studentName)} e todas as suas atividades foram excluídos com sucesso.`, 'info');
+    showToast(`Cadastro de ${getStudentCleanName(studentName)} e todas as suas atividades foram excluidos com sucesso.`, 'info');
   };
 
   const startCameraDetail = async (facing: 'user' | 'environment' = cameraFacingModeDetail) => {
@@ -386,8 +386,8 @@ export default function ClassroomList({
         }
       }, 100);
     } catch (err: any) {
-      console.error("Erro ao acessar a c do prontuário:", err);
-      setCameraErrorDetail("Não foi possível acessar a c do dispositivo. Verifique as permissões de acesso.");
+      console.error("Erro ao acessar a c do prontuario:", err);
+      setCameraErrorDetail("Nao foi possivel acessar a c do dispositivo. Verifique as permissoes de acesso.");
     }
   };
 
@@ -427,7 +427,7 @@ export default function ClassroomList({
         updateStudentPhotoInDB(selectedStudentForDetail.id, dataUrl);
         stopCameraDetail();
         setIsEditingDetailPhoto(false);
-        showToast("Foto do prontuário atualizada com sucesso!", "success");
+        showToast("Foto do prontuario atualizada com sucesso!", "success");
       }
     }
   };
@@ -439,13 +439,13 @@ export default function ClassroomList({
         const compressed = await compressImage(file, 300, 300, 0.5);
         updateStudentPhotoInDB(selectedStudentForDetail.id, compressed);
         setIsEditingDetailPhoto(false);
-        showToast("Foto do prontuário carregada com sucesso!", "success");
+        showToast("Foto do prontuario carregada com sucesso!", "success");
       } catch (err) {
         const reader = new FileReader();
         reader.onload = () => {
           updateStudentPhotoInDB(selectedStudentForDetail.id, reader.result as string);
           setIsEditingDetailPhoto(false);
-          showToast("Foto do prontuário carregada!", "success");
+          showToast("Foto do prontuario carregada!", "success");
         };
         reader.readAsDataURL(file);
       }
@@ -493,7 +493,7 @@ export default function ClassroomList({
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
-        showToast("Download da foto concluído!", "success");
+        showToast("Download da foto concluido!", "success");
         return;
       }
 
@@ -509,7 +509,7 @@ export default function ClassroomList({
       link.click();
       document.body.removeChild(link);
       setTimeout(() => URL.revokeObjectURL(blobUrl), 2000);
-      showToast("Download da foto concluído!", "success");
+      showToast("Download da foto concluido!", "success");
     } catch {
       // 3. Fallback using Canvas to convert external image to Data URL and download
       try {
@@ -529,7 +529,7 @@ export default function ClassroomList({
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            showToast("Download da foto concluído!", "success");
+            showToast("Download da foto concluido!", "success");
           }
         };
         img.onerror = () => {
@@ -570,13 +570,13 @@ export default function ClassroomList({
       alergias: newStudentAllergiesInput ? newStudentAllergiesInput.split(',').map(a => a.trim()).filter(Boolean) : [],
       observacoes: 'Aluno adicionado manualmente via painel escolar.',
       contatoEmergencia: {
-        nome: newStudentResponsibleName.trim() || 'Responsável Não Informado',
+        nome: newStudentResponsibleName.trim() || 'Responsavel Nao Informado',
         parentesco: newStudentResponsibleParentesco,
         telefone: newStudentResponsiblePhone.trim() || '(11) 99999-9999'
       },
-      planoCuidado: newStudentCarePlanInput.trim() || 'Incentivar atividades lúdicas coletivas e checar hidratação regular.',
+      planoCuidado: newStudentCarePlanInput.trim() || 'Incentivar atividades ludicas coletivas e checar hidratacao regular.',
       medicoResponsavel: {
-        nome: 'Dr(a). Não Cadastrado',
+        nome: 'Dr(a). Nao Cadastrado',
         especialidade: 'Pediatria Geral',
         telefone: ''
       }
@@ -642,7 +642,7 @@ export default function ClassroomList({
       const fallbackList: any[] = [];
 
       lines.forEach((line, idx) => {
-        let cleanLine = line.replace(/^[\d\.\-\*\•\)]+\s*/, '').trim();
+        let cleanLine = line.replace(/^[\d\.\-\*\ \)]+\s*/, '').trim();
         if (!cleanLine) return;
 
         let age = 3;
@@ -650,12 +650,12 @@ export default function ClassroomList({
         if (ageMatch) age = parseInt(ageMatch[1], 10);
 
         let className = 'Maternal I';
-        const classMatch = cleanLine.match(/(Berçário\s*(?:I|II|1|2)?|Maternal\s*(?:I|II|1|2)?|Jardim\s*(?:I|II|1|2)?|Pré\s*(?:I|II|1|2)?|Infantil\s*(?:\d+)?|Fundamental\s*(?:\d+)?|Turma\s*[\w]+)/i);
+        const classMatch = cleanLine.match(/(Bercario\s*(?:I|II|1|2)?|Maternal\s*(?:I|II|1|2)?|Jardim\s*(?:I|II|1|2)?|Pre\s*(?:I|II|1|2)?|Infantil\s*(?:\d+)?|Fundamental\s*(?:\d+)?|Turma\s*[\w]+)/i);
         if (classMatch) className = classMatch[0].trim();
 
-        let guardianName = 'Responsável';
-        let guardianRelationship = 'Mãe/Pai';
-        const guardianMatch = cleanLine.match(/(Mãe|Pai|Responsável|Resp|Avó|Avô):\s*([^\(,\d]+)/i);
+        let guardianName = 'Responsavel';
+        let guardianRelationship = 'Mae/Pai';
+        const guardianMatch = cleanLine.match(/(Mae|Pai|Responsavel|Resp|Avo|Avo):\s*([^\(,\d]+)/i);
         if (guardianMatch) {
           guardianRelationship = guardianMatch[1].trim();
           guardianName = guardianMatch[2].trim();
@@ -675,11 +675,11 @@ export default function ClassroomList({
         }
 
         let allergies: string[] = [];
-        const allergyMatch = cleanLine.match(/(?:alergia|alérgic[oa]|restrição|intoler)s?:\s*([^\(\;\.\n]+)/i);
+        const allergyMatch = cleanLine.match(/(?:alergia|alergic[oa]|restricao|intoler)s?:\s*([^\(\;\.\n]+)/i);
         if (allergyMatch) {
           allergies = allergyMatch[1].split(/,|e\b/).map(s => s.trim()).filter(Boolean);
         } else {
-          const keywords = ['lactose', 'glúten', 'amendoim', 'ovo', 'picada', 'poeira', 'corante', 'mofo'];
+          const keywords = ['lactose', 'gluten', 'amendoim', 'ovo', 'picada', 'poeira', 'corante', 'mofo'];
           keywords.forEach(kw => {
             if (cleanLine.toLowerCase().includes(kw)) {
               allergies.push(kw.charAt(0).toUpperCase() + kw.slice(1));
@@ -688,11 +688,11 @@ export default function ClassroomList({
         }
 
         let conditions: string[] = [];
-        const condMatch = cleanLine.match(/(?:cuidado|cuidados|condiçã[oo]|asma|fralda|medicação|remédio)s?:\s*([^\(\;\.\n]+)/i);
+        const condMatch = cleanLine.match(/(?:cuidado|cuidados|condica[oo]|asma|fralda|medicacao|remedio)s?:\s*([^\(\;\.\n]+)/i);
         if (condMatch) {
           conditions = condMatch[1].split(/,|e\b/).map(s => s.trim()).filter(Boolean);
         } else {
-          const keywords = ['asma', 'bombinha', 'fralda', 'fisioterapia', 'desfralde', 'dermatite', 'óculos', 'chupeta'];
+          const keywords = ['asma', 'bombinha', 'fralda', 'fisioterapia', 'desfralde', 'dermatite', 'oculos', 'chupeta'];
           keywords.forEach(kw => {
             if (cleanLine.toLowerCase().includes(kw)) {
               conditions.push(kw.charAt(0).toUpperCase() + kw.slice(1));
@@ -700,8 +700,8 @@ export default function ClassroomList({
           });
         }
 
-        let namePart = cleanLine.split(/,|\b(anos|ano|Berçário|Maternal|Jardim|Pré|Infantil|Mãe|Pai|Resp)\b/i)[0].trim();
-        namePart = namePart.replace(/[:\-–]/g, '').trim();
+        let namePart = cleanLine.split(/,|\b(anos|ano|Bercario|Maternal|Jardim|Pre|Infantil|Mae|Pai|Resp)\b/i)[0].trim();
+        namePart = namePart.replace(/[:\--]/g, '').trim();
 
         if (namePart && namePart.length >= 2) {
           fallbackList.push({
@@ -724,7 +724,7 @@ export default function ClassroomList({
         setParsedStudents(fallbackList);
         showToast(`Aura extraiu ${fallbackList.length} aluno(s) da lista!`, 'success');
       } else {
-        showToast('Não foi possível identificar nomes na lista enviada. Verifique o texto e tente novamente.', 'warning');
+        showToast('Nao foi possivel identificar nomes na lista enviada. Verifique o texto e tente novamente.', 'warning');
       }
     } finally {
       setIsParsingBulk(false);
@@ -733,7 +733,7 @@ export default function ClassroomList({
 
   const handleSaveBulkStudents = () => {
     if (parsedStudents.length === 0) {
-      showToast('Não há alunos estruturados para salvar!', 'warning');
+      showToast('Nao ha alunos estruturados para salvar!', 'warning');
       return;
     }
 
@@ -773,15 +773,15 @@ export default function ClassroomList({
         alergias: studentAllergies,
         observacoes: student.observations || 'Aluno cadastrado e padronizado via assistente inteligente Aura.',
         contatoEmergencia: {
-          nome: student.guardianName || 'Responsável Não Informado',
-          parentesco: student.guardianRelationship || 'Responsável',
+          nome: student.guardianName || 'Responsavel Nao Informado',
+          parentesco: student.guardianRelationship || 'Responsavel',
           telefone: student.guardianPhone || '(11) 99999-9999'
         },
         planoCuidado: studentConditions.length > 0 
           ? `Cuidados Especiais: ${studentConditions.join(', ')}.` 
-          : 'Incentivar atividades lúdicas coletivas e checar hidratação regular.',
+          : 'Incentivar atividades ludicas coletivas e checar hidratacao regular.',
         medicoResponsavel: {
-          nome: 'Dr(a). Não Cadastrado',
+          nome: 'Dr(a). Nao Cadastrado',
           especialidade: 'Pediatria Geral',
           telefone: ''
         }
@@ -831,7 +831,7 @@ export default function ClassroomList({
     setStudents(loadStudentsFromDB(allPeople));
 
     // Notify other components
-    showToast('Ficha e histórico apagados com sucesso!', 'success');
+    showToast('Ficha e historico apagados com sucesso!', 'success');
 
     // Select first student remaining or clear detail view
     const remainingStudents = allPeople.filter(p => p.id.startsWith('aluno_'));
@@ -959,7 +959,7 @@ export default function ClassroomList({
     
     // Check if duplicate
     if (absenceDates.includes(retroDate)) {
-      showToast('Esta data de falta já está registrada!', 'warning');
+      showToast('Esta data de falta ja esta registrada!', 'warning');
       return;
     }
 
@@ -984,7 +984,7 @@ export default function ClassroomList({
     const isCurrentlyAbsentToday = absenceDates.includes(todayStr);
 
     if (!isCurrentlyAbsentToday) {
-      const confirmMsg = `Deseja registrar Falta/Ausência para ${getStudentCleanName(student.nome)} HOJE? Ao marcar a falta, qualquer atividade anotada hoje será limpa para ele(a) e os pais receberão um aviso de ausência.`;
+      const confirmMsg = `Deseja registrar Falta/Ausencia para ${getStudentCleanName(student.nome)} HOJE? Ao marcar a falta, qualquer atividade anotada hoje sera limpa para ele(a) e os pais receberao um aviso de ausencia.`;
       
       triggerConfirm(
         'Confirmar Registro de Falta',
@@ -1029,24 +1029,24 @@ export default function ClassroomList({
           logs.unshift({
             id: 'log_' + Date.now(),
             autor: 'Professora / Cuidadora',
-            acao: `Registrado Falta / Ausência de Aluno`,
+            acao: `Registrado Falta / Ausencia de Aluno`,
             data: new Date().toLocaleString('pt-BR'),
             ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-            detalhes: `Aluno marcado como ausente hoje via Painel de Salas de Aula. O período ativo foi encerrado e os dados correntes foram limpos por solicitação.`
+            detalhes: `Aluno marcado como ausente hoje via Painel de Salas de Aula. O periodo ativo foi encerrado e os dados correntes foram limpos por solicitacao.`
           });
           saveToDB(`anjo_lgpd_auditoria_${student.id}`, logs);
 
           // Trigger simulated WhatsApp message to parents
           const cleanName = getStudentCleanName(student.nome);
-          const abMsg = `Anjo Escolar — Aviso de Ausência
+          const abMsg = `Anjo Escolar - Aviso de Ausencia
           
-Olá. Registramos que o(a) aluno(a) *${cleanName}* não compareceu hoje às atividades / aulas (Falta Justificada). 
+Ola. Registramos que o(a) aluno(a) *${cleanName}* nao compareceu hoje as atividades / aulas (Falta Justificada). 
 
-Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dúvida, estamos à disposição.`;
+Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvida, estamos a disposicao.`;
           
           try {
             const customEvent = new CustomEvent('anjo_whatsapp_sim', {
-              detail: { title: 'Aviso de Ausência e Falta Corrente', msg: abMsg }
+              detail: { title: 'Aviso de Ausencia e Falta Corrente', msg: abMsg }
             });
             window.dispatchEvent(customEvent);
           } catch (e) {}
@@ -1057,8 +1057,8 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
       );
     } else {
       triggerConfirm(
-        'Confirmar Presença do Aluno(a)',
-        `Tem certeza que deseja remover o registro de falta de HOJE para ${getStudentCleanName(student.nome)}? Ele(a) constará como Presente.`,
+        'Confirmar Presenca do Aluno(a)',
+        `Tem certeza que deseja remover o registro de falta de HOJE para ${getStudentCleanName(student.nome)}? Ele(a) constara como Presente.`,
         () => {
           const updated = absenceDates.filter(d => d !== todayStr);
           setAbsenceDates(updated);
@@ -1078,7 +1078,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
           saveToDB(`anjo_lgpd_auditoria_${student.id}`, logs);
 
           window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-          showToast(`Presença registrada para ${getStudentCleanName(student.nome)}!`, 'success');
+          showToast(`Presenca registrada para ${getStudentCleanName(student.nome)}!`, 'success');
         }
       );
     }
@@ -1263,7 +1263,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
     }
 
     setSelectedGroup(classroomName);
-    showToast(`✓ Sala alterada para ${classroomName}!`, 'success');
+    showToast(`  Sala alterada para ${classroomName}!`, 'success');
   };
 
   const handleSwitchClassroom = (classroomName: string) => {
@@ -1288,7 +1288,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
 
     const pin = roomPinInput.trim();
     if (!pin) {
-      setRoomPinError('Digite o PIN de 4 dígitos para prosseguir.');
+      setRoomPinError('Digite o PIN de 4 digitos para prosseguir.');
       return;
     }
 
@@ -1319,9 +1319,9 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
       setShowRoomPinModal(false);
       setPendingRoomToSwitch(null);
       executeSwitchClassroom(roomToOpen);
-      showToast(`✓ PIN correto! Acesso liberado para a sala ${roomToOpen}.`, 'success');
+      showToast(`  PIN correto! Acesso liberado para a sala ${roomToOpen}.`, 'success');
     } else {
-      setRoomPinError('❌ PIN incorreto! Digite o PIN da educadora, o PIN da Diretora Nilva (3031) ou o PIN Dev (9181).');
+      setRoomPinError('  PIN incorreto! Digite o PIN da educadora, o PIN da Diretora Nilva (3031) ou o PIN Dev (9181).');
     }
   };
 
@@ -1374,7 +1374,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
       .filter(h => h.idosoId === student.id && isTodayOrDemoDate(h.data))
       .reduce((acc, curr) => acc + (curr.quantidadeMl || 0), 0);
 
-    showToast(`  Servido +${quantityMl}ml de água para ${getStudentCleanName(student.nome)}! Acumulado no turno: ${totalStudentMl}ml.`, 'success');
+    showToast(`  Servido +${quantityMl}ml de agua para ${getStudentCleanName(student.nome)}! Acumulado no turno: ${totalStudentMl}ml.`, 'success');
   };
 
   const handleQuickServeBottle = (student: Idoso, quantityUnits: number = 1) => {
@@ -1398,13 +1398,13 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
       // 2. Trigger WhatsApp simulation / Comunicado alert for parents
       if (triggerWhatsAppSim) {
         triggerWhatsAppSim(
-          '  Comunicado: Mamadeira Já Servida',
-          `Anjinho Escolar: ${cleanStudentName} já tomou mamadeira às ${intervalCheck.lastHorario}. A tentativa de nova mamadeira às ${nowTime} foi registrada. Respeitando o intervalo seguro de 2 horas, a próxima mamadeira estará liberada às ${intervalCheck.nextAllowedHorario}.`
+          '  Comunicado: Mamadeira Ja Servida',
+          `Anjinho Escolar: ${cleanStudentName} ja tomou mamadeira as ${intervalCheck.lastHorario}. A tentativa de nova mamadeira as ${nowTime} foi registrada. Respeitando o intervalo seguro de 2 horas, a proxima mamadeira estara liberada as ${intervalCheck.nextAllowedHorario}.`
         );
       }
 
       // 3. Show alert modal
-      alert(`${intervalCheck.message}\n\n  Um comunicado oficial foi gerado no mural e enviado aos responsáveis informando que a criança já tomou mamadeira recentemente.`);
+      alert(`${intervalCheck.message}\n\n  Um comunicado oficial foi gerado no mural e enviado aos responsaveis informando que a crianca ja tomou mamadeira recentemente.`);
       return;
     }
 
@@ -1437,7 +1437,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
     const totalBottles = allMeals
       .filter(m => m.idosoId === student.id && m.refeicao === 'mamadeira' && isTodayOrDemoDate(m.data)).length;
 
-    const noticeMsg = `Anjinho Escolar:   Mamadeira servida para ${cleanStudentName} às ${nowTime} (150ml). Grau de Aceitação: Tomou tudo. Total do dia: ${totalBottles} ${totalBottles === 1 ? 'mamadeira' : 'mamadeiras'}. Registrado por ${usuarioAtual?.nome || 'Professora'}.`;
+    const noticeMsg = `Anjinho Escolar:   Mamadeira servida para ${cleanStudentName} as ${nowTime} (150ml). Grau de Aceitacao: Tomou tudo. Total do dia: ${totalBottles} ${totalBottles === 1 ? 'mamadeira' : 'mamadeiras'}. Registrado por ${usuarioAtual?.nome || 'Professora'}.`;
 
     if (triggerWhatsAppSim) {
       triggerWhatsAppSim('  Mamadeira Registrada', noticeMsg);
@@ -1446,7 +1446,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
       allLogs.unshift({
         id: `notif_mamadeira_ok_${Date.now()}`,
         idosoId: student.id,
-        familiarNome: `Pais/Responsáveis de ${cleanStudentName}`,
+        familiarNome: `Pais/Responsaveis de ${cleanStudentName}`,
         telefone: '(11) 98765-4321',
         dataHora: `${todayIso} ${nowTime}`,
         tipo: 'mamadeira',
@@ -1458,7 +1458,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
     }
 
     if (quantityUnits > 1) {
-      showToast(`  Servida 1ª mamadeira para ${cleanStudentName}! Total do dia: ${totalBottles}. A 2ª mamadeira exige aguardar o intervalo de 2 horas.`, 'success');
+      showToast(`  Servida 1a mamadeira para ${cleanStudentName}! Total do dia: ${totalBottles}. A 2a mamadeira exige aguardar o intervalo de 2 horas.`, 'success');
     } else {
       showToast(`  Servida mamadeira para ${cleanStudentName}! Total do dia: ${totalBottles} ${totalBottles === 1 ? 'mamadeira' : 'mamadeiras'}.`, 'success');
     }
@@ -1511,7 +1511,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
 
       // Check if another room has the same name
       if (rooms.some(r => r.id !== editingRoomId && r.name.toLowerCase() === newNameClean.toLowerCase())) {
-        showToast('Já existe uma outra sala com este nome!', 'warning');
+        showToast('Ja existe uma outra sala com este nome!', 'warning');
         return;
       }
 
@@ -1579,7 +1579,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
       setEditingRoomId(null);
     } else {
       if (rooms.some(r => r.name.toLowerCase() === newRoomName.trim().toLowerCase())) {
-        showToast('Já existe uma sala com este nome!', 'warning');
+        showToast('Ja existe uma sala com este nome!', 'warning');
         return;
       }
 
@@ -1651,7 +1651,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
   const handleDeleteClassroom = (roomId: string, roomName: string) => {
     triggerConfirm(
       'Excluir Sala de Aula',
-      `Tem certeza de que deseja excluir a sala "${roomName}"? Alunos associados continuarão existindo, mas sem sala de aula definida.`,
+      `Tem certeza de que deseja excluir a sala "${roomName}"? Alunos associados continuarao existindo, mas sem sala de aula definida.`,
       () => {
         const rooms = getFromDB<Classroom[]>('anjo_salas', SALAS_INICIAIS);
         const updated = rooms.filter(r => r.id !== roomId);
@@ -1701,7 +1701,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
         
         setUpdateTrigger(prev => prev + 1);
         window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-        showToast(`Sala "${roomName}" excluída com sucesso!`, 'success');
+        showToast(`Sala "${roomName}" excluida com sucesso!`, 'success');
       }
     );
   };
@@ -1714,8 +1714,8 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
     if (found) {
       return `${found.name} (${found.ageGroup})`;
     }
-    if (name.includes('Berçário I')) return 'Berçário I (0-1 ano)';
-    if (name.includes('Berçário II')) return 'Berçário II (1-2 anos)';
+    if (name.includes('Bercario I')) return 'Bercario I (0-1 ano)';
+    if (name.includes('Bercario II')) return 'Bercario II (1-2 anos)';
     if (name.includes('Maternal II')) return 'Maternal II (3-4 anos)';
     if (name.includes('Maternal I')) return 'Maternal I (2 anos)';
     if (name.includes('Jardim II')) return 'Jardim II (5-6 anos)';
@@ -1815,13 +1815,13 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="bg-amber-400 text-amber-950 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">Modo Escolinha</span>
-              <span className="bg-teal-500 text-teal-950 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">Relação Completa</span>
+              <span className="bg-teal-500 text-teal-950 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">Relacao Completa</span>
             </div>
             <h2 className="text-xl md:text-2xl font-extrabold font-display leading-tight flex items-center gap-2">
-              <span> </span> Caderneta da Turma — {students.length} Alunos
+              <span> </span> Caderneta da Turma - {students.length} Alunos
             </h2>
             <p className="text-xs text-indigo-200/90 max-w-xl font-medium leading-relaxed">
-              Painel Geral de Controle {usuarioAtual ? `da Profª ${usuarioAtual.nome.replace(' (Educadora)', '')}` : 'do Anjo Escolar'}. Selecione qualquer um dos alunos cadastrados para visualizar fichas de saúde, receitas e agendar comunicados com um único clique.
+              Painel Geral de Controle {usuarioAtual ? `da Profa ${usuarioAtual.nome.replace(' (Educadora)', '')}` : 'do Anjo Escolar'}. Selecione qualquer um dos alunos cadastrados para visualizar fichas de saude, receitas e agendar comunicados com um unico clique.
             </p>
           </div>
           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-3 border border-white/15 flex items-center gap-3 shrink-0 self-start md:self-auto">
@@ -1844,10 +1844,10 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
           <div className="space-y-1">
             <h3 className="text-sm font-black text-slate-800 flex items-center gap-2">
-              <span>🏫</span> Central de Salas de Aula <span className="bg-indigo-100 text-indigo-800 text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">Gestão Ativa</span>
+              <span>  </span> Central de Salas de Aula <span className="bg-indigo-100 text-indigo-800 text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">Gestao Ativa</span>
             </h3>
             <p className="text-[11px] text-slate-555 leading-relaxed font-semibold">
-              Temos <strong className="text-indigo-700">{classrooms.length} salas de aula</strong> cadastradas. Clique em qualquer uma para assumir o controle da sala e gerenciar seus alunos e diários de bordo!
+              Temos <strong className="text-indigo-700">{classrooms.length} salas de aula</strong> cadastradas. Clique em qualquer uma para assumir o controle da sala e gerenciar seus alunos e diarios de bordo!
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2 shrink-0">
@@ -1861,7 +1861,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
               <div className="flex items-center gap-2 bg-indigo-50/50 border border-indigo-100 px-3 py-1.5 rounded-2xl">
                 <span className="text-[10px] text-indigo-800 font-extrabold uppercase">Sua Sala Ativa:</span>
                 <span className="text-[11px] font-black text-indigo-950 flex items-center gap-1">
-                   🏫 {usuarioAtual.nome.replace(' (Educadora)', '')} 
+                      {usuarioAtual.nome.replace(' (Educadora)', '')} 
                   <span className="bg-indigo-600 text-white text-[9px] px-1.5 py-0.2 rounded-md font-extrabold">{usuarioAtual.salaAula}</span>
                 </span>
               </div>
@@ -1874,10 +1874,10 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
           <div id="classroom-config-panel" className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-4 animate-fade-in">
             <div className="flex items-center justify-between border-b border-slate-200 pb-2">
               <h4 className="text-xs font-black text-slate-700 flex items-center gap-1.5 uppercase tracking-wide">
-                <span>{editingRoomId ? '✏' : ' '}</span> {editingRoomId ? 'Editando Sala de Aula' : 'Painel de Configuração de Salas'}
+                <span>{editingRoomId ? ' ' : ' '}</span> {editingRoomId ? 'Editando Sala de Aula' : 'Painel de Configuracao de Salas'}
               </h4>
               <span className="text-[10px] text-slate-400 font-bold">
-                {editingRoomId ? 'Altere as informações da sala e salve' : 'Adicione novas turmas, edite ou exclua salas'}
+                {editingRoomId ? 'Altere as informacoes da sala e salve' : 'Adicione novas turmas, edite ou exclua salas'}
               </span>
             </div>
 
@@ -1890,7 +1890,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   onChange={e => setNewRoomEmoji(e.target.value)}
                   className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all text-center cursor-pointer"
                 >
-                  {[' ', ' ', ' ', ' ', ' ', ' ', '⭐', ' ', ' ', ' ', ' ', '⚽', ' ', ' ', ' ', '✏', ' ', ' ', ' ', ' ', ' ', ' '].map(emo => (
+                  {[' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '].map(emo => (
                     <option key={emo} value={emo}>{emo}</option>
                   ))}
                 </select>
@@ -1909,14 +1909,14 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
               </div>
 
               <div className="md:col-span-2">
-                <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">Faixa Etária</label>
+                <label className="block text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1">Faixa Etaria</label>
                 <select
                   value={newRoomAgeGroup}
                   onChange={e => setNewRoomAgeGroup(e.target.value)}
                   className="w-full px-3 py-1.5 bg-white border border-slate-200 rounded-xl text-xs font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all cursor-pointer"
                 >
-                  <option value="0-1 ano">  0-1 ano (Berçário I)</option>
-                  <option value="1-2 anos">  1-2 anos (Berçário II)</option>
+                  <option value="0-1 ano">  0-1 ano (Bercario I)</option>
+                  <option value="1-2 anos">  1-2 anos (Bercario II)</option>
                   <option value="2-3 anos">  2-3 anos (Maternal I)</option>
                   <option value="3-4 anos">  3-4 anos (Maternal II)</option>
                   <option value="4-5 anos">  4-5 anos (Jardim I)</option>
@@ -1943,7 +1943,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   className="flex-1 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-xl cursor-pointer flex items-center justify-center gap-1 shadow-sm hover:shadow transition-all"
                 >
                   {editingRoomId ? <CheckCircle className="w-3.5 h-3.5" /> : <Plus className="w-3.5 h-3.5" />}
-                  {editingRoomId ? 'Salvar Alterações' : 'Adicionar Sala'}
+                  {editingRoomId ? 'Salvar Alteracoes' : 'Adicionar Sala'}
                 </button>
                 {editingRoomId && (
                   <button
@@ -1959,7 +1959,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
 
             
             <div className="border-t border-slate-200 pt-3 space-y-2">
-              <span className="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider block">Lista de Salas para Edição e Exclusão</span>
+              <span className="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider block">Lista de Salas para Edicao e Exclusao</span>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
                 {classrooms.map(room => {
                   const studentCount = students.filter(s => isStudentInRoom(s, room.name)).length;
@@ -2057,7 +2057,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                     <h4 className="font-extrabold text-xs text-slate-900 group-hover:text-indigo-900 transition-colors truncate">{room.name}</h4>
                     <span className="text-[9px] font-black text-slate-400 shrink-0 bg-slate-100 px-1 py-0.2 rounded">{room.ageGroup}</span>
                   </div>
-                  <p className="text-[10px] text-slate-500 font-extrabold truncate"> 🏫 {teacherName}</p>
+                  <p className="text-[10px] text-slate-500 font-extrabold truncate">    {teacherName}</p>
                   <div className="flex items-center justify-between text-[9px] text-slate-400 font-bold pt-1">
                     <span>  {activeStudentsInClass} Aluno{activeStudentsInClass !== 1 ? 's' : ''}</span>
                     <span>Cap: {room.capacity || 15}</span>
@@ -2083,12 +2083,12 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 <span className="text-3xl p-2.5 bg-white rounded-2xl shadow-3xs">{selectedClassroomForPreview.emoji}</span>
                 <div className="space-y-0.5">
                   <h4 className="text-sm font-black text-slate-900 flex items-center gap-2">
-                    Pré-visualização: {selectedClassroomForPreview.name}
+                    Pre-visualizacao: {selectedClassroomForPreview.name}
                     <span className="bg-indigo-100 text-indigo-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full uppercase">
                       {selectedClassroomForPreview.ageGroup}
                     </span>
                   </h4>
-                  <p className="text-xs text-slate-500 font-semibold">{selectedClassroomForPreview.description || 'Turma ativa na demonstração do Painel Escolar.'}</p>
+                  <p className="text-xs text-slate-500 font-semibold">{selectedClassroomForPreview.description || 'Turma ativa na demonstracao do Painel Escolar.'}</p>
                 </div>
               </div>
               <div className="text-right">
@@ -2103,7 +2103,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
             <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
               
               <div className="md:col-span-4 bg-white rounded-2xl p-4 border border-indigo-100/50 space-y-3">
-                <span className="text-[10px] font-black uppercase text-indigo-500 tracking-wider block"> 🏫 Educadora da Sala</span>
+                <span className="text-[10px] font-black uppercase text-indigo-500 tracking-wider block">    Educadora da Sala</span>
                 {(() => {
                   const assignedTeacher = getAssignedTeacherForRoom(selectedClassroomForPreview.name, usuarioAtual);
                   
@@ -2118,7 +2118,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                         <div className="min-w-0">
                           <p className="text-xs font-black text-slate-800 truncate">{assignedTeacher.nome.replace(' (Educadora)', '').replace(' (Professora)', '')}</p>
                           <p className="text-[10px] text-slate-500 font-extrabold">Professora Titular</p>
-                          <p className="text-[9px] text-emerald-600 font-bold flex items-center gap-0.5 mt-0.5">● Online na plataforma</p>
+                          <p className="text-[9px] text-emerald-600 font-bold flex items-center gap-0.5 mt-0.5">  Online na plataforma</p>
                         </div>
                       </div>
                     );
@@ -2128,7 +2128,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                         <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-lg text-slate-400 font-bold"> </div>
                         <div>
                           <p className="text-xs font-extrabold text-slate-750">Sem Educadora Fixa</p>
-                          <p className="text-[9px] text-amber-600 font-semibold leading-tight">Ao confirmar, você será vinculada como educadora desta sala.</p>
+                          <p className="text-[9px] text-amber-600 font-semibold leading-tight">Ao confirmar, voce sera vinculada como educadora desta sala.</p>
                         </div>
                       </div>
                     );
@@ -2143,7 +2143,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   const classStudents = students.filter(s => isStudentInRoom(s, selectedClassroomForPreview.name));
                   if (classStudents.length === 0) {
                     return (
-                      <p className="text-xs text-slate-400 italic py-4">Nenhum aluno cadastrado nesta sala ainda. Use o botão "Cadastrar Aluno" para adicionar!</p>
+                      <p className="text-xs text-slate-400 italic py-4">Nenhum aluno cadastrado nesta sala ainda. Use o botao "Cadastrar Aluno" para adicionar!</p>
                     );
                   }
                   return (
@@ -2200,10 +2200,10 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-2xl p-4 shadow-sm animate-fade-in">
               <div className="space-y-1 text-center sm:text-left">
                 <p className="text-xs font-black flex items-center justify-center sm:justify-start gap-1">
-                  <span> </span> Confirmar Troca de Sala com PIN de Segurança
+                  <span> </span> Confirmar Troca de Sala com PIN de Seguranca
                 </p>
                 <p className="text-[11px] text-indigo-100 font-semibold leading-relaxed">
-                  Para sua segurança, você será direcionado à Troca de Perfil para que a professora responsável confirme o PIN da sala <strong>{selectedClassroomForPreview.name}</strong>.
+                  Para sua seguranca, voce sera direcionado a Troca de Perfil para que a professora responsavel confirme o PIN da sala <strong>{selectedClassroomForPreview.name}</strong>.
                 </p>
               </div>
               <button
@@ -2221,14 +2221,14 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
         <div className="bg-gradient-to-r from-indigo-50 to-indigo-100/60 border border-indigo-200/80 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
           <div className="flex items-center gap-3">
             <div className="p-2.5 bg-indigo-600 text-white rounded-xl text-lg flex items-center justify-center shrink-0 shadow-sm shadow-indigo-600/30">
-              🏫
+                
             </div>
             <div className="space-y-0.5">
               <h4 className="text-sm font-black text-slate-800 flex items-center gap-1.5 flex-wrap">
-                Filtro de Sala Ativo para Você: <span className="bg-indigo-600 text-white px-2 py-0.5 rounded-md text-[11px] font-black">{usuarioAtual.salaAula}</span>
+                Filtro de Sala Ativo para Voce: <span className="bg-indigo-600 text-white px-2 py-0.5 rounded-md text-[11px] font-black">{usuarioAtual.salaAula}</span>
               </h4>
               <p className="text-[11px] text-slate-550 font-semibold leading-relaxed">
-                Ademais da segmentação geral, mostramos para você apenas os alunos correspondentes à sua própria sala de aula.
+                Ademais da segmentacao geral, mostramos para voce apenas os alunos correspondentes a sua propria sala de aula.
               </p>
             </div>
           </div>
@@ -2240,7 +2240,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 : 'bg-indigo-600 hover:bg-indigo-700 text-white border-transparent'
             }`}
           >
-            {bypassClassroomFilter ? '⚡ Reativar Filtro de Sala' : '  Ver Outras Salas'}
+            {bypassClassroomFilter ? '  Reativar Filtro de Sala' : '  Ver Outras Salas'}
           </button>
         </div>
       )}
@@ -2283,10 +2283,10 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   id="btn_gerenciar_familias_turma"
                   onClick={() => onNavigate('family')}
                   className="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs font-extrabold rounded-xl cursor-pointer flex items-center justify-center gap-1.5 shadow-2xs hover:shadow-xs transition-all shrink-0"
-                  title="Convidar e cadastrar pais e familiares no diário"
+                  title="Convidar e cadastrar pais e familiares no diario"
                 >
                   <Share2 className="w-3.5 h-3.5 text-emerald-600" />
-                  <span>Convidar Pais / Famílias</span>
+                  <span>Convidar Pais / Familias</span>
                 </button>
               )}
             </div>
@@ -2314,7 +2314,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                       : 'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200/50'
                   }`}
                 >
-                  ⚠ Alérgicos ({students.filter(s => s.alergias.length > 0).length})
+                  [!] Alergicos ({students.filter(s => s.alergias.length > 0).length})
                 </button>
                 <button
                   onClick={() => setSelectedFilter('cuidados_especiais')}
@@ -2392,10 +2392,10 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                             <p className="text-xs text-slate-550 flex items-center gap-1 mt-0.5 font-medium truncate">
                               <span className="text-[10px] text-slate-400 shrink-0">   </span>
                               <strong className="text-slate-800 truncate">{child.contatoEmergencia.nome}</strong>
-                              <span className="text-[9px] text-slate-400 shrink-0">({child.contatoEmergencia.parentesco || 'Mãe/Pai'})</span>
+                              <span className="text-[9px] text-slate-400 shrink-0">({child.contatoEmergencia.parentesco || 'Mae/Pai'})</span>
                             </p>
                           ) : (
-                            <p className="text-xs text-slate-400 mt-0.5 italic">Sem responsável</p>
+                            <p className="text-xs text-slate-400 mt-0.5 italic">Sem responsavel</p>
                           )}
 
                           {child.contatoEmergencia?.telefone && (
@@ -2411,13 +2411,13 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                       <div className="flex flex-wrap gap-1 items-center">
                         
                         <span className="inline-flex items-center gap-1 text-[9px] bg-indigo-50 text-indigo-700 font-black px-2 py-0.5 rounded-md border border-indigo-150 uppercase tracking-wider">
-                          🏫 {classLabel}
+                             {classLabel}
                         </span>
 
                         
                         {child.alergias && child.alergias.length > 0 ? (
                           <span className="inline-flex items-center gap-1 text-[9px] bg-rose-50 text-rose-700 font-black px-2 py-0.5 rounded-md border border-rose-200 uppercase tracking-wider truncate max-w-[150px]">
-                            ⚠ {child.alergias[0]}
+                            [!] {child.alergias[0]}
                           </span>
                         ) : child.condicoesMedicas && child.condicoesMedicas.length > 0 ? (
                           <span className="inline-flex items-center gap-1 text-[9px] bg-amber-50 text-amber-800 font-black px-2 py-0.5 rounded-md border border-amber-200 uppercase tracking-wider truncate max-w-[150px]">
@@ -2425,7 +2425,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1 text-[9px] bg-emerald-50 text-emerald-700 font-extrabold px-1.5 py-0.5 rounded-md border border-emerald-200/60">
-                              Saúde OK
+                              Saude OK
                           </span>
                         )}
 
@@ -2444,7 +2444,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                       
                       {isActive ? (
                         <span className="text-[10px] text-indigo-700 font-extrabold flex items-center gap-1">
-                          <CheckCircle className="w-3 h-3 text-indigo-600" /> Diário Ativo
+                          <CheckCircle className="w-3 h-3 text-indigo-600" /> Diario Ativo
                         </span>
                       ) : (
                         <button
@@ -2485,7 +2485,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                       }
                     }}
                     className="px-2.5 py-1.5 bg-white hover:bg-indigo-50 text-indigo-700 font-extrabold rounded-xl text-[10px] uppercase shadow-3xs transition-all cursor-pointer flex items-center gap-1 border border-indigo-200"
-                    title="Editar informações e cadastro do aluno"
+                    title="Editar informacoes e cadastro do aluno"
                   >
                     <Edit2 className="w-3.5 h-3.5 text-indigo-600" />
                     {isEditingStudentProfile ? 'Ver Ficha' : 'Editar Aluno'}
@@ -2496,7 +2496,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 <div className="absolute top-4 right-4">
                   {selectedStudentForDetail.id === activeIdoso.id ? (
                     <span className="bg-emerald-600 text-white font-black text-[9px] px-2.5 py-1 rounded-full uppercase flex items-center gap-1 shadow-3xs">
-                      <CheckCircle className="w-3 h-3 text-white" /> Diário de Hoje Ativo
+                      <CheckCircle className="w-3 h-3 text-white" /> Diario de Hoje Ativo
                     </span>
                   ) : (
                     <button
@@ -2559,7 +2559,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                         <div className="flex justify-center">
                           <img 
                             src={selectedStudentForDetail.foto} 
-                            alt="Previsualização" 
+                            alt="Previsualizacao" 
                             className="w-24 h-24 rounded-2xl object-cover border-2 border-indigo-200 shadow-sm"
                             referrerPolicy="no-referrer"
                           />
@@ -2593,7 +2593,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                         </div>
 
                         <div className="border-t border-slate-100 pt-2 space-y-2">
-                          <span className="text-[9px] text-slate-400 font-bold block uppercase text-left">Ou escolha um avatar rápido:</span>
+                          <span className="text-[9px] text-slate-400 font-bold block uppercase text-left">Ou escolha um avatar rapido:</span>
                           <div className="grid grid-cols-6 gap-1 justify-items-center">
                             {AVATAR_OPTIONS.map((av, idx) => (
                               <button
@@ -2710,10 +2710,10 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 <form onSubmit={handleSaveEditedStudentProfile} className="p-6 space-y-4 text-xs text-left bg-white">
                   <div className="bg-indigo-50/70 p-3 rounded-2xl border border-indigo-100 mb-1">
                     <h4 className="text-xs font-extrabold text-indigo-950 flex items-center gap-1.5">
-                      ✏ Edição Completa de Cadastro
+                        Edicao Completa de Cadastro
                     </h4>
                     <p className="text-[10px] text-indigo-700 leading-snug">
-                      Altere nome, data de nascimento, responsáveis, contatos de emergência e histórico de saúde do aluno.
+                      Altere nome, data de nascimento, responsaveis, contatos de emergencia e historico de saude do aluno.
                     </p>
                   </div>
 
@@ -2757,10 +2757,10 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   </div>
 
                   <div className="border-t border-slate-100 pt-3 space-y-2">
-                    <span className="text-[10px] font-black uppercase text-indigo-600 tracking-wider block">  Contato dos Pais / Responsável</span>
+                    <span className="text-[10px] font-black uppercase text-indigo-600 tracking-wider block">  Contato dos Pais / Responsavel</span>
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-slate-500 block">Nome do Responsável</label>
+                        <label className="text-[9px] font-bold text-slate-500 block">Nome do Responsavel</label>
                         <input
                           type="text"
                           value={editStudentForm.responsavelNome}
@@ -2769,7 +2769,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="text-[9px] font-bold text-slate-500 block">Telefone do Responsável</label>
+                        <label className="text-[9px] font-bold text-slate-500 block">Telefone do Responsavel</label>
                         <input
                           type="text"
                           value={editStudentForm.responsavelFone}
@@ -2781,7 +2781,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   </div>
 
                   <div className="border-t border-slate-100 pt-3 space-y-2">
-                    <span className="text-[10px] font-black uppercase text-indigo-600 tracking-wider block">🩺 Pediatra de Referência</span>
+                    <span className="text-[10px] font-black uppercase text-indigo-600 tracking-wider block">   Pediatra de Referencia</span>
                     <div className="grid grid-cols-2 gap-2">
                       <div className="space-y-1">
                         <label className="text-[9px] font-bold text-slate-500 block">Nome do Pediatra</label>
@@ -2805,7 +2805,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   </div>
 
                   <div className="space-y-1 border-t border-slate-100 pt-3">
-                    <label className="text-[10px] font-extrabold text-slate-700 uppercase tracking-wider block">Alergias (separadas por vírgula)</label>
+                    <label className="text-[10px] font-extrabold text-slate-700 uppercase tracking-wider block">Alergias (separadas por virgula)</label>
                     <input
                       type="text"
                       placeholder="Ex: Leite de vaca, Ovo, Dipirona"
@@ -2816,7 +2816,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] font-extrabold text-slate-700 uppercase tracking-wider block">Restrições / Rotina Especial (separadas por vírgula)</label>
+                    <label className="text-[10px] font-extrabold text-slate-700 uppercase tracking-wider block">Restricoes / Rotina Especial (separadas por virgula)</label>
                     <input
                       type="text"
                       placeholder="Ex: Dorme com naninha, Requer chupeta na soneca"
@@ -2827,7 +2827,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   </div>
 
                   <div className="space-y-1">
-                    <label className="text-[10px] font-extrabold text-slate-700 uppercase tracking-wider block">Diretrizes de Cuidados e Observações</label>
+                    <label className="text-[10px] font-extrabold text-slate-700 uppercase tracking-wider block">Diretrizes de Cuidados e Observacoes</label>
                     <textarea
                       rows={3}
                       value={editStudentForm.planoCuidado}
@@ -2841,14 +2841,14 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                       type="submit"
                       className="w-full py-2.5 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-extrabold rounded-xl text-xs transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer"
                     >
-                      <CheckCircle className="w-4 h-4 text-white" /> Salvar Alterações do Aluno
+                      <CheckCircle className="w-4 h-4 text-white" /> Salvar Alteracoes do Aluno
                     </button>
                     <button
                       type="button"
                       onClick={() => setIsEditingStudentProfile(false)}
                       className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-colors cursor-pointer"
                     >
-                      Cancelar Edição
+                      Cancelar Edicao
                     </button>
                   </div>
                 </form>
@@ -2878,20 +2878,20 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                       selectedStudentForDetail.condicoesMedicas.map((cond, i) => (
                         <div key={i} className="flex items-center justify-between gap-1 text-slate-700 font-semibold text-[11px] group/item">
                           <div className="flex items-start gap-1">
-                            <span className="text-amber-500 mt-0.5">⭐</span>
+                            <span className="text-amber-500 mt-0.5"> </span>
                             <span>{cond}</span>
                           </div>
                           <button
                             onClick={() => handleDeleteCondicao(selectedStudentForDetail.id, cond)}
                             className="p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all cursor-pointer shrink-0"
-                            title="Remover restrição"
+                            title="Remover restricao"
                           >
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         </div>
                       ))
                     ) : (
-                      <p className="text-slate-500 italic py-1 text-[11px]">Sem restrições lúdicas especiais.</p>
+                      <p className="text-slate-500 italic py-1 text-[11px]">Sem restricoes ludicas especiais.</p>
                     )}
                   </div>
                 </div>
@@ -2945,15 +2945,15 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                           onChange={e => setNewSpecialType(e.target.value as 'condicao' | 'alergia')}
                           className="text-xs px-2 py-1.5 bg-white border border-indigo-200 rounded-lg text-slate-705 outline-hidden focus:border-indigo-500 font-bold"
                         >
-                          <option value="condicao">Rotina / Restrição</option>
+                          <option value="condicao">Rotina / Restricao</option>
                           <option value="alergia">Alergia Grave</option>
                         </select>
                       </div>
                       <div className="flex flex-col gap-1">
-                        <label className="text-[9px] text-indigo-900 font-extrabold uppercase tracking-wide">Especificação</label>
+                        <label className="text-[9px] text-indigo-900 font-extrabold uppercase tracking-wide">Especificacao</label>
                         <input
                           type="text"
-                          placeholder={newSpecialType === 'condicao' ? 'Ex: Requer chupeta para dormir' : 'Ex: Glúten, Sabonete líquido'}
+                          placeholder={newSpecialType === 'condicao' ? 'Ex: Requer chupeta para dormir' : 'Ex: Gluten, Sabonete liquido'}
                           value={newSpecialValue}
                           onChange={e => setNewSpecialValue(e.target.value)}
                           className="text-xs px-2.5 py-1.5 bg-white border border-indigo-200 rounded-lg text-slate-800 placeholder-indigo-300 outline-hidden focus:border-indigo-500 font-semibold"
@@ -2982,7 +2982,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 
                 <div className="space-y-1">
                   <p className="text-[10px] text-rose-600 font-extrabold uppercase tracking-wider flex items-center gap-1">
-                    <UserX className="w-3.5 h-3.5 text-rose-500" /> Frequência e Controle de Faltas
+                    <UserX className="w-3.5 h-3.5 text-rose-500" /> Frequencia e Controle de Faltas
                   </p>
                   <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 space-y-2">
                     <div className="flex justify-between items-center pb-1.5 border-b border-slate-100">
@@ -3001,7 +3001,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                           <div className="space-y-0.5">
                             <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide block">Falta Hoje?</span>
                             <span className={`text-[10px] font-extrabold flex items-center gap-1 ${isAbsentToday ? 'text-rose-600' : 'text-emerald-700'}`}>
-                              {isAbsentToday ? '  Ausente (Com Falta)' : '✓ Presente (Em Aula)'}
+                              {isAbsentToday ? '  Ausente (Com Falta)' : '  Presente (Em Aula)'}
                             </span>
                           </div>
                           <button
@@ -3013,7 +3013,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                                 : 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100 active:bg-rose-200'
                             }`}
                           >
-                            {isAbsentToday ? 'Marcar Presença' : 'Marcar Falta'}
+                            {isAbsentToday ? 'Marcar Presenca' : 'Marcar Falta'}
                           </button>
                         </div>
                       );
@@ -3117,7 +3117,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                             <div>
                               <span className="font-extrabold text-slate-800 block text-xs">Fralda / Higiene</span>
                               <span className="text-[10px] text-slate-500 font-medium">
-                                {hasDiaper ? '✓ Fralda trocada/cuidada hoje' : 'Pendente de registro'}
+                                {hasDiaper ? '  Fralda trocada/cuidada hoje' : 'Pendente de registro'}
                               </span>
                             </div>
                           </div>
@@ -3147,14 +3147,14 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                           <div className="flex items-center gap-2">
                             <span className="text-base"> </span>
                             <div>
-                              <span className="font-extrabold text-slate-800 block text-xs">Saúde / Vitais</span>
+                              <span className="font-extrabold text-slate-800 block text-xs">Saude / Vitais</span>
                               <span className="text-[10px] text-slate-500 font-medium">
-                                {lastSinal ? `Temp: ${lastSinal.temperatura || 36.5}°C | ${lastSinal.soneca || 'Sem queixas'}` : 'Nenhuma alteração de saúde'}
+                                {lastSinal ? `Temp: ${lastSinal.temperatura || 36.5}oC | ${lastSinal.soneca || 'Sem queixas'}` : 'Nenhuma alteracao de saude'}
                               </span>
                             </div>
                           </div>
                           <span className={`text-[10px] font-black px-2 py-0.5 rounded-md ${lastSinal?.temperatura ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}`}>
-                            {lastSinal?.temperatura ? `${lastSinal.temperatura}°C` : 'Em Dia'}
+                            {lastSinal?.temperatura ? `${lastSinal.temperatura}oC` : 'Em Dia'}
                           </span>
                         </div>
 
@@ -3171,7 +3171,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                                 <div className="flex items-center gap-2">
                                   <span className="text-base"> </span>
                                   <div>
-                                    <span className="font-extrabold text-slate-800 block text-xs">Mamadeira de Leite / Fórmula</span>
+                                    <span className="font-extrabold text-slate-800 block text-xs">Mamadeira de Leite / Formula</span>
                                     <span className="text-[10px] text-slate-500 font-medium">
                                       {bottleCount > 0
                                         ? `${bottleCount} ${bottleCount === 1 ? 'mamadeira servida hoje' : 'mamadeiras servidas hoje'}`
@@ -3206,7 +3206,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                       </div>
 
                       <p className="text-[10px] text-slate-500 font-semibold italic text-center pt-1 border-t border-indigo-100/60">
-                          Estes registros permanecem mantidos durante todo o turno. Só são apagados ao zerar os cronômetros ou reiniciar.
+                          Estes registros permanecem mantidos durante todo o turno. So sao apagados ao zerar os cronometros ou reiniciar.
                       </p>
                     </div>
                   );
@@ -3215,7 +3215,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 
                 <div className="space-y-1">
                   <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider flex items-center gap-1">
-                    <Phone className="w-3.5 h-3.5 text-slate-400" /> Responsáveis para Recados urgentes
+                    <Phone className="w-3.5 h-3.5 text-slate-400" /> Responsaveis para Recados urgentes
                   </p>
                   <div className="bg-indigo-50/40 p-3 rounded-xl border border-indigo-100/50 space-y-2">
                     <div className="flex items-start justify-between gap-2">
@@ -3236,7 +3236,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                           type="button"
                           onClick={() => onNavigate('family')}
                           className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white rounded-lg text-[10px] font-extrabold flex items-center gap-1 transition-all cursor-pointer shadow-3xs shrink-0"
-                          title="Convidar este responsável para acessar o diário pelo WhatsApp"
+                          title="Convidar este responsavel para acessar o diario pelo WhatsApp"
                         >
                           <Share2 className="w-3 h-3" /> Convidar
                         </button>
@@ -3248,21 +3248,21 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 
                 <div className="space-y-1">
                   <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider flex items-center gap-1">
-                    <ClipboardList className="w-3.5 h-3.5 text-slate-400" /> Diretrizes de Orientação e Cuidados
+                    <ClipboardList className="w-3.5 h-3.5 text-slate-400" /> Diretrizes de Orientacao e Cuidados
                   </p>
                   <p className="text-slate-600 font-semibold leading-relaxed bg-slate-50 px-3 py-2.5 rounded-xl border border-slate-100 text-[11px]">
-                    {selectedStudentForDetail.planoCuidado || 'Incentivar atividades lúdicas coletivas e checar hidratação regular.'}
+                    {selectedStudentForDetail.planoCuidado || 'Incentivar atividades ludicas coletivas e checar hidratacao regular.'}
                   </p>
                 </div>
 
                 
                 <div className="space-y-1">
                   <p className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider flex items-center gap-1">
-                    <Heart className="w-3.5 h-3.5 text-slate-400" /> Pediatra de Referência do Aluno
+                    <Heart className="w-3.5 h-3.5 text-slate-400" /> Pediatra de Referencia do Aluno
                   </p>
                   <div className="bg-slate-50 px-3 py-2.5 rounded-xl border border-slate-100 flex justify-between items-center text-[11px] font-semibold text-slate-755">
                     <div>
-                      <p className="font-extrabold text-slate-800">{selectedStudentForDetail.medicoResponsavel?.nome || 'Dr(a). Não Cadastrado'}</p>
+                      <p className="font-extrabold text-slate-800">{selectedStudentForDetail.medicoResponsavel?.nome || 'Dr(a). Nao Cadastrado'}</p>
                       <p className="text-[9px] text-slate-400 font-bold">{selectedStudentForDetail.medicoResponsavel?.especialidade || 'Pediatria Geral'}</p>
                     </div>
                     <span className="text-[10px] text-slate-500 font-mono font-bold">{selectedStudentForDetail.medicoResponsavel?.telefone || ''}</span>
@@ -3273,14 +3273,14 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 <div className="pt-2 space-y-3">
                   {selectedStudentForDetail.id === activeIdoso.id ? (
                     <div className="p-3 bg-emerald-50 text-emerald-900 font-extrabold text-center rounded-xl border border-emerald-100 text-[11px]">
-                      ✨ Esta é a caderneta que você está editando no momento. Qualquer remédio mandado, alimento ou soneca anotada irá para a família de {getStudentCleanName(selectedStudentForDetail.nome)}!
+                        Esta e a caderneta que voce esta editando no momento. Qualquer remedio mandado, alimento ou soneca anotada ira para a familia de {getStudentCleanName(selectedStudentForDetail.nome)}!
                     </div>
                   ) : (
                     <button
                       onClick={() => handleActivateProfile(selectedStudentForDetail)}
                       className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-extrabold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 shadow-md hover:shadow-lg"
                     >
-                      <UserCheck className="w-4 h-4 text-white" /> Ativar Diário Escolar de {getStudentCleanName(selectedStudentForDetail.nome)}
+                      <UserCheck className="w-4 h-4 text-white" /> Ativar Diario Escolar de {getStudentCleanName(selectedStudentForDetail.nome)}
                     </button>
                   )}
 
@@ -3301,7 +3301,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
             </div>
           ) : (
             <div className="bg-slate-100 rounded-3xl p-6 border border-slate-200 text-center text-slate-400 italic">
-              Selecione um aluno na lista para ver o prontuário completo.
+              Selecione um aluno na lista para ver o prontuario completo.
             </div>
           )}
         </div>
@@ -3321,7 +3321,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 onClick={() => setShowAddStudentForm(false)}
                 className="text-slate-400 hover:text-slate-600 font-bold p-1 cursor-pointer rounded-lg hover:bg-slate-100 text-xs"
               >
-                ✕ Fechar
+                  Fechar
               </button>
             </div>
 
@@ -3347,7 +3347,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                     : 'text-slate-400 hover:text-slate-600'
                 }`}
               >
-                  Importação com Aura AI
+                  Importacao com Aura AI
               </button>
             </div>
 
@@ -3356,7 +3356,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 <div className="p-3 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl border border-indigo-100 text-[11px] leading-relaxed text-indigo-950 space-y-2">
                   <div className="flex items-center gap-2 font-black text-xs text-indigo-900">
                     <Sparkles className="w-4 h-4 text-indigo-600 shrink-0" />
-                    <span>Padrão Oficial de Cadastro do Anjinho + Aura AI</span>
+                    <span>Padrao Oficial de Cadastro do Anjinho + Aura AI</span>
                   </div>
                   <p className="text-[11px] text-slate-700">
                     Cole qualquer texto bruto, planilha ou lista informal de alunos. A <strong>Aura AI</strong> extrai e padroniza automaticamente os campos oficiais do sistema:
@@ -3364,10 +3364,10 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   <div className="grid grid-cols-2 gap-x-2 gap-y-1 text-[10px] pt-1 font-semibold text-slate-700">
                     <div className="flex items-center gap-1">  <strong>Nome Completo</strong></div>
                     <div className="flex items-center gap-1">  <strong>Data de Nasc. / Idade</strong></div>
-                    <div className="flex items-center gap-1">🏫 <strong>Turma / Sala</strong></div>
-                    <div className="flex items-center gap-1">    <strong>Responsável & Contato</strong></div>
-                    <div className="flex items-center gap-1">⚠ <strong>Alergias & Restrições</strong></div>
-                    <div className="flex items-center gap-1">🩺 <strong>Cuidados / Saúde</strong></div>
+                    <div className="flex items-center gap-1">   <strong>Turma / Sala</strong></div>
+                    <div className="flex items-center gap-1">    <strong>Responsavel & Contato</strong></div>
+                    <div className="flex items-center gap-1">[!] <strong>Alergias & Restricoes</strong></div>
+                    <div className="flex items-center gap-1">   <strong>Cuidados / Saude</strong></div>
                   </div>
                 </div>
 
@@ -3377,7 +3377,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                     rows={5}
                     value={bulkText}
                     onChange={e => setBulkText(e.target.value)}
-                    placeholder="Ex: João da Silva nasceu em 15/03/2023 (3 anos), turma Maternal I. Alergia a Lactose e Pele atópica. Mãe Clarice tel (11) 98765-4321&#10;Maria Souza, 4 anos, Jardim I, Pai Rodrigo tel (11) 91234-5678, usa bombinha de asma."
+                    placeholder="Ex: Joao da Silva nasceu em 15/03/2023 (3 anos), turma Maternal I. Alergia a Lactose e Pele atopica. Mae Clarice tel (11) 98765-4321&#10;Maria Souza, 4 anos, Jardim I, Pai Rodrigo tel (11) 91234-5678, usa bombinha de asma."
                     className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50 text-slate-800"
                   />
                 </div>
@@ -3415,9 +3415,9 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                             <th className="p-2">Aluno</th>
                             <th className="p-2">Turma</th>
                             <th className="p-2">Nascimento / Idade</th>
-                            <th className="p-2">Responsável</th>
+                            <th className="p-2">Responsavel</th>
                             <th className="p-2">Alergias</th>
-                            <th className="p-2">Cuidados / Saúde</th>
+                            <th className="p-2">Cuidados / Saude</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -3438,7 +3438,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                                   <div className="flex flex-wrap gap-1">
                                     {st.allergies.map((alg: any, idx: number) => (
                                       <span key={idx} className="px-1.5 py-0.5 bg-rose-50 text-rose-700 text-[9px] font-bold rounded-md border border-rose-100">
-                                        ⚠ {String(alg || '')}
+                                        [!] {String(alg || '')}
                                       </span>
                                     ))}
                                   </div>
@@ -3451,7 +3451,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                                   <div className="flex flex-wrap gap-1">
                                     {st.conditions.map((cnd: any, idx: number) => (
                                       <span key={idx} className="px-1.5 py-0.5 bg-amber-50 text-amber-800 text-[9px] font-bold rounded-md border border-amber-100">
-                                        🩺 {String(cnd || '')}
+                                           {String(cnd || '')}
                                       </span>
                                     ))}
                                   </div>
@@ -3552,7 +3552,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                               <span className="absolute bottom-1 right-1 bg-teal-500 text-white text-[8px] font-extrabold px-1 rounded shadow-xs">FOTO REAL</span>
                             )}
                           </div>
-                          <span className="text-[9px] text-slate-400 font-bold">Visualização</span>
+                          <span className="text-[9px] text-slate-400 font-bold">Visualizacao</span>
                         </div>
                         
                         
@@ -3580,7 +3580,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                           </div>
 
                           <div className="border-t border-slate-100 pt-2 space-y-2">
-                            <span className="text-[9px] text-slate-400 font-bold block uppercase">Ou escolha um avatar rápido:</span>
+                            <span className="text-[9px] text-slate-400 font-bold block uppercase">Ou escolha um avatar rapido:</span>
                             
                             <div className="grid grid-cols-6 gap-1 max-w-sm">
                               {AVATAR_OPTIONS.map((av, idx) => {
@@ -3683,7 +3683,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
 
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <label className="text-[10px] uppercase font-black tracking-wider text-slate-500">Nome do Pai/Mãe/Tutor *</label>
+                    <label className="text-[10px] uppercase font-black tracking-wider text-slate-500">Nome do Pai/Mae/Tutor *</label>
                     <VoiceInput 
                       onTranscript={text => setNewStudentResponsibleName(prev => prev ? prev + ' ' + text : text)} 
                       size="sm"
@@ -3706,16 +3706,16 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                     onChange={e => setNewStudentResponsibleParentesco(e.target.value)}
                     className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-bold bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-800 h-[34px]"
                   >
-                    <option value="Mãe">Mãe</option>
+                    <option value="Mae">Mae</option>
                     <option value="Pai">Pai</option>
-                    <option value="Avó/Avô">Avó / Avô</option>
+                    <option value="Avo/Avo">Avo / Avo</option>
                     <option value="Tio/Tia">Tio / Tia</option>
-                    <option value="Responsável Legal">Responsável Legal</option>
+                    <option value="Responsavel Legal">Responsavel Legal</option>
                   </select>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] uppercase font-black tracking-wider text-slate-500">Telefone do Responsável *</label>
+                  <label className="text-[10px] uppercase font-black tracking-wider text-slate-500">Telefone do Responsavel *</label>
                   <input
                     type="text"
                     required
@@ -3730,7 +3730,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
 
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <label className="text-[10px] uppercase font-black tracking-wider text-slate-500">Alergias (Opcional - separar por vírgula)</label>
+                  <label className="text-[10px] uppercase font-black tracking-wider text-slate-500">Alergias (Opcional - separar por virgula)</label>
                   <VoiceInput 
                     onTranscript={text => setNewStudentAllergiesInput(prev => prev ? prev + ', ' + text : text)} 
                     size="sm"
@@ -3738,7 +3738,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 </div>
                 <input
                   type="text"
-                  placeholder="Ex: Glúten, Lactose, Corante Vermelho"
+                  placeholder="Ex: Gluten, Lactose, Corante Vermelho"
                   value={newStudentAllergiesInput}
                   onChange={e => setNewStudentAllergiesInput(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50 text-slate-800"
@@ -3747,7 +3747,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
 
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <label className="text-[10px] uppercase font-black tracking-wider text-slate-500">Condições / Cuidados Especiais (Opcional - separar por vírgula)</label>
+                  <label className="text-[10px] uppercase font-black tracking-wider text-slate-500">Condicoes / Cuidados Especiais (Opcional - separar por virgula)</label>
                   <VoiceInput 
                     onTranscript={text => setNewStudentConditionsInput(prev => prev ? prev + ', ' + text : text)} 
                     size="sm"
@@ -3755,7 +3755,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 </div>
                 <input
                   type="text"
-                  placeholder="Ex: Asma (bombinha de ar), Pele sensível"
+                  placeholder="Ex: Asma (bombinha de ar), Pele sensivel"
                   value={newStudentConditionsInput}
                   onChange={e => setNewStudentConditionsInput(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50 text-slate-800"
@@ -3764,7 +3764,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
 
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <label className="text-[10px] uppercase font-black tracking-wider text-slate-500">Plano de Cuidado Especial / Recomendações (Opcional)</label>
+                  <label className="text-[10px] uppercase font-black tracking-wider text-slate-500">Plano de Cuidado Especial / Recomendacoes (Opcional)</label>
                   <VoiceInput 
                     onTranscript={text => setNewStudentCarePlanInput(prev => prev ? prev + ' ' + text : text)} 
                     size="sm"
@@ -3772,7 +3772,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 </div>
                 <textarea
                   rows={2.5}
-                  placeholder="Ex: Evitar que corra excessivamente devido à asma e hidratar com maior frequência."
+                  placeholder="Ex: Evitar que corra excessivamente devido a asma e hidratar com maior frequencia."
                   value={newStudentCarePlanInput}
                   onChange={e => setNewStudentCarePlanInput(e.target.value)}
                   className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-slate-50 text-slate-800"
@@ -3874,7 +3874,7 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
             </div>
 
             <p className="text-xs text-slate-500 font-semibold leading-relaxed">
-              Você está prestes a excluir o cadastro de <strong>{deleteStudentOptions.studentName}</strong>. 
+              Voce esta prestes a excluir o cadastro de <strong>{deleteStudentOptions.studentName}</strong>. 
               Por favor, selecione como deseja gerenciar os registros anteriores deste aluno:
             </p>
 
@@ -3888,10 +3888,10 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 <span className="text-xl shrink-0 mt-0.5"> </span>
                 <div>
                   <h4 className="text-xs font-black text-indigo-900 group-hover:text-indigo-950">
-                    Opção 1: Excluir Cadastro (Manter Histórico)
+                    Opcao 1: Excluir Cadastro (Manter Historico)
                   </h4>
                   <p className="text-[10px] text-indigo-700/80 font-bold leading-normal mt-1">
-                    Remove a ficha ativa do aluno das turmas e diários. Porém, todo o histórico anterior de relatórios de turnos, sono, alimentação e medicamentos continuará salvo para consultas estatísticas e auditorias da escola.
+                    Remove a ficha ativa do aluno das turmas e diarios. Porem, todo o historico anterior de relatorios de turnos, sono, alimentacao e medicamentos continuara salvo para consultas estatisticas e auditorias da escola.
                   </p>
                 </div>
               </button>
@@ -3905,10 +3905,10 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                 <span className="text-xl shrink-0 mt-0.5"> </span>
                 <div>
                   <h4 className="text-xs font-black text-rose-900 group-hover:text-rose-950">
-                    Opção 2: Excluir Tudo (Limpar Histórico Completo)
+                    Opcao 2: Excluir Tudo (Limpar Historico Completo)
                   </h4>
                   <p className="text-[10px] text-rose-700/80 font-bold leading-normal mt-1">
-                    Apaga permanentemente o cadastro do aluno e limpa do banco de dados qualquer registro de sono, fraldas, refeições, medicações ou incidentes associados a ele. Ação definitiva e irreversível.
+                    Apaga permanentemente o cadastro do aluno e limpa do banco de dados qualquer registro de sono, fraldas, refeicoes, medicacoes ou incidentes associados a ele. Acao definitiva e irreversivel.
                   </p>
                 </div>
               </button>
@@ -3965,11 +3965,11 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                     <img src={assignedTeacher.foto} alt={assignedTeacher.nome} className="w-10 h-10 rounded-full object-cover border border-indigo-200" referrerPolicy="no-referrer" />
                   ) : (
                     <div className="w-10 h-10 rounded-full bg-indigo-200 text-indigo-800 flex items-center justify-center font-black">
-                       🏫
+                         
                     </div>
                   )}
                   <div>
-                    <p className="text-[10px] font-extrabold text-indigo-600 uppercase tracking-wider">Educadora Responsável</p>
+                    <p className="text-[10px] font-extrabold text-indigo-600 uppercase tracking-wider">Educadora Responsavel</p>
                     <p className="font-extrabold text-slate-800">{assignedTeacher ? assignedTeacher.nome : 'Educadora da Turma'}</p>
                   </div>
                 </div>
@@ -3979,14 +3979,14 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
             <form onSubmit={handleVerifyRoomPin} className="space-y-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-700 block text-center">
-                  Digite o PIN de Segurança (4 dígitos) para liberar a sala:
+                  Digite o PIN de Seguranca (4 digitos) para liberar a sala:
                 </label>
                 <input
                   type="password"
                   maxLength={4}
                   pattern="[0-9]*"
                   inputMode="numeric"
-                  placeholder="••••"
+                  placeholder="    "
                   value={roomPinInput}
                   onChange={e => {
                     setRoomPinInput(e.target.value.replace(/\D/g, ''));
@@ -4003,9 +4003,9 @@ Desejamos um excelente dia e esperamos vê-lo(a) de volta em breve! Qualquer dú
                   </p>
                 ) : (
                   <p className="text-[10px] text-slate-500 font-semibold text-center leading-normal">
-                      Proteção de Segurança: Insira o PIN da educadora para ter acesso a esta sala. <br />
+                      Protecao de Seguranca: Insira o PIN da educadora para ter acesso a esta sala. <br />
                     <span className="text-indigo-600 font-black">
-                      Dica de Simulação: Digite "3031" (Diretora Nilva), "9181" (Dev Djalma) ou o PIN da educadora.
+                      Dica de Simulacao: Digite "3031" (Diretora Nilva), "9181" (Dev Djalma) ou o PIN da educadora.
                     </span>
                   </p>
                 )}

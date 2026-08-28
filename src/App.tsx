@@ -58,7 +58,7 @@ export default function App() {
   const [usuarioAtual, setUsuarioAtual] = useState<Usuario | null>(null);
   const [idosoAtual, setIdosoAtual] = useState<Idoso | null>(null);
   
-  // Modo de aplicativo: Idoso (Anjo Cuidador), Pré-escolar (Anjinho Escolar) ou Fundamental (Ensino Fundamental I)
+  // Modo de aplicativo: Idoso (Anjo Cuidador), Pre-escolar (Anjinho Escolar) ou Fundamental (Ensino Fundamental I)
   const [appMode, setAppMode] = useState<'idoso' | 'escolar_infantil' | 'escolar_fundamental'>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -98,7 +98,7 @@ export default function App() {
     return localStorage.getItem(`anjo_brand_slogan_${mode}`) || '';
   });
 
-  // Controle de PIN de segurança para trancamento do Modo Escolar e Admin
+  // Controle de PIN de seguranca para trancamento do Modo Escolar e Admin
   const [showPinModal, setShowPinModal] = useState(false);
   const [pinValue, setPinValue] = useState('');
   const [pinError, setPinError] = useState('');
@@ -233,7 +233,7 @@ export default function App() {
 
   // Initialize DB once on boot
   useEffect(() => {
-    console.log('✅ App JS carregado no dispositivo:', new Date().toISOString());
+    console.log('[OK] App JS carregado no dispositivo:', new Date().toISOString());
     initializeDB();
     // startFirebaseSync(); // Temporarily disabled to rescue login
     
@@ -370,8 +370,8 @@ export default function App() {
       // If user is a teacher with classroom restrictions, enforce classroom matching
       if ((loggedUser.tipo === 'cuidador' || loggedUser.tipo === 'profissional' || loggedUser.tipo === 'professor' || loggedUser.tipo === 'professora' || loggedUser.tipo === 'educador' || loggedUser.tipo === 'educadora' || isStaffUser(loggedUser)) && loggedUser.salaAula && loggedUser.salaAula !== 'Todas') {
         const getStudentClassroomLocal = (name: string): string => {
-          if (name.includes('Berçário I')) return 'Berçário I';
-          if (name.includes('Berçário II')) return 'Berçário II';
+          if (name.includes('Bercario I')) return 'Bercario I';
+          if (name.includes('Bercario II')) return 'Bercario II';
           if (name.includes('Maternal II')) return 'Maternal II';
           if (name.includes('Maternal I')) return 'Maternal I';
           if (name.includes('Jardim II')) return 'Jardim II';
@@ -450,16 +450,16 @@ export default function App() {
     // Parse campaign tracking referrers for special welcoming animations
     const ref = params.get('ref');
     if (ref) {
-      let canalAmigavel = 'Canal de Divulgação';
-      if (ref === 'recepcao') canalAmigavel = 'Recepção Parceira / Clínica';
+      let canalAmigavel = 'Canal de Divulgacao';
+      if (ref === 'recepcao') canalAmigavel = 'Recepcao Parceira / Clinica';
       if (ref === 'panfleto') canalAmigavel = 'Panfleto Comercial (Pix)';
-      if (ref === 'parceiros') canalAmigavel = 'Grupo de Parceiros Clínicos';
+      if (ref === 'parceiros') canalAmigavel = 'Grupo de Parceiros Clinicos';
       
       setTimeout(() => {
         setNotifPush({
           visible: true,
           title: "  Voucher de Parceria Ativado!",
-          message: `Código de rastreamento: "${ref.toUpperCase()}". Carregamos o modo ideal para você com suporte de faturamento estendido!`
+          message: `Codigo de rastreamento: "${ref.toUpperCase()}". Carregamos o modo ideal para voce com suporte de faturamento estendido!`
         });
       }, 2000);
     }
@@ -586,7 +586,7 @@ export default function App() {
     }
 
     // 0. Direct high-priority mapping for mock users to ensure 100% accurate profile sync
-    // Berçário I - A (5 Alunos & Pais)
+    // Bercario I - A (5 Alunos & Pais)
     if (user.id === 'user_mae_clarice') {
       const mariana = candidates.find(s => s.id === 'aluno_1' || s.nome.toLowerCase().includes('mariana'));
       if (mariana) return mariana;
@@ -604,7 +604,7 @@ export default function App() {
       if (bernardo) return bernardo;
     }
     if (user.id === 'user_mae_camila') {
-      const cecilia = candidates.find(s => s.id === 'aluno_5' || s.nome.toLowerCase().includes('cecília') || s.nome.toLowerCase().includes('cecilia'));
+      const cecilia = candidates.find(s => s.id === 'aluno_5' || s.nome.toLowerCase().includes('cecilia') || s.nome.toLowerCase().includes('cecilia'));
       if (cecilia) return cecilia;
     }
     // Maternal I - A (5 Alunos & Pais)
@@ -630,14 +630,14 @@ export default function App() {
     }
     // Educadoras
     if (user.id === 'user_cuidador_1') {
-      const ber1 = candidates.find(s => s.salaAula === 'Berçário I - A' || s.id === 'aluno_1');
+      const ber1 = candidates.find(s => s.salaAula === 'Bercario I - A' || s.id === 'aluno_1');
       if (ber1) return ber1;
     }
     if (user.id === 'user_cuidador_2') {
       const mat1 = candidates.find(s => s.salaAula === 'Maternal I - A' || s.id === 'aluno_6');
       if (mat1) return mat1;
     }
-    // Gestão e Direção
+    // Gestao e Direcao
     if (user.id === 'user_admin' || user.id === 'user_coordenador' || user.id === 'user_desenvolvedor_djalma') {
       if (!isEscolarMode) {
         const maria = candidates.find(s => s.id === 'idoso_maria');
@@ -654,12 +654,12 @@ export default function App() {
       return r.toLowerCase()
         .replace(/maternal\s*1\b/g, 'maternal i')
         .replace(/maternal\s*2\b/g, 'maternal ii')
-        .replace(/berçário\s*1\b/g, 'berçário i')
-        .replace(/bercario\s*1\b/g, 'berçário i')
-        .replace(/berçário\s*2\b/g, 'berçário ii')
-        .replace(/bercario\s*2\b/g, 'berçário ii')
-        .replace(/berçário\s*3\b/g, 'berçário iii')
-        .replace(/bercario\s*3\b/g, 'berçário iii')
+        .replace(/bercario\s*1\b/g, 'bercario i')
+        .replace(/bercario\s*1\b/g, 'bercario i')
+        .replace(/bercario\s*2\b/g, 'bercario ii')
+        .replace(/bercario\s*2\b/g, 'bercario ii')
+        .replace(/bercario\s*3\b/g, 'bercario iii')
+        .replace(/bercario\s*3\b/g, 'bercario iii')
         .replace(/jardim\s*1\b/g, 'jardim i')
         .replace(/jardim\s*2\b/g, 'jardim ii')
         .replace(/[\s\-\._]+/g, '');
@@ -687,7 +687,7 @@ export default function App() {
       const baseGroupStudent = candidates.find(s => {
         const sRoom = s.salaAula || s.quarto || (s as any).sala || '';
         return loggedRooms.some(room => {
-          const baseGroups = ['Berçário I', 'Berçário II', 'Maternal I', 'Maternal II', 'Jardim I', 'Jardim II', '1º Ano', '5º Ano'];
+          const baseGroups = ['Bercario I', 'Bercario II', 'Maternal I', 'Maternal II', 'Jardim I', 'Jardim II', '1o Ano', '5o Ano'];
           for (const group of baseGroups) {
             if ((sRoom.includes(group) || s.nome.includes(group)) && room.includes(group)) {
               return true;
@@ -749,8 +749,8 @@ export default function App() {
       idLower.includes('idoso_') ||
       nameLower.includes('idoso') ||
       nameLower.includes('dona maria') ||
-      nameLower.includes('seu joão') ||
-      nameLower.includes('sr. joão') ||
+      nameLower.includes('seu joao') ||
+      nameLower.includes('sr. joao') ||
       uParentesco.includes('neto') ||
       (uParentesco.includes('idoso') && !idLower.startsWith('aluno_'))
     ) {
@@ -797,11 +797,11 @@ export default function App() {
 
     if (isSchoolUser) {
       if (
-        user.salaAula?.includes('1º') || 
-        user.salaAula?.includes('2º') || 
-        user.salaAula?.includes('3º') || 
-        user.salaAula?.includes('4º') || 
-        user.salaAula?.includes('5º') || 
+        user.salaAula?.includes('1o') || 
+        user.salaAula?.includes('2o') || 
+        user.salaAula?.includes('3o') || 
+        user.salaAula?.includes('4o') || 
+        user.salaAula?.includes('5o') || 
         user.salaAula?.toLowerCase().includes('fundamental') || 
         idLower.includes('fun') ||
         idLower.includes('prof_fun')
@@ -810,9 +810,9 @@ export default function App() {
       }
       if (
         user.salaAula?.toLowerCase().includes('maternal') || 
-        user.salaAula?.toLowerCase().includes('berçário') || 
         user.salaAula?.toLowerCase().includes('bercario') || 
-        user.salaAula?.toLowerCase().includes('pré') || 
+        user.salaAula?.toLowerCase().includes('bercario') || 
+        user.salaAula?.toLowerCase().includes('pre') || 
         user.salaAula?.toLowerCase().includes('pre') || 
         user.salaAula?.toLowerCase().includes('infantil') ||
         idLower.includes('maternal') ||
@@ -886,7 +886,7 @@ export default function App() {
 
       setKeyTrigger(prev => prev + 1);
     } catch (err: any) {
-      alert('Erro inesperado ao iniciar a sessão: ' + err.message);
+      alert('Erro inesperado ao iniciar a sessao: ' + err.message);
     }
   };
 
@@ -970,7 +970,7 @@ export default function App() {
     }
   };
 
-  // Adaptação dos dados de Idoso / Aluno com base no modo ativo
+  // Adaptacao dos dados de Idoso / Aluno com base no modo ativo
   const getActiveIdoso = (): Idoso | null => {
     if (!idosoAtual) return null;
     const isEscolar = appMode === 'escolar_infantil' || appMode === 'escolar_fundamental';
@@ -1012,13 +1012,13 @@ export default function App() {
     const nameLower = (usuarioAtual.nome || '').toLowerCase();
     const idLower = (usuarioAtual.id || '').toLowerCase();
 
-    // 1. Explicit Family members (Mãe, Pai, Familiar, Convidado, Responsável)
+    // 1. Explicit Family members (Mae, Pai, Familiar, Convidado, Responsavel)
     if (
       uType === 'familiar' || 
       uType === 'familiar_convidado' || 
       uType === 'familiar_admin' || 
       uType === 'responsavel' ||
-      uParentesco.includes('mãe') || 
+      uParentesco.includes('mae') || 
       uParentesco.includes('mae') || 
       uParentesco.includes('pai') || 
       uParentesco.includes('familiar') ||
@@ -1037,13 +1037,13 @@ export default function App() {
         return {
           ...usuarioAtual,
           tipo: 'familiar_admin',
-          parentesco: usuarioAtual.parentesco || 'Responsável (Admin)'
+          parentesco: usuarioAtual.parentesco || 'Responsavel (Admin)'
         };
       }
       return {
         ...usuarioAtual,
         tipo: 'familiar',
-        parentesco: usuarioAtual.parentesco || (nameLower.includes('pai') ? 'Pai' : 'Mãe')
+        parentesco: usuarioAtual.parentesco || (nameLower.includes('pai') ? 'Pai' : 'Mae')
       };
     }
 
@@ -1056,11 +1056,11 @@ export default function App() {
     }
 
     // 3. Directors / Admin
-    if (uType === 'diretor' || uType === 'diretora' || (uType === 'admin' && !uParentesco.includes('mãe')) || nameLower.includes('diretor') || nameLower.includes('diretora') || nameLower.includes('direção') || nameLower.includes('nilva')) {
+    if (uType === 'diretor' || uType === 'diretora' || (uType === 'admin' && !uParentesco.includes('mae')) || nameLower.includes('diretor') || nameLower.includes('diretora') || nameLower.includes('direcao') || nameLower.includes('nilva')) {
       return {
         ...usuarioAtual,
         tipo: 'diretor',
-        parentesco: 'Direção'
+        parentesco: 'Direcao'
       };
     }
 
@@ -1075,15 +1075,15 @@ export default function App() {
     // 5. Teachers / Educators / Caregivers
     if (
       uType === 'professor' || uType === 'professora' || uType === 'educador' || uType === 'educadora' || uType === 'cuidador' ||
-      nameLower.includes('profª') || nameLower.includes('prof.') || nameLower.includes('prof ') || nameLower.includes('professor') || nameLower.includes('educad') || nameLower.includes('cuidador') ||
+      nameLower.includes('profa') || nameLower.includes('prof.') || nameLower.includes('prof ') || nameLower.includes('professor') || nameLower.includes('educad') || nameLower.includes('cuidador') ||
       idLower === 'user_cuidador_1' || idLower.includes('cuidador_fun') || idLower.includes('cuidador_m') || idLower.includes('cuidador_j') || idLower.includes('cuidador_b')
     ) {
-      const isCustomizedName = usuarioAtual.nome !== 'Ana Silva (Cuidadora)' && usuarioAtual.nome !== 'Profª Ana Silva (Educadora)';
+      const isCustomizedName = usuarioAtual.nome !== 'Ana Silva (Cuidadora)' && usuarioAtual.nome !== 'Profa Ana Silva (Educadora)';
       return {
         ...usuarioAtual,
-        nome: idLower === 'user_cuidador_1' ? (isCustomizedName ? usuarioAtual.nome : (isEscolar ? 'Profª Ana Silva (Educadora)' : 'Ana Silva (Cuidadora)')) : usuarioAtual.nome,
+        nome: idLower === 'user_cuidador_1' ? (isCustomizedName ? usuarioAtual.nome : (isEscolar ? 'Profa Ana Silva (Educadora)' : 'Ana Silva (Cuidadora)')) : usuarioAtual.nome,
         tipo: isEscolar ? 'professor' : 'cuidador',
-        observacoes: usuarioAtual.observacoes || (isEscolar ? 'Professora licenciada em Pedagogia, responsável pela classe.' : 'Cuidadora técnica responsável.')
+        observacoes: usuarioAtual.observacoes || (isEscolar ? 'Professora licenciada em Pedagogia, responsavel pela classe.' : 'Cuidadora tecnica responsavel.')
       };
     }
 
@@ -1193,7 +1193,7 @@ export default function App() {
             id: 'log_' + Date.now() + '_bcast_active',
             idosoId: idosoAtual.id,
             familiarNome: `Pais de Todos os ${targetStudents.length} Alunos`,
-            telefoneDestino: '(Transmissão em Massa)',
+            telefoneDestino: '(Transmissao em Massa)',
             tipoCompromisso: titulo,
             mensagem: mensagem,
             status: 'enviada_whatsapp',
@@ -1209,11 +1209,11 @@ export default function App() {
         // Categorize the alert to match registered preferences:
         let alertProperty: 'atrasos' | 'medicamentos' | 'vitais' | 'resumo' = 'resumo';
         const lowerTitle = titulo.toLowerCase();
-        if (lowerTitle.includes('atras') || lowerTitle.includes('alerta importante') || lowerTitle.includes('crític')) {
+        if (lowerTitle.includes('atras') || lowerTitle.includes('alerta importante') || lowerTitle.includes('critic')) {
           alertProperty = 'atrasos';
-        } else if (lowerTitle.includes('medic') || lowerTitle.includes('reméd') || lowerTitle.includes('confirmada')) {
+        } else if (lowerTitle.includes('medic') || lowerTitle.includes('remed') || lowerTitle.includes('confirmada')) {
           alertProperty = 'medicamentos';
-        } else if (lowerTitle.includes('vital') || lowerTitle.includes('aferição') || lowerTitle.includes('pressão') || lowerTitle.includes('glic')) {
+        } else if (lowerTitle.includes('vital') || lowerTitle.includes('afericao') || lowerTitle.includes('pressao') || lowerTitle.includes('glic')) {
           alertProperty = 'vitais';
         } else {
           alertProperty = 'resumo';
@@ -1292,9 +1292,9 @@ export default function App() {
             }
 
             const responseData = await response.json();
-            console.log('✅ Mensagem real de WhatsApp enviada com sucesso via Netlify:', responseData);
+            console.log('[OK] Mensagem real de WhatsApp enviada com sucesso via Netlify:', responseData);
           } catch (err: any) {
-            console.warn('ℹ Função serverless local não encontrada ou offline. Erro:', err.message);
+            console.warn('  Funcao serverless local nao encontrada ou offline. Erro:', err.message);
           }
         });
       }
@@ -1354,7 +1354,7 @@ export default function App() {
     uRoleLower === 'professor' || uRoleLower === 'professora' || uRoleLower === 'cuidador' || uRoleLower === 'educador' || uRoleLower === 'educadora' ||
     uRoleLower === 'profissional';
 
-// Gerador assíncrono de JWT HMAC-SHA256 com Web Crypto API para autenticação no SSO da Aura
+// Gerador assincrono de JWT HMAC-SHA256 com Web Crypto API para autenticacao no SSO da Aura
 const generateAuraJwtAsync = async (payload: any, secret: string): Promise<string> => {
   const header = { alg: "HS256", typ: "JWT" };
   const b64Url = (str: string) =>
@@ -1395,14 +1395,14 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
     const now = Math.floor(Date.now() / 1000);
 
     const cleanName = usuarioAdaptado?.nome
-      .replace(/ \((Educadora|Cuidadora|Mãe|Pai|Familiar|Médico|Pediatra|Profissional|Responsável|Diretor|Diretora|Direção|Administrador|Coordenador|Coordenadora|Desenvolvedor|Dev)\)/gi, '')
-      .replace(/Profª /g, '')
+      .replace(/ \((Educadora|Cuidadora|Mae|Pai|Familiar|Medico|Pediatra|Profissional|Responsavel|Diretor|Diretora|Direcao|Administrador|Coordenador|Coordenadora|Desenvolvedor|Dev)\)/gi, '')
+      .replace(/Profa /g, '')
       .replace(/Prof\. /g, '')
-      .replace(/Drª\.? /g, '')
+      .replace(/Dra\.? /g, '')
       .replace(/Dr\.? /g, '')
-      .trim() || 'Usuário';
+      .trim() || 'Usuario';
 
-    // Determinar o cargo do usuário dentre os cargos oficiais da Aura: professor, coordenador, diretor, desenvolvedor, profissional
+    // Determinar o cargo do usuario dentre os cargos oficiais da Aura: professor, coordenador, diretor, desenvolvedor, profissional
     let mappedType = 'professor';
     let userCargo = 'Professor Titular';
     let userPersona = 'professor';
@@ -1445,12 +1445,12 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
       userNameLower.includes('coordenad')
     ) {
       mappedType = 'coordenador';
-      userCargo = isEscolar ? 'Coordenador(a) Pedagógico(a)' : 'Coordenador(a) de Equipe';
+      userCargo = isEscolar ? 'Coordenador(a) Pedagogico(a)' : 'Coordenador(a) de Equipe';
       userPersona = 'coordenador';
       userRole = 'coordenador';
     } else if (
       userTypeLower === 'profissional' ||
-      userNameLower.includes('médic') ||
+      userNameLower.includes('medic') ||
       userNameLower.includes('medico') ||
       userNameLower.includes('fono') ||
       userNameLower.includes('psico') ||
@@ -1458,7 +1458,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
       userNameLower.includes('pediatra')
     ) {
       mappedType = 'profissional';
-      userCargo = usuarioAdaptado?.parentesco || 'Profissional de Saúde / Especialista';
+      userCargo = usuarioAdaptado?.parentesco || 'Profissional de Saude / Especialista';
       userPersona = 'profissional';
       userRole = 'profissional';
     } else if (
@@ -1478,7 +1478,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
     } else if (usuarioAdaptado?.tipo === 'familiar' || userTypeLower === 'mae' || userTypeLower === 'pai') {
       const isPai = usuarioAdaptado?.parentesco?.toLowerCase().includes('pai') || userNameLower.includes('pai');
       mappedType = isPai ? 'pai' : 'mae';
-      userCargo = usuarioAdaptado?.parentesco || (isPai ? 'Pai' : 'Mãe / Responsável');
+      userCargo = usuarioAdaptado?.parentesco || (isPai ? 'Pai' : 'Mae / Responsavel');
       userPersona = mappedType;
       userRole = 'familiar';
     } else {
@@ -1506,7 +1506,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
         studentNome = match[1].trim();
         const details = match[2].split(' - ').map(s => s.trim());
         const lastPart = details[details.length - 1];
-        if (/(\d+\s*(Meses|Mês|Anos|Ano))/i.test(lastPart)) {
+        if (/(\d+\s*(Meses|Mes|Anos|Ano))/i.test(lastPart)) {
           studentAge = lastPart;
           studentRoom = details.slice(0, details.length - 1).join(' - ');
         } else {
@@ -1555,11 +1555,11 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
           historyText = recentLogs.join(' | ');
         }
       } catch (err) {
-        console.warn('Erro ao carregar histórico para Aura AI:', err);
+        console.warn('Erro ao carregar historico para Aura AI:', err);
       }
     }
 
-    // Return URL de navegação de volta para o Anjinho
+    // Return URL de navegacao de volta para o Anjinho
     const currentUrl = (() => {
       try {
         if (typeof window !== 'undefined' && window.location) {
@@ -1605,7 +1605,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
       escolaId: escolaId,
       school_id: escolaId,
       schoolId: escolaId,
-      greeting_hint: `Olá, ${cleanName}! Como ${userCargo}, estou à sua disposição.`,
+      greeting_hint: `Ola, ${cleanName}! Como ${userCargo}, estou a sua disposicao.`,
       turma: activeTurma,
       turma_id: activeTurma,
       turmaId: activeTurma,
@@ -1635,8 +1635,8 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
       returnUrl: currentUrl
     };
 
-    // Incluir par no nível raiz para que a API da Aura monte o redirect "next" com query params,
-    // garantindo que a validação x() do contexto da Aura seja satisfeita ao abrir a tela do chat /app
+    // Incluir par no nivel raiz para que a API da Aura monte o redirect "next" com query params,
+    // garantindo que a validacao x() do contexto da Aura seja satisfeita ao abrir a tela do chat /app
     const payload = {
       userId: usuarioAdaptado?.id || 'user_01',
       sub: usuarioAdaptado?.id || 'user_01',
@@ -1661,7 +1661,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
       escolaId: escolaId,
       school_id: escolaId,
       schoolId: escolaId,
-      greeting_hint: `Olá, ${cleanName}! Como ${userCargo}, estou à sua disposição.`,
+      greeting_hint: `Ola, ${cleanName}! Como ${userCargo}, estou a sua disposicao.`,
       turma: activeTurma,
       turma_id: activeTurma,
       turmaId: activeTurma,
@@ -1700,7 +1700,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
     try {
       const jwtToken = await getAuraTokenAsync();
 
-      // Formulário POST din enviado para https://anjinha-aura.lovable.app/api/sso
+      // Formulario POST din enviado para https://anjinha-aura.lovable.app/api/sso
       const form = document.createElement('form');
       form.method = 'POST';
       form.action = 'https://anjinha-aura.lovable.app/api/sso';
@@ -1742,7 +1742,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
   const allNavLinks = [
     { 
       id: 'dashboard', 
-      label: isEscolar ? 'Diário Escolar  ' : 'Início  ', 
+      label: isEscolar ? 'Diario Escolar  ' : 'Inicio  ', 
       icon: isEscolar ? <BookOpen className="w-4 h-4 text-indigo-400 font-bold" /> : <Activity className="w-4 h-4" /> 
     },
     ...(isEscolar && !isFamiliarUser ? [{
@@ -1752,22 +1752,22 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
     }] : []),
     { 
       id: 'routine', 
-      label: isEscolar ? 'Diário de Rotina ⏱' : 'Rotina Diária', 
+      label: isEscolar ? 'Diario de Rotina  ' : 'Rotina Diaria', 
       icon: <Clock className="w-4 h-4 text-amber-500 font-bold" /> 
     },
     ...(!isFamiliarConvidado ? [{ 
       id: 'medicacoes', 
-      label: isEscolar ? 'Autorizações ✍' : 'Remédios', 
+      label: isEscolar ? 'Autorizacoes  ' : 'Remedios', 
       icon: <Heart className="w-4 h-4 text-rose-500 fill-rose-500/10" /> 
     }] : []),
     { 
       id: 'agenda', 
-      label: isEscolar ? 'Agenda  ' : 'Agenda Médica', 
+      label: isEscolar ? 'Agenda  ' : 'Agenda Medica', 
       icon: <Calendar className="w-4 h-4 text-blue-500 font-bold" /> 
     },
     ...(isEscolar && !isFamiliarUser ? [{
       id: 'coordenacao',
-      label: 'Coordenação  🏫',
+      label: 'Coordenacao    ',
       icon: <GraduationCap className="w-4 h-4 text-indigo-400 font-bold" />
     }] : []),
     { 
@@ -1782,12 +1782,12 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
     }] : []),
     { 
       id: 'reports', 
-      label: isFundamental ? 'Boletins & Foco' : (isEscolar ? 'Boletins & Relatórios  ' : 'Relatórios'), 
+      label: isFundamental ? 'Boletins & Foco' : (isEscolar ? 'Boletins & Relatorios  ' : 'Relatorios'), 
       icon: <Sliders className="w-4 h-4 text-purple-400 font-bold" /> 
     },
     { 
       id: 'family', 
-      label: isEscolar ? 'Famílias    ' : 'Família', 
+      label: isEscolar ? 'Familias    ' : 'Familia', 
       icon: <Users className="w-4 h-4 text-indigo-400 font-bold" /> 
     },
     { 
@@ -1797,7 +1797,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
     },
     ...(isEscolar && !isFamiliarUser ? [{ 
       id: 'director', 
-      label: 'Direção Escolar  ', 
+      label: 'Direcao Escolar  ', 
       icon: <ShieldCheck className="w-4 h-4 text-amber-500 font-bold" /> 
     }] : []),
     { 
@@ -1807,12 +1807,12 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
     },
     { 
       id: 'settings', 
-      label: 'Configurar ⚙', 
+      label: 'Configurar  ', 
       icon: <Sliders className="w-4 h-4 text-slate-500 font-bold" /> 
     },
     { 
       id: 'toggle_mode_tab', 
-      label: isEscolar ? 'Modo Sênior  ' : 'Modo Escola  ', 
+      label: isEscolar ? 'Modo Senior  ' : 'Modo Escola  ', 
       icon: isEscolar ? <Baby className="w-4 h-4 text-amber-400 font-bold" /> : <GraduationCap className="w-4 h-4 text-amber-300 font-bold" /> 
     },
   ];
@@ -1828,14 +1828,14 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
       {notifPush?.visible && (
         <div className="fixed top-4 left-4 right-4 md:left-auto md:right-4 md:max-w-md bg-zinc-900 text-white p-4 rounded-2xl shadow-2xl z-50 border border-zinc-800 flex items-start gap-3 animate-bounce cursor-pointer hover:bg-zinc-850 transition-all transform hover:scale-101"
              onClick={() => { setActiveScreen('alerts'); setNotifPush(null); }}
-             title="Clique para ir à Central de WhatsApp"
+             title="Clique para ir a Central de WhatsApp"
         >
           <div className="p-2.5 bg-emerald-600 text-white rounded-xl shrink-0">
             <MessageSquare className="w-5 h-5 fill-current text-white" />
           </div>
           <div className="flex-1 min-w-0 space-y-1">
             <div className="flex items-center justify-between">
-              <span className="text-[10px] font-black uppercase text-emerald-400 tracking-widest">Notificação de Envio</span>
+              <span className="text-[10px] font-black uppercase text-emerald-400 tracking-widest">Notificacao de Envio</span>
               <span className="text-[9px] text-[#A1A1AA] font-semibold">agora mesmo</span>
             </div>
             <strong className="text-xs font-bold text-white block">{notifPush.title}</strong>
@@ -1855,7 +1855,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
                 className="bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-[10px] px-2.5 py-1 text-white font-black rounded-lg transition-colors flex items-center gap-1 cursor-pointer border border-emerald-500/20"
                 title="Clique para abrir a conversa real no WhatsApp e enviar o texto"
               >
-                  Enviar WhatsApp p/ {getNotificationRecipient().nome ? getNotificationRecipient().nome.split(' ')[0] : 'Família'} de verdade
+                  Enviar WhatsApp p/ {getNotificationRecipient().nome ? getNotificationRecipient().nome.split(' ')[0] : 'Familia'} de verdade
               </button>
             </div>
           </div>
@@ -1902,10 +1902,10 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
               </h1>
               <p className="text-[10px] sm:text-[11px] text-white/95 font-medium leading-tight tracking-normal mt-0.5 block">
                 {instSlogan || (isFundamental
-                  ? 'Onde a educação e o foco se encontram'
+                  ? 'Onde a educacao e o foco se encontram'
                   : isEscolar
-                    ? 'Onde a inf é registrada para sempre'
-                    : 'Acompanhamento Sênior Inteligente')}
+                    ? 'Onde a inf e registrada para sempre'
+                    : 'Acompanhamento Senior Inteligente')}
               </p>
             </div>
           </div>
@@ -1947,7 +1947,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
                     ? 'bg-white text-indigo-700 border-white shadow-sm font-black'
                     : 'bg-white/10 hover:bg-white/20 text-white border-white/20'
                 }`}
-                title="Mais opções e relatórios"
+                title="Mais opcoes e relatorios"
               >
                 <Menu className="w-4 h-4" />
                 <span>Mais</span>
@@ -1963,7 +1963,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
                   <div className="absolute right-0 top-full mt-2 w-64 bg-white text-slate-800 rounded-2xl shadow-2xl border border-slate-200/80 p-2 z-50 animate-fade-in divide-y divide-slate-100">
                     <div className="py-1">
                       <div className="px-3 py-1.5 text-[10px] font-black uppercase text-slate-400 tracking-wider">
-                        Outros Módulos & Gestão
+                        Outros Modulos & Gestao
                       </div>
                       {moreNavLinks.map(m => {
                         const active = activeScreen === m.id;
@@ -2004,17 +2004,17 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
                 title="Abrir o assistente inteligente Anjinha Aura em nova aba"
               >
                 <Sparkles className="w-4 h-4 text-white fill-white/20" />
-                <span className="hidden sm:inline">Anjinha Aura ✨</span>
-                <span className="sm:hidden">Aura ✨</span>
+                <span className="hidden sm:inline">Anjinha Aura  </span>
+                <span className="sm:hidden">Aura  </span>
               </a>
             )}
 
             <div className="hidden md:flex flex-col text-right leading-none">
               <span className="text-xs font-bold text-white flex items-center justify-end gap-1">
                 {localStorage.getItem('anjo_master_demonstracao_ativo') === 'true' && (
-                  <span className="text-[10px]" title="Acesso Total de Demonstração (PIN Dev 9181 / Direção 3031)"> </span>
+                  <span className="text-[10px]" title="Acesso Total de Demonstracao (PIN Dev 9181 / Direcao 3031)"> </span>
                 )}
-                {usuarioAdaptado ? usuarioAdaptado.nome.replace(/ \((Educadora|Cuidadora|Mãe|Pai|Familiar|Médico|Pediatra|Profissional)\)/g, '') : ''}
+                {usuarioAdaptado ? usuarioAdaptado.nome.replace(/ \((Educadora|Cuidadora|Mae|Pai|Familiar|Medico|Pediatra|Profissional)\)/g, '') : ''}
               </span>
               <span className="text-[9px] uppercase font-black tracking-wider text-white/70 mt-0.5">
                 {localStorage.getItem('anjo_master_demonstracao_ativo') === 'true' 
@@ -2030,7 +2030,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
                         )
                     )
                 }
-                {usuarioAdaptado?.salaAula && ` · ${usuarioAdaptado.salaAula === 'Todas' ? 'Todas' : usuarioAdaptado.salaAula}`}
+                {usuarioAdaptado?.salaAula && `   ${usuarioAdaptado.salaAula === 'Todas' ? 'Todas' : usuarioAdaptado.salaAula}`}
               </span>
             </div>
             
@@ -2080,7 +2080,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
             <button
               onClick={handleLogout}
               className="flex p-2 hover:bg-white/10 text-white/80 hover:text-white rounded-xl transition-all cursor-pointer"
-              title="Voltar ao início de perfis"
+              title="Voltar ao inicio de perfis"
             >
               <LogOut className="w-5 h-5" />
             </button>
@@ -2112,7 +2112,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
             />
             <div className="leading-tight">
               <span className="text-xs font-bold text-white block">
-                {usuarioAdaptado?.nome.replace(/ \((Educadora|Cuidadora|Mãe|Pai|Familiar|Médico|Pediatra|Profissional)\)/g, '')}
+                {usuarioAdaptado?.nome.replace(/ \((Educadora|Cuidadora|Mae|Pai|Familiar|Medico|Pediatra|Profissional)\)/g, '')}
               </span>
               <span className="text-[9px] uppercase font-black tracking-wider text-white/70 block">
                 {localStorage.getItem('anjo_master_demonstracao_ativo') === 'true' ? 'Master (Acesso Total)' : getRoleLabel(usuarioAdaptado, isEscolar)}
@@ -2159,13 +2159,13 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
               title="Abrir assistente de IA em nova aba"
             >
               <Sparkles className="w-5 h-5 text-pink-400 font-bold" />
-              <span>Anjinha Aura ✨</span>
+              <span>Anjinha Aura  </span>
             </a>
           )}
 
           
           <div className="border-t border-white/10 my-2 pt-2.5 space-y-1">
-            <span className="text-[9px] text-white/50 uppercase font-bold tracking-wider px-3 block">Configurações Rápidas</span>
+            <span className="text-[9px] text-white/50 uppercase font-bold tracking-wider px-3 block">Configuracoes Rapidas</span>
             
             
             <button
@@ -2225,7 +2225,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
               </div>
               <div className="min-w-0 leading-tight">
                 <div className="text-[9.5px] uppercase font-black text-amber-300 tracking-wider flex items-center gap-1">
-                  <span>{isEscolar ? '  Criança/Aluno em Exibição:' : '  Assistido em Exibição:'}</span>
+                  <span>{isEscolar ? '  Crianca/Aluno em Exibicao:' : '  Assistido em Exibicao:'}</span>
                 </div>
                 <div className="text-xs sm:text-sm font-black text-white truncate flex items-center gap-2">
                   <span>{idosoAdaptado.nome.split(' (')[0]}</span>
@@ -2262,10 +2262,10 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
         {subscriptionStatus === 'atrasado' && usuarioAdaptado && usuarioAdaptado.tipo === 'admin' && (
           <div className="mb-6 p-4 bg-rose-50 border-2 border-rose-200 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-3 text-slate-800 animate-pulse">
             <div className="flex items-center gap-3">
-              <span className="text-2xl">⚠</span>
+              <span className="text-2xl">[!]</span>
               <div>
                 <strong className="text-sm font-bold text-rose-950 block">Mensalidade Pendente (R$ {subscriptionPrice.toFixed(2).replace('.', ',')})</strong>
-                <span className="text-xs text-rose-800 font-medium">Os familiares estão temporariamente com acesso suspenso até a confirmação de regularidade.</span>
+                <span className="text-xs text-rose-800 font-medium">Os familiares estao temporariamente com acesso suspenso ate a confirmacao de regularidade.</span>
               </div>
             </div>
             <button 
@@ -2282,7 +2282,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
           <div className="mb-6 p-3.5 bg-emerald-50 border border-emerald-250 rounded-2xl flex items-center gap-2 text-slate-800">
             <span className="text-emerald-600 font-bold shrink-0"> </span>
             <span className="text-xs text-emerald-800 font-semibold leading-normal">
-              <strong>Modo de Cuidado de Emergência Ativo:</strong> Mesmo com aviso financeiro pendente do idoso, seu login como cuidador continua 100% liberado para registrar remédios, refeições e sinais vitais. O cuidado físico e a segurança nunca param!
+              <strong>Modo de Cuidado de Emergencia Ativo:</strong> Mesmo com aviso financeiro pendente do idoso, seu login como cuidador continua 100% liberado para registrar remedios, refeicoes e sinais vitais. O cuidado fisico e a seguranca nunca param!
             </span>
           </div>
         )}
@@ -2464,10 +2464,10 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
       
       <footer className="py-4 border-t border-soft-gray shrink-0 text-center text-xs text-slate-500 font-medium animate-fade-in">
         {isFundamental
-          ? 'Anjinho Fundamental — Aprendizado, foco e desenvolvimento acompanhados de perto.'
+          ? 'Anjinho Fundamental - Aprendizado, foco e desenvolvimento acompanhados de perto.'
           : isEscolar
-            ? 'Anjinho Escolar — Cada dia vivido. Cada lembrança guardada.'
-            : 'Anjo Cuidador — Cuidado, presença e tranquilidade para quem você ama.'
+            ? 'Anjinho Escolar - Cada dia vivido. Cada lembranca guardada.'
+            : 'Anjo Cuidador - Cuidado, presenca e tranquilidade para quem voce ama.'
         }
       </footer>
 
@@ -2481,27 +2481,27 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
               </div>
               <div className="space-y-1">
                 <h3 className="text-base font-black text-slate-900 flex items-center gap-1.5 leading-tight">
-                  {pendingAction === 'toggle_mode' ? 'Acesso ao Modo Escolar' : pendingAction === 'view_director' ? 'Acesso à Direção Escolar' : 'Painel de Administrador Restrito'}
+                  {pendingAction === 'toggle_mode' ? 'Acesso ao Modo Escolar' : pendingAction === 'view_director' ? 'Acesso a Direcao Escolar' : 'Painel de Administrador Restrito'}
                 </h3>
                 <p className="text-[10px] font-black text-indigo-600 uppercase tracking-widest block">
-                  Segurança e Permissão de Escopo
+                  Seguranca e Permissao de Escopo
                 </p>
               </div>
             </div>
 
             <p className="text-xs text-slate-500 leading-relaxed font-semibold">
-              Você está tentando acessar uma {pendingAction === 'toggle_mode' ? 'funcionalidade comercial externa' : pendingAction === 'view_director' ? 'área da direção da escola' : 'área administrativa sensível'}. 
-              Seu usuário simulado selecionado no momento é <strong className="text-slate-800">{usuarioAtual?.nome}</strong> ({usuarioAtual?.tipo === 'cuidador' ? 'Cuidador de Idosos' : 'Membro da Família'}).
+              Voce esta tentando acessar uma {pendingAction === 'toggle_mode' ? 'funcionalidade comercial externa' : pendingAction === 'view_director' ? 'area da direcao da escola' : 'area administrativa sensivel'}. 
+              Seu usuario simulado selecionado no momento e <strong className="text-slate-800">{usuarioAtual?.nome}</strong> ({usuarioAtual?.tipo === 'cuidador' ? 'Cuidador de Idosos' : 'Membro da Familia'}).
             </p>
 
             <div className="p-3 bg-slate-50 border rounded-xl space-y-1">
-              <strong className="text-[11px] block font-extrabold text-slate-700">Por que isto está bloqueado?</strong>
+              <strong className="text-[11px] block font-extrabold text-slate-700">Por que isto esta bloqueado?</strong>
               <p className="text-[10px] text-slate-500 leading-snug">
                 {pendingAction === 'toggle_mode' 
-                  ? 'Para assegurar a máxima privacidade e evitar que cuidadores domésticos acessem agendas, fotos e boletins pedagógicos escolares de menores, o modo Anjinho Escolar é isolado contra acessos não autorizados.'
+                  ? 'Para assegurar a maxima privacidade e evitar que cuidadores domesticos acessem agendas, fotos e boletins pedagogicos escolares de menores, o modo Anjinho Escolar e isolado contra acessos nao autorizados.'
                   : pendingAction === 'view_director'
-                    ? 'O Painel da Direção Escolar contém dados sensíveis como o cadastro de turmas, alocação de professoras e personalização visual da escola (co-branding).'
-                    : 'O Painel de Auditoria Governamental da LGPD e as configurações de Mensalidades do plano são restritos apenas à titular administradora do plano (Clarice).'
+                    ? 'O Painel da Direcao Escolar contem dados sensiveis como o cadastro de turmas, alocacao de professoras e personalizacao visual da escola (co-branding).'
+                    : 'O Painel de Auditoria Governamental da LGPD e as configuracoes de Mensalidades do plano sao restritos apenas a titular administradora do plano (Clarice).'
                 }
               </p>
             </div>
@@ -2581,14 +2581,14 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
             }} className="space-y-3.5">
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-650 block">
-                  {pendingAction === 'view_director' ? 'Digite o PIN da Direção ou PIN Dev (9181) para Liberar:' : 'Digite o PIN do Administrador / Dev (9181) para Liberar:'}
+                  {pendingAction === 'view_director' ? 'Digite o PIN da Direcao ou PIN Dev (9181) para Liberar:' : 'Digite o PIN do Administrador / Dev (9181) para Liberar:'}
                 </label>
                 <input 
                   type="password"
                   maxLength={4}
                   pattern="[0-9]*"
                   inputMode="numeric"
-                  placeholder="••••"
+                  placeholder="    "
                   value={pinValue}
                   onChange={e => {
                     setPinValue(e.target.value.replace(/\D/g, ''));
@@ -2601,11 +2601,11 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
                 
                 {pinError ? (
                   <p className="text-[11px] text-rose-600 font-extrabold text-center">
-                    ❌ {pinError}
+                      {pinError}
                   </p>
                 ) : (
                   <p className="text-[10px] text-slate-400 font-semibold text-center leading-normal">
-                      Acesso Master & Direção: Digite o PIN de 4 dígitos para prosseguir. <br />
+                      Acesso Master & Direcao: Digite o PIN de 4 digitos para prosseguir. <br />
                     <span className="text-indigo-600 font-black">
                       {pendingAction === 'view_director' 
                         ? '  Dica de Acesso: Use o PIN Master Dev "9181" (Acesso Total) ou o PIN da Diretora Nilva "3031" para liberar!' 
@@ -2652,7 +2652,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
                 Seletor de Ambiente Inteligente
               </h3>
               <p className="text-xs sm:text-sm text-slate-500 max-w-2xl mx-auto leading-relaxed">
-                Olá, <strong className="text-slate-800">{usuarioAtual?.nome}</strong>! Como Administrador/Diretor, você possui privilégios de governança para gerenciar e alternar instantaneamente entre os perfis de atendimento ativos.
+                Ola, <strong className="text-slate-800">{usuarioAtual?.nome}</strong>! Como Administrador/Diretor, voce possui privilegios de governanca para gerenciar e alternar instantaneamente entre os perfis de atendimento ativos.
               </p>
             </div>
 
@@ -2674,17 +2674,17 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
                     <h4 className="font-extrabold text-sm text-slate-800 flex items-center gap-1.5">
                       Anjo Cuidador
                     </h4>
-                    <span className="text-[10px] uppercase font-black text-emerald-600 tracking-wider">Acompanhamento Sênior</span>
+                    <span className="text-[10px] uppercase font-black text-emerald-600 tracking-wider">Acompanhamento Senior</span>
                   </div>
                   <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
-                    Monitoramento de idosos, controle de remédios com alarmes, registro de sinais vitais, agenda médica e alertas instant de emergência no WhatsApp.
+                    Monitoramento de idosos, controle de remedios com alarmes, registro de sinais vitais, agenda medica e alertas instant de emergencia no WhatsApp.
                   </p>
                 </div>
                 <div className="w-full pt-2">
                   <span className={`text-[10px] font-black px-2.5 py-1.5 rounded-full block text-center ${
                     appMode === 'idoso' ? 'bg-emerald-600 text-white' : 'bg-slate-100 text-slate-600'
                   }`}>
-                    {appMode === 'idoso' ? 'Ambiente Ativo ✓' : 'Ativar Ambiente'}
+                    {appMode === 'idoso' ? 'Ambiente Ativo  ' : 'Ativar Ambiente'}
                   </span>
                 </div>
               </button>
@@ -2706,17 +2706,17 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
                     <h4 className="font-extrabold text-sm text-slate-800 flex items-center gap-1.5">
                       Anjinho Escolar
                     </h4>
-                    <span className="text-[10px] uppercase font-black text-indigo-600 tracking-wider">Educação Infantil (Berçário, Maternal e Pré)</span>
+                    <span className="text-[10px] uppercase font-black text-indigo-600 tracking-wider">Educacao Infantil (Bercario, Maternal e Pre)</span>
                   </div>
                   <p className="text-[11px] text-slate-500 leading-relaxed font-medium">
-                    Gestão para berçário, maternal e pré-escola. Caderneta digital de sonecas, trocas de fraldas, mamadeiras, hidratação, refeições e recados diários aos pais.
+                    Gestao para bercario, maternal e pre-escola. Caderneta digital de sonecas, trocas de fraldas, mamadeiras, hidratacao, refeicoes e recados diarios aos pais.
                   </p>
                 </div>
                 <div className="w-full pt-2">
                   <span className={`text-[10px] font-black px-2.5 py-1.5 rounded-full block text-center ${
                     appMode === 'escolar_infantil' || appMode === 'escolar_fundamental' ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600'
                   }`}>
-                    {appMode === 'escolar_infantil' || appMode === 'escolar_fundamental' ? 'Ambiente Ativo ✓' : 'Ativar Ambiente'}
+                    {appMode === 'escolar_infantil' || appMode === 'escolar_fundamental' ? 'Ambiente Ativo  ' : 'Ativar Ambiente'}
                   </span>
                 </div>
               </button>
@@ -2724,7 +2724,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
 
             <div className="pt-3 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] text-slate-400">
               <span className="font-semibold text-center sm:text-left leading-normal flex items-center gap-1">
-                  <span>Acesso seguro com privilégios de Direção Geral ativos.</span>
+                  <span>Acesso seguro com privilegios de Direcao Geral ativos.</span>
               </span>
               <button
                 onClick={() => setShowModeSelectionModal(false)}

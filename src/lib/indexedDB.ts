@@ -1,14 +1,14 @@
 /**
  * indexedDB.ts
- * Implementação de fila local resiliente com IndexedDB para o Anjo Cuidador.
- * Mantém os registros capturados offline seguros no dispositivo do cuidador.
+ * Implementacao de fila local resiliente com IndexedDB para o Anjo Cuidador.
+ * Mantem os registros capturados offline seguros no dispositivo do cuidador.
  */
 
 export interface ItemFilaOffline {
   id_local: string;
   idoso_id: string;
   cuidador_id: string;
-  atividade_id: string; // id correspondente de remédio/rotina/etc
+  atividade_id: string; // id correspondente de remedio/rotina/etc
   tipo: 'medicacao' | 'alimentacao' | 'hidratacao' | 'banho' | 'sinal_vital' | 'outros';
   titulo: string;
   status: 'realizado' | 'recusado' | 'atrasado';
@@ -30,7 +30,7 @@ const STORE_NAME = 'fila_offline';
 export function initOfflineDB(): Promise<IDBDatabase | null> {
   return new Promise((resolve) => {
     if (typeof window === 'undefined' || !window.indexedDB) {
-      console.warn('⚠️ IndexedDB não é suportado neste navegador. Utilizando fallback local.');
+      console.warn('[!]  IndexedDB nao e suportado neste navegador. Utilizando fallback local.');
       resolve(null);
       return;
     }
@@ -42,7 +42,7 @@ export function initOfflineDB(): Promise<IDBDatabase | null> {
         const db = event.target.result;
         if (!db.objectStoreNames.contains(STORE_NAME)) {
           db.createObjectStore(STORE_NAME, { keyPath: 'id_local' });
-          console.log(`✅ ObjectStore "${STORE_NAME}" criada com sucesso no IndexedDB.`);
+          console.log(`[OK] ObjectStore "${STORE_NAME}" criada com sucesso no IndexedDB.`);
         }
       };
 
@@ -51,23 +51,23 @@ export function initOfflineDB(): Promise<IDBDatabase | null> {
       };
 
       request.onerror = (event: any) => {
-        console.error('❌ Erro ao abrir IndexedDB:', event.target.error);
+        console.error('  Erro ao abrir IndexedDB:', event.target.error);
         resolve(null);
       };
     } catch (e) {
-      console.error('❌ Exceção ao abrir IndexedDB:', e);
+      console.error('  Excecao ao abrir IndexedDB:', e);
       resolve(null);
     }
   });
 }
 
 /**
- * Adiciona um item na fila de sincronização offline (IndexedDB)
+ * Adiciona um item na fila de sincronizacao offline (IndexedDB)
  */
 export async function adicionarItemFila(item: ItemFilaOffline): Promise<boolean> {
   const db = await initOfflineDB();
   if (!db) {
-    // Fallback para LocalStorage se o IndexedDB falhar ou não estiver disponível
+    // Fallback para LocalStorage se o IndexedDB falhar ou nao estiver disponivel
     try {
       const filaLocalStorage = JSON.parse(localStorage.getItem('anjo_fila_offline_fallback') || '[]');
       filaLocalStorage.push(item);
@@ -89,7 +89,7 @@ export async function adicionarItemFila(item: ItemFilaOffline): Promise<boolean>
       };
 
       request.onerror = (err) => {
-        console.error('❌ Erro ao salvar na fila do IndexedDB:', err);
+        console.error('  Erro ao salvar na fila do IndexedDB:', err);
         resolve(false);
       };
     } catch (e) {
@@ -99,7 +99,7 @@ export async function adicionarItemFila(item: ItemFilaOffline): Promise<boolean>
 }
 
 /**
- * Retorna todos os itens pendentes de sincronização
+ * Retorna todos os itens pendentes de sincronizacao
  */
 export async function obterItensPendentes(): Promise<ItemFilaOffline[]> {
   const db = await initOfflineDB();
@@ -133,7 +133,7 @@ export async function obterItensPendentes(): Promise<ItemFilaOffline[]> {
 }
 
 /**
- * Retorna o histórico de itens offline já sincronizados no aparelho para fins de auditoria
+ * Retorna o historico de itens offline ja sincronizados no aparelho para fins de auditoria
  */
 export async function obterItensSincronizados(): Promise<ItemFilaOffline[]> {
   const db = await initOfflineDB();
@@ -221,7 +221,7 @@ export async function atualizarStatusSincronizado(idLocal: string, servidorTime:
 }
 
 /**
- * Limpa todo o histórico local se desejado
+ * Limpa todo o historico local se desejado
  */
 export async function limparBancoOfflineSync(): Promise<boolean> {
   const db = await initOfflineDB();

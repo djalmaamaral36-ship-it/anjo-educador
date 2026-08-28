@@ -153,7 +153,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
     if (selectedMode === 'escolar_infantil') {
       if (assistidoNome === 'Dona Alzira Amaral' || assistidoNome === 'Arthur Amaral' || !assistidoNome) {
         setAssistidoNome('Paulinho Amaral');
-        setRelacionamento('Pai/Mãe');
+        setRelacionamento('Pai/Mae');
       }
     } else {
       if (assistidoNome === 'Paulinho Amaral' || assistidoNome === 'Arthur Amaral' || !assistidoNome) {
@@ -289,7 +289,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
       return;
     }
 
-    setErrorMessage(`Código de acesso inválido! Tente "9181", "3031" ou o PIN de 4 dígitos do seu perfil.`);
+    setErrorMessage(`Codigo de acesso invalido! Tente "9181", "3031" ou o PIN de 4 digitos do seu perfil.`);
   };
 
   const handlePhoneChange = (val: string) => {
@@ -309,35 +309,35 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
   const handleTrialSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!tutorName.trim() || !whatsapp.trim() || !email.trim() || !assistidoNome.trim() || !customPin.trim()) {
-      setErrorMessage("Por favor, preencha todos os campos cadastrais para sua segurança.");
+      setErrorMessage("Por favor, preencha todos os campos cadastrais para sua seguranca.");
       return;
     }
     if (customPin.length < 4) {
-      setErrorMessage("O código PIN precisa conter pelo menos 4 caracteres numéricos.");
+      setErrorMessage("O codigo PIN precisa conter pelo menos 4 caracteres numericos.");
       return;
     }
     if (!agreedSensivel || !agreedTutor || !agreedPolitica) {
-      setErrorMessage("Para ativar a licença grátis, é obrigatório assinar todas as opções de consentimento da LGPD.");
+      setErrorMessage("Para ativar a licenca gratis, e obrigatorio assinar todas as opcoes de consentimento da LGPD.");
       return;
     }
 
     // Check if customPin is unique across users
     const pinCheck = isPinUnique(customPin.trim());
     if (!pinCheck.isUnique) {
-      setErrorMessage(`⚠ O PIN "${customPin.trim()}" já está em uso por ${pinCheck.conflictingUser?.nome || 'outro usuário'}. Por favor, escolha um PIN exclusivo de 4 dígitos.`);
+      setErrorMessage(`[!] O PIN "${customPin.trim()}" ja esta em uso por ${pinCheck.conflictingUser?.nome || 'outro usuario'}. Por favor, escolha um PIN exclusivo de 4 digitos.`);
       return;
     }
 
     setErrorMessage('');
 
-    // Rastreamento amigável
-    let finalCampLabel = '  Divulgação Geral';
-    if (refCampaign === 'recepcao') finalCampLabel = '  Recepção Clínica';
+    // Rastreamento amigavel
+    let finalCampLabel = '  Divulgacao Geral';
+    if (refCampaign === 'recepcao') finalCampLabel = '  Recepcao Clinica';
     if (refCampaign === 'panfleto') finalCampLabel = '  Panfleto Promocional';
     if (refCampaign === 'parceiros') finalCampLabel = '  Parceiro Credenciado';
 
     const cleanRef = refCampaign || 'geral';
-    const deviceHash = `IP ${Math.floor(Math.random() * 80 + 171)}.${Math.floor(Math.random() * 200)}.${Math.floor(Math.random() * 255)} (SSL • ${navigator.userAgent.includes('iPhone') ? 'iPhone OS' : 'Android OS 14'})`;
+    const deviceHash = `IP ${Math.floor(Math.random() * 80 + 171)}.${Math.floor(Math.random() * 200)}.${Math.floor(Math.random() * 255)} (SSL   ${navigator.userAgent.includes('iPhone') ? 'iPhone OS' : 'Android OS 14'})`;
     const consentId = `consent_${Date.now()}`;
 
     // 1st Layer: Generate LGPD Consent Log Entry (This sends the user to the spreadsheet/planilha!)
@@ -350,7 +350,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
       idosoNome: assistidoNome,
       dataConsentimento: new Date().toLocaleString('pt-BR'),
       modoApp: selectedMode === 'escolar_infantil' ? '  Anjinho Escolar (Infantil)' : '  Anjo Cuidador',
-      deviceFingerprint: `${deviceHash} • Ref: ${cleanRef.toUpperCase()}`,
+      deviceFingerprint: `${deviceHash}   Ref: ${cleanRef.toUpperCase()}`,
       statusFinanceiro: 'pago' // Free 15-day trial is registered as Active/Adimplente directly
     };
 
@@ -392,18 +392,18 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
         : 'https://images.unsplash.com/photo-1544717297-fa95b6ee9643?auto=format&fit=crop&q=80&w=200',
       dataNascimento: selectedMode === 'escolar_infantil' ? '14/10/2023' : '15/07/1944',
       condicoesMedicas: selectedMode.startsWith('escolar')
-        ? ['Período de Adaptação Ativo', 'Ativação Grátis de 30 Dias'] 
-        : ['Acompanhamento Ativo', 'Ativação Grátis de 30 Dias'],
+        ? ['Periodo de Adaptacao Ativo', 'Ativacao Gratis de 30 Dias'] 
+        : ['Acompanhamento Ativo', 'Ativacao Gratis de 30 Dias'],
       alergias: ['Nenhuma cadastrada'],
-      observacoes: `Perfil do assistido criado digitalmente pelo tutor ${tutorName} nas configurações rápidas do app.`,
+      observacoes: `Perfil do assistido criado digitalmente pelo tutor ${tutorName} nas configuracoes rapidas do app.`,
       contatoEmergencia: {
         nome: tutorName,
         parentesco: relacionamento,
         telefone: whatsapp
       },
       planoCuidado: selectedMode === 'escolar_infantil'
-        ? 'Apoiar adaptação lúdica, registrar alimentação e hidratação regular, sestas à tarde.'
-        : 'Verificar batimentos e saturação diariamente, alertar sobre remédios e hidratação constante.',
+        ? 'Apoiar adaptacao ludica, registrar alimentacao e hidratacao regular, sestas a tarde.'
+        : 'Verificar batimentos e saturacao diariamente, alertar sobre remedios e hidratacao constante.',
       medicoResponsavel: {
         nome: selectedMode.startsWith('escolar') ? 'Dra. Luana Peixoto' : 'Dr. Roberto Kardec',
         especialidade: selectedMode.startsWith('escolar') ? 'Pediatra Geral' : 'Geriatra',
@@ -491,8 +491,8 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
             </h1>
             <p className="text-xs sm:text-sm text-serene-blue dark:text-indigo-300 font-extrabold tracking-wide uppercase leading-relaxed w-full text-center block">
               {selectedMode === 'escolar_infantil' 
-                ? 'Rotina, Segurança e Conectividade para Educação Infantil' 
-                : 'Tranquilidade, presença e carinho para quem você ama'
+                ? 'Rotina, Seguranca e Conectividade para Educacao Infantil' 
+                : 'Tranquilidade, presenca e carinho para quem voce ama'
               }
             </p>
           </div>
@@ -527,7 +527,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
               }`}
             >
               <Sparkles className="w-3.5 h-3.5" />
-              30 Dias Grátis & LGPD
+              30 Dias Gratis & LGPD
             </button>
           </div>
         )}
@@ -540,9 +540,9 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                 <Check className="w-5 h-5 stroke-[3]" />
               </div>
               <div className="space-y-1">
-                <strong className="text-sm font-black text-slate-800">Termo LGPD Assinado & Teste Grátis Ativado!</strong>
+                <strong className="text-sm font-black text-slate-800">Termo LGPD Assinado & Teste Gratis Ativado!</strong>
                 <p className="text-xs text-slate-600 leading-normal">
-                  Seus dados e o consentimento de tratamento de dados sensíveis foram salvos em nossa planilha central. Chave de auditoria para fins jurídicos:
+                  Seus dados e o consentimento de tratamento de dados sensiveis foram salvos em nossa planilha central. Chave de auditoria para fins juridicos:
                 </p>
                 <div className="bg-white/80 border border-emerald-150 rounded-lg px-2.5 py-1 text-[10px] text-emerald-700 font-mono mt-1 w-fit">
                   {registeredSuccess.consentHash}
@@ -552,7 +552,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
 
             
             <div className="border border-slate-150 rounded-2xl p-4 space-y-3 bg-slate-50/50">
-              <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 block">Informações da Conta de Teste</span>
+              <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 block">Informacoes da Conta de Teste</span>
               
               <div className="grid grid-cols-2 gap-3 text-xs">
                 <div>
@@ -568,7 +568,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                   <strong className="text-indigo-600 block font-bold truncate">{registeredSuccess.refLabel}</strong>
                 </div>
                 <div>
-                  <span className="text-slate-400 block leading-tight">Assistido (Sênior/Aluno)</span>
+                  <span className="text-slate-400 block leading-tight">Assistido (Senior/Aluno)</span>
                   <strong className="text-slate-800 block font-bold truncate">  {registeredSuccess.senior.nome}</strong>
                 </div>
               </div>
@@ -576,14 +576,14 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
               <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between text-xs">
                 <div className="flex items-center gap-1">
                   <Lock className="w-3.5 h-3.5 text-amber-500" />
-                  <span className="text-slate-500">Seu PIN padrão de acesso:</span>
+                  <span className="text-slate-500">Seu PIN padrao de acesso:</span>
                 </div>
                 <strong className="font-mono text-amber-600 font-black text-sm bg-amber-50 px-2 py-0.5 rounded border border-amber-200">{registeredSuccess.user.pin}</strong>
               </div>
             </div>
 
             <p className="text-xs text-slate-550 leading-relaxed text-center">
-              Criamos um painel completo com dados estruturados para você avaliar a rotina, o relatório de turnos e o envio de mensagens fictícias pelo WhatsApp.
+              Criamos um painel completo com dados estruturados para voce avaliar a rotina, o relatorio de turnos e o envio de mensagens ficticias pelo WhatsApp.
             </p>
 
             <button
@@ -592,7 +592,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
               }}
               className="w-full p-4 bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-black text-base uppercase tracking-wider rounded-2xl transition-all cursor-pointer shadow-md shadow-emerald-600/10 flex items-center justify-center gap-2"
             >
-              Começar Teste Prático de 30 Dias <ArrowRight className="w-5 h-5 stroke-[2.5]" />
+              Comecar Teste Pratico de 30 Dias <ArrowRight className="w-5 h-5 stroke-[2.5]" />
             </button>
           </div>
         ) : activeTab === 'trial' ? (
@@ -603,7 +603,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
             <div className={`p-3 rounded-2xl border ${accessibility?.darkMode ? 'bg-emerald-950/20 border-emerald-900/50 text-emerald-300' : 'bg-emerald-50/40 border-emerald-100 text-emerald-800'} flex items-center gap-2`}>
               <span className="text-xs"> </span>
               <p className="text-[11px] font-bold leading-normal">
-                Você escaneou e ativou nosso voucher promocional! Preencha abaixo para assinar os termos e criar seu perfil grátis de 30 dias.
+                Voce escaneou e ativou nosso voucher promocional! Preencha abaixo para assinar os termos e criar seu perfil gratis de 30 dias.
               </p>
             </div>
 
@@ -663,11 +663,11 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                     className={`w-full mt-0.5 px-3 py-2 ${accessibility?.darkMode ? 'bg-slate-800 border-slate-700 text-slate-100 focus:bg-slate-850 focus:ring-emerald-500/25' : 'bg-slate-50 border-slate-205 text-slate-800 focus:bg-white focus:ring-emerald-400/25'} rounded-xl text-xs font-bold focus:ring-2`}
                   >
                     <option value="diretor">  Diretor(a) / Gestor(a)</option>
-                    <option value="coordenador"> 🏫 Coordenador(a) Pedagógico(a)</option>
-                    <option value="professor"> 🏫 Professor(a) / Educador(a)</option>
+                    <option value="coordenador">    Coordenador(a) Pedagogico(a)</option>
+                    <option value="professor">    Professor(a) / Educador(a)</option>
                     <option value="desenvolvedor">  Desenvolvedor (Dev)</option>
-                    <option value="familiar_admin">    Familiar Admin (Responsável Principal - Acesso a Autorizações)</option>
-                    <option value="familiar_convidado">  Familiar Convidado (Leitor / Outro Parente - Sem Autorizações)</option>
+                    <option value="familiar_admin">    Familiar Admin (Responsavel Principal - Acesso a Autorizacoes)</option>
+                    <option value="familiar_convidado">  Familiar Convidado (Leitor / Outro Parente - Sem Autorizacoes)</option>
                   </select>
                 </div>
 
@@ -689,18 +689,18 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
 
               {(cargoUsuario === 'familiar' || cargoUsuario === 'familiar_admin' || cargoUsuario === 'familiar_convidado') && (
                 <div>
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Grau de Parentesco / Relação</label>
+                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1">Grau de Parentesco / Relacao</label>
                   <select
                     value={relacionamento}
                     onChange={e => setRelacionamento(e.target.value)}
                     className={`w-full mt-0.5 px-3 py-2 ${accessibility?.darkMode ? 'bg-slate-800 border-slate-700 text-slate-100 focus:bg-slate-850 focus:ring-emerald-500/25' : 'bg-slate-50 border-slate-205 text-slate-800 focus:bg-white focus:ring-emerald-400/25'} rounded-xl text-xs focus:ring-2`}
                   >
                     <option value="Filho(a)">Filho(a)</option>
-                    <option value="Pai/Mãe">Pai/Mãe</option>
+                    <option value="Pai/Mae">Pai/Mae</option>
                     <option value="Neto(a)">Neto(a)</option>
-                    <option value="Cônjuge">Cônjuge</option>
+                    <option value="Conjuge">Conjuge</option>
                     <option value="Cuidador(a) Profissional">Cuidador(a) Profissional</option>
-                    <option value="Responsável Legal">Responsável Legal</option>
+                    <option value="Responsavel Legal">Responsavel Legal</option>
                   </select>
                 </div>
               )}
@@ -708,7 +708,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
               <div className="grid grid-cols-1 sm:grid-cols-10 gap-3">
                 <div className="sm:col-span-7">
                   <label className="text-[10px] font-black uppercase text-slate-400 ml-1">
-                    {selectedMode.startsWith('escolar') ? 'Nome do Aluno (Criança)' : 'Nome do Assistido (Idoso)'}
+                    {selectedMode.startsWith('escolar') ? 'Nome do Aluno (Crianca)' : 'Nome do Assistido (Idoso)'}
                   </label>
                   <div className="relative mt-0.5">
                     <Baby className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
@@ -724,7 +724,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                 </div>
 
                 <div className="sm:col-span-3">
-                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1" title="Digite 4 dígitos para servir de PIN de segurança">PIN desejado</label>
+                  <label className="text-[10px] font-black uppercase text-slate-400 ml-1" title="Digite 4 digitos para servir de PIN de seguranca">PIN desejado</label>
                   <input
                     type="password"
                     required
@@ -757,7 +757,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
             <div className={`p-4.5 rounded-2xl border ${accessibility?.darkMode ? 'bg-slate-850 border-slate-750' : 'bg-slate-50 border-slate-200/80'} space-y-3`}>
               <div className={`flex items-center gap-1.5 ${accessibility?.darkMode ? 'text-slate-300' : 'text-slate-700'}`}>
                 <Shield className="w-4 h-4 text-emerald-600" />
-                <span className="text-xs font-black uppercase tracking-wider">Cláusulas de Proteção LGPD</span>
+                <span className="text-xs font-black uppercase tracking-wider">Clausulas de Protecao LGPD</span>
               </div>
               
               <div className="space-y-3 pt-1">
@@ -769,7 +769,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                     className="mt-0.5 accent-emerald-600"
                   />
                   <span className={`text-[10.5px] ${accessibility?.darkMode ? 'text-slate-300' : 'text-slate-600'} leading-normal font-medium`}>
-                    Autorizo livremente o tratamento de dados pessoais sensíveis de saúde de <strong className={accessibility?.darkMode ? 'text-white font-extrabold' : 'text-slate-800'}>{assistidoNome || 'meu assistido'}</strong> conforme Lei 13.709/18.
+                    Autorizo livremente o tratamento de dados pessoais sensiveis de saude de <strong className={accessibility?.darkMode ? 'text-white font-extrabold' : 'text-slate-800'}>{assistidoNome || 'meu assistido'}</strong> conforme Lei 13.709/18.
                   </span>
                 </label>
 
@@ -793,7 +793,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                     className="mt-0.5 accent-emerald-600"
                   />
                   <span className={`text-[10.5px] ${accessibility?.darkMode ? 'text-slate-300' : 'text-slate-600'} leading-normal font-medium`}>
-                    Aceito os Termos de Uso e Política de Privacidade do App, concordando com a geração de chaves criptográficas para auditoria no painel Admin.
+                    Aceito os Termos de Uso e Politica de Privacidade do App, concordando com a geracao de chaves criptograficas para auditoria no painel Admin.
                   </span>
                 </label>
               </div>
@@ -809,7 +809,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
               type="submit"
               className="w-full p-4 bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white font-black text-sm uppercase tracking-widest rounded-2xl transition-all cursor-pointer shadow-md flex items-center justify-center gap-2"
             >
-              ✓ Assinar Termos & Ativar Período de Testes
+                Assinar Termos & Ativar Periodo de Testes
             </button>
           </form>
         ) : (
@@ -821,17 +821,17 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
               <div className="p-4 bg-indigo-50 dark:bg-indigo-950/70 border-2 border-indigo-500/50 rounded-2xl flex items-start justify-between gap-3 text-indigo-900 dark:text-indigo-100 shadow-md animate-fade-in">
                 <div className="flex items-start gap-3">
                   <div className="p-2.5 bg-indigo-600 text-white rounded-xl text-lg shrink-0 shadow-sm shadow-indigo-600/30">
-                    🏫
+                      
                   </div>
                   <div className="space-y-1 text-xs">
                     <strong className="font-black text-sm text-indigo-950 dark:text-indigo-100 block">
-                      Acesso Seguro à Sala: <span className="underline decoration-indigo-400">{pendingClassroom}</span>
+                      Acesso Seguro a Sala: <span className="underline decoration-indigo-400">{pendingClassroom}</span>
                     </strong>
                     <p className="text-[11px] text-indigo-800 dark:text-indigo-200 font-semibold leading-relaxed">
                       {pendingTeacherName 
-                        ? `Perfil da professora ${pendingTeacherName} pré-selecionado.` 
+                        ? `Perfil da professora ${pendingTeacherName} pre-selecionado.` 
                         : 'Selecione seu perfil de professora.'} 
-                      Por favor, digite seu PIN de segurança para autorizar e entrar na sala.
+                      Por favor, digite seu PIN de seguranca para autorizar e entrar na sala.
                     </p>
                   </div>
                 </div>
@@ -897,7 +897,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                 </div>
 
                 <span className="text-[10px] text-slate-400 dark:text-slate-500 font-extrabold text-center sm:text-right">
-                  ⚡ Busca rápida de profissionais por nome
+                    Busca rapida de profissionais por nome
                 </span>
               </div>
 
@@ -913,8 +913,8 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                     onChange={(e) => setProfileSearch(e.target.value)}
                     placeholder={
                       selectedMode.startsWith('escolar')
-                        ? "⚡ Digite nome da professora, educadora ou responsável..."
-                        : "⚡ Digite nome da cuidadora, médica ou familiar..."
+                        ? "  Digite nome da professora, educadora ou responsavel..."
+                        : "  Digite nome da cuidadora, medica ou familiar..."
                     }
                     className={`w-full pl-10 pr-20 py-2.5 rounded-2xl text-xs font-bold transition-all focus:outline-none ${
                       accessibility?.darkMode
@@ -973,7 +973,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                     }`}
                   >
-                     🏫 Coord.
+                        Coord.
                   </button>
                   <button
                     type="button"
@@ -984,7 +984,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                         : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
                     }`}
                   >
-                     🏫 Prof.
+                        Prof.
                   </button>
                   <button
                     type="button"
@@ -1070,11 +1070,11 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                       const isCoordType = uType === 'profissional' || uType === 'coordenador' || uType === 'coordenadora';
 
                       const roleKeywords = (
-                        isTeacherType ? 'cuidador cuidadora professora educadora assistente estagiaria babá tias de apoio ana mariana' :
-                        isDirectorType ? 'admin administradora responsável mãe pai tutor djalma alzira diretor diretora nilva direção direcao' :
-                        isCoordType ? 'profissional médica pediatra geriatra doutora luana roberto coordenador coordenadora' :
-                        isConvidadoUser ? 'convidado leitura tio avó parente sem autorizacao' :
-                        'familiar admin irmão neto parente mae pai responsavel'
+                        isTeacherType ? 'cuidador cuidadora professora educadora assistente estagiaria baba tias de apoio ana mariana' :
+                        isDirectorType ? 'admin administradora responsavel mae pai tutor djalma alzira diretor diretora nilva direcao direcao' :
+                        isCoordType ? 'profissional medica pediatra geriatra doutora luana roberto coordenador coordenadora' :
+                        isConvidadoUser ? 'convidado leitura tio avo parente sem autorizacao' :
+                        'familiar admin irmao neto parente mae pai responsavel'
                       );
                       const matchKeywords = roleKeywords.includes(term);
 
@@ -1121,16 +1121,16 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                   const nameLower = (user.nome || '').toLowerCase();
                   if (uType === 'desenvolvedor' || uType === 'dev' || nameLower.includes('desenvolvedor') || nameLower.includes('dev') || user.id === 'user_desenvolvedor_djalma') {
                     roleLabel = '  Desenvolvedor do Sistema';
-                  } else if (uType === 'diretor' || uType === 'diretora' || user.id === 'user_admin' || nameLower.includes('diret') || nameLower.includes('direção')) {
-                    roleLabel = '  Diretor(a) / Gestão Geral';
+                  } else if (uType === 'diretor' || uType === 'diretora' || user.id === 'user_admin' || nameLower.includes('diret') || nameLower.includes('direcao')) {
+                    roleLabel = '  Diretor(a) / Gestao Geral';
                   } else if (uType === 'coordenador' || uType === 'coordenadora' || user.id === 'user_medico_1' || nameLower.includes('coordenad')) {
-                    roleLabel = ' 🏫 Coordenador(a) Pedagógico(a)';
+                    roleLabel = '    Coordenador(a) Pedagogico(a)';
                   } else if (uType === 'professor' || uType === 'professora' || uType === 'cuidador' || user.id === 'user_cuidador_1' || nameLower.includes('prof') || nameLower.includes('educad')) {
                     roleLabel = user.salaAula && user.salaAula !== 'Todas' 
-                      ? ` 🏫 Professora (${user.salaAula})` 
-                      : ' 🏫 Professor(a) / Educador(a)';
+                      ? `    Professora (${user.salaAula})` 
+                      : '    Professor(a) / Educador(a)';
                   } else if (uType === 'profissional') {
-                    roleLabel = ' ⚕ Equipe de Apoio / Saúde';
+                    roleLabel = '   Equipe de Apoio / Saude';
                   } else if (isConvidadoUser) {
                     roleLabel = '  Familiar (Convidado / Leitor)';
                   } else {
@@ -1202,7 +1202,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                         </div>
                         {active && (
                           <span className="text-[9.5px] bg-indigo-600 text-white font-black px-2 py-0.5 rounded-full shadow-xs shrink-0">
-                            ✓ Selecionado
+                              Selecionado
                           </span>
                         )}
                       </div>
@@ -1211,7 +1211,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                       {active && (
                         <div className="mt-3 pt-3 border-t border-indigo-200/60 dark:border-indigo-800/60 space-y-2.5 animate-fade-in" onClick={e => e.stopPropagation()}>
                           <div className="flex justify-between items-center flex-wrap gap-1">
-                            <label className="text-[10px] font-black uppercase text-indigo-950 dark:text-indigo-200">Código PIN de Acesso</label>
+                            <label className="text-[10px] font-black uppercase text-indigo-950 dark:text-indigo-200">Codigo PIN de Acesso</label>
                             <span className="text-[9.5px] font-bold bg-white/90 dark:bg-slate-900 text-indigo-700 dark:text-indigo-300 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">
                               PIN: <span className="font-mono text-xs font-black">{userPin}</span>
                             </span>
@@ -1294,9 +1294,9 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                                   ? 'bg-slate-800 text-slate-300 border border-slate-700'
                                   : 'bg-slate-100 text-slate-600 border border-slate-200'
                               }`}
-                              title="Apagar último número"
+                              title="Apagar ultimo numero"
                             >
-                              ⌫
+                               
                             </button>
                           </div>
 
@@ -1330,7 +1330,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
 
         
         <div className={`p-3.5 ${accessibility?.darkMode ? 'bg-indigo-950/20 border-indigo-900/50 text-indigo-300' : 'bg-indigo-50 border-indigo-200 text-indigo-800'} rounded-xl text-[10px] text-center leading-relaxed`}>
-            <strong>Nota Importante:</strong> O aplicativo {selectedMode.startsWith('escolar') ? 'Anjinho Escolar' : 'Anjo Cuidador'} foi desenvolvido de forma estrita em total concord com as diretrizes de proteção e privacidade da <strong>LGPD (Lei nº 13.709/2018)</strong> brasileira.
+            <strong>Nota Importante:</strong> O aplicativo {selectedMode.startsWith('escolar') ? 'Anjinho Escolar' : 'Anjo Cuidador'} foi desenvolvido de forma estrita em total concord com as diretrizes de protecao e privacidade da <strong>LGPD (Lei no 13.709/2018)</strong> brasileira.
         </div>
       </div>
     </div>

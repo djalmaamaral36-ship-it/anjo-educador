@@ -41,10 +41,10 @@ import {
 } from 'lucide-react';
 
 export const GESTOS_AFETO: { id: GestoAfetoTipo; label: string; emoji: string; desc: string; color: string; activeBg: string }[] = [
-  { id: 'encanto', label: 'Que encanto!', emoji: '✨', desc: 'Admiração e surpresa positiva diante da descoberta', color: 'text-amber-700 border-amber-300 bg-amber-50/80', activeBg: 'bg-amber-500 text-white border-amber-600' },
-  { id: 'amor', label: 'Feito com amor', emoji: '❤', desc: 'Valida o afeto e dedicação da criança', color: 'text-rose-700 border-rose-300 bg-rose-50/80', activeBg: 'bg-rose-500 text-white border-rose-600' },
-  { id: 'brilho', label: 'Puro brilho!', emoji: '⭐', desc: 'Celebra a criatividade e protagonismo', color: 'text-indigo-700 border-indigo-300 bg-indigo-50/80', activeBg: 'bg-indigo-500 text-white border-indigo-600' },
-  { id: 'orgulho', label: 'Orgulho da gente', emoji: ' ', desc: 'Fortalece o vínculo de comunidade e família', color: 'text-emerald-800 border-emerald-300 bg-emerald-50/80', activeBg: 'bg-emerald-600 text-white border-emerald-700' },
+  { id: 'encanto', label: 'Que encanto!', emoji: ' ', desc: 'Admiracao e surpresa positiva diante da descoberta', color: 'text-amber-700 border-amber-300 bg-amber-50/80', activeBg: 'bg-amber-500 text-white border-amber-600' },
+  { id: 'amor', label: 'Feito com amor', emoji: ' ', desc: 'Valida o afeto e dedicacao da crianca', color: 'text-rose-700 border-rose-300 bg-rose-50/80', activeBg: 'bg-rose-500 text-white border-rose-600' },
+  { id: 'brilho', label: 'Puro brilho!', emoji: ' ', desc: 'Celebra a criatividade e protagonismo', color: 'text-indigo-700 border-indigo-300 bg-indigo-50/80', activeBg: 'bg-indigo-500 text-white border-indigo-600' },
+  { id: 'orgulho', label: 'Orgulho da gente', emoji: ' ', desc: 'Fortalece o vinculo de comunidade e familia', color: 'text-emerald-800 border-emerald-300 bg-emerald-50/80', activeBg: 'bg-emerald-600 text-white border-emerald-700' },
   { id: 'tesouro', label: 'Um tesouro!', emoji: ' ', desc: 'Registro precioso guardado para sempre', color: 'text-sky-700 border-sky-300 bg-sky-50/80', activeBg: 'bg-sky-500 text-white border-sky-600' }
 ];
 
@@ -64,9 +64,9 @@ interface JornadaAnjinhoProps {
 const PRESET_IMAGES = [
   { url: 'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&q=80&w=600', label: '  Oficina de Artes' },
   { url: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&q=80&w=600', label: '  Brincadeira Livre' },
-  { url: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=600', label: '  Leitura e Histórias' },
+  { url: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=600', label: '  Leitura e Historias' },
   { url: 'https://images.unsplash.com/photo-1519689680058-324335c77ebd?auto=format&fit=crop&q=80&w=600', label: '  Soneca dos Anjos' },
-  { url: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&q=80&w=600', label: '  Musicalização' },
+  { url: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&q=80&w=600', label: '  Musicalizacao' },
   { url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600', label: '  Atividade de Horta / Habilidades' },
 ];
 
@@ -77,12 +77,12 @@ const INITIAL_MEMORIES: Omit<JornadaEvent, 'id'>[] = [
     tipo: 'conquista',
     titulo: 'Sentou sem apoio pela primeira vez!  ',
     data: '2026-06-15',
-    descricao: 'Mariana conseguiu se manter sentadinha no tatame de estimulação por mais de 2 minutos sem cair para os lados. Riu muito e bateu palminhas ao conseguir o feito! Desenvolveu o equilíbrio e coordenação motora ampla de forma exemplar!',
+    descricao: 'Mariana conseguiu se manter sentadinha no tatame de estimulacao por mais de 2 minutos sem cair para os lados. Riu muito e bateu palminhas ao conseguir o feito! Desenvolveu o equilibrio e coordenacao motora ampla de forma exemplar!',
     imagemUrl: 'https://images.unsplash.com/photo-1519689680058-324335c77ebd?auto=format&fit=crop&q=80&w=600',
     dimensoesDesenvolvimento: ['Motor Amplo', 'Social/Afetivo'],
     likes: 8,
     reagido: false,
-    registradoPor: 'Profª Ana Silva',
+    registradoPor: 'Profa Ana Silva',
     anexoNome: 'certificado_bebe_forte.pdf',
     valoresVivenciados: ['Esperou sua vez', 'Cooperou'],
     inesquecivel: true
@@ -90,14 +90,14 @@ const INITIAL_MEMORIES: Omit<JornadaEvent, 'id'>[] = [
   {
     idosoId: 'aluno_1',
     tipo: 'foto',
-    titulo: 'Soneca dos Anjos após contação de histórias  ',
+    titulo: 'Soneca dos Anjos apos contacao de historias  ',
     data: '2026-06-25',
-    descricao: 'Um registro precioso da nossa querida Mariana descansando tranquila após nossa contação de histórias com chocalhos suaves de ninar. Dormiu com o apego de chupeta segurando seu cobertor fofinho.',
+    descricao: 'Um registro precioso da nossa querida Mariana descansando tranquila apos nossa contacao de historias com chocalhos suaves de ninar. Dormiu com o apego de chupeta segurando seu cobertor fofinho.',
     imagemUrl: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&q=80&w=600',
     dimensoesDesenvolvimento: ['Social/Afetivo'],
     likes: 12,
     reagido: true,
-    registradoPor: 'Profª Ana Silva',
+    registradoPor: 'Profa Ana Silva',
     valoresVivenciados: ['Respeitou regras']
   },
   {
@@ -105,12 +105,12 @@ const INITIAL_MEMORIES: Omit<JornadaEvent, 'id'>[] = [
     tipo: 'atividade',
     titulo: 'Pintura de Dedos Sensorial e Cores Quentes  ',
     data: '2026-07-02',
-    descricao: 'Oficina sensorial de artes! Mariana experimentou guache azul e amarelo misturado com amido de milho para criar texturas. No começo sentiu estranheza na consistência gelada, mas logo espalhou a tinta com entusiasmo no papel craft!',
+    descricao: 'Oficina sensorial de artes! Mariana experimentou guache azul e amarelo misturado com amido de milho para criar texturas. No comeco sentiu estranheza na consistencia gelada, mas logo espalhou a tinta com entusiasmo no papel craft!',
     imagemUrl: 'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&q=80&w=600',
     dimensoesDesenvolvimento: ['Motor Fino', 'Cognitivo'],
     likes: 5,
     reagido: false,
-    registradoPor: 'Profª Ana Silva',
+    registradoPor: 'Profa Ana Silva',
     valoresVivenciados: ['Cooperou', 'Compartilhou'],
     inesquecivel: true
   },
@@ -119,42 +119,42 @@ const INITIAL_MEMORIES: Omit<JornadaEvent, 'id'>[] = [
   {
     idosoId: 'aluno_fun_1',
     tipo: 'conquista',
-    titulo: "Escreveu o 'A' de Arthur na areia colorida! ✍",
+    titulo: "Escreveu o 'A' de Arthur na areia colorida!  ",
     data: '2026-06-18',
-    descricao: 'Arthur demonstrou excelente avanço na coordenação motora fina e associação fonêmica! Utilizando o dedinho indicador no prato de areia colorida de estimulação, ele reproduziu a letra inicial do seu nome com grande precisão e orgulho.',
+    descricao: 'Arthur demonstrou excelente avanco na coordenacao motora fina e associacao fonemica! Utilizando o dedinho indicador no prato de areia colorida de estimulacao, ele reproduziu a letra inicial do seu nome com grande precisao e orgulho.',
     imagemUrl: 'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&q=80&w=600',
     dimensoesDesenvolvimento: ['Cognitivo', 'Motor Fino', 'Linguagem'],
     likes: 15,
     reagido: true,
-    registradoPor: 'Profª Cláudia Lemos',
+    registradoPor: 'Profa Claudia Lemos',
     valoresVivenciados: ['Respeitou regras'],
     inesquecivel: true
   },
   {
     idosoId: 'aluno_fun_1',
     tipo: 'atividade',
-    titulo: 'Construção de Castelo Cooperativo  ',
+    titulo: 'Construcao de Castelo Cooperativo  ',
     data: '2026-06-28',
-    descricao: 'Arthur trabalhou em equipe com os coleguinhas para erguer uma grande torre de blocos lógicos gigantes. Ele sugeriu colocar as peças maiores na base para não cair. Cooperação nota dez!',
+    descricao: 'Arthur trabalhou em equipe com os coleguinhas para erguer uma grande torre de blocos logicos gigantes. Ele sugeriu colocar as pecas maiores na base para nao cair. Cooperacao nota dez!',
     imagemUrl: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&q=80&w=600',
     dimensoesDesenvolvimento: ['Cognitivo', 'Social/Afetivo'],
     likes: 9,
     reagido: false,
-    registradoPor: 'Profª Cláudia Lemos',
+    registradoPor: 'Profa Claudia Lemos',
     valoresVivenciados: ['Cooperou', 'Compartilhou', 'Demonstrou empatia'],
     inesquecivel: true
   },
   {
     idosoId: 'aluno_fun_1',
     tipo: 'data_importante',
-    titulo: 'Passeio Ecológico na Horta da Escola  ',
+    titulo: 'Passeio Ecologico na Horta da Escola  ',
     data: '2026-07-01',
-    descricao: 'Dia de plantar sementinhas! Arthur conheceu o pé de tomate-cereja, sentiu o cheiro do hortelã e plantou seu próprio feijãozinho no copinho. Ficou fascinado ao saber que a planta bebe água pela raiz!',
+    descricao: 'Dia de plantar sementinhas! Arthur conheceu o pe de tomate-cereja, sentiu o cheiro do hortela e plantou seu proprio feijaozinho no copinho. Ficou fascinado ao saber que a planta bebe agua pela raiz!',
     imagemUrl: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=600',
     dimensoesDesenvolvimento: ['Cognitivo', 'Social/Afetivo'],
     likes: 11,
     reagido: false,
-    registradoPor: 'Profª Cláudia Lemos',
+    registradoPor: 'Profa Claudia Lemos',
     valoresVivenciados: ['Foi gentil', 'Cooperou']
   },
 
@@ -162,28 +162,28 @@ const INITIAL_MEMORIES: Omit<JornadaEvent, 'id'>[] = [
   {
     idosoId: 'aluno_fun_2',
     tipo: 'conquista',
-    titulo: 'Subindo degraus no módulo de espuma!  ',
+    titulo: 'Subindo degraus no modulo de espuma!  ',
     data: '2026-06-20',
-    descricao: 'Enzo subiu com total autonomia os três degraus do circuito de espuma da nossa sala psicomotora, apoiando as mãozinhas e joelhos com ritmo constante. Celebrou no topo com um sorriso vibrante!',
+    descricao: 'Enzo subiu com total autonomia os tres degraus do circuito de espuma da nossa sala psicomotora, apoiando as maozinhas e joelhos com ritmo constante. Celebrou no topo com um sorriso vibrante!',
     imagemUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600',
     dimensoesDesenvolvimento: ['Motor Amplo'],
     likes: 7,
     reagido: false,
-    registradoPor: 'Profª Ana Silva',
+    registradoPor: 'Profa Ana Silva',
     valoresVivenciados: ['Esperou sua vez'],
     inesquecivel: true
   },
   {
     idosoId: 'aluno_fun_2',
     tipo: 'atividade',
-    titulo: 'Pesca de Tampinhas na Água  ',
+    titulo: 'Pesca de Tampinhas na Agua  ',
     data: '2026-07-03',
-    descricao: 'Trabalho excelente de pinça e coordenação visomotora! Enzo usou uma colherzinha de plástico grande para tentar pescar tampinhas coloridas que boiavam na bacia de água morna. Concentração total!',
+    descricao: 'Trabalho excelente de pinca e coordenacao visomotora! Enzo usou uma colherzinha de plastico grande para tentar pescar tampinhas coloridas que boiavam na bacia de agua morna. Concentracao total!',
     imagemUrl: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=600',
     dimensoesDesenvolvimento: ['Motor Fino', 'Cognitivo'],
     likes: 4,
     reagido: false,
-    registradoPor: 'Profª Ana Silva',
+    registradoPor: 'Profa Ana Silva',
     valoresVivenciados: ['Cooperou', 'Respeitou regras']
   }
 ];
@@ -192,8 +192,8 @@ export const DIMENSION_LABELS: Record<string, string> = {
   'Cognitivo': '  Aprendizado',
   'Motor Fino': '  Criatividade',
   'Motor Amplo': '  Movimento',
-  'Social/Afetivo': '  Convivência',
-  'Linguagem': '  Comunicação'
+  'Social/Afetivo': '  Convivencia',
+  'Linguagem': '  Comunicacao'
 };
 
 export const formatChildTenderName = (rawName: string): string => {
@@ -217,17 +217,17 @@ export const generateSmartDiary = (childName: string, studentEvents: JornadaEven
   const formattedDate = today.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
 
   if (studentEvents.length === 0) {
-    return `  Diário Afetivo de ${tenderName}
+    return `  Diario Afetivo de ${tenderName}
   ${formattedDate}
 
-Olá, família querida! ✨
+Ola, familia querida!  
 
-Hoje é um dia de acolhimento e doce expectativa. 
-Estamos cuidando de cada detalhe para que os primeiros passos, risadas e vivências de ${tenderName} sejam vividos com muita ternura, segurança e alegria em nosso espaço escolar. Cada pequena vitória e cada gesto de carinho serão eternizados com todo amor.
+Hoje e um dia de acolhimento e doce expectativa. 
+Estamos cuidando de cada detalhe para que os primeiros passos, risadas e vivencias de ${tenderName} sejam vividos com muita ternura, seguranca e alegria em nosso espaco escolar. Cada pequena vitoria e cada gesto de carinho serao eternizados com todo amor.
 
   Que a nossa caminhada juntos seja cheia de luz, serenidade e encanto!
 
-  Guardado com amor no Álbum da Primeira Inf`;
+  Guardado com amor no Album da Primeira Inf`;
   }
 
   // Sort events from newest to oldest
@@ -240,13 +240,13 @@ Estamos cuidando de cada detalhe para que os primeiros passos, risadas e vivênc
     eventDateStr = d.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
   }
 
-  let narrative = `  Diário Afetivo de ${tenderName}\n  ${eventDateStr}\n\n`;
-  narrative += `Olá, família querida! ✨\nHoje o dia por aqui foi preenchido com muito aconchego, sorrisos serenos e momentos especiais de cuidado e desenvolvimento.\n\n`;
+  let narrative = `  Diario Afetivo de ${tenderName}\n  ${eventDateStr}\n\n`;
+  narrative += `Ola, familia querida!  \nHoje o dia por aqui foi preenchido com muito aconchego, sorrisos serenos e momentos especiais de cuidado e desenvolvimento.\n\n`;
 
   // Categorize events to build a human, fluid, cohesive story rather than disconnected logs
   const sleepEvents = sorted.filter(e => e.tipo === 'rotina' && (e.titulo.toLowerCase().includes('soneca') || e.titulo.toLowerCase().includes('sono') || e.descricao.toLowerCase().includes('descanso')));
-  const mealEvents = sorted.filter(e => e.tipo === 'rotina' && (e.titulo.toLowerCase().includes('refeição') || e.titulo.toLowerCase().includes('refeicao') || e.titulo.toLowerCase().includes('mamadeira') || e.descricao.toLowerCase().includes('alimentação')));
-  const hydEvents = sorted.filter(e => e.tipo === 'rotina' && (e.titulo.toLowerCase().includes('hidratação') || e.titulo.toLowerCase().includes('hidratacao') || e.titulo.toLowerCase().includes('água') || e.titulo.toLowerCase().includes('agua')));
+  const mealEvents = sorted.filter(e => e.tipo === 'rotina' && (e.titulo.toLowerCase().includes('refeicao') || e.titulo.toLowerCase().includes('refeicao') || e.titulo.toLowerCase().includes('mamadeira') || e.descricao.toLowerCase().includes('alimentacao')));
+  const hydEvents = sorted.filter(e => e.tipo === 'rotina' && (e.titulo.toLowerCase().includes('hidratacao') || e.titulo.toLowerCase().includes('hidratacao') || e.titulo.toLowerCase().includes('agua') || e.titulo.toLowerCase().includes('agua')));
   const pedagogicalEvents = sorted.filter(e => (e.tipo as string) !== 'rotina' || e.dimensoesDesenvolvimento?.some(d => d.includes('Cognitivo') || d.includes('Motor') || d.includes('Social') || d.includes('Linguagem')));
 
   const paragraphs: string[] = [];
@@ -256,7 +256,7 @@ Estamos cuidando de cada detalhe para que os primeiros passos, risadas e vivênc
     const s = sleepEvents[0];
     const matchTime = s.titulo.match(/\((.*?)\)/);
     const timeSpan = matchTime ? matchTime[1] : '';
-    paragraphs.push(`  *Hora do Soninho e Aconchego:*\n${tenderName} descansou com tranquilidade e serenidade${timeSpan ? ` (${timeSpan})` : ''}, recarregando as energias em um ambiente calmo e protegido. Acordou com disposição, olhar doce e um lindo sorriso.`);
+    paragraphs.push(`  *Hora do Soninho e Aconchego:*\n${tenderName} descansou com tranquilidade e serenidade${timeSpan ? ` (${timeSpan})` : ''}, recarregando as energias em um ambiente calmo e protegido. Acordou com disposicao, olhar doce e um lindo sorriso.`);
   }
 
   // 2. Nutrition & Bottle feeding narrative
@@ -268,29 +268,29 @@ Estamos cuidando de cada detalhe para que os primeiros passos, risadas e vivênc
     if (bottleFeed) {
       const matchMl = bottleFeed.descricao.match(/(\d+)\s*ml/i) || bottleFeed.titulo.match(/(\d+)\s*ml/i);
       const mlStr = matchMl ? `${matchMl[1]} ml` : 'sua mamadeira quentinha';
-      mealSentences.push(`tomou ${mlStr} com calma e excelente apetite, sentindo-se acolhido(a) e muito confortável em nosso colinho`);
+      mealSentences.push(`tomou ${mlStr} com calma e excelente apetite, sentindo-se acolhido(a) e muito confortavel em nosso colinho`);
     }
 
     if (solidMeals.length > 0) {
-      const cleanTitles = solidMeals.slice(0, 2).map(m => m.titulo.replace(/[  ✨❤]/g, '').trim().toLowerCase());
+      const cleanTitles = solidMeals.slice(0, 2).map(m => m.titulo.replace(/[    ]/g, '').trim().toLowerCase());
       mealSentences.push(`aproveitou com alegria o momento do ${cleanTitles.join(' e ')}, demonstrando curiosidade pelos sabores e comendo super bem`);
     }
 
     if (mealSentences.length > 0) {
-      paragraphs.push(`  *Nutrição com Afeto:*\nNo momento da alimentação, ${tenderName} ${mealSentences.join(', e também ')}.`);
+      paragraphs.push(`  *Nutricao com Afeto:*\nNo momento da alimentacao, ${tenderName} ${mealSentences.join(', e tambem ')}.`);
     }
   }
 
   // 3. Hydration
   if (hydEvents.length > 0) {
-    paragraphs.push(`  *Hidratação e Bem-Estar:*\nAo longo de todo o período, bebeu sua aguinha fresca com regularidade, mantendo-se sempre bem hidratado(a), saudável e cheio(a) de disposição.`);
+    paragraphs.push(`  *Hidratacao e Bem-Estar:*\nAo longo de todo o periodo, bebeu sua aguinha fresca com regularidade, mantendo-se sempre bem hidratado(a), saudavel e cheio(a) de disposicao.`);
   }
 
   // 4. Pedagogical and interaction activities
   if (pedagogicalEvents.length > 0) {
     const act = pedagogicalEvents[0];
-    const cleanTitle = act.titulo.replace(/[        ✍  ✨]/g, '').trim();
-    paragraphs.push(`  *Vivências e Descobertas:*\nNa atividade *${cleanTitle}*, demonstrou olhinhos brilhantes, curiosidade e grande delicadeza ao interagir com materiais e colegas, vivenciando um momento muito rico de estímulo e afeto.`);
+    const cleanTitle = act.titulo.replace(/[            ]/g, '').trim();
+    paragraphs.push(`  *Vivencias e Descobertas:*\nNa atividade *${cleanTitle}*, demonstrou olhinhos brilhantes, curiosidade e grande delicadeza ao interagir com materiais e colegas, vivenciando um momento muito rico de estimulo e afeto.`);
   }
 
   // Fallback if very few specific events
@@ -301,9 +301,9 @@ Estamos cuidando de cada detalhe para que os primeiros passos, risadas e vivênc
   narrative += paragraphs.join('\n\n') + '\n\n';
 
   // Warm, reassuring closing
-  narrative += `Nosso dia foi repleto de amor, respeito ao tempinho da inf e muita dedicação. É uma alegria imensa acompanhar o florescer de cada dia!   \n\n`;
+  narrative += `Nosso dia foi repleto de amor, respeito ao tempinho da inf e muita dedicacao. E uma alegria imensa acompanhar o florescer de cada dia!   \n\n`;
   narrative += `Com todo carinho da equipe escolar.\n`;
-  narrative += `  Guardado com amor no Álbum da Primeira Inf`;
+  narrative += `  Guardado com amor no Album da Primeira Inf`;
 
   return narrative;
 };
@@ -383,14 +383,14 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
         id: `jornada_mock_g1_${studentId}`,
         idosoId: studentId,
         tipo: 'conquista',
-        titulo: 'Primeira adaptação bem sucedida!  ',
+        titulo: 'Primeira adaptacao bem sucedida!  ',
         data: '2026-06-10',
-        descricao: `${studentName.split(' (')[0]} se adaptou completamente à rotina da nossa sala, interagindo alegremente com os amiguinhos, participando das rodas musicais e lanchando de forma independente.`,
+        descricao: `${studentName.split(' (')[0]} se adaptou completamente a rotina da nossa sala, interagindo alegremente com os amiguinhos, participando das rodas musicais e lanchando de forma independente.`,
         imagemUrl: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&q=80&w=600',
         dimensoesDesenvolvimento: ['Social/Afetivo', 'Cognitivo'],
         likes: 6,
         reagido: false,
-        registradoPor: 'Coordenação Pedagógica'
+        registradoPor: 'Coordenacao Pedagogica'
       },
       {
         id: `jornada_mock_g2_${studentId}`,
@@ -398,20 +398,20 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
         tipo: 'atividade',
         titulo: 'Pintura livre no cavalete  ',
         data: '2026-06-22',
-        descricao: 'Expressão e criatividade! Atividade de pintura livre com tintas de cores frias para estimular a percepção cromática e o controle motor fino dos bracinhos.',
+        descricao: 'Expressao e criatividade! Atividade de pintura livre com tintas de cores frias para estimular a percepcao cromatica e o controle motor fino dos bracinhos.',
         imagemUrl: 'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&q=80&w=600',
         dimensoesDesenvolvimento: ['Motor Fino', 'Cognitivo'],
         likes: 9,
         reagido: true,
-        registradoPor: 'Profª Orientadora'
+        registradoPor: 'Profa Orientadora'
       },
       {
         id: `jornada_mock_g3_${studentId}`,
         idosoId: studentId,
         tipo: 'foto',
-        titulo: 'Hora do Soninho da Tarde ✨',
+        titulo: 'Hora do Soninho da Tarde  ',
         data: '2026-07-04',
-        descricao: 'Um registro fofo do sono regenerador do nosso anjinho após as ricas brincadeiras no parque externo da escola.',
+        descricao: 'Um registro fofo do sono regenerador do nosso anjinho apos as ricas brincadeiras no parque externo da escola.',
         imagemUrl: 'https://images.unsplash.com/photo-1519689680058-324335c77ebd?auto=format&fit=crop&q=80&w=600',
         dimensoesDesenvolvimento: ['Social/Afetivo'],
         likes: 14,
@@ -443,22 +443,22 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
       id: `sync_sono_${s.id}`,
       idosoId: studentId,
       tipo: 'rotina',
-      titulo: `  Soneca Aconchegante (${dormiu} às ${acordou})`,
+      titulo: `  Soneca Aconchegante (${dormiu} as ${acordou})`,
       data: s.data || '2026-05-30',
-      descricao: `Descansou com muita serenidade e conforto por cerca de ${horas}h (sono ${qual.toLowerCase()}). Acordou revigorado(a), com olhar doce e disposição para as vivências escolares. ${obs ? `Obs: ${obs}` : ''}`,
+      descricao: `Descansou com muita serenidade e conforto por cerca de ${horas}h (sono ${qual.toLowerCase()}). Acordou revigorado(a), com olhar doce e disposicao para as vivencias escolares. ${obs ? `Obs: ${obs}` : ''}`,
       imagemUrl: 'https://images.unsplash.com/photo-1519689680058-324335c77ebd?auto=format&fit=crop&q=80&w=600',
-      dimensoesDesenvolvimento: ['Social/Afetivo', 'Saúde e Bem-Estar'],
+      dimensoesDesenvolvimento: ['Social/Afetivo', 'Saude e Bem-Estar'],
       likes: 1,
       reagido: false,
-      registradoPor: s.registradoPor || 'Equipe Pedagógica'
+      registradoPor: s.registradoPor || 'Equipe Pedagogica'
     });
   });
 
   const mealLabelMap: Record<string, string> = {
     mamadeira: 'Mamadeira de Leite',
-    cafe_manha: 'Café da Manhã',
-    lanche_manha: 'Lanche da Manhã',
-    almoco: 'Almoço',
+    cafe_manha: 'Cafe da Manha',
+    lanche_manha: 'Lanche da Manha',
+    almoco: 'Almoco',
     lanche_tarde: 'Lanche da Tarde',
     jantar: 'Jantar',
     ceia: 'Ceia'
@@ -475,7 +475,7 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
   const alimentacoes = isRoutineClearedInJornada ? [] : Array.from(feedsTimelineMap.values()).filter(a => !isRecordBeforeResetTimestamp(a, resetTimeStrInJornada));
   alimentacoes.forEach(a => {
     const isBottle = String(a.refeicao || '').toLowerCase().includes('mamad');
-    const mealName = mealLabelMap[a.refeicao] || a.refeicao || 'Refeição';
+    const mealName = mealLabelMap[a.refeicao] || a.refeicao || 'Refeicao';
     const aceitacao = a.aceitacao ? a.aceitacao.replace('_', ' ') : 'muito bem';
     const obs = a.observacoes || '';
     const ml = a.quantidadeMl || 180;
@@ -484,13 +484,13 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
       id: `sync_ali_${a.id}`,
       idosoId: studentId,
       tipo: 'rotina',
-      titulo: isBottle ? `  Mamadeira Aconchegante (${a.horario || 'Horário Escolar'})` : `  ${mealName} Nutritivo (${a.horario || 'Horário Escolar'})`,
+      titulo: isBottle ? `  Mamadeira Aconchegante (${a.horario || 'Horario Escolar'})` : `  ${mealName} Nutritivo (${a.horario || 'Horario Escolar'})`,
       data: a.data || '2026-05-30',
       descricao: isBottle 
         ? `Tomou sua mamadeira quentinha (${ml} ml) com muito apetite e aconchego no colinho (${aceitacao}). ${obs ? `Obs: ${obs}` : ''}`
-        : `Aproveitou a refeição do ${mealName.toLowerCase()} com alegria e excelente aceitação (${aceitacao}). ${obs ? `Obs: ${obs}` : ''}`,
+        : `Aproveitou a refeicao do ${mealName.toLowerCase()} com alegria e excelente aceitacao (${aceitacao}). ${obs ? `Obs: ${obs}` : ''}`,
       imagemUrl: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&q=80&w=600',
-      dimensoesDesenvolvimento: ['Saúde e Nutrição'],
+      dimensoesDesenvolvimento: ['Saude e Nutricao'],
       likes: 1,
       reagido: false,
       registradoPor: a.registradoPor || 'Equipe Escolar'
@@ -513,10 +513,10 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
       id: `sync_hid_${h.id}`,
       idosoId: studentId,
       tipo: 'rotina',
-      titulo: `  Aguinha Fresca (${h.quantidadeMl} ml às ${h.horario || '10:00'})`,
+      titulo: `  Aguinha Fresca (${h.quantidadeMl} ml as ${h.horario || '10:00'})`,
       data: h.data || '2026-05-30',
-      descricao: `Hidratou-se com carinho e aguinha fresca, mantendo a saúde e energia sempre em dia ao longo da rotina.`,
-      dimensoesDesenvolvimento: ['Saúde e Bem-Estar'],
+      descricao: `Hidratou-se com carinho e aguinha fresca, mantendo a saude e energia sempre em dia ao longo da rotina.`,
+      dimensoesDesenvolvimento: ['Saude e Bem-Estar'],
       likes: 1,
       reagido: false,
       registradoPor: h.registradoPor || 'Equipe Escolar'
@@ -530,9 +530,9 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
       id: `sync_ativ_${a.id}`,
       idosoId: studentId,
       tipo: 'atividade',
-      titulo: `  ${a.titulo || 'Atividade Lúdica Escolar'}`,
+      titulo: `  ${a.titulo || 'Atividade Ludica Escolar'}`,
       data: a.data || '2026-05-30',
-      descricao: `${a.descricao || 'Atividade pedagógica e vivência em sala de aula.'}`,
+      descricao: `${a.descricao || 'Atividade pedagogica e vivencia em sala de aula.'}`,
       imagemUrl: a.fotoTrabalhinho || 'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&q=80&w=600',
       dimensoesDesenvolvimento: [a.campoExperiencia || 'Cognitivo'],
       likes: 2,
@@ -553,7 +553,7 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
       dimensoesDesenvolvimento: ['Social/Afetivo'],
       likes: 1,
       reagido: false,
-      registradoPor: r.remetente || r.cargo || 'Mural de Mão Dupla'
+      registradoPor: r.remetente || r.cargo || 'Mural de Mao Dupla'
     });
   });
 
@@ -570,22 +570,22 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
 
     const details: string[] = [];
     if (bath) details.push('Banho revigorante tomado com carinho');
-    if (diaper) details.push('Troca de fralda realizada com higienização completa');
-    if (hands) details.push('Mãozinhas higienizadas');
+    if (diaper) details.push('Troca de fralda realizada com higienizacao completa');
+    if (hands) details.push('Maozinhas higienizadas');
     if (teeth) details.push('Higiene bucal realizada');
     if (clothes) details.push('Troca de roupinhas limpas');
-    if (cream) details.push('Aplicação de creme/hidratante protetor');
+    if (cream) details.push('Aplicacao de creme/hidratante protetor');
 
     if (details.length > 0) {
       synchronizedRoutineEvents.push({
         id: `sync_hyg_${studentId}_${hygLog.date || 'today'}`,
         idosoId: studentId,
         tipo: 'rotina',
-        titulo: `  Higiene, Banho & Cuidados às ${time}`,
+        titulo: `  Higiene, Banho & Cuidados as ${time}`,
         data: hygLog.date || '2026-05-30',
         descricao: `${details.join('. ')}. ${obs ? `Obs: ${obs}` : ''}`,
         imagemUrl: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=600',
-        dimensoesDesenvolvimento: ['Saúde e Bem-Estar'],
+        dimensoesDesenvolvimento: ['Saude e Bem-Estar'],
         likes: 1,
         reagido: false,
         registradoPor: hygLog.registradoPor || 'Equipe Escolar'
@@ -599,9 +599,9 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
       id: `sync_hum_${h.id || idx}`,
       idosoId: studentId,
       tipo: 'rotina',
-      titulo: `  Estado de Humor & Disposição (${h.horario || 'Horário Escolar'})`,
+      titulo: `  Estado de Humor & Disposicao (${h.horario || 'Horario Escolar'})`,
       data: h.data || '2026-05-30',
-      descricao: `Apresentou humor ${h.humor || 'alegre e receptivo(a)'} durante as atividades e interações do período. ${h.observacoes ? `Obs: ${h.observacoes}` : ''}`,
+      descricao: `Apresentou humor ${h.humor || 'alegre e receptivo(a)'} durante as atividades e interacoes do periodo. ${h.observacoes ? `Obs: ${h.observacoes}` : ''}`,
       imagemUrl: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=600',
       dimensoesDesenvolvimento: ['Social/Afetivo'],
       likes: 1,
@@ -616,11 +616,11 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
       id: `sync_occ_${o.id || idx}`,
       idosoId: studentId,
       tipo: 'recado',
-      titulo: `  Ocorrência Escolar: ${(o.tipo || 'Atenção').toUpperCase()}`,
+      titulo: `  Ocorrencia Escolar: ${(o.tipo || 'Atencao').toUpperCase()}`,
       data: o.data || '2026-05-30',
-      descricao: `${o.descricao || o.titulo || 'Registro de ocorrência realizado pela equipe.'}`,
+      descricao: `${o.descricao || o.titulo || 'Registro de ocorrencia realizado pela equipe.'}`,
       imagemUrl: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=600',
-      dimensoesDesenvolvimento: ['Saúde e Bem-Estar'],
+      dimensoesDesenvolvimento: ['Saude e Bem-Estar'],
       likes: 1,
       reagido: false,
       registradoPor: o.registradoPor || 'Equipe Escolar'
@@ -723,19 +723,19 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
     let particleEmoji = ' ';
     
     if (gesto === 'encanto') {
-      feedbackText = '✨ Centelhas de encanto iluminaram a árvore!';
-      particleEmoji = '✨';
+      feedbackText = '  Centelhas de encanto iluminaram a arvore!';
+      particleEmoji = ' ';
     } else if (gesto === 'amor') {
-      feedbackText = '❤ Borboletas de amor pousaram nas flores!';
+      feedbackText = '  Borboletas de amor pousaram nas flores!';
       particleEmoji = ' ';
     } else if (gesto === 'brilho') {
-      feedbackText = '⭐ Estrelinhas e passarinhos cantam na copa!';
+      feedbackText = '  Estrelinhas e passarinhos cantam na copa!';
       particleEmoji = ' ';
     } else if (gesto === 'orgulho') {
-      feedbackText = '  Raízes e folhas fortes se expandiram!';
+      feedbackText = '  Raizes e folhas fortes se expandiram!';
       particleEmoji = ' ';
     } else if (gesto === 'tesouro') {
-      feedbackText = '  Um tesouro inesquecível guardado com carinho!';
+      feedbackText = '  Um tesouro inesquecivel guardado com carinho!';
       particleEmoji = ' ';
     }
 
@@ -743,7 +743,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
     
     // Create rich animated floating elements with large prominent sizes
     const animChoices = ['anim-swirl-butterfly', 'anim-fly-bird', 'anim-rise-heart'];
-    const emojisPool = [particleEmoji, ' ', ' ', ' ', '✨', ' ', ' ', ' ', ' ', item.emoji];
+    const emojisPool = [particleEmoji, ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', item.emoji];
     const screenParticles = Array.from({ length: 50 }).map((_, i) => ({
       id: Math.random() + i,
       left: Math.random() * 88 + 6,
@@ -780,7 +780,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
     localStorage.setItem(`anjo_regar_count_${idoso.id}`, (currentRegar + 1).toString());
 
     // Create raining droplets, birds and butterflies across the entire screen
-    const emojisPool = [' ', ' ', ' ', ' ', '✨', ' ', ' ', ' '];
+    const emojisPool = [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '];
     const screenParticles = Array.from({ length: 50 }).map((_, i) => ({
       id: Math.random() + i,
       left: Math.random() * 88 + 6,
@@ -799,9 +799,9 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
     setRainingHearts(screenParticles.map(p => ({ id: p.id, left: p.left, delay: p.delay, emoji: p.emoji })));
 
     setLastAfetoFeedback({
-      label: 'Árvore Regada com Afeto',
+      label: 'Arvore Regada com Afeto',
       emoji: ' ',
-      text: 'A árvore foi regada com amor! Borboletas e passarinhos celebraram!'
+      text: 'A arvore foi regada com amor! Borboletas e passarinhos celebraram!'
     });
 
     setTimeout(() => {
@@ -820,69 +820,69 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
     const name = idoso.nome.split(' (')[0];
     const nameOnly = name.split(' ')[0];
     
-    // Find if we have any recently logged values or "Inesquecível" moments
+    // Find if we have any recently logged values or "Inesquecivel" moments
     const inesqueciveis = events.filter(e => e.inesquecivel);
     const comValores = events.filter(e => e.valoresVivenciados && e.valoresVivenciados.length > 0);
     
     if (inesqueciveis.length > 0) {
       const lastInesq = inesqueciveis[inesqueciveis.length - 1];
-      return `  "Olha só! Sinto meus galhos ainda mais fortes e felizes por conta daquele momento especial de ${nameOnly}: '${lastInesq.titulo}'. Guardarei essa linda lembrança para sempre!"`;
+      return `  "Olha so! Sinto meus galhos ainda mais fortes e felizes por conta daquele momento especial de ${nameOnly}: '${lastInesq.titulo}'. Guardarei essa linda lembranca para sempre!"`;
     }
     
     if (comValores.length > 0) {
       const lastVal = comValores[comValores.length - 1];
       const val = lastVal.valoresVivenciados?.[0] || 'Empatia';
-      return `  "Hoje floresci um pouquinho mais! ${nameOnly} demonstrou o valor precioso de ${val}. É emocionante ver esse sentimento desabrochar em nossas folhas!"`;
+      return `  "Hoje floresci um pouquinho mais! ${nameOnly} demonstrou o valor precioso de ${val}. E emocionante ver esse sentimento desabrochar em nossas folhas!"`;
     }
     
     // Default messages based on current station lifecycle
     const soilBonus = stats.soilBonus;
     if (soilBonus === 0) {
-      return `  "Olá, família! Sou a semente do futuro de ${nameOnly}. Cada soneca tranquila, colher de papa e cuidado diário na escola é como água fresca nutrindo minhas primeiras raízes."`;
+      return `  "Ola, familia! Sou a semente do futuro de ${nameOnly}. Cada soneca tranquila, colher de papa e cuidado diario na escola e como agua fresca nutrindo minhas primeiras raizes."`;
     } else if (soilBonus === 20) {
-      return `  "Estou criando lindos brotos! É tão alegre ver o ${nameOnly} brincando livremente, descobrindo o mundo e criando vínculos de amizade na sala!"`;
+      return `  "Estou criando lindos brotos! E tao alegre ver o ${nameOnly} brincando livremente, descobrindo o mundo e criando vinculos de amizade na sala!"`;
     } else if (soilBonus === 45) {
-      return `  "Minhas raízes estão ficando muito fortes! Adoro acompanhar o ${nameOnly} ganhando autonomia e espalhando gargalhadas em cada nova atividade."`;
+      return `  "Minhas raizes estao ficando muito fortes! Adoro acompanhar o ${nameOnly} ganhando autonomia e espalhando gargalhadas em cada nova atividade."`;
     } else {
-      return `  "Tenho tanto orgulho de carregar frutos maduros! Cada conquista do ${nameOnly} é um doce legado de aprendizados e amor, pronto para iluminar os próximos caminhos da vida!"`;
+      return `  "Tenho tanto orgulho de carregar frutos maduros! Cada conquista do ${nameOnly} e um doce legado de aprendizados e amor, pronto para iluminar os proximos caminhos da vida!"`;
     }
   };
 
-  // Dynamic calculation for the "Índice de Cultivo" & "Estações da Árvore" (Camada Oculta de Inteligência)
+  // Dynamic calculation for the "Indice de Cultivo" & "Estacoes da Arvore" (Camada Oculta de Inteligencia)
   const getCultivoStats = () => {
     // Determine baseline bonus based on age-group (strictly behind the scenes - Camada Oculta)
     let soilBonus = 0;
-    let cycleName = 'Primavera do Berçário';
+    let cycleName = 'Primavera do Bercario';
     let stationEmoji = ' ';
-    let stationName = 'Primavera (Berçário)';
-    let stationDesc = 'Toda grande árvore começa como uma semente. Nesta fase, cada cuidado é uma raiz que fortalece o futuro.';
-    let stationMetaphor = 'Acolhimento, afeto e as primeiras conexões vitais com o mundo.';
+    let stationName = 'Primavera (Bercario)';
+    let stationDesc = 'Toda grande arvore comeca como uma semente. Nesta fase, cada cuidado e uma raiz que fortalece o futuro.';
+    let stationMetaphor = 'Acolhimento, afeto e as primeiras conexoes vitais com o mundo.';
     let svgBaseState = 'seed'; // will adjust based on total progress
     
     const name = idoso.nome;
     
     if (name.includes('Maternal') || name.includes('2 Anos') || name.includes('3 Anos')) {
       soilBonus = 20;
-      cycleName = 'Verão do Maternal';
+      cycleName = 'Verao do Maternal';
       stationEmoji = ' ';
-      stationName = 'Verão (Maternal)';
-      stationDesc = 'Sua árvore já começou a criar novos brotos. Agora ela aprende explorando, descobrindo e criando vínculos.';
-      stationMetaphor = 'Tempo de socialização, curiosidade lúdica e expansão afetiva.';
+      stationName = 'Verao (Maternal)';
+      stationDesc = 'Sua arvore ja comecou a criar novos brotos. Agora ela aprende explorando, descobrindo e criando vinculos.';
+      stationMetaphor = 'Tempo de socializacao, curiosidade ludica e expansao afetiva.';
       svgBaseState = 'sprout';
     } else if (name.includes('Jardim I') || name.includes('4 Anos')) {
       soilBonus = 45;
       cycleName = 'Outono do Jardim';
       stationEmoji = ' ';
       stationName = 'Outono (Jardim)';
-      stationDesc = 'Sua árvore já possui raízes fortes. É tempo de florescer, desenvolver autonomia, criatividade e amizades.';
+      stationDesc = 'Sua arvore ja possui raizes fortes. E tempo de florescer, desenvolver autonomia, criatividade e amizades.';
       stationMetaphor = 'O desabrochar socioemocional, empatia e a beleza de conviver.';
       svgBaseState = 'roots';
-    } else if (name.includes('Jardim II') || name.includes('Pré') || name.includes('5 Anos') || name.includes('6 Anos')) {
+    } else if (name.includes('Jardim II') || name.includes('Pre') || name.includes('5 Anos') || name.includes('6 Anos')) {
       soilBonus = 75;
-      cycleName = 'Estação da Colheita (Pré)';
+      cycleName = 'Estacao da Colheita (Pre)';
       stationEmoji = ' ';
-      stationName = 'Estação da Colheita (Pré)';
-      stationDesc = 'Sua árvore está no momento de colher os doces frutos da autonomia, das descobertas e de consolidar um lindo legado para o Ensino Fundamental.';
+      stationName = 'Estacao da Colheita (Pre)';
+      stationDesc = 'Sua arvore esta no momento de colher os doces frutos da autonomia, das descobertas e de consolidar um lindo legado para o Ensino Fundamental.';
       stationMetaphor = 'A colheita de conquistas, preparando asas fortes para voar alto.';
       svgBaseState = 'blossom';
     }
@@ -924,7 +924,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
     const atividadesList = (isActCleared || isRoutineClearedScore) ? [] : getFromDB<any[]>('anjo_atividades', []).filter(item => item.idosoId === idoso.id && !isRecordBeforeResetTimestamp(item, resetTimeStrScore));
 
     // Each daily routine log (feeding, sleeping, mood, hydration) adds points
-    // especially important for babies (Berçário & Maternal)
+    // especially important for babies (Bercario & Maternal)
     const routinePoints = (soilBonus === 0 || soilBonus === 20) ? 2.5 : 1.5;
     score += (alimentacaoList.length + hidratacaoList.length + sonoList.length + humorList.length) * routinePoints;
 
@@ -946,7 +946,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
       // Multipliers based on kid age-group:
       const text = (e.titulo + ' ' + (e.descricao || '')).toLowerCase();
       if (soilBonus === 0 || soilBonus === 20) {
-        // Berçário & Maternal I: routine logs (sleep, food, hygiene) have high relevance
+        // Bercario & Maternal I: routine logs (sleep, food, hygiene) have high relevance
         if (e.tipo === 'rotina' || text.includes('sono') || text.includes('mamadeira') || text.includes('fralda') || text.includes('papinha') || text.includes('dormiu')) {
           eventPoints = 3.5;
         }
@@ -961,7 +961,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
         totalFrutos++;
       }
       if (e.valoresVivenciados && e.valoresVivenciados.length > 0) {
-        // Jardim & Pré have enhanced valuation for complex socio-emotional values
+        // Jardim & Pre have enhanced valuation for complex socio-emotional values
         const valueWeight = (soilBonus >= 75) ? 6 : 4;
         score += e.valoresVivenciados.length * valueWeight;
         totalValores += e.valoresVivenciados.length;
@@ -994,20 +994,20 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
     let maxPts = soilBonus + 50; // Every cycle has a progress band of 50 points of new stories
     const progressPercent = Math.min(100, Math.round(((finalScore - minPts) / (maxPts - minPts)) * 100));
 
-    // Qualitative label of tree nutrition (visível para os pais no lugar de pontuação seca)
+    // Qualitative label of tree nutrition (visivel para os pais no lugar de pontuacao seca)
     let cultivoLabel = 'Solo Acolhedor  ';
     let labelColor = 'bg-amber-50 border-amber-200/50 text-amber-900';
     if (progressPercent >= 90) {
-      cultivoLabel = 'Árvore em Pleno Florescimento  ';
+      cultivoLabel = 'Arvore em Pleno Florescimento  ';
       labelColor = 'bg-emerald-50 border-emerald-250 text-emerald-950';
     } else if (progressPercent >= 60) {
-      cultivoLabel = 'Copas em Expansão  ';
+      cultivoLabel = 'Copas em Expansao  ';
       labelColor = 'bg-sky-50 border-sky-200 text-sky-950';
     } else if (progressPercent >= 30) {
       cultivoLabel = 'Crescimento Ativo  ';
       labelColor = 'bg-teal-50 border-teal-200 text-teal-950';
     } else if (progressPercent >= 10) {
-      cultivoLabel = 'Solo Fértil Nutrido  ';
+      cultivoLabel = 'Solo Fertil Nutrido  ';
       labelColor = 'bg-amber-50 border-amber-200 text-amber-950';
     }
 
@@ -1058,7 +1058,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      alert("Por favor, selecione um arquivo de imagem válido (PNG, JPG, WEBP).");
+      alert("Por favor, selecione um arquivo de imagem valido (PNG, JPG, WEBP).");
       return;
     }
 
@@ -1193,7 +1193,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
 
   const toggleListening = (field: 'title' | 'desc') => {
     if (!recognitionRef.current) {
-      alert("O reconhecimento de voz não é suportado pelo seu navegador neste momento. Por favor, tente usar o Google Chrome ou Safari.");
+      alert("O reconhecimento de voz nao e suportado pelo seu navegador neste momento. Por favor, tente usar o Google Chrome ou Safari.");
       return;
     }
     
@@ -1243,7 +1243,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
       }
     } catch (err: any) {
       console.error("Erro ao abrir c", err);
-      setCameraError("Não foi possível acessar a c do dispositivo. Verifique as permissões de c");
+      setCameraError("Nao foi possivel acessar a c do dispositivo. Verifique as permissoes de c");
       setIsCameraActive(false);
     }
   };
@@ -1287,7 +1287,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
     loadJourneyEvents();
 
     const handleSync = (e: any) => {
-      console.log(`  [JornadaAnjinho Component] Evento de atualização capturado (${e?.type || 'sync'})! Recarregando eventos da jornada.`, { timestamp: new Date().toISOString() });
+      console.log(`  [JornadaAnjinho Component] Evento de atualizacao capturado (${e?.type || 'sync'})! Recarregando eventos da jornada.`, { timestamp: new Date().toISOString() });
       loadJourneyEvents();
     };
 
@@ -1496,29 +1496,29 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
         interrupcoes: 0,
         data: newDate,
         observacoes: `${newTitle}: ${newDesc}`,
-        registradoPor: usuarioAtual?.nome || 'Diário da Inf'
+        registradoPor: usuarioAtual?.nome || 'Diario da Inf'
       });
       saveToDB('anjo_sono', sonos);
     }
 
     // Meal sync
-    if (textLower.includes('refeição') || textLower.includes('almoço') || textLower.includes('lanche') || textLower.includes('café') || textLower.includes('papinha') || textLower.includes('mamadeira')) {
+    if (textLower.includes('refeicao') || textLower.includes('almoco') || textLower.includes('lanche') || textLower.includes('cafe') || textLower.includes('papinha') || textLower.includes('mamadeira')) {
       const feeds = getFromDB<any[]>('anjo_alimentacao', []);
       feeds.push({
         id: 'ali_' + Date.now(),
         idosoId: idoso.id,
-        refeicao: textLower.includes('almoço') ? 'almoco' : textLower.includes('café') ? 'cafe_manha' : 'lanche_tarde',
+        refeicao: textLower.includes('almoco') ? 'almoco' : textLower.includes('cafe') ? 'cafe_manha' : 'lanche_tarde',
         aceitacao: 'muito_bem',
         horario: new Date().toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' }),
         data: newDate,
         observacoes: `${newTitle}: ${newDesc}`,
-        registradoPor: usuarioAtual?.nome || 'Diário da Inf'
+        registradoPor: usuarioAtual?.nome || 'Diario da Inf'
       });
       saveToDB('anjo_alimentacao', feeds);
     }
 
     // Hydration sync
-    if (textLower.includes('hidratação') || textLower.includes('água') || textLower.includes('suco') || textLower.includes('copo')) {
+    if (textLower.includes('hidratacao') || textLower.includes('agua') || textLower.includes('suco') || textLower.includes('copo')) {
       const hydro = getFromDB<any[]>('anjo_hidratacao', []);
       hydro.push({
         id: 'hid_' + Date.now(),
@@ -1526,7 +1526,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
         quantidadeMl: 200,
         horario: new Date().toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' }),
         data: newDate,
-        registradoPor: usuarioAtual?.nome || 'Diário da Inf'
+        registradoPor: usuarioAtual?.nome || 'Diario da Inf'
       });
       saveToDB('anjo_hidratacao', hydro);
     }
@@ -1608,13 +1608,13 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
 
   const getCategoryLabel = (tipo: JornadaEvent['tipo']) => {
     switch (tipo) {
-      case 'foto': return '  Foto Histórica';
-      case 'atividade': return '  Atividade Pedagógica';
-      case 'evolucao': return '  Evolução / Crescimento';
+      case 'foto': return '  Foto Historica';
+      case 'atividade': return '  Atividade Pedagogica';
+      case 'evolucao': return '  Evolucao / Crescimento';
       case 'conquista': return '  Primeira Conquista';
-      case 'relatorio': return '  Relatório de Progresso';
+      case 'relatorio': return '  Relatorio de Progresso';
       case 'data_importante': return '  Data Comemorativa';
-      case 'rotina': return '  Rotina / Diário Escolar';
+      case 'rotina': return '  Rotina / Diario Escolar';
       case 'recado': return '  Mural de Recados';
       default: return '  Registro';
     }
@@ -1634,8 +1634,8 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
   const filteredEvents = events.filter(e => filterType === 'todos' || e.tipo === filterType);
 
   const getStudentClassroom = (name: string) => {
-    if (name.includes('Berçário I')) return 'Berçário I - A';
-    if (name.includes('Berçário II')) return 'Berçário II';
+    if (name.includes('Bercario I')) return 'Bercario I - A';
+    if (name.includes('Bercario II')) return 'Bercario II';
     if (name.includes('Maternal I')) return 'Maternal I';
     if (name.includes('Maternal II')) return 'Maternal II - A';
     if (name.includes('Jardim I')) return 'Jardim I';
@@ -1653,7 +1653,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
       soilBonus = 20;
     } else if (name.includes('Jardim I') || name.includes('4 Anos')) {
       soilBonus = 45;
-    } else if (name.includes('Jardim II') || name.includes('Pré') || name.includes('5 Anos') || name.includes('6 Anos')) {
+    } else if (name.includes('Jardim II') || name.includes('Pre') || name.includes('5 Anos') || name.includes('6 Anos')) {
       soilBonus = 75;
     }
 
@@ -1711,13 +1711,13 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
     let stageName = 'Semente no Solo';
     if (finalScore >= 110) {
       svgState = 'fruit';
-      stageName = 'Árvore de Frutos (Preservação)  ';
+      stageName = 'Arvore de Frutos (Preservacao)  ';
     } else if (finalScore >= 76) {
       svgState = 'blossom';
-      stageName = 'Árvore Frondosa / Florescimento  ';
+      stageName = 'Arvore Frondosa / Florescimento  ';
     } else if (finalScore >= 41) {
       svgState = 'roots';
-      stageName = 'Raízes Firmes e Folhas Ativas  ';
+      stageName = 'Raizes Firmes e Folhas Ativas  ';
     } else if (finalScore >= 16) {
       svgState = 'sprout';
       stageName = 'Brotinho Crescendo  ';
@@ -1803,7 +1803,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                   onClick={() => setIsBookMode(false)}
                   className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-800 transition-all font-semibold"
                 >
-                  <X className="w-5 h-5" /> Fechar Visualização
+                  <X className="w-5 h-5" /> Fechar Visualizacao
                 </button>
                 <div className="flex items-center gap-2">
                   <button 
@@ -1833,7 +1833,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                   />
                 </div>
                 <h1 className="text-4xl font-black text-slate-900 tracking-tight print:text-black">
-                  O Álbum da Primeira Inf  
+                  O Album da Primeira Inf  
                 </h1>
                 <p className="text-lg font-bold text-slate-800 mt-3 max-w-lg leading-relaxed">
                   A Linda Jornada de Aprendizado, Afeto e Descobertas de uma Vida Inteira
@@ -1842,11 +1842,11 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                   {idoso.nome.split(' (')[0]}
                 </h2>
                 <p className="text-xs font-extrabold text-indigo-950 bg-[#FFFDF9]/80 border border-indigo-200 px-3 py-1 rounded-full mt-2 uppercase tracking-wider">
-                  Sala: {studentRoom} • Ano Letivo 2026
+                  Sala: {studentRoom}   Ano Letivo 2026
                 </p>
                 
                 <div className="max-w-md mt-8 p-5 bg-[#FFFDF9] rounded-2xl border-2 border-dashed border-amber-200 italic text-slate-800 text-xs font-medium shadow-sm leading-relaxed">
-                  "Que estas pequenas lembranças de conquistas diárias, sorrisos, primeiras letras e amizades sinceras na escola fiquem eternamente guardadas no coração de toda a família."
+                  "Que estas pequenas lembrancas de conquistas diarias, sorrisos, primeiras letras e amizades sinceras na escola fiquem eternamente guardadas no coracao de toda a familia."
                 </div>
               </div>
 
@@ -1904,7 +1904,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
 
               
               <div className="border-t border-amber-250/30 pt-8 flex justify-between items-center text-xs text-slate-400">
-                <p>Gerado via Plataforma Anjinho Escolar • Todos os Direitos Reservados</p>
+                <p>Gerado via Plataforma Anjinho Escolar   Todos os Direitos Reservados</p>
                 <p>{new Date().toLocaleDateString('pt-BR')}</p>
               </div>
 
@@ -1917,10 +1917,10 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#FFFDF6] border border-amber-250/50 p-4 rounded-3xl shadow-sm">
         <div className="space-y-1">
           <h3 className="text-sm sm:text-base font-black text-indigo-950 flex items-center gap-1.5">
-              O Ecossistema de Cultivo Pedagógico
+              O Ecossistema de Cultivo Pedagogico
           </h3>
           <p className="text-[11px] font-semibold text-slate-500">
-            Acompanhe a evolução de cada semente ou contemple a harmonia coletiva da nossa escola.
+            Acompanhe a evolucao de cada semente ou contemple a harmonia coletiva da nossa escola.
           </p>
         </div>
 
@@ -1934,7 +1934,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
             }`}
           >
             <Leaf className="w-3.5 h-3.5" />
-            <span>Árvore de {idoso.nome.split(' (')[0].split(' ')[0]}</span>
+            <span>Arvore de {idoso.nome.split(' (')[0].split(' ')[0]}</span>
           </button>
           <button
             onClick={() => setActiveViewTab('floresta')}
@@ -1945,9 +1945,9 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
             }`}
           >
             <Trees className="w-3.5 h-3.5" />
-            <span>A Floresta do Saber®</span>
+            <span>A Floresta do Saber </span>
             <span className="bg-amber-400 text-slate-900 font-extrabold text-[8px] px-1.5 py-0.5 rounded-full uppercase tracking-wider scale-95 ml-1">
-              MÉTODO
+              METODO
             </span>
           </button>
         </div>
@@ -1981,14 +1981,14 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
             <div className="space-y-1">
               <div className="flex justify-center lg:justify-start">
                 <span className="bg-amber-400 text-indigo-950 font-black text-[10px] sm:text-xs px-3.5 py-1 rounded-full uppercase tracking-wider shadow-sm border border-amber-300">
-                  Exclusivo • Jornada do Anjinho  
+                  Exclusivo   Jornada do Anjinho  
                 </span>
               </div>
               <h2 className="text-xl sm:text-3xl font-black tracking-tight leading-none mt-1">
                 {idoso.nome.split(' (')[0]}
               </h2>
               <p className="text-xs sm:text-sm text-indigo-100 font-semibold">
-                Sala: {studentRoom} • Histórico Emocional e Pedagógico Permanente
+                Sala: {studentRoom}   Historico Emocional e Pedagogico Permanente
               </p>
             </div>
           </div>
@@ -2007,12 +2007,12 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
               {showAddForm ? (
                 <>
                   <X className="w-5 h-5 text-white" />
-                  <span className="font-extrabold text-white">Fechar Formulário</span>
+                  <span className="font-extrabold text-white">Fechar Formulario</span>
                 </>
               ) : (
                 <>
                   <Plus className="w-5 h-5 text-indigo-950 stroke-[3]" />
-                  <span className="text-indigo-950 font-black tracking-tight text-sm sm:text-base">  + Registrar Nova Lembrança</span>
+                  <span className="text-indigo-950 font-black tracking-tight text-sm sm:text-base">  + Registrar Nova Lembranca</span>
                 </>
               )}
             </button>
@@ -2022,7 +2022,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
               onClick={() => setIsBookMode(true)}
               className="flex items-center justify-center gap-2 bg-white/95 hover:bg-white text-indigo-950 font-black px-4 py-3.5 rounded-2xl text-xs sm:text-sm shadow-md transition-all cursor-pointer border border-white/50"
             >
-              <BookOpen className="w-4 h-4 text-indigo-600" /> O Álbum da Primeira Inf  
+              <BookOpen className="w-4 h-4 text-indigo-600" /> O Album da Primeira Inf  
             </button>
           </div>
         </div>
@@ -2042,13 +2042,13 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
             <form onSubmit={handleAddEventSubmit} className="rounded-3xl p-6 border-2 border-amber-300 space-y-4 bg-[#FFFDF6] shadow-xl text-slate-800 ring-4 ring-amber-100">
               <div className="flex justify-between items-center border-b pb-3 border-amber-200">
                 <h3 className="text-base font-black flex items-center gap-2 text-indigo-950">
-                  <Camera className="w-5 h-5 text-indigo-600 animate-bounce" style={{ animationDuration: '2s' }} /> Cultivar uma Nova Lembrança ou Escrever uma Nova Página da Jornada  
+                  <Camera className="w-5 h-5 text-indigo-600 animate-bounce" style={{ animationDuration: '2s' }} /> Cultivar uma Nova Lembranca ou Escrever uma Nova Pagina da Jornada  
                 </h3>
                 <button 
                   type="button" 
                   onClick={() => setShowAddForm(false)}
                   className="cursor-pointer text-indigo-900 hover:text-red-500 p-1.5 rounded-full hover:bg-slate-100 transition-all"
-                  title="Fechar Formulário"
+                  title="Fechar Formulario"
                 >
                   <X className="w-6 h-6" />
                 </button>
@@ -2060,7 +2060,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between items-center mb-1">
-                      <label className="text-xs font-bold text-slate-700">Título do Momento:</label>
+                      <label className="text-xs font-bold text-slate-700">Titulo do Momento:</label>
                       <button
                         type="button"
                         onClick={() => toggleListening('title')}
@@ -2069,7 +2069,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                             ? 'bg-red-500 text-white animate-pulse shadow-sm' 
                             : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-100'
                         }`}
-                        title={isListening && listeningField === 'title' ? "Parar de ouvir" : "Falar título por voz"}
+                        title={isListening && listeningField === 'title' ? "Parar de ouvir" : "Falar titulo por voz"}
                       >
                         <Mic className="w-3.5 h-3.5" />
                         {isListening && listeningField === 'title' ? 'Ouvindo... Parar' : 'Falar por Voz'}
@@ -2094,12 +2094,12 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                       onChange={(e) => setNewType(e.target.value as JornadaEvent['tipo'])}
                       className="w-full border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-indigo-500 bg-white text-slate-900 border-slate-200"
                     >
-                      <option value="atividade">  Atividade Pedagógica</option>
+                      <option value="atividade">  Atividade Pedagogica</option>
                       <option value="conquista">  Primeira Conquista / Marco</option>
-                      <option value="foto">  Foto Histórica / Sorriso</option>
-                      <option value="evolucao">  Evolução Pedagógica</option>
+                      <option value="foto">  Foto Historica / Sorriso</option>
+                      <option value="evolucao">  Evolucao Pedagogica</option>
                       <option value="data_importante">  Data Comemorativa Importante</option>
-                      <option value="relatorio">  Relatório Integral de Progresso</option>
+                      <option value="relatorio">  Relatorio Integral de Progresso</option>
                     </select>
                   </div>
 
@@ -2119,7 +2119,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between items-center mb-1">
-                      <label className="text-xs font-bold text-slate-700">Relato / Descrição Detalhada:</label>
+                      <label className="text-xs font-bold text-slate-700">Relato / Descricao Detalhada:</label>
                       <button
                         type="button"
                         onClick={() => toggleListening('desc')}
@@ -2138,7 +2138,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                       value={newDesc}
                       onChange={(e) => setNewDesc(e.target.value)}
                       rows={4}
-                      placeholder={isListening && listeningField === 'desc' ? "Estou ouvindo... Fale com clareza próximo ao microfone de seu aparelho." : "Relate como foi a conquista, a reação do aluno, as habilidades observadas e o sentimento desse momento..."}
+                      placeholder={isListening && listeningField === 'desc' ? "Estou ouvindo... Fale com clareza proximo ao microfone de seu aparelho." : "Relate como foi a conquista, a reacao do aluno, as habilidades observadas e o sentimento desse momento..."}
                       className={`w-full border px-3 py-2 rounded-xl text-xs font-semibold focus:outline-indigo-500 bg-white text-slate-900 border-slate-200 ${
                         isListening && listeningField === 'desc' ? 'ring-2 ring-red-400 bg-red-50/10' : ''
                       }`}
@@ -2203,7 +2203,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                           onClick={stopCamera}
                           className="flex items-center justify-center gap-2 py-3 px-3 bg-slate-200 text-slate-800 font-extrabold text-xs rounded-2xl transition-all cursor-pointer"
                         >
-                          Cancelar C ✕
+                          Cancelar C  
                         </button>
                       )}
                     </div>
@@ -2235,7 +2235,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                       <div className="text-[11px] text-amber-900 bg-amber-50 border border-amber-200 p-2.5 rounded-xl space-y-1">
                         <p className="font-bold">  Dica para Celular:</p>
                         <p>{cameraError}</p>
-                        <p className="text-[10px] text-indigo-800 font-bold">Use o botão azul "  Enviar Foto da Galeria / Celular" acima para abrir a c ou galeria do seu aparelho diretamente!</p>
+                        <p className="text-[10px] text-indigo-800 font-bold">Use o botao azul "  Enviar Foto da Galeria / Celular" acima para abrir a c ou galeria do seu aparelho diretamente!</p>
                       </div>
                     )}
 
@@ -2244,21 +2244,21 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                       <div className="rounded-2xl border-2 border-indigo-200 bg-white p-3 shadow-sm space-y-2 animate-fade-in">
                         <div className="flex items-center justify-between">
                           <span className="text-[10px] uppercase font-black tracking-wider text-indigo-700 bg-indigo-50 px-2.5 py-1 rounded-full border border-indigo-100 flex items-center gap-1">
-                            ✓ Foto Pronta para Postar
+                              Foto Pronta para Postar
                           </span>
                           <button
                             type="button"
                             onClick={() => setNewImgUrl('')}
                             className="text-[11px] font-bold text-rose-600 hover:text-rose-800 hover:underline px-2 cursor-pointer flex items-center gap-1"
                           >
-                            Remover Foto ✕
+                            Remover Foto  
                           </button>
                         </div>
 
                         <div className="w-full h-48 sm:h-56 rounded-xl overflow-hidden border border-slate-200 relative bg-slate-100">
                           <img 
                             src={newImgUrl} 
-                            alt="Pré-visualização do momento"
+                            alt="Pre-visualizacao do momento"
                             className="w-full h-full object-cover" 
                             referrerPolicy="no-referrer" 
                           />
@@ -2267,13 +2267,13 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                     ) : (
                       <div className="p-3 bg-amber-50/60 border border-amber-200/60 rounded-2xl text-center space-y-1">
                         <p className="text-xs font-bold text-amber-900">Nenhuma foto selecionada ainda</p>
-                        <p className="text-[10px] text-slate-500">Clique em "  Enviar Foto da Galeria / Celular" para escolher do seu celular ou selecione uma imagem rápida abaixo.</p>
+                        <p className="text-[10px] text-slate-500">Clique em "  Enviar Foto da Galeria / Celular" para escolher do seu celular ou selecione uma imagem rapida abaixo.</p>
                       </div>
                     )}
 
                     
                     <div className="pt-2">
-                      <label className="text-[10px] font-bold block mb-1 text-slate-600">Ou escolha uma ilustração pedagógica rápida:</label>
+                      <label className="text-[10px] font-bold block mb-1 text-slate-600">Ou escolha uma ilustracao pedagogica rapida:</label>
                       <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 p-1 border rounded-xl bg-white border-slate-200">
                         {PRESET_IMAGES.map((img) => (
                           <button
@@ -2332,10 +2332,10 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                     {[
                       { id: 'Compartilhou', label: '  Compartilhou' },
-                      { id: 'Demonstrou empatia', label: '❤ Empatia' },
-                      { id: 'Esperou sua vez', label: '⏳ Esperou vez' },
+                      { id: 'Demonstrou empatia', label: '  Empatia' },
+                      { id: 'Esperou sua vez', label: '  Esperou vez' },
                       { id: 'Consolou um colega', label: '  Consolou' },
-                      { id: 'Foi gentil', label: '✨ Foi gentil' },
+                      { id: 'Foi gentil', label: '  Foi gentil' },
                       { id: 'Cooperou', label: '  Cooperou' },
                       { id: 'Respeitou regras', label: '  Respeitou' },
                     ].map(val => {
@@ -2360,7 +2360,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                           <span className={`w-3.5 h-3.5 rounded flex items-center justify-center border text-[8px] shrink-0 ${
                             selected ? 'bg-amber-500 border-amber-500 text-white' : 'border-slate-300 bg-white'
                           }`}>
-                            {selected && '✓'}
+                            {selected && ' '}
                           </span>
                           <span className="truncate">{val.label}</span>
                         </button>
@@ -2382,10 +2382,10 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                     <div className="space-y-1">
                       <label htmlFor="inesquecivel-checkbox" className="text-xs font-black text-indigo-950 flex items-center gap-1.5 cursor-pointer">
                         <MessageSquare className="w-4 h-4 text-indigo-500" />
-                          Destacar como "Momento Inesquecível"
+                          Destacar como "Momento Inesquecivel"
                       </label>
                       <p className="text-[10px] text-slate-700 leading-relaxed font-semibold">
-                        Selecione isso se este for um registro que merece ser lembrado para sempre. Ele aparecerá com destaque especial e design de recordação no álbum.
+                        Selecione isso se este for um registro que merece ser lembrado para sempre. Ele aparecera com destaque especial e design de recordacao no album.
                       </p>
                     </div>
                   </div>
@@ -2404,7 +2404,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                           Replicar para a Classe Toda ({studentRoom})
                       </label>
                       <p className="text-[10px] text-slate-700 leading-relaxed font-semibold">
-                        Selecione para salvar automaticamente esta mesma atividade pedagógica na linha do tempo de <strong>todos os alunos</strong> desta mesma turma de forma simult
+                        Selecione para salvar automaticamente esta mesma atividade pedagogica na linha do tempo de <strong>todos os alunos</strong> desta mesma turma de forma simult
                       </p>
                     </div>
                   </div>
@@ -2424,7 +2424,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                   type="submit"
                   className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-black shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
                 >
-                  <Check className="w-4 h-4" /> Cultivar Lembrança na Linha do Tempo
+                  <Check className="w-4 h-4" /> Cultivar Lembranca na Linha do Tempo
                 </button>
               </div>
             </form>
@@ -2440,7 +2440,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
               <Smile className="w-5 h-5 text-indigo-500" /> Desenvolvimento Integral do Anjinho
             </h3>
             <p className="text-[11px] font-semibold mt-0.5 text-slate-505">
-              Áreas de crescimento acompanhadas de perto pelas professoras com base na pedagogia afetiva.
+              Areas de crescimento acompanhadas de perto pelas professoras com base na pedagogia afetiva.
             </p>
           </div>
           <span className="text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-100/60 text-amber-900 border border-amber-250/50">
@@ -2478,7 +2478,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
           })}
         </div>
         <p className="text-[10px] mt-3 italic text-slate-600 font-semibold">
-          * A correspondência com os códigos e relatórios técnicos da BNCC (Base Nacional Comum Curricular) está registrada nos boletins e relatórios escolares das professoras.
+          * A correspondencia com os codigos e relatorios tecnicos da BNCC (Base Nacional Comum Curricular) esta registrada nos boletins e relatorios escolares das professoras.
         </p>
       </div>
 
@@ -2497,7 +2497,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
               transform: 'translateY(110vh)'
             }}
           >
-            {item.emoji || '❤'}
+            {item.emoji || ' '}
           </div>
         ))}
 
@@ -2516,7 +2516,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
               </div>
             </div>
             <span className="text-[10px] uppercase font-black bg-white/80 text-amber-900 px-2.5 py-1 rounded-full border border-amber-200">
-              Árvore Regada ✨
+              Arvore Regada  
             </span>
           </div>
         )}
@@ -2674,27 +2674,27 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-200/50 pb-3">
               <div>
                 <span className="text-[10px] uppercase font-black tracking-wider bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full border border-indigo-200/40">
-                  Método Árvore da Inf  
+                  Metodo Arvore da Inf  
                 </span>
                 <h3 className="text-xl font-black text-indigo-950 mt-1.5 flex items-center gap-2">
-                  A Árvore da Inf de {idoso.nome.split(' (')[0]}
+                  A Arvore da Inf de {idoso.nome.split(' (')[0]}
                 </h3>
                 <span className="inline-block mt-1 text-[9px] font-extrabold bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-md border border-indigo-150 uppercase tracking-wider">
-                    {stats.cycleName} • Estação da Vida Ativa
+                    {stats.cycleName}   Estacao da Vida Ativa
                 </span>
               </div>
               <button 
                 onClick={() => setShowMethodModal(true)}
                 className="text-xs font-black text-indigo-600 hover:text-indigo-800 transition-all cursor-pointer flex items-center gap-1 self-start sm:self-center"
               >
-                <Info className="w-4 h-4" /> Entenda o Método
+                <Info className="w-4 h-4" /> Entenda o Metodo
               </button>
             </div>
 
             
             <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
               <div className="md:col-span-8 space-y-1">
-                <p className="text-[10px] font-black uppercase text-indigo-500 tracking-wider">Estação do Desenvolvimento</p>
+                <p className="text-[10px] font-black uppercase text-indigo-500 tracking-wider">Estacao do Desenvolvimento</p>
                 <div className="flex items-center gap-2">
                   <span className="text-2xl">{stats.station.emoji}</span>
                   <span className="text-lg font-black text-indigo-950">{stats.station.name}</span>
@@ -2720,7 +2720,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
             
             <div className="space-y-1.5 pt-1">
               <div className="flex justify-between items-center text-[10px] font-black text-slate-500">
-                <span>Raízes do Ciclo</span>
+                <span>Raizes do Ciclo</span>
                 <span className="text-indigo-600">Florescimento Pleno</span>
               </div>
               <div className="w-full h-3 rounded-full bg-slate-100 overflow-hidden border border-amber-100/60 relative">
@@ -2755,7 +2755,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
               </div>
 
               <div className="bg-[#FFFDF9] border border-amber-200/40 rounded-xl p-2.5 text-center shadow-3xs">
-                <span className="text-xs block">❤</span>
+                <span className="text-xs block"> </span>
                 <span className="text-sm font-black text-slate-900 block">{stats.totalLikes}</span>
                 <span className="text-[9px] text-slate-500 font-bold block uppercase tracking-wider">Gestos de Afeto</span>
               </div>
@@ -2795,44 +2795,44 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
 
               <div className="text-center space-y-2 border-b border-amber-200/50 pb-4">
                 <span className="text-4xl block"> </span>
-                <h3 className="text-lg font-black text-indigo-950">Método Árvore da Inf</h3>
+                <h3 className="text-lg font-black text-indigo-950">Metodo Arvore da Inf</h3>
                 <p className="text-xs text-indigo-600 font-black uppercase tracking-wider">A Filosofia e Arquitetura do Nosso Cultivo</p>
               </div>
 
               <div className="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed max-h-[350px] overflow-y-auto pr-2">
                 <p className="font-semibold text-slate-800">
-                  O <strong>Método Árvore da Inf</strong> é uma abordagem pedagógica proprietária do Anjinho Escolar estruturada em duas camadas complementares, criada para respeitar a individualidade de cada criança:
+                  O <strong>Metodo Arvore da Inf</strong> e uma abordagem pedagogica proprietaria do Anjinho Escolar estruturada em duas camadas complementares, criada para respeitar a individualidade de cada crianca:
                 </p>
 
                 <div className="space-y-3 font-sans text-xs">
                   
                   <div className="bg-amber-50/60 p-3 rounded-xl border border-amber-200/40 space-y-1">
                     <h4 className="font-extrabold text-amber-900 uppercase text-[10px] flex items-center gap-1.5">
-                        Camada Visível (Afetiva & Narrativa)
+                        Camada Visivel (Afetiva & Narrativa)
                     </h4>
                     <p className="text-slate-700 leading-relaxed">
-                      Livre de rankings, notas frias ou tabelas competitivas de pontuação. Pais e professores contemplam apenas o amadurecimento natural da árvore nas **Estações da Vida** e escutam a voz poética da própria Árvore, que reflete marcos e afeto.
+                      Livre de rankings, notas frias ou tabelas competitivas de pontuacao. Pais e professores contemplam apenas o amadurecimento natural da arvore nas **Estacoes da Vida** e escutam a voz poetica da propria Arvore, que reflete marcos e afeto.
                     </p>
                   </div>
 
                   
                   <div className="bg-indigo-50/50 p-3 rounded-xl border border-indigo-100 space-y-1">
                     <h4 className="font-extrabold text-indigo-900 uppercase text-[10px] flex items-center gap-1.5">
-                      ⚖ Camada Oculta (Inteligência & Equidade)
+                        Camada Oculta (Inteligencia & Equidade)
                     </h4>
                     <p className="text-slate-700 leading-relaxed">
-                      Um motor silencioso alinhado com a **BNCC** equilibra as ações:
+                      Um motor silencioso alinhado com a **BNCC** equilibra as acoes:
                     </p>
                     <ul className="list-disc pl-4 space-y-1 mt-1 text-slate-600">
-                      <li><strong>Berçário & Maternal:</strong> O cuidado essencial (sono, alimentação, higiene) recebe pesos multiplicadores máximos para consagrar a rotina vital.</li>
-                      <li><strong>Pré-Escola & Jardim:</strong> Os marcos socioemocionais (gentileza, cooperação, autonomia) tornam-se o vetor central de maturidade da Árvore.</li>
-                      <li><strong>Preservação:</strong> A árvore nunca reseta. Ela amadurece continuamente ao longo de todos os anos letivos.</li>
+                      <li><strong>Bercario & Maternal:</strong> O cuidado essencial (sono, alimentacao, higiene) recebe pesos multiplicadores maximos para consagrar a rotina vital.</li>
+                      <li><strong>Pre-Escola & Jardim:</strong> Os marcos socioemocionais (gentileza, cooperacao, autonomia) tornam-se o vetor central de maturidade da Arvore.</li>
+                      <li><strong>Preservacao:</strong> A arvore nunca reseta. Ela amadurece continuamente ao longo de todos os anos letivos.</li>
                     </ul>
                   </div>
                 </div>
 
                 <p className="text-xs pt-2 border-t border-amber-200/40 italic text-slate-500 text-center">
-                  "Toda criança é uma semente única. A família planta, a escola cultiva e o Anjinho Escolar preserva essa história."   
+                  "Toda crianca e uma semente unica. A familia planta, a escola cultiva e o Anjinho Escolar preserva essa historia."   
                 </p>
               </div>
 
@@ -2857,17 +2857,17 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="font-extrabold text-[10px] px-3 py-1 rounded-full uppercase tracking-wider bg-amber-100 text-amber-900">
-                Exclusivo • Narrativa Afetiva  
+                Exclusivo   Narrativa Afetiva  
               </span>
               <span className="text-xs font-semibold text-amber-900/75 font-bold">Mensagem de Hoje</span>
             </div>
             
             <h3 className="text-lg font-black flex items-center gap-2 text-amber-950">
-              O Diário de Crescimento do Anjinho  
+              O Diario de Crescimento do Anjinho  
             </h3>
             
             <p className="text-xs font-semibold leading-relaxed text-amber-900/70">
-              Com base no histórico real de conquistas do seu filho, criamos uma narrativa aconchegante para ler em família ou compartilhar no grupo com os avós.
+              Com base no historico real de conquistas do seu filho, criamos uma narrativa aconchegante para ler em familia ou compartilhar no grupo com os avos.
             </p>
             
             
@@ -2893,7 +2893,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                 </>
               ) : (
                 <>
-                  <FileText className="w-4 h-4 text-slate-950" /> Copiar Diário Afetivo
+                  <FileText className="w-4 h-4 text-slate-950" /> Copiar Diario Afetivo
                 </>
               )}
             </button>
@@ -2905,7 +2905,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
               }}
               className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba5a] text-white font-black py-2.5 px-4 rounded-xl text-xs transition-all cursor-pointer shadow-sm"
             >
-              <Share2 className="w-4 h-4" /> Enviar para a Família
+              <Share2 className="w-4 h-4" /> Enviar para a Familia
             </button>
           </div>
         </div>
@@ -2915,17 +2915,17 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="font-extrabold text-[10px] px-3 py-1 rounded-full uppercase tracking-wider bg-indigo-100 text-indigo-950">
-                Para Sempre • Recordação Eterna ⏳
+                Para Sempre   Recordacao Eterna  
               </span>
               <span className="text-xs font-extrabold text-indigo-650">Autobiografia Escolar</span>
             </div>
             
             <h3 className="text-lg font-black flex items-center gap-2 text-indigo-950">
-              O Legado da Primeira Inf ⏳
+              O Legado da Primeira Inf  
             </h3>
             
             <p className="text-xs font-semibold leading-relaxed text-indigo-900/85">
-              Parabéns! Durante estes anos de Educação Infantil, registramos e organizamos cada traço da linda jornada de <strong className="text-indigo-950 font-black">{idoso.nome.split(' (')[0]}</strong> para que fiquem guardados para sempre na história da família:
+              Parabens! Durante estes anos de Educacao Infantil, registramos e organizamos cada traco da linda jornada de <strong className="text-indigo-950 font-black">{idoso.nome.split(' (')[0]}</strong> para que fiquem guardados para sempre na historia da familia:
             </p>
 
             <div className="grid grid-cols-2 gap-3 pt-1">
@@ -2948,7 +2948,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
             </div>
 
             <p className="text-[11px] font-semibold leading-relaxed text-indigo-900/80 pt-1 text-center">
-              Muito mais que comunicação. Um patrimônio digital seguro e inesquecível da sua família.
+              Muito mais que comunicacao. Um patrimonio digital seguro e inesquecivel da sua familia.
             </p>
           </div>
 
@@ -2958,7 +2958,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
               onClick={() => setIsBookMode(true)}
               className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black py-2.5 px-4 rounded-xl text-xs transition-all cursor-pointer shadow-sm"
             >
-              <BookOpen className="w-4 h-4 text-white" /> Baixar Álbum da Primeira Inf (Gratuito)
+              <BookOpen className="w-4 h-4 text-white" /> Baixar Album da Primeira Inf (Gratuito)
             </button>
             <div className="p-3 text-center text-[10px] font-bold italic text-indigo-900/70">
               "Obrigado por permitir que o Anjinho Escolar acompanhasse essa linda jornada."  
@@ -2986,7 +2986,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
             </h3>
             
             <p className="text-xs text-slate-700 leading-relaxed font-semibold">
-              Não somos uma simples agenda digital. Nosso propósito diário se apoia em três pilares integrados que preservam a magia da inf
+              Nao somos uma simples agenda digital. Nosso proposito diario se apoia em tres pilares integrados que preservam a magia da inf
             </p>
 
             <div className="space-y-3 pt-1">
@@ -2995,18 +2995,18 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                    
                 </div>
                 <div>
-                  <h4 className="text-xs font-black text-slate-900">Memórias</h4>
-                  <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">Cada dia na escola é uma história inesquecível que merece ser eternizada.</p>
+                  <h4 className="text-xs font-black text-slate-900">Memorias</h4>
+                  <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">Cada dia na escola e uma historia inesquecivel que merece ser eternizada.</p>
                 </div>
               </div>
 
               <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-white border border-amber-200/30">
                 <div className="w-8 h-8 rounded-lg bg-rose-100 flex items-center justify-center shrink-0 text-xs">
-                  ❤
+                   
                 </div>
                 <div>
                   <h4 className="text-xs font-black text-slate-900">Relacionamento</h4>
-                  <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">Fortalecemos a parceria ativa e a confiança mútua entre escola e família.</p>
+                  <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">Fortalecemos a parceria ativa e a confianca mutua entre escola e familia.</p>
                 </div>
               </div>
 
@@ -3030,24 +3030,24 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
               <span className="font-extrabold text-[9px] px-2.5 py-1 rounded-full uppercase tracking-wider bg-indigo-50 text-indigo-905">
                 Filosofia Exclusiva  
               </span>
-              <span className="text-[10px] font-bold text-indigo-900">Método L.I.V.R.O.</span>
+              <span className="text-[10px] font-bold text-indigo-900">Metodo L.I.V.R.O.</span>
             </div>
             
             <h3 className="text-base font-black text-indigo-950 flex items-center gap-1.5">
-              <BookOpen className="w-5 h-5 text-indigo-500" /> O Método L.I.V.R.O.
+              <BookOpen className="w-5 h-5 text-indigo-500" /> O Metodo L.I.V.R.O.
             </h3>
             
             <p className="text-xs text-slate-700 leading-relaxed font-semibold">
-              Nossa metodologia autoral de preservação da inf Toque nas letras para ver a aplicação prática:
+              Nossa metodologia autoral de preservacao da inf Toque nas letras para ver a aplicacao pratica:
             </p>
 
             <div className="space-y-1.5 pt-1">
               {[
-                { l: 'L', name: 'Lembrar', desc: 'Registrar cada marco ou pequena descoberta e transformá-la em recordação.' },
-                { l: 'I', name: 'Inspirar', desc: 'Evidenciar o progresso e o brilho único da criança dia após dia.' },
-                { l: 'V', name: 'Valorizar', desc: 'Envolver a família no ecossistema emocional do desenvolvimento do filho.' },
+                { l: 'L', name: 'Lembrar', desc: 'Registrar cada marco ou pequena descoberta e transforma-la em recordacao.' },
+                { l: 'I', name: 'Inspirar', desc: 'Evidenciar o progresso e o brilho unico da crianca dia apos dia.' },
+                { l: 'V', name: 'Valorizar', desc: 'Envolver a familia no ecossistema emocional do desenvolvimento do filho.' },
                 { l: 'R', name: 'Registrar', desc: 'Criar uma linha do tempo afetiva e permanente para toda a vida.' },
-                { l: 'O', name: 'Organizar', desc: 'Reunir fotografias, artes e relatos em um acervo pedagógico seguro.' }
+                { l: 'O', name: 'Organizar', desc: 'Reunir fotografias, artes e relatos em um acervo pedagogico seguro.' }
               ].map((item) => {
                 const isExpanded = expandedMethod === item.l;
                 return (
@@ -3088,9 +3088,9 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <span className="font-extrabold text-[9px] px-2.5 py-1 rounded-full uppercase tracking-wider bg-amber-400 text-indigo-950">
-                Memória Eterna ⏳
+                Memoria Eterna  
               </span>
-              <span className="text-[10px] font-bold text-indigo-200">Geração Inteligente</span>
+              <span className="text-[10px] font-bold text-indigo-200">Geracao Inteligente</span>
             </div>
             
             <h3 className="text-base font-black text-amber-300 flex items-center gap-1.5">
@@ -3098,15 +3098,15 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
             </h3>
             
             <p className="text-xs text-indigo-100 leading-relaxed font-semibold">
-              Ao concluir a primeira inf na escola, geramos uma linda carta de despedida e gratidão para ser lida e revivida no futuro!
+              Ao concluir a primeira inf na escola, geramos uma linda carta de despedida e gratidao para ser lida e revivida no futuro!
             </p>
 
             <div className="p-3.5 rounded-2xl border-2 border-dashed border-indigo-550/40 bg-indigo-900/40 text-center space-y-2 relative overflow-hidden">
               <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-5xl opacity-10 select-none">
-                ✉
+                 
               </div>
               <p className="text-[10px] italic text-indigo-200 font-semibold leading-relaxed relative z-10">
-                "Hoje você encerra este capítulo lindo na Educação Infantil. Que você guarde sempre no coração as risadas, os desenhos e a magia que viveu aqui..."
+                "Hoje voce encerra este capitulo lindo na Educacao Infantil. Que voce guarde sempre no coracao as risadas, os desenhos e a magia que viveu aqui..."
               </p>
             </div>
           </div>
@@ -3116,7 +3116,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
             onClick={() => setShowLetterModal(true)}
             className="w-full flex items-center justify-center gap-2 bg-amber-400 hover:bg-amber-500 text-indigo-950 font-black py-2.5 px-4 rounded-xl text-xs transition-all cursor-pointer shadow-md"
           >
-            <Gift className="w-4 h-4 text-indigo-950" /> Abrir Carta de {idoso.nome.split(' (')[0]} ✉
+            <Gift className="w-4 h-4 text-indigo-950" /> Abrir Carta de {idoso.nome.split(' (')[0]}  
           </button>
         </div>
 
@@ -3130,8 +3130,8 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
             { id: 'conquista', label: '  Conquistas' },
             { id: 'atividade', label: '  Atividades' },
             { id: 'foto', label: '  Fotos' },
-            { id: 'evolucao', label: '  Evolução' },
-            { id: 'relatorio', label: '  Relatórios' },
+            { id: 'evolucao', label: '  Evolucao' },
+            { id: 'relatorio', label: '  Relatorios' },
             { id: 'data_importante', label: '  Datas' },
           ].map(btn => (
             <button
@@ -3158,7 +3158,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
               className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-400 hover:bg-amber-500 text-indigo-950 font-black text-xs shadow-sm hover:scale-102 active:scale-95 transition-all cursor-pointer border border-amber-300"
             >
               <Plus className="w-4 h-4 stroke-[3]" />
-              <span>  Nova Lembrança</span>
+              <span>  Nova Lembranca</span>
             </button>
           )}
         </div>
@@ -3174,11 +3174,11 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                   Momentos que Merecem ser Lembrados
               </h3>
               <p className="text-xs text-slate-700 font-semibold">
-                Registros espont e inesquecíveis da vida do anjinho na escola:
+                Registros espont e inesqueciveis da vida do anjinho na escola:
               </p>
             </div>
             <span className="text-[10px] font-extrabold text-amber-800 bg-amber-100 border border-amber-250 px-3 py-1 rounded-full uppercase tracking-wider text-center self-start sm:self-center">
-              Destaques Afetivos ✨
+              Destaques Afetivos  
             </span>
           </div>
 
@@ -3241,7 +3241,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
             <Camera className="w-12 h-12 text-slate-300 mx-auto" />
             <h4 className="text-base font-bold text-slate-700">Nenhum momento registrado nesta categoria</h4>
             <p className="text-xs text-slate-505 max-w-md mx-auto">
-              Adicione lembranças pedagógicas, marcos de desenvolvimento ou fotos do dia-a-dia do aluno para construir a sua linda linha do tempo eterna.
+              Adicione lembrancas pedagogicas, marcos de desenvolvimento ou fotos do dia-a-dia do aluno para construir a sua linda linha do tempo eterna.
             </p>
             {canAddMoment && (
               <div className="pt-2">
@@ -3251,7 +3251,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                   className="px-6 py-3 rounded-2xl bg-amber-400 hover:bg-amber-500 text-indigo-950 font-black text-xs inline-flex items-center gap-2 shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer border border-amber-300"
                 >
                   <Plus className="w-4 h-4 stroke-[3]" />
-                  <span>  Registrar Nova Lembrança</span>
+                  <span>  Registrar Nova Lembranca</span>
                 </button>
               </div>
             )}
@@ -3305,7 +3305,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                           
                           {e.inesquecivel && (
                             <span className="text-[9px] font-black px-2.5 py-1 rounded-full bg-amber-400 text-indigo-950 border border-amber-300 flex items-center gap-1 shadow-3xs">
-                              <Star className="w-2.5 h-2.5 fill-indigo-950 text-indigo-950 shrink-0" /> Inesquecível ✨
+                              <Star className="w-2.5 h-2.5 fill-indigo-950 text-indigo-950 shrink-0" /> Inesquecivel  
                             </span>
                           )}
                         </div>
@@ -3380,7 +3380,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                           <FileText className="w-4 h-4 text-indigo-500 shrink-0" />
                           <div className="min-w-0 flex-1">
                             <p className="text-[10px] font-bold truncate text-slate-700">{e.anexoNome}</p>
-                            <p className="text-[8px] text-slate-500">Documento anexo disponível</p>
+                            <p className="text-[8px] text-slate-500">Documento anexo disponivel</p>
                           </div>
                           <button 
                             type="button" 
@@ -3396,11 +3396,11 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                       <div className="pt-3 pb-1 border-t-2 border-amber-300/60 bg-amber-50/40 -mx-4 -mb-1 px-4 py-3 rounded-b-2xl">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-[10px] font-black uppercase tracking-wider text-amber-950 flex items-center gap-1.5 bg-white px-2.5 py-0.5 rounded-md border border-amber-200 shadow-3xs">
-                            <span className="text-sm"> </span> Gestos de Presença & Afeto
+                            <span className="text-sm"> </span> Gestos de Presenca & Afeto
                           </span>
                           {(e.likes || 0) > 0 && (
                             <span className="text-[10px] font-black text-amber-950 bg-amber-200/80 border border-amber-300 px-2.5 py-0.5 rounded-full shadow-3xs">
-                              ❤ {e.likes} {e.likes === 1 ? 'gesto de afeto' : 'gestos de afeto'}
+                                {e.likes} {e.likes === 1 ? 'gesto de afeto' : 'gestos de afeto'}
                             </span>
                           )}
                         </div>
@@ -3452,26 +3452,26 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                                 ? GESTOS_AFETO.find(g => g.id === e.meuGestoAfeto)?.label 
                                 : 'Feito com amor';
                               const studentName = idoso.nome.split(' (')[0];
-                              const textShare = `  *A ÁRVORE DA INFNCIA HOJE:*
-Hoje a árvore do(a) *${studentName}* floresceu com um momento lindo na escola:
+                              const textShare = `  *A ARVORE DA INFNCIA HOJE:*
+Hoje a arvore do(a) *${studentName}* floresceu com um momento lindo na escola:
 
   *${e.titulo}*
 ${e.descricao}
 
   *Gesto de Afeto:* "${gestoTexto}"
 
-☀  *PARTICIPE DA JORNADA DO(A) ${studentName.toUpperCase()}!*
-Abra as fotos no aplicativo e regue a árvore do seu filho enviando uma das manifestações de afeto:
-✨ *Que encanto!* • ❤ *Feito com amor* •   *Puro brilho!* •   *Orgulho da gente* •   *Um tesouro!*
+   *PARTICIPE DA JORNADA DO(A) ${studentName.toUpperCase()}!*
+Abra as fotos no aplicativo e regue a arvore do seu filho enviando uma das manifestacoes de afeto:
+  *Que encanto!*     *Feito com amor*     *Puro brilho!*     *Orgulho da gente*     *Um tesouro!*
 
-_(Cada manifestação sua ilumina e rega a árvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
+_(Cada manifestacao sua ilumina e rega a arvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
 
 Com carinho,
-Equipe Anjinho Escolar ❤ `;
+Equipe Anjinho Escolar   `;
                               window.open(`https://wa.me/?text=${encodeURIComponent(textShare)}`, '_blank');
                             }}
                             className="p-1.5 rounded-full transition-all cursor-pointer text-slate-500 hover:text-indigo-600 hover:bg-slate-150 border border-slate-200/40 bg-white"
-                            title="Compartilhar no WhatsApp dos Avós e Familiares"
+                            title="Compartilhar no WhatsApp dos Avos e Familiares"
                           >
                             <Share2 className="w-3.5 h-3.5" />
                           </button>
@@ -3518,17 +3518,17 @@ Equipe Anjinho Escolar ❤ `;
               <div className="space-y-2 max-w-2xl">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="bg-amber-400 text-teal-950 font-black text-[10px] px-3 py-1 rounded-full uppercase tracking-wider shadow-sm border border-amber-350">
-                    Método Árvore da Inf
+                    Metodo Arvore da Inf
                   </span>
                   <span className="bg-emerald-600/70 border border-emerald-400/30 text-[10px] px-2.5 py-1 rounded-full text-emerald-100 font-extrabold uppercase tracking-wider">
-                    A Floresta do Saber®
+                    A Floresta do Saber 
                   </span>
                 </div>
                 <h2 className="text-2xl sm:text-4xl font-black tracking-tight leading-none text-white flex items-center gap-2">
-                  A Floresta do Saber® <Trees className="w-8 h-8 text-emerald-300" />
+                  A Floresta do Saber  <Trees className="w-8 h-8 text-emerald-300" />
                 </h2>
                 <p className="text-xs sm:text-sm text-teal-100 font-medium leading-relaxed">
-                  Toda escola é uma floresta viva. Aqui, contemplamos o crescimento coletivo, cultivado com afeto, respeito e tempo. Cada árvore representa uma semente única florescendo em seu próprio tempo.
+                  Toda escola e uma floresta viva. Aqui, contemplamos o crescimento coletivo, cultivado com afeto, respeito e tempo. Cada arvore representa uma semente unica florescendo em seu proprio tempo.
                 </p>
               </div>
 
@@ -3536,12 +3536,12 @@ Equipe Anjinho Escolar ❤ `;
               <button
                 onClick={() => {
                   handleRegar();
-                  alert("  Chuva de Carinho Enviada! O Bosque do colégio inteiro recebeu afeto hoje. Que lindo gesto pedagógico!");
+                  alert("  Chuva de Carinho Enviada! O Bosque do colegio inteiro recebeu afeto hoje. Que lindo gesto pedagogico!");
                 }}
                 className="flex items-center gap-2 bg-amber-400 hover:bg-amber-500 text-slate-900 font-black px-5 py-3.5 rounded-2xl text-xs sm:text-sm shadow-md transition-all shrink-0 cursor-pointer animate-pulse"
               >
                 <Droplet className="w-4 h-4 text-indigo-950 fill-indigo-950" />
-                <span>Chuva de Carinho Coletiva ❤</span>
+                <span>Chuva de Carinho Coletiva  </span>
               </button>
             </div>
           </div>
@@ -3550,14 +3550,14 @@ Equipe Anjinho Escolar ❤ `;
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-[#FFFCEB] border border-amber-200/50 rounded-2xl p-4 shadow-sm flex flex-col justify-between space-y-3">
               <div className="flex justify-between items-start">
-                <span className="text-xs font-black text-slate-700">Árvores Plantadas</span>
+                <span className="text-xs font-black text-slate-700">Arvores Plantadas</span>
                 <span className="p-1.5 rounded-lg bg-amber-100 text-amber-900">
                   <Leaf className="w-4 h-4" />
                 </span>
               </div>
               <div>
                 <p className="text-2xl sm:text-3xl font-black text-slate-800">{forestStats.totalStudents}</p>
-                <p className="text-[10px] font-semibold text-slate-500">Crianças florescendo ativas na escola</p>
+                <p className="text-[10px] font-semibold text-slate-500">Criancas florescendo ativas na escola</p>
               </div>
             </div>
 
@@ -3573,7 +3573,7 @@ Equipe Anjinho Escolar ❤ `;
                 <div className="w-full h-1.5 bg-emerald-100 rounded-full overflow-hidden mt-1">
                   <div className="h-full bg-emerald-600 rounded-full" style={{ width: `${forestStats.averageVitality}%` }} />
                 </div>
-                <p className="text-[10px] font-semibold text-emerald-700 mt-1">Índice de nutrição afetiva geral</p>
+                <p className="text-[10px] font-semibold text-emerald-700 mt-1">Indice de nutricao afetiva geral</p>
               </div>
             </div>
 
@@ -3586,7 +3586,7 @@ Equipe Anjinho Escolar ❤ `;
               </div>
               <div>
                 <p className="text-2xl sm:text-3xl font-black text-sky-950">{forestStats.totalFrutos}</p>
-                <p className="text-[10px] font-semibold text-sky-700">Momentos Inesquecíveis & Trabalhinhos</p>
+                <p className="text-[10px] font-semibold text-sky-700">Momentos Inesqueciveis & Trabalhinhos</p>
               </div>
             </div>
 
@@ -3622,7 +3622,7 @@ Equipe Anjinho Escolar ❤ `;
                   <TreePine className="w-5 h-5 text-emerald-600" /> Explorar Bosques e Clareiras da Escola
                 </h3>
                 <p className="text-[11px] font-semibold text-slate-500">
-                  Navegue pelas salas de aula e faixas etárias para contemplar o ecossistema pedagógico.
+                  Navegue pelas salas de aula e faixas etarias para contemplar o ecossistema pedagogico.
                 </p>
               </div>
 
@@ -3630,7 +3630,7 @@ Equipe Anjinho Escolar ❤ `;
               {usuarioAtual?.tipo !== 'familiar' && (
                 <div className="flex flex-wrap gap-2 w-full sm:w-auto">
                   <div className="flex-1 sm:flex-none">
-                    <label className="block text-[9px] font-black uppercase text-slate-500 mb-1">Clareiras (Série)</label>
+                    <label className="block text-[9px] font-black uppercase text-slate-500 mb-1">Clareiras (Serie)</label>
                     <select
                       value={forestFilterGrade}
                       onChange={(e) => {
@@ -3640,7 +3640,7 @@ Equipe Anjinho Escolar ❤ `;
                       className="w-full text-xs font-bold border border-slate-200 rounded-xl bg-white px-3 py-2 cursor-pointer outline-indigo-500"
                     >
                       <option value="todos">Todas as Clareiras</option>
-                      <option value="Berçário">Berçário</option>
+                      <option value="Bercario">Bercario</option>
                       <option value="Maternal">Maternal</option>
                       <option value="Jardim">Jardim</option>
                     </select>
@@ -3653,10 +3653,10 @@ Equipe Anjinho Escolar ❤ `;
                       className="w-full text-xs font-bold border border-slate-200 rounded-xl bg-white px-3 py-2 cursor-pointer outline-indigo-500"
                     >
                       <option value="todos">Todos os Bosques</option>
-                      {forestFilterGrade === 'todos' || forestFilterGrade === 'Berçário' ? (
+                      {forestFilterGrade === 'todos' || forestFilterGrade === 'Bercario' ? (
                         <>
-                          <option value="Berçário I - A">Berçário I - A</option>
-                          <option value="Berçário II">Berçário II</option>
+                          <option value="Bercario I - A">Bercario I - A</option>
+                          <option value="Bercario II">Bercario II</option>
                         </>
                       ) : null}
                       {forestFilterGrade === 'todos' || forestFilterGrade === 'Maternal' ? (
@@ -3687,14 +3687,14 @@ Equipe Anjinho Escolar ❤ `;
                     <span className="text-xs font-black text-indigo-950">Companheirismo e Amizade no {studentRoom}</span>
                   </div>
                   <p className="text-[11px] font-semibold text-slate-600 leading-relaxed">
-                    Sua árvore se desenvolve ao lado de outros amiguinhos. Para preservar a segurança e privacidade de cada família, as demais sementes aparecem de forma poética e anônima como "Companheiro de Bosque". Mas repare como todos florescem juntos!
+                    Sua arvore se desenvolve ao lado de outros amiguinhos. Para preservar a seguranca e privacidade de cada familia, as demais sementes aparecem de forma poetica e anonima como "Companheiro de Bosque". Mas repare como todos florescem juntos!
                   </p>
                 </div>
               ) : usuarioAtual?.tipo === 'cuidador' ? (
                 <div className="p-4 bg-emerald-50/65 border border-emerald-200/50 rounded-2xl flex items-center gap-2.5">
                   <div className="w-2 h-2 rounded-full bg-emerald-500 animate-ping shrink-0" />
                   <span className="text-xs font-bold text-emerald-900">
-                    Você está contemplando o <strong>Bosque do {usuarioAtual.salaAula || 'Maternal'}</strong>, sua sala de aula titular.
+                    Voce esta contemplando o <strong>Bosque do {usuarioAtual.salaAula || 'Maternal'}</strong>, sua sala de aula titular.
                   </span>
                 </div>
               ) : null}
@@ -3740,7 +3740,7 @@ Equipe Anjinho Escolar ❤ `;
                         whileHover={{ scale: 1.02 }}
                         onClick={() => {
                           if (isFamilyMode && !isOwnChild) {
-                            alert("Para preservar a privacidade escolar, as páginas de recordação dos outros alunos são de acesso exclusivo de suas respectivas famílias.");
+                            alert("Para preservar a privacidade escolar, as paginas de recordacao dos outros alunos sao de acesso exclusivo de suas respectivas familias.");
                             return;
                           }
                           setFocusedStudentId(student.id);
@@ -3810,7 +3810,7 @@ Equipe Anjinho Escolar ❤ `;
                         {(!isFamilyMode || isOwnChild) && (
                           <div className="absolute inset-0 bg-indigo-950/5 rounded-2xl opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
                             <span className="bg-white/95 text-slate-900 text-[8px] font-black py-1 px-2.5 rounded-lg border border-slate-200 shadow-sm uppercase tracking-wider">
-                              Ver Árvore  
+                              Ver Arvore  
                             </span>
                           </div>
                         )}
@@ -3851,12 +3851,12 @@ Equipe Anjinho Escolar ❤ `;
 
               
               <div className="text-center space-y-2 pb-4 border-b border-amber-200">
-                <span className="text-3xl">✉</span>
+                <span className="text-3xl"> </span>
                 <h3 className="text-xl sm:text-2xl font-serif font-black text-amber-900 tracking-tight">
                   Uma Carta para o Futuro de {idoso.nome.split(' (')[0]}
                 </h3>
                 <p className="text-[10px] uppercase font-black tracking-widest text-indigo-900/60">
-                  Cápsula do Tempo • Para ler daqui a 10 anos
+                  Capsula do Tempo   Para ler daqui a 10 anos
                 </p>
               </div>
 
@@ -3866,33 +3866,33 @@ Equipe Anjinho Escolar ❤ `;
                   Querido(a) {idoso.nome.split(' (')[0]},
                 </p>
                 <p>
-                  Escrevemos esta carta hoje, enquanto você ainda corre pelos corredores com um sorriso contagiante, segura o pincel de pintura cheio de tinta colorida e descobre a magia de empilhar blocos e dar os seus primeiros passos com firmeza e autonomia.
+                  Escrevemos esta carta hoje, enquanto voce ainda corre pelos corredores com um sorriso contagiante, segura o pincel de pintura cheio de tinta colorida e descobre a magia de empilhar blocos e dar os seus primeiros passos com firmeza e autonomia.
                 </p>
                 <p>
-                  Durante a sua linda jornada na nossa escola, cada conquista sua foi celebrada com muito amor. Nós vimos você rir ao ouvir histórias mágicas, consolar amiguinhos de forma espont demonstrando uma empatia preciosa, e se superar em cada oficina criativa de artes.
+                  Durante a sua linda jornada na nossa escola, cada conquista sua foi celebrada com muito amor. Nos vimos voce rir ao ouvir historias magicas, consolar amiguinhos de forma espont demonstrando uma empatia preciosa, e se superar em cada oficina criativa de artes.
                 </p>
                 <p>
-                  Seus professores, que o(a) guiaram com tanto carinho através dos pilares de <strong>Memórias, Relacionamento e Desenvolvimento</strong>, guardaram cada pedacinho desse caminho no seu <em>Álbum da Primeira Inf</em>. 
+                  Seus professores, que o(a) guiaram com tanto carinho atraves dos pilares de <strong>Memorias, Relacionamento e Desenvolvimento</strong>, guardaram cada pedacinho desse caminho no seu <em>Album da Primeira Inf</em>. 
                 </p>
                 <p>
-                  Quando você abrir este aplicativo ou reler esta carta no futuro, esperamos que saiba o quanto foi amado(a) e valorizado(a) aqui. Você aprendeu a compartilhar, a esperar sua vez, a sorrir para os desafios e a espalhar alegria. Cada traço do seu desenho de hoje é a fundação do adulto maravilhoso que você se tornará amanhã.
+                  Quando voce abrir este aplicativo ou reler esta carta no futuro, esperamos que saiba o quanto foi amado(a) e valorizado(a) aqui. Voce aprendeu a compartilhar, a esperar sua vez, a sorrir para os desafios e a espalhar alegria. Cada traco do seu desenho de hoje e a fundacao do adulto maravilhoso que voce se tornara amanha.
                 </p>
                 <p className="italic text-indigo-950 font-bold">
-                  "Nunca perca essa curiosidade brilhante nos olhos e o carinho no coração."
+                  "Nunca perca essa curiosidade brilhante nos olhos e o carinho no coracao."
                 </p>
                 <p className="pt-4 text-right font-serif text-slate-600">
-                  Com todo o amor de sua família,<br />
-                  Seus Educadores e a equipe do <strong>Anjinho Escolar</strong>. ❤
+                  Com todo o amor de sua familia,<br />
+                  Seus Educadores e a equipe do <strong>Anjinho Escolar</strong>.  
                 </p>
               </div>
 
               
               <div className="flex justify-between items-center pt-4 border-t border-amber-200 text-xs">
                 <div className="text-slate-500 font-semibold">
-                  Data de Emissão: <span className="font-extrabold text-slate-700">{new Date().toLocaleDateString('pt-BR')}</span>
+                  Data de Emissao: <span className="font-extrabold text-slate-700">{new Date().toLocaleDateString('pt-BR')}</span>
                 </div>
                 <div className="text-center font-serif text-amber-900 font-extrabold italic bg-amber-100/50 px-3 py-1.5 rounded-lg border border-amber-200">
-                    Selo de Preservação Anjinho Escolar
+                    Selo de Preservacao Anjinho Escolar
                 </div>
               </div>
 
@@ -3901,9 +3901,9 @@ Equipe Anjinho Escolar ❤ `;
                 <button
                   type="button"
                   onClick={() => {
-                    const textToCopy = `Uma Carta para o Futuro de ${idoso.nome.split(' (')[0]}\n\nQuerido(a) ${idoso.nome.split(' (')[0]},\n\nEscrevemos esta carta hoje, enquanto você ainda corre pelos corredores com um sorriso contagiante...\n\nCom todo o amor, seus Educadores e a equipe do Anjinho Escolar.`;
+                    const textToCopy = `Uma Carta para o Futuro de ${idoso.nome.split(' (')[0]}\n\nQuerido(a) ${idoso.nome.split(' (')[0]},\n\nEscrevemos esta carta hoje, enquanto voce ainda corre pelos corredores com um sorriso contagiante...\n\nCom todo o amor, seus Educadores e a equipe do Anjinho Escolar.`;
                     navigator.clipboard.writeText(textToCopy);
-                    alert("A Carta para o Futuro foi copiada para a área de transferência! Você pode colá-la em um e-mail ou documento de texto.");
+                    alert("A Carta para o Futuro foi copiada para a area de transferencia! Voce pode cola-la em um e-mail ou documento de texto.");
                   }}
                   className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black py-3 rounded-xl text-xs transition-all cursor-pointer shadow-md"
                 >
@@ -3916,7 +3916,7 @@ Equipe Anjinho Escolar ❤ `;
                   }}
                   className="flex-1 flex items-center justify-center gap-2 bg-amber-400 hover:bg-amber-500 text-indigo-950 font-black py-3 rounded-xl text-xs transition-all cursor-pointer shadow-md"
                 >
-                  <Printer className="w-4 h-4 text-indigo-950" /> Imprimir Carta de Recordação  
+                  <Printer className="w-4 h-4 text-indigo-950" /> Imprimir Carta de Recordacao  
                 </button>
               </div>
             </motion.div>
@@ -3957,12 +3957,12 @@ Equipe Anjinho Escolar ❤ `;
               ? 'bg-red-500 hover:bg-red-600 text-white ring-red-300'
               : 'bg-amber-400 hover:bg-amber-300 text-indigo-950 ring-amber-300/80 shadow-amber-500/20'
           }`}
-          title="Clique para abrir ou fechar o formulário de Nova Lembrança"
+          title="Clique para abrir ou fechar o formulario de Nova Lembranca"
         >
           {showAddForm ? (
             <>
               <X className="w-5 h-5 text-white" />
-              <span className="text-sm font-black tracking-tight text-white">Fechar Formulário</span>
+              <span className="text-sm font-black tracking-tight text-white">Fechar Formulario</span>
             </>
           ) : (
             <>
@@ -3971,7 +3971,7 @@ Equipe Anjinho Escolar ❤ `;
                 <span className="relative inline-flex rounded-full h-3 w-3 bg-indigo-600"></span>
               </span>
               <Camera className="w-5 h-5 text-indigo-950 group-hover:rotate-12 transition-transform stroke-[2.5]" />
-              <span className="text-sm font-black tracking-tight text-indigo-950">  + Registrar Lembrança</span>
+              <span className="text-sm font-black tracking-tight text-indigo-950">  + Registrar Lembranca</span>
             </>
           )}
         </button>
@@ -4009,7 +4009,7 @@ Equipe Anjinho Escolar ❤ `;
                   {lastAfetoFeedback.label}
                 </span>
                 <span className="text-[10px] bg-amber-300 text-amber-950 font-black px-2.5 py-0.5 rounded-full border border-amber-400 shadow-sm">
-                  Árvore Iluminada! ✨
+                  Arvore Iluminada!  
                 </span>
               </div>
               <p className="text-xs sm:text-sm font-black text-slate-800 leading-snug">

@@ -17,10 +17,10 @@ import { USUARIOS_SIMULADOS, SALAS_INICIAIS, IDOSOS_INICIAIS } from './seedData'
 const app = initializeApp(firebaseConfig);
 let dbInstance;
 try {
-  console.log("🚀 [Firebase] Initializing Firestore with DB ID:", firebaseConfig.firestoreDatabaseId);
+  console.log("   [Firebase] Initializing Firestore with DB ID:", firebaseConfig.firestoreDatabaseId);
   dbInstance = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 } catch (e) {
-  console.warn("⚠️ [Firebase] Failed to init custom DB, falling back to (default).", e);
+  console.warn("[!]  [Firebase] Failed to init custom DB, falling back to (default).", e);
   dbInstance = getFirestore(app);
 }
 export const db = dbInstance;
@@ -88,7 +88,7 @@ export async function saveToFirestore(collectionName: string, data: any) {
       window.dispatchEvent(new CustomEvent('firestore-connection-status', { detail: { connected: true } }));
     }
   } catch (error: any) {
-    console.error(`❌ [Firebase] Error saving to ${collectionName}:`, error);
+    console.error(`  [Firebase] Error saving to ${collectionName}:`, error);
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent('anjo_sync_error', { 
         detail: { collectionName, code: error?.code, message: error?.message } 
@@ -109,7 +109,7 @@ export async function deleteFromFirestore(collectionName: string, id: string) {
       } catch (e) {}
     }
   } catch (error: any) {
-    console.error(`❌ [Firebase] Error deleting from ${collectionName}:`, error);
+    console.error(`  [Firebase] Error deleting from ${collectionName}:`, error);
   }
 }
 
@@ -124,7 +124,7 @@ export async function deleteBatchFromFirestore(collectionName: string, ids: stri
     });
     await batch.commit();
   } catch (error: any) {
-    console.error(`❌ [Firebase] Batch delete error in ${collectionName}:`, error);
+    console.error(`  [Firebase] Batch delete error in ${collectionName}:`, error);
   }
 }
 
@@ -171,7 +171,7 @@ export async function forceReconnectFirestore(): Promise<boolean> {
     }
     return true;
   } catch (err) {
-    console.error("Erro ao forçar reconexão Firestore:", err);
+    console.error("Erro ao forcar reconexao Firestore:", err);
     return false;
   }
 }
@@ -181,7 +181,7 @@ export async function seedDatabase(collectionName: string, localItems: any[]) {
     const colRef = collection(db, collectionName);
     const snapshot = await getDocs(colRef);
     if (snapshot.empty && localItems.length > 0) {
-      console.log(`🚀 [Firebase] Seeding ${collectionName} with ${localItems.length} items.`);
+      console.log(`   [Firebase] Seeding ${collectionName} with ${localItems.length} items.`);
       for (const item of localItems) {
         if (item && item.id) {
           await setDoc(doc(db, collectionName, String(item.id).replace(/\//g, '_')), item, { merge: true });
@@ -197,7 +197,7 @@ const lastDataSerialized: Record<string, string> = {};
 export function startFirebaseSync(force?: boolean) {
   if (syncInitialized && !force) return;
   syncInitialized = true;
-  console.log("🚀 [Firebase] Full Real-time Sync initialized with custom DB:", firebaseConfig.firestoreDatabaseId);
+  console.log("   [Firebase] Full Real-time Sync initialized with custom DB:", firebaseConfig.firestoreDatabaseId);
 
   const collectionsToListen = Object.keys(SYNC_COLLECTIONS_MAP);
 
@@ -214,27 +214,27 @@ export function startFirebaseSync(force?: boolean) {
         // Self-heal and protect canonical collections from being wiped to empty array
         if (colName === 'anjo_usuarios') {
           if (data.length === 0) {
-            console.log("🚀 [Firebase] Auto-seeding empty anjo_usuarios in Firestore with 14 canonical simulated users...");
+            console.log("   [Firebase] Auto-seeding empty anjo_usuarios in Firestore with 14 canonical simulated users...");
             seedDatabase('anjo_usuarios', USUARIOS_SIMULADOS);
             data = USUARIOS_SIMULADOS;
           } else {
             // Check if any canonical users are missing from remote (like dev, director, coordinators, teachers, parents)
             const missingSeedUsers = USUARIOS_SIMULADOS.filter(seedU => !data.some(d => d.id === seedU.id));
             if (missingSeedUsers.length > 0) {
-              console.log(`🚀 [Firebase] Restoring ${missingSeedUsers.length} missing seed users to anjo_usuarios in Firestore...`);
+              console.log(`   [Firebase] Restoring ${missingSeedUsers.length} missing seed users to anjo_usuarios in Firestore...`);
               missingSeedUsers.forEach(u => saveToFirestore('anjo_usuarios', u));
               data = [...data, ...missingSeedUsers];
             }
           }
         } else if (colName === 'anjo_salas') {
           if (data.length === 0) {
-            console.log("🚀 [Firebase] Auto-seeding empty anjo_salas in Firestore with 2 initial classes...");
+            console.log("   [Firebase] Auto-seeding empty anjo_salas in Firestore with 2 initial classes...");
             seedDatabase('anjo_salas', SALAS_INICIAIS);
             data = SALAS_INICIAIS;
           }
         } else if (colName === 'anjo_idosos') {
           if (data.length === 0) {
-            console.log("🚀 [Firebase] Auto-seeding empty anjo_idosos in Firestore with 10 students...");
+            console.log("   [Firebase] Auto-seeding empty anjo_idosos in Firestore with 10 students...");
             seedDatabase('anjo_idosos', IDOSOS_INICIAIS);
             data = IDOSOS_INICIAIS;
           }
@@ -254,7 +254,7 @@ export function startFirebaseSync(force?: boolean) {
         // Only dispatch and update storage if data changed
         if (serialized !== lastDataSerialized[colName]) {
           lastDataSerialized[colName] = serialized;
-          console.log(`📡 [Firebase Sync] ${colName}: ${data.length} docs atualizados`);
+          console.log(`   [Firebase Sync] ${colName}: ${data.length} docs atualizados`);
 
           if (Array.isArray(data) && data.length > 0) {
             data.forEach((item: any) => {
@@ -287,7 +287,7 @@ export function startFirebaseSync(force?: boolean) {
           }
         }
       }, (error) => {
-        console.error(`❌ [Firebase] Error listening to ${colName}:`, error);
+        console.error(`  [Firebase] Error listening to ${colName}:`, error);
         isFirestoreConnected = false;
         if (typeof window !== 'undefined') {
           window.dispatchEvent(new CustomEvent('firestore-connection-status', { detail: { connected: false } }));
@@ -297,7 +297,7 @@ export function startFirebaseSync(force?: boolean) {
         }
       });
     } catch (err) {
-      console.error(`❌ [Firebase] Failed to attach listener for ${colName}:`, err);
+      console.error(`  [Firebase] Failed to attach listener for ${colName}:`, err);
     }
   });
 }

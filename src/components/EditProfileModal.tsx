@@ -47,7 +47,7 @@ export default function EditProfileModal({
   const [foto, setFoto] = useState(usuarioAtual.foto || '');
   const [pin, setPin] = useState(usuarioAtual.pin || '1234');
   const [tipo, setTipo] = useState<UserType>(usuarioAtual.tipo || 'familiar');
-  const [parentesco, setParentesco] = useState(usuarioAtual.parentesco || 'Mãe (Responsável)');
+  const [parentesco, setParentesco] = useState(usuarioAtual.parentesco || 'Mae (Responsavel)');
   const [observacoes, setObservacoes] = useState(usuarioAtual.observacoes || '');
 
   const [isSaving, setIsSaving] = useState(false);
@@ -69,7 +69,7 @@ export default function EditProfileModal({
       setFoto(usuarioAtual.foto || '');
       setPin(usuarioAtual.pin || '1234');
       setTipo(usuarioAtual.tipo || 'familiar');
-      setParentesco(usuarioAtual.parentesco || 'Mãe (Responsável)');
+      setParentesco(usuarioAtual.parentesco || 'Mae (Responsavel)');
       setObservacoes(usuarioAtual.observacoes || '');
     }
   }, [usuarioAtual, isOpen]);
@@ -99,7 +99,7 @@ export default function EditProfileModal({
       }
     } catch (err: any) {
       console.error("Erro ao abrir c", err);
-      setCameraError("Não foi possível acessar a c Verifique as permissões do seu navegador.");
+      setCameraError("Nao foi possivel acessar a c Verifique as permissoes do seu navegador.");
       setIsCapturing(false);
     }
   };
@@ -143,7 +143,7 @@ export default function EditProfileModal({
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     if (!nome.trim()) {
-      setErrorMsg("O nome de usuário não pode ficar em branco.");
+      setErrorMsg("O nome de usuario nao pode ficar em branco.");
       return;
     }
 
@@ -152,7 +152,7 @@ export default function EditProfileModal({
     // Check if PIN is unique
     const pinCheck = isPinUnique(newPin, usuarioAtual.id);
     if (!pinCheck.isUnique) {
-      setErrorMsg(`⚠ O PIN "${newPin}" já está em uso por ${pinCheck.conflictingUser?.nome || 'outro usuário'}. Por favor, escolha um PIN exclusivo de 4 dígitos.`);
+      setErrorMsg(`[!] O PIN "${newPin}" ja esta em uso por ${pinCheck.conflictingUser?.nome || 'outro usuario'}. Por favor, escolha um PIN exclusivo de 4 digitos.`);
       return;
     }
 
@@ -191,7 +191,7 @@ export default function EditProfileModal({
       // Notify parent App component
       onSaveUsuario(updatedUser);
 
-      setSuccessMsg("✨ Perfil, foto e função atualizados permanentemente!");
+      setSuccessMsg("  Perfil, foto e funcao atualizados permanentemente!");
       setTimeout(() => {
         setIsSaving(false);
         setSuccessMsg('');
@@ -199,7 +199,7 @@ export default function EditProfileModal({
       }, 1000);
     } catch (err: any) {
       console.error("Erro ao salvar perfil:", err);
-      setErrorMsg("Não foi possível salvar as alterações. Tente novamente.");
+      setErrorMsg("Nao foi possivel salvar as alteracoes. Tente novamente.");
       setIsSaving(false);
     }
   };
@@ -254,7 +254,7 @@ export default function EditProfileModal({
           <div className="space-y-3 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl border border-slate-200 dark:border-slate-700">
             <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 block flex items-center gap-1.5">
               <ImageIcon className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
-              Foto do Perfil de Usuário
+              Foto do Perfil de Usuario
             </label>
 
             {isCapturing ? (
@@ -408,7 +408,7 @@ export default function EditProfileModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
               <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 block flex items-center gap-1.5">
-                <Key className="w-3.5 h-3.5 text-amber-500" /> PIN de Acesso (4 Dígitos)
+                <Key className="w-3.5 h-3.5 text-amber-500" /> PIN de Acesso (4 Digitos)
               </label>
               <input
                 type="text"
@@ -422,7 +422,7 @@ export default function EditProfileModal({
 
             <div className="space-y-1">
               <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 block flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> Função / Nível de Acesso
+                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> Funcao / Nivel de Acesso
               </label>
               <select
                 value={tipo}
@@ -430,15 +430,15 @@ export default function EditProfileModal({
                   const newT = e.target.value as UserType;
                   setTipo(newT);
                   if (newT === 'familiar' && !parentesco) {
-                    setParentesco('Mãe (Responsável)');
+                    setParentesco('Mae (Responsavel)');
                   }
                 }}
                 className="w-full px-3 py-2 text-xs font-bold rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-850 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500/20"
               >
-                <option value="familiar">    Familiar (Mãe / Pai / Responsável)</option>
-                <option value="professor"> 🏫 Professor(a) / Educador(a)</option>
-                <option value="coordenador"> 🏫 Coordenação Pedagógica</option>
-                <option value="diretor">  Direção Escolar / Gestão</option>
+                <option value="familiar">    Familiar (Mae / Pai / Responsavel)</option>
+                <option value="professor">    Professor(a) / Educador(a)</option>
+                <option value="coordenador">    Coordenacao Pedagogica</option>
+                <option value="diretor">  Direcao Escolar / Gestao</option>
                 <option value="desenvolvedor">  Desenvolvedor Master</option>
               </select>
             </div>
@@ -447,13 +447,13 @@ export default function EditProfileModal({
           
           <div className="space-y-1">
             <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 block flex items-center gap-1.5">
-              <Heart className="w-3.5 h-3.5 text-rose-500" /> Parentesco / Vínculo / Cargo
+              <Heart className="w-3.5 h-3.5 text-rose-500" /> Parentesco / Vinculo / Cargo
             </label>
             <input
               type="text"
               value={parentesco}
               onChange={e => setParentesco(e.target.value)}
-              placeholder="Ex: Mãe (Responsável), Pai, Tia, Diretora Escolar"
+              placeholder="Ex: Mae (Responsavel), Pai, Tia, Diretora Escolar"
               className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500/20 font-medium"
             />
           </div>
@@ -461,13 +461,13 @@ export default function EditProfileModal({
           
           <div className="space-y-1">
             <label className="text-xs font-extrabold text-slate-700 dark:text-slate-300 block">
-              Observações / Bio
+              Observacoes / Bio
             </label>
             <textarea
               rows={2}
               value={observacoes}
               onChange={e => setObservacoes(e.target.value)}
-              placeholder="Breve descrição do seu perfil..."
+              placeholder="Breve descricao do seu perfil..."
               className="w-full px-3.5 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500/20"
             />
           </div>
@@ -490,7 +490,7 @@ export default function EditProfileModal({
               className="px-5 py-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white text-xs font-extrabold rounded-xl shadow-md cursor-pointer flex items-center gap-2 transition-all"
             >
               <Sparkles className="w-4 h-4 text-amber-300" />
-              {isSaving ? 'Salvando...' : 'Salvar Alterações'}
+              {isSaving ? 'Salvando...' : 'Salvar Alteracoes'}
             </button>
           </div>
 

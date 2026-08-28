@@ -122,7 +122,7 @@ export default function FinanceModule({
         valor: val,
         status: 'pago',
         dataPagamento: `10/06/2026`,
-        metodo: 'Cartão de Crédito'
+        metodo: 'Cartao de Credito'
       },
       {
         id: 'inv_3',
@@ -161,7 +161,7 @@ export default function FinanceModule({
     setHistory(updatedHistory);
     localStorage.setItem(`anjo_sub_historico_${idoso.id}`, JSON.stringify(updatedHistory));
 
-    setSuccessMessage('⚙ Configurações financeiras do aluno atualizadas com sucesso!');
+    setSuccessMessage('  Configuracoes financeiras do aluno atualizadas com sucesso!');
     setTimeout(() => setSuccessMessage(''), 3000);
     onRefresh();
   };
@@ -209,7 +209,7 @@ export default function FinanceModule({
             <span className="p-2 rounded-xl bg-indigo-50 text-indigo-700">
               <CreditCard className="w-5 h-5" />
             </span>
-            <span className="text-[10px] font-black uppercase text-indigo-500 tracking-wider">Módulo Integrado</span>
+            <span className="text-[10px] font-black uppercase text-indigo-500 tracking-wider">Modulo Integrado</span>
           </div>
           <h2 className="text-xl sm:text-2xl font-black text-indigo-950">
             Painel Financeiro & Mensalidades
@@ -223,7 +223,7 @@ export default function FinanceModule({
         <div className="flex items-center gap-3 self-stretch md:self-auto border-t md:border-t-0 pt-3 md:pt-0">
           <div className="text-right hidden sm:block">
             <span className="text-[10px] font-black uppercase text-slate-400 block">Status do Aluno</span>
-            <span className="text-xs font-semibold text-slate-600">Simulação de Bloqueios</span>
+            <span className="text-xs font-semibold text-slate-600">Simulacao de Bloqueios</span>
           </div>
 
           <button
@@ -233,17 +233,17 @@ export default function FinanceModule({
                 ? 'bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700'
                 : 'bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 animate-pulse'
             }`}
-            title="Clique para alternar o status de pagamento e testar a visualização dos pais!"
+            title="Clique para alternar o status de pagamento e testar a visualizacao dos pais!"
           >
             {status === 'pago' ? (
               <>
                 <CheckCircle className="w-4 h-4 text-emerald-600 fill-emerald-600/10" />
-                <span>Mensalidade: PAGA ✅</span>
+                <span>Mensalidade: PAGA [OK]</span>
               </>
             ) : (
               <>
                 <AlertTriangle className="w-4 h-4 text-rose-600 animate-bounce" />
-                <span>Mensalidade: ATRASADA ⚠</span>
+                <span>Mensalidade: ATRASADA [!]</span>
               </>
             )}
           </button>
@@ -276,7 +276,7 @@ export default function FinanceModule({
               <div>
                 <p className="text-3xl font-serif font-black text-amber-950">R$ {price.toFixed(2).replace('.', ',')}</p>
                 <span className="text-[9px] font-extrabold text-amber-700 uppercase tracking-widest mt-0.5 block">
-                  {isCustom ? '⭐ Personalizado' : '🏫 Preço Padrão'}
+                  {isCustom ? '  Personalizado' : '   Preco Padrao'}
                 </span>
               </div>
             </div>
@@ -292,7 +292,7 @@ export default function FinanceModule({
               <div>
                 <p className="text-3xl font-black text-sky-950">Dia {billingDay}</p>
                 <span className="text-[9px] font-extrabold text-sky-700 uppercase tracking-widest mt-0.5 block">
-                  Cobrança Mensal Recorrente
+                  Cobranca Mensal Recorrente
                 </span>
               </div>
             </div>
@@ -310,7 +310,7 @@ export default function FinanceModule({
                   {billingType === 'coletivo' ? '  Coletivo' : '  Individual'}
                 </p>
                 <span className="text-[9px] font-extrabold text-indigo-700 uppercase tracking-widest mt-1 block">
-                  Faturamento de Serviços
+                  Faturamento de Servicos
                 </span>
               </div>
             </div>
@@ -321,7 +321,7 @@ export default function FinanceModule({
           <div className="bg-white rounded-3xl border border-indigo-50 shadow-sm overflow-hidden">
             <div className="p-5 border-b border-indigo-50 bg-indigo-50/20 flex justify-between items-center">
               <h3 className="text-sm font-black text-indigo-950 flex items-center gap-1.5">
-                <FileText className="w-4 h-4 text-indigo-600" /> Cobrança em Aberto (Competência Corrente)
+                <FileText className="w-4 h-4 text-indigo-600" /> Cobranca em Aberto (Competencia Corrente)
               </h3>
               <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-full border ${
                 status === 'pago' 
@@ -335,10 +335,10 @@ export default function FinanceModule({
             <div className="p-6 space-y-6">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div className="space-y-1">
-                  <span className="text-xs text-slate-400 font-bold">Anjinho Escolar Serviços Educacionais Ltda.</span>
-                  <h4 className="text-base font-bold text-slate-800">Cobrança de Mensalidade Escolar - {activeStudentName}</h4>
+                  <span className="text-xs text-slate-400 font-bold">Anjinho Escolar Servicos Educacionais Ltda.</span>
+                  <h4 className="text-base font-bold text-slate-800">Cobranca de Mensalidade Escolar - {activeStudentName}</h4>
                   <p className="text-xs text-slate-500 leading-normal font-medium">
-                    Serviço de berçário, cuidados integrados de governança escolar, monitoramento e relatórios de asseio/sono.
+                    Servico de bercario, cuidados integrados de governanca escolar, monitoramento e relatorios de asseio/sono.
                   </p>
                 </div>
                 <div className="text-left sm:text-right shrink-0">
@@ -352,10 +352,10 @@ export default function FinanceModule({
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                     <div className="space-y-0.5">
                       <span className="text-xs font-black text-amber-800 flex items-center gap-1">
-                        ⚡ Pagamento Facilitado via Pix
+                          Pagamento Facilitado via Pix
                       </span>
                       <p className="text-[11px] text-amber-900 font-semibold leading-relaxed">
-                        Copie a chave Pix Copia e Cola ou escaneie o código QR para realizar a simulação instant de regularização.
+                        Copie a chave Pix Copia e Cola ou escaneie o codigo QR para realizar a simulacao instant de regularizacao.
                       </p>
                     </div>
 
@@ -402,7 +402,7 @@ export default function FinanceModule({
                       ) : (
                         <>
                           <Copy className="w-4 h-4" />
-                          <span>Copiar Código</span>
+                          <span>Copiar Codigo</span>
                         </>
                       )}
                     </button>
@@ -414,7 +414,7 @@ export default function FinanceModule({
                       onClick={togglePaymentStatus}
                       className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-[11px] rounded-lg cursor-pointer transition-all shadow-3xs"
                     >
-                      Pagar Fatura Agora (Simulação)  
+                      Pagar Fatura Agora (Simulacao)  
                     </button>
                   </div>
 
@@ -425,7 +425,7 @@ export default function FinanceModule({
                   <div className="space-y-0.5">
                     <strong className="text-xs font-bold text-emerald-950 block">Selo de Regularidade Ativo!</strong>
                     <p className="text-[11px] text-emerald-800 font-semibold">
-                      O acesso de todos os pais e autorizados do(a) {activeStudentName} está 100% liberado. Tudo em dia!
+                      O acesso de todos os pais e autorizados do(a) {activeStudentName} esta 100% liberado. Tudo em dia!
                     </p>
                   </div>
                 </div>
@@ -436,19 +436,19 @@ export default function FinanceModule({
           
           <div className="bg-white rounded-3xl border border-indigo-50 shadow-sm p-6 space-y-4">
             <h3 className="text-sm font-black text-indigo-950 flex items-center gap-1.5">
-              <Calendar className="w-4.5 h-4.5 text-indigo-600" /> Histórico de Faturamento & Recibos
+              <Calendar className="w-4.5 h-4.5 text-indigo-600" /> Historico de Faturamento & Recibos
             </h3>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
                   <tr className="border-b border-indigo-50 text-[10px] font-black text-slate-400 uppercase tracking-wider">
-                    <th className="pb-3 font-black">Competência</th>
+                    <th className="pb-3 font-black">Competencia</th>
                     <th className="pb-3 font-black">Vencimento</th>
                     <th className="pb-3 font-black text-right">Valor</th>
                     <th className="pb-3 font-black text-center">Status</th>
-                    <th className="pb-3 font-black">Método</th>
-                    <th className="pb-3 font-black text-right">Ação</th>
+                    <th className="pb-3 font-black">Metodo</th>
+                    <th className="pb-3 font-black text-right">Acao</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-indigo-50/50 text-xs font-semibold text-slate-700">
@@ -475,7 +475,7 @@ export default function FinanceModule({
                       </td>
                       <td className="py-3.5 text-right">
                         <button
-                          onClick={() => alert(`  Recibo PDF da competência "${inv.competencia}" simulado com sucesso. Arquivo anjo_recibo_${inv.id}.pdf pronto para impressão!`)}
+                          onClick={() => alert(`  Recibo PDF da competencia "${inv.competencia}" simulado com sucesso. Arquivo anjo_recibo_${inv.id}.pdf pronto para impressao!`)}
                           className="px-2.5 py-1 bg-white hover:bg-indigo-50 border border-indigo-100 rounded-md text-[10px] font-black text-indigo-700 transition-all cursor-pointer"
                         >
                           Recibo
@@ -497,10 +497,10 @@ export default function FinanceModule({
           <div className="bg-white rounded-3xl border border-indigo-50 shadow-sm p-6 space-y-5">
             <div className="border-b border-indigo-50 pb-3">
               <h3 className="text-sm font-black text-indigo-950 flex items-center gap-1.5">
-                <ShieldCheck className="w-4.5 h-4.5 text-indigo-600" /> Configuração Escolar (Diretores)
+                <ShieldCheck className="w-4.5 h-4.5 text-indigo-600" /> Configuracao Escolar (Diretores)
               </h3>
               <p className="text-[11px] text-slate-400 font-semibold leading-relaxed mt-1">
-                Ajuste o plano de mensalidade específico deste aluno para simular diferentes condições.
+                Ajuste o plano de mensalidade especifico deste aluno para simular diferentes condicoes.
               </p>
             </div>
 
@@ -537,10 +537,10 @@ export default function FinanceModule({
                     onChange={(e) => setCustomDayInput(e.target.value)}
                     className="w-full px-3 py-2 border border-slate-200 rounded-xl text-xs font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-white"
                   >
-                    <option value="5">Dia 5 de cada mês</option>
-                    <option value="10">Dia 10 de cada mês</option>
-                    <option value="15">Dia 15 de cada mês</option>
-                    <option value="20">Dia 20 de cada mês</option>
+                    <option value="5">Dia 5 de cada mes</option>
+                    <option value="10">Dia 10 de cada mes</option>
+                    <option value="15">Dia 15 de cada mes</option>
+                    <option value="20">Dia 20 de cada mes</option>
                   </select>
                 </div>
 
@@ -586,9 +586,9 @@ export default function FinanceModule({
             ) : (
               <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100 space-y-2">
                 <span className="text-base"> </span>
-                <strong className="text-xs font-bold text-slate-800 block">Acesso Reservado à Direção</strong>
+                <strong className="text-xs font-bold text-slate-800 block">Acesso Reservado a Direcao</strong>
                 <p className="text-[11px] text-slate-500 leading-normal font-medium">
-                  Para alterar as mensalidades ou configurar preços específicos, use um perfil de Professor ou Diretor com PIN autorizado.
+                  Para alterar as mensalidades ou configurar precos especificos, use um perfil de Professor ou Diretor com PIN autorizado.
                 </p>
               </div>
             )}
@@ -597,15 +597,15 @@ export default function FinanceModule({
           
           <div className="bg-gradient-to-br from-indigo-950 to-[#2A2359] border border-indigo-900 text-white rounded-3xl p-6 shadow-sm space-y-4">
             <h3 className="text-xs font-black uppercase tracking-widest text-amber-300">
-              Sobre o Faturamento Anjinho®
+              Sobre o Faturamento Anjinho 
             </h3>
             <p className="text-[11px] text-indigo-100 font-semibold leading-relaxed">
-              Nosso sistema de mensalidades é integrado ao controle de acessos da escola:
+              Nosso sistema de mensalidades e integrado ao controle de acessos da escola:
             </p>
             <ul className="text-[11px] text-indigo-100 space-y-2 font-medium list-disc list-inside">
-              <li>Inadimplência gera paywall preventivo na conta dos familiares.</li>
-              <li>Acesso da equipe de educadores e diretores NUNCA é suspenso por débitos.</li>
-              <li>Faturas são geradas automaticamente no dia configurado.</li>
+              <li>Inadimplencia gera paywall preventivo na conta dos familiares.</li>
+              <li>Acesso da equipe de educadores e diretores NUNCA e suspenso por debitos.</li>
+              <li>Faturas sao geradas automaticamente no dia configurado.</li>
               <li>Controle unificado de planos individuais ou faturamento coletivo municipal.</li>
             </ul>
             <div className="pt-2 border-t border-indigo-850 flex items-center justify-between text-[10px] text-indigo-200 font-bold">

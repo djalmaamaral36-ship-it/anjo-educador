@@ -99,7 +99,7 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
         const cleanContactPhone = student.contatoEmergencia?.telefone ? student.contatoEmergencia.telefone.replace(/\D/g, '') : '';
         const phoneMatches = Boolean(cleanUserPhone && cleanContactPhone && (cleanUserPhone.includes(cleanContactPhone) || cleanContactPhone.includes(cleanUserPhone)));
         
-        const cleanUserName = norm(usuarioAtual.nome).replace(/\s*\((mãe|mae|pai|responsável|responsavel|familiar|convidado|admin)\)/gi, '').trim();
+        const cleanUserName = norm(usuarioAtual.nome).replace(/\s*\((mae|mae|pai|responsavel|responsavel|familiar|convidado|admin)\)/gi, '').trim();
         const cleanContactName = norm(student.contatoEmergencia?.nome || '');
         const nameMatches = Boolean(
           cleanContactName && cleanUserName &&
@@ -162,8 +162,8 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
   };
 
   const roomFilterOptions = isEscolar
-    ? ['todas', 'Berçário I', 'Berçário II', 'Maternal I', 'Maternal II', 'Jardim I', 'Jardim II']
-    : ['todas', 'Suíte 101', 'Suíte 102', 'Ala Solaria', 'Recanto Especial'];
+    ? ['todas', 'Bercario I', 'Bercario II', 'Maternal I', 'Maternal II', 'Jardim I', 'Jardim II']
+    : ['todas', 'Suite 101', 'Suite 102', 'Ala Solaria', 'Recanto Especial'];
 
   return (
     <div ref={containerRef} className={`relative w-full ${className}`}>
@@ -188,8 +188,8 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
           onFocus={() => setIsOpen(true)}
           placeholder={
             isEscolar 
-              ? "Busca rápida: digite nome da criança, sala ou responsável..." 
-              : "Busca rápida: digite nome do idoso ou número do quarto..."
+              ? "Busca rapida: digite nome da crianca, sala ou responsavel..." 
+              : "Busca rapida: digite nome do idoso ou numero do quarto..."
           }
           className={`w-full pl-10 pr-20 py-2.5 rounded-2xl text-xs font-bold transition-all focus:outline-none ${
             compact
@@ -310,7 +310,7 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
                         />
                         {isSelected && (
                           <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full flex items-center justify-center text-white text-[8px] font-black border border-white">
-                            ✓
+                             
                           </div>
                         )}
                       </div>
@@ -330,13 +330,13 @@ export const QuickStudentSearch: React.FC<QuickStudentSearchProps> = ({
 
                         {student.contatoEmergencia?.nome && (
                           <div className="text-[10px] font-bold text-indigo-700 dark:text-indigo-300 block truncate leading-snug">
-                                Resp: {student.contatoEmergencia.nome} ({student.contatoEmergencia.parentesco || 'Mãe/Pai'})
+                                Resp: {student.contatoEmergencia.nome} ({student.contatoEmergencia.parentesco || 'Mae/Pai'})
                           </div>
                         )}
 
                         <div className="text-[10.5px] text-slate-500 dark:text-slate-400 flex items-center gap-2 mt-0.5">
                           <span className="font-bold text-indigo-600 dark:text-indigo-400">{roomInfo}</span>
-                          <span>•</span>
+                          <span> </span>
                           <span>{(student as any).idade || student.dataNascimento || 'Aluno'}</span>
                         </div>
                       </div>

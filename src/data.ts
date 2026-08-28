@@ -8,12 +8,12 @@ export const MEDICAMENTOS_INICIAIS: Medicamento[] = [
   {
     id: 'med_maria_losartana',
     idosoId: 'idoso_maria',
-    nome: 'Losartana Potássica (Pressão)',
+    nome: 'Losartana Potassica (Pressao)',
     dosagem: '50mg - 1 Comp.',
-    frequência: 'Diário',
+    frequencia: 'Diario',
     horarios: ['08:00'],
     diasSemana: ['Todos'],
-    observacoes: 'Tomar em jejum, com meio copo d\'água.',
+    observacoes: 'Tomar em jejum, com meio copo d\'agua.',
     status: 'ativo'
   },
   {
@@ -21,7 +21,7 @@ export const MEDICAMENTOS_INICIAIS: Medicamento[] = [
     idosoId: 'idoso_maria',
     nome: 'Donepezila (Aricept - Alzheimer)',
     dosagem: '5mg - 1 Comp.',
-    frequência: 'Diário',
+    frequencia: 'Diario',
     horarios: ['21:00'],
     diasSemana: ['Todos'],
     observacoes: 'Oferecer logo antes do descanso noturno.',
@@ -30,35 +30,35 @@ export const MEDICAMENTOS_INICIAIS: Medicamento[] = [
   {
     id: 'med_maria_calcio',
     idosoId: 'idoso_maria',
-    nome: 'Cálcio + Vitamina D',
-    dosagem: '1 sachet em pó',
-    frequência: 'Diário',
+    nome: 'Calcio + Vitamina D',
+    dosagem: '1 sachet em po',
+    frequencia: 'Diario',
     horarios: ['12:30'],
     diasSemana: ['Todos'],
-    observacoes: 'Diluir em 100ml de suco ou água no almoço.',
+    observacoes: 'Diluir em 100ml de suco ou agua no almoco.',
     status: 'ativo'
   },
-  // Seu João
+  // Seu Joao
   {
     id: 'med_joao_metformina',
     idosoId: 'idoso_joao',
     nome: 'Glicofage XR (Metformina - Diabetes)',
     dosagem: '850mg - 1 Comp.',
-    frequência: 'Diário',
+    frequencia: 'Diario',
     horarios: ['08:00', '20:00'],
     diasSemana: ['Todos'],
-    observacoes: 'Tomar imediatamente após o café da manhã e após o jantar.',
+    observacoes: 'Tomar imediatamente apos o cafe da manha e apos o jantar.',
     status: 'ativo'
   },
   {
     id: 'med_joao_daflon',
     idosoId: 'idoso_joao',
-    nome: 'Daflon 1000mg (Circulação)',
+    nome: 'Daflon 1000mg (Circulacao)',
     dosagem: '1 comprimido',
-    frequência: 'A cada 12h',
+    frequencia: 'A cada 12h',
     horarios: ['09:00', '21:00'],
     diasSemana: ['Todos'],
-    observacoes: 'Tomar com as refeições.',
+    observacoes: 'Tomar com as refeicoes.',
     status: 'ativo'
   }
 ];
@@ -69,13 +69,13 @@ export const AGENDA_INICIAL: CompromissoMedico[] = [
     id: 'compromisso_maria_1',
     idosoId: 'idoso_maria',
     tipo: 'consulta',
-    titulo: 'Retorno Clínico de Geriatria',
+    titulo: 'Retorno Clinico de Geriatria',
     medico: 'Dr. Roberto Kardec',
     especialidade: 'Geriatria & Cardiologia',
-    local: 'Consultório Dr. Kardec - Av. Paulista, 1500, cj 42',
-    data: '2026-06-05', // no futuro próximo
+    local: 'Consultorio Dr. Kardec - Av. Paulista, 1500, cj 42',
+    data: '2026-06-05', // no futuro proximo
     horario: '14:30',
-    observacoes: 'Levar último exame de ecocardiograma e medições de pressão feitas em casa.',
+    observacoes: 'Levar ultimo exame de ecocardiograma e medicoes de pressao feitas em casa.',
     confirmadoFamiliar: true,
     alertasAtivos: true,
     status: 'agendado'
@@ -85,28 +85,28 @@ export const AGENDA_INICIAL: CompromissoMedico[] = [
     idosoId: 'idoso_maria',
     tipo: 'exame',
     titulo: 'Coleta de Exame de Sangue',
-    medico: 'Dra. Patrícia - Laboratório Fleury',
-    especialidade: 'Hematologia / Bioquímica',
+    medico: 'Dra. Patricia - Laboratorio Fleury',
+    especialidade: 'Hematologia / Bioquimica',
     local: 'Fleury Moema - Av. Ibirapuera, 1200',
     data: '2026-06-12',
     horario: '07:00',
-    observacoes: 'Necessário jejum de 8 horas. Beber água moderadamente livre.',
+    observacoes: 'Necessario jejum de 8 horas. Beber agua moderadamente livre.',
     confirmadoFamiliar: true,
     alertasAtivos: true,
     status: 'agendado'
   },
-  // Seu João
+  // Seu Joao
   {
     id: 'compromisso_joao_1',
     idosoId: 'idoso_joao',
     tipo: 'fisioterapia',
-    titulo: 'Sessão de Fisioterapia Domiciliar',
+    titulo: 'Sessao de Fisioterapia Domiciliar',
     medico: 'Dr. Alan Macedo',
-    especialidade: 'Fisioterapia Traumato-Ortopédica',
-    local: 'Residencial Seu João',
+    especialidade: 'Fisioterapia Traumato-Ortopedica',
+    local: 'Residencial Seu Joao',
     data: '2026-06-01',
     horario: '10:00',
-    observacoes: 'Foco no ganho de força de quadríceps e flexibilidade patelar.',
+    observacoes: 'Foco no ganho de forca de quadriceps e flexibilidade patelar.',
     confirmadoFamiliar: true,
     alertasAtivos: true,
     status: 'agendado'
@@ -244,7 +244,7 @@ export function getFromDB<T>(key: string, defaultValue: T): T {
 
 // Write helpers
 export function pruneLocalStorageToFreeSpace() {
-  console.warn("Iniciando auto-limpeza de emergência do localStorage para liberar espaço...");
+  console.warn("Iniciando auto-limpeza de emergencia do localStorage para liberar espaco...");
   try {
     // 1. Truncate notifications (anjo_notificacoes) to the last 5 entries
     const notifsStr = localStorage.getItem('anjo_notificacoes');
@@ -252,7 +252,7 @@ export function pruneLocalStorageToFreeSpace() {
       try {
         const notifs = JSON.parse(notifsStr);
         if (Array.isArray(notifs) && notifs.length > 5) {
-          console.log(`Removendo ${notifs.length - 5} notificações antigas...`);
+          console.log(`Removendo ${notifs.length - 5} notificacoes antigas...`);
           localStorage.setItem('anjo_notificacoes', JSON.stringify(notifs.slice(-5)));
         }
       } catch (e) {
@@ -267,7 +267,7 @@ export function pruneLocalStorageToFreeSpace() {
         const tasks = JSON.parse(tasksStr);
         if (Array.isArray(tasks)) {
           let modified = false;
-          // Deduplicar tarefas e garantir que almoço/papinha não se repita para o mesmo aluno
+          // Deduplicar tarefas e garantir que almoco/papinha nao se repita para o mesmo aluno
           const seenKeySet = new Set<string>();
           const seenLunchStudents = new Set<string>();
           const dedupedTasks: any[] = [];
@@ -275,13 +275,13 @@ export function pruneLocalStorageToFreeSpace() {
           tasks.forEach(t => {
             if (!t || !t.idosoId) return;
             const tit = (t.titulo || '').toLowerCase();
-            const isLunch = tit.includes('almoço') || tit.includes('almocinho') || tit.includes('papinha') || tit.includes('sopinha');
+            const isLunch = tit.includes('almoco') || tit.includes('almocinho') || tit.includes('papinha') || tit.includes('sopinha');
             const studentId = t.idosoId;
 
             if (isLunch) {
               if (seenLunchStudents.has(studentId)) {
                 modified = true;
-                return; // Ignora almoços duplicados
+                return; // Ignora almocos duplicados
               }
               seenLunchStudents.add(studentId);
             }
@@ -357,9 +357,9 @@ export function pruneLocalStorageToFreeSpace() {
         console.error("Erro ao limpar fotos de medicamentos", e);
       }
     }
-    console.log("Limpeza de emergência concluída com sucesso!");
+    console.log("Limpeza de emergencia concluida com sucesso!");
   } catch (err) {
-    console.error("Falha catastrófica ao tentar auto-limpar o localStorage:", err);
+    console.error("Falha catastrofica ao tentar auto-limpar o localStorage:", err);
   }
 }
 
@@ -442,9 +442,9 @@ export function saveToDB(key: string, data: any) {
       pruneLocalStorageToFreeSpace();
       try {
         localStorage.setItem(key, JSON.stringify(data));
-        console.log(`Sucesso ao salvar chave ${key} após limpeza de emergência!`);
+        console.log(`Sucesso ao salvar chave ${key} apos limpeza de emergencia!`);
       } catch (retryError) {
-        console.error("Falha ao salvar mesmo após a auto-limpeza:", retryError);
+        console.error("Falha ao salvar mesmo apos a auto-limpeza:", retryError);
       }
     }
   }
@@ -457,7 +457,7 @@ export function saveToDB(key: string, data: any) {
           saveToFirestore(key, item);
         }
       });
-      console.log(`⚡ [Firebase Diff Sync] Enviando ${itemsToUpload.length} item(ns) para Firestore na chave "${key}".`);
+      console.log(`  [Firebase Diff Sync] Enviando ${itemsToUpload.length} item(ns) para Firestore na chave "${key}".`);
     }
   } catch (err) {
     console.error("[Firebase Sync] Error uploading saved items", err);
@@ -673,10 +673,10 @@ export function getStudentRoomName(studentObj: any): string | null {
     }
   }
 
-  if (name.includes('Berçário I - B') || name.includes('Berçário 1B') || name.includes('Berçário 1 - B') || name.includes('B1-B') || name.includes('B1B')) return 'Berçário I - B';
-  if (name.includes('Berçário I - A') || name.includes('Berçário 1A') || name.includes('Berçário 1 - A') || name.includes('Berçário I') || name.includes('Berçário 1')) return 'Berçário I - A';
-  if (name.includes('Berçário III') || name.includes('Berçário 3')) return 'Berçário III';
-  if (name.includes('Berçário II') || name.includes('Berçário 2')) return 'Berçário II';
+  if (name.includes('Bercario I - B') || name.includes('Bercario 1B') || name.includes('Bercario 1 - B') || name.includes('B1-B') || name.includes('B1B')) return 'Bercario I - B';
+  if (name.includes('Bercario I - A') || name.includes('Bercario 1A') || name.includes('Bercario 1 - A') || name.includes('Bercario I') || name.includes('Bercario 1')) return 'Bercario I - A';
+  if (name.includes('Bercario III') || name.includes('Bercario 3')) return 'Bercario III';
+  if (name.includes('Bercario II') || name.includes('Bercario 2')) return 'Bercario II';
   if (name.includes('Maternal I - D') || name.includes('Maternal 1D')) return 'Maternal I - D';
   if (name.includes('Maternal I - C') || name.includes('Maternal 1C')) return 'Maternal I - C';
   if (name.includes('Maternal I - B') || name.includes('Maternal 1B')) return 'Maternal I - B';
@@ -1246,8 +1246,8 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
         id: 'task_s_entrada_' + idosoId,
         idosoId,
         tipo: 'atividade_fisica',
-        titulo: 'Acolhida & Entrada Afetiva 🏫',
-        descricao: 'Recepção carinhosa dos alunos, acolhimento individual e organização de pertences.',
+        titulo: 'Acolhida & Entrada Afetiva   ',
+        descricao: 'Recepcao carinhosa dos alunos, acolhimento individual e organizacao de pertences.',
         horarioPrevisto: '07:00',
         status: 'pendente'
       },
@@ -1255,8 +1255,8 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
         id: 'task_s_roda_' + idosoId,
         idosoId,
         tipo: 'atividade_fisica',
-        titulo: 'Roda de Conversa: Tema do Dia 🪞',
-        descricao: 'Apresentação do tema diário, musicalização, chamada divertida e expressão das crianças.',
+        titulo: 'Roda de Conversa: Tema do Dia   ',
+        descricao: 'Apresentacao do tema diario, musicalizacao, chamada divertida e expressao das criancas.',
         horarioPrevisto: '08:00',
         status: 'pendente'
       },
@@ -1264,8 +1264,8 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
         id: 'task_s_lanche_manha_' + idosoId,
         idosoId,
         tipo: 'alimentacao',
-        titulo: 'Lanche da Manhã & Frutinhas 🍎',
-        descricao: 'Frutas frescas da estação, biscoito integral e incentivo à hidratação.',
+        titulo: 'Lanche da Manha & Frutinhas   ',
+        descricao: 'Frutas frescas da estacao, biscoito integral e incentivo a hidratacao.',
         horarioPrevisto: '09:00',
         status: 'pendente'
       },
@@ -1273,8 +1273,8 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
         id: 'task_s_parque_' + idosoId,
         idosoId,
         tipo: 'atividade_fisica',
-        titulo: 'Recreação no Pátio & Parquinho 🧸',
-        descricao: 'Brincadeiras ao ar livre para estímulo motor, socialização e banho de sol adequado.',
+        titulo: 'Recreacao no Patio & Parquinho   ',
+        descricao: 'Brincadeiras ao ar livre para estimulo motor, socializacao e banho de sol adequado.',
         horarioPrevisto: '09:45',
         status: 'pendente'
       },
@@ -1282,8 +1282,8 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
         id: 'task_s_dirigida_' + idosoId,
         idosoId,
         tipo: 'atividade_fisica',
-        titulo: 'Atividade Dirigida Temática (BNCC) 🎨',
-        descricao: 'Atividade prática pedagógica com foco no desenvolvimento cognitivo e sensorial.',
+        titulo: 'Atividade Dirigida Tematica (BNCC)   ',
+        descricao: 'Atividade pratica pedagogica com foco no desenvolvimento cognitivo e sensorial.',
         horarioPrevisto: '10:30',
         status: 'pendente'
       },
@@ -1291,8 +1291,8 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
         id: 'task_s_almoco_' + idosoId,
         idosoId,
         tipo: 'alimentacao',
-        titulo: 'Almoço Saudável / Papinha 🍲',
-        descricao: 'Pratinho balanceado, introdução de novos sabores, verduras e carninha desfiada.',
+        titulo: 'Almoco Saudavel / Papinha   ',
+        descricao: 'Pratinho balanceado, introducao de novos sabores, verduras e carninha desfiada.',
         horarioPrevisto: '11:30',
         status: 'pendente'
       },
@@ -1300,8 +1300,8 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
         id: 'task_s_higiene_escovacao_' + idosoId,
         idosoId,
         tipo: 'banho',
-        titulo: 'Higiene, Fraldas & Escovação 👶',
-        descricao: 'Troca de fraldas, lavagem das mãos e estímulo à escovação dental com carinho.',
+        titulo: 'Higiene, Fraldas & Escovacao   ',
+        descricao: 'Troca de fraldas, lavagem das maos e estimulo a escovacao dental com carinho.',
         horarioPrevisto: '12:15',
         status: 'pendente'
       },
@@ -1309,8 +1309,8 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
         id: 'task_s_soneca_' + idosoId,
         idosoId,
         tipo: 'sono',
-        titulo: 'Soneca & Repouso Restaurador 💤',
-        descricao: 'Descanso nos colchonetes individuais com ambiente calmo, iluminação suave e música relaxante.',
+        titulo: 'Soneca & Repouso Restaurador   ',
+        descricao: 'Descanso nos colchonetes individuais com ambiente calmo, iluminacao suave e musica relaxante.',
         horarioPrevisto: '12:30',
         status: 'pendente'
       },
@@ -1318,8 +1318,8 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
         id: 'task_s_lanche_tarde_' + idosoId,
         idosoId,
         tipo: 'alimentacao',
-        titulo: 'Lanche da Tarde & Frutinhas 🍎',
-        descricao: 'Frutas frescas da época fatiadas, biscoito integral e hidratação da tarde.',
+        titulo: 'Lanche da Tarde & Frutinhas   ',
+        descricao: 'Frutas frescas da epoca fatiadas, biscoito integral e hidratacao da tarde.',
         horarioPrevisto: '14:15',
         status: 'pendente'
       },
@@ -1327,8 +1327,8 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
         id: 'task_s_brincadeira_livre_' + idosoId,
         idosoId,
         tipo: 'atividade_fisica',
-        titulo: 'Brincadeira Livre & Socialização 🧸',
-        descricao: 'Cantinhos temáticos com brinquedos educativos, blocos de montar e autonomia.',
+        titulo: 'Brincadeira Livre & Socializacao   ',
+        descricao: 'Cantinhos tematicos com brinquedos educativos, blocos de montar e autonomia.',
         horarioPrevisto: '14:45',
         status: 'pendente'
       },
@@ -1336,7 +1336,7 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
         id: 'task_s_historias_' + idosoId,
         idosoId,
         tipo: 'atividade_fisica',
-        titulo: 'Contação de Histórias & Música 📚',
+        titulo: 'Contacao de Historias & Musica   ',
         descricao: 'Leitura de livros ilustrados, fantoches e cantigas de roda.',
         horarioPrevisto: '15:30',
         status: 'pendente'
@@ -1345,8 +1345,8 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
         id: 'task_s_saida_' + idosoId,
         idosoId,
         tipo: 'atividade_fisica',
-        titulo: 'Preparação para Saída & Despedida Afetiva 🎒',
-        descricao: 'Organização das mochilinhas, fechamento da agenda do dia e entrega afetiva aos familiares.',
+        titulo: 'Preparacao para Saida & Despedida Afetiva   ',
+        descricao: 'Organizacao das mochilinhas, fechamento da agenda do dia e entrega afetiva aos familiares.',
         horarioPrevisto: '16:00',
         status: 'pendente'
       }
@@ -1357,8 +1357,8 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
       id: 'task_m_losartana_' + idosoId,
       idosoId,
       tipo: 'medicacao',
-      titulo: 'Losartana Potássica (Pressão)',
-      descricao: 'Dosagem: 50mg - 1 comprimido. Dar com meio copo d\'água.',
+      titulo: 'Losartana Potassica (Pressao)',
+      descricao: 'Dosagem: 50mg - 1 comprimido. Dar com meio copo d\'agua.',
       horarioPrevisto: '08:00',
       status: 'pendente'
     },
@@ -1366,8 +1366,8 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
       id: 'task_m_cafe_' + idosoId,
       idosoId,
       tipo: 'alimentacao',
-      titulo: 'Café da manhã',
-      descricao: 'Geleia sem açúcar com pão integral + café com leite.',
+      titulo: 'Cafe da manha',
+      descricao: 'Geleia sem acucar com pao integral + cafe com leite.',
       horarioPrevisto: '08:30',
       status: 'pendente'
     },
@@ -1376,7 +1376,7 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
       idosoId,
       tipo: 'banho',
       titulo: 'Banho & Higiene Geral',
-      descricao: 'Banho morno assistido, hidratação da pele e troca de roupas limpas.',
+      descricao: 'Banho morno assistido, hidratacao da pele e troca de roupas limpas.',
       horarioPrevisto: '10:00',
       status: 'pendente'
     },
@@ -1384,8 +1384,8 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
       id: 'task_m_almoco_' + idosoId,
       idosoId,
       tipo: 'alimentacao',
-      titulo: 'Almoço',
-      descricao: 'Arroz integral, purê de abóbora, filé de frango desfiado e brócolis cozido ao vapor.',
+      titulo: 'Almoco',
+      descricao: 'Arroz integral, pure de abobora, file de frango desfiado e brocolis cozido ao vapor.',
       horarioPrevisto: '12:30',
       status: 'pendente'
     },
@@ -1393,8 +1393,8 @@ export function generateDefaultTasksForStudent(idosoId: string): any[] {
       id: 'task_m_hidra_tarde_' + idosoId,
       idosoId,
       tipo: 'hidratacao',
-      titulo: 'Copos d\'Água da Tarde',
-      descricao: 'Oferecer 250ml de água gelada.',
+      titulo: 'Copos d\'Agua da Tarde',
+      descricao: 'Oferecer 250ml de agua gelada.',
       horarioPrevisto: '15:00',
       status: 'pendente'
     }
@@ -1430,7 +1430,7 @@ export function wipeAllParentsPanelActivities() {
     localStorage.removeItem(`anjo_activities_cleared_${id}`);
     localStorage.removeItem(`anjo_routine_cleared_${id}`);
     localStorage.removeItem(`anjo_tasks_cleared_${id}`);
-    localStorage.removeItem(`anjo_almoço_pct_${id}`);
+    localStorage.removeItem(`anjo_almoco_pct_${id}`);
     localStorage.removeItem(`anjo_sleep_hr_${id}`);
     localStorage.removeItem(`anjo_registro_agua_${id}`);
     localStorage.removeItem(`anjo_hidratacao_${id}`);
@@ -1551,7 +1551,7 @@ export function resetStudentDailyRoutine(studentIds: string[]) {
 
   // 3. Clear individual per-student logs and hygiene checkboxes
   validIds.forEach(id => {
-    localStorage.removeItem(`anjo_almoço_pct_${id}`);
+    localStorage.removeItem(`anjo_almoco_pct_${id}`);
     localStorage.removeItem(`anjo_sleep_hr_${id}`);
     localStorage.removeItem(`anjo_registro_agua_${id}`);
     localStorage.removeItem(`anjo_hidratacao_${id}`);
@@ -1911,14 +1911,14 @@ export function checkBottleFeedingInterval(
     if (diff < MIN_INTERVAL_MINUTES) {
       const nextAllowedMins = bottleMins + MIN_INTERVAL_MINUTES;
       const nextAllowedTime = formatMinutesToTime(nextAllowedMins);
-      const cleanName = studentName ? (studentName.includes(' (') ? studentName.split(' (')[0] : studentName) : 'A criança';
+      const cleanName = studentName ? (studentName.includes(' (') ? studentName.split(' (')[0] : studentName) : 'A crianca';
 
       return {
         allowed: false,
         lastHorario: bottleTimeStr,
         nextAllowedHorario: nextAllowedTime,
         diffMinutes: diff,
-        message: `🍼 COMUNICADO DE SEGURANÇA (MAMADEIRA)\n\n${cleanName} já tomou mamadeira às ${bottleTimeStr}.\nPara a nutrição e digestão adequada, deve ser mantido o intervalo mínimo de 2 horas entre mamadeiras.\n\n⏰ Próxima mamadeira liberada a partir das ${nextAllowedTime}.`
+        message: `   COMUNICADO DE SEGURANCA (MAMADEIRA)\n\n${cleanName} ja tomou mamadeira as ${bottleTimeStr}.\nPara a nutricao e digestao adequada, deve ser mantido o intervalo minimo de 2 horas entre mamadeiras.\n\n[T] Proxima mamadeira liberada a partir das ${nextAllowedTime}.`
       };
     }
   }
@@ -1946,12 +1946,12 @@ export function registerBottleAttemptNotice(
   const newNotice: any = {
     id: `notif_mamadeira_${Date.now()}_${Math.random().toString(36).substr(2, 4)}`,
     idosoId: studentId,
-    familiarNome: `Pais/Responsáveis de ${cleanName}`,
+    familiarNome: `Pais/Responsaveis de ${cleanName}`,
     telefone: '(11) 98765-4321',
     dataHora: `${getTodayBr()} ${attemptTime}`,
     tipo: 'comunicado_mamadeira',
-    titulo: `🍼 Comunicado: Mamadeira Recente (${cleanName})`,
-    mensagem: `Anjinho Escolar: Comunicado de acompanhamento. ${cleanName} já tomou mamadeira às ${lastTime}. A tentativa de registro foi realizada às ${attemptTime}. Respeitando o intervalo mínimo de 2 horas para digestão adequada, a próxima mamadeira estará liberada a partir das ${nextTime}. Registrado por ${registradoPor}.`,
+    titulo: `   Comunicado: Mamadeira Recente (${cleanName})`,
+    mensagem: `Anjinho Escolar: Comunicado de acompanhamento. ${cleanName} ja tomou mamadeira as ${lastTime}. A tentativa de registro foi realizada as ${attemptTime}. Respeitando o intervalo minimo de 2 horas para digestao adequada, a proxima mamadeira estara liberada a partir das ${nextTime}. Registrado por ${registradoPor}.`,
     statusEnvio: 'enviado'
   };
 
@@ -1968,7 +1968,7 @@ export function formatTimeBr(dateOrIso?: string | Date | null, fallback = '07:30
   if (!dateOrIso) return fallback;
   if (/^\d{2}:\d{2}$/.test(String(dateOrIso))) return String(dateOrIso);
   if (/^\d{2}:\d{2}:\d{2}$/.test(String(dateOrIso))) return String(dateOrIso).substring(0, 5);
-  if (dateOrIso === 'Início do Turno' || String(dateOrIso).includes('Invalid')) return fallback;
+  if (dateOrIso === 'Inicio do Turno' || String(dateOrIso).includes('Invalid')) return fallback;
   try {
     const d = typeof dateOrIso === 'string' ? new Date(dateOrIso) : dateOrIso;
     if (!isNaN(d.getTime())) {
@@ -2023,13 +2023,13 @@ export function purgeOrphanedStudentData() {
       let mod = { ...t };
       const titleLower = (mod.titulo || '').toLowerCase();
       if ((titleLower.includes('lanche da tarde') || titleLower.includes('lanchinho da tarde') || titleLower.includes('lanche tarde')) && titleLower.includes('mamadeira')) {
-        mod.titulo = 'Lanche da Tarde & Frutinhas 🍎';
-        mod.descricao = 'Frutas frescas da época fatiadas, biscoito integral e hidratação da tarde.';
+        mod.titulo = 'Lanche da Tarde & Frutinhas   ';
+        mod.descricao = 'Frutas frescas da epoca fatiadas, biscoito integral e hidratacao da tarde.';
         tasksChanged = true;
       }
-      if (titleLower.includes('mamadeira') && (titleLower.includes('café') || titleLower.includes('cafe'))) {
-        mod.titulo = 'Lanche da Manhã & Frutinhas 🍎';
-        mod.descricao = 'Frutas frescas da estação, biscoito integral e incentivo à hidratação.';
+      if (titleLower.includes('mamadeira') && (titleLower.includes('cafe') || titleLower.includes('cafe'))) {
+        mod.titulo = 'Lanche da Manha & Frutinhas   ';
+        mod.descricao = 'Frutas frescas da estacao, biscoito integral e incentivo a hidratacao.';
         tasksChanged = true;
       }
       return mod;
@@ -2129,7 +2129,7 @@ export function deleteStudentEverywhere(studentId: string) {
   localStorage.removeItem(`anjo_activities_cleared_${studentId}`);
   localStorage.removeItem(`anjo_tasks_initialized_${studentId}`);
   localStorage.removeItem(`anjo_mural_cleared_${studentId}`);
-  localStorage.removeItem(`anjo_almoço_pct_${studentId}`);
+  localStorage.removeItem(`anjo_almoco_pct_${studentId}`);
   localStorage.removeItem(`anjo_sleep_hr_${studentId}`);
   localStorage.removeItem(`anjo_registro_agua_${studentId}`);
   localStorage.removeItem(`anjo_hidratacao_${studentId}`);

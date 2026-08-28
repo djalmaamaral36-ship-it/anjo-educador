@@ -108,12 +108,12 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
   const [subHistory, setSubHistory] = useState<any[]>([]);
   const [savingMessage, setSavingMessage] = useState<string>('');
 
-  // Sinais vitais / Saúde, Sono & Fralda states
+  // Sinais vitais / Saude, Sono & Fralda states
   const [sinaisList, setSinaisList] = useState<any[]>([]);
   const [sinaisSearchTerm, setSinaisSearchTerm] = useState('');
   const [sinaisFilterMode, setSinaisFilterMode] = useState<'todos' | 'idoso' | 'creche' | 'fundamental'>('todos');
 
-  // 🏫 CRM ANJINHO ESCOLAR BAURU (Controle de Famílias & Funil)
+  //    CRM ANJINHO ESCOLAR BAURU (Controle de Familias & Funil)
   const [adminActiveTab, setAdminActiveTab] = useState<'faturamento' | 'crm_escolar'>('faturamento');
   const [crmSubTab, setCrmSubTab] = useState<'dashboard' | 'familias' | 'origem' | 'jornada' | 'financeiro'>('dashboard');
   const [crmSearch, setCrmSearch] = useState('');
@@ -131,7 +131,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
   const [newFamIdade, setNewFamIdade] = useState('4 anos');
   const [newFamEscola, setNewFamEscola] = useState('EMEF Santa Maria - Bauru');
   const [newFamOrigem, setNewFamOrigem] = useState('QR Code Entrada');
-  const [newFamCampanha, setNewFamCampanha] = useState('Panfletagem Portão 7h30');
+  const [newFamCampanha, setNewFamCampanha] = useState('Panfletagem Portao 7h30');
 
   // Bauru CRM Families State
   const [crmFamilias, setCrmFamilias] = useState<any[]>(() => {
@@ -149,7 +149,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         idade: '4 anos',
         escola: 'EMEF Santa Maria - Bauru',
         origem: 'QR Code Entrada',
-        campanha: 'Panfletagem Portão 7h30',
+        campanha: 'Panfletagem Portao 7h30',
         dataAdesao: '12/05/2025',
         status: 'Ativo',
         statusFinanceiro: 'pago',
@@ -157,7 +157,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         diaJornada: 28,
         likesRecebidos: 14,
         regadasAmor: 6,
-        ultimoContato: 'Hoje às 08:30'
+        ultimoContato: 'Hoje as 08:30'
       },
       {
         id: 'crm_fam_2',
@@ -166,9 +166,9 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         email: 'rafael.oli@hotmail.com',
         crianca: 'Theo Oliveira',
         idade: '5 anos',
-        escola: 'Colégio São Francisco',
-        origem: 'Recepção da Escola',
-        campanha: 'Volta às Aulas 2025',
+        escola: 'Colegio Sao Francisco',
+        origem: 'Recepcao da Escola',
+        campanha: 'Volta as Aulas 2025',
         dataAdesao: '18/05/2025',
         status: 'Ativo',
         statusFinanceiro: 'pago',
@@ -185,7 +185,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         email: 'ju.costa@outlook.com',
         crianca: 'Laura e Enzo',
         idade: '3 e 6 anos',
-        escola: 'EMEI Leila de Fátima',
+        escola: 'EMEI Leila de Fatima',
         origem: 'Instagram',
         campanha: 'Campanha Insta Bauru',
         dataAdesao: '20/05/2025',
@@ -195,7 +195,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         diaJornada: 14,
         likesRecebidos: 8,
         regadasAmor: 4,
-        ultimoContato: 'Há 2 dias'
+        ultimoContato: 'Ha 2 dias'
       },
       {
         id: 'crm_fam_4',
@@ -206,7 +206,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         idade: '4 anos',
         escola: 'Escola Criativa Bauru',
         origem: 'QR Code Entrada',
-        campanha: 'Panfletagem Portão 7h30',
+        campanha: 'Panfletagem Portao 7h30',
         dataAdesao: '02/06/2025',
         status: 'Ativo',
         statusFinanceiro: 'pago',
@@ -214,7 +214,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         diaJornada: 9,
         likesRecebidos: 12,
         regadasAmor: 5,
-        ultimoContato: 'Hoje às 10:15'
+        ultimoContato: 'Hoje as 10:15'
       },
       {
         id: 'crm_fam_5',
@@ -223,9 +223,9 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         email: 'fer.lima@gmail.com',
         crianca: 'Beatriz Castro',
         idade: '3 anos',
-        escola: 'Colégio Preve Objetivo',
-        origem: 'Indicação de Mães',
-        campanha: 'Indique uma Mãe',
+        escola: 'Colegio Preve Objetivo',
+        origem: 'Indicacao de Maes',
+        campanha: 'Indique uma Mae',
         dataAdesao: '08/06/2025',
         status: 'Pendente',
         statusFinanceiro: 'atrasado',
@@ -233,18 +233,18 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         diaJornada: 30,
         likesRecebidos: 2,
         regadasAmor: 1,
-        ultimoContato: 'Há 5 dias'
+        ultimoContato: 'Ha 5 dias'
       },
       {
         id: 'crm_fam_6',
-        responsavel: 'Patrícia Andrade',
+        responsavel: 'Patricia Andrade',
         telefone: '(14) 99188-3322',
         email: 'paty.andrade@gmail.com',
         crianca: 'Gael Andrade',
         idade: '3 anos',
         escola: 'EMEF Nacilda de Campos',
         origem: 'QR Code Entrada',
-        campanha: 'Panfletagem Portão 7h30',
+        campanha: 'Panfletagem Portao 7h30',
         dataAdesao: '10/06/2025',
         status: 'Ativo',
         statusFinanceiro: 'pago',
@@ -252,7 +252,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         diaJornada: 5,
         likesRecebidos: 15,
         regadasAmor: 7,
-        ultimoContato: 'Hoje às 11:40'
+        ultimoContato: 'Hoje as 11:40'
       },
       {
         id: 'crm_fam_7',
@@ -261,7 +261,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         email: 'camila.rocha@uol.com.br',
         crianca: 'Heitor Rocha',
         idade: '5 anos',
-        escola: 'Colégio São José',
+        escola: 'Colegio Sao Jose',
         origem: 'WhatsApp Direto',
         campanha: 'Campanha WhatsApp Bauru',
         dataAdesao: '11/06/2025',
@@ -271,7 +271,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         diaJornada: 3,
         likesRecebidos: 10,
         regadasAmor: 4,
-        ultimoContato: 'Hoje às 09:00'
+        ultimoContato: 'Hoje as 09:00'
       }
     ];
   });
@@ -311,7 +311,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
     setNewFamCrianca('');
     setCrmNewFamilyModal(false);
 
-    setCrmToast(`✓ Família de ${newFamMae} (${newFamCrianca}) cadastrada com sucesso no CRM Bauru!`);
+    setCrmToast(`  Familia de ${newFamMae} (${newFamCrianca}) cadastrada com sucesso no CRM Bauru!`);
     setTimeout(() => setCrmToast(null), 4000);
   };
 
@@ -413,7 +413,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
       setSubValor(globalSubValor);
     }
     
-    setSavingMessage('Preço padrão geral atualizado para todos os alunos!');
+    setSavingMessage('Preco padrao geral atualizado para todos os alunos!');
     setTimeout(() => {
       setSavingMessage('');
     }, 2000);
@@ -433,7 +433,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
     setSubHistory(updated);
     localStorage.setItem(`anjo_sub_historico_${selectedIdosoId}`, JSON.stringify(updated));
     
-    setSavingMessage('Novo pagamento manual lançado com sucesso!');
+    setSavingMessage('Novo pagamento manual lancado com sucesso!');
     setTimeout(() => {
       setSavingMessage('');
     }, 2000);
@@ -445,7 +445,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
       const cleanI = record.idosoNome.toLowerCase();
       return cleanS === cleanI || cleanS.includes(cleanI) || cleanI.includes(cleanS) ||
         (s.id === 'idoso_maria' && (cleanI.includes('maria') || cleanI.includes('mariana'))) ||
-        (s.id === 'idoso_joao' && (cleanI.includes('joão') || cleanI.includes('joao') || cleanI.includes('enzo')));
+        (s.id === 'idoso_joao' && (cleanI.includes('joao') || cleanI.includes('joao') || cleanI.includes('enzo')));
     });
     if (senior) {
       const isCustom = localStorage.getItem(`anjo_sub_is_custom_${senior.id}`) === 'true';
@@ -463,16 +463,16 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
     const priceFormatted = getSubValorForConsent(record).toFixed(2).replace('.', ',');
     
     if (day === 1) {
-      return `Olá, *${usuarioNome}*! Que bom ter você no aplicativo *${appName}*!   Aproveite seus 30 dias de teste gratuito para acompanhar a rotina diária em tempo real de *${idosoNome}*.\n\nQualquer dúvida, estamos à inteira disposição!`;
+      return `Ola, *${usuarioNome}*! Que bom ter voce no aplicativo *${appName}*!   Aproveite seus 30 dias de teste gratuito para acompanhar a rotina diaria em tempo real de *${idosoNome}*.\n\nQualquer duvida, estamos a inteira disposicao!`;
     }
     if (day === 15) {
-      return `Olá, *${usuarioNome}*! Já se passaram 15 dias de acompanhamento do(a) *${idosoNome}* no aplicativo *${appName}*.   Viu como as abas de Medicamentos, Rotina e Relatórios facilitam seu dia e trazem muito mais tranquilidade? Aproveite o restante do seu teste grátis!`;
+      return `Ola, *${usuarioNome}*! Ja se passaram 15 dias de acompanhamento do(a) *${idosoNome}* no aplicativo *${appName}*.   Viu como as abas de Medicamentos, Rotina e Relatorios facilitam seu dia e trazem muito mais tranquilidade? Aproveite o restante do seu teste gratis!`;
     }
     if (day === 25) {
-      return `Olá, *${usuarioNome}*! Faltam apenas 5 dias para encerrar seu período gratuito no aplicativo *${appName}*.   Para não perder o acesso em tempo real à rotina do(a) *${idosoNome}*, ative sua assinatura mensal por apenas *R$ ${priceFormatted}/mês*!\n\n  *Chave Pix:* ${billingPixKey}\n  *Favorecido:* ${billingPixReceiver}\n\nEnvie o comprovante para liberação instant`;
+      return `Ola, *${usuarioNome}*! Faltam apenas 5 dias para encerrar seu periodo gratuito no aplicativo *${appName}*.   Para nao perder o acesso em tempo real a rotina do(a) *${idosoNome}*, ative sua assinatura mensal por apenas *R$ ${priceFormatted}/mes*!\n\n  *Chave Pix:* ${billingPixKey}\n  *Favorecido:* ${billingPixReceiver}\n\nEnvie o comprovante para liberacao instant`;
     }
     // Day 30 - Elegant Cut
-    return `⚠ *AVISO DE PAUSA NO ACESSO - ${appName}* ⚠\n\nOlá, *${usuarioNome}*! O período de 30 dias grátis de testes de *${idosoNome}* chegou ao fim.\n\nPara restabelecer ou manter o seu acesso de familiar ativo imediatamente, regularize sua assinatura por apenas *R$ ${priceFormatted}*:\n\n  *Chave Pix:* ${billingPixKey}\n  *Favorecido:* ${billingPixReceiver}\n\nEstamos à disposição para ajudar!`;
+    return `[!] *AVISO DE PAUSA NO ACESSO - ${appName}* [!]\n\nOla, *${usuarioNome}*! O periodo de 30 dias gratis de testes de *${idosoNome}* chegou ao fim.\n\nPara restabelecer ou manter o seu acesso de familiar ativo imediatamente, regularize sua assinatura por apenas *R$ ${priceFormatted}*:\n\n  *Chave Pix:* ${billingPixKey}\n  *Favorecido:* ${billingPixReceiver}\n\nEstamos a disposicao para ajudar!`;
   };
 
   useEffect(() => {
@@ -485,11 +485,11 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
     
     let template = '';
     if (billingMessageType === 'trial_ending') {
-      template = `Olá, *${usuarioNome}*! O período de teste grátis de 30 dias de *${idosoNome}* no aplicativo *${appName}* está chegando ao fim.  \n\nPara continuar acompanhando a rotina diária, medicamentos, sinais vitais e receber relatórios de turno em tempo real, ative sua assinatura mensal por apenas *R$ ${priceFormatted}*!\n\n  *Chave Pix para ativação:* ${billingPixKey}\n  *Favorecido:* ${billingPixReceiver}\n\nApós o pagamento, envie o comprovante por aqui para liberarmos seu acesso definitivo. Obrigado pela confiança!`;
+      template = `Ola, *${usuarioNome}*! O periodo de teste gratis de 30 dias de *${idosoNome}* no aplicativo *${appName}* esta chegando ao fim.  \n\nPara continuar acompanhando a rotina diaria, medicamentos, sinais vitais e receber relatorios de turno em tempo real, ative sua assinatura mensal por apenas *R$ ${priceFormatted}*!\n\n  *Chave Pix para ativacao:* ${billingPixKey}\n  *Favorecido:* ${billingPixReceiver}\n\nApos o pagamento, envie o comprovante por aqui para liberarmos seu acesso definitivo. Obrigado pela confianca!`;
     } else if (billingMessageType === 'monthly_billing') {
-      template = `Olá, *${usuarioNome}*! Passando para lembrar que a mensalidade do aplicativo *${appName}* para o acompanhamento de *${idosoNome}* está disponível para renovação.  \n\nValor: *R$ ${priceFormatted}*\n  *Chave Pix:* ${billingPixKey}\n  *Favorecido:* ${billingPixReceiver}\n\nBasta realizar o Pix e nos enviar o comprovante de pagamento para manter seu acesso ativo sem interrupções! Muito obrigado!`;
+      template = `Ola, *${usuarioNome}*! Passando para lembrar que a mensalidade do aplicativo *${appName}* para o acompanhamento de *${idosoNome}* esta disponivel para renovacao.  \n\nValor: *R$ ${priceFormatted}*\n  *Chave Pix:* ${billingPixKey}\n  *Favorecido:* ${billingPixReceiver}\n\nBasta realizar o Pix e nos enviar o comprovante de pagamento para manter seu acesso ativo sem interrupcoes! Muito obrigado!`;
     } else {
-      template = `⚠ *AVISO IMPORTANTE - ${appName}* ⚠\n\nOlá, *${usuarioNome}*! Identificamos que o período de testes ou a mensalidade do perfil de *${idosoNome}* expirou e o painel de acompanhamento foi temporariamente suspenso.\n\nPara restabelecer o acesso imediatamente e continuar recebendo os registros diários:\n\nValor: *R$ ${priceFormatted}*\n  *Chave Pix:* ${billingPixKey}\n  *Favorecido:* ${billingPixReceiver}\n\nRealize o Pix e envie o comprovante para liberação instant Estamos à disposição!`;
+      template = `[!] *AVISO IMPORTANTE - ${appName}* [!]\n\nOla, *${usuarioNome}*! Identificamos que o periodo de testes ou a mensalidade do perfil de *${idosoNome}* expirou e o painel de acompanhamento foi temporariamente suspenso.\n\nPara restabelecer o acesso imediatamente e continuar recebendo os registros diarios:\n\nValor: *R$ ${priceFormatted}*\n  *Chave Pix:* ${billingPixKey}\n  *Favorecido:* ${billingPixReceiver}\n\nRealize o Pix e envie o comprovante para liberacao instant Estamos a disposicao!`;
     }
     
     setBillingCustomText(template);
@@ -515,7 +515,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
     if (triggerWhatsAppSim) {
       triggerWhatsAppSim(
         billingMessageType === 'trial_ending' 
-          ? 'Lembrete de Cobrança (Trial)' 
+          ? 'Lembrete de Cobranca (Trial)' 
           : billingMessageType === 'monthly_billing' 
             ? 'Mensalidade do Aplicativo' 
             : 'Aviso de Bloqueio',
@@ -536,8 +536,8 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         billingMessageType === 'trial_ending' 
           ? '  Fim do Teste Comercial' 
           : billingMessageType === 'monthly_billing' 
-            ? '  Cobrança Mensal' 
-            : '⚠ Alerta de Bloqueio',
+            ? '  Cobranca Mensal' 
+            : '[!] Alerta de Bloqueio',
         billingCustomText
       );
     }
@@ -581,14 +581,14 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
       const mockConsents: ConsentRecord[] = isEscolarCurrent ? [
         {
           id: 'mock_1',
-          usuarioNome: 'Clarice Souza (Mãe)',
+          usuarioNome: 'Clarice Souza (Mae)',
           usuarioEmail: 'clarice.souza@gmail.com',
           usuarioTelefone: '(11) 98765-4321',
           usuarioTipo: 'familiar',
           idosoNome: 'Mariana Souza',
           dataConsentimento: new Date(Date.now() - 3600000 * 24).toLocaleString('pt-BR'),
           modoApp: '  Anjinho Escolar',
-          deviceFingerprint: 'IP 189.14.88.221 (SSL • Android 14)',
+          deviceFingerprint: 'IP 189.14.88.221 (SSL   Android 14)',
           statusFinanceiro: 'pago'
         },
         {
@@ -597,22 +597,22 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           usuarioEmail: 'ana.silva@escola.com',
           usuarioTelefone: '(11) 91234-5678',
           usuarioTipo: 'cuidador',
-          idosoNome: 'Berçário I - A',
+          idosoNome: 'Bercario I - A',
           dataConsentimento: new Date(Date.now() - 3600000 * 48).toLocaleString('pt-BR'),
           modoApp: '  Anjinho Escolar',
-          deviceFingerprint: 'IP 177.33.102.13 (SSL • iOS 17)',
+          deviceFingerprint: 'IP 177.33.102.13 (SSL   iOS 17)',
           statusFinanceiro: 'pago'
         },
         {
           id: 'mock_3',
-          usuarioNome: 'Juliana Santos (Mãe)',
+          usuarioNome: 'Juliana Santos (Mae)',
           usuarioEmail: 'juliana.santos@gmail.com',
           usuarioTelefone: '(11) 98844-3322',
           usuarioTipo: 'familiar',
           idosoNome: 'Alice Santos',
           dataConsentimento: new Date(Date.now() - 3600000 * 12).toLocaleString('pt-BR'),
           modoApp: '  Anjinho Escolar',
-          deviceFingerprint: 'IP 200.180.2.49 (SSL • Windows 11)',
+          deviceFingerprint: 'IP 200.180.2.49 (SSL   Windows 11)',
           statusFinanceiro: 'pago'
         }
       ] : [
@@ -625,7 +625,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           idosoNome: 'Dona Maria de Souza',
           dataConsentimento: new Date(Date.now() - 3600000 * 24).toLocaleString('pt-BR'),
           modoApp: '  Anjo Cuidador',
-          deviceFingerprint: 'IP 189.14.88.221 (SSL • Android 14)',
+          deviceFingerprint: 'IP 189.14.88.221 (SSL   Android 14)',
           statusFinanceiro: 'pago'
         },
         {
@@ -637,7 +637,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           idosoNome: 'Dona Maria de Souza',
           dataConsentimento: new Date(Date.now() - 3600000 * 48).toLocaleString('pt-BR'),
           modoApp: '  Anjo Cuidador',
-          deviceFingerprint: 'IP 177.33.102.13 (SSL • iOS 17)',
+          deviceFingerprint: 'IP 177.33.102.13 (SSL   iOS 17)',
           statusFinanceiro: 'pago'
         },
         {
@@ -646,10 +646,10 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           usuarioEmail: 'carlos.souza@outlook.com',
           usuarioTelefone: '(11) 95555-4444',
           usuarioTipo: 'familiar',
-          idosoNome: 'Seu João Alencar',
+          idosoNome: 'Seu Joao Alencar',
           dataConsentimento: new Date(Date.now() - 3600000 * 12).toLocaleString('pt-BR'),
           modoApp: '  Anjo Cuidador',
-          deviceFingerprint: 'IP 200.180.2.49 (SSL • Windows 11)',
+          deviceFingerprint: 'IP 200.180.2.49 (SSL   Windows 11)',
           statusFinanceiro: 'atrasado'
         }
       ];
@@ -737,12 +737,12 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
       "Nome do Gestor/Cuidador",
       "E-mail",
       "Telefone WhatsApp",
-      "Função",
+      "Funcao",
       "Idoso Assistido",
       "Data e Hora do Consentimento",
       "Ambiente de Uso",
       "ID Digital (Dispositivo/IP)",
-      "Adimplência Financeira"
+      "Adimplencia Financeira"
     ];
 
     const rows = consents.map(c => {
@@ -852,7 +852,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
             Console do Dono (Financeiro & CRM Anjinho Escolar)
           </h2>
           <p className="text-sm text-indigo-100 font-medium leading-relaxed">
-            Consulte métricas comerciais, acompanhe adesões de famílias ao projeto Anjinho Escolar em Bauru, envie notificações via WhatsApp e controle faturamentos Pix. Este painel é mantido em segredo e não é visível para a direção escolar.
+            Consulte metricas comerciais, acompanhe adesoes de familias ao projeto Anjinho Escolar em Bauru, envie notificacoes via WhatsApp e controle faturamentos Pix. Este painel e mantido em segredo e nao e visivel para a direcao escolar.
           </p>
         </div>
       </div>
@@ -883,7 +883,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
             }`}
           >
             <GraduationCap className="w-4 h-4" />
-            <span>🏫 CRM Anjinho Escolar Bauru (Famílias)</span>
+            <span>   CRM Anjinho Escolar Bauru (Familias)</span>
             <span className="px-1.5 py-0.5 bg-amber-400 text-slate-900 text-[9px] font-black rounded-full uppercase tracking-tight">
               {crmFamilias.length}
             </span>
@@ -897,7 +897,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
             className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-black flex items-center justify-center gap-1.5 cursor-pointer shadow-xs transition-all active:scale-95 shrink-0"
           >
             <Plus className="w-4 h-4" />
-            <span>+ Nova Família Aderida</span>
+            <span>+ Nova Familia Aderida</span>
           </button>
         )}
       </div>
@@ -952,11 +952,11 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           isDark ? 'bg-slate-850 border-slate-750' : 'bg-white border-slate-200'
         } shadow-2xs space-y-2`}>
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-black uppercase tracking-wider text-amber-500">Arrecadação Mensal</span>
+            <span className="text-[10px] font-black uppercase tracking-wider text-amber-500">Arrecadacao Mensal</span>
             <span className="p-1.5 bg-amber-50 text-amber-600 rounded-lg"><TrendingUp className="w-4 h-4" /></span>
           </div>
           <div className="text-2xl font-black text-amber-600">R$ {totalMonthlyBilling.toFixed(2)}</div>
-          <p className="text-[10px] text-slate-400 font-bold leading-none">Faturamento ativo projetado / mês</p>
+          <p className="text-[10px] text-slate-400 font-bold leading-none">Faturamento ativo projetado / mes</p>
         </div>
 
         <div className={`p-5 rounded-2xl border ${
@@ -964,7 +964,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         } shadow-2xs space-y-2`}>
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-black uppercase tracking-wider text-indigo-500">Engajamento de Afeto</span>
-            <span className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg">❤</span>
+            <span className="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg"> </span>
           </div>
           <div className="text-2xl font-black text-rose-600 flex items-baseline gap-1.5">
             {globalLikes} <span className="text-xs text-slate-400 font-bold">gestos de afeto</span>
@@ -982,10 +982,10 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           <div className="space-y-1">
             <h3 className="text-base font-black text-slate-850 flex items-center gap-2">
               <CreditCard className="w-5 h-5 text-amber-500" />
-              Gestão de Mensalidades & Controle de Acesso
+              Gestao de Mensalidades & Controle de Acesso
             </h3>
             <p className="text-xs text-slate-500 font-semibold">
-              Regule os pagamentos recorrentes e demonstre o bloqueio temporário de segurança para os familiares.
+              Regule os pagamentos recorrentes e demonstre o bloqueio temporario de seguranca para os familiares.
             </p>
           </div>
           
@@ -1010,7 +1010,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
 
             <div className="inline-flex items-center gap-1 px-3 py-1 bg-amber-50 text-amber-800 font-black border border-amber-200 text-xs rounded-full shadow-3xs">
               <Coins className="w-3.5 h-3.5" />
-              Preço Base: R$ {subValor.toFixed(2)}/mês
+              Preco Base: R$ {subValor.toFixed(2)}/mes
             </div>
           </div>
         </div>
@@ -1022,10 +1022,10 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="space-y-1">
               <span className="text-xs font-black uppercase tracking-wider text-indigo-700 dark:text-indigo-300 block flex items-center gap-1">
-                ⚙ Configuração do Preço Base Geral (Para Todos)
+                  Configuracao do Preco Base Geral (Para Todos)
               </span>
               <p className="text-xs text-slate-500 font-semibold max-w-xl">
-                Altere o valor padrão cobrado de todos os alunos cadastrados. Os alunos com descontos especiais (como desconto coletivo para irmãos) são mantidos como exceções e não serão alterados!
+                Altere o valor padrao cobrado de todos os alunos cadastrados. Os alunos com descontos especiais (como desconto coletivo para irmaos) sao mantidos como excecoes e nao serao alterados!
               </p>
             </div>
             
@@ -1060,10 +1060,10 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <div className="space-y-1">
               <span className="text-xs font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300 block flex items-center gap-1.5">
-                  Configuração das Chaves de Recebimento PIX (Desenvolvedor)
+                  Configuracao das Chaves de Recebimento PIX (Desenvolvedor)
               </span>
               <p className="text-xs text-slate-500 font-semibold max-w-xl">
-                Defina os dados da sua chave Pix e o nome do favorecido. Essas informações serão usadas para gerar o <strong>Pix Copia e Cola</strong> automático dos familiares e nas mensagens do WhatsApp!
+                Defina os dados da sua chave Pix e o nome do favorecido. Essas informacoes serao usadas para gerar o <strong>Pix Copia e Cola</strong> automatico dos familiares e nas mensagens do WhatsApp!
               </p>
             </div>
             
@@ -1102,7 +1102,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
             
             <div className={`${isDark ? 'bg-slate-850 border-slate-750' : 'bg-slate-50/75 border-slate-200'} border rounded-2xl p-4 space-y-4`}>
               <span className="text-xs font-bold text-slate-600 block uppercase tracking-wider">
-                  Simulador de Inadimplência
+                  Simulador de Inadimplencia
               </span>
               
               <div className="space-y-3">
@@ -1131,8 +1131,8 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
 
                   <p className="text-[10px] text-slate-400 font-medium leading-normal pt-1.5">
                     {subStatus === 'pago' 
-                      ? "Os familiares podem visualizar relatórios. Troque para ver o bloqueio."
-                      : "Familiares estão restritos à tela de cobrança PIX. Cuidadores continuam liberados!"
+                      ? "Os familiares podem visualizar relatorios. Troque para ver o bloqueio."
+                      : "Familiares estao restritos a tela de cobranca PIX. Cuidadores continuam liberados!"
                     }
                   </p>
                 </div>
@@ -1147,9 +1147,9 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   }`}
                 >
                   {subStatus === 'pago' ? (
-                    <>⚠ Simular Parcela Vencida (Bloquear)</>
+                    <>[!] Simular Parcela Vencida (Bloquear)</>
                   ) : (
-                    <>✓ Normalizar Pagamento (Simular Pago)</>
+                    <>  Normalizar Pagamento (Simular Pago)</>
                   )}
                 </button>
               </div>
@@ -1160,7 +1160,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               isDark ? 'bg-slate-850 border-slate-750' : 'bg-white border-slate-200'
             }`}>
               <span className="text-xs font-bold text-slate-600 block uppercase tracking-wider">
-                ⚙ Ajuste de Assinatura
+                  Ajuste de Assinatura
               </span>
 
               <form onSubmit={handleSaveSubConfig} className="space-y-3.5">
@@ -1181,8 +1181,8 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                     >
                       <span className="mt-0.5 text-xs"> </span>
                       <div>
-                        <span className="block font-bold">Usar Preço Base Geral (R$ {globalSubValor.toFixed(2).replace('.', ',')})</span>
-                        <span className="text-[10px] text-slate-400 font-medium leading-normal block mt-0.5">Herdará reajustes futuros que você fizer para toda a escola automaticamente.</span>
+                        <span className="block font-bold">Usar Preco Base Geral (R$ {globalSubValor.toFixed(2).replace('.', ',')})</span>
+                        <span className="text-[10px] text-slate-400 font-medium leading-normal block mt-0.5">Herdara reajustes futuros que voce fizer para toda a escola automaticamente.</span>
                       </div>
                     </button>
 
@@ -1199,8 +1199,8 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                     >
                       <span className="mt-0.5 text-xs"> </span>
                       <div>
-                        <span className="block font-bold">Usar Valor Personalizado (Exceção/Desconto)</span>
-                        <span className="text-[10px] text-slate-400 font-medium leading-normal block mt-0.5">Definir tarifa própria para esse aluno (ex: desconto para irmãos, bolsas ou acordos).</span>
+                        <span className="block font-bold">Usar Valor Personalizado (Excecao/Desconto)</span>
+                        <span className="text-[10px] text-slate-400 font-medium leading-normal block mt-0.5">Definir tarifa propria para esse aluno (ex: desconto para irmaos, bolsas ou acordos).</span>
                       </div>
                     </button>
                   </div>
@@ -1237,7 +1237,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                               : isDark ? 'bg-slate-900 border-slate-750 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-600'
                           }`}
                         >
-                            Coletivo (Desconto Irmãos)
+                            Coletivo (Desconto Irmaos)
                         </button>
                       </div>
                       {subTipo === 'coletivo' && (
@@ -1248,7 +1248,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                     </div>
 
                     <div className="space-y-1">
-                      <label className="text-xs font-bold text-slate-600 block">Preço Mensal Personalizado (R$)</label>
+                      <label className="text-xs font-bold text-slate-600 block">Preco Mensal Personalizado (R$)</label>
                       <div className="relative rounded-xl shadow-xs">
                         <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-xs font-black text-slate-400">R$</span>
                         <input 
@@ -1266,7 +1266,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   </>
                 ) : (
                   <div className="p-3 bg-slate-50 border border-slate-150 rounded-xl text-[11px] text-slate-500 font-semibold leading-relaxed">
-                       Este aluno herdará o preço base geral de <strong>R$ {globalSubValor.toFixed(2).replace('.', ',')} / mês</strong> automaticamente. Se quiser aplicar um desconto específico para irmãos ou estipular outra exceção, selecione <strong>"Valor Personalizado"</strong> acima.
+                       Este aluno herdara o preco base geral de <strong>R$ {globalSubValor.toFixed(2).replace('.', ',')} / mes</strong> automaticamente. Se quiser aplicar um desconto especifico para irmaos ou estipular outra excecao, selecione <strong>"Valor Personalizado"</strong> acima.
                   </div>
                 )}
 
@@ -1280,7 +1280,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                     }`}
                   >
                     {[5, 10, 15, 20, 25, 28].map(day => (
-                      <option key={day} value={day}>Dia {day} de cada mês</option>
+                      <option key={day} value={day}>Dia {day} de cada mes</option>
                     ))}
                   </select>
                 </div>
@@ -1300,10 +1300,10 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
             }`}>
               <span className="text-xs font-bold text-indigo-600 block uppercase tracking-wider flex items-center gap-1">
                 <HelpCircle className="w-4 h-4" />
-                Como Automatizar em Produção?
+                Como Automatizar em Producao?
               </span>
               <p className="text-[11px] leading-relaxed font-medium">
-                Para automatizar esta cobrança ao lançar o aplicativo de verdade comercialmente:
+                Para automatizar esta cobranca ao lancar o aplicativo de verdade comercialmente:
               </p>
               <div className="text-[10px] space-y-2 text-slate-500 leading-relaxed max-h-36 overflow-y-auto pr-1">
                 <div className={`p-1.5 border rounded-lg ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-indigo-100'}`}>
@@ -1315,20 +1315,20 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   Configure sua API para escutar o evento <span className="font-mono text-pink-600 font-semibold bg-pink-50 px-0.5 rounded">PAYMENT_OVERDUE</span>.
                 </div>
                 <div className={`p-1.5 border rounded-lg ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-indigo-100'}`}>
-                  <strong className="text-indigo-600 block">3. Atualização de Acesso:</strong>
-                  Ao receber o webhook, defina a flag <span className="font-mono text-slate-850 bg-slate-100 dark:bg-slate-800 px-0.5 rounded">statusValido = false</span> no banco. O app travará o familiar.
+                  <strong className="text-indigo-600 block">3. Atualizacao de Acesso:</strong>
+                  Ao receber o webhook, defina a flag <span className="font-mono text-slate-850 bg-slate-100 dark:bg-slate-800 px-0.5 rounded">statusValido = false</span> no banco. O app travara o familiar.
                 </div>
               </div>
             </div>
 
           </div>
         ) : (
-          <p className="text-xs text-slate-400 font-bold italic">Carregando informações do aluno/assistido selecionado...</p>
+          <p className="text-xs text-slate-400 font-bold italic">Carregando informacoes do aluno/assistido selecionado...</p>
         )}
 
         {savingMessage && (
           <div className="p-3 bg-emerald-500 text-white rounded-xl text-xs font-bold text-center animate-pulse">
-            ✓ {savingMessage}
+              {savingMessage}
           </div>
         )}
 
@@ -1338,7 +1338,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         }`}>
           <div className="flex justify-between items-center pb-1">
             <span className="text-xs font-bold text-slate-550 uppercase tracking-wider block">
-                Histórico Recente de Compensações
+                Historico Recente de Compensacoes
             </span>
             <button
               type="button"
@@ -1354,8 +1354,8 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               <thead>
                 <tr className="text-slate-450 font-bold border-b text-[10px] uppercase">
                   <th className="pb-2">Data Processada</th>
-                  <th className="pb-2">Identificação</th>
-                  <th className="pb-2">Método</th>
+                  <th className="pb-2">Identificacao</th>
+                  <th className="pb-2">Metodo</th>
                   <th className="pb-2">Valor</th>
                   <th className="pb-2 text-right">Resultado</th>
                 </tr>
@@ -1374,7 +1374,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                     <td className="py-2.5 font-bold">R$ {parseFloat(h.valor || '29.90').toFixed(2)}</td>
                     <td className="py-2.5 text-right">
                       <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
-                        ✓ Pago
+                          Pago
                       </span>
                     </td>
                   </tr>
@@ -1382,7 +1382,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                 {subHistory.length === 0 && (
                   <tr>
                     <td colSpan={5} className="py-6 text-center text-slate-400 italic font-normal">
-                      Nenhum registro de faturamento cadastrado. Use o botão acima para simular o primeiro!
+                      Nenhum registro de faturamento cadastrado. Use o botao acima para simular o primeiro!
                     </td>
                   </tr>
                 )}
@@ -1475,20 +1475,20 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           <table className="w-full text-left text-xs border-collapse">
             <thead>
               <tr className="bg-slate-50 border-b border-slate-100">
-                <th className="p-4 font-black uppercase text-[10px] text-slate-400">Usuário do App</th>
-                <th className="p-4 font-black uppercase text-[10px] text-slate-400">Associação / Paciente</th>
+                <th className="p-4 font-black uppercase text-[10px] text-slate-400">Usuario do App</th>
+                <th className="p-4 font-black uppercase text-[10px] text-slate-400">Associacao / Paciente</th>
                 <th className="p-4 font-black uppercase text-[10px] text-slate-400">Data e Assinatura Digital</th>
                 <th className="p-4 font-black uppercase text-[10px] text-slate-400">Canal / Modo</th>
-                <th className="p-4 font-black uppercase text-[10px] text-slate-400 text-center">Engajamento (Família)</th>
+                <th className="p-4 font-black uppercase text-[10px] text-slate-400 text-center">Engajamento (Familia)</th>
                 <th className="p-4 font-black uppercase text-[10px] text-slate-400 text-center">Faturamento</th>
-                <th className="p-4 font-black uppercase text-[10px] text-slate-400 text-right">Ação Rápida</th>
+                <th className="p-4 font-black uppercase text-[10px] text-slate-400 text-right">Acao Rapida</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
               {filteredConsents.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="p-8 text-center text-slate-400">
-                    Nenhum registro de consentimento ou usuário localizado para esta busca.
+                    Nenhum registro de consentimento ou usuario localizado para esta busca.
                   </td>
                 </tr>
               ) : (
@@ -1501,7 +1501,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                     if (cleanS.includes(cleanI) || cleanI.includes(cleanS)) return true;
                     // Handle adapted children/senior pairs
                     if (s.id === 'idoso_maria' && (cleanI.includes('maria') || cleanI.includes('mariana'))) return true;
-                    if (s.id === 'idoso_joao' && (cleanI.includes('joão') || cleanI.includes('joao') || cleanI.includes('enzo'))) return true;
+                    if (s.id === 'idoso_joao' && (cleanI.includes('joao') || cleanI.includes('joao') || cleanI.includes('enzo'))) return true;
                     return false;
                   });
                   const seniorIdMatch = matchedS ? matchedS.id : '';
@@ -1527,7 +1527,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                     >
                       <td className="p-4 space-y-1">
                         <strong className="block font-bold text-slate-800">{item.usuarioNome}</strong>
-                        <div className="text-[10px] text-slate-400 font-bold">{item.usuarioEmail} • {item.usuarioTelefone}</div>
+                        <div className="text-[10px] text-slate-400 font-bold">{item.usuarioEmail}   {item.usuarioTelefone}</div>
                       </td>
                       <td className="p-4">
                         <div className="flex items-center gap-1.5 font-bold text-slate-805">
@@ -1547,7 +1547,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                       <td className="p-4 text-center">
                         <div className="inline-flex items-center justify-center gap-3.5 bg-slate-50 px-3 py-1.5 rounded-xl border border-slate-100">
                           <div className="flex items-center gap-1 text-xs text-rose-600 font-black" title="Gestos de Afeto Enviados">
-                            <span>❤</span>
+                            <span> </span>
                             <span>{totalLikes}</span>
                           </div>
                           <div className="flex items-center gap-1 text-xs text-blue-600 font-black" title="Regar com Amor (Regadas)">
@@ -1614,9 +1614,9 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                                 ? 'bg-rose-50 text-rose-600 hover:bg-rose-100'
                                 : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100 animate-bounce'
                             }`}
-                            title={liveStatus === 'pago' ? "Bloquear acesso por inadimplência" : "Aprovar pagamento / Desbloquear"}
+                            title={liveStatus === 'pago' ? "Bloquear acesso por inadimplencia" : "Aprovar pagamento / Desbloquear"}
                           >
-                            {liveStatus === 'pago' ? '⚠ Cortar Acesso' : '✓ Registrar Pago'}
+                            {liveStatus === 'pago' ? '[!] Cortar Acesso' : '  Registrar Pago'}
                           </button>
 
                           <button
@@ -1625,7 +1625,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                               setBillingModalUser(item);
                             }}
                             className="px-3 py-1.5 rounded-xl text-[10px] font-black uppercase bg-indigo-55 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 transition-all cursor-pointer flex items-center gap-1"
-                            title="Disparar aviso comercial ou cobrança Pix via WhatsApp"
+                            title="Disparar aviso comercial ou cobranca Pix via WhatsApp"
                           >
                             <MessageSquare className="w-3.5 h-3.5 text-indigo-500" />
                             <span>Cobrar</span>
@@ -1650,13 +1650,13 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         <div className="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="space-y-1 text-left">
             <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-emerald-50 text-emerald-700 text-[10px] font-black rounded-full uppercase tracking-wider">
-                Máquina de Vendas
+                Maquina de Vendas
             </span>
             <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
-              <span> </span> Jornada Comercial dos 30 Dias Grátis (Trial)
+              <span> </span> Jornada Comercial dos 30 Dias Gratis (Trial)
             </h3>
             <p className="text-xs text-slate-500 leading-relaxed font-semibold">
-              Não perca assinantes! Acompanhe o funil de comunicação dos 30 dias de teste grátis e envie mensagens de alto valor para guiar os pais até a assinatura por Pix.
+              Nao perca assinantes! Acompanhe o funil de comunicacao dos 30 dias de teste gratis e envie mensagens de alto valor para guiar os pais ate a assinatura por Pix.
             </p>
           </div>
 
@@ -1695,13 +1695,13 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
             }`}>
               <div className="space-y-3">
                 <div className="flex items-center justify-between border-b border-slate-150 pb-2">
-                  <span className="text-xs font-black text-indigo-600 uppercase tracking-wide">Dia 1 • Boas-vindas</span>
+                  <span className="text-xs font-black text-indigo-600 uppercase tracking-wide">Dia 1   Boas-vindas</span>
                   <span className="text-lg"> </span>
                 </div>
                 
-                <p className="text-[10px] text-slate-400 font-bold text-left uppercase leading-none">Ação Estratégica:</p>
+                <p className="text-[10px] text-slate-400 font-bold text-left uppercase leading-none">Acao Estrategica:</p>
                 <p className="text-[11px] text-slate-600 leading-relaxed text-left font-semibold">
-                  Acolher o tutor na ativação do perfil grátis, gerando simpatia e demonstrando a utilidade do aplicativo desde o primeiro minuto.
+                  Acolher o tutor na ativacao do perfil gratis, gerando simpatia e demonstrando a utilidade do aplicativo desde o primeiro minuto.
                 </p>
 
                 
@@ -1745,13 +1745,13 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
             }`}>
               <div className="space-y-3">
                 <div className="flex items-center justify-between border-b border-slate-150 pb-2">
-                  <span className="text-xs font-black text-amber-600 uppercase tracking-wide">Dia 15 • Reforçar Valor</span>
+                  <span className="text-xs font-black text-amber-600 uppercase tracking-wide">Dia 15   Reforcar Valor</span>
                   <span className="text-lg"> </span>
                 </div>
                 
-                <p className="text-[10px] text-slate-400 font-bold text-left uppercase leading-none">Ação Estratégica:</p>
+                <p className="text-[10px] text-slate-400 font-bold text-left uppercase leading-none">Acao Estrategica:</p>
                 <p className="text-[11px] text-slate-600 leading-relaxed text-left font-semibold">
-                  Garantir que o tutor conheça as abas mais importantes (Medicamentos, Sinais Vitais) para que ele perceba o valor diário.
+                  Garantir que o tutor conheca as abas mais importantes (Medicamentos, Sinais Vitais) para que ele perceba o valor diario.
                 </p>
 
                 
@@ -1777,7 +1777,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   onClick={() => {
                     if (triggerWhatsAppSim) {
                       triggerWhatsAppSim(
-                        "Dia 15: Reforço de Valor & Dica",
+                        "Dia 15: Reforco de Valor & Dica",
                         getJourneyMessage(15, selectedJourneyUser)
                       );
                     }
@@ -1795,13 +1795,13 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
             }`}>
               <div className="space-y-3">
                 <div className="flex items-center justify-between border-b border-slate-150 pb-2">
-                  <span className="text-xs font-black text-rose-500 uppercase tracking-wide">Dia 25 • Aviso Prévio</span>
+                  <span className="text-xs font-black text-rose-500 uppercase tracking-wide">Dia 25   Aviso Previo</span>
                   <span className="text-lg"> </span>
                 </div>
                 
-                <p className="text-[10px] text-slate-400 font-bold text-left uppercase leading-none">Ação Estratégica:</p>
+                <p className="text-[10px] text-slate-400 font-bold text-left uppercase leading-none">Acao Estrategica:</p>
                 <p className="text-[11px] text-slate-600 leading-relaxed text-left font-semibold">
-                  Avisar de forma amigável que faltam apenas 5 dias para o fim do teste e fornecer a chave Pix para renovar sem pausas de segurança.
+                  Avisar de forma amigavel que faltam apenas 5 dias para o fim do teste e fornecer a chave Pix para renovar sem pausas de seguranca.
                 </p>
 
                 
@@ -1827,7 +1827,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   onClick={() => {
                     if (triggerWhatsAppSim) {
                       triggerWhatsAppSim(
-                        "Dia 25: Aviso de Fim do Período Grátis",
+                        "Dia 25: Aviso de Fim do Periodo Gratis",
                         getJourneyMessage(25, selectedJourneyUser)
                       );
                     }
@@ -1845,13 +1845,13 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
             }`}>
               <div className="space-y-3">
                 <div className="flex items-center justify-between border-b border-slate-150 pb-2">
-                  <span className="text-xs font-black text-red-600 uppercase tracking-wide">Dia 30 • Corte Elegante</span>
-                  <span className="text-lg">⚠</span>
+                  <span className="text-xs font-black text-red-600 uppercase tracking-wide">Dia 30   Corte Elegante</span>
+                  <span className="text-lg">[!]</span>
                 </div>
                 
-                <p className="text-[10px] text-slate-400 font-bold text-left uppercase leading-none">Ação Estratégica:</p>
+                <p className="text-[10px] text-slate-400 font-bold text-left uppercase leading-none">Acao Estrategica:</p>
                 <p className="text-[11px] text-slate-600 leading-relaxed text-left font-semibold">
-                  Bloquear o painel de faturamento no aplicativo de forma automática e enviar uma cobrança firme, mas polida, para reativação via Pix.
+                  Bloquear o painel de faturamento no aplicativo de forma automatica e enviar uma cobranca firme, mas polida, para reativacao via Pix.
                 </p>
 
                 
@@ -1877,7 +1877,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                   onClick={() => {
                     if (triggerWhatsAppSim) {
                       triggerWhatsAppSim(
-                        "Dia 30: Suspensão por Fim do Teste",
+                        "Dia 30: Suspensao por Fim do Teste",
                         getJourneyMessage(30, selectedJourneyUser)
                       );
                     }
@@ -1889,7 +1889,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                     }
                   }}
                   className="w-full py-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-xl text-[10px] font-bold uppercase transition-all cursor-pointer border border-red-200"
-                  title="Testar o corte elegante simulado: Além do push, altera o status do perfil selecionado para bloquear na hora!"
+                  title="Testar o corte elegante simulado: Alem do push, altera o status do perfil selecionado para bloquear na hora!"
                 >
                     Testar Bloqueio Imediato
                 </button>
@@ -1898,7 +1898,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
 
           </div>
         ) : (
-          <p className="text-xs text-slate-400 font-bold">Cadastre uma família na planilha ou no formulário para habilitar a visualização da Jornada Comercial.</p>
+          <p className="text-xs text-slate-400 font-bold">Cadastre uma familia na planilha ou no formulario para habilitar a visualizacao da Jornada Comercial.</p>
         )}
 
       </div>
@@ -1910,10 +1910,10 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         
         <div className="border-b border-slate-100 pb-4">
           <h3 className="text-lg font-black text-indigo-600 uppercase tracking-tight flex items-center gap-2">
-            <span> </span> Central Comercial de Testes & Divulgação por QR Code
+            <span> </span> Central Comercial de Testes & Divulgacao por QR Code
           </h3>
           <p className="text-xs text-slate-500 leading-relaxed font-semibold mt-1">
-            Gere links promocionais e códigos QR para clínicas geriátricas, consultórios parceiros ou panfletos impressos. Controle o funil de aquisição de familiares de forma profissional.
+            Gere links promocionais e codigos QR para clinicas geriatricas, consultorios parceiros ou panfletos impressos. Controle o funil de aquisicao de familiares de forma profissional.
           </p>
         </div>
 
@@ -1931,7 +1931,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                 <div className="text-xl"> </div>
                 <h5 className="text-xs font-black uppercase text-indigo-600">Disponibilizar para Testes (Trial)</h5>
                 <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Ofereça até <strong>30 dias de teste grátis</strong> para novas famílias criarem perfis e usarem todos os recursos. Eles se cadastram pelo link gerado no QR Code ao lado.
+                  Ofereca ate <strong>30 dias de teste gratis</strong> para novas familias criarem perfis e usarem todos os recursos. Eles se cadastram pelo link gerado no QR Code ao lado.
                 </p>
               </div>
 
@@ -1941,7 +1941,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                 <div className="text-xl"> </div>
                 <h5 className="text-xs font-black uppercase text-rose-500">Bloqueio & Controle Absoluto</h5>
                 <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Gerencie o funil na planilha ou na <strong>Tabela de Faturamento</strong> acima. Se o período de teste expirar e o cliente não pagar o Pix mensal, clique em <strong className="text-rose-600">⚠ Cortar Acesso</strong>. O app deles é bloqueado na hora com um cadeado e instruções de pagamento de R$ {subValor.toFixed(2).replace('.', ',')}!
+                  Gerencie o funil na planilha ou na <strong>Tabela de Faturamento</strong> acima. Se o periodo de teste expirar e o cliente nao pagar o Pix mensal, clique em <strong className="text-rose-600">[!] Cortar Acesso</strong>. O app deles e bloqueado na hora com um cadeado e instrucoes de pagamento de R$ {subValor.toFixed(2).replace('.', ',')}!
                 </p>
               </div>
 
@@ -1949,9 +1949,9 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                 isDark ? 'bg-slate-850 border-slate-750' : 'bg-slate-50 border-slate-150'
               } space-y-2`}>
                 <div className="text-xl"> </div>
-                <h5 className="text-xs font-black uppercase text-emerald-600">Parcerias com Clínicas e Escolas</h5>
+                <h5 className="text-xs font-black uppercase text-emerald-600">Parcerias com Clinicas e Escolas</h5>
                 <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Imprima e cole o QR Code preparado no balcão de clínicas de geriatria ou envie nas reuniões de pais escolares. Isso automatiza a captação de clientes sem segredos.
+                  Imprima e cole o QR Code preparado no balcao de clinicas de geriatria ou envie nas reunioes de pais escolares. Isso automatiza a captacao de clientes sem segredos.
                 </p>
               </div>
 
@@ -1961,7 +1961,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                 <div className="text-xl"> </div>
                 <h5 className="text-xs font-black uppercase text-amber-500">Rastreamento de Origem</h5>
                 <p className="text-[11px] text-slate-500 leading-relaxed">
-                  Selecione a campanha no painel ao lado e nós adicionamos um par invisível. Assim, você saberá exatamente de qual clínica ou panfleto veio cada novo responsável!
+                  Selecione a campanha no painel ao lado e nos adicionamos um par invisivel. Assim, voce sabera exatamente de qual clinica ou panfleto veio cada novo responsavel!
                 </p>
               </div>
 
@@ -1971,10 +1971,10 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               isDark ? 'border-slate-700 bg-slate-850/50' : 'border-indigo-200 bg-indigo-50/20'
             } space-y-2`}>
               <div className="flex items-center gap-1.5 text-xs font-black text-indigo-700 uppercase">
-                <span> </span> Estratégia Recomendada
+                <span> </span> Estrategia Recomendada
               </div>
               <p className="text-[11px] text-slate-500 leading-relaxed">
-                Recomendamos imprimir um pequeno display acrílico para o balcão com a frase: <strong className="text-indigo-600">"Conecte sua família com o cuidado que ela merece. Escaneie e ganhe 10 dias de teste grátis no aplicativo oficial Anjo Cuidador."</strong>
+                Recomendamos imprimir um pequeno display acrilico para o balcao com a frase: <strong className="text-indigo-600">"Conecte sua familia com o cuidado que ela merece. Escaneie e ganhe 10 dias de teste gratis no aplicativo oficial Anjo Cuidador."</strong>
               </p>
             </div>
 
@@ -1988,7 +1988,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
               
               <div className="text-center space-y-1">
                 <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Gerador em Tempo Real</span>
-                <h5 className="text-xs font-black text-slate-800">QR Code e Link de Divulgação</h5>
+                <h5 className="text-xs font-black text-slate-800">QR Code e Link de Divulgacao</h5>
               </div>
 
               
@@ -2027,7 +2027,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                         : isDark ? 'border-slate-700 text-slate-350 hover:bg-slate-750' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-100'
                     }`}
                   >
-                      Recepção
+                      Recepcao
                   </button>
                   <button
                     onClick={() => setQrCampaign('panfleto')}
@@ -2142,7 +2142,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                     <div className="text-center w-full space-y-2">
                       <div className="flex flex-col items-center gap-1">
                         <span className="text-[10px] text-slate-400 font-medium">
-                          Servidor de QR Ativo: <strong className="text-indigo-600 uppercase">{qrSourceEngine === 'google' ? 'Google API (Ultra-Rápido)' : 'QRServer API'}</strong>
+                          Servidor de QR Ativo: <strong className="text-indigo-600 uppercase">{qrSourceEngine === 'google' ? 'Google API (Ultra-Rapido)' : 'QRServer API'}</strong>
                         </span>
                         <button
                           onClick={() => setQrSourceEngine(prev => prev === 'google' ? 'qrserver' : 'google')}
@@ -2151,7 +2151,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                               ? 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-750' 
                               : 'bg-white border-slate-200 text-slate-650 hover:bg-slate-100'
                           }`}
-                          title="Clique caso seu bloqueador de anúncios ou antivírus no computador esteja impedindo a imagem de carregar"
+                          title="Clique caso seu bloqueador de anuncios ou antivirus no computador esteja impedindo a imagem de carregar"
                         >
                             Alternar Servidor de QR
                         </button>
@@ -2200,10 +2200,10 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
         <div className="flex items-center justify-between flex-col md:flex-row gap-3">
           <div className="space-y-1">
             <h4 className="text-sm font-black text-indigo-600 flex items-center gap-1.5 uppercase">
-                Como Integrar de forma 100% Automática com o Google Sheets?
+                Como Integrar de forma 100% Automatica com o Google Sheets?
             </h4>
             <p className="text-slate-500 text-xs leading-relaxed max-w-2xl font-medium">
-              Sua ideia de mandar automaticamente para a planilha é excelente! No mundo real, você não precisa exportar manualmente o arquivo CSV toda hora. Nós fazemos as informações se comunicarem de forma fluida.
+              Sua ideia de mandar automaticamente para a planilha e excelente! No mundo real, voce nao precisa exportar manualmente o arquivo CSV toda hora. Nos fazemos as informacoes se comunicarem de forma fluida.
             </p>
           </div>
 
@@ -2212,29 +2212,29 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
             className="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-600 font-extrabold text-xs rounded-xl cursor-pointer shrink-0 transition-all flex items-center gap-1"
           >
             <ExternalLink className="w-3.5 h-3.5" />
-            {integrationCodeVisible ? "Ocultar Instruções" : "Ver Código de Exemplo"}
+            {integrationCodeVisible ? "Ocultar Instrucoes" : "Ver Codigo de Exemplo"}
           </button>
         </div>
 
         {integrationCodeVisible && (
           <div className="bg-slate-900 text-slate-100 rounded-2xl p-5 text-xs font-medium space-y-4 border border-slate-850 animate-slide-up">
             <p className="leading-relaxed">
-              <strong>Como isso funciona na prática?</strong> <br />
-              Toda vez que o familiar ou o cuidador assina digitalmente o consentimento (LGPD) ou realiza um pagamento pelo Pix, nós fazemos um envio no plano de fundo do aplicativo para uma <strong>Google Sheet</strong> (sua planilha din).
+              <strong>Como isso funciona na pratica?</strong> <br />
+              Toda vez que o familiar ou o cuidador assina digitalmente o consentimento (LGPD) ou realiza um pagamento pelo Pix, nos fazemos um envio no plano de fundo do aplicativo para uma <strong>Google Sheet</strong> (sua planilha din).
             </p>
 
             <div className="space-y-2">
-              <span className="text-[10px] font-black uppercase text-amber-400 tracking-wider">Passo a Passo Rápido:</span>
+              <span className="text-[10px] font-black uppercase text-amber-400 tracking-wider">Passo a Passo Rapido:</span>
               <ol className="list-decimal pl-5 space-y-1.5 text-slate-300">
-                <li>Você cria uma conta gratuita no <strong>Make.com</strong> ou <strong>Zapier</strong>.</li>
-                <li>Gera uma URL de <strong>Webhook</strong> e conecta com o módulo do Google Planilhas.</li>
-                <li>Nós colocamos o código abaixo no evento de aceitação de consentimento no seu app para enviar as colunas:</li>
+                <li>Voce cria uma conta gratuita no <strong>Make.com</strong> ou <strong>Zapier</strong>.</li>
+                <li>Gera uma URL de <strong>Webhook</strong> e conecta com o modulo do Google Planilhas.</li>
+                <li>Nos colocamos o codigo abaixo no evento de aceitacao de consentimento no seu app para enviar as colunas:</li>
               </ol>
             </div>
 
             <div className="relative">
               <pre className="p-4 bg-slate-950 rounded-xl overflow-x-auto text-[11px] font-mono leading-relaxed text-emerald-400">
-{`// Código real de sincronização em segundo plano (Webhook automático):
+{`// Codigo real de sincronizacao em segundo plano (Webhook automatico):
 async function enviarParaGoogleSheets(dadosConsentimento) {
   try {
     const webhookURL = "https://hook.us1.make.com/sua-chave-webhook-sheets";
@@ -2259,7 +2259,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
       console.log("Planilha do Google atualizada automaticamente!");
     }
   } catch (error) {
-    console.warn("Falha ao comunicar com Google Planilhas. Sincronização offline retentará em breve.", error);
+    console.warn("Falha ao comunicar com Google Planilhas. Sincronizacao offline retentara em breve.", error);
   }
 }`}
               </pre>
@@ -2268,7 +2268,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
             <div className="p-3.5 bg-slate-850 rounded-xl text-slate-300 leading-normal flex items-start gap-2 border border-slate-750">
               <span className="text-base shrink-0"> </span>
               <span>
-                <strong>Próximo Passo Recomendado:</strong> se você quiser implantar essa automação definitiva com o Sheets para receber as notificações direto no celular da sua equipe comercial, peça para eu escrever ou configurar esse webhook para você!
+                <strong>Proximo Passo Recomendado:</strong> se voce quiser implantar essa automacao definitiva com o Sheets para receber as notificacoes direto no celular da sua equipe comercial, peca para eu escrever ou configurar esse webhook para voce!
               </span>
             </div>
           </div>
@@ -2286,10 +2286,10 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                 Auditoria de Rotina
             </span>
             <h3 className="text-base font-extrabold text-slate-800 flex items-center gap-1.5">
-              <span>🩺</span> Diários de Saúde, Sono & Fralda (Tempo Real)
+              <span>  </span> Diarios de Saude, Sono & Fralda (Tempo Real)
             </h3>
             <p className="text-xs text-slate-500 leading-none">
-              Consulte e audite todos os registros de sono, troca de fraldas, vitais e observações inseridos no app.
+              Consulte e audite todos os registros de sono, troca de fraldas, vitais e observacoes inseridos no app.
             </p>
           </div>
 
@@ -2299,7 +2299,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
               className={`p-2 rounded-xl border transition-all hover:bg-slate-100 ${
                 isDark ? 'border-slate-700 hover:bg-slate-850' : 'border-slate-200 bg-white'
               } cursor-pointer`}
-              title="Recarregar diários"
+              title="Recarregar diarios"
             >
               <RefreshCw className="w-4 h-4 text-slate-500" />
             </button>
@@ -2349,7 +2349,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
             type="text"
             value={sinaisSearchTerm}
             onChange={e => setSinaisSearchTerm(e.target.value)}
-            placeholder="Pesquisar por aluno/idoso, professor/cuidador, soneca, xixi/cocô ou anotações..."
+            placeholder="Pesquisar por aluno/idoso, professor/cuidador, soneca, xixi/coco ou anotacoes..."
             className={`w-full pl-10 pr-4 py-2.5 bg-slate-50 border rounded-2xl text-xs font-medium focus:ring-2 focus:ring-indigo-500/10 focus:outline-none focus:bg-white transition-all ${
               isDark ? 'border-slate-850 text-white' : 'border-slate-205'
             }`}
@@ -2365,10 +2365,10 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                 <th className="p-4 font-black uppercase text-[10px] text-slate-400">Data e Hora</th>
                 <th className="p-4 font-black uppercase text-[10px] text-slate-400">Sono / Soneca / PA</th>
                 <th className="p-4 font-black uppercase text-[10px] text-slate-400">Fralda / Comportamento</th>
-                <th className="p-4 font-black uppercase text-[10px] text-slate-400">Vitais / Hidratação</th>
+                <th className="p-4 font-black uppercase text-[10px] text-slate-400">Vitais / Hidratacao</th>
                 <th className="p-4 font-black uppercase text-[10px] text-slate-400">Registrado Por</th>
-                <th className="p-4 font-black uppercase text-[10px] text-slate-400">Observações</th>
-                <th className="p-4 font-black uppercase text-[10px] text-slate-400 text-right">Ação</th>
+                <th className="p-4 font-black uppercase text-[10px] text-slate-400">Observacoes</th>
+                <th className="p-4 font-black uppercase text-[10px] text-slate-400 text-right">Acao</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 font-medium text-slate-700">
@@ -2404,7 +2404,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                   return (
                     <tr>
                       <td colSpan={8} className="p-8 text-center text-slate-400">
-                        Nenhum registro de Saúde, Sono ou Fralda localizado para esta busca.
+                        Nenhum registro de Saude, Sono ou Fralda localizado para esta busca.
                       </td>
                     </tr>
                   );
@@ -2434,7 +2434,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                   }
 
                   const handleDelete = () => {
-                    if (window.confirm("Deseja realmente remover permanentemente este registro de saúde/rotina? Esta ação é irreversível.")) {
+                    if (window.confirm("Deseja realmente remover permanentemente este registro de saude/rotina? Esta acao e irreversivel.")) {
                       const allSinais = getFromDB<any[]>('anjo_sinais', []);
                       const updated = allSinais.filter(s => s.id !== item.id);
                       saveToDB('anjo_sinais', updated);
@@ -2454,12 +2454,12 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                         </div>
                       </td>
                       <td className="p-4 font-bold text-slate-500">
-                        {item.data ? item.data.split('-').reverse().join('/') : '-'} às {item.horario || '-'}
+                        {item.data ? item.data.split('-').reverse().join('/') : '-'} as {item.horario || '-'}
                       </td>
                       <td className="p-4 font-extrabold">
                         {isEscolarFun ? (
                           <div className="space-y-0.5">
-                            <span className="text-[9px] block text-slate-400 font-bold uppercase">Lição / Dever:</span>
+                            <span className="text-[9px] block text-slate-400 font-bold uppercase">Licao / Dever:</span>
                             <span className="text-slate-800 text-xs">{item.pressaoArterial || 'Sem registros'}</span>
                           </div>
                         ) : isEscolarInf ? (
@@ -2469,7 +2469,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                           </div>
                         ) : (
                           <div className="space-y-0.5">
-                            <span className="text-[9px] block text-emerald-400 font-bold uppercase">Pressão Arterial:</span>
+                            <span className="text-[9px] block text-emerald-400 font-bold uppercase">Pressao Arterial:</span>
                             <span className="text-emerald-800 text-xs">{item.pressaoArterial || 'Sem registros'}</span>
                           </div>
                         )}
@@ -2495,12 +2495,12 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                       <td className="p-4">
                         <div className="space-y-1 font-bold text-slate-650">
                           {item.temperatura ? (
-                            <p className="flex items-center gap-1"><span className="text-red-500"> </span> {item.temperatura} °C</p>
+                            <p className="flex items-center gap-1"><span className="text-red-500"> </span> {item.temperatura} oC</p>
                           ) : null}
                           {isEscolarFun || isEscolarInf ? (
                             <>
                               {item.frequenciaCardiaca ? (
-                                <p className="flex items-center gap-1"><span className="text-sky-500"> </span> {item.frequenciaCardiaca} copos de água</p>
+                                <p className="flex items-center gap-1"><span className="text-sky-500"> </span> {item.frequenciaCardiaca} copos de agua</p>
                               ) : null}
                               {item.saturacao ? (
                                 <p className="flex items-center gap-1">
@@ -2511,10 +2511,10 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                           ) : (
                             <>
                               {item.frequenciaCardiaca ? (
-                                <p className="flex items-center gap-1"><span className="text-rose-500">❤</span> {item.frequenciaCardiaca} bpm</p>
+                                <p className="flex items-center gap-1"><span className="text-rose-500"> </span> {item.frequenciaCardiaca} bpm</p>
                               ) : null}
                               {item.saturacao ? (
-                                <p className="flex items-center gap-1"><span className="text-blue-500"> </span> {item.saturacao}% Sat. O₂</p>
+                                <p className="flex items-center gap-1"><span className="text-blue-500"> </span> {item.saturacao}% Sat. O </p>
                               ) : null}
                             </>
                           )}
@@ -2524,7 +2524,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                           {item.registradoPor || 'Sistema'}
                       </td>
                       <td className="p-4 text-xs text-slate-500 italic max-w-xs truncate font-medium" title={item.observacoes}>
-                        {item.observacoes || 'Nenhuma observação'}
+                        {item.observacoes || 'Nenhuma observacao'}
                       </td>
                       <td className="p-4 text-right">
                         <button
@@ -2561,7 +2561,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
               }`}
             >
               <Sparkles className="w-4 h-4" />
-              <span>Painel & Métricas Bauru</span>
+              <span>Painel & Metricas Bauru</span>
             </button>
 
             <button
@@ -2574,7 +2574,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
               }`}
             >
               <Baby className="w-4 h-4" />
-              <span>Famílias Aderidas ({crmFamilias.length})</span>
+              <span>Familias Aderidas ({crmFamilias.length})</span>
             </button>
 
             <button
@@ -2587,7 +2587,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
               }`}
             >
               <MapPin className="w-4 h-4" />
-              <span>Canais de Captação & Panfletagem</span>
+              <span>Canais de Captacao & Panfletagem</span>
             </button>
 
             <button
@@ -2600,7 +2600,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
               }`}
             >
               <MessageCircleHeart className="w-4 h-4" />
-              <span>Engajamento & Jornada das Mães</span>
+              <span>Engajamento & Jornada das Maes</span>
             </button>
 
             <button
@@ -2623,32 +2623,32 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
               
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 text-white shadow-md space-y-1">
-                  <span className="text-[10px] font-black uppercase opacity-80 tracking-wider">Famílias Ativas Bauru</span>
+                  <span className="text-[10px] font-black uppercase opacity-80 tracking-wider">Familias Ativas Bauru</span>
                   <div className="text-3xl font-black">{crmFamilias.filter(f => f.status === 'Ativo' || f.status === 'Teste (Trial)').length}</div>
-                  <p className="text-[11px] font-medium opacity-90">Mães acompanhando rotina escolar diária</p>
+                  <p className="text-[11px] font-medium opacity-90">Maes acompanhando rotina escolar diaria</p>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-1">
                   <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Receita Recorrente Estimada</span>
                   <div className="text-2xl font-black text-slate-800 dark:text-white">
                     R$ {crmFamilias.reduce((acc, f) => acc + (f.statusFinanceiro === 'pago' ? f.valorMensal : 0), 0).toFixed(2).replace('.', ',')}
-                    <span className="text-xs text-slate-400 font-normal"> /mês</span>
+                    <span className="text-xs text-slate-400 font-normal"> /mes</span>
                   </div>
-                  <p className="text-[11px] font-bold text-emerald-600">Base R$ 29,90/mês por aluno</p>
+                  <p className="text-[11px] font-bold text-emerald-600">Base R$ 29,90/mes por aluno</p>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-1">
-                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Demonstrações de Afeto</span>
+                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Demonstracoes de Afeto</span>
                   <div className="text-2xl font-black text-rose-500 flex items-center gap-1">
-                    ❤ {crmFamilias.reduce((acc, f) => acc + (f.likesRecebidos || 0) + (f.regadasAmor || 0), 0)}
+                      {crmFamilias.reduce((acc, f) => acc + (f.likesRecebidos || 0) + (f.regadasAmor || 0), 0)}
                   </div>
-                  <p className="text-[11px] font-medium text-slate-500">Likes & Regadas de Amor no diário</p>
+                  <p className="text-[11px] font-medium text-slate-500">Likes & Regadas de Amor no diario</p>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-1">
                   <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">Principal Canal Bauru</span>
                   <div className="text-lg font-black text-teal-600 truncate">QR Code na Entrada</div>
-                  <p className="text-[11px] font-bold text-slate-500">58% das adesões totais</p>
+                  <p className="text-[11px] font-bold text-slate-500">58% das adesoes totais</p>
                 </div>
               </div>
 
@@ -2659,25 +2659,25 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                   <div>
                     <h4 className="text-sm font-black text-slate-800 dark:text-white flex items-center gap-2">
                       <GraduationCap className="w-4 h-4 text-emerald-600" />
-                      <span>Distribuição de Alunos por Escola em Bauru</span>
+                      <span>Distribuicao de Alunos por Escola em Bauru</span>
                     </h4>
-                    <p className="text-xs text-slate-500">Quantidade de famílias cadastradas por unidade escolar</p>
+                    <p className="text-xs text-slate-500">Quantidade de familias cadastradas por unidade escolar</p>
                   </div>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart data={[
                         { name: 'EMEF Santa Maria', familias: crmFamilias.filter(f => f.escola.includes('Santa Maria')).length },
-                        { name: 'Colégio São Francisco', familias: crmFamilias.filter(f => f.escola.includes('São Francisco')).length },
-                        { name: 'EMEI Leila de Fátima', familias: crmFamilias.filter(f => f.escola.includes('Leila')).length },
+                        { name: 'Colegio Sao Francisco', familias: crmFamilias.filter(f => f.escola.includes('Sao Francisco')).length },
+                        { name: 'EMEI Leila de Fatima', familias: crmFamilias.filter(f => f.escola.includes('Leila')).length },
                         { name: 'Escola Criativa Bauru', familias: crmFamilias.filter(f => f.escola.includes('Criativa')).length },
-                        { name: 'Colégio Preve Objetivo', familias: crmFamilias.filter(f => f.escola.includes('Preve')).length },
-                        { name: 'Outras Escolas', familias: crmFamilias.filter(f => !f.escola.includes('Santa Maria') && !f.escola.includes('São Francisco') && !f.escola.includes('Leila') && !f.escola.includes('Criativa') && !f.escola.includes('Preve')).length }
+                        { name: 'Colegio Preve Objetivo', familias: crmFamilias.filter(f => f.escola.includes('Preve')).length },
+                        { name: 'Outras Escolas', familias: crmFamilias.filter(f => !f.escola.includes('Santa Maria') && !f.escola.includes('Sao Francisco') && !f.escola.includes('Leila') && !f.escola.includes('Criativa') && !f.escola.includes('Preve')).length }
                       ]}>
                         <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.2} />
                         <XAxis dataKey="name" tick={{ fontSize: 10 }} />
                         <YAxis allowDecimals={false} tick={{ fontSize: 10 }} />
                         <Tooltip />
-                        <Bar dataKey="familias" fill="#059669" radius={[8, 8, 0, 0]} name="Famílias" />
+                        <Bar dataKey="familias" fill="#059669" radius={[8, 8, 0, 0]} name="Familias" />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -2688,9 +2688,9 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                   <div>
                     <h4 className="text-sm font-black text-slate-800 dark:text-white flex items-center gap-2">
                       <MapPin className="w-4 h-4 text-teal-600" />
-                      <span>Origem das Famílias em Bauru</span>
+                      <span>Origem das Familias em Bauru</span>
                     </h4>
-                    <p className="text-xs text-slate-500">Canais que mais convertem mães para a plataforma</p>
+                    <p className="text-xs text-slate-500">Canais que mais convertem maes para a plataforma</p>
                   </div>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
@@ -2698,9 +2698,9 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                         <Pie
                           data={[
                             { name: 'QR Code Entrada', value: crmFamilias.filter(f => f.origem.includes('QR Code')).length, color: '#059669' },
-                            { name: 'Recepção Escola', value: crmFamilias.filter(f => f.origem.includes('Recepção')).length, color: '#0d9488' },
+                            { name: 'Recepcao Escola', value: crmFamilias.filter(f => f.origem.includes('Recepcao')).length, color: '#0d9488' },
                             { name: 'Instagram', value: crmFamilias.filter(f => f.origem.includes('Instagram')).length, color: '#2563eb' },
-                            { name: 'Indicação Mães', value: crmFamilias.filter(f => f.origem.includes('Indicação')).length, color: '#7c3aed' },
+                            { name: 'Indicacao Maes', value: crmFamilias.filter(f => f.origem.includes('Indicacao')).length, color: '#7c3aed' },
                             { name: 'WhatsApp', value: crmFamilias.filter(f => f.origem.includes('WhatsApp')).length, color: '#d97706' }
                           ]}
                           dataKey="value"
@@ -2742,7 +2742,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                     type="text"
                     value={crmSearch}
                     onChange={(e) => setCrmSearch(e.target.value)}
-                    placeholder="Buscar mãe, criança ou fone..."
+                    placeholder="Buscar mae, crianca ou fone..."
                     className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                   />
                 </div>
@@ -2755,10 +2755,10 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                   >
                     <option value="Todas">Escolas: Todas de Bauru</option>
                     <option value="EMEF Santa Maria">EMEF Santa Maria</option>
-                    <option value="Colégio São Francisco">Colégio São Francisco</option>
-                    <option value="EMEI Leila de Fátima">EMEI Leila de Fátima</option>
+                    <option value="Colegio Sao Francisco">Colegio Sao Francisco</option>
+                    <option value="EMEI Leila de Fatima">EMEI Leila de Fatima</option>
                     <option value="Escola Criativa Bauru">Escola Criativa Bauru</option>
-                    <option value="Colégio Preve Objetivo">Colégio Preve Objetivo</option>
+                    <option value="Colegio Preve Objetivo">Colegio Preve Objetivo</option>
                   </select>
                 </div>
 
@@ -2769,10 +2769,10 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                     className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 focus:outline-none"
                   >
                     <option value="Todas">Campanhas: Todas</option>
-                    <option value="Panfletagem Portão 7h30">Panfletagem Portão 7h30</option>
-                    <option value="Volta às Aulas 2025">Volta às Aulas 2025</option>
+                    <option value="Panfletagem Portao 7h30">Panfletagem Portao 7h30</option>
+                    <option value="Volta as Aulas 2025">Volta as Aulas 2025</option>
                     <option value="Campanha Insta Bauru">Campanha Insta Bauru</option>
-                    <option value="Indique uma Mãe">Indique uma Mãe</option>
+                    <option value="Indique uma Mae">Indique uma Mae</option>
                   </select>
                 </div>
 
@@ -2796,13 +2796,13 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                   <table className="w-full text-left border-collapse">
                     <thead>
                       <tr className="bg-slate-50 dark:bg-slate-800/50 border-b border-slate-200 dark:border-slate-800 text-[10px] uppercase font-black tracking-wider text-slate-500">
-                        <th className="p-4">Responsável (Mãe/Pai)</th>
-                        <th className="p-4">Criança (Aluno)</th>
+                        <th className="p-4">Responsavel (Mae/Pai)</th>
+                        <th className="p-4">Crianca (Aluno)</th>
                         <th className="p-4">Escola / Unidade</th>
                         <th className="p-4">Origem / Campanha</th>
                         <th className="p-4 text-center">Jornada</th>
                         <th className="p-4 text-center">Status Pix</th>
-                        <th className="p-4 text-right">Ação WhatsApp</th>
+                        <th className="p-4 text-right">Acao WhatsApp</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
@@ -2822,7 +2822,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                         })
                         .map(fam => {
                           const cleanNum = formatWhatsAppNumber(fam.telefone);
-                          const msg = `Olá, *${fam.responsavel}*! 🏫 Acompanhe as fotos e novidades escolares de *${fam.crianca}* no *Anjinho Escolar Bauru*! Suporte: (14) 99812-3400.`;
+                          const msg = `Ola, *${fam.responsavel}*!    Acompanhe as fotos e novidades escolares de *${fam.crianca}* no *Anjinho Escolar Bauru*! Suporte: (14) 99812-3400.`;
                           const waUrl = `https://wa.me/${cleanNum}?text=${encodeURIComponent(msg)}`;
 
                           return (
@@ -2853,17 +2853,17 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                               <td className="p-4 text-center">
                                 <div className="font-black text-slate-800 dark:text-white">Dia {fam.diaJornada}/30</div>
                                 <div className="text-[10px] text-rose-500 font-bold flex items-center justify-center gap-1">
-                                  <span>❤ {fam.likesRecebidos} likes</span>
+                                  <span>  {fam.likesRecebidos} likes</span>
                                 </div>
                               </td>
                               <td className="p-4 text-center">
                                 {fam.statusFinanceiro === 'pago' ? (
                                   <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 font-black rounded-full text-[10px] uppercase">
-                                    ✓ Pago (R$ 29,90)
+                                      Pago (R$ 29,90)
                                   </span>
                                 ) : (
                                   <span className="px-2.5 py-1 bg-amber-100 text-amber-800 font-black rounded-full text-[10px] uppercase animate-pulse">
-                                    ⚠ Pendente
+                                    [!] Pendente
                                   </span>
                                 )}
                               </td>
@@ -2895,25 +2895,25 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                 <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-black text-lg">
                    
                 </div>
-                <h4 className="font-black text-slate-800 dark:text-white">Panfletagem de Portão (7h30)</h4>
+                <h4 className="font-black text-slate-800 dark:text-white">Panfletagem de Portao (7h30)</h4>
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Flyer entregue aos pais na entrada e saída das escolas de Bauru. Possui QR Code direcionando para o cadastro rápido do aluno.
+                  Flyer entregue aos pais na entrada e saida das escolas de Bauru. Possui QR Code direcionando para o cadastro rapido do aluno.
                 </p>
                 <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-xs font-bold text-emerald-600">
-                  Conversão média: 24% dos escaneamentos
+                  Conversao media: 24% dos escaneamentos
                 </div>
               </div>
 
               <div className="p-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl space-y-3">
                 <div className="w-10 h-10 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center font-black text-lg">
-                  🏫
+                    
                 </div>
-                <h4 className="font-black text-slate-800 dark:text-white">Totem/Cartaz na Recepção</h4>
+                <h4 className="font-black text-slate-800 dark:text-white">Totem/Cartaz na Recepcao</h4>
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Visual fixo na secretaria escolar. Pais escaneiam enquanto aguardam atendimento ou reunião de pais.
+                  Visual fixo na secretaria escolar. Pais escaneiam enquanto aguardam atendimento ou reuniao de pais.
                 </p>
                 <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-xs font-bold text-teal-600">
-                  Excelente retenção e confiança das famílias
+                  Excelente retencao e confianca das familias
                 </div>
               </div>
 
@@ -2921,9 +2921,9 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                 <div className="w-10 h-10 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-black text-lg">
                      
                 </div>
-                <h4 className="font-black text-slate-800 dark:text-white">Grupos de Mães no WhatsApp</h4>
+                <h4 className="font-black text-slate-800 dark:text-white">Grupos de Maes no WhatsApp</h4>
                 <p className="text-xs text-slate-500 leading-relaxed">
-                  Mães satisfeitas indicando no grupo de mães da sala. A recomendação boca a boca em Bauru gera adesões espont
+                  Maes satisfeitas indicando no grupo de maes da sala. A recomendacao boca a boca em Bauru gera adesoes espont
                 </p>
                 <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-xs font-bold text-indigo-600">
                   Efeito viral sem custo adicional
@@ -2936,29 +2936,29 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
           {crmSubTab === 'jornada' && (
             <div className="p-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl space-y-4">
               <h4 className="font-black text-slate-800 dark:text-white text-base">
-                Ciclo de 30 Dias de Amor das Famílias
+                Ciclo de 30 Dias de Amor das Familias
               </h4>
               <p className="text-xs text-slate-500">
-                Acompanhamento automático do nível de envolvimento das mães com o diário do aluno.
+                Acompanhamento automatico do nivel de envolvimento das maes com o diario do aluno.
               </p>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
                 <div className="p-4 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-900 space-y-2">
                   <span className="text-[10px] font-black uppercase text-emerald-700 dark:text-emerald-300">Semana 1 (Dia 1-7)</span>
                   <div className="text-xl font-black text-slate-800 dark:text-white">Encantamento Inicial</div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">A mãe recebe as primeiras fotos do almoço e soneca. Taxa de abertura de 98%.</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-300">A mae recebe as primeiras fotos do almoco e soneca. Taxa de abertura de 98%.</p>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-teal-50 dark:bg-teal-950/30 border border-teal-100 dark:border-teal-900 space-y-2">
                   <span className="text-[10px] font-black uppercase text-teal-700 dark:text-teal-300">Semana 2 (Dia 8-15)</span>
-                  <div className="text-xl font-black text-slate-800 dark:text-white">Interação Ativa</div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">Uso diário dos botões "Dar Like" e "Regar com Amor". Média de 12 interações por semana.</p>
+                  <div className="text-xl font-black text-slate-800 dark:text-white">Interacao Ativa</div>
+                  <p className="text-xs text-slate-600 dark:text-slate-300">Uso diario dos botoes "Dar Like" e "Regar com Amor". Media de 12 interacoes por semana.</p>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900 space-y-2">
                   <span className="text-[10px] font-black uppercase text-indigo-700 dark:text-indigo-300">Semana 3-4 (Dia 16-30)</span>
-                  <div className="text-xl font-black text-slate-800 dark:text-white">Fidelização Recorrente</div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300">Renovação da assinatura mensal de R$ 29,90 via Pix automático ou cartão.</p>
+                  <div className="text-xl font-black text-slate-800 dark:text-white">Fidelizacao Recorrente</div>
+                  <p className="text-xs text-slate-600 dark:text-slate-300">Renovacao da assinatura mensal de R$ 29,90 via Pix automatico ou cartao.</p>
                 </div>
               </div>
             </div>
@@ -2970,33 +2970,33 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
                 <div>
                   <h4 className="font-black text-slate-800 dark:text-white text-base">
-                    Gestão de Faturamento Bauru (R$ 29,90/mês)
+                    Gestao de Faturamento Bauru (R$ 29,90/mes)
                   </h4>
                   <p className="text-xs text-slate-500">
-                    Controle de mensalidades de famílias conectadas ao Anjinho Escolar em Bauru
+                    Controle de mensalidades de familias conectadas ao Anjinho Escolar em Bauru
                   </p>
                 </div>
                 <div className="text-right">
                   <div className="text-2xl font-black text-emerald-600">
                     R$ {crmFamilias.reduce((acc, f) => acc + (f.statusFinanceiro === 'pago' ? f.valorMensal : 0), 0).toFixed(2).replace('.', ',')}
                   </div>
-                  <span className="text-[10px] text-slate-400 font-bold uppercase">Total Recebido este mês</span>
+                  <span className="text-[10px] text-slate-400 font-bold uppercase">Total Recebido este mes</span>
                 </div>
               </div>
 
               <div className="space-y-3">
                 <h5 className="text-xs font-black text-slate-700 dark:text-slate-300 uppercase tracking-wide">
-                  Notificações de Mensalidade Prontas para WhatsApp
+                  Notificacoes de Mensalidade Prontas para WhatsApp
                 </h5>
                 <div className="p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-3">
                   <p className="text-xs font-medium text-slate-700 dark:text-slate-300">
-                    Envie a chave Pix com 1 clique para as mães com pagamento pendente:
+                    Envie a chave Pix com 1 clique para as maes com pagamento pendente:
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {crmFamilias.filter(f => f.statusFinanceiro !== 'pago').map(fam => (
                       <a
                         key={fam.id}
-                        href={`https://wa.me/${formatWhatsAppNumber(fam.telefone)}?text=${encodeURIComponent(`Olá, ${fam.responsavel}! 🏫 Chave Pix para renovação do Anjinho Escolar Bauru de ${fam.crianca}: ${billingPixKey || 'contato@anjocuidador.com.br'}`)}`}
+                        href={`https://wa.me/${formatWhatsAppNumber(fam.telefone)}?text=${encodeURIComponent(`Ola, ${fam.responsavel}!    Chave Pix para renovacao do Anjinho Escolar Bauru de ${fam.crianca}: ${billingPixKey || 'contato@anjocuidador.com.br'}`)}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-black inline-flex items-center gap-1 shadow-xs"
@@ -3006,7 +3006,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                       </a>
                     ))}
                     {crmFamilias.filter(f => f.statusFinanceiro !== 'pago').length === 0 && (
-                      <p className="text-xs font-bold text-emerald-600">✓ Todas as famílias de Bauru estão em dia!</p>
+                      <p className="text-xs font-bold text-emerald-600">  Todas as familias de Bauru estao em dia!</p>
                     )}
                   </div>
                 </div>
@@ -3023,7 +3023,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <h3 className="font-black text-slate-800 dark:text-white text-base flex items-center gap-2">
                 <Baby className="w-5 h-5 text-emerald-600" />
-                <span>Nova Família em Bauru</span>
+                <span>Nova Familia em Bauru</span>
               </h3>
               <button
                 type="button"
@@ -3036,13 +3036,13 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
 
             <form onSubmit={handleAddCrmFamily} className="space-y-3 text-xs">
               <div className="space-y-1">
-                <label className="font-bold text-slate-700 dark:text-slate-300">Nome da Mãe / Responsável *</label>
+                <label className="font-bold text-slate-700 dark:text-slate-300">Nome da Mae / Responsavel *</label>
                 <input
                   type="text"
                   required
                   value={newFamMae}
                   onChange={(e) => setNewFamMae(e.target.value)}
-                  placeholder="Ex: Vanessa Guimarães"
+                  placeholder="Ex: Vanessa Guimaraes"
                   className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                 />
               </div>
@@ -3073,18 +3073,18 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="font-bold text-slate-700 dark:text-slate-300">Nome da Criança *</label>
+                  <label className="font-bold text-slate-700 dark:text-slate-300">Nome da Crianca *</label>
                   <input
                     type="text"
                     required
                     value={newFamCrianca}
                     onChange={(e) => setNewFamCrianca(e.target.value)}
-                    placeholder="Ex: Lucas Guimarães"
+                    placeholder="Ex: Lucas Guimaraes"
                     className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-medium focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
                   />
                 </div>
                 <div className="space-y-1">
-                  <label className="font-bold text-slate-700 dark:text-slate-300">Idade / Série</label>
+                  <label className="font-bold text-slate-700 dark:text-slate-300">Idade / Serie</label>
                   <input
                     type="text"
                     value={newFamIdade}
@@ -3103,10 +3103,10 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                   className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-slate-700 dark:text-slate-200 focus:outline-none"
                 >
                   <option value="EMEF Santa Maria - Bauru">EMEF Santa Maria - Bauru</option>
-                  <option value="Colégio São Francisco">Colégio São Francisco</option>
-                  <option value="EMEI Leila de Fátima">EMEI Leila de Fátima</option>
+                  <option value="Colegio Sao Francisco">Colegio Sao Francisco</option>
+                  <option value="EMEI Leila de Fatima">EMEI Leila de Fatima</option>
                   <option value="Escola Criativa Bauru">Escola Criativa Bauru</option>
-                  <option value="Colégio Preve Objetivo">Colégio Preve Objetivo</option>
+                  <option value="Colegio Preve Objetivo">Colegio Preve Objetivo</option>
                   <option value="Outra Unidade Bauru">Outra Unidade Bauru</option>
                 </select>
               </div>
@@ -3120,9 +3120,9 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                     className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-slate-700 dark:text-slate-200 focus:outline-none"
                   >
                     <option value="QR Code Entrada">QR Code Entrada</option>
-                    <option value="Recepção da Escola">Recepção da Escola</option>
+                    <option value="Recepcao da Escola">Recepcao da Escola</option>
                     <option value="Instagram">Instagram</option>
-                    <option value="Indicação de Mães">Indicação de Mães</option>
+                    <option value="Indicacao de Maes">Indicacao de Maes</option>
                     <option value="WhatsApp Direto">WhatsApp Direto</option>
                   </select>
                 </div>
@@ -3134,10 +3134,10 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                     onChange={(e) => setNewFamCampanha(e.target.value)}
                     className="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl font-bold text-slate-700 dark:text-slate-200 focus:outline-none"
                   >
-                    <option value="Panfletagem Portão 7h30">Panfletagem Portão 7h30</option>
-                    <option value="Volta às Aulas 2025">Volta às Aulas 2025</option>
+                    <option value="Panfletagem Portao 7h30">Panfletagem Portao 7h30</option>
+                    <option value="Volta as Aulas 2025">Volta as Aulas 2025</option>
                     <option value="Campanha Insta Bauru">Campanha Insta Bauru</option>
-                    <option value="Indique uma Mãe">Indique uma Mãe</option>
+                    <option value="Indique uma Mae">Indique uma Mae</option>
                   </select>
                 </div>
               </div>
@@ -3173,7 +3173,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
             <div className="flex items-center justify-between border-b border-slate-150 pb-3">
               <h3 className="text-base font-black flex items-center gap-2">
                 <span className="text-xl"> </span>
-                <span>Central de Cobrança WhatsApp</span>
+                <span>Central de Cobranca WhatsApp</span>
               </h3>
               <button 
                 onClick={() => setBillingModalUser(null)}
@@ -3193,7 +3193,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                 <span className="text-xl shrink-0"> </span>
                 <div>
                   <p className="font-bold text-slate-800">Enviando para: {billingModalUser.usuarioNome}</p>
-                  <p className="text-[10px] opacity-75 text-slate-600">Tutor de {billingModalUser.idosoNome} • WhatsApp: {billingModalUser.usuarioTelefone}</p>
+                  <p className="text-[10px] opacity-75 text-slate-600">Tutor de {billingModalUser.idosoNome}   WhatsApp: {billingModalUser.usuarioTelefone}</p>
                 </div>
               </div>
 
@@ -3210,7 +3210,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                       type="text" 
                       value={billingPixKey}
                       onChange={(e) => handlePixKeyChange(e.target.value)}
-                      placeholder="E-mail, celular, CNPJ ou aleatória"
+                      placeholder="E-mail, celular, CNPJ ou aleatoria"
                       className={`w-full px-3 py-1.5 rounded-xl border text-[11px] focus:outline-none focus:ring-2 focus:ring-indigo-500/20 ${
                         accessibilitySettings.darkMode ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-250 text-slate-850'
                       }`}
@@ -3233,7 +3233,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
 
               
               <div className="space-y-1.5">
-                <label className="text-[10px] font-black uppercase text-slate-450 text-slate-500 tracking-wide block">Escolha o Tipo de Notificação</label>
+                <label className="text-[10px] font-black uppercase text-slate-450 text-slate-500 tracking-wide block">Escolha o Tipo de Notificacao</label>
                 <div className="grid grid-cols-3 gap-1.5 bg-slate-100 p-1 rounded-xl">
                   <button
                     type="button"
@@ -3255,7 +3255,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                         : 'text-slate-500 hover:text-slate-800'
                     }`}
                   >
-                      Cobrança Pix
+                      Cobranca Pix
                   </button>
                   <button
                     type="button"
@@ -3266,7 +3266,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                         : 'text-slate-500 hover:text-slate-800'
                     }`}
                   >
-                    ⚠ Bloqueio
+                    [!] Bloqueio
                   </button>
                 </div>
               </div>
@@ -3275,7 +3275,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
               <div className="space-y-1">
                 <div className="flex justify-between items-center">
                   <label className="text-[10px] font-black uppercase text-slate-500 tracking-wide">Mensagem Pronta para WhatsApp</label>
-                  <span className="text-[9px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded uppercase">Editável antes do envio</span>
+                  <span className="text-[9px] text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded uppercase">Editavel antes do envio</span>
                 </div>
                 <textarea
                   rows={6}

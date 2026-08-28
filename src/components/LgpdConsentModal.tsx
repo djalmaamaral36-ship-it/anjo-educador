@@ -12,7 +12,7 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
     localStorage.getItem('anjo_app_mode') === 'escolar_fundamental' ||
     seniorName.toLowerCase().includes('maternal') || 
     seniorName.toLowerCase().includes('infantil') || 
-    seniorName.toLowerCase().includes('berçário') || 
+    seniorName.toLowerCase().includes('bercario') || 
     seniorName.toLowerCase().includes('jardim') ||
     seniorName.toLowerCase().includes('ano') ||
     seniorName.toLowerCase().includes('aluno_fun');
@@ -30,7 +30,7 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
 
   const handleSaveName = () => {
     if (!tempName.trim()) {
-      alert(isEscolar ? 'Favor preencher o nome do aluno/criança.' : 'Favor preencher o nome do idoso.');
+      alert(isEscolar ? 'Favor preencher o nome do aluno/crianca.' : 'Favor preencher o nome do idoso.');
       return;
     }
     const allSeniors = getFromDB<any[]>('anjo_idosos', []);
@@ -63,8 +63,8 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
             <Lock className="w-6 h-6" />
           </div>
           <div>
-            <span className="text-[9px] font-black uppercase text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full tracking-widest">LGPD & Segurança</span>
-            <h3 className="text-xl font-black text-slate-800 tracking-tight mt-1">Consentimento de Proteção de Dados</h3>
+            <span className="text-[9px] font-black uppercase text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full tracking-widest">LGPD & Seguranca</span>
+            <h3 className="text-xl font-black text-slate-800 tracking-tight mt-1">Consentimento de Protecao de Dados</h3>
           </div>
         </div>
 
@@ -72,7 +72,7 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
         <div className="space-y-4" id="lgpd-description-block">
           <div className="bg-slate-50 border border-slate-200/60 rounded-2xl p-4 space-y-3">
             <p className="text-xs text-slate-600 leading-normal">
-              Para assegurar a rastreabilidade e integridade das informações de acompanhamento e do boletim diário de cuidados de:
+              Para assegurar a rastreabilidade e integridade das informacoes de acompanhamento e do boletim diario de cuidados de:
             </p>
             
             {isEditingName ? (
@@ -82,7 +82,7 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
                   value={tempName}
                   onChange={(e) => setTempName(e.target.value)}
                   className="flex-1 px-3 py-1.5 text-xs font-bold border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-400/25 rounded-lg bg-slate-50 text-slate-800"
-                  placeholder={isEscolar ? "Nome do aluno/criança" : "Nome do idoso"}
+                  placeholder={isEscolar ? "Nome do aluno/crianca" : "Nome do idoso"}
                   maxLength={50}
                   autoFocus
                 />
@@ -102,20 +102,20 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
             ) : (
               <div className="flex items-center justify-between bg-white px-3.5 py-2.5 rounded-xl border border-slate-100 shadow-2xs">
                 <span className="text-xs font-bold text-slate-400">
-                  {isEscolar ? 'Aluno / Criança:' : 'Idoso:'} <span className="font-extrabold text-slate-800 text-sm ml-1">{isEscolar ? ' ' : ' '} {seniorName}</span>
+                  {isEscolar ? 'Aluno / Crianca:' : 'Idoso:'} <span className="font-extrabold text-slate-800 text-sm ml-1">{isEscolar ? ' ' : ' '} {seniorName}</span>
                 </span>
                 <button
                   onClick={() => setIsEditingName(true)}
                   className="text-[10px] font-black text-emerald-600 hover:text-emerald-750 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-lg flex items-center gap-1 transition-all cursor-pointer"
                   title={isEscolar ? "Clique para editar o nome do aluno" : "Clique para editar o nome do idoso"}
                 >
-                  ✏ Editar Nome
+                    Editar Nome
                 </button>
               </div>
             )}
 
             <p className="text-[11px] text-slate-500 leading-normal pt-1">
-              Sob os termos da <strong>Lei Geral de Proteção de Dados (LGPD - Lei nº 13.709/2018)</strong>, solicitamos o seu consentimento livre e inequívoco antes de liberar o acesso.
+              Sob os termos da <strong>Lei Geral de Protecao de Dados (LGPD - Lei no 13.709/2018)</strong>, solicitamos o seu consentimento livre e inequivoco antes de liberar o acesso.
             </p>
           </div>
 
@@ -123,17 +123,17 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
             className="border border-slate-200 bg-slate-50 rounded-2xl p-4 text-[11px] text-slate-500 leading-relaxed max-h-40 overflow-y-auto space-y-2 border-dashed font-normal"
             id="lgpd-terms-scroller"
           >
-            <p className="font-bold text-slate-700">Artigo 5º, inciso II - Tratamento de Dados Pessoais Sensíveis:</p>
+            <p className="font-bold text-slate-700">Artigo 5o, inciso II - Tratamento de Dados Pessoais Sensiveis:</p>
             <p>
-              Os dados coletados neste aplicativo (tais como rotinas de medicação, aceitabilidade alimentar, episódios de indisposição, aferimento de sinais vitais e relatos comportamentais) constituem <strong>dados pessoais sensíveis de saúde</strong>. Seu processamento é realizado estritamente para a tutela assistencial de saúde sob governança familiar.
+              Os dados coletados neste aplicativo (tais como rotinas de medicacao, aceitabilidade alimentar, episodios de indisposicao, aferimento de sinais vitais e relatos comportamentais) constituem <strong>dados pessoais sensiveis de saude</strong>. Seu processamento e realizado estritamente para a tutela assistencial de saude sob governanca familiar.
             </p>
             <p className="font-bold text-slate-700">Responsabilidades do Operador e Controladores:</p>
             <p>
-              Cada membro (cuidador e família) compromete-se a resguardar o sigilo profissional e familiar dos registros históricos, não compartilhando capturas de tela ou informações confidenciais fora do círculo familiar autorizado. O sistema registra logs automáticos de auditoria digital com endereços IP e carimbo de data/hora a cada acesso por segurança jurídica.
+              Cada membro (cuidador e familia) compromete-se a resguardar o sigilo profissional e familiar dos registros historicos, nao compartilhando capturas de tela ou informacoes confidenciais fora do circulo familiar autorizado. O sistema registra logs automaticos de auditoria digital com enderecos IP e carimbo de data/hora a cada acesso por seguranca juridica.
             </p>
-            <p className="font-bold text-slate-700">Direito de Revogação de Consentimento:</p>
+            <p className="font-bold text-slate-700">Direito de Revogacao de Consentimento:</p>
             <p>
-              O titular ou seu tutor pode solicitar o relatório integral de logs, a portabilidade das informações ou a exclusão parcial de dados históricos diretamente aos canais administrativos do {isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'} a qualquer momento.
+              O titular ou seu tutor pode solicitar o relatorio integral de logs, a portabilidade das informacoes ou a exclusao parcial de dados historicos diretamente aos canais administrativos do {isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'} a qualquer momento.
             </p>
           </div>
         </div>
@@ -159,8 +159,8 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
             </div>
             <span className="text-xs text-slate-700 font-medium select-none leading-normal">
               {isEscolar 
-                ? `Autorizo o registro e processamento de rotinas e dados comportamentais de ${seniorName} para acompanhamento pedagógico e de cuidados.`
-                : `Autorizo o registro e processamento de dados de saúde sensíveis para acompanhamento assistencial de ${seniorName}.`
+                ? `Autorizo o registro e processamento de rotinas e dados comportamentais de ${seniorName} para acompanhamento pedagogico e de cuidados.`
+                : `Autorizo o registro e processamento de dados de saude sensiveis para acompanhamento assistencial de ${seniorName}.`
               }
             </span>
           </label>
@@ -183,8 +183,8 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
             </div>
             <span className="text-xs text-slate-700 font-medium select-none leading-normal">
               {isEscolar
-                ? `Declaro que sou familiar, responsável legal ou tutor autorizado pela família de ${seniorName} para acessar esta rotina escolar.`
-                : `Declaro que sou familiar ou cuidador expressamente autorizado pela família de ${seniorName} para acessar este histórico de cuidado.`
+                ? `Declaro que sou familiar, responsavel legal ou tutor autorizado pela familia de ${seniorName} para acessar esta rotina escolar.`
+                : `Declaro que sou familiar ou cuidador expressamente autorizado pela familia de ${seniorName} para acessar este historico de cuidado.`
               }
             </span>
           </label>
@@ -206,7 +206,7 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
               </div>
             </div>
             <span className="text-xs text-slate-700 font-medium select-none leading-normal">
-              Concordo com os Termos de Uso e Política de Privacidade do {isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'} e aceito o registro de auditoria de acessos via WhatsApp.
+              Concordo com os Termos de Uso e Politica de Privacidade do {isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'} e aceito o registro de auditoria de acessos via WhatsApp.
             </span>
           </label>
 
@@ -216,7 +216,7 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
         <div className="border-t border-slate-100 pt-5 flex items-center justify-between gap-4" id="lgpd-footer">
           <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400">
             <ShieldCheck className="w-4 h-4 text-emerald-500" />
-            <span>Confirmação Digital do Resumo de Turno</span>
+            <span>Confirmacao Digital do Resumo de Turno</span>
           </div>
 
           <button
@@ -232,7 +232,7 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
                 : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
             }`}
           >
-            ✓ Confirmar Consentimento
+              Confirmar Consentimento
           </button>
         </div>
       </div>

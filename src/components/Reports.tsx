@@ -69,7 +69,7 @@ export default function Reports({ idoso, accessibilitySettings, keyTrigger, trig
         telefone: idoso.contatoEmergencia.telefone 
       };
     }
-    return { nome: 'Família', telefone: '(11) 98765-4321' };
+    return { nome: 'Familia', telefone: '(11) 98765-4321' };
   };
 
   useEffect(() => {
@@ -258,44 +258,44 @@ export default function Reports({ idoso, accessibilitySettings, keyTrigger, trig
     const ultimoSinal = sinaisHoje[sinaisHoje.length - 1];
     
     let msgSinais = isEscolar 
-      ? '⚠ Nenhuma observação de saúde ou rotina hoje.'
-      : '⚠ Nenhum sinal aferido hoje.';
+      ? '[!] Nenhuma observacao de saude ou rotina hoje.'
+      : '[!] Nenhum sinal aferido hoje.';
     if (ultimoSinal) {
       msgSinais = isEscolar
-        ? `• Período de Sono/Soneca: ${ultimoSinal.pressaoArterial}
-• Fraldas e Trocas (Urina/Fezes): ${ultimoSinal.fralda || 'Verificada e limpa'}
-• Temperatura Corporal: ${ultimoSinal.temperatura}°C
-• Copos d'Água oferecidos: ${coposCount} copo(s) (${totalMl}ml total de água)`
-        : `• Pressão Arterial: ${ultimoSinal.pressaoArterial} mmHg (às ${ultimoSinal.horario})
-• Glicemia Capilar: ${ultimoSinal.glicemia} mg/dL (${ultimoSinal.tipoGlicemia || 'casual'})
-• Temperatura Corporal: ${ultimoSinal.temperatura}°C
-• Freq. Cardíaca: ${ultimoSinal.frequenciaCardiaca} bpm
-• Saturação de O2: ${ultimoSinal.saturacao}%`;
+        ? `  Periodo de Sono/Soneca: ${ultimoSinal.pressaoArterial}
+  Fraldas e Trocas (Urina/Fezes): ${ultimoSinal.fralda || 'Verificada e limpa'}
+  Temperatura Corporal: ${ultimoSinal.temperatura}oC
+  Copos d'Agua oferecidos: ${coposCount} copo(s) (${totalMl}ml total de agua)`
+        : `  Pressao Arterial: ${ultimoSinal.pressaoArterial} mmHg (as ${ultimoSinal.horario})
+  Glicemia Capilar: ${ultimoSinal.glicemia} mg/dL (${ultimoSinal.tipoGlicemia || 'casual'})
+  Temperatura Corporal: ${ultimoSinal.temperatura}oC
+  Freq. Cardiaca: ${ultimoSinal.frequenciaCardiaca} bpm
+  Saturacao de O2: ${ultimoSinal.saturacao}%`;
     }
 
     // Today's meds
     const medicamentosH = concluidas.filter(t => t.tipo === 'medicacao');
     const medPendentesH = todayTasks.filter(t => t.tipo === 'medicacao' && t.status !== 'concluido');
 
-    let msgMed = '✅ Todos os medicamentos programados foram tomados!';
+    let msgMed = '[OK] Todos os medicamentos programados foram tomados!';
     if (medicamentosH.length === 0 && medPendentesH.length === 0) {
-      msgMed = '• Nenhuma medicação programada para hoje.';
+      msgMed = '  Nenhuma medicacao programada para hoje.';
     } else {
       msgMed = '';
       if (medicamentosH.length > 0) {
-        msgMed += '  *Tomados:*\n' + medicamentosH.map(m => `  • ${m.titulo} às ${m.concluidaEm}`).join('\n');
+        msgMed += '  *Tomados:*\n' + medicamentosH.map(m => `    ${m.titulo} as ${m.concluidaEm}`).join('\n');
       }
       if (medPendentesH.length > 0) {
         if (msgMed) msgMed += '\n';
-        msgMed += '  *Pendentes/Próximos:*\n' + medPendentesH.map(m => `  • ${m.titulo} (${m.horarioPrevisto})`).join('\n');
+        msgMed += '  *Pendentes/Proximos:*\n' + medPendentesH.map(m => `    ${m.titulo} (${m.horarioPrevisto})`).join('\n');
       }
     }
 
     const mealLabelMap: { [key: string]: string } = {
       mamadeira: 'Mamadeira de Leite',
-      cafe_manha: 'Café da Manhã',
-      almoco: 'Almoço',
-      lanche: 'Lanche da Manhã',
+      cafe_manha: 'Cafe da Manha',
+      almoco: 'Almoco',
+      lanche: 'Lanche da Manha',
       lanche_tarde: 'Lanche da Tarde',
       jantar: 'Jantar',
       ceia: 'Ceia'
@@ -307,16 +307,16 @@ export default function Reports({ idoso, accessibilitySettings, keyTrigger, trig
       recusou: 'Recusou'
     };
 
-    let msgAlimento = 'Refeições Principais:';
+    let msgAlimento = 'Refeicoes Principais:';
     if (feedsHoje.length === 0) {
-      msgAlimento += '\n  • Sem refeições registradas até o momento.';
+      msgAlimento += '\n    Sem refeicoes registradas ate o momento.';
     } else {
       msgAlimento += '\n' + feedsHoje.map(a => {
         const mealName = mealLabelMap[a.refeicao] || a.refeicao;
         const acceptName = acceptLabelMap[a.aceitacao] || a.aceitacao;
         const obs = a.observacoes ? ` ("${a.observacoes}")` : '';
         const qty = a.quantidadeMl ? ` (${a.quantidadeMl}ml)` : '';
-        return `  • ${mealName}${qty}: Aceitação ${acceptName}${obs} às ${a.horario}`;
+        return `    ${mealName}${qty}: Aceitacao ${acceptName}${obs} as ${a.horario}`;
       }).join('\n');
     }
 
@@ -326,47 +326,47 @@ export default function Reports({ idoso, accessibilitySettings, keyTrigger, trig
     }
     
     if (isEscolar) {
-      msgAlimento += `\n  Ingestão Hídrica (Água): ${totalMl} ml (${coposCount} copo(s) d'água registrados hoje).`;
+      msgAlimento += `\n  Ingestao Hidrica (Agua): ${totalMl} ml (${coposCount} copo(s) d'agua registrados hoje).`;
     } else {
-      msgAlimento += `\n  Ingestão Hídrica: ${totalMl} ml (${coposCount} copo(s) d'água registrados hoje).`;
+      msgAlimento += `\n  Ingestao Hidrica: ${totalMl} ml (${coposCount} copo(s) d'agua registrados hoje).`;
     }
 
     // Routine checklist (baths, sun, exercises...)
     const outRotinasH = concluidas.filter(t => t.tipo !== 'medicacao' && t.tipo !== 'alimentacao' && t.tipo !== 'hidratacao');
     let msgRotinas = 'Atividades & Higiene:';
     if (outRotinasH.length === 0) {
-      msgRotinas += '\n  • Nenhuma outra atividade concluída até o momento.';
+      msgRotinas += '\n    Nenhuma outra atividade concluida ate o momento.';
     } else {
-      msgRotinas += '\n' + outRotinasH.map(r => `  • [Concluído] ${r.titulo} às ${r.concluidaEm}`).join('\n');
+      msgRotinas += '\n' + outRotinasH.map(r => `    [Concluido] ${r.titulo} as ${r.concluidaEm}`).join('\n');
     }
 
     const obsTxt = customNotes ? `\n\n  *${isEscolar ? 'MENSAGEM DA PROFESSORA' : 'NOTAS DO CUIDADOR'}:*\n"${customNotes}"` : '';
 
     if (isEscolar) {
       const tenderName = idoso.nome.split(' (')[0].replace(/[0-9]/g, '').trim() || 'Nosso Anjinho';
-      return `  *DIÁRIO AFETIVO ESCOLAR — ${tenderName.toUpperCase()}*  
+      return `  *DIARIO AFETIVO ESCOLAR - ${tenderName.toUpperCase()}*  
   *Data:* ${dataAtual}
 
-Olá, família querida! ✨
+Ola, familia querida!  
 Segue o resumo carinhoso do dia do(a) nosso(a) pequeno(a) na escola:
 
   *SONO & BEM-ESTAR:*
 ${msgSinais}
 
-  *ALIMENTAÇÁO & HIDRATAÇÁO:*
+  *ALIMENTACAO & HIDRATACAO:*
 ${msgAlimento}
 
-  *VIVÊNCIAS & CUIDADOS:*
+  *VIVENCIAS & CUIDADOS:*
 ${msgRotinas}${obsTxt}
 
-✨ *Um dia cheio de carinho, aprendizado e acolhimento!*
+  *Um dia cheio de carinho, aprendizado e acolhimento!*
 ___
-  *Anjinho Escolar — Cuidando com amor de cada pequeno passo.*`;
+  *Anjinho Escolar - Cuidando com amor de cada pequeno passo.*`;
     }
 
-    const title = `  *RELATÓRIO DIÁRIO DE CUIDADOS — ${idoso.nome.toUpperCase()}*  `;
-    const sinaisLabel = `❤ *SINAIS VITAIS:*`;
-    const medsLabel = `💊 *MEDICAÇÕES DO DIA:*`;
+    const title = `  *RELATORIO DIARIO DE CUIDADOS - ${idoso.nome.toUpperCase()}*  `;
+    const sinaisLabel = `  *SINAIS VITAIS:*`;
+    const medsLabel = `   *MEDICACOES DO DIA:*`;
     const routinesLabel = `  *OUTROS CUIDADOS REALIZADOS:*`;
 
     return `${title}
@@ -378,14 +378,14 @@ ${msgSinais}
 ${medsLabel}
 ${msgMed}
 
-  *ALIMENTAÇÁO & HIDRATAÇÁO:*
+  *ALIMENTACAO & HIDRATACAO:*
 ${msgAlimento}
 
 ${routinesLabel}
 ${msgRotinas}${obsTxt}
 
 ___
-  Relatório gerado no aplicativo *Anjo Cuidador*.`;
+  Relatorio gerado no aplicativo *Anjo Cuidador*.`;
   };
 
   const handleCopy = () => {
@@ -445,10 +445,10 @@ ___
         <div>
           <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
             <TrendingUp className="w-6 h-6 text-serene-blue" />
-            Painel de Desempenho e Relatórios
+            Painel de Desempenho e Relatorios
           </h2>
           <p className="text-sm text-slate-500">
-            Gráficos e históricos diários consolidados para apresentação médica ou acompanhamento familiar.
+            Graficos e historicos diarios consolidados para apresentacao medica ou acompanhamento familiar.
           </p>
         </div>
 
@@ -457,7 +457,7 @@ ___
           className="px-5 py-3 bg-white hover:bg-slate-50 text-slate-700 border border-slate-350 font-bold rounded-xl active:scale-95 transition-all text-sm flex items-center justify-center gap-2 cursor-pointer shadow-xs"
         >
           <Printer className="w-5 h-5 text-slate-500" /> 
-          {showPrintReady ? 'Fechar Visual Impresso' : 'Visualizar para Impressão'}
+          {showPrintReady ? 'Fechar Visual Impresso' : 'Visualizar para Impressao'}
         </button>
       </div>
 
@@ -469,21 +469,21 @@ ___
               <Calendar className="w-5 h-5" />
             </span>
             <div>
-              <h3 className="text-sm font-extrabold text-slate-800">Filtro de Período & Busca por Datas</h3>
-              <p className="text-xs text-slate-500">Selecione o intervalo de tempo para analisar gráficos e boletins históricos</p>
+              <h3 className="text-sm font-extrabold text-slate-800">Filtro de Periodo & Busca por Datas</h3>
+              <p className="text-xs text-slate-500">Selecione o intervalo de tempo para analisar graficos e boletins historicos</p>
             </div>
           </div>
           <span className="text-[10px] uppercase font-bold tracking-widest text-indigo-700 bg-indigo-50 border border-indigo-100 px-2.5 py-1 rounded-lg self-start sm:self-auto">
-            {presetFilter === 'todo' ? 'Todo o histórico' : presetFilter === '7' ? 'Últimos 7 dias' : presetFilter === '30' ? 'Últimos 30 dias' : presetFilter === '90' ? 'Últimos 3 meses (90 dias)' : 'Intervalo Personalizado'}
+            {presetFilter === 'todo' ? 'Todo o historico' : presetFilter === '7' ? 'Ultimos 7 dias' : presetFilter === '30' ? 'Ultimos 30 dias' : presetFilter === '90' ? 'Ultimos 3 meses (90 dias)' : 'Intervalo Personalizado'}
           </span>
         </div>
 
         <div className="flex flex-wrap items-center gap-2 pt-1">
           {[
-            { id: 'todo', label: 'Todo o Histórico' },
-            { id: '7', label: 'Últimos 7 dias' },
-            { id: '30', label: 'Últimos 30 dias' },
-            { id: '90', label: 'Últimos 3 meses (90 dias)' },
+            { id: 'todo', label: 'Todo o Historico' },
+            { id: '7', label: 'Ultimos 7 dias' },
+            { id: '30', label: 'Ultimos 30 dias' },
+            { id: '90', label: 'Ultimos 3 meses (90 dias)' },
             { id: 'personalizado', label: 'Intervalo Personalizado  ' }
           ].map(p => {
             const isActive = presetFilter === p.id;
@@ -508,7 +508,7 @@ ___
         {presetFilter === 'personalizado' && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-white border border-slate-200 rounded-xl max-w-xl transition-all">
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-500 block">De (Data de início)</label>
+              <label className="text-xs font-bold text-slate-500 block">De (Data de inicio)</label>
               <input
                 type="date"
                 value={startDate}
@@ -517,7 +517,7 @@ ___
               />
             </div>
             <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-500 block">Até (Data final)</label>
+              <label className="text-xs font-bold text-slate-500 block">Ate (Data final)</label>
               <input
                 type="date"
                 value={endDate}
@@ -543,25 +543,25 @@ ___
 
           <div className="text-center py-4 border-b border-soft-gray space-y-2">
             <h1 className="text-2xl font-black text-slate-800 uppercase tracking-widest">{isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}</h1>
-            <p className="text-xs text-slate-400">{isEscolar ? 'Relatório Pedagógico Unificado de Atividades e Rotinas' : 'Relatório Médico Unificado de Rotinas e Sinais Vitais'}</p>
+            <p className="text-xs text-slate-400">{isEscolar ? 'Relatorio Pedagogico Unificado de Atividades e Rotinas' : 'Relatorio Medico Unificado de Rotinas e Sinais Vitais'}</p>
             <div className="inline-flex gap-4 text-xs font-semibold text-slate-705">
-              <span>{isEscolar ? 'Criança/Aluno(a):' : 'Paciente:'} <strong className="text-slate-900 font-bold">{idoso.nome}</strong></span>
-              <span>•</span>
-              <span>Data de Referência: <strong className="text-slate-930">{new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })}</strong></span>
+              <span>{isEscolar ? 'Crianca/Aluno(a):' : 'Paciente:'} <strong className="text-slate-900 font-bold">{idoso.nome}</strong></span>
+              <span> </span>
+              <span>Data de Referencia: <strong className="text-slate-930">{new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' })}</strong></span>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-6 text-sm">
             <div className="space-y-2">
-              <h3 className="font-bold border-b pb-1 text-slate-800">{isEscolar ? 'Restrições, Alergias & Avisos' : 'Alertas Clínicos & Alergias'}</h3>
+              <h3 className="font-bold border-b pb-1 text-slate-800">{isEscolar ? 'Restricoes, Alergias & Avisos' : 'Alertas Clinicos & Alergias'}</h3>
               <ul className="list-disc pl-4 text-xs text-slate-650 space-y-1">
-                <li><strong className="text-slate-800">{isEscolar ? 'Fatores de Observação:' : 'Principais Condições:'}</strong> {idoso.condicoesMedicas.join(', ')}</li>
+                <li><strong className="text-slate-800">{isEscolar ? 'Fatores de Observacao:' : 'Principais Condicoes:'}</strong> {idoso.condicoesMedicas.join(', ')}</li>
                 <li><strong className="text-slate-800">Alergias Catalogadas:</strong> {idoso.alergias.join(', ')}</li>
-                <li><strong className="text-slate-800">{isEscolar ? 'Pediatra / Responsável:' : 'Doutor Responsável:'}</strong> {idoso.medicoResponsavel?.nome || 'Não definido'}</li>
+                <li><strong className="text-slate-800">{isEscolar ? 'Pediatra / Responsavel:' : 'Doutor Responsavel:'}</strong> {idoso.medicoResponsavel?.nome || 'Nao definido'}</li>
               </ul>
             </div>
             <div className="space-y-2">
-              <h3 className="font-bold border-b pb-1 text-slate-800">{isEscolar ? 'Recomendações e Instruções dos Pais' : 'Instruções de Cuidados Atuais'}</h3>
+              <h3 className="font-bold border-b pb-1 text-slate-800">{isEscolar ? 'Recomendacoes e Instrucoes dos Pais' : 'Instrucoes de Cuidados Atuais'}</h3>
               <p className="text-xs text-slate-600 italic">
                 "{idoso.planoCuidado}"
               </p>
@@ -571,7 +571,7 @@ ___
           
           <div className="space-y-3">
             <h3 className="font-bold border-b pb-1 text-slate-800 text-sm">
-              {isEscolar ? 'Diário de Saúde, Sono & Rotina Recente' : 'Aferições de Sinais Vitais Recentes'}
+              {isEscolar ? 'Diario de Saude, Sono & Rotina Recente' : 'Afericoes de Sinais Vitais Recentes'}
             </h3>
             <table className="w-full text-xs text-left text-slate-705 text-[11px]">
               <thead>
@@ -583,15 +583,15 @@ ___
                       <th className="p-2">Fralda (Troca)</th>
                       <th className="p-2">Temp</th>
                       <th className="p-2 font-bold">Mamadeiras</th>
-                      <th className="p-2">Copos d'Água</th>
+                      <th className="p-2">Copos d'Agua</th>
                     </>
                   ) : (
                     <>
                       <th className="p-2">P. Arterial</th>
                       <th className="p-2">Glicemia</th>
                       <th className="p-2">Temp</th>
-                      <th className="p-2 font-bold">F. Cardíaca</th>
-                      <th className="p-2">Saturação</th>
+                      <th className="p-2 font-bold">F. Cardiaca</th>
+                      <th className="p-2">Saturacao</th>
                     </>
                   )}
                   <th className="p-2 font-bold text-indigo-750">Peso</th>
@@ -606,7 +606,7 @@ ___
                       <>
                         <td className="p-2 font-bold text-slate-700">{s.pressaoArterial}</td>
                         <td className="p-2 font-bold text-slate-700">{s.fralda || 'Verificada'}</td>
-                        <td className="p-2">{s.temperatura} °C</td>
+                        <td className="p-2">{s.temperatura} oC</td>
                         <td className="p-2">{s.frequenciaCardiaca} u</td>
                         <td className="p-2 font-semibold text-emerald-800">{s.saturacao} copos</td>
                       </>
@@ -614,12 +614,12 @@ ___
                       <>
                         <td className="p-2 font-bold">{s.pressaoArterial} mmHg</td>
                         <td className="p-2 font-bold">{s.glicemia} mg/dL ({s.tipoGlicemia || 'casual'})</td>
-                        <td className="p-2">{s.temperatura} °C</td>
+                        <td className="p-2">{s.temperatura} oC</td>
                         <td className="p-2">{s.frequenciaCardiaca} bpm</td>
                         <td className="p-2 font-semibold text-emerald-800">{s.saturacao} %</td>
                       </>
                     )}
-                    <td className="p-2 font-black text-indigo-700">{s.peso ? `${s.peso} kg` : '—'}</td>
+                    <td className="p-2 font-black text-indigo-700">{s.peso ? `${s.peso} kg` : '-'}</td>
                     <td className="p-2 text-slate-500">{s.registradoPor}</td>
                   </tr>
                 ))}
@@ -630,14 +630,14 @@ ___
           
           <div className="grid grid-cols-2 gap-6 pt-4 border-t border-slate-100 text-xs">
             <div className="p-3 bg-slate-50 border rounded-xl space-y-1.5">
-              <h4 className="font-bold text-slate-850">Acompanhamento Alimentação</h4>
-              <p>Total de refeições monitoradas: <strong className="font-bold">{totalFoodsCount} refeições</strong></p>
-              <p>Grau de aceitação positiva (comeu tudo): <strong className="text-emerald-700 font-bold">{foodAcceptanceRate}%</strong></p>
+              <h4 className="font-bold text-slate-850">Acompanhamento Alimentacao</h4>
+              <p>Total de refeicoes monitoradas: <strong className="font-bold">{totalFoodsCount} refeicoes</strong></p>
+              <p>Grau de aceitacao positiva (comeu tudo): <strong className="text-emerald-700 font-bold">{foodAcceptanceRate}%</strong></p>
             </div>
             <div className="p-3 bg-slate-50 border rounded-xl space-y-1.5">
-              <h4 className="font-bold text-slate-850">Registro de Hidratação</h4>
-              <p>Total de água ingerida acumulado: <strong className="text-cyan-700 font-bold">{totalWaterLoggedThisWeek} ml</strong></p>
-              <p>Meta recomendada: 1.500 ml diários</p>
+              <h4 className="font-bold text-slate-850">Registro de Hidratacao</h4>
+              <p>Total de agua ingerida acumulado: <strong className="text-cyan-700 font-bold">{totalWaterLoggedThisWeek} ml</strong></p>
+              <p>Meta recomendada: 1.500 ml diarios</p>
             </div>
           </div>
 
@@ -645,19 +645,19 @@ ___
           <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-2.5 text-[10px] text-slate-500">
             <div className="flex items-center gap-2">
               <span className="p-1 px-2 bg-emerald-100 text-emerald-800 rounded-md font-extrabold text-[9px] uppercase tracking-wider">
-                ✓ Documento Oficial Auditado
+                  Documento Oficial Auditado
               </span>
               <span className="font-mono text-slate-700">
                 Hash: <strong>ANJO-2026-{Math.abs(((idoso.id || 'aluno') + '_' + (idoso.nome || '')).split('').reduce((a, b) => ((a << 5) - a) + b.charCodeAt(0) | 0, 0)).toString(16).toUpperCase()}</strong>
               </span>
             </div>
             <div className="text-right text-[9px] text-slate-400 font-medium">
-              © 2026 Anjinho Escolar / Anjo Cuidador • Protegido pelas Leis 9.609/98 e 9.610/98 • Autoria Registrada
+                2026 Anjinho Escolar / Anjo Cuidador   Protegido pelas Leis 9.609/98 e 9.610/98   Autoria Registrada
             </div>
           </div>
 
           <p className="text-[10px] text-slate-400 text-center italic pt-1">
-            {isEscolar ? 'Anjinho Escolar — Onde os primeiros capítulos da inf são guardados com amor.' : 'Anjo Cuidador — Cuidado, presença e tranquilidade para quem você ama.'} Relatório compilado eletronicamente em {new Date().toLocaleDateString('pt-BR')}.
+            {isEscolar ? 'Anjinho Escolar - Onde os primeiros capitulos da inf sao guardados com amor.' : 'Anjo Cuidador - Cuidado, presenca e tranquilidade para quem voce ama.'} Relatorio compilado eletronicamente em {new Date().toLocaleDateString('pt-BR')}.
           </p>
         </div>
       )}
@@ -665,10 +665,10 @@ ___
       
       <div className="flex border-b border-soft-gray gap-4 overflow-x-auto">
         {[
-          { id: 'sinais', label: '  Sinais Vitais Históricos', icon: <Activity className="w-4 h-4" /> },
-          { id: 'rotina', label: '  Padrão de Sono e Humor', icon: <Moon className="w-4 h-4" /> },
-          { id: 'resumo', label: '  Resumo de Alimentação', icon: <FileText className="w-4 h-4" /> },
-          { id: 'whatsapp_diario', label: '  Relatório Diário WhatsApp', icon: <Share2 className="w-4 h-4 text-emerald-500" fill="currentColor" /> }
+          { id: 'sinais', label: '  Sinais Vitais Historicos', icon: <Activity className="w-4 h-4" /> },
+          { id: 'rotina', label: '  Padrao de Sono e Humor', icon: <Moon className="w-4 h-4" /> },
+          { id: 'resumo', label: '  Resumo de Alimentacao', icon: <FileText className="w-4 h-4" /> },
+          { id: 'whatsapp_diario', label: '  Relatorio Diario WhatsApp', icon: <Share2 className="w-4 h-4 text-emerald-500" fill="currentColor" /> }
         ].map(tb => (
           <button
             key={tb.id}
@@ -695,19 +695,19 @@ ___
               <div className="p-6 bg-slate-50 border border-slate-200 rounded-2xl space-y-4 shadow-3xs">
                 <div className="flex items-center gap-3 text-indigo-600">
                   <Activity className="w-6 h-6 animate-pulse" />
-                  <h4 className="font-extrabold text-slate-800 text-base">Foco Pedagógico & Rotina de Saúde do Aluno</h4>
+                  <h4 className="font-extrabold text-slate-800 text-base">Foco Pedagogico & Rotina de Saude do Aluno</h4>
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  No modo <strong>Educação Infantil (Anjinho Escolar)</strong>, as professoras e auxiliares de sala <strong>não realizam medições de glicemia (açúcar no sangue) e pressão arterial</strong> de crianças, uma vez que estes são procedimentos de acompanhamento clínico geriátrico.
+                  No modo <strong>Educacao Infantil (Anjinho Escolar)</strong>, as professoras e auxiliares de sala <strong>nao realizam medicoes de glicemia (acucar no sangue) e pressao arterial</strong> de criancas, uma vez que estes sao procedimentos de acompanhamento clinico geriatrico.
                 </p>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  O monitoramento no ambiente escolar é focado integralmente no bem-estar diário e desenvolvimento do(a) aluno(a). Isso inclui o controle de temperatura corporal para prevenção e identificação de episódios de febre, supervisão e registro dos períodos de sono e soneca, trocas higiênicas de fralda (com acompanhamento de assaduras ou necessidades), consumo alimentar/hídrico adequado e evolução saudável do peso da criança.
+                  O monitoramento no ambiente escolar e focado integralmente no bem-estar diario e desenvolvimento do(a) aluno(a). Isso inclui o controle de temperatura corporal para prevencao e identificacao de episodios de febre, supervisao e registro dos periodos de sono e soneca, trocas higienicas de fralda (com acompanhamento de assaduras ou necessidades), consumo alimentar/hidrico adequado e evolucao saudavel do peso da crianca.
                 </p>
                 <div className="bg-indigo-50/50 p-4 rounded-xl border border-indigo-100 flex items-start gap-2.5 text-xs text-indigo-800">
                   <span className="text-sm"> </span>
                   <div>
                     <strong className="font-bold block mb-1">Rotina Humanizada e Conectada</strong>
-                    Use o formulário rápido de Diário de Rotina na Dashboard para registrar as sonecas, mamadeiras e trocas de fralda de hoje. Todas as observações estarão disponíveis para a família em tempo real!
+                    Use o formulario rapido de Diario de Rotina na Dashboard para registrar as sonecas, mamadeiras e trocas de fralda de hoje. Todas as observacoes estarao disponiveis para a familia em tempo real!
                   </div>
                 </div>
               </div>
@@ -719,13 +719,13 @@ ___
                 <div className="flex justify-between items-center">
                   <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
                     <Heart className="w-5 h-5 text-rose-500" />
-                    Acompanhamento de Pressão Arterial
+                    Acompanhamento de Pressao Arterial
                   </h4>
-                  <span className="text-[10px] text-slate-400 font-bold">Últimas 5 aferições</span>
+                  <span className="text-[10px] text-slate-400 font-bold">Ultimas 5 afericoes</span>
                 </div>
 
                 {sinais.length < 2 ? (
-                  <p className="text-xs text-slate-400 py-10 text-center">Registrar aferições na Dashboard para alimentar o gráfico.</p>
+                  <p className="text-xs text-slate-400 py-10 text-center">Registrar afericoes na Dashboard para alimentar o grafico.</p>
                 ) : (
                   <div className="space-y-4">
                     
@@ -733,10 +733,10 @@ ___
                       <svg viewBox="0 0 400 170" className="w-full h-full overflow-visible">
                         
                         <line x1="0" y1="40" x2="400" y2="40" stroke="#fca5a5" strokeDasharray="4 4" strokeWidth="1.5" />
-                        <text x="5" y="34" className="chart-limit-text-red" fontSize="9" fontWeight="900" fill="#991b1b">Limite Alerta Sistólica (140)</text>
+                        <text x="5" y="34" className="chart-limit-text-red" fontSize="9" fontWeight="900" fill="#991b1b">Limite Alerta Sistolica (140)</text>
 
                         <line x1="0" y1="100" x2="400" y2="100" stroke="#93c5fd" strokeDasharray="4 4" strokeWidth="1.5" />
-                        <text x="5" y="94" className="chart-limit-text-blue" fontSize="9" fontWeight="900" fill="#1e3a8a">Limite Alerta Diastólica (90)</text>
+                        <text x="5" y="94" className="chart-limit-text-blue" fontSize="9" fontWeight="900" fill="#1e3a8a">Limite Alerta Diastolica (90)</text>
                         
                         
                         <polyline
@@ -825,13 +825,13 @@ ___
 
                       
                       <div className="absolute top-2 left-2 flex gap-4 text-xs font-black">
-                        <span className="flex items-center gap-1.5"><span className="w-3.5 h-3.5 bg-red-600 rounded-full"></span> Sistólica (Máx)</span>
-                        <span className="flex items-center gap-1.5"><span className="w-3.5 h-3.5 bg-blue-600 rounded-full"></span> Diastólica (Mín)</span>
+                        <span className="flex items-center gap-1.5"><span className="w-3.5 h-3.5 bg-red-600 rounded-full"></span> Sistolica (Max)</span>
+                        <span className="flex items-center gap-1.5"><span className="w-3.5 h-3.5 bg-blue-600 rounded-full"></span> Diastolica (Min)</span>
                       </div>
                     </div>
                     
                     <p className="text-xs text-slate-400 text-center leading-normal">
-                      As linhas indicam o histórico consolidado. Níveis de atenção médica são representados nos traçados tracejados superiores.
+                      As linhas indicam o historico consolidado. Niveis de atencao medica sao representados nos tracados tracejados superiores.
                     </p>
                   </div>
                 )}
@@ -842,13 +842,13 @@ ___
                 <div className="flex justify-between items-center">
                   <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
                     <Activity className="w-5 h-5 text-amber-500" />
-                    Histórico de Glicemia
+                    Historico de Glicemia
                   </h4>
                   <span className="text-[10px] text-slate-400 font-bold">Meta: 90 - 140 mg/dL</span>
                 </div>
 
                 {sinais.length < 2 ? (
-                  <p className="text-xs text-slate-400 py-10 text-center">Registrar aferições na Dashboard para alimentar o gráfico.</p>
+                  <p className="text-xs text-slate-400 py-10 text-center">Registrar afericoes na Dashboard para alimentar o grafico.</p>
                 ) : (
                   <div className="space-y-4">
                     
@@ -908,7 +908,7 @@ ___
                     </div>
 
                     <p className="text-xs text-slate-400 text-center leading-normal">
-                      A glicemia mantém-se controlada. Variações comuns ocorrem após café da manhã ou almoço (glicose pós-prandial).
+                      A glicemia mantem-se controlada. Variacoes comuns ocorrem apos cafe da manha ou almoco (glicose pos-prandial).
                     </p>
                   </div>
                 )}
@@ -923,15 +923,15 @@ ___
                 <div>
                   <h4 className="font-extrabold text-slate-850 flex items-center gap-2 text-base">
                     <Scale className="w-5 h-5 text-indigo-600 animate-bounce" />
-                    Controle e Evolução de Peso Corporal (Acompanhamento Geral)
+                    Controle e Evolucao de Peso Corporal (Acompanhamento Geral)
                   </h4>
                   <p className="text-xs text-slate-500">
                     {isEscolar 
-                      ? 'Acompanhamento do ganho de peso e crescimento saudável das crianças (idealmente registrado de forma regular para focar em tendências de desenvolvimento infantil).' 
-                      : 'Acompanhamento clínico de ganho ou perda de peso do idoso (idealmente registrado semanalmente para evitar oscilações diárias de água e focar em tendências de nutrição ou robustez corporal).'}
+                      ? 'Acompanhamento do ganho de peso e crescimento saudavel das criancas (idealmente registrado de forma regular para focar em tendencias de desenvolvimento infantil).' 
+                      : 'Acompanhamento clinico de ganho ou perda de peso do idoso (idealmente registrado semanalmente para evitar oscilacoes diarias de agua e focar em tendencias de nutricao ou robustez corporal).'}
                   </p>
                 </div>
-                <span className="text-[10px] text-slate-550 bg-indigo-50 text-indigo-700 px-3 py-1 font-bold rounded-lg self-start sm:self-center uppercase tracking-wider">Histórico de Peso</span>
+                <span className="text-[10px] text-slate-550 bg-indigo-50 text-indigo-700 px-3 py-1 font-bold rounded-lg self-start sm:self-center uppercase tracking-wider">Historico de Peso</span>
               </div>
 
               
@@ -940,12 +940,12 @@ ___
                 if (weightedSinais.length === 0) {
                   return (
                     <div className="p-4 bg-slate-50 border border-slate-150 rounded-2xl text-xs text-center text-slate-505">
-                      Nenhum registro de peso corporal encontrado para {idoso.nome}. Registre o peso no Painel Um-Toque da Dashboard para alimentar a análise.
+                      Nenhum registro de peso corporal encontrado para {idoso.nome}. Registre o peso no Painel Um-Toque da Dashboard para alimentar a analise.
                     </div>
                   );
                 }
 
-                let diagnosisText = "Estável (Aguardando mais medições para avaliar tendência)";
+                let diagnosisText = "Estavel (Aguardando mais medicoes para avaliar tendencia)";
                 let diagnosisColor = "bg-emerald-50 border-emerald-150 text-emerald-800";
                 let trendIcon = <TrendingUp className="w-5 h-5 text-emerald-600" />;
                 const latestSinal = weightedSinais[weightedSinais.length - 1];
@@ -955,15 +955,15 @@ ___
                   const prevW = weightedSinais[weightedSinais.length - 2].peso!;
                   const diff = latestW - prevW;
                   if (Math.abs(diff) < 0.3) {
-                    diagnosisText = `Mantendo o Peso (Estável): ${latestW} kg (Variação sutil de ${diff >= 0 ? '+' : ''}${diff.toFixed(1)} kg)`;
+                    diagnosisText = `Mantendo o Peso (Estavel): ${latestW} kg (Variacao sutil de ${diff >= 0 ? '+' : ''}${diff.toFixed(1)} kg)`;
                     diagnosisColor = "bg-emerald-50 border-emerald-150 text-emerald-800";
                     trendIcon = <TrendingUp className="w-5 h-5 text-emerald-600" />;
                   } else if (diff >= 0.3) {
-                    diagnosisText = `Ganhando Peso (Engordando): ${latestW} kg (+${diff.toFixed(1)} kg aumentados em relação à aferição anterior)`;
+                    diagnosisText = `Ganhando Peso (Engordando): ${latestW} kg (+${diff.toFixed(1)} kg aumentados em relacao a afericao anterior)`;
                     diagnosisColor = "bg-indigo-50 border-indigo-150 text-indigo-850 font-bold";
                     trendIcon = <TrendingUp className="w-5 h-5 text-indigo-600" />;
                   } else {
-                    diagnosisText = `Perdendo Peso (Emagrecendo): ${latestW} kg (${diff.toFixed(1)} kg reduzidos em relação à aferição anterior)`;
+                    diagnosisText = `Perdendo Peso (Emagrecendo): ${latestW} kg (${diff.toFixed(1)} kg reduzidos em relacao a afericao anterior)`;
                     diagnosisColor = "bg-rose-50 border-rose-150 text-rose-800 font-bold";
                     trendIcon = <TrendingDown className="w-5 h-5 text-rose-600" />;
                   }
@@ -976,7 +976,7 @@ ___
                         {trendIcon}
                       </div>
                       <div className="space-y-0.5">
-                        <span className="text-[10px] font-black uppercase tracking-wider opacity-65 block">Rastreabilidade / Variação Corporal</span>
+                        <span className="text-[10px] font-black uppercase tracking-wider opacity-65 block">Rastreabilidade / Variacao Corporal</span>
                         <p className="text-xs font-black">{diagnosisText}</p>
                       </div>
                     </div>
@@ -984,11 +984,11 @@ ___
                     
                     {weightedSinais.length < 2 ? (
                       <p className="text-xs text-slate-400 py-8 text-center bg-slate-50 rounded-xl border border-dashed">
-                        Seja bem vindo! Registre pelo menos 2 aferições de peso para que a linha de tendência com variação histórica apareça automaticamente.
+                        Seja bem vindo! Registre pelo menos 2 afericoes de peso para que a linha de tendencia com variacao historica apareca automaticamente.
                       </p>
                     ) : (
                       <div className="space-y-3">
-                        <h5 className="text-[10px] uppercase tracking-wider text-slate-400 font-black">Evolução do Peso ao Longo do Tempo (kg)</h5>
+                        <h5 className="text-[10px] uppercase tracking-wider text-slate-400 font-black">Evolucao do Peso ao Longo do Tempo (kg)</h5>
                         <div className="relative h-44 border-b border-l border-slate-200 bg-slate-50/50 rounded-tr-lg p-2 overflow-visible">
                           <svg viewBox="0 0 400 120" className="w-full h-full overflow-visible">
                             
@@ -1063,11 +1063,11 @@ ___
               <div className="border border-slate-200 rounded-2xl p-5 space-y-4">
                 <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
                   <Moon className="w-5 h-5 text-indigo-500" />
-                  Diário de Sono Semanal
+                  Diario de Sono Semanal
                 </h4>
 
                 {sono.length === 0 ? (
-                  <p className="text-xs text-slate-400 py-10 text-center">Registrar padrões de sono no painel de rotinas para ver médias.</p>
+                  <p className="text-xs text-slate-400 py-10 text-center">Registrar padroes de sono no painel de rotinas para ver medias.</p>
                 ) : (
                   <div className="space-y-4">
                     
@@ -1111,11 +1111,11 @@ ___
               <div className="border border-slate-200 rounded-2xl p-5 space-y-4">
                 <h4 className="font-bold text-slate-800 flex items-center gap-1.5">
                   <Smile className="w-5 h-5 text-emerald-500" />
-                  Avaliação Psicoemocional Recorrente
+                  Avaliacao Psicoemocional Recorrente
                 </h4>
 
                 {topMoods.length === 0 ? (
-                  <p className="text-xs text-slate-400 py-10 text-center">Nenhum humor mensurado para exibição estatística.</p>
+                  <p className="text-xs text-slate-400 py-10 text-center">Nenhum humor mensurado para exibicao estatistica.</p>
                 ) : (
                   <div className="space-y-3 pt-2">
                     {topMoods.map(([mood, total]) => {
@@ -1155,17 +1155,17 @@ ___
                   <Activity className="text-amber-500 w-5 h-5" /> Acompanhamento Nutricional
                 </h4>
                 <p className="text-sm text-slate-600 leading-relaxed">
-                  {idoso.nome} demonstrou <strong className="text-emerald-700">{foodAcceptanceRate}%</strong> de aprovação nas refeições principais desta semana. 
-                  Isso traduz-se em uma ótima ingestão de calorias e vitaminas essenciais.
+                  {idoso.nome} demonstrou <strong className="text-emerald-700">{foodAcceptanceRate}%</strong> de aprovacao nas refeicoes principais desta semana. 
+                  Isso traduz-se em uma otima ingestao de calorias e vitaminas essenciais.
                 </p>
                 <div className="pt-2">
-                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Últimos registros alimentares:</span>
+                  <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">Ultimos registros alimentares:</span>
                   <div className="space-y-2">
                     {alimentacao.slice(-3).map(f => (
                       <div key={f.id} className="text-xs bg-white border p-2.5 rounded-xl flex justify-between items-center">
                         <div>
                           <strong className="font-bold text-slate-800 capitalize">{f.refeicao.replace('_', ' ')}</strong>
-                          <span className="block text-slate-400 text-[10px]">Nota: {f.observacoes || 'Comido com satisfação.'}</span>
+                          <span className="block text-slate-400 text-[10px]">Nota: {f.observacoes || 'Comido com satisfacao.'}</span>
                         </div>
                         <span className={`px-2 py-0.5 text-[9px] font-bold rounded-lg uppercase ${
                           f.aceitacao === 'muito_bem' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
@@ -1180,14 +1180,14 @@ ___
 
               <div className="p-5 border border-slate-200 rounded-2xl bg-cyan-50/30 space-y-3">
                 <h4 className="font-bold text-sky-850 flex items-center gap-1">
-                  <Droplets className="text-cyan-500 w-5 h-5" /> Par de Hidratação
+                  <Droplets className="text-cyan-500 w-5 h-5" /> Par de Hidratacao
                 </h4>
                 <p className="text-sm text-slate-605 leading-relaxed">
-                  Ingeridos <strong className="text-sky-800 font-bold">{totalWaterLoggedThisWeek} ml</strong> nos últimos dias. 
-                  A hidratação celular combate dores musculares, reduz cansaço mental e {localStorage.getItem('anjo_app_mode') === 'escolar_infantil' ? 'previne fadiga escolar e dores de cabeça nas crianças.' : 'previne crises geriatras de confusão moderada.'}
+                  Ingeridos <strong className="text-sky-800 font-bold">{totalWaterLoggedThisWeek} ml</strong> nos ultimos dias. 
+                  A hidratacao celular combate dores musculares, reduz cansaco mental e {localStorage.getItem('anjo_app_mode') === 'escolar_infantil' ? 'previne fadiga escolar e dores de cabeca nas criancas.' : 'previne crises geriatras de confusao moderada.'}
                 </p>
                 <div className="flex justify-between items-center p-3 bg-white border border-cyan-100 rounded-2xl text-xs font-semibold text-sky-900 mt-2">
-                  <span>Meta Alvo Diária:</span>
+                  <span>Meta Alvo Diaria:</span>
                   <span className="font-mono text-cyan-700 bg-cyan-100 px-2 py-0.5 rounded font-bold">1.500 ml</span>
                 </div>
               </div>
@@ -1208,12 +1208,12 @@ ___
                     <Share2 className="text-emerald-500 w-5 h-5" /> Configurar Informativo do Dia
                   </h4>
                   <p className="text-xs text-slate-500 leading-normal">
-                    Este assistente inteligente compila automaticamente todos os sinais vitais, remédios ingeridos, refeições e rotinas de hoje em um formato de WhatsApp limpo e prático para envio rápido.
+                    Este assistente inteligente compila automaticamente todos os sinais vitais, remedios ingeridos, refeicoes e rotinas de hoje em um formato de WhatsApp limpo e pratico para envio rapido.
                   </p>
                   
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <label className="text-xs font-bold text-slate-600 block">Deseja adicionar observações extras para a família?</label>
+                      <label className="text-xs font-bold text-slate-600 block">Deseja adicionar observacoes extras para a familia?</label>
                       <VoiceInput 
                         onTranscript={text => setCustomNotes(prev => prev ? prev + ' ' + text : text)} 
                         size="sm"
@@ -1251,10 +1251,10 @@ ___
                         <button
                           onClick={() => {
                             const msg = buildWhatsAppMessage();
-                            triggerWhatsAppSim('Informativo Diário de ' + idoso.nome, msg);
+                            triggerWhatsAppSim('Informativo Diario de ' + idoso.nome, msg);
                           }}
                           className="flex-1 px-4 py-3 bg-white hover:bg-emerald-50 text-emerald-600 border border-emerald-300 font-bold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 text-sm"
-                          title="Simular entrega do sumário formatado"
+                          title="Simular entrega do sumario formatado"
                         >
                           <Share2 className="w-4 h-4" /> Simular no Log
                         </button>
@@ -1270,7 +1270,7 @@ ___
                           className="flex-1 px-4 py-3 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold rounded-xl transition-all cursor-pointer flex items-center justify-center gap-2 text-sm"
                           title="Enviar de Verdade pelo WhatsApp"
                         >
-                            Enviar p/ WhatsApp Real ({getNotificationRecipient().nome ? getNotificationRecipient().nome.split(' ')[0] : 'Família'})
+                            Enviar p/ WhatsApp Real ({getNotificationRecipient().nome ? getNotificationRecipient().nome.split(' ')[0] : 'Familia'})
                         </button>
                       </div>
                     )}
@@ -1283,7 +1283,7 @@ ___
                   <div className="text-xs text-blue-700 space-y-1">
                     <strong className="font-bold block">Como utilizar no seu celular?</strong>
                     <p className="leading-relaxed">
-                      Basta clicar no botão **Copiar Texto Formatado** acima e colar diretamente no chat ou grupo de WhatsApp da família. O texto já vai com marcadores e emojis bem organizados!
+                      Basta clicar no botao **Copiar Texto Formatado** acima e colar diretamente no chat ou grupo de WhatsApp da familia. O texto ja vai com marcadores e emojis bem organizados!
                     </p>
                   </div>
                 </div>
@@ -1299,8 +1299,8 @@ ___
                       <img referrerPolicy="no-referrer" src={idoso.foto} alt="Dona" className="w-full h-full object-cover" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h4 className="text-sm font-bold text-white leading-tight truncate">Grupo de Cuidados — {idoso.nome.split(' ')[0]}</h4>
-                      <p className="text-[10px] text-emerald-200 leading-none">Visto por último hoje • Anjo Cuidador</p>
+                      <h4 className="text-sm font-bold text-white leading-tight truncate">Grupo de Cuidados - {idoso.nome.split(' ')[0]}</h4>
+                      <p className="text-[10px] text-emerald-200 leading-none">Visto por ultimo hoje   Anjo Cuidador</p>
                     </div>
                   </div>
 
@@ -1319,7 +1319,7 @@ ___
                         
                         <div className="flex items-center justify-end gap-1 text-[9px] text-slate-400 font-semibold mt-1">
                           <span>{new Date().toLocaleTimeString('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' })}</span>
-                          <span className="text-sky-500 font-bold">✓✓</span>
+                          <span className="text-sky-500 font-bold">  </span>
                         </div>
                       </div>
                     </div>

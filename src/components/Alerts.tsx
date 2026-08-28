@@ -93,18 +93,18 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
           .replace(/Anjo Cuidador/g, 'Anjo Escolar')
           .replace(/Dona Maria de Souza/g, 'Mariana Souza')
           .replace(/Dona Maria/g, 'Mariana')
-          .replace(/Seu João/g, 'Enzo')
-          .replace(/Seu João de Alencar/g, 'Enzo Alencar')
-          .replace(/medicação/g, 'rotina alimentar')
+          .replace(/Seu Joao/g, 'Enzo')
+          .replace(/Seu Joao de Alencar/g, 'Enzo Alencar')
+          .replace(/medicacao/g, 'rotina alimentar')
           .replace(/medicamento/g, 'item de cuidado')
-          .replace(/Losartana Potássica/g, 'Lactilon / Chupeta')
+          .replace(/Losartana Potassica/g, 'Lactilon / Chupeta')
           .replace(/Losartana/g, 'Mamadeira')
           .replace(/cuidador\(a\)/g, 'professor(a)')
           .replace(/Cuidadora/g, 'Professora')
           .replace(/Cuidador/g, 'Professor')
           .replace(/paciente/g, 'aluno')
-          .replace(/Café da manhã/g, 'Lanche da manhã')
-          .replace(/Geleia sem açúcar com pão integral/g, 'Frutas frescas fatiadas e suquinho');
+          .replace(/Cafe da manha/g, 'Lanche da manha')
+          .replace(/Geleia sem acucar com pao integral/g, 'Frutas frescas fatiadas e suquinho');
         
         return {
           ...l,
@@ -130,9 +130,9 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
     const fullDate = d.toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
 
     if (dStr === todayStr) {
-      return `Hoje • ${fullDate}`;
+      return `Hoje   ${fullDate}`;
     } else if (dStr === yesterdayStr) {
-      return `Ontem • ${fullDate}`;
+      return `Ontem   ${fullDate}`;
     } else {
       return fullDate;
     }
@@ -157,25 +157,25 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
     const caregiverName = usuarioAtual.nome;
     
     if (templateType === 'check') {
-      tit = isEscolar ? 'Rotina Realizada' : 'Tarefa Concluída';
+      tit = isEscolar ? 'Rotina Realizada' : 'Tarefa Concluida';
       msg = isEscolar
-        ? `Anjo Escolar: A rotina/refeição de ${elderName} das 08:00 foi registrada como concluída pelo professor(a) ${caregiverName}.`
-        : `Anjo Cuidador: A medicação de ${elderName} das 08:00 (Losartana) foi marcada como concluída por ${caregiverName}.`;
+        ? `Anjo Escolar: A rotina/refeicao de ${elderName} das 08:00 foi registrada como concluida pelo professor(a) ${caregiverName}.`
+        : `Anjo Cuidador: A medicacao de ${elderName} das 08:00 (Losartana) foi marcada como concluida por ${caregiverName}.`;
     } else if (templateType === 'pendente') {
-      tit = isEscolar ? 'Item Pendente ou Requerido' : 'Tarefa Próxima ou Pendente';
+      tit = isEscolar ? 'Item Pendente ou Requerido' : 'Tarefa Proxima ou Pendente';
       msg = isEscolar
-        ? `Anjo Escolar: Lembrete, a autorização especial ou item de higiene de ${elderName} para às 12:30 ainda não foi registrado. Favor verificar com ${caregiverName}.`
-        : `Anjo Cuidador: Atenção, a medicação de ${elderName} das 12:30 (Cálcio + Vit D) ainda não foi marcada como administrada. Favor verificar com ${caregiverName}.`;
+        ? `Anjo Escolar: Lembrete, a autorizacao especial ou item de higiene de ${elderName} para as 12:30 ainda nao foi registrado. Favor verificar com ${caregiverName}.`
+        : `Anjo Cuidador: Atencao, a medicacao de ${elderName} das 12:30 (Calcio + Vit D) ainda nao foi marcada como administrada. Favor verificar com ${caregiverName}.`;
     } else if (templateType === 'atraso') {
-      tit = isEscolar ? 'Alerta Crítico de Atraso' : 'Alerta Importante de Atraso';
+      tit = isEscolar ? 'Alerta Critico de Atraso' : 'Alerta Importante de Atraso';
       msg = isEscolar
-        ? `Anjo Escolar: Alerta de rotina. A rotina de "Banho/Fralda/Sono" de ${elderName} planejada para às 10:00 está em aberto no painel de acompanhamento de ${caregiverName}.`
-        : `Anjo Cuidador: Alerta importante. A tarefa "Banho e Higiene" de ${elderName} planejada para às 10:00 está atrasada e necessita de acompanhamento cuidador de ${caregiverName}.`;
+        ? `Anjo Escolar: Alerta de rotina. A rotina de "Banho/Fralda/Sono" de ${elderName} planejada para as 10:00 esta em aberto no painel de acompanhamento de ${caregiverName}.`
+        : `Anjo Cuidador: Alerta importante. A tarefa "Banho e Higiene" de ${elderName} planejada para as 10:00 esta atrasada e necessita de acompanhamento cuidador de ${caregiverName}.`;
     } else {
-      tit = isEscolar ? 'Resumo de Aula do Dia (Diário)' : 'Resumo Diário do Acompanhamento';
+      tit = isEscolar ? 'Resumo de Aula do Dia (Diario)' : 'Resumo Diario do Acompanhamento';
       msg = isEscolar
-        ? `Anjo Escolar: Resumo do dia escolar de ${elderName}: alimentação concluída, soneca de 1h30m realizada com sucesso, sem intercorrências e bem acompanhado(a) por ${caregiverName}.`
-        : `Anjo Cuidador: Resumo do dia de ${elderName}: alimentação concluída, medicação feita, hidratação parcial (800ml/1500ml) e rotina monitorada com sucesso por ${caregiverName}.`;
+        ? `Anjo Escolar: Resumo do dia escolar de ${elderName}: alimentacao concluida, soneca de 1h30m realizada com sucesso, sem intercorrencias e bem acompanhado(a) por ${caregiverName}.`
+        : `Anjo Cuidador: Resumo do dia de ${elderName}: alimentacao concluida, medicacao feita, hidratacao parcial (800ml/1500ml) e rotina monitorada com sucesso por ${caregiverName}.`;
     }
 
     triggerWhatsAppSim(tit, msg);
@@ -193,7 +193,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
           </h2>
           <p className={`text-sm ${isDark ? 'text-slate-350' : 'text-slate-500'}`}>
             {isEscolar
-              ? 'O Anjo Escolar gera comunicados, rotinas e alertas padronizados de forma automática, permitindo que você envie um WhatsApp com um único clique.'
+              ? 'O Anjo Escolar gera comunicados, rotinas e alertas padronizados de forma automatica, permitindo que voce envie um WhatsApp com um unico clique.'
               : 'O Anjo Cuidador gera a mensagem padronizada e abre o WhatsApp para que o cuidador confirme o envio aos familiares cadastrados.'}
           </p>
         </div>
@@ -202,7 +202,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
           onClick={handleClearLogs}
           className="text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-150 border border-rose-200 px-3.5 py-2.5 rounded-xl cursor-pointer shrink-0"
         >
-          Limpar histórico
+          Limpar historico
         </button>
       </div>
 
@@ -212,10 +212,10 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
       }`}>
         <div className="flex items-center gap-2">
           <Sparkles className="w-5 h-5 text-emerald-500 animate-spin" style={{ animationDuration: '4s' }} />
-          <h3 className={`text-sm font-bold ${isDark ? 'text-white' : 'text-slate-750'}`}>{isApresentacao ? 'Modelos de Comunicação Padronizados (WhatsApp)' : 'Simulador de Modelos de Mensagem (WhatsApp)'}</h3>
+          <h3 className={`text-sm font-bold ${isDark ? 'text-white' : 'text-slate-750'}`}>{isApresentacao ? 'Modelos de Comunicacao Padronizados (WhatsApp)' : 'Simulador de Modelos de Mensagem (WhatsApp)'}</h3>
         </div>
         <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-400'}`}>
-          Clique nos botões abaixo para gerar e pré-visualizar os modelos padronizados de mensagens prontos para envio.
+          Clique nos botoes abaixo para gerar e pre-visualizar os modelos padronizados de mensagens prontos para envio.
         </p>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -227,7 +227,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
                 : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
             }`}
           >
-            {isEscolar ? '✅ Rotina Realizada' : '✅ Ingestão Confirmada'}
+            {isEscolar ? '[OK] Rotina Realizada' : '[OK] Ingestao Confirmada'}
           </button>
           <button
             onClick={() => handleTestDispatchTemplates('pendente')}
@@ -237,7 +237,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
                 : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
             }`}
           >
-            {isEscolar ? '⚠ Item Pendente' : '⚠ Próximo / Pendente'}
+            {isEscolar ? '[!] Item Pendente' : '[!] Proximo / Pendente'}
           </button>
           <button
             onClick={() => handleTestDispatchTemplates('atraso')}
@@ -247,7 +247,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
                 : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
             }`}
           >
-            {isEscolar ? '  Alerta de Rotina' : '  Alerta Crítico Atraso'}
+            {isEscolar ? '  Alerta de Rotina' : '  Alerta Critico Atraso'}
           </button>
           <button
             onClick={() => handleTestDispatchTemplates('resumo')}
@@ -257,7 +257,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
                 : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
             }`}
           >
-            {isEscolar ? '  Diário de Aula' : '  Resumo do Dia'}
+            {isEscolar ? '  Diario de Aula' : '  Resumo do Dia'}
           </button>
         </div>
       </div>
@@ -275,8 +275,8 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
           </h4>
           <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
             {isEscolar
-              ? 'Sempre que você registra uma rotina diária (como sono, alimentação e comportamento) ou quando preenche a situation de saúde do aluno, o app gera uma notificação correspondente prontinha para compartilhar com os pais.'
-              : 'Sempre que uma cuidadora marca uma rotina diária como concluída (ex: banho oferecido, Losartana das 08h tomada) ou quando os sinais vitais mudam, o app formata a mensagem correspondente para permitir que o cuidador a despache via WhatsApp com um só clique.'}
+              ? 'Sempre que voce registra uma rotina diaria (como sono, alimentacao e comportamento) ou quando preenche a situation de saude do aluno, o app gera uma notificacao correspondente prontinha para compartilhar com os pais.'
+              : 'Sempre que uma cuidadora marca uma rotina diaria como concluida (ex: banho oferecido, Losartana das 08h tomada) ou quando os sinais vitais mudam, o app formata a mensagem correspondente para permitir que o cuidador a despache via WhatsApp com um so clique.'}
           </p>
 
           <div className="space-y-3 pt-2">
@@ -287,10 +287,10 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
             }`}>
               <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
               <div>
-                <strong className="block font-bold">{isEscolar ? 'Comunicações Prontas' : 'Resumos Automatizados'}</strong>
+                <strong className="block font-bold">{isEscolar ? 'Comunicacoes Prontas' : 'Resumos Automatizados'}</strong>
                 <span className="text-[11px] leading-normal font-medium block">
                   {isEscolar 
-                    ? 'Fraldas, mamadeiras, sonecas e fotos geram textos prontos simplificando a comunicação da rotina.' 
+                    ? 'Fraldas, mamadeiras, sonecas e fotos geram textos prontos simplificando a comunicacao da rotina.' 
                     : 'Medicamentos e rotinas geram textos prontos eliminando mensagens confusas.'}
                 </span>
               </div>
@@ -303,11 +303,11 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
             }`}>
               <Lock className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
               <div>
-                <strong className="block font-bold">Transparência Ética</strong>
+                <strong className="block font-bold">Transparencia Etica</strong>
                 <span className="text-[11px] leading-normal font-medium block">
                   {isEscolar 
                     ? 'Disparo assistido com controle do professor, sem custos abusivos ou envios indesejados.' 
-                    : 'Disparo assistido sem depender de APIs custosas ou automações sem crivo.'}
+                    : 'Disparo assistido sem depender de APIs custosas ou automacoes sem crivo.'}
                 </span>
               </div>
             </div>
@@ -338,7 +338,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
                   <span className="w-2 h-2 rounded-full bg-[#18eb5f] animate-pulse"></span>{' '}
                   {isEscolar 
                     ? `Ativo com os Pais de ${cleanStudentName}` 
-                    : `Ativo com a Família de ${cleanStudentName}`}
+                    : `Ativo com a Familia de ${cleanStudentName}`}
                 </p>
               </div>
             </div>
@@ -346,7 +346,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
             <span className={`text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full ${
               isDark ? 'bg-zinc-800 text-slate-300' : 'bg-white/20 text-white'
             }`}>
-              {isApresentacao ? 'Pre-Visualização' : 'Simulador'}
+              {isApresentacao ? 'Pre-Visualizacao' : 'Simulador'}
             </span>
           </div>
 
@@ -358,8 +358,8 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
             {logs.length === 0 ? (
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 text-slate-400 space-y-2 select-none font-sans">
                 <MessageSquare className="w-10 h-10 opacity-30" />
-                <p className="text-xs font-medium">As mensagens simuladas de WhatsApp aparecerão aqui na ordem de envio.</p>
-                <p className="text-[10px]">Tente marcar uma atividade na tela inicial ou use os botões rápidos de teste ali em cima!</p>
+                <p className="text-xs font-medium">As mensagens simuladas de WhatsApp aparecerao aqui na ordem de envio.</p>
+                <p className="text-[10px]">Tente marcar uma atividade na tela inicial ou use os botoes rapidos de teste ali em cima!</p>
               </div>
             ) : (() => {
               let lastDateLabel = '';
@@ -392,7 +392,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
                       {isBroadcastMessage && (
                         <div className="flex items-center gap-1.5 pb-1 border-b border-emerald-300/40 text-[10px] font-extrabold text-emerald-900 dark:text-emerald-200">
                           <Users className="w-3.5 h-3.5 text-emerald-700 dark:text-emerald-300" />
-                          <span>Transmissão em Massa • {totalCount} Alunos/Famílias</span>
+                          <span>Transmissao em Massa   {totalCount} Alunos/Familias</span>
                         </div>
                       )}
 
@@ -411,7 +411,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
                               className="bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-extrabold px-2.5 py-1.5 rounded-xl flex items-center justify-center gap-1.5 cursor-pointer transition-all shadow-xs border border-indigo-500/20"
                             >
                               <Users className="w-3.5 h-3.5" />
-                              <span>  Transmitir via WhatsApp para Todos os {totalCount} Pais / Famílias</span>
+                              <span>  Transmitir via WhatsApp para Todos os {totalCount} Pais / Familias</span>
                             </button>
 
                             <button
@@ -446,8 +446,8 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
                       <div className={`flex items-center justify-end gap-1 text-[9px] font-mono text-right select-none font-semibold ${
                         isDark ? 'text-[#8696a0]' : 'text-slate-500'
                       }`}>
-                        <span>Destino: {isBroadcastMessage ? `Todas as ${totalCount} Famílias (${log.familiarNome})` : log.familiarNome}</span>
-                        <span>•</span>
+                        <span>Destino: {isBroadcastMessage ? `Todas as ${totalCount} Familias (${log.familiarNome})` : log.familiarNome}</span>
+                        <span> </span>
                         <span>{dateText}</span>
                         <span className="flex text-sky-500">
                           <Check className="w-2.5 h-2.5" />
@@ -469,7 +469,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
             <div className="ml-auto flex items-center gap-2">
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase ${
                 isDark ? 'bg-emerald-950 text-emerald-300' : 'bg-emerald-100 text-emerald-700'
-              }`}>Integração Ativa</span>
+              }`}>Integracao Ativa</span>
             </div>
           </div>
         </div>
@@ -495,10 +495,10 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
                   </div>
                   <div>
                     <h3 className="text-base font-extrabold text-slate-800">
-                      Transmissão em Massa de WhatsApp
+                      Transmissao em Massa de WhatsApp
                     </h3>
                     <p className="text-xs text-indigo-700 font-medium">
-                      Enviando para {list.length} famílias / responsáveis cadastrados
+                      Enviando para {list.length} familias / responsaveis cadastrados
                     </p>
                   </div>
                 </div>
@@ -507,13 +507,13 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
                   onClick={() => setSelectedBroadcastLog(null)}
                   className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center font-bold text-slate-600 cursor-pointer"
                 >
-                  ✕
+                   
                 </button>
               </div>
 
               <div className="bg-indigo-50/70 p-3 rounded-2xl border border-indigo-150 text-xs space-y-2 shrink-0">
                 <div className="flex items-center justify-between">
-                  <span className="font-extrabold text-indigo-950">  Conteúdo do Comunicado:</span>
+                  <span className="font-extrabold text-indigo-950">  Conteudo do Comunicado:</span>
                   <button
                     type="button"
                     onClick={() => {
@@ -596,14 +596,14 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
             <div className="flex items-center gap-3 text-rose-600">
               <AlertTriangle className="w-6 h-6 shrink-0" />
               <h3 className="text-base font-bold text-slate-800">
-                {isEscolar ? 'Limpar Histórico de Comunicados?' : 'Limpar Histórico de Alertas?'}
+                {isEscolar ? 'Limpar Historico de Comunicados?' : 'Limpar Historico de Alertas?'}
               </h3>
             </div>
             
             <p className="text-xs text-slate-500 leading-relaxed">
               {isEscolar
-                ? 'Deseja limpar todo o histórico de mensagens, comunicados e diários escolares do WhatsApp enviados aos pais do aluno? Essa ação é permanente.'
-                : 'Deseja limpar todo o painel de simulações e registros de WhatsApp? Essa operação removerá todos os logs correspondentes de forma irreversível.'}
+                ? 'Deseja limpar todo o historico de mensagens, comunicados e diarios escolares do WhatsApp enviados aos pais do aluno? Essa acao e permanente.'
+                : 'Deseja limpar todo o painel de simulacoes e registros de WhatsApp? Essa operacao removera todos os logs correspondentes de forma irreversivel.'}
             </p>
 
             <div className="flex gap-2 justify-end pt-2 text-xs">

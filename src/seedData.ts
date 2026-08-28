@@ -3,19 +3,19 @@ import { Classroom, Idoso, Usuario } from './types';
 export const SALAS_INICIAIS: Classroom[] = [
   {
     id: 'sala_1',
-    name: 'Berçário I - A',
-    emoji: '🍼',
+    name: 'Bercario I - A',
+    emoji: '  ',
     ageGroup: '0-1 ano',
     capacity: 5,
-    description: 'Turma de bebês com estimulação sensorial e cuidados contínuos.'
+    description: 'Turma de bebes com estimulacao sensorial e cuidados continuos.'
   },
   {
     id: 'sala_2',
     name: 'Maternal I - A',
-    emoji: '🧸',
+    emoji: '  ',
     ageGroup: '2-3 anos',
     capacity: 5,
-    description: 'Turma de desenvolvimento motor, linguagem e socialização.'
+    description: 'Turma de desenvolvimento motor, linguagem e socializacao.'
   }
 ];
 
@@ -42,20 +42,20 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
     tipo: 'diretor',
     parentesco: 'Diretora Geral',
     foto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Diretora Geral da Escola. Gestão executiva e administrativa.',
+    observacoes: 'Diretora Geral da Escola. Gestao executiva e administrativa.',
     pin: '3031'
   },
 
   // 3. Coordenadoras (2)
   {
     id: 'user_coordenador_1',
-    nome: 'Renata Vasconcelos (Coordenadora Pedagógica)',
+    nome: 'Renata Vasconcelos (Coordenadora Pedagogica)',
     email: 'renata.coord@escola.com',
     telefone: '(11) 98765-1010',
     tipo: 'coordenador',
-    parentesco: 'Coordenação Pedagógica',
+    parentesco: 'Coordenacao Pedagogica',
     foto: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Coordenadora Pedagógica da Educação Infantil.',
+    observacoes: 'Coordenadora Pedagogica da Educacao Infantil.',
     pin: '1010'
   },
   {
@@ -64,14 +64,14 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
     email: 'fabiana.coord@escola.com',
     telefone: '(11) 98765-2020',
     tipo: 'coordenador',
-    parentesco: 'Coordenação de Cuidados',
+    parentesco: 'Coordenacao de Cuidados',
     foto: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Coordenadora de Saúde, Nutrição e Acolhimento Infantil.',
+    observacoes: 'Coordenadora de Saude, Nutricao e Acolhimento Infantil.',
     pin: '2020'
   },
 
   // 4. Professores (2 Professores - 1 para cada classe)
-  // Professora da Sala 1: Berçário I - A
+  // Professora da Sala 1: Bercario I - A
   {
     id: 'user_cuidador_1',
     nome: 'Ana Silva (Professora Titular)',
@@ -79,9 +79,9 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
     telefone: '(11) 91234-5678',
     tipo: 'cuidador',
     foto: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Professora titular responsável pelo Berçário I - A.',
+    observacoes: 'Professora titular responsavel pelo Bercario I - A.',
     pin: '5678',
-    salaAula: 'Berçário I - A'
+    salaAula: 'Bercario I - A'
   },
 
   // Professora da Sala 2: Maternal I - A
@@ -92,22 +92,22 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
     telefone: '(11) 92222-2222',
     tipo: 'cuidador',
     foto: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Professora titular responsável pelo Maternal I - A.',
+    observacoes: 'Professora titular responsavel pelo Maternal I - A.',
     pin: '2222',
     salaAula: 'Maternal I - A'
   },
 
-  // 5. Pais / Mães / Responsáveis (10) - 1 para cada um dos 10 alunos
-  // Pais da Sala 1: Berçário I - A (5 Alunos)
+  // 5. Pais / Maes / Responsaveis (10) - 1 para cada um dos 10 alunos
+  // Pais da Sala 1: Bercario I - A (5 Alunos)
   {
     id: 'user_mae_clarice',
-    nome: 'Clarice Souza (Mãe)',
+    nome: 'Clarice Souza (Mae)',
     email: 'clarice.souza@gmail.com',
     telefone: '(11) 98765-4321',
     tipo: 'familiar',
-    parentesco: 'Mãe',
+    parentesco: 'Mae',
     foto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Mãe da aluna Mariana Souza.',
+    observacoes: 'Mae da aluna Mariana Souza.',
     pin: '4321'
   },
   {
@@ -123,13 +123,13 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
   },
   {
     id: 'user_mae_beatriz',
-    nome: 'Mariana Castro (Mãe)',
+    nome: 'Mariana Castro (Mae)',
     email: 'mariana.castro@gmail.com',
     telefone: '(11) 99823-3310',
     tipo: 'familiar',
-    parentesco: 'Mãe',
+    parentesco: 'Mae',
     foto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Mãe da aluna Beatriz Castro.',
+    observacoes: 'Mae da aluna Beatriz Castro.',
     pin: '3310'
   },
   {
@@ -145,26 +145,26 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
   },
   {
     id: 'user_mae_camila',
-    nome: 'Camila Duarte (Mãe)',
+    nome: 'Camila Duarte (Mae)',
     email: 'camila.duarte@gmail.com',
     telefone: '(11) 98321-7654',
     tipo: 'familiar',
-    parentesco: 'Mãe',
+    parentesco: 'Mae',
     foto: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Mãe da aluna Cecília Duarte.',
+    observacoes: 'Mae da aluna Cecilia Duarte.',
     pin: '7654'
   },
 
   // Pais da Sala 2: Maternal I - A (5 Alunos)
   {
     id: 'user_mae_juliana',
-    nome: 'Juliana Santos (Mãe)',
+    nome: 'Juliana Santos (Mae)',
     email: 'juliana.santos@gmail.com',
     telefone: '(11) 98844-3322',
     tipo: 'familiar',
-    parentesco: 'Mãe',
+    parentesco: 'Mae',
     foto: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Mãe da aluna Alice Santos.',
+    observacoes: 'Mae da aluna Alice Santos.',
     pin: '3322'
   },
   {
@@ -180,13 +180,13 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
   },
   {
     id: 'user_mae_patricia',
-    nome: 'Patrícia Ferreira (Mãe)',
+    nome: 'Patricia Ferreira (Mae)',
     email: 'patricia.ferreira@gmail.com',
     telefone: '(11) 96622-3344',
     tipo: 'familiar',
-    parentesco: 'Mãe',
+    parentesco: 'Mae',
     foto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Mãe da aluna Helena Ferreira.',
+    observacoes: 'Mae da aluna Helena Ferreira.',
     pin: '3344'
   },
   {
@@ -202,35 +202,35 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
   },
   {
     id: 'user_mae_larissa',
-    nome: 'Larissa Costa (Mãe)',
+    nome: 'Larissa Costa (Mae)',
     email: 'larissa.costa@gmail.com',
     telefone: '(11) 94455-6677',
     tipo: 'familiar',
-    parentesco: 'Mãe',
+    parentesco: 'Mae',
     foto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Mãe da aluna Laura Costa.',
+    observacoes: 'Mae da aluna Laura Costa.',
     pin: '6677'
   }
 ];
 
 export const IDOSOS_INICIAIS: Idoso[] = [
-  // --- SALA 1: Berçário I - A (5 Alunos) ---
+  // --- SALA 1: Bercario I - A (5 Alunos) ---
   {
     id: 'aluno_1',
     nome: 'Mariana Souza',
-    salaAula: 'Berçário I - A',
-    quarto: 'Berçário I - A',
+    salaAula: 'Bercario I - A',
+    quarto: 'Bercario I - A',
     foto: 'https://images.unsplash.com/photo-1519689680058-324335c77ebd?auto=format&fit=crop&q=80&w=150',
     dataNascimento: '12/10/2023',
-    condicoesMedicas: ['Soneca após o almoço', 'Em fase de primeiros dentinhos'],
+    condicoesMedicas: ['Soneca apos o almoco', 'Em fase de primeiros dentinhos'],
     alergias: ['Leite Integral (lactose)'],
     observacoes: 'Gosta de dormir com seu paninho azul.',
     contatoEmergencia: {
       nome: 'Clarice Souza',
-      parentesco: 'Mãe',
+      parentesco: 'Mae',
       telefone: '(11) 98765-4321'
     },
-    planoCuidado: 'Oferecer água regularmente e verificar troca de fralda.',
+    planoCuidado: 'Oferecer agua regularmente e verificar troca de fralda.',
     medicoResponsavel: {
       nome: 'Dra. Luana Peixoto',
       especialidade: 'Pediatra Geral',
@@ -240,19 +240,19 @@ export const IDOSOS_INICIAIS: Idoso[] = [
   {
     id: 'aluno_2',
     nome: 'Enzo Alencar',
-    salaAula: 'Berçário I - A',
-    quarto: 'Berçário I - A',
+    salaAula: 'Bercario I - A',
+    quarto: 'Bercario I - A',
     foto: 'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&q=80&w=150',
     dataNascimento: '15/03/2023',
     condicoesMedicas: ['Engatinhando com agilidade'],
     alergias: ['Frutos Vermelhos'],
-    observacoes: 'Adora brinquedos com músicas e cores vivas.',
+    observacoes: 'Adora brinquedos com musicas e cores vivas.',
     contatoEmergencia: {
       nome: 'Thiago Alencar',
       parentesco: 'Pai',
       telefone: '(11) 95555-4440'
     },
-    planoCuidado: 'Estimulação motora e alimentação orientada.',
+    planoCuidado: 'Estimulacao motora e alimentacao orientada.',
     medicoResponsavel: {
       nome: 'Dr. Lucas Mendes',
       especialidade: 'Pediatra',
@@ -262,21 +262,21 @@ export const IDOSOS_INICIAIS: Idoso[] = [
   {
     id: 'aluno_3',
     nome: 'Beatriz Castro',
-    salaAula: 'Berçário I - A',
-    quarto: 'Berçário I - A',
+    salaAula: 'Bercario I - A',
+    quarto: 'Bercario I - A',
     foto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150',
     dataNascimento: '18/07/2023',
-    condicoesMedicas: ['Nenhuma observação clínica relevante'],
+    condicoesMedicas: ['Nenhuma observacao clinica relevante'],
     alergias: ['Nenhuma catalogada'],
     observacoes: 'Muito tranquila e risonha durante as atividades.',
     contatoEmergencia: {
       nome: 'Mariana Castro',
-      parentesco: 'Mãe',
+      parentesco: 'Mae',
       telefone: '(11) 99823-3310'
     },
-    planoCuidado: 'Estimulação sensorial e contação de histórias.',
+    planoCuidado: 'Estimulacao sensorial e contacao de historias.',
     medicoResponsavel: {
-      nome: 'Dra. Patrícia Faro',
+      nome: 'Dra. Patricia Faro',
       especialidade: 'Pediatra',
       telefone: '(11) 99342-8888'
     }
@@ -284,19 +284,19 @@ export const IDOSOS_INICIAIS: Idoso[] = [
   {
     id: 'aluno_4',
     nome: 'Bernardo Teixeira',
-    salaAula: 'Berçário I - A',
-    quarto: 'Berçário I - A',
+    salaAula: 'Bercario I - A',
+    quarto: 'Bercario I - A',
     foto: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150',
     dataNascimento: '05/09/2023',
-    condicoesMedicas: ['Refluxo leve fisiológico'],
+    condicoesMedicas: ['Refluxo leve fisiologico'],
     alergias: ['Nenhuma catalogada'],
-    observacoes: 'Manter elevado 20 minutos após mamadas.',
+    observacoes: 'Manter elevado 20 minutos apos mamadas.',
     contatoEmergencia: {
       nome: 'Felipe Teixeira',
       parentesco: 'Pai',
       telefone: '(11) 97123-4567'
     },
-    planoCuidado: 'Cuidados pós-alimentação e sonecas regulares.',
+    planoCuidado: 'Cuidados pos-alimentacao e sonecas regulares.',
     medicoResponsavel: {
       nome: 'Dr. Marcos Santos',
       especialidade: 'Pediatra',
@@ -305,17 +305,17 @@ export const IDOSOS_INICIAIS: Idoso[] = [
   },
   {
     id: 'aluno_5',
-    nome: 'Cecília Duarte',
-    salaAula: 'Berçário I - A',
-    quarto: 'Berçário I - A',
+    nome: 'Cecilia Duarte',
+    salaAula: 'Bercario I - A',
+    quarto: 'Bercario I - A',
     foto: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=150',
     dataNascimento: '22/11/2023',
-    condicoesMedicas: ['Adaptação recente'],
+    condicoesMedicas: ['Adaptacao recente'],
     alergias: ['Nenhuma catalogada'],
-    observacoes: 'Gosta de ouvir canções de ninar para dormir.',
+    observacoes: 'Gosta de ouvir cancoes de ninar para dormir.',
     contatoEmergencia: {
       nome: 'Camila Duarte',
-      parentesco: 'Mãe',
+      parentesco: 'Mae',
       telefone: '(11) 98321-7654'
     },
     planoCuidado: 'Acolhimento afetivo e rotina de sono calma.',
@@ -339,10 +339,10 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     observacoes: 'Adora pintar com tinta guache e brincar na pracinha.',
     contatoEmergencia: {
       nome: 'Juliana Santos',
-      parentesco: 'Mãe',
+      parentesco: 'Mae',
       telefone: '(11) 98844-3322'
     },
-    planoCuidado: 'Incentivo para ir ao banheiro a cada 2h e atividades lúdicas.',
+    planoCuidado: 'Incentivo para ir ao banheiro a cada 2h e atividades ludicas.',
     medicoResponsavel: {
       nome: 'Dr. Roberto Kardec',
       especialidade: 'Pediatra',
@@ -364,7 +364,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
       parentesco: 'Pai',
       telefone: '(11) 97711-2233'
     },
-    planoCuidado: 'Restrição a amendoim e estímulo psicomotor.',
+    planoCuidado: 'Restricao a amendoim e estimulo psicomotor.',
     medicoResponsavel: {
       nome: 'Dra. Vanessa Luz',
       especialidade: 'Pediatra',
@@ -378,18 +378,18 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     quarto: 'Maternal I - A',
     foto: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150',
     dataNascimento: '30/08/2021',
-    condicoesMedicas: ['Rinite alérgica leve em dias secos'],
-    alergias: ['Poeira e ácaros'],
-    observacoes: 'Muito criativa e participativa na roda de música.',
+    condicoesMedicas: ['Rinite alergica leve em dias secos'],
+    alergias: ['Poeira e acaros'],
+    observacoes: 'Muito criativa e participativa na roda de musica.',
     contatoEmergencia: {
-      nome: 'Patrícia Ferreira',
-      parentesco: 'Mãe',
+      nome: 'Patricia Ferreira',
+      parentesco: 'Mae',
       telefone: '(11) 96622-3344'
     },
-    planoCuidado: 'Manter ambiente arejado e hidratação frequente.',
+    planoCuidado: 'Manter ambiente arejado e hidratacao frequente.',
     medicoResponsavel: {
       nome: 'Dr. Lucas Mendes',
-      especialidade: 'Alergista Pediátrico',
+      especialidade: 'Alergista Pediatrico',
       telefone: '(11) 97777-6666'
     }
   },
@@ -402,7 +402,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     dataNascimento: '19/11/2021',
     condicoesMedicas: ['Desenvolvimento dentro do esperado'],
     alergias: ['Nenhuma catalogada'],
-    observacoes: 'Gosta de histórias ilustradas e massinha de modelar.',
+    observacoes: 'Gosta de historias ilustradas e massinha de modelar.',
     contatoEmergencia: {
       nome: 'Rodrigo Mendes',
       parentesco: 'Pai',
@@ -422,17 +422,17 @@ export const IDOSOS_INICIAIS: Idoso[] = [
     quarto: 'Maternal I - A',
     foto: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150',
     dataNascimento: '03/04/2021',
-    condicoesMedicas: ['Ótima autonomia nas refeições'],
+    condicoesMedicas: ['Otima autonomia nas refeicoes'],
     alergias: ['Nenhuma catalogada'],
-    observacoes: 'Expressa-se muito bem e adora dança.',
+    observacoes: 'Expressa-se muito bem e adora danca.',
     contatoEmergencia: {
       nome: 'Larissa Costa',
-      parentesco: 'Mãe',
+      parentesco: 'Mae',
       telefone: '(11) 94455-6677'
     },
     planoCuidado: 'Desenvolvimento socioemocional e brincadeiras coletivas.',
     medicoResponsavel: {
-      nome: 'Dra. Patrícia Faro',
+      nome: 'Dra. Patricia Faro',
       especialidade: 'Pediatra',
       telefone: '(11) 99342-8888'
     }

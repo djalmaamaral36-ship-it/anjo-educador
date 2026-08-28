@@ -80,7 +80,7 @@ export default function SettingsPage({
   const handleTogglePresentation = (checked: boolean) => {
     setModoApresentacao(checked);
     localStorage.setItem('anjo_modo_apresentacao', checked ? 'true' : 'false');
-    setSavingMessage(checked ? '✨ Modo de Apresentação Ativado! Atualizando...' : '  Modo de Apresentação Desativado! Atualizando...');
+    setSavingMessage(checked ? '  Modo de Apresentacao Ativado! Atualizando...' : '  Modo de Apresentacao Desativado! Atualizando...');
     setTimeout(() => {
       setSavingMessage('');
       window.location.reload();
@@ -103,7 +103,7 @@ export default function SettingsPage({
   const handleToggleCopyProtection = (checked: boolean) => {
     setCopyProtection(checked);
     localStorage.setItem('anjo_copy_protection', checked ? 'true' : 'false');
-    setSavingMessage(checked ? '  Proteção Anti-Cópia Ativada!' : '⚠ Proteção Anti-Cópia Desativada');
+    setSavingMessage(checked ? '  Protecao Anti-Copia Ativada!' : '[!] Protecao Anti-Copia Desativada');
     setTimeout(() => setSavingMessage(''), 2000);
   };
 
@@ -163,8 +163,8 @@ export default function SettingsPage({
         }
       }, 100);
     } catch (err: any) {
-      console.error("Erro ao acessar a c em configurações:", err);
-      setCameraError("Não foi possível acessar a c do dispositivo. Verifique as permissões.");
+      console.error("Erro ao acessar a c em configuracoes:", err);
+      setCameraError("Nao foi possivel acessar a c do dispositivo. Verifique as permissoes.");
     }
   };
 
@@ -273,7 +273,7 @@ export default function SettingsPage({
       return;
     }
 
-    setSwitchingError(`PIN incorreto para ${switchingUser.nome}! O PIN correto é "${requiredPin}".`);
+    setSwitchingError(`PIN incorreto para ${switchingUser.nome}! O PIN correto e "${requiredPin}".`);
   };
 
   useEffect(() => {
@@ -283,8 +283,8 @@ export default function SettingsPage({
         : localStorage.getItem('anjo_lgpd_accepted') === 'true';
       setLgpdAccepted(isAccepted);
       setLgpdLogs(getFromDB<any[]>(`anjo_lgpd_auditoria_${idoso.id}`, [
-        { id: '1', autor: 'Ana Silva (Cuidadora)', acao: 'Consulta do Histórico de Rotina', data: 'Hoje às 18:10', ip: '192.168.1.13', detalhes: 'Carimbo de conformidade de escala' },
-        { id: '2', autor: 'Djalma (Familiar)', acao: 'Visualização do Painel de Tranquilidade', data: 'Hoje às 18:15', ip: '200.41.52.12', detalhes: 'Acesso seguro ponta a ponta' }
+        { id: '1', autor: 'Ana Silva (Cuidadora)', acao: 'Consulta do Historico de Rotina', data: 'Hoje as 18:10', ip: '192.168.1.13', detalhes: 'Carimbo de conformidade de escala' },
+        { id: '2', autor: 'Djalma (Familiar)', acao: 'Visualizacao do Painel de Tranquilidade', data: 'Hoje as 18:15', ip: '200.41.52.12', detalhes: 'Acesso seguro ponta a ponta' }
       ]));
     }
   }, [idoso, keyTrigger, usuarioAtual?.id]);
@@ -295,7 +295,7 @@ export default function SettingsPage({
     }
     localStorage.removeItem('anjo_lgpd_accepted');
     setLgpdAccepted(false);
-    setSavingMessage('Consentimento LGPD revogado! O portal exigirá uma nova assinatura digital no próximo acesso.');
+    setSavingMessage('Consentimento LGPD revogado! O portal exigira uma nova assinatura digital no proximo acesso.');
     setTimeout(() => {
       setSavingMessage('');
       window.dispatchEvent(new CustomEvent('anjo_user_updated'));
@@ -304,7 +304,7 @@ export default function SettingsPage({
   };
 
   const handleWipeHistory = () => {
-    if (!window.confirm('Aviso: Isso irá limpar permanentemente todos os registros de água tomada, sinais vitais medidos, humores, sono, alimentação, atividades e a lista de notificações enviadas. Os perfis e medicamentos serão mantidos intactos. Deseja prosseguir?')) {
+    if (!window.confirm('Aviso: Isso ira limpar permanentemente todos os registros de agua tomada, sinais vitais medidos, humores, sono, alimentacao, atividades e a lista de notificacoes enviadas. Os perfis e medicamentos serao mantidos intactos. Deseja prosseguir?')) {
       return;
     }
     
@@ -312,7 +312,7 @@ export default function SettingsPage({
     wipeAllParentsPanelActivities();
     initializeDB();
     
-    setSavingMessage('Limpeza concluída! Histórico de testes zerado. Agora todos os gráficos e relatórios iniciam vazios.');
+    setSavingMessage('Limpeza concluida! Historico de testes zerado. Agora todos os graficos e relatorios iniciam vazios.');
     setTimeout(() => {
       setSavingMessage('');
     }, 4000);
@@ -322,7 +322,7 @@ export default function SettingsPage({
   };
 
   const handleFullFactoryReset = () => {
-    if (!window.confirm('ATENÇÁO: Você está prestes a realizar um reset de fábrica completo. Todos os cadastros, PIN do administrador e dados editados serão redefinidos para os valores padrões de fábrica. Tudo será zerado. Deseja mesmo prosseguir?')) {
+    if (!window.confirm('ATENCAO: Voce esta prestes a realizar um reset de fabrica completo. Todos os cadastros, PIN do administrador e dados editados serao redefinidos para os valores padroes de fabrica. Tudo sera zerado. Deseja mesmo prosseguir?')) {
       return;
     }
     
@@ -335,7 +335,7 @@ export default function SettingsPage({
     // Reinitialize DB standard schemas
     initializeDB();
     
-    setSavingMessage('Sistema restaurado para o padrão original! PIN da administração redefinido para 9181.');
+    setSavingMessage('Sistema restaurado para o padrao original! PIN da administracao redefinido para 9181.');
     setTimeout(() => {
       setSavingMessage('');
     }, 4000);
@@ -375,7 +375,7 @@ export default function SettingsPage({
       // Show Mariana and Enzo as key test profiles for the school board simulation
       setIdososMock(allSeniors.filter(s => s.id === 'aluno_1' || s.id === 'aluno_2'));
     } else {
-      // Symmetrically show Dona Maria and Seu João for senior simulation
+      // Symmetrically show Dona Maria and Seu Joao for senior simulation
       setIdososMock(allSeniors.filter(s => s.id === 'idoso_maria' || s.id === 'idoso_joao'));
     }
     
@@ -428,7 +428,7 @@ export default function SettingsPage({
       return;
     }
 
-    // Formatar data de nascimento caso esteja em formato corrido (8 dígitos, ex: 23111963)
+    // Formatar data de nascimento caso esteja em formato corrido (8 digitos, ex: 23111963)
     let formattedDOB = editedSenior.dataNascimento.trim();
     const dobDigits = formattedDOB.replace(/\D/g, '');
     if (dobDigits.length === 8 && !formattedDOB.includes('/')) {
@@ -483,10 +483,10 @@ export default function SettingsPage({
       <div>
         <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
           <Settings className="w-6 h-6 text-serene-blue" />
-          Configurações Gerais de Operação
+          Configuracoes Gerais de Operacao
         </h2>
         <p className="text-sm text-slate-500">
-          Gerenciamento de acessibilidade, troca de personagens simulados do plano, e edição de contatos clínicos.
+          Gerenciamento de acessibilidade, troca de personagens simulados do plano, e edicao de contatos clinicos.
         </p>
       </div>
 
@@ -520,7 +520,7 @@ export default function SettingsPage({
                   </span>
                 </div>
                 <p className="text-xs text-indigo-200/90 font-medium mt-0.5">
-                  {usuarioAtual.email === 'sem_email@anjo.com' ? 'Sem e-mail cadastrado' : usuarioAtual.email} • {usuarioAtual.telefone || '(11) 98765-9181'}
+                  {usuarioAtual.email === 'sem_email@anjo.com' ? 'Sem e-mail cadastrado' : usuarioAtual.email}   {usuarioAtual.telefone || '(11) 98765-9181'}
                 </p>
                 <p className="text-[10px] text-slate-300 font-medium mt-1">
                   Sua foto e dados do perfil ficam sincronizados no banco de dados e salvos permanentemente.
@@ -545,7 +545,7 @@ export default function SettingsPage({
         <div className="bg-white rounded-2xl border p-5 border-soft-gray space-y-4">
           <h3 className="text-base font-bold text-slate-850 flex items-center gap-1.5 border-b pb-2">
             <Sliders className="w-4.5 h-4.5 text-serene-blue" />
-            Preferências de Visualização (Acessibilidade)
+            Preferencias de Visualizacao (Acessibilidade)
           </h3>
 
           
@@ -573,7 +573,7 @@ export default function SettingsPage({
                 );
               })}
             </div>
-            <p className="text-[10px] text-slate-400">Selecionar "Aa Gigante" ajuda leitores seniores a lerem tarefas sem óculos.</p>
+            <p className="text-[10px] text-slate-400">Selecionar "Aa Gigante" ajuda leitores seniores a lerem tarefas sem oculos.</p>
           </div>
 
           
@@ -588,7 +588,7 @@ export default function SettingsPage({
               />
               <div>
                 <strong className="text-sm font-bold text-amber-900 block">Modo Simples para Idosos</strong>
-                <span className="text-[11px] leading-normal font-semibold text-slate-550 block">Habilita tons de contraste absolutos, simplifica as tabelas de relatório e oculta configurações para um visual focado.</span>
+                <span className="text-[11px] leading-normal font-semibold text-slate-550 block">Habilita tons de contraste absolutos, simplifica as tabelas de relatorio e oculta configuracoes para um visual focado.</span>
               </div>
             </label>
           </div>
@@ -607,14 +607,14 @@ export default function SettingsPage({
                 <strong className="text-sm font-bold text-slate-800 block flex items-center gap-1.5">
                     Ativar Modo Noturno (Tema Escuro)
                 </strong>
-                <span className="text-[11px] leading-normal font-semibold text-slate-500 block">Muda as cores de fundo para tons escuros confortáveis para uso em horários de baixa luminosidade (noite/madrugada) ou para menor cansaço visual.</span>
+                <span className="text-[11px] leading-normal font-semibold text-slate-500 block">Muda as cores de fundo para tons escuros confortaveis para uso em horarios de baixa luminosidade (noite/madrugada) ou para menor cansaco visual.</span>
               </div>
             </label>
           </div>
 
           
           <div className="space-y-2 pt-2 border-t border-slate-100">
-            <span className="text-xs font-bold text-slate-500 block">Modo de Apresentação (Apenas o App Limpo):</span>
+            <span className="text-xs font-bold text-slate-500 block">Modo de Apresentacao (Apenas o App Limpo):</span>
             <label className="flex items-center gap-3 p-3 bg-indigo-50/45 rounded-xl cursor-pointer hover:bg-indigo-100/30 transition-colors border border-indigo-150">
               <input 
                 type="checkbox" 
@@ -624,9 +624,9 @@ export default function SettingsPage({
               />
               <div>
                 <strong className="text-sm font-bold text-indigo-950 block flex items-center gap-1.5">
-                  ✨ Ativar Modo de Apresentação Limpo
+                    Ativar Modo de Apresentacao Limpo
                 </strong>
-                <span className="text-[11px] leading-normal font-semibold text-slate-550 block">Oculta todos os simuladores de queda de rede, logs de WhatsApp, switchers de perfis de teste e avisos de "Simulação" para que os diretores vejam apenas a interface final polida de produção.</span>
+                <span className="text-[11px] leading-normal font-semibold text-slate-550 block">Oculta todos os simuladores de queda de rede, logs de WhatsApp, switchers de perfis de teste e avisos de "Simulacao" para que os diretores vejam apenas a interface final polida de producao.</span>
               </div>
             </label>
           </div>
@@ -637,27 +637,27 @@ export default function SettingsPage({
           <div className="bg-white rounded-2xl border p-5 border-soft-gray space-y-4 shadow-2xs" id="pin-admin-management">
             <h3 className="text-base font-bold text-slate-850 flex items-center gap-1.5 border-b pb-2">
               <Lock className="w-4.5 h-4.5 text-indigo-600" />
-              PIN de Segurança do Administrador
+              PIN de Seguranca do Administrador
             </h3>
             <p className="text-xs text-slate-500 font-medium leading-relaxed">
-              Configure o PIN de 4 dígitos usado para proteger a troca para o <strong>Modo Escolar  </strong> e para restringir o acesso à aba de <strong>Controle de Assinaturas e Relatórios de Governança (Admin & Planilha)</strong>.
+              Configure o PIN de 4 digitos usado para proteger a troca para o <strong>Modo Escolar  </strong> e para restringir o acesso a aba de <strong>Controle de Assinaturas e Relatorios de Governanca (Admin & Planilha)</strong>.
             </p>
 
             <form onSubmit={(e) => {
               e.preventDefault();
               if (newPin.length !== 4) {
-                alert('O PIN deve conter exatamente 4 números!');
+                alert('O PIN deve conter exatamente 4 numeros!');
                 return;
               }
               localStorage.setItem('anjo_admin_pin', newPin);
-              setSavingMessage('PIN de segurança do Administrador updated with success!');
+              setSavingMessage('PIN de seguranca do Administrador updated with success!');
               setTimeout(() => {
                 setSavingMessage('');
               }, 2500);
               window.dispatchEvent(new CustomEvent('anjo_user_updated'));
             }} className="space-y-3.5">
               <div className="space-y-1.5">
-                <label className="text-[11px] font-black text-slate-450 uppercase tracking-wider block">Novo PIN numérico (4 dígitos):</label>
+                <label className="text-[11px] font-black text-slate-450 uppercase tracking-wider block">Novo PIN numerico (4 digitos):</label>
                 <div className="flex gap-2 items-center">
                   <div className="w-36">
                     <input
@@ -683,11 +683,11 @@ export default function SettingsPage({
               </div>
 
               <div className="p-3 bg-indigo-50/50 rounded-xl space-y-1.5 border border-indigo-150/60">
-                <span className="text-[10px] uppercase font-black tracking-wider text-indigo-700 block">Status da Chave de Segurança:</span>
+                <span className="text-[10px] uppercase font-black tracking-wider text-indigo-700 block">Status da Chave de Seguranca:</span>
                 <div className="flex items-center justify-between gap-1.5 bg-white/60 p-3 rounded-lg border border-indigo-100/40">
                   <p className="text-[11px] text-slate-600 font-bold leading-relaxed">
-                      PIN do Administrador: <span className="font-mono text-indigo-800 tracking-widest bg-indigo-100/60 px-2.5 py-0.5 rounded border border-indigo-200 font-extrabold">••••</span>
-                    <span className="block text-[9px] text-slate-450 mt-1 font-semibold leading-normal">Por diretrizes estritas de rastreabilidade e segurança corporativa, o PIN ativo permanece estritamente ocultado e inacessível na interface gráfica, mesmo para administradores. Redefina-o de forma segura utilizando o formulário acima.</span>
+                      PIN do Administrador: <span className="font-mono text-indigo-800 tracking-widest bg-indigo-100/60 px-2.5 py-0.5 rounded border border-indigo-200 font-extrabold">    </span>
+                    <span className="block text-[9px] text-slate-450 mt-1 font-semibold leading-normal">Por diretrizes estritas de rastreabilidade e seguranca corporativa, o PIN ativo permanece estritamente ocultado e inacessivel na interface grafica, mesmo para administradores. Redefina-o de forma segura utilizando o formulario acima.</span>
                   </p>
                 </div>
               </div>
@@ -700,7 +700,7 @@ export default function SettingsPage({
           <div className="bg-white rounded-2xl border p-5 border-soft-gray space-y-4">
             <h3 className="text-base font-bold text-slate-850 flex items-center gap-1.5 border-b pb-2">
               <UserCheck className="w-4.5 h-4.5 text-emerald-500" />
-              Vias de Teste da Simulação
+              Vias de Teste da Simulacao
             </h3>
 
           
@@ -736,15 +736,15 @@ export default function SettingsPage({
             </div>
             <p className="text-[10px] text-slate-400">
               {localStorage.getItem('anjo_app_mode') && localStorage.getItem('anjo_app_mode')!.startsWith('escolar') 
-                ? 'Cada aluno possui restrições, rotina, relatórios e contatos de emergência exclusivos cadastrados no sistema.' 
-                : 'Cada idoso possui doenças, remédios, relatórios de vitais e equipe médica exclusiva cadastrada no sistema.'}
+                ? 'Cada aluno possui restricoes, rotina, relatorios e contatos de emergencia exclusivos cadastrados no sistema.' 
+                : 'Cada idoso possui doencas, remedios, relatorios de vitais e equipe medica exclusiva cadastrada no sistema.'}
             </p>
           </div>
 
           
           <div className="space-y-2 pt-1 border-t border-slate-100">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1.5">
-              <span className="text-xs font-bold text-slate-500 block">Simular usuário conectado (Permissões):</span>
+              <span className="text-xs font-bold text-slate-500 block">Simular usuario conectado (Permissoes):</span>
               
               
               <div className="relative flex items-center max-w-xs w-full">
@@ -753,7 +753,7 @@ export default function SettingsPage({
                   type="text"
                   value={settingsUserSearch}
                   onChange={e => setSettingsUserSearch(e.target.value)}
-                  placeholder="Buscar usuário por nome ou cargo..."
+                  placeholder="Buscar usuario por nome ou cargo..."
                   className="w-full pl-8 pr-7 py-1 rounded-xl bg-slate-50 text-[11px] font-bold border border-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
                 />
                 {settingsUserSearch && (
@@ -801,10 +801,10 @@ export default function SettingsPage({
                         <strong className="text-[11px] font-bold block text-slate-800 leading-tight truncate">{usr.nome.split(' ')[0]}</strong>
                         <span className="text-[9px] uppercase font-bold text-emerald-800 truncate block">
                           {usr.tipo === 'diretor' || usr.tipo === 'diretora' || usr.tipo === 'admin' ? '  Diretor(a)' :
-                           usr.tipo === 'coordenador' || usr.tipo === 'coordenadora' ? ' 🏫 Coordenador(a)' :
+                           usr.tipo === 'coordenador' || usr.tipo === 'coordenadora' ? '    Coordenador(a)' :
                            usr.tipo === 'desenvolvedor' || usr.tipo === 'dev' ? '  Desenvolvedor' :
-                           usr.tipo === 'professor' || usr.tipo === 'professora' || usr.tipo === 'cuidador' ? ' 🏫 Professor(a)' :
-                           usr.tipo === 'profissional' ? ' ⚕ Saúde' :
+                           usr.tipo === 'professor' || usr.tipo === 'professora' || usr.tipo === 'cuidador' ? '    Professor(a)' :
+                           usr.tipo === 'profissional' ? '   Saude' :
                            '    Familiar'}
                         </span>
                       </div>
@@ -823,12 +823,12 @@ export default function SettingsPage({
               <Lock className="w-5.5 h-5.5" />
             </div>
             <div className="space-y-1.5 max-w-xl">
-              <h4 className="text-sm font-bold text-slate-800">Módulos Administrativos Restritos</h4>
+              <h4 className="text-sm font-bold text-slate-800">Modulos Administrativos Restritos</h4>
               <p className="text-xs text-slate-500 leading-relaxed font-semibold">
-                Para garantir a segurança e conformidade com a LGPD, as seções de <strong>Termos de Consentimento Digital</strong>, <strong>PIN de Segurança</strong> e <strong>Dados Clínicos do Assistido</strong> estão restritas à equipe gestora e de educadores. O faturamento e cobrança de mensalidades (via Pix) são processados e controlados diretamente pelo desenvolvedor.
+                Para garantir a seguranca e conformidade com a LGPD, as secoes de <strong>Termos de Consentimento Digital</strong>, <strong>PIN de Seguranca</strong> e <strong>Dados Clinicos do Assistido</strong> estao restritas a equipe gestora e de educadores. O faturamento e cobranca de mensalidades (via Pix) sao processados e controlados diretamente pelo desenvolvedor.
               </p>
               <p className="text-[11px] text-slate-400">
-                Seu usuário conectado possui o papel de <strong>Familiar / Tutor ({usuarioAtual.nome})</strong>. Você pode simular um usuário da equipe de cuidado no painel acima para obter acesso de visualização e edição a esses recursos.
+                Seu usuario conectado possui o papel de <strong>Familiar / Tutor ({usuarioAtual.nome})</strong>. Voce pode simular um usuario da equipe de cuidado no painel acima para obter acesso de visualizacao e edicao a esses recursos.
               </p>
             </div>
           </div>
@@ -843,10 +843,10 @@ export default function SettingsPage({
                 Zerar Dados para Iniciar Testes Reais?
               </h3>
               <p className="text-xs text-slate-500 leading-relaxed font-semibold mt-2">
-                <strong>De início, não é obrigatório zerar nada!</strong> O aplicativo é 100% editável para testes rápidos: você pode reescrever nomes, personalizar medicamentos e trocar de personagens sem necessidade de limpezas.
+                <strong>De inicio, nao e obrigatorio zerar nada!</strong> O aplicativo e 100% editavel para testes rapidos: voce pode reescrever nomes, personalizar medicamentos e trocar de personagens sem necessidade de limpezas.
               </p>
               <p className="text-[11px] text-slate-500 leading-normal mt-1.5">
-                Porém, se você quiser simular as rotinas diárias e notificações em tempo real a partir de um cenário inteiramente limpo e estéril para verificação real, utilize um dos botões rápidos:
+                Porem, se voce quiser simular as rotinas diarias e notificacoes em tempo real a partir de um cenario inteiramente limpo e esteril para verificacao real, utilize um dos botoes rapidos:
               </p>
             </div>
 
@@ -857,10 +857,10 @@ export default function SettingsPage({
                 className="w-full py-2.5 px-3 bg-amber-50 hover:bg-amber-100 active:bg-amber-200 text-amber-900 text-xs font-extrabold rounded-xl border border-amber-200 hover:border-amber-300 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-3xs"
               >
                 <Trash2 className="w-4 h-4 text-amber-700 shrink-0" />
-                Limpar Apenas Históricos e Logs
+                Limpar Apenas Historicos e Logs
               </button>
               <p className="text-[10px] text-slate-400 leading-snug">
-                Apaga apenas os copos d'água, sinais medidos, sono, medicação e notificações para começar o dia zerado hoje, mas preserva os perfis, medicamentos e fotos.
+                Apaga apenas os copos d'agua, sinais medidos, sono, medicacao e notificacoes para comecar o dia zerado hoje, mas preserva os perfis, medicamentos e fotos.
               </p>
 
               <div className="border-t border-slate-100 my-2 pt-2">
@@ -870,10 +870,10 @@ export default function SettingsPage({
                   className="w-full py-2.5 px-3 bg-rose-50 hover:bg-rose-100 active:bg-rose-200 text-rose-900 text-xs font-extrabold rounded-xl border border-rose-200 hover:border-rose-300 transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-3xs"
                 >
                   <RotateCcw className="w-4 h-4 text-rose-700 shrink-0" />
-                  Restaurar Padrão de Fábrica Geral
+                  Restaurar Padrao de Fabrica Geral
                 </button>
                 <p className="text-[10px] text-slate-400 leading-snug mt-1">
-                  Zera as chaves de armazenamento local por completo para as configurações originais, redefinindo o PIN de Administrador (Clarice) para o padrão de fábrica estabelecido do plano.
+                  Zera as chaves de armazenamento local por completo para as configuracoes originais, redefinindo o PIN de Administrador (Clarice) para o padrao de fabrica estabelecido do plano.
                 </p>
               </div>
             </div>
@@ -886,14 +886,14 @@ export default function SettingsPage({
           <div className="flex justify-between items-center border-b pb-2">
             <h3 className="text-base font-bold text-slate-850 flex items-center gap-1.5">
               <Heart className="w-4.5 h-4.5 text-rose-500" />
-              Editar Dados Clínicos de {idoso.nome}
+              Editar Dados Clinicos de {idoso.nome}
             </h3>
             
             <button
               onClick={() => setIsEditingSenior(!isEditingSenior)}
               className="text-xs font-bold text-serene-blue hover:underline cursor-pointer"
             >
-              {isEditingSenior ? 'Cancelar Edição' : 'Clique para Editar Perfil'}
+              {isEditingSenior ? 'Cancelar Edicao' : 'Clique para Editar Perfil'}
             </button>
           </div>
 
@@ -941,7 +941,7 @@ export default function SettingsPage({
               
               <div className="space-y-1 md:col-span-2 border-b border-dashed border-slate-200 pb-3">
                 <label className="text-xs font-bold text-slate-700 block">
-                  Foto de Identificação do {localStorage.getItem('anjo_app_mode') && localStorage.getItem('anjo_app_mode')!.startsWith('escolar') ? 'Aluno' : 'Idoso'}
+                  Foto de Identificacao do {localStorage.getItem('anjo_app_mode') && localStorage.getItem('anjo_app_mode')!.startsWith('escolar') ? 'Aluno' : 'Idoso'}
                 </label>
                 
                 {isCapturing ? (
@@ -1018,7 +1018,7 @@ export default function SettingsPage({
                           <span>Enviar Foto</span>
                           <input 
                             type="file" 
-                            aria-label="Anexar foto de identificação do idoso"
+                            aria-label="Anexar foto de identificacao do idoso"
                             accept="image/*" 
                             onChange={handlePhotoUpload} 
                             className="hidden" 
@@ -1034,14 +1034,14 @@ export default function SettingsPage({
                         />
                       </div>
                     ) : (
-                      <span className="text-xs text-slate-500 italic">Habilite a edição para alterar a foto do perfil.</span>
+                      <span className="text-xs text-slate-500 italic">Habilite a edicao para alterar a foto do perfil.</span>
                     )}
                   </div>
                 )}
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-600 block">Condições Médicas / Diagnósticos (separado por vírgula)</label>
+                <label className="text-xs font-bold text-slate-600 block">Condicoes Medicas / Diagnosticos (separado por virgula)</label>
                 <input 
                   type="text"
                   value={editedSenior.condiciones}
@@ -1052,7 +1052,7 @@ export default function SettingsPage({
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-600 block">Alergias Catalogadas (separado por vírgula)</label>
+                <label className="text-xs font-bold text-slate-600 block">Alergias Catalogadas (separado por virgula)</label>
                 <input 
                   type="text"
                   value={editedSenior.alergias}
@@ -1063,7 +1063,7 @@ export default function SettingsPage({
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-600 block">Nome do Responsável Emergência</label>
+                <label className="text-xs font-bold text-slate-600 block">Nome do Responsavel Emergencia</label>
                 <input 
                   type="text"
                   value={editedSenior.contatoNome}
@@ -1074,7 +1074,7 @@ export default function SettingsPage({
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-600 block">Telefone de Emergência</label>
+                <label className="text-xs font-bold text-slate-600 block">Telefone de Emergencia</label>
                 <input 
                   type="text"
                   value={editedSenior.contatoFone}
@@ -1086,7 +1086,7 @@ export default function SettingsPage({
 
               <div className="space-y-1">
                 <label className="text-xs font-bold text-slate-600 block">
-                  {localStorage.getItem('anjo_app_mode') && localStorage.getItem('anjo_app_mode')!.startsWith('escolar') ? 'Pediatra Responsável' : 'Geriatra Responsável'}
+                  {localStorage.getItem('anjo_app_mode') && localStorage.getItem('anjo_app_mode')!.startsWith('escolar') ? 'Pediatra Responsavel' : 'Geriatra Responsavel'}
                 </label>
                 <input 
                   type="text"
@@ -1098,7 +1098,7 @@ export default function SettingsPage({
               </div>
 
               <div className="space-y-1">
-                <label className="text-xs font-bold text-slate-600 block">Telefone do Médico</label>
+                <label className="text-xs font-bold text-slate-600 block">Telefone do Medico</label>
                 <input 
                   type="text"
                   value={editedSenior.medicoFone}
@@ -1111,7 +1111,7 @@ export default function SettingsPage({
               <div className="space-y-1 md:col-span-2">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-bold text-slate-600 block">
-                    Plano de Cuidado / Instruções Rápidas do {localStorage.getItem('anjo_app_mode') && localStorage.getItem('anjo_app_mode')!.startsWith('escolar') ? 'Aluno' : 'Idoso'}
+                    Plano de Cuidado / Instrucoes Rapidas do {localStorage.getItem('anjo_app_mode') && localStorage.getItem('anjo_app_mode')!.startsWith('escolar') ? 'Aluno' : 'Idoso'}
                   </label>
                   {isEditingSenior && (
                     <VoiceInput 
@@ -1136,7 +1136,7 @@ export default function SettingsPage({
                   type="submit"
                   className="px-5 py-2.5 bg-serene-blue hover:bg-blue-600 text-white text-xs font-bold rounded-xl flex items-center gap-1 cursor-pointer"
                 >
-                  <Save className="w-4 h-4" /> Salvar Alterações do Perfil
+                  <Save className="w-4 h-4" /> Salvar Alteracoes do Perfil
                 </button>
               </div>
             )}
@@ -1151,10 +1151,10 @@ export default function SettingsPage({
             <div>
               <h3 className="text-base font-bold text-slate-850 flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-emerald-600" />
-                Governança LGPD, Autorizações & Auditoria Digital
+                Governanca LGPD, Autorizacoes & Auditoria Digital
               </h3>
               <p className="text-xs text-slate-500 font-medium">
-                Consulte as bases legais de consentimento de dados de saúde sensíveis (Art. 5º, II da LGPD) e audite os registros de acesso.
+                Consulte as bases legais de consentimento de dados de saude sensiveis (Art. 5o, II da LGPD) e audite os registros de acesso.
               </p>
             </div>
             <div 
@@ -1165,7 +1165,7 @@ export default function SettingsPage({
                   : 'bg-amber-50 text-amber-800 border-amber-250'
               }`}
             >
-              {lgpdAccepted ? '✓ Termos Aceitos (Ativo)' : '⚠ Consentimento Pendente'}
+              {lgpdAccepted ? '  Termos Aceitos (Ativo)' : '[!] Consentimento Pendente'}
             </div>
           </div>
 
@@ -1174,7 +1174,7 @@ export default function SettingsPage({
             
             <div className="lg:col-span-5 bg-slate-50/60 border border-slate-200/80 rounded-2xl p-4.5 space-y-4" id="lgpd-active-authorizations-section">
               <span className="text-xs font-black text-slate-500 uppercase tracking-widest block">
-                  Autorizações em Vigor
+                  Autorizacoes em Vigor
               </span>
               
               <div className="space-y-3" id="lgpd-terms-list">
@@ -1183,9 +1183,9 @@ export default function SettingsPage({
                     <CheckCircle className="w-4 h-4" />
                   </div>
                   <div>
-                    <strong className="text-xs font-bold text-slate-800 block">Dado Pessoal Sensível de Saúde (Ativo)</strong>
+                    <strong className="text-xs font-bold text-slate-800 block">Dado Pessoal Sensivel de Saude (Ativo)</strong>
                     <span className="text-[10px] text-slate-500 leading-normal block mt-0.5">
-                      Autorização para registrar rotinas, aceitação alimentar, hidratação, sono, aferimentos de sinais vitais e relatos diários.
+                      Autorizacao para registrar rotinas, aceitacao alimentar, hidratacao, sono, aferimentos de sinais vitais e relatos diarios.
                     </span>
                   </div>
                 </div>
@@ -1195,9 +1195,9 @@ export default function SettingsPage({
                     <CheckCircle className="w-4 h-4" />
                   </div>
                   <div>
-                    <strong className="text-xs font-bold text-slate-800 block">Declaração de Vínculo de Cuidado (Ativo)</strong>
+                    <strong className="text-xs font-bold text-slate-800 block">Declaracao de Vinculo de Cuidado (Ativo)</strong>
                     <span className="text-[10px] text-slate-500 leading-normal block mt-0.5">
-                      Afirmação de vínculo familiar ou profissional para atuar como operador autorizado de dados sob a tutela assistencial do idoso.
+                      Afirmacao de vinculo familiar ou profissional para atuar como operador autorizado de dados sob a tutela assistencial do idoso.
                     </span>
                   </div>
                 </div>
@@ -1209,7 +1209,7 @@ export default function SettingsPage({
                   <div>
                     <strong className="text-xs font-bold text-slate-800 block">Trilha de Auditoria Digital (Ativo)</strong>
                     <span className="text-[10px] text-slate-500 leading-normal block mt-0.5">
-                      Concord com o registro de carimbo de tempo, IP e ator no log criptográfico para fins de rastreabilidade jurídica.
+                      Concord com o registro de carimbo de tempo, IP e ator no log criptografico para fins de rastreabilidade juridica.
                     </span>
                   </div>
                 </div>
@@ -1217,7 +1217,7 @@ export default function SettingsPage({
 
               <div className="pt-2 border-t border-slate-200/60 flex flex-col gap-2" id="lgpd-action-revoke-box">
                 <p className="text-[10px] text-slate-400 leading-relaxed font-semibold">
-                  Se desejar revogar as autorizações digitais dadas ou simular a assinatura de um novo termo:
+                  Se desejar revogar as autorizacoes digitais dadas ou simular a assinatura de um novo termo:
                 </p>
                 <button
                   id="revoke-lgpd-consent-btn"
@@ -1226,7 +1226,7 @@ export default function SettingsPage({
                   className="w-full py-2 bg-rose-50 hover:bg-rose-100 active:bg-rose-200 text-rose-700 font-extrabold text-[11px] rounded-xl border border-rose-200 hover:border-rose-300 transition-all cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   <Lock className="w-3.5 h-3.5" />
-                  Revogar Autorizações (Exigir Novo Termo)
+                  Revogar Autorizacoes (Exigir Novo Termo)
                 </button>
               </div>
             </div>
@@ -1249,7 +1249,7 @@ export default function SettingsPage({
                       <tr className="text-slate-400 font-bold text-[9px] uppercase tracking-wider">
                         <th className="py-2.5 px-3">Carimbo / IP</th>
                         <th className="py-2.5 px-1 col-span-2">Autor (Agente)</th>
-                        <th className="py-2.5 px-3">Ação Protegida</th>
+                        <th className="py-2.5 px-3">Acao Protegida</th>
                         <th className="py-2.5 px-3">Rigor Legal</th>
                       </tr>
                     </thead>
@@ -1269,7 +1269,7 @@ export default function SettingsPage({
                           </td>
                           <td className="py-2 px-3">
                             <span className="inline-flex items-center gap-0.5 text-[9px] font-black text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-sm border border-emerald-100">
-                              ✓ Auditado
+                                Auditado
                             </span>
                           </td>
                         </tr>
@@ -1288,7 +1288,7 @@ export default function SettingsPage({
 
               <div className="p-3 bg-indigo-50/60 border border-indigo-150 rounded-xl space-y-1.5 text-[10px] text-slate-600 leading-normal" id="lgpd-disclaimer-box">
                 <p>
-                    <strong>Garantia de Confidencialidade:</strong> Toda visualização de relatórios de saúde, prescrição ou histórico clínico da pessoa idosa é registrada com carimbo de tempo inviolável de conformidade legal, atendendo às exigências de transparência perante o titular de dados e familiares responsáveis.
+                    <strong>Garantia de Confidencialidade:</strong> Toda visualizacao de relatorios de saude, prescricao ou historico clinico da pessoa idosa e registrada com carimbo de tempo inviolavel de conformidade legal, atendendo as exigencias de transparencia perante o titular de dados e familiares responsaveis.
                 </p>
               </div>
             </div>
@@ -1303,14 +1303,14 @@ export default function SettingsPage({
                   <div>
                     <div className="flex items-center gap-2">
                       <h3 className="text-base font-extrabold text-slate-800">
-                        Propriedade Intelectual & Proteção Anti-Plágio
+                        Propriedade Intelectual & Protecao Anti-Plagio
                       </h3>
                       <span className="text-[9px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md border border-emerald-200">
                         Autoria Protegida
                       </span>
                     </div>
                     <p className="text-xs text-slate-500">
-                      Direitos autorais do software, registro de código-fonte e bloqueio contra cópias não autorizadas.
+                      Direitos autorais do software, registro de codigo-fonte e bloqueio contra copias nao autorizadas.
                     </p>
                   </div>
                 </div>
@@ -1328,11 +1328,11 @@ export default function SettingsPage({
                 <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
                   <div className="flex items-center gap-1.5 text-slate-700 font-bold">
                     <Award className="w-4 h-4 text-amber-500" />
-                    <span>Titularidade & Criação de Software</span>
+                    <span>Titularidade & Criacao de Software</span>
                   </div>
                   <p className="text-slate-600 text-[11px]">
                     <strong>Autor Desenvolvedor:</strong> Djalma Amaral<br />
-                    <strong>Gestão Institucional:</strong> Nilva Amaral<br />
+                    <strong>Gestao Institucional:</strong> Nilva Amaral<br />
                     <strong>Plataforma:</strong> Anjinho Escolar / Anjo Cuidador SaaS
                   </p>
                 </div>
@@ -1340,11 +1340,11 @@ export default function SettingsPage({
                 <div className="p-3.5 bg-slate-50 border border-slate-200 rounded-2xl space-y-1">
                   <div className="flex items-center gap-1.5 text-slate-700 font-bold">
                     <Copyright className="w-4 h-4 text-indigo-600" />
-                    <span>Legislação de Proteção</span>
+                    <span>Legislacao de Protecao</span>
                   </div>
                   <p className="text-slate-600 text-[11px]">
-                    <strong>Lei nº 9.609/1998:</strong> Proteção de Propriedade Intelectual de Programa de Computador.<br />
-                    <strong>Lei nº 9.610/1998:</strong> Direitos Autorais e Proteção Internacional (Convenção de Berna).
+                    <strong>Lei no 9.609/1998:</strong> Protecao de Propriedade Intelectual de Programa de Computador.<br />
+                    <strong>Lei no 9.610/1998:</strong> Direitos Autorais e Protecao Internacional (Convencao de Berna).
                   </p>
                 </div>
               </div>
@@ -1355,10 +1355,10 @@ export default function SettingsPage({
                   <div className="space-y-0.5">
                     <h4 className="text-xs font-black text-slate-800 flex items-center gap-1.5">
                       <Lock className="w-3.5 h-3.5 text-amber-600" />
-                      Proteção Ativa de Interface contra Cópias e Capturas
+                      Protecao Ativa de Interface contra Copias e Capturas
                     </h4>
                     <p className="text-[11px] text-slate-600">
-                      Desativa a seleção indiscriminada de texto, cópia de relatórios e arraste de fotos confidenciais de alunos/pacientes.
+                      Desativa a selecao indiscriminada de texto, copia de relatorios e arraste de fotos confidenciais de alunos/pacientes.
                     </p>
                   </div>
 
@@ -1377,10 +1377,10 @@ export default function SettingsPage({
               
               <div className="p-3.5 bg-slate-900 text-slate-200 rounded-2xl text-[10px] leading-relaxed space-y-1 font-mono">
                 <p className="text-amber-400 font-bold uppercase tracking-wider">
-                  ⚠ AVISO LEGAL DE DIREITOS RESERVADOS
+                  [!] AVISO LEGAL DE DIREITOS RESERVADOS
                 </p>
                 <p>
-                  É expressamente proibida a cópia, clonagem, distribuição, modificação não autorizada, descompilação ou engenharia reversa de qualquer módulo, tela ou código-fonte desta aplicação. Todos os direitos reservados © 2026. Violações estão sujeitas a sanções cíveis e criminais conforme o Art. 12 da Lei Federal 9.609/98.
+                  E expressamente proibida a copia, clonagem, distribuicao, modificacao nao autorizada, descompilacao ou engenharia reversa de qualquer modulo, tela ou codigo-fonte desta aplicacao. Todos os direitos reservados   2026. Violacoes estao sujeitas a sancoes civeis e criminais conforme o Art. 12 da Lei Federal 9.609/98.
                 </p>
               </div>
             </div>
@@ -1401,13 +1401,13 @@ export default function SettingsPage({
               </div>
               <div className="space-y-1">
                 <span className="text-[9px] font-black uppercase tracking-wider text-indigo-700 bg-indigo-50 border border-indigo-100 px-2 py-0.5 rounded-md">
-                    Gating de Segurança
+                    Gating de Seguranca
                 </span>
                 <h3 className="text-base font-bold text-slate-800 mt-1">
                   Acessar perfil de {switchingUser.nome}
                 </h3>
                 <p className="text-xs text-slate-500 leading-normal">
-                  Preencha o PIN de segurança para entrar no perfil. Isso impede que outras pessoas interfiram na rotina de cuidados de forma não autorizada.
+                  Preencha o PIN de seguranca para entrar no perfil. Isso impede que outras pessoas interfiram na rotina de cuidados de forma nao autorizada.
                 </p>
               </div>
             </div>
@@ -1417,7 +1417,7 @@ export default function SettingsPage({
                 <div className="flex justify-between items-center">
                   <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">Senha PIN da Conta</label>
                   <span className="text-[9px] font-bold text-indigo-650 bg-indigo-50 border border-indigo-100/50 px-2 py-0.5 rounded-sm">
-                    PIN da simulação: <strong className="font-mono text-[11px] font-black">{switchingUser.pin || (switchingUser.telefone ? switchingUser.telefone.replace(/\D/g, '').slice(-4) : '1234')}</strong>
+                    PIN da simulacao: <strong className="font-mono text-[11px] font-black">{switchingUser.pin || (switchingUser.telefone ? switchingUser.telefone.replace(/\D/g, '').slice(-4) : '1234')}</strong>
                   </span>
                 </div>
                 <input 
@@ -1433,7 +1433,7 @@ export default function SettingsPage({
 
               {switchingError && (
                 <p className="text-[10px] text-alert-red font-bold text-center bg-red-50 border border-red-200 rounded-lg p-2 animate-pulse">
-                  ⚠ {switchingError}
+                  [!] {switchingError}
                 </p>
               )}
 
@@ -1449,7 +1449,7 @@ export default function SettingsPage({
                   type="submit"
                   className="flex-1 py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-black text-xs rounded-xl shadow-xs transition-all cursor-pointer text-center"
                 >
-                  Entrar no Perfil →
+                  Entrar no Perfil  
                 </button>
               </div>
             </form>

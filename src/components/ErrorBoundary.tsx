@@ -41,11 +41,11 @@ export class ErrorBoundary extends Component<Props, State> {
         <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center p-4 text-center font-sans">
           <div className="max-w-md w-full bg-slate-800/90 border border-slate-700 p-6 rounded-3xl shadow-2xl space-y-4">
             <div className="w-16 h-16 bg-indigo-500/20 text-indigo-400 rounded-2xl flex items-center justify-center mx-auto text-3xl font-black">
-              ✨
+               
             </div>
             <h2 className="text-lg font-bold text-slate-100">Ops! Ocorreu um contratempo inesperado</h2>
             <p className="text-xs text-slate-300 leading-relaxed">
-              O sistema identificou uma falha de exibição temporária. Clique no botão abaixo para recarregar o aplicativo e continuar suas atividades normalmente.
+              O sistema identificou uma falha de exibicao temporaria. Clique no botao abaixo para recarregar o aplicativo e continuar suas atividades normalmente.
             </p>
             {this.state.error?.message && (
               <div className="p-3 bg-slate-950/60 rounded-xl text-left border border-slate-800 font-mono text-[10px] text-rose-300 overflow-x-auto max-h-32">

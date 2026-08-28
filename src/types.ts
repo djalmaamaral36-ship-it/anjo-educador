@@ -17,13 +17,13 @@ export const isStaffUser = (user: { tipo?: string; nome?: string; parentesco?: s
     t === 'familiar_admin' ||
     t === 'familiar_convidado' ||
     t === 'responsavel' ||
-    p.includes('mãe') ||
+    p.includes('mae') ||
     p.includes('mae') ||
     p.includes('pai') ||
     p.includes('familiar') ||
-    p.includes('responsável') ||
     p.includes('responsavel') ||
-    n.includes('mãe') ||
+    p.includes('responsavel') ||
+    n.includes('mae') ||
     n.includes('mae') ||
     n.includes('pai') ||
     n.includes('clarice') ||
@@ -81,11 +81,11 @@ export const isDirectorOrAdminUser = (user: { tipo?: string; nome?: string; pare
     t === 'familiar' || 
     t === 'familiar_convidado' || 
     t === 'familiar_admin' || 
-    p.includes('mãe') || 
+    p.includes('mae') || 
     p.includes('mae') || 
     p.includes('pai') || 
     p.includes('familiar') || 
-    p.includes('responsável') ||
+    p.includes('responsavel') ||
     id.startsWith('user_mae_') ||
     id.startsWith('user_pai_')
   ) {
@@ -115,37 +115,37 @@ export const isDirectorOrAdminUser = (user: { tipo?: string; nome?: string; pare
 };
 
 export const getRoleLabel = (user: { tipo?: string; nome?: string; parentesco?: string; id?: string } | null | undefined, isEscolar: boolean = true): string => {
-  if (!user) return 'Usuário';
+  if (!user) return 'Usuario';
   const t = (user.tipo || '').toLowerCase();
   const n = (user.nome || '').toLowerCase();
   const p = (user.parentesco || '').toLowerCase();
   const id = (user.id || '').toLowerCase();
 
-  // Prioritize family / parents if user is set to familiar or has parentesco/mãe/pai
+  // Prioritize family / parents if user is set to familiar or has parentesco/mae/pai
   if (
     t === 'familiar' || 
     t === 'familiar_admin' || 
     t === 'familiar_convidado' || 
-    p.includes('mãe') || 
+    p.includes('mae') || 
     p.includes('mae') || 
     p.includes('pai') || 
-    p.includes('responsável') || 
+    p.includes('responsavel') || 
     p.includes('familiar')
   ) {
     if (t === 'familiar_convidado' || p.includes('convidado')) return 'Familiar Convidado';
-    if (t === 'familiar_admin' || p.includes('admin')) return 'Familiar Responsável (Admin)';
+    if (t === 'familiar_admin' || p.includes('admin')) return 'Familiar Responsavel (Admin)';
     if (user.parentesco && !p.includes('dire')) return `Familiar (${user.parentesco})`;
-    return 'Familiar (Mãe/Responsável)';
+    return 'Familiar (Mae/Responsavel)';
   }
 
   if (t === 'desenvolvedor' || t === 'dev' || n.includes('desenvolvedor') || n.includes('dev') || id.includes('dev')) {
     return 'Desenvolvedor Master';
   }
-  if (t === 'diretor' || t === 'diretora' || (t === 'admin' && isEscolar) || n.includes('direç') || n.includes('diret')) {
-    return isEscolar ? 'Direção Escolar' : 'Administrador';
+  if (t === 'diretor' || t === 'diretora' || (t === 'admin' && isEscolar) || n.includes('direc') || n.includes('diret')) {
+    return isEscolar ? 'Direcao Escolar' : 'Administrador';
   }
   if (t === 'coordenador' || t === 'coordenadora' || (t === 'profissional' && isEscolar) || n.includes('coordenad') || id === 'user_medico_1') {
-    return isEscolar ? 'Coordenação Pedagógica' : 'Profissional / Saúde';
+    return isEscolar ? 'Coordenacao Pedagogica' : 'Profissional / Saude';
   }
   if (
     t === 'professor' ||
@@ -158,16 +158,16 @@ export const getRoleLabel = (user: { tipo?: string; nome?: string; parentesco?: 
     n.includes('cuidador') ||
     id.includes('cuidador')
   ) {
-    return isEscolar ? 'Professora Titular / Educador' : 'Cuidador Sênior';
+    return isEscolar ? 'Professora Titular / Educador' : 'Cuidador Senior';
   }
   if (t === 'familiar_admin') {
-    return 'Familiar Responsável (Admin)';
+    return 'Familiar Responsavel (Admin)';
   }
   if (t === 'familiar_convidado' || t === 'convidado') {
     return 'Familiar Convidado';
   }
   if (t === 'familiar' || user.parentesco) {
-    return user.parentesco ? `Familiar (${user.parentesco})` : 'Familiar Responsável';
+    return user.parentesco ? `Familiar (${user.parentesco})` : 'Familiar Responsavel';
   }
   return isEscolar ? 'Educador(a)' : 'Cuidador(a)';
 };
@@ -188,7 +188,7 @@ export interface Usuario {
 export interface Classroom {
   id: string;
   name: string; // e.g. "Maternal I - A"
-  emoji: string; // e.g. "🧸"
+  emoji: string; // e.g. "  "
   ageGroup: string; // e.g. "2-3 anos"
   capacity?: number;
   description?: string;
@@ -240,7 +240,7 @@ export interface Medicamento {
   idosoId: string;
   nome: string;
   dosagem: string; // e.g. "1 comprimido", "5ml"
-  frequência: string; // e.g. "Diário", "A cada 12h"
+  frequencia: string; // e.g. "Diario", "A cada 12h"
   horarios: string[]; // e.g. ["08:00", "20:00"]
   diasSemana: string[]; // e.g. ["Seg", "Ter", "Qua"...] or ["Todos"]
   observacoes: string;
@@ -279,8 +279,8 @@ export interface SinalVital {
   horario: string; // HH:MM
   registradoPor: string;
   observacoes: string;
-  fralda?: string; // School mode only e.g., "Fez Cocô / Pomada"
-  soneca?: string; // School mode only e.g., "Dormiu das 13h às 14h"
+  fralda?: string; // School mode only e.g., "Fez Coco / Pomada"
+  soneca?: string; // School mode only e.g., "Dormiu das 13h as 14h"
 }
 
 export interface RegistroHidratacao {
@@ -358,21 +358,21 @@ export interface CuidadoStatusDia {
 }
 
 /**
- * Formata um número de telefone brasileiro para abertura de link do WhatsApp (wa.me)
+ * Formata um numero de telefone brasileiro para abertura de link do WhatsApp (wa.me)
  * Trata o caso comum de DDD 55 (Rio Grande do Sul) que causava falhas no prefixo 55 internacional,
- * além de validar comprimentos padrão (10 ou 11 dígitos para celular/fixo nacional).
+ * alem de validar comprimentos padrao (10 ou 11 digitos para celular/fixo nacional).
  */
 export function formatWhatsAppNumber(phone: string): string {
   const cleaned = phone.replace(/\D/g, '');
   if (!cleaned) return '';
   
-  // Se possuir exatamente 10 ou 11 dígitos, é um número padrão sem o código do país prefixado
-  // (ex: DDD + 9 ou 8 dígitos). Assim, forçamos o prefixo 55.
+  // Se possuir exatamente 10 ou 11 digitos, e um numero padrao sem o codigo do pais prefixado
+  // (ex: DDD + 9 ou 8 digitos). Assim, forcamos o prefixo 55.
   if (cleaned.length === 10 || cleaned.length === 11) {
     return '55' + cleaned;
   }
   
-  // Se já tiver 12 ou mais dígitos, assume-se que já conta com o DDI internacional brasileiro (55)
+  // Se ja tiver 12 ou mais digitos, assume-se que ja conta com o DDI internacional brasileiro (55)
   if (cleaned.length >= 12) {
     return cleaned;
   }
@@ -384,11 +384,11 @@ export function formatWhatsAppNumber(phone: string): string {
 export type GestoAfetoTipo = 'encanto' | 'amor' | 'brilho' | 'orgulho' | 'tesouro';
 
 export interface GestoAfetoCount {
-  encanto?: number; // "Que encanto!" ✨
-  amor?: number; // "Feito com amor" ❤️
-  brilho?: number; // "Puro brilho!" ⭐
-  orgulho?: number; // "Orgulho da gente" 🌿
-  tesouro?: number; // "Um tesouro!" 💎
+  encanto?: number; // "Que encanto!"  
+  amor?: number; // "Feito com amor"   
+  brilho?: number; // "Puro brilho!"  
+  orgulho?: number; // "Orgulho da gente"   
+  tesouro?: number; // "Um tesouro!"   
 }
 
 export interface JornadaEvent {
@@ -406,8 +406,8 @@ export interface JornadaEvent {
   gestosAfeto?: GestoAfetoCount; // Count breakdown per affective reaction
   registradoPor?: string;
   anexoNome?: string;
-  valoresVivenciados?: string[]; // 🌟 Valores Vivenciados (e.g. "Compartilhou", "Foi gentil", etc.)
-  inesquecivel?: boolean; // 💬 Momentos que Merecem ser Lembrados
+  valoresVivenciados?: string[]; //    Valores Vivenciados (e.g. "Compartilhou", "Foi gentil", etc.)
+  inesquecivel?: boolean; //    Momentos que Merecem ser Lembrados
 }
 
 

@@ -24,14 +24,14 @@ export default function FirebaseDiagnosticBar() {
   };
 
   useEffect(() => {
-    addLog('  Painel de Diagnóstico do Firestore ativado.');
+    addLog('  Painel de Diagnostico do Firestore ativado.');
     startFirebaseSync();
 
     const handleConnectionStatus = (e: any) => {
       const conn = e.detail?.connected ?? true;
       setIsConnected(conn);
       if (e.detail?.reconnected) {
-        addLog('✅ Rede reconectada manualmente com sucesso (Teste 3).');
+        addLog('[OK] Rede reconectada manualmente com sucesso (Teste 3).');
       }
     };
 
@@ -41,14 +41,14 @@ export default function FirebaseDiagnosticBar() {
       setLastUpdate(timestamp);
       setLastCol(collectionName);
       setTotalSnapshots(prev => prev + 1);
-      addLog(`  [onSnapshot] Recebido de "${collectionName}" (${docCount} docs) às ${timestamp}`);
+      addLog(`  [onSnapshot] Recebido de "${collectionName}" (${docCount} docs) as ${timestamp}`);
     };
 
     const handleSyncError = (e: any) => {
       const { collectionName, code, message } = e.detail || {};
-      addLog(`❌ [ERRO SYNC] ${collectionName || ''}: ${code || ''} - ${message || ''}`);
+      addLog(`  [ERRO SYNC] ${collectionName || ''}: ${code || ''} - ${message || ''}`);
       if (code === 'permission-denied') {
-        setTestResult(`❌ Permissão Negada em ${collectionName || ''}. Verifique firestore.rules`);
+        setTestResult(`  Permissao Negada em ${collectionName || ''}. Verifique firestore.rules`);
       }
     };
 
@@ -65,13 +65,13 @@ export default function FirebaseDiagnosticBar() {
 
   const handleManualReconnect = async () => {
     setIsReconnecting(true);
-    addLog('  [Teste 3] Forçando reinicialização da rede WebSocket do Firestore...');
+    addLog('  [Teste 3] Forcando reinicializacao da rede WebSocket do Firestore...');
     const success = await forceReconnectFirestore();
     setIsReconnecting(false);
     if (success) {
-      setTestResult('✅ Rede reiniciada e reconectada com sucesso!');
+      setTestResult('[OK] Rede reiniciada e reconectada com sucesso!');
     } else {
-      setTestResult('❌ Erro na reconexão. Verifique a internet.');
+      setTestResult('  Erro na reconexao. Verifique a internet.');
     }
     setTimeout(() => setTestResult(null), 4000);
   };
@@ -88,14 +88,14 @@ export default function FirebaseDiagnosticBar() {
       await setDoc(pingDocRef, testPayload);
       const checkSnap = await getDoc(pingDocRef);
       if (checkSnap.exists()) {
-        addLog('✅ [Teste 4 SUCESSO] Regras do Firestore OK! Escrita e Leitura permitidas.');
-        setTestResult('✅ Regras OK! Conexão de leitura/escrita funcionando.');
+        addLog('[OK] [Teste 4 SUCESSO] Regras do Firestore OK! Escrita e Leitura permitidas.');
+        setTestResult('[OK] Regras OK! Conexao de leitura/escrita funcionando.');
       } else {
-        addLog('⚠ [Teste 4 AVISO] O documento de teste não retornou.');
+        addLog('[!] [Teste 4 AVISO] O documento de teste nao retornou.');
       }
     } catch (err: any) {
-      addLog(`❌ [Teste 4 ERRO DE REGRAS] ${err?.message || err}`);
-      setTestResult(`❌ Erro nas regras ou conexão: ${err?.message || 'Acesso negado'}`);
+      addLog(`  [Teste 4 ERRO DE REGRAS] ${err?.message || err}`);
+      setTestResult(`  Erro nas regras ou conexao: ${err?.message || 'Acesso negado'}`);
     }
     setTimeout(() => setTestResult(null), 5000);
   };
@@ -104,7 +104,7 @@ export default function FirebaseDiagnosticBar() {
     return (
       <button
         onClick={() => setIsHidden(false)}
-        title="Mostrar Diagnóstico do Firestore"
+        title="Mostrar Diagnostico do Firestore"
         className="hidden sm:flex fixed bottom-2 right-2 z-[9999] p-1.5 rounded-full bg-emerald-950/70 hover:bg-emerald-900 border border-emerald-500/40 text-emerald-300 shadow-md backdrop-blur-xs text-[10px] items-center gap-1 active:scale-95 cursor-pointer opacity-40 hover:opacity-100 transition-opacity"
       >
         <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
@@ -154,7 +154,7 @@ export default function FirebaseDiagnosticBar() {
             <button
               onClick={handleManualReconnect}
               disabled={isReconnecting}
-              title="Forçar Reconexão"
+              title="Forcar Reconexao"
               className="px-1.5 sm:px-2 py-1 rounded-md bg-emerald-700/70 hover:bg-emerald-600 text-white flex items-center gap-1 text-[9px] sm:text-[10px] font-semibold transition active:scale-95 disabled:opacity-50"
             >
               <RefreshCw className={`w-2.5 h-2.5 sm:w-3 sm:h-3 ${isReconnecting ? 'animate-spin' : ''}`} />
@@ -193,7 +193,7 @@ export default function FirebaseDiagnosticBar() {
           <div className="mt-2 pt-2 border-t border-white/15 space-y-2 text-[10px] sm:text-[11px]">
             <div className="grid grid-cols-2 gap-1.5 text-[9px] sm:text-[10px]">
               <div className="p-1.5 rounded bg-black/40 border border-white/10">
-                <span className="text-white/60 block">Última Coleção:</span>
+                <span className="text-white/60 block">Ultima Colecao:</span>
                 <span className="font-mono font-bold text-emerald-300 truncate block">{lastCol}</span>
               </div>
               <div className="p-1.5 rounded bg-black/40 border border-white/10">

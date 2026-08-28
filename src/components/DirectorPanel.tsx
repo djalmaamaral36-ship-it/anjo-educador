@@ -71,13 +71,13 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
           <span className="text-3xl"> </span>
         </div>
         <div className="space-y-1">
-          <h2 className="text-lg font-black text-slate-800">Acesso Restrito ao Painel da Direção</h2>
+          <h2 className="text-lg font-black text-slate-800">Acesso Restrito ao Painel da Direcao</h2>
           <p className="text-xs font-bold text-rose-600">
-            Perfil Selecionado no Celular: {activeUser.nome} ({activeUser.tipo === 'familiar' ? 'Familiar Responsável' : activeUser.tipo})
+            Perfil Selecionado no Celular: {activeUser.nome} ({activeUser.tipo === 'familiar' ? 'Familiar Responsavel' : activeUser.tipo})
           </p>
         </div>
         <p className="text-sm text-slate-500 max-w-md leading-relaxed">
-          O celular está atualmente com o perfil de <strong>Familiar</strong> selecionado. O Painel da Direção é restrito à equipe diretiva da escola.
+          O celular esta atualmente com o perfil de <strong>Familiar</strong> selecionado. O Painel da Direcao e restrito a equipe diretiva da escola.
         </p>
 
         {directorUser && (
@@ -169,7 +169,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
   const [selectedClassForBosque, setSelectedClassForBosque] = useState<string>('');
   const [isWateringAnimate, setIsWateringAnimate] = useState<boolean>(false);
 
-  // Rastreamento 360º Individual Attention states
+  // Rastreamento 360o Individual Attention states
   const [rastreamentoFilter, setRastreamentoFilter] = useState<'todos' | 'alertas'>('todos');
   const [rastreamentoClassFilter, setRastreamentoClassFilter] = useState<string>('Todas');
   const [rastreamentoSearch, setRastreamentoSearch] = useState<string>('');
@@ -221,54 +221,54 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
           classroomName: 'Maternal I',
           studentName: 'Arthur Silva',
           tipo: 'pedagogico_geral',
-          reason: 'Dificuldade de socialização em grupo e choro persistente na hora da despedida.',
+          reason: 'Dificuldade de socializacao em grupo e choro persistente na hora da despedida.',
           data: '2026-05-10',
-          registeredBy: 'Profª Estela Pinto'
+          registeredBy: 'Profa Estela Pinto'
         },
         {
           id: 'ref_2',
           classroomName: 'Maternal II',
           studentName: 'Beatriz Souza',
           tipo: 'fonoaudiologia',
-          reason: 'Atraso de fala expressiva identificado no diário pedagógico e conversado com a coordenação.',
+          reason: 'Atraso de fala expressiva identificado no diario pedagogico e conversado com a coordenacao.',
           data: '2026-05-12',
-          registeredBy: 'Profª Estela Pinto'
+          registeredBy: 'Profa Estela Pinto'
         },
         {
           id: 'ref_3',
           classroomName: 'Maternal II',
           studentName: 'Guilherme Santos',
           tipo: 'terapia_ocupacional',
-          reason: 'Hipersensibilidade tátil severa relatada no momento do banho e resistência a texturas de massinha.',
+          reason: 'Hipersensibilidade tatil severa relatada no momento do banho e resistencia a texturas de massinha.',
           data: '2026-05-14',
-          registeredBy: 'Profª Estela Pinto'
+          registeredBy: 'Profa Estela Pinto'
         },
         {
           id: 'ref_4',
           classroomName: 'Jardim II',
           studentName: 'Enzo Costa',
           tipo: 'psicologia',
-          reason: 'Agitação física intensa com episódios frequentes de morder brinquedos e disputar espaço com os colegas.',
+          reason: 'Agitacao fisica intensa com episodios frequentes de morder brinquedos e disputar espaco com os colegas.',
           data: '2026-05-15',
-          registeredBy: 'Profª Estela Pinto'
+          registeredBy: 'Profa Estela Pinto'
         },
         {
           id: 'ref_5',
           classroomName: 'Jardim II',
           studentName: 'Laura Lima',
           tipo: 'terapia_ocupacional',
-          reason: 'Seletividade alimentar extrema com recusa total de sólidos durante o almoço escolar.',
+          reason: 'Seletividade alimentar extrema com recusa total de solidos durante o almoco escolar.',
           data: '2026-05-18',
-          registeredBy: 'Profª Estela Pinto'
+          registeredBy: 'Profa Estela Pinto'
         },
         {
           id: 'ref_6',
           classroomName: 'Jardim II',
           studentName: 'Miguel Oliveira',
           tipo: 'pedagogico_geral',
-          reason: 'Comportamento desafiador recorrente e resistência sistemática às regras de transição de rotina.',
+          reason: 'Comportamento desafiador recorrente e resistencia sistematica as regras de transicao de rotina.',
           data: '2026-05-20',
-          registeredBy: 'Profª Estela Pinto'
+          registeredBy: 'Profa Estela Pinto'
         },
         {
           id: 'ref_7',
@@ -277,25 +277,25 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
           tipo: 'fonoaudiologia',
           reason: 'Troca de fonemas (/r/ por /l/) persistente aos 5 anos de idade na fala espont',
           data: '2026-05-22',
-          registeredBy: 'Profª Estela Pinto'
+          registeredBy: 'Profa Estela Pinto'
         },
         {
           id: 'ref_8',
           classroomName: 'Jardim II',
           studentName: 'Lucas Rocha',
           tipo: 'psicologia',
-          reason: 'Isolamento social sistemático no recreio, preferindo ficar sozinho no canto do pátio e evitando brincar.',
+          reason: 'Isolamento social sistematico no recreio, preferindo ficar sozinho no canto do patio e evitando brincar.',
           data: '2026-05-25',
-          registeredBy: 'Profª Estela Pinto'
+          registeredBy: 'Profa Estela Pinto'
         },
         {
           id: 'ref_9',
           classroomName: 'Jardim II',
           studentName: 'Sofia Mendes',
           tipo: 'pedagogico_geral',
-          reason: 'Falta de atenção concentrada com perda frequente de materiais de uso pedagógico.',
+          reason: 'Falta de atencao concentrada com perda frequente de materiais de uso pedagogico.',
           data: '2026-05-28',
-          registeredBy: 'Profª Estela Pinto'
+          registeredBy: 'Profa Estela Pinto'
         }
       ];
       saveToDB('anjo_encaminhamentos_pedagogicos', defaultReferrals);
@@ -345,7 +345,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
       emoji: newClassEmoji,
       ageGroup: newClassAge,
       capacity: Number(newClassCapacity) || 15,
-      description: newClassDesc.trim() || 'Sem descrição.'
+      description: newClassDesc.trim() || 'Sem descricao.'
     };
 
     const updatedSalas = [...classrooms, newSala];
@@ -423,14 +423,14 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
     const newPin = editTeacherPin.trim();
     if (newPin && newPin.length < 4) {
-      alert('O PIN deve conter pelo menos 4 dígitos numéricos!');
+      alert('O PIN deve conter pelo menos 4 digitos numericos!');
       return;
     }
 
     if (newPin) {
       const pinCheck = isPinUnique(newPin, editingTeacher.id);
       if (!pinCheck.isUnique) {
-        alert(`⚠ O PIN "${newPin}" já está em uso na escola por ${pinCheck.conflictingUser?.nome || 'outro colaborador'}.\n\nPor favor, escolha um PIN diferente para evitar conflito de acesso.`);
+        alert(`[!] O PIN "${newPin}" ja esta em uso na escola por ${pinCheck.conflictingUser?.nome || 'outro colaborador'}.\n\nPor favor, escolha um PIN diferente para evitar conflito de acesso.`);
         return;
       }
     }
@@ -456,7 +456,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
     setEditingTeacher(null);
     loadData();
 
-    setActionSuccessMessage(`✓ Dados e turmas de "${editTeacherName}" atualizados com sucesso!`);
+    setActionSuccessMessage(`  Dados e turmas de "${editTeacherName}" atualizados com sucesso!`);
     setTimeout(() => setActionSuccessMessage(null), 4000);
     window.dispatchEvent(new Event('anjo_user_updated'));
     window.dispatchEvent(new CustomEvent('anjo_user_updated'));
@@ -473,7 +473,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
       setEditingTeacher(null);
     }
     loadData();
-    setActionSuccessMessage(`✓ Colaborador(a) "${teacherName}" removido(a) com sucesso.`);
+    setActionSuccessMessage(`  Colaborador(a) "${teacherName}" removido(a) com sucesso.`);
     setTimeout(() => setActionSuccessMessage(null), 4000);
     window.dispatchEvent(new Event('anjo_user_updated'));
     window.dispatchEvent(new CustomEvent('anjo_user_updated'));
@@ -486,14 +486,14 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
     let finalPin = newStaffPin.trim();
     if (finalPin && finalPin.length < 4) {
-      alert('O PIN deve conter pelo menos 4 dígitos numéricos!');
+      alert('O PIN deve conter pelo menos 4 digitos numericos!');
       return;
     }
 
     if (finalPin) {
       const pinCheck = isPinUnique(finalPin);
       if (!pinCheck.isUnique) {
-        alert(`⚠ O PIN "${finalPin}" já está em uso na escola por ${pinCheck.conflictingUser?.nome || 'outro colaborador'}.\n\nPor favor, escolha um PIN diferente.`);
+        alert(`[!] O PIN "${finalPin}" ja esta em uso na escola por ${pinCheck.conflictingUser?.nome || 'outro colaborador'}.\n\nPor favor, escolha um PIN diferente.`);
         return;
       }
     } else {
@@ -517,7 +517,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
       pin: finalPin,
       foto: defaultAvatars[newStaffRole] || defaultAvatars.professor,
       salaAula: newStaffClassrooms.length > 0 ? newStaffClassrooms.join(',') : undefined,
-      observacoes: newStaffObs.trim() || `${newStaffRole === 'coordenador' ? 'Coordenação Pedagógica' : newStaffRole === 'pedagoga' ? 'Equipe Pedagógica' : newStaffRole === 'admin' ? 'Administração Escolar' : 'Corpo Docente'} credenciado.`
+      observacoes: newStaffObs.trim() || `${newStaffRole === 'coordenador' ? 'Coordenacao Pedagogica' : newStaffRole === 'pedagoga' ? 'Equipe Pedagogica' : newStaffRole === 'admin' ? 'Administracao Escolar' : 'Corpo Docente'} credenciado.`
     };
 
     const updatedUsers = [...users, newCollaborator];
@@ -534,7 +534,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
     setNewStaffObs('');
     setShowStaffModal(false);
 
-    setActionSuccessMessage(`✓ Colaborador(a) ${newCollaborator.nome} cadastrado(a) com sucesso! PIN: ${finalPin}`);
+    setActionSuccessMessage(`  Colaborador(a) ${newCollaborator.nome} cadastrado(a) com sucesso! PIN: ${finalPin}`);
     setTimeout(() => setActionSuccessMessage(null), 4000);
     window.dispatchEvent(new Event('anjo_user_updated'));
     window.dispatchEvent(new CustomEvent('anjo_user_updated'));
@@ -579,9 +579,9 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
     saveToDB('anjo_usuarios', updatedUsers);
     
     if (selectedTeacher) {
-      setActionSuccessMessage(`✓ Professor(a) ${selectedTeacher.nome.split(' (')[0]} vinculado(a) à turma "${roomName}" com sucesso!`);
+      setActionSuccessMessage(`  Professor(a) ${selectedTeacher.nome.split(' (')[0]} vinculado(a) a turma "${roomName}" com sucesso!`);
     } else {
-      setActionSuccessMessage(`✓ Vínculo de professor da turma "${roomName}" desfeito.`);
+      setActionSuccessMessage(`  Vinculo de professor da turma "${roomName}" desfeito.`);
     }
     setTimeout(() => setActionSuccessMessage(null), 4000);
 
@@ -622,7 +622,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
   const studentsWithAlerts = seniors.filter(s => {
     if (!s.id.startsWith('aluno_')) return false;
     // Check if they have food alert or high temperature or pending medical warnings
-    const foodAverage = parseInt(localStorage.getItem(`anjo_almoço_pct_${s.id}`) || '100', 10);
+    const foodAverage = parseInt(localStorage.getItem(`anjo_almoco_pct_${s.id}`) || '100', 10);
     const tempAverage = parseFloat(localStorage.getItem(`anjo_temp_deg_${s.id}`) || '36.5');
     const sleepAverage = parseFloat(localStorage.getItem(`anjo_sleep_hr_${s.id}`) || '2.2');
     return (foodAverage > 0 && foodAverage < 50) || tempAverage > 37.8;
@@ -660,21 +660,21 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 <Shield className="w-5 h-5" />
               </span>
               <span className="text-[10px] font-black uppercase tracking-wider text-indigo-500 dark:text-indigo-400">
-                Direção Geral & Gestão Pedagógica
+                Direcao Geral & Gestao Pedagogica
               </span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black font-display tracking-tight leading-none text-slate-900 dark:text-white">
-              Painel da Direção Escolar
+              Painel da Direcao Escolar
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-xl">
-              Portal exclusivo para controle de desempenho das turmas, capacitação de educadores, monitoramento de rotina e customização visual da marca da escola.
+              Portal exclusivo para controle de desempenho das turmas, capacitacao de educadores, monitoramento de rotina e customizacao visual da marca da escola.
             </p>
           </div>
 
           <div className="flex items-center gap-1.5 self-stretch sm:self-auto">
             <span className="text-[11px] font-extrabold text-slate-400 dark:text-slate-500">Filtrando:</span>
             <div className="px-3 py-1.5 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-700 dark:text-indigo-300 font-bold rounded-xl text-xs flex items-center gap-1">
-              <span>🏫</span>
+              <span>  </span>
               <span>Anjinho Escolar</span>
             </div>
           </div>
@@ -690,7 +690,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 : 'border-transparent text-slate-400 hover:text-slate-600 hover:border-slate-200'
             }`}
           >
-            <span> </span> Visão Geral Escolar
+            <span> </span> Visao Geral Escolar
           </button>
           <button
             onClick={() => setActiveTab('classes')}
@@ -710,7 +710,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 : 'border-transparent text-slate-400 hover:text-slate-600 hover:border-slate-200'
             }`}
           >
-            <span> </span> Desempenho & Saúde Geral
+            <span> </span> Desempenho & Saude Geral
           </button>
           <button
             onClick={() => setActiveTab('teachers')}
@@ -720,7 +720,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 : 'border-transparent text-slate-400 hover:text-slate-600 hover:border-slate-200'
             }`}
           >
-            <span> 🏫</span> Corpo Docente ({teachers.length})
+            <span>   </span> Corpo Docente ({teachers.length})
           </button>
         </div>
       </div>
@@ -747,10 +747,10 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   </span>
                 </div>
                 <h2 className="text-xl font-black text-white flex items-center gap-2">
-                  <span> </span> Visão 360º da Escola
+                  <span> </span> Visao 360o da Escola
                 </h2>
                 <p className="text-xs text-indigo-200/80 font-medium">
-                  Indicadores unificados de gestão operacional, pedagógica, saúde e engajamento da comunidade escolar.
+                  Indicadores unificados de gestao operacional, pedagogica, saude e engajamento da comunidade escolar.
                 </p>
               </div>
 
@@ -767,7 +767,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               <div className="p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-indigo-400/30 transition-all space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-black tracking-wider text-indigo-300 uppercase flex items-center gap-1.5">
-                    <span>🏫</span> OPERAÇÁO
+                    <span>  </span> OPERACAO
                   </span>
                   <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[9px] font-bold">Em conformidade</span>
                 </div>
@@ -779,7 +779,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     <div className="bg-emerald-400 h-full rounded-full" style={{ width: '94%' }}></div>
                   </div>
                 </div>
-                <p className="text-[10px] text-indigo-200/70 font-medium">Audit de rotinas e segurança LGPD/normativas</p>
+                <p className="text-[10px] text-indigo-200/70 font-medium">Audit de rotinas e seguranca LGPD/normativas</p>
               </div>
 
               
@@ -798,7 +798,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     <div className="bg-sky-400 h-full rounded-full" style={{ width: '96%' }}></div>
                   </div>
                 </div>
-                <p className="text-[10px] text-indigo-200/70 font-medium">Sono, alimentação, fralda e hidratação do dia</p>
+                <p className="text-[10px] text-indigo-200/70 font-medium">Sono, alimentacao, fralda e hidratacao do dia</p>
               </div>
 
               
@@ -808,18 +808,18 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               >
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-black tracking-wider text-rose-300 uppercase flex items-center gap-1.5">
-                    <span> </span> ATENÇÁO
+                    <span> </span> ATENCAO
                   </span>
                   <span className="px-1.5 py-0.5 rounded bg-rose-500/30 text-rose-200 text-[9px] font-bold group-hover:bg-rose-500 group-hover:text-white transition-colors">
-                    Ação Imediata ➔
+                    Acao Imediata  
                   </span>
                 </div>
                 <div>
                   <div className="text-2xl font-black text-rose-200 flex items-baseline gap-1">
-                    1 <span className="text-[11px] text-rose-200/80 font-semibold">ocorrência prioritária</span>
+                    1 <span className="text-[11px] text-rose-200/80 font-semibold">ocorrencia prioritaria</span>
                   </div>
                   <p className="text-[10px] text-rose-200/70 font-medium mt-1.5">
-                    Acompanhamento de febre/recusa alimentar em análise
+                    Acompanhamento de febre/recusa alimentar em analise
                   </p>
                 </div>
               </div>
@@ -834,15 +834,15 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     <span> </span> TURMAS
                   </span>
                   <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[9px] font-bold group-hover:bg-amber-500 group-hover:text-slate-950 transition-colors">
-                    Ver Salas ➔
+                    Ver Salas  
                   </span>
                 </div>
                 <div>
                   <div className="text-2xl font-black text-amber-200 flex items-baseline gap-1">
-                    2 <span className="text-[11px] text-amber-200/80 font-semibold">turmas sob observação</span>
+                    2 <span className="text-[11px] text-amber-200/80 font-semibold">turmas sob observacao</span>
                   </div>
                   <p className="text-[10px] text-amber-200/70 font-medium mt-1.5">
-                    Maternal I e Jardim II com variação de intercorrências
+                    Maternal I e Jardim II com variacao de intercorrencias
                   </p>
                 </div>
               </div>
@@ -851,38 +851,38 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               <div className="p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-indigo-400/30 transition-all space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-black tracking-wider text-emerald-300 uppercase flex items-center gap-1.5">
-                    <span> 🏫</span> EQUIPE
+                    <span>   </span> EQUIPE
                   </span>
                   <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[9px] font-bold">Engajada</span>
                 </div>
                 <div>
                   <div className="text-2xl font-black text-white flex items-baseline gap-1">
-                    93% <span className="text-[11px] text-indigo-200/70 font-semibold">de adesão aos registros</span>
+                    93% <span className="text-[11px] text-indigo-200/70 font-semibold">de adesao aos registros</span>
                   </div>
                   <div className="w-full bg-white/10 h-1.5 rounded-full mt-1.5 overflow-hidden">
                     <div className="bg-emerald-400 h-full rounded-full" style={{ width: '93%' }}></div>
                   </div>
                 </div>
-                <p className="text-[10px] text-indigo-200/70 font-medium">Professores e cuidadores preenchendo diários via PIN</p>
+                <p className="text-[10px] text-indigo-200/70 font-medium">Professores e cuidadores preenchendo diarios via PIN</p>
               </div>
 
               
               <div className="p-4 rounded-2xl bg-white/5 backdrop-blur-md border border-white/10 hover:border-indigo-400/30 transition-all space-y-2">
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-black tracking-wider text-rose-300 uppercase flex items-center gap-1.5">
-                    <span>   </span> FAMÍLIAS
+                    <span>   </span> FAMILIAS
                   </span>
                   <span className="px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 text-[9px] font-bold">Ativas</span>
                 </div>
                 <div>
                   <div className="text-2xl font-black text-white flex items-baseline gap-1">
-                    91% <span className="text-[11px] text-indigo-200/70 font-semibold">de visualização</span>
+                    91% <span className="text-[11px] text-indigo-200/70 font-semibold">de visualizacao</span>
                   </div>
                   <div className="w-full bg-white/10 h-1.5 rounded-full mt-1.5 overflow-hidden">
                     <div className="bg-rose-400 h-full rounded-full" style={{ width: '91%' }}></div>
                   </div>
                 </div>
-                <p className="text-[10px] text-indigo-200/70 font-medium">Visualização de recados, fotos e autorizações no app</p>
+                <p className="text-[10px] text-indigo-200/70 font-medium">Visualizacao de recados, fotos e autorizacoes no app</p>
               </div>
 
               
@@ -892,16 +892,16 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               >
                 <div className="flex items-center justify-between">
                   <span className="text-[10px] font-black tracking-wider text-indigo-300 uppercase flex items-center gap-1.5">
-                    <span> </span> PEDAGÓGICO
+                    <span> </span> PEDAGOGICO
                   </span>
                   <span className="px-2 py-0.5 rounded bg-indigo-500 text-white text-[9px] font-extrabold group-hover:bg-indigo-400 transition-colors">
-                    Ver Acompanhamento Pedagógico ➔
+                    Ver Acompanhamento Pedagogico  
                   </span>
                 </div>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                   <div>
                     <div className="text-2xl font-black text-white flex items-baseline gap-1">
-                      3 <span className="text-[11px] text-indigo-200/80 font-semibold">crianças com evolução que merece acompanhamento</span>
+                      3 <span className="text-[11px] text-indigo-200/80 font-semibold">criancas com evolucao que merece acompanhamento</span>
                     </div>
                     <p className="text-[10px] text-indigo-200/70 font-medium mt-1">
                       Encaminhamentos ativos para fonoaudiologia, psicologia e desenvolvimento cognitivo
@@ -927,7 +927,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 {students.length} <span className="text-xs text-slate-400 font-bold">matriculados</span>
               </div>
               <p className="text-[10px] text-slate-400 font-bold leading-none flex items-center gap-1">
-                <span> </span> Distribuição em {classrooms.length} turmas ativas
+                <span> </span> Distribuicao em {classrooms.length} turmas ativas
               </p>
             </div>
 
@@ -936,13 +936,13 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
             } shadow-2xs space-y-2 text-left`}>
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-black uppercase tracking-wider text-slate-400">Educadores Titulares</span>
-                <span className="p-1.5 bg-amber-50 dark:bg-amber-950/40 text-amber-600 rounded-lg"> 🏫</span>
+                <span className="p-1.5 bg-amber-50 dark:bg-amber-950/40 text-amber-600 rounded-lg">   </span>
               </div>
               <div className="text-3xl font-black text-slate-950 dark:text-white flex items-baseline gap-1">
                 {teachers.length} <span className="text-xs text-slate-400 font-bold">professores</span>
               </div>
               <p className="text-[10px] text-slate-400 font-bold leading-none flex items-center gap-1">
-                <span> </span> Alocação com segurança por PIN individual
+                <span> </span> Alocacao com seguranca por PIN individual
               </p>
             </div>
 
@@ -950,8 +950,8 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
             } shadow-2xs space-y-2 text-left`}>
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-wider text-rose-500">Parceria com Famílias</span>
-                <span className="p-1.5 bg-rose-50 dark:bg-rose-950/40 text-rose-600 rounded-lg">❤</span>
+                <span className="text-[10px] font-black uppercase tracking-wider text-rose-500">Parceria com Familias</span>
+                <span className="p-1.5 bg-rose-50 dark:bg-rose-950/40 text-rose-600 rounded-lg"> </span>
               </div>
               <div className="text-3xl font-black text-rose-600 flex items-baseline gap-1.5">
                 {globalLikes} <span className="text-xs text-slate-400 font-bold">gestos de afeto</span>
@@ -965,14 +965,14 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
             } shadow-2xs space-y-2 text-left`}>
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-black uppercase tracking-wider text-amber-600">Alertas de Saúde</span>
-                <span className="p-1.5 bg-amber-50 dark:bg-amber-950/40 text-amber-600 rounded-lg">⚠</span>
+                <span className="text-[10px] font-black uppercase tracking-wider text-amber-600">Alertas de Saude</span>
+                <span className="p-1.5 bg-amber-50 dark:bg-amber-950/40 text-amber-600 rounded-lg">[!]</span>
               </div>
               <div className="text-3xl font-black text-amber-600 flex items-baseline gap-1">
-                {studentsWithAlerts.length} <span className="text-xs text-slate-400 font-bold">casos em atenção</span>
+                {studentsWithAlerts.length} <span className="text-xs text-slate-400 font-bold">casos em atencao</span>
               </div>
               <p className="text-[10px] text-slate-400 font-bold leading-none">
-                {studentsWithAlerts.length > 0 ? '⚠ Baixa alimentação ou febre detectada.' : '✅ Rotinas saudáveis estáveis.'}
+                {studentsWithAlerts.length > 0 ? '[!] Baixa alimentacao ou febre detectada.' : '[OK] Rotinas saudaveis estaveis.'}
               </p>
             </div>
 
@@ -990,7 +990,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   <span> </span> Identidade e Logomarca da Escola
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                  Personalize o aplicativo com o nome da sua escola e a URL do seu logo. Ele será exibido de forma harmônica no topo de todas as telas.
+                  Personalize o aplicativo com o nome da sua escola e a URL do seu logo. Ele sera exibido de forma harmonica no topo de todas as telas.
                 </p>
               </div>
 
@@ -1003,7 +1003,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       type="text"
                       value={instNameInput}
                       onChange={(e) => setInstNameInput(e.target.value)}
-                      placeholder="Ex: Colégio Mater Dei / Escola Arco-Íris"
+                      placeholder="Ex: Colegio Mater Dei / Escola Arco-Iris"
                       className={`w-full px-3 py-2.5 text-xs rounded-xl border focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all font-semibold ${
                         isDark ? 'bg-slate-850 border-slate-750 text-white' : 'bg-white border-slate-205 text-slate-800'
                       }`}
@@ -1029,7 +1029,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       type="text"
                       value={instSloganInput}
                       onChange={(e) => setInstSloganInput(e.target.value)}
-                      placeholder="Ex: Onde a inf é registrada para sempre"
+                      placeholder="Ex: Onde a inf e registrada para sempre"
                       className={`w-full px-3 py-2.5 text-xs rounded-xl border focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all font-semibold ${
                         isDark ? 'bg-slate-850 border-slate-750 text-white' : 'bg-white border-slate-205 text-slate-800'
                       }`}
@@ -1058,7 +1058,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
                   {saveSuccess && (
                     <span className="text-xs text-emerald-600 font-extrabold flex items-center gap-1 animate-pulse">
-                      ✓ Configurações salvas e aplicadas!
+                        Configuracoes salvas e aplicadas!
                     </span>
                   )}
                 </div>
@@ -1070,7 +1070,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 <div className="flex flex-wrap gap-2">
                   <button
                     onClick={() => {
-                      setInstNameInput('Colégio Infantil Doce Saber');
+                      setInstNameInput('Colegio Infantil Doce Saber');
                       setInstLogoInput('https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=150');
                     }}
                     className={`px-2.5 py-1 text-[10px] font-bold border rounded-lg cursor-pointer transition-colors ${
@@ -1081,7 +1081,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   </button>
                   <button
                     onClick={() => {
-                      setInstNameInput('Colégio Montessori');
+                      setInstNameInput('Colegio Montessori');
                       setInstLogoInput('https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&q=80&w=150');
                     }}
                     className={`px-2.5 py-1 text-[10px] font-bold border rounded-lg cursor-pointer transition-colors ${
@@ -1100,20 +1100,20 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
             } shadow-xs`}>
               <div className="space-y-1 border-b border-slate-100 dark:border-slate-850 pb-3">
-                <span className="text-[10px] font-black uppercase tracking-wider text-rose-500">Família Ativa</span>
+                <span className="text-[10px] font-black uppercase tracking-wider text-rose-500">Familia Ativa</span>
                 <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-2">
-                  <span> </span> Linha de Afeto (Reações dos Pais)
+                  <span> </span> Linha de Afeto (Reacoes dos Pais)
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold leading-tight">
-                  Log em tempo real de curtidas, regadas e interações que os pais enviaram aos diários da escola.
+                  Log em tempo real de curtidas, regadas e interacoes que os pais enviaram aos diarios da escola.
                 </p>
               </div>
 
               <div className="flex-1 overflow-y-auto max-h-64 mt-4 space-y-3.5 pr-1">
                 {allEventsInDb.filter(e => e.likes > 0).length === 0 ? (
                   <div className="text-center py-8 text-slate-400 font-bold text-xs space-y-1">
-                    <span>❤</span>
-                    <p>Aguardando primeiras interações dos pais nos diários escolares dos bebês.</p>
+                    <span> </span>
+                    <p>Aguardando primeiras interacoes dos pais nos diarios escolares dos bebes.</p>
                   </div>
                 ) : (
                   allEventsInDb.filter(e => e.likes > 0 || e.idosoId).slice(0, 10).map((evt, idx) => {
@@ -1122,13 +1122,13 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     return (
                       <div key={idx} className="flex gap-2.5 text-[11px] leading-tight pb-3 border-b border-slate-50 dark:border-slate-850 last:border-0">
                         <div className="p-1.5 bg-rose-50 dark:bg-rose-950/40 text-rose-600 rounded-lg shrink-0 h-fit self-center">
-                          <span>❤</span>
+                          <span> </span>
                         </div>
                         <div className="space-y-1">
                           <p className="text-slate-700 dark:text-slate-300">
                             Familiar amou o momento <strong>"{evt.titulo || 'Atividade'}"</strong> registrado para o aluno(a) <strong className="text-indigo-600 dark:text-indigo-400">{studentName}</strong>.
                           </p>
-                          <span className="text-[9px] text-slate-400 font-bold block">{evt.horario || 'Agora mesmo'} • {evt.registradoPor || 'Família'}</span>
+                          <span className="text-[9px] text-slate-400 font-bold block">{evt.horario || 'Agora mesmo'}   {evt.registradoPor || 'Familia'}</span>
                         </div>
                       </div>
                     );
@@ -1141,20 +1141,20 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   </div>
                   <div className="space-y-1">
                     <p className="text-slate-700 dark:text-slate-300">
-                      Mãe de <strong>Mariana Souza</strong> enviou uma <strong>Regada de Amor</strong> para parabenizar a dedicação dos professores hoje!
+                      Mae de <strong>Mariana Souza</strong> enviou uma <strong>Regada de Amor</strong> para parabenizar a dedicacao dos professores hoje!
                     </p>
-                    <span className="text-[9px] text-slate-400 font-bold block">15 min atrás • App do Familiar</span>
+                    <span className="text-[9px] text-slate-400 font-bold block">15 min atras   App do Familiar</span>
                   </div>
                 </div>
                 <div className="flex gap-2.5 text-[11px] leading-tight pb-3">
                   <div className="p-1.5 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 rounded-lg shrink-0 h-fit self-center">
-                    <span>✍</span>
+                    <span> </span>
                   </div>
                   <div className="space-y-1">
                     <p className="text-slate-700 dark:text-slate-300">
-                      Pai de <strong>Miguel Oliveira</strong> assinou eletronicamente o diário e confirmou envio de medicação diária.
+                      Pai de <strong>Miguel Oliveira</strong> assinou eletronicamente o diario e confirmou envio de medicacao diaria.
                     </p>
-                    <span className="text-[9px] text-slate-400 font-bold block">1 hora atrás • Autorização Confirmada</span>
+                    <span className="text-[9px] text-slate-400 font-bold block">1 hora atras   Autorizacao Confirmada</span>
                   </div>
                 </div>
               </div>
@@ -1172,10 +1172,10 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-1.5">
-                <span> </span> Lista de Salas & Taxa de Ocupação
+                <span> </span> Lista de Salas & Taxa de Ocupacao
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold">
-                Gerencie as capacidades de cada turma do maternal e berçário, veja as crianças ativas e faça a alocação do educador titular.
+                Gerencie as capacidades de cada turma do maternal e bercario, veja as criancas ativas e faca a alocacao do educador titular.
               </p>
             </div>
 
@@ -1235,7 +1235,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     
                     <div className="space-y-1.5">
                       <div className="flex justify-between text-[10px] font-black uppercase text-slate-400">
-                        <span>Lotação: {classStudents.length} / {room.capacity}</span>
+                        <span>Lotacao: {classStudents.length} / {room.capacity}</span>
                         <span className={`${occupancyPct > 90 ? 'text-rose-500' : 'text-indigo-600 dark:text-indigo-400'}`}>{occupancyPct}%</span>
                       </div>
                       <div className="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
@@ -1253,9 +1253,9 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       isDark ? 'bg-slate-850 text-slate-300' : 'bg-slate-50 text-slate-700'
                     }`}>
                       <div className="flex items-center gap-1.5 min-w-0">
-                        <span className="text-base shrink-0"> 🏫</span>
+                        <span className="text-base shrink-0">   </span>
                         <div className="min-w-0 leading-tight">
-                          <span className="text-[9px] block text-slate-400 font-bold uppercase">Professor(a) Responsável</span>
+                          <span className="text-[9px] block text-slate-400 font-bold uppercase">Professor(a) Responsavel</span>
                           <span className="font-extrabold text-slate-800 dark:text-slate-200 truncate block">
                             {assignedTeacher ? assignedTeacher.nome.split(' (')[0] : 'Nenhum Alocado'}
                           </span>
@@ -1291,7 +1291,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 <span> </span> Monitor de Desempenho e Rotinas Coletivas
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold">
-                Análise pedagógica da rotina escolar, saúde e engajamento das famílias por meio de metáforas da natureza ou relatórios convencionais.
+                Analise pedagogica da rotina escolar, saude e engajamento das familias por meio de metaforas da natureza ou relatorios convencionais.
               </p>
             </div>
 
@@ -1305,7 +1305,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
                 }`}
               >
-                  Árvores em Evolução
+                  Arvores em Evolucao
               </button>
               <button
                 onClick={() => setPedagogyViewMode('charts')}
@@ -1315,7 +1315,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
                 }`}
               >
-                  Gráficos Convencionais
+                  Graficos Convencionais
               </button>
             </div>
           </div>
@@ -1336,7 +1336,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200'
                   }`}
                 >
-                  <span> </span> Árvore Individual (Aluno)
+                  <span> </span> Arvore Individual (Aluno)
                 </button>
                 <button
                   onClick={() => setTreeLevel('class')}
@@ -1370,13 +1370,13 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   } shadow-xs`}>
                     
                     <div className="w-full flex items-center justify-between border-b border-slate-100 dark:border-slate-850 pb-3 mb-4">
-                      <span className="text-[10px] font-black uppercase text-indigo-500 tracking-wide">Plantação Pedagógica</span>
+                      <span className="text-[10px] font-black uppercase text-indigo-500 tracking-wide">Plantacao Pedagogica</span>
                       <span className="text-[10px] font-bold text-slate-400">Tempo Real</span>
                     </div>
 
                     
                     <div className="w-full space-y-1 mb-4 text-left">
-                      <label className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wide block">Selecione o Aluno para Ver Sua Árvore</label>
+                      <label className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wide block">Selecione o Aluno para Ver Sua Arvore</label>
                       <select
                         value={selectedStudentForTree}
                         onChange={(e) => setSelectedStudentForTree(e.target.value)}
@@ -1402,7 +1402,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       }
 
                       // Let's get student metrics
-                      const foodVal = parseInt(localStorage.getItem(`anjo_almoço_pct_${selectedStudent.id}`) || '90', 10);
+                      const foodVal = parseInt(localStorage.getItem(`anjo_almoco_pct_${selectedStudent.id}`) || '90', 10);
                       const tempVal = parseFloat(localStorage.getItem(`anjo_temp_deg_${selectedStudent.id}`) || '36.5');
                       const sleepVal = parseFloat(localStorage.getItem(`anjo_sleep_hr_${selectedStudent.id}`) || '2.0');
                       
@@ -1548,12 +1548,12 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
                           
                           <div className="mt-1 space-y-1">
-                            <span className="text-[10px] font-black uppercase text-slate-400 block leading-none">Estágio de Vida</span>
+                            <span className="text-[10px] font-black uppercase text-slate-400 block leading-none">Estagio de Vida</span>
                             <span className="px-3 py-1 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-extrabold rounded-full text-xs inline-block shadow-3xs">
                               {compliance <= 20 ? '  Brotinho (Iniciando Sopro)' : 
-                               compliance <= 50 ? '  Árvore Jovem (Em Crescimento)' : 
-                               compliance <= 85 ? '  Árvore Frondosa (Saudável e Forte)' : 
-                               '  Árvore Frutífera e Florida (Harmonia Completa)'}
+                               compliance <= 50 ? '  Arvore Jovem (Em Crescimento)' : 
+                               compliance <= 85 ? '  Arvore Frondosa (Saudavel e Forte)' : 
+                               '  Arvore Frutifera e Florida (Harmonia Completa)'}
                             </span>
                           </div>
 
@@ -1590,9 +1590,9 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     
                     {(() => {
                       const selectedStudent = students.find(s => s.id === selectedStudentForTree);
-                      if (!selectedStudent) return <div className="text-slate-400 text-xs">Selecione uma criança.</div>;
+                      if (!selectedStudent) return <div className="text-slate-400 text-xs">Selecione uma crianca.</div>;
 
-                      const foodVal = parseInt(localStorage.getItem(`anjo_almoço_pct_${selectedStudent.id}`) || '90', 10);
+                      const foodVal = parseInt(localStorage.getItem(`anjo_almoco_pct_${selectedStudent.id}`) || '90', 10);
                       const tempVal = parseFloat(localStorage.getItem(`anjo_temp_deg_${selectedStudent.id}`) || '36.5');
                       const sleepVal = parseFloat(localStorage.getItem(`anjo_sleep_hr_${selectedStudent.id}`) || '2.0');
                       const regarCount = parseInt(localStorage.getItem(`anjo_regar_count_${selectedStudent.id}`) || '0', 10);
@@ -1624,9 +1624,9 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
                             
                             <div className="space-y-2">
-                              <h5 className="text-[10px] uppercase font-black tracking-wider text-indigo-500">Diagnóstico Ecológico</h5>
+                              <h5 className="text-[10px] uppercase font-black tracking-wider text-indigo-500">Diagnostico Ecologico</h5>
                               <p className="text-xs text-slate-650 dark:text-slate-400 font-semibold leading-relaxed">
-                                A Árvore de Desenvolvimento de <strong>{selectedStudent.nome.split(' (')[0]}</strong> é uma representação lúdica de sua rotina. Ela responde de forma viva aos registros das professoras e à proximidade dos familiares.
+                                A Arvore de Desenvolvimento de <strong>{selectedStudent.nome.split(' (')[0]}</strong> e uma representacao ludica de sua rotina. Ela responde de forma viva aos registros das professoras e a proximidade dos familiares.
                               </p>
                             </div>
 
@@ -1639,14 +1639,14 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                   <span> </span> {compliance}%
                                 </div>
                                 <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-medium leading-tight">
-                                  Alimentação saudável e soneca regulada fortalecem o tronco.
+                                  Alimentacao saudavel e soneca regulada fortalecem o tronco.
                                 </span>
                               </div>
 
                               <div className="p-3 bg-slate-50 dark:bg-slate-850 rounded-2xl border border-slate-100/10 space-y-1">
-                                <span className="text-[9px] font-black uppercase text-slate-400 block">Nutrição Afetiva (Familiar)</span>
+                                <span className="text-[9px] font-black uppercase text-slate-400 block">Nutricao Afetiva (Familiar)</span>
                                 <div className="text-lg font-black text-rose-600 flex items-center gap-1 animate-pulse">
-                                  <span>❤</span> {regarCount} regas
+                                  <span> </span> {regarCount} regas
                                 </div>
                                 <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-medium leading-tight">
                                   Curtidas de fotos e regadas dos pais geram frutos vermelhos e flores.
@@ -1654,9 +1654,9 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                               </div>
 
                               <div className="p-3 bg-slate-50 dark:bg-slate-850 rounded-2xl border border-slate-100/10 space-y-1">
-                                <span className="text-[9px] font-black uppercase text-slate-400 block">Fotossíntese de Saúde</span>
+                                <span className="text-[9px] font-black uppercase text-slate-400 block">Fotossintese de Saude</span>
                                 <div className={`text-lg font-black flex items-center gap-1 ${hasAlert ? 'text-amber-500' : 'text-emerald-600'}`}>
-                                  <span> </span> {tempVal}°C
+                                  <span> </span> {tempVal}oC
                                 </div>
                                 <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-medium leading-tight">
                                   {isFever ? 'Alerta de Febre: Folhagem desidratada/amarela.' : 'Temperatura corporal ideal. Clima ameno.'}
@@ -1669,7 +1669,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                   <span> </span> {foodVal}%
                                 </div>
                                 <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-medium leading-tight">
-                                  {isLowFood ? 'Atenção: Pouco apetite hoje.' : 'Excelente aceitação de nutrientes.'}
+                                  {isLowFood ? 'Atencao: Pouco apetite hoje.' : 'Excelente aceitacao de nutrientes.'}
                                 </span>
                               </div>
 
@@ -1679,7 +1679,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
                           
                           <div className="p-3 bg-indigo-50/50 dark:bg-indigo-950/20 rounded-2xl border border-indigo-100/20 text-[10.5px] text-indigo-800 dark:text-indigo-300 font-semibold leading-normal mt-4">
-                              <strong>Dica da Coordenação:</strong> A folhagem de {selectedStudent.nome.split(' (')[0]} está {hasAlert ? 'amarela, sugerindo atenção de saúde.' : 'verde e vibrante!'} Estimule os pais a mandarem "Regadas de Amor" pelo app para continuarem preenchendo o diário com interações afetivas.
+                              <strong>Dica da Coordenacao:</strong> A folhagem de {selectedStudent.nome.split(' (')[0]} esta {hasAlert ? 'amarela, sugerindo atencao de saude.' : 'verde e vibrante!'} Estimule os pais a mandarem "Regadas de Amor" pelo app para continuarem preenchendo o diario com interacoes afetivas.
                           </div>
 
                         </div>
@@ -1701,7 +1701,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   } flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs font-semibold`}>
                     
                     <div className="space-y-0.5 text-left">
-                      <span className="text-[10px] font-black uppercase text-slate-400 block">Turma Sob Análise</span>
+                      <span className="text-[10px] font-black uppercase text-slate-400 block">Turma Sob Analise</span>
                       <h4 className="text-sm font-extrabold text-slate-800 dark:text-white">Bosque do Desenvolvimento Coletivo</h4>
                     </div>
 
@@ -1732,15 +1732,15 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                           isDark ? 'bg-slate-900/40 border-slate-800 text-slate-500' : 'bg-slate-50 border-slate-200 text-slate-400'
                         } font-bold text-xs space-y-1.5`}>
                           <span> </span>
-                          <p>Não há alunos matriculados nesta turma para compor o Bosque.</p>
-                          <p className="text-[10px] text-slate-400 font-normal">Altere o nome da sala dos alunos no painel de turmas para vinculá-los aqui.</p>
+                          <p>Nao ha alunos matriculados nesta turma para compor o Bosque.</p>
+                          <p className="text-[10px] text-slate-400 font-normal">Altere o nome da sala dos alunos no painel de turmas para vincula-los aqui.</p>
                         </div>
                       );
                     }
 
                     // Calculate class averages for the grove
                     const avgCompliance = Math.round(classStudents.reduce((acc, s) => {
-                      const food = parseInt(localStorage.getItem(`anjo_almoço_pct_${s.id}`) || '90', 10);
+                      const food = parseInt(localStorage.getItem(`anjo_almoco_pct_${s.id}`) || '90', 10);
                       const sleep = parseFloat(localStorage.getItem(`anjo_sleep_hr_${s.id}`) || '2.0');
                       return acc + Math.min(100, Math.max(10, Math.round((food + (sleep / 3 * 100)) / 2)));
                     }, 0) / classStudents.length);
@@ -1759,12 +1759,12 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                           
                           
                           <div className="absolute top-6 left-8 w-10 h-10 rounded-full bg-amber-400/20 blur-sm"></div>
-                          <div className="absolute top-10 right-16 bg-white/70 dark:bg-slate-800/40 px-3 py-1 rounded-full text-[9px] font-bold text-slate-400">  Turma Harmônica</div>
+                          <div className="absolute top-10 right-16 bg-white/70 dark:bg-slate-800/40 px-3 py-1 rounded-full text-[9px] font-bold text-slate-400">  Turma Harmonica</div>
 
                           
                           <div className="flex flex-wrap items-end justify-center gap-6 md:gap-12 py-6 z-10 overflow-x-auto">
                             {classStudents.map(student => {
-                              const foodVal = parseInt(localStorage.getItem(`anjo_almoço_pct_${student.id}`) || '90', 10);
+                              const foodVal = parseInt(localStorage.getItem(`anjo_almoco_pct_${student.id}`) || '90', 10);
                               const tempVal = parseFloat(localStorage.getItem(`anjo_temp_deg_${student.id}`) || '36.5');
                               const sleepVal = parseFloat(localStorage.getItem(`anjo_sleep_hr_${student.id}`) || '2.0');
                               const regarCount = parseInt(localStorage.getItem(`anjo_regar_count_${student.id}`) || '0', 10);
@@ -1787,7 +1787,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                     setTreeLevel('individual');
                                   }}
                                   className="flex flex-col items-center cursor-pointer hover:scale-105 transition-all duration-300 group max-w-[120px] text-center"
-                                  title={`Ver Árvore Detalhada de ${student.nome.split(' (')[0]}`}
+                                  title={`Ver Arvore Detalhada de ${student.nome.split(' (')[0]}`}
                                 >
                                   
                                   <svg viewBox="0 0 160 160" className="w-20 h-20 overflow-visible">
@@ -1814,7 +1814,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                       alt={student.nome}
                                       className="w-6 h-6 rounded-full object-cover border border-white dark:border-slate-800 shadow-2xs group-hover:border-indigo-500"
                                     />
-                                    {isFever && <span className="absolute -top-1 -right-1 bg-red-500 text-[8px] text-white p-0.5 rounded-full animate-pulse leading-none">⚠</span>}
+                                    {isFever && <span className="absolute -top-1 -right-1 bg-red-500 text-[8px] text-white p-0.5 rounded-full animate-pulse leading-none">[!]</span>}
                                   </div>
 
                                   <span className="text-[10px] font-black text-slate-800 dark:text-slate-300 truncate w-full mt-1 leading-tight group-hover:text-indigo-600 block">
@@ -1837,10 +1837,10 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                           <div className={`p-4 rounded-2xl border text-left ${
                             isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-205'
                           } shadow-3xs space-y-1`}>
-                            <span className="text-[10px] font-black uppercase text-slate-400 block">Árvores no Bosque</span>
+                            <span className="text-[10px] font-black uppercase text-slate-400 block">Arvores no Bosque</span>
                             <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400">{classStudents.length} unidades</div>
                             <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-normal font-medium">
-                              Cada criança matriculada cultiva sua própria árvore correspondente.
+                              Cada crianca matriculada cultiva sua propria arvore correspondente.
                             </p>
                           </div>
 
@@ -1848,19 +1848,19 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                             isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-205'
                           } shadow-3xs space-y-1`}>
                             <span className="text-[10px] font-black uppercase text-slate-400 block">Clima do Bosque (Harmonia)</span>
-                            <div className="text-2xl font-black text-emerald-600">{avgCompliance}% Saudável</div>
+                            <div className="text-2xl font-black text-emerald-600">{avgCompliance}% Saudavel</div>
                             <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-normal font-medium">
-                              Média de rotina concluída e soneca ideal das crianças hoje.
+                              Media de rotina concluida e soneca ideal das criancas hoje.
                             </p>
                           </div>
 
                           <div className={`p-4 rounded-2xl border text-left ${
                             isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-205'
                           } shadow-3xs space-y-1`}>
-                            <span className="text-[10px] font-black uppercase text-slate-400 block">Precipitação de Afeto (Regadas)</span>
+                            <span className="text-[10px] font-black uppercase text-slate-400 block">Precipitacao de Afeto (Regadas)</span>
                             <div className="text-2xl font-black text-sky-600">{totalClassWaterings} ml total</div>
                             <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-normal font-medium">
-                              Regadas de afeto enviadas pelos familiares e pela direção do Colégio.
+                              Regadas de afeto enviadas pelos familiares e pela direcao do Colegio.
                             </p>
                           </div>
 
@@ -1888,7 +1888,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         <span> </span> Floresta Escolar: Ecossistema de Rotina e Cuidado
                       </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold leading-relaxed">
-                        A união dos bosques de todas as salas forma a Floresta Escolar da nossa instituição. Cada árvore representa o desenvolvimento coletivo e a harmonia das famílias parceiras!
+                        A uniao dos bosques de todas as salas forma a Floresta Escolar da nossa instituicao. Cada arvore representa o desenvolvimento coletivo e a harmonia das familias parceiras!
                       </p>
                     </div>
 
@@ -1896,15 +1896,15 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                       
                       <div className="p-4 bg-slate-50 dark:bg-slate-850 rounded-2xl space-y-1 border border-slate-100/10">
-                        <span className="text-[9px] font-black uppercase text-slate-400 block">Árvores Plantadas (Alunos)</span>
+                        <span className="text-[9px] font-black uppercase text-slate-400 block">Arvores Plantadas (Alunos)</span>
                         <div className="text-2xl font-black text-slate-800 dark:text-slate-100">{students.length}  </div>
                         <span className="text-[10px] text-slate-400 font-medium block">Total de ecossistemas individuais monitorados.</span>
                       </div>
 
                       <div className="p-4 bg-slate-50 dark:bg-slate-850 rounded-2xl space-y-1 border border-slate-100/10">
-                        <span className="text-[9px] font-black uppercase text-slate-400 block">Oxigênio Pedagógico (Harmonia)</span>
+                        <span className="text-[9px] font-black uppercase text-slate-400 block">Oxigenio Pedagogico (Harmonia)</span>
                         <div className="text-2xl font-black text-emerald-600">86% OK</div>
-                        <span className="text-[10px] text-slate-400 font-medium block">Média geral de conformidade das salas escolares de hoje.</span>
+                        <span className="text-[10px] text-slate-400 font-medium block">Media geral de conformidade das salas escolares de hoje.</span>
                       </div>
 
                       <div className="p-4 bg-slate-50 dark:bg-slate-850 rounded-2xl space-y-1 border border-slate-100/10">
@@ -1938,7 +1938,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                           
                           // Class average wellness
                           const avgCompliance = classStudents.length === 0 ? 0 : Math.round(classStudents.reduce((acc, s) => {
-                            const food = parseInt(localStorage.getItem(`anjo_almoço_pct_${s.id}`) || '90', 10);
+                            const food = parseInt(localStorage.getItem(`anjo_almoco_pct_${s.id}`) || '90', 10);
                             const sleep = parseFloat(localStorage.getItem(`anjo_sleep_hr_${s.id}`) || '2.0');
                             return acc + Math.min(100, Math.max(10, Math.round((food + (sleep / 3 * 100)) / 2)));
                           }, 0) / classStudents.length);
@@ -1967,7 +1967,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                 <div className="space-y-1">
                                   <div className="flex justify-between text-[9px] font-black uppercase text-slate-400">
                                     <span>Clima: {avgCompliance}%</span>
-                                    <span>{classStudents.length} Árvores</span>
+                                    <span>{classStudents.length} Arvores</span>
                                   </div>
                                   <div className="h-1.5 w-28 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                     <div 
@@ -1992,10 +1992,10 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     
                     <div className="flex items-center justify-between p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/40 rounded-2xl gap-4">
                       <div className="flex items-center gap-2.5 text-xs text-emerald-800 dark:text-emerald-300">
-                        <span className="text-xl">☔</span>
+                        <span className="text-xl"> </span>
                         <div>
-                          <strong className="font-bold block mb-0.5">Irrigação Geral Escolar</strong>
-                          Selecione esta ação para enviar uma notificação de carinho e afeto coletivo para todos os familiares cadastrados no Anjinho!
+                          <strong className="font-bold block mb-0.5">Irrigacao Geral Escolar</strong>
+                          Selecione esta acao para enviar uma notificacao de carinho e afeto coletivo para todos os familiares cadastrados no Anjinho!
                         </div>
                       </div>
                       <button
@@ -2007,7 +2007,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                           });
                           setTimeout(() => {
                             setIsWateringAnimate(false);
-                            alert('☔ Chuva de Afeto enviada! Todos os familiares receberam um convite de regada de amor e todas as árvores ganharam +1 fruto florido!');
+                            alert('  Chuva de Afeto enviada! Todos os familiares receberam um convite de regada de amor e todas as arvores ganharam +1 fruto florido!');
                           }, 1000);
                           loadData();
                           window.dispatchEvent(new Event('anjo_user_updated'));
@@ -2026,7 +2026,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
             </div>
           ) : (
             // =========================================================================
-            // VIEW MODE 2: CONVENTIONAL CHARTS (RELATÓRIOS E LISTAS TRADICIONAIS)     
+            // VIEW MODE 2: CONVENTIONAL CHARTS (RELATORIOS E LISTAS TRADICIONAIS)     
             // =========================================================================
             <div className="space-y-6 animate-fade-in">
               
@@ -2040,7 +2040,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       : 'text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300'
                   }`}
                 >
-                    Monitor de Cuidados & Saúde Diária
+                    Monitor de Cuidados & Saude Diaria
                 </button>
                 <button
                   onClick={() => setChartsSubTab('strategic')}
@@ -2050,7 +2050,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       : 'text-slate-400 hover:text-slate-600 dark:text-slate-500 dark:hover:text-slate-300'
                   }`}
                 >
-                    Indicadores Estratégicos & Evasão <span className="bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 text-[9px] px-1.5 py-0.5 rounded-full font-extrabold font-mono">Novo</span>
+                    Indicadores Estrategicos & Evasao <span className="bg-rose-100 dark:bg-rose-950/50 text-rose-600 dark:text-rose-400 text-[9px] px-1.5 py-0.5 rounded-full font-extrabold font-mono">Novo</span>
                 </button>
               </div>
 
@@ -2063,7 +2063,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   } shadow-xs`}>
                     
                     <h4 className="text-sm font-extrabold text-slate-850 flex items-center gap-1">
-                      <span> </span> Indicadores Médios dos Alunos
+                      <span> </span> Indicadores Medios dos Alunos
                     </h4>
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -2075,29 +2075,29 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         </div>
                         <div className="text-2xl font-black text-emerald-600">86%</div>
                         <p className="text-[10px] text-slate-400 leading-normal">
-                          Média de papinhas e lanchinhos aceitos pelas crianças esta semana.
+                          Media de papinhas e lanchinhos aceitos pelas criancas esta semana.
                         </p>
                       </div>
 
                       <div className="p-4 bg-slate-50 dark:bg-slate-850 rounded-2xl border border-slate-100/10 space-y-2">
                         <div className="flex items-center justify-between text-xs text-slate-500 font-bold">
-                          <span>Média de Soneca Diária</span>
+                          <span>Media de Soneca Diaria</span>
                           <span> </span>
                         </div>
                         <div className="text-2xl font-black text-indigo-600">2,1h</div>
                         <p className="text-[10px] text-slate-400 leading-normal">
-                          Duração média de repouso vespertino registrado pelos professores.
+                          Duracao media de repouso vespertino registrado pelos professores.
                         </p>
                       </div>
 
                       <div className="p-4 bg-slate-50 dark:bg-slate-850 rounded-2xl border border-slate-100/10 space-y-2">
                         <div className="flex items-center justify-between text-xs text-slate-500 font-bold">
-                          <span>Adesão a Remédios</span>
-                          <span>💊</span>
+                          <span>Adesao a Remedios</span>
+                          <span>  </span>
                         </div>
                         <div className="text-2xl font-black text-rose-600">100%</div>
                         <p className="text-[10px] text-slate-400 leading-normal">
-                          Administrações de medicamentos efetuadas rigorosamente conforme receita.
+                          Administracoes de medicamentos efetuadas rigorosamente conforme receita.
                         </p>
                       </div>
 
@@ -2109,14 +2109,14 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         <div className="space-y-1 text-left">
                           <div className="flex items-center gap-2">
                             <span className="text-xs font-black uppercase text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
-                              <span> </span> Rastreamento 360º de Atenção Individual
+                              <span> </span> Rastreamento 360o de Atencao Individual
                             </span>
                             <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 text-[10px] font-extrabold">
                               6 Pilares de Cuidado
                             </span>
                           </div>
                           <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                            Painel completo do diretor: temperatura, nutrição, sono, higiene/fraldas, medicação prescrita e desenvolvimento sócioemocional.
+                            Painel completo do diretor: temperatura, nutricao, sono, higiene/fraldas, medicacao prescrita e desenvolvimento socioemocional.
                           </p>
                         </div>
 
@@ -2142,7 +2142,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                 : 'bg-rose-100 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 hover:bg-rose-200'
                             }`}
                           >
-                            <span> </span> Apenas Alertas / Observação
+                            <span> </span> Apenas Alertas / Observacao
                           </button>
                         </div>
                       </div>
@@ -2162,7 +2162,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                             type="text"
                             value={rastreamentoSearch}
                             onChange={(e) => setRastreamentoSearch(e.target.value)}
-                            placeholder="Buscar aluno por nome, sala ou responsável..."
+                            placeholder="Buscar aluno por nome, sala ou responsavel..."
                             className={`w-full pl-9 pr-3 py-2 rounded-xl border text-xs font-medium ${
                               isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-800'
                             }`}
@@ -2190,7 +2190,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       <div className="space-y-3">
                         {students
                           .filter(s => {
-                            const foodVal = parseInt(localStorage.getItem(`anjo_almoço_pct_${s.id}`) || (s.id === 'aluno_1' ? '30' : s.id === 'aluno_2' ? '45' : '90'), 10);
+                            const foodVal = parseInt(localStorage.getItem(`anjo_almoco_pct_${s.id}`) || (s.id === 'aluno_1' ? '30' : s.id === 'aluno_2' ? '45' : '90'), 10);
                             const tempVal = parseFloat(localStorage.getItem(`anjo_temp_deg_${s.id}`) || (s.id === 'aluno_1' ? '38.2' : s.id === 'aluno_4' ? '37.9' : '36.5'));
                             const sleepVal = parseFloat(localStorage.getItem(`anjo_sleep_hr_${s.id}`) || (s.id === 'aluno_2' ? '0.5' : '2.0'));
                             const isAlert = foodVal < 50 || tempVal >= 37.8 || sleepVal < 1.0;
@@ -2207,33 +2207,33 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                             return true;
                           })
                           .map(s => {
-                            const foodVal = parseInt(localStorage.getItem(`anjo_almoço_pct_${s.id}`) || (s.id === 'aluno_1' ? '30' : s.id === 'aluno_2' ? '45' : '90'), 10);
+                            const foodVal = parseInt(localStorage.getItem(`anjo_almoco_pct_${s.id}`) || (s.id === 'aluno_1' ? '30' : s.id === 'aluno_2' ? '45' : '90'), 10);
                             const tempVal = parseFloat(localStorage.getItem(`anjo_temp_deg_${s.id}`) || (s.id === 'aluno_1' ? '38.2' : s.id === 'aluno_4' ? '37.9' : '36.5'));
                             const sleepVal = parseFloat(localStorage.getItem(`anjo_sleep_hr_${s.id}`) || (s.id === 'aluno_2' ? '0.5' : '2.0'));
                             
                             const diaperStatus = localStorage.getItem(`anjo_diaper_${s.id}`) || (
-                              s.id === 'aluno_1' ? '3 trocas (Fezes Moles/Atenção)' :
+                              s.id === 'aluno_1' ? '3 trocas (Fezes Moles/Atencao)' :
                               s.id === 'aluno_3' ? '2 trocas (Acompanhamento)' :
                               '3 trocas (Aspecto Normal)'
                             );
 
                             const medStatus = localStorage.getItem(`anjo_med_${s.id}`) || (
-                              s.id === 'aluno_1' ? 'Paracetamol 10mg/mL (12:00 ✓)' :
-                              s.id === 'aluno_4' ? 'Amoxicilina (Pendente 15:30 ⏰)' :
+                              s.id === 'aluno_1' ? 'Paracetamol 10mg/mL (12:00  )' :
+                              s.id === 'aluno_4' ? 'Amoxicilina (Pendente 15:30 [T])' :
                               'Sem receita para hoje'
                             );
 
                             const emotionalStatus = localStorage.getItem(`anjo_emotional_${s.id}`) || (
                               s.id === 'aluno_1' ? 'Irritabilidade / Choro Dificultado' :
-                              s.id === 'aluno_2' ? 'Agitação no Repouso / Recusa de Chupeta' :
+                              s.id === 'aluno_2' ? 'Agitacao no Repouso / Recusa de Chupeta' :
                               s.id === 'aluno_4' ? 'Encaminhado p/ Fonoaudiologia' :
                               'Calmo, Participativo e Comunicativo'
                             );
 
-                            const isAlert = tempVal >= 37.8 || foodVal < 50 || sleepVal < 1.0 || diaperStatus.includes('Atenção') || medStatus.includes('Pendente');
+                            const isAlert = tempVal >= 37.8 || foodVal < 50 || sleepVal < 1.0 || diaperStatus.includes('Atencao') || medStatus.includes('Pendente');
                             const isObservation = !isAlert && (tempVal >= 37.3 || foodVal < 70 || emotionalStatus.includes('Choro') || emotionalStatus.includes('Encaminhado'));
 
-                            const parentContact = s.contatoEmergencia?.nome || 'Clarice Souza (Mãe)';
+                            const parentContact = s.contatoEmergencia?.nome || 'Clarice Souza (Mae)';
                             const parentPhone = s.contatoEmergencia?.telefone || '(11) 98765-4321';
 
                             return (
@@ -2264,7 +2264,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                         </span>
                                       </div>
                                       <p className="text-[11px] text-slate-500 font-medium">
-                                        Responsável: <strong className="text-slate-700 dark:text-slate-300">{parentContact}</strong> • {parentPhone}
+                                        Responsavel: <strong className="text-slate-700 dark:text-slate-300">{parentContact}</strong>   {parentPhone}
                                       </p>
                                     </div>
                                   </div>
@@ -2278,7 +2278,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                         ? 'bg-amber-100 text-amber-800 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-300'
                                         : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-300'
                                     }`}>
-                                      {isAlert ? '  ATENÇÁO PRIORITÁRIA' : isObservation ? '⚠ EM OBSERVAÇÁO' : '✓ ROTINA REGISTRADA EM DIA'}
+                                      {isAlert ? '  ATENCAO PRIORITARIA' : isObservation ? '[!] EM OBSERVACAO' : '  ROTINA REGISTRADA EM DIA'}
                                     </span>
                                   </div>
                                 </div>
@@ -2291,17 +2291,17 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                     tempVal >= 37.8 ? 'bg-rose-100/60 border-rose-300 text-rose-900 font-extrabold' : 'bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700'
                                   }`}>
                                     <span className="text-[9px] font-bold uppercase text-slate-400 block">  Temperatura</span>
-                                    <span className="font-black text-slate-800 dark:text-slate-100">{tempVal}°C</span>
-                                    <span className="text-[9px] block text-slate-500 font-medium">{tempVal >= 37.8 ? 'Febril (Medição 10:15)' : 'Estável'}</span>
+                                    <span className="font-black text-slate-800 dark:text-slate-100">{tempVal}oC</span>
+                                    <span className="text-[9px] block text-slate-500 font-medium">{tempVal >= 37.8 ? 'Febril (Medicao 10:15)' : 'Estavel'}</span>
                                   </div>
 
                                   
                                   <div className={`p-2 rounded-xl border text-xs space-y-0.5 ${
                                     foodVal < 50 ? 'bg-amber-100/60 border-amber-300 text-amber-900 font-extrabold' : 'bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700'
                                   }`}>
-                                    <span className="text-[9px] font-bold uppercase text-slate-400 block">  Nutrição / Almoço</span>
+                                    <span className="text-[9px] font-bold uppercase text-slate-400 block">  Nutricao / Almoco</span>
                                     <span className="font-black text-slate-800 dark:text-slate-100">{foodVal}%</span>
-                                    <span className="text-[9px] block text-slate-500 font-medium">{foodVal < 50 ? 'Recusa Alimentar' : 'Ótima Aceitação'}</span>
+                                    <span className="text-[9px] block text-slate-500 font-medium">{foodVal < 50 ? 'Recusa Alimentar' : 'Otima Aceitacao'}</span>
                                   </div>
 
                                   
@@ -2321,13 +2321,13 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                   <div className={`p-2 rounded-xl border text-xs space-y-0.5 ${
                                     medStatus.includes('Pendente') ? 'bg-amber-100/60 border-amber-300' : 'bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700'
                                   }`}>
-                                    <span className="text-[9px] font-bold uppercase text-slate-400 block">💊 Medicação</span>
+                                    <span className="text-[9px] font-bold uppercase text-slate-400 block">   Medicacao</span>
                                     <span className="font-black text-slate-800 dark:text-slate-100 text-[10px] block truncate">{medStatus}</span>
                                   </div>
 
                                   
                                   <div className="p-2 rounded-xl border bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700 text-xs space-y-0.5">
-                                    <span className="text-[9px] font-bold uppercase text-slate-400 block">  Sócioemocional</span>
+                                    <span className="text-[9px] font-bold uppercase text-slate-400 block">  Socioemocional</span>
                                     <span className="font-extrabold text-indigo-600 dark:text-indigo-400 text-[10px] block truncate">{emotionalStatus}</span>
                                   </div>
 
@@ -2337,7 +2337,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                 <div className="p-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/50 text-xs text-slate-600 dark:text-slate-300 flex items-start gap-2">
                                   <FileText className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
                                   <p className="leading-relaxed text-[11px] font-medium">
-                                    <strong className="text-slate-800 dark:text-slate-200">Relato da Professora:</strong> "{s.observacoes || 'Criança apresentou boa disposição nas vivências pedagógicas e interação harmoniosa com o grupo.'}"
+                                    <strong className="text-slate-800 dark:text-slate-200">Relato da Professora:</strong> "{s.observacoes || 'Crianca apresentou boa disposicao nas vivencias pedagogicas e interacao harmoniosa com o grupo.'}"
                                   </p>
                                 </div>
 
@@ -2349,7 +2349,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                       onClick={() => setSelectedStudent360(s)}
                                       className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
                                     >
-                                      <Eye className="w-3.5 h-3.5" /> Ficha 360º Completa
+                                      <Eye className="w-3.5 h-3.5" /> Ficha 360o Completa
                                     </button>
 
                                     <button
@@ -2381,23 +2381,23 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                       const now = new Date();
                                       const dateFormatted = now.toLocaleDateString('pt-BR');
                                       const timeFormatted = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                                      const waMsg = `*🏫 Colégio Anjinho Escolar Bauru — Direção Geral*\n\n` +
-                                        `Olá, responsáveis pelo(a) *${studentShortName}*!\n` +
-                                        `Aqui é a Diretora *Nilva Amaral*. Gostaria de alinhar com vocês algumas informações sobre a rotina e o bem-estar do(a) ${studentShortName}.\n\n` +
-                                        `_Data:_ ${dateFormatted} às ${timeFormatted}\n` +
-                                        `_Colégio Anjinho Escolar — Cuidado, Afeto e Excelência Pedagógica_  `;
+                                      const waMsg = `*   Colegio Anjinho Escolar Bauru - Direcao Geral*\n\n` +
+                                        `Ola, responsaveis pelo(a) *${studentShortName}*!\n` +
+                                        `Aqui e a Diretora *Nilva Amaral*. Gostaria de alinhar com voces algumas informacoes sobre a rotina e o bem-estar do(a) ${studentShortName}.\n\n` +
+                                        `_Data:_ ${dateFormatted} as ${timeFormatted}\n` +
+                                        `_Colegio Anjinho Escolar - Cuidado, Afeto e Excelencia Pedagogica_  `;
 
                                       if (formattedPhone) {
                                         window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(waMsg)}`, '_blank');
                                       } else {
                                         window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(waMsg)}`, '_blank');
                                       }
-                                      setActionSuccessMessage(`  WhatsApp aberto com o contato da família de ${studentShortName} (${parentContact})!`);
+                                      setActionSuccessMessage(`  WhatsApp aberto com o contato da familia de ${studentShortName} (${parentContact})!`);
                                       setTimeout(() => setActionSuccessMessage(null), 4500);
                                     }}
                                     className="px-3 py-1.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800 text-xs font-extrabold flex items-center gap-1.5 cursor-pointer transition-all"
                                   >
-                                    <PhoneCall className="w-3.5 h-3.5 text-emerald-600" /> Chamar Família (WhatsApp)
+                                    <PhoneCall className="w-3.5 h-3.5 text-emerald-600" /> Chamar Familia (WhatsApp)
                                   </button>
                                 </div>
                               </div>
@@ -2416,10 +2416,10 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     <div className="space-y-2 text-left">
                       <span className="text-[10px] font-black uppercase tracking-wider text-amber-500">Engajamento de Afeto</span>
                       <h4 className="text-sm font-extrabold text-slate-850 flex items-center gap-1">
-                        <span> </span> Ranking de Participação dos Pais
+                        <span> </span> Ranking de Participacao dos Pais
                       </h4>
                       <p className="text-[11px] text-slate-500 dark:text-slate-400 font-semibold leading-relaxed">
-                        As salas onde os familiares mais interagem com curtidas e regadas. Estimule o canal para aumentar a fidelidade das famílias!
+                        As salas onde os familiares mais interagem com curtidas e regadas. Estimule o canal para aumentar a fidelidade das familias!
                       </p>
                     </div>
 
@@ -2446,7 +2446,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     </div>
 
                     <div className="p-3 bg-amber-50 dark:bg-amber-950/20 rounded-2xl border border-amber-200/30 text-[10px] text-amber-800 dark:text-amber-300 font-bold leading-normal text-left">
-                        <strong>Dica da Direção:</strong> envie comunicados no mural de avisos convidando os pais para curtirem o diário. Escolas com engajamento acima de 50 pontos retêm 40% mais famílias na matrícula anual!
+                        <strong>Dica da Direcao:</strong> envie comunicados no mural de avisos convidando os pais para curtirem o diario. Escolas com engajamento acima de 50 pontos retem 40% mais familias na matricula anual!
                     </div>
 
                   </div>
@@ -2454,7 +2454,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </div>
               ) : (
                 // =========================================================================
-                //   PAINEL DE INDICADORES ESTRATÉGICOS (ANJINHO ANALYTICS)
+                //   PAINEL DE INDICADORES ESTRATEGICOS (ANJINHO ANALYTICS)
                 // =========================================================================
                 <div className="space-y-6">
                   
@@ -2463,12 +2463,12 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
                   }`}>
                     <div className="space-y-1">
-                      <span className="text-[10px] font-black uppercase text-indigo-500 block tracking-wider">Direção Escolar Avançada</span>
+                      <span className="text-[10px] font-black uppercase text-indigo-500 block tracking-wider">Direcao Escolar Avancada</span>
                       <h4 className="text-sm font-black text-slate-800 dark:text-white flex items-center gap-1.5">
-                        <span> </span> Indicadores Estratégicos & Governança Pedagógica
+                        <span> </span> Indicadores Estrategicos & Governanca Pedagogica
                       </h4>
                       <p className="text-[11px] text-slate-400 font-semibold leading-normal">
-                        Monitore a evasão escolar, desenvolvimento cognitivo, tempo de tela e comportamento para intervenções precoces eficientes.
+                        Monitore a evasao escolar, desenvolvimento cognitivo, tempo de tela e comportamento para intervencoes precoces eficientes.
                       </p>
                     </div>
 
@@ -2501,14 +2501,14 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         <div className="flex items-center justify-between">
                           <h5 className="text-xs font-black uppercase text-slate-500 flex items-center gap-1.5">
                             <span className="p-1.5 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 rounded-lg"> </span> 
-                            1. Frequência Diária & Alerta de Evasão
+                            1. Frequencia Diaria & Alerta de Evasao
                           </h5>
                           <span className="text-[10px] font-extrabold text-slate-400 font-mono">Meta: &gt;90%</span>
                         </div>
 
                         <div className="space-y-4">
                           <p className="text-[11px] font-semibold text-slate-500 leading-relaxed">
-                            Faltas frequentes são os principais sinalizadores de desengajamento familiar, insatisfação ou problemas de saúde. Monitore o risco preventivamente.
+                            Faltas frequentes sao os principais sinalizadores de desengajamento familiar, insatisfacao ou problemas de saude. Monitore o risco preventivamente.
                           </p>
 
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -2519,7 +2519,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                 const attendance = c.name.includes('Maternal I') ? 96 
                                                  : c.name.includes('Maternal II') ? 88 
                                                  : c.name.includes('Jardim I') ? 84 
-                                                 : 74; // Jardim II / Pré has some absentees
+                                                 : 74; // Jardim II / Pre has some absentees
 
                                 const isLow = attendance < 85;
 
@@ -2549,14 +2549,14 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                           ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/30 dark:text-rose-400' 
                                           : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400'
                                       }`}>
-                                        {isLow ? '⚠ Risco de Evasão Alta' : '✓ Saudável'}
+                                        {isLow ? '[!] Risco de Evasao Alta' : '  Saudavel'}
                                       </span>
                                       
                                       <button 
-                                        onClick={() => alert(`  Disparo Preventivo: Uma mensagem automática de carinho e verificação de saúde foi sugerida para a professora de ${c.name} disparar para as famílias com mais de 2 faltas consecutivas!`)}
+                                        onClick={() => alert(`  Disparo Preventivo: Uma mensagem automatica de carinho e verificacao de saude foi sugerida para a professora de ${c.name} disparar para as familias com mais de 2 faltas consecutivas!`)}
                                         className="text-[9px] font-bold text-indigo-600 hover:text-indigo-700 underline cursor-pointer"
                                       >
-                                        Disparar Verificação
+                                        Disparar Verificacao
                                       </button>
                                     </div>
                                   </div>
@@ -2573,14 +2573,14 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         <div className="flex items-center justify-between">
                           <h5 className="text-xs font-black uppercase text-slate-500 flex items-center gap-1.5">
                             <span className="p-1.5 bg-indigo-50 dark:bg-indigo-950/30 text-indigo-600 rounded-lg"> </span> 
-                            2. Identificação Precoce de Atraso no Desenvolvimento
+                            2. Identificacao Precoce de Atraso no Desenvolvimento
                           </h5>
                           <span className="text-[10px] font-extrabold text-amber-500 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-full font-mono">Encaminhamento Precoce</span>
                         </div>
 
                         <div className="space-y-4">
                           <p className="text-[11px] font-semibold text-slate-500 leading-relaxed">
-                            Monitoramento proativo de marcos do desenvolvimento (fala, coordenação motora, socialização). O encaminhamento precoce para especialistas (Fono, Psico, TO) muda o futuro pedagógico da criança!
+                            Monitoramento proativo de marcos do desenvolvimento (fala, coordenacao motora, socializacao). O encaminhamento precoce para especialistas (Fono, Psico, TO) muda o futuro pedagogico da crianca!
                           </p>
 
                           <div className={`p-4 rounded-2xl border ${
@@ -2596,9 +2596,9 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                 <span className="text-sm font-black text-indigo-600 dark:text-indigo-400">5.4%</span>
                               </div>
                               <div className="text-left space-y-0.5">
-                                <span className="text-xs font-black text-slate-800 dark:text-slate-100 block">Sinais de Atenção Identificados</span>
+                                <span className="text-xs font-black text-slate-800 dark:text-slate-100 block">Sinais de Atencao Identificados</span>
                                 <span className="text-[10px] font-medium text-slate-400 block leading-tight">
-                                  Apenas 2 de 37 crianças matriculadas exibiram sinais persistentes de alerta nos relatórios de diários pedagógicos este mês.
+                                  Apenas 2 de 37 criancas matriculadas exibiram sinais persistentes de alerta nos relatorios de diarios pedagogicos este mes.
                                 </span>
                               </div>
                             </div>
@@ -2619,15 +2619,15 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       } shadow-xs`}>
                         <div className="flex items-center justify-between">
                           <h5 className="text-xs font-black uppercase text-slate-500 flex items-center gap-1.5">
-                            <span className="p-1.5 bg-amber-50 dark:bg-amber-950/30 text-amber-600 rounded-lg">🏫</span> 
-                            3. Número de Encaminhamentos Pedagógicos por Turma
+                            <span className="p-1.5 bg-amber-50 dark:bg-amber-950/30 text-amber-600 rounded-lg">  </span> 
+                            3. Numero de Encaminhamentos Pedagogicos por Turma
                           </h5>
-                          <span className="text-[10px] font-extrabold text-slate-400 font-mono">Meta de Equilíbrio: &lt;5 / Sem</span>
+                          <span className="text-[10px] font-extrabold text-slate-400 font-mono">Meta de Equilibrio: &lt;5 / Sem</span>
                         </div>
 
                         <div className="space-y-4">
                           <p className="text-[11px] font-semibold text-slate-500 leading-relaxed">
-                            Encaminhamentos pedagógicos internos excessivos podem indicar problemas de adequação de planejamento, estresse docente ou atividades inadequadas para a idade de maturação da turma.
+                            Encaminhamentos pedagogicos internos excessivos podem indicar problemas de adequacao de planejamento, estresse docente ou atividades inadequadas para a idade de maturacao da turma.
                           </p>
 
                           <div className="space-y-3">
@@ -2662,15 +2662,15 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                               ? 'bg-amber-100 text-amber-800 hover:bg-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:hover:bg-amber-900/60' 
                                               : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:text-indigo-400 dark:hover:bg-indigo-900/60'
                                           }`}
-                                          title="Clique para ver ou lançar novos encaminhamentos para esta turma"
+                                          title="Clique para ver ou lancar novos encaminhamentos para esta turma"
                                         >
-                                          {count} encaminhamentos ⚙
+                                          {count} encaminhamentos  
                                         </button>
                                       </div>
 
                                       {isHigh && (
                                         <span className="text-[9px] text-amber-600 font-extrabold flex items-center gap-0.5" title="Recomenda-se revisar planejamento">
-                                          ⚠ Alto (Revisar Planejamento)
+                                          [!] Alto (Revisar Planejamento)
                                         </span>
                                       )}
                                     </div>
@@ -2688,23 +2688,23 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         <div className="flex items-center justify-between">
                           <h5 className="text-xs font-black uppercase text-slate-500 flex items-center gap-1.5">
                             <span className="p-1.5 bg-rose-50 dark:bg-rose-950/30 text-rose-600 rounded-lg"> </span> 
-                            4. Exposição ao Tempo de Tela (Dispositivos)
+                            4. Exposicao ao Tempo de Tela (Dispositivos)
                           </h5>
-                          <span className="text-[10px] font-extrabold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full font-mono">Meta: Mínimo ou Zero  </span>
+                          <span className="text-[10px] font-extrabold text-emerald-500 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full font-mono">Meta: Minimo ou Zero  </span>
                         </div>
 
                         <div className="space-y-4 text-left">
                           <p className="text-[11px] font-semibold text-slate-500 leading-relaxed">
-                            A Sociedade Brasileira de Pediatria e a OMS recomendam tempo de tela <strong>ZERO</strong> para crianças menores de 2 anos, e máximo de 1 hora diária para 3 a 5 anos.
+                            A Sociedade Brasileira de Pediatria e a OMS recomendam tempo de tela <strong>ZERO</strong> para criancas menores de 2 anos, e maximo de 1 hora diaria para 3 a 5 anos.
                           </p>
 
                           <div className="p-4 rounded-2xl border border-dashed border-emerald-300 dark:border-emerald-800/40 bg-emerald-50/40 dark:bg-emerald-950/10 space-y-3">
                             <div className="flex items-center gap-2.5 text-xs text-emerald-800 dark:text-emerald-400">
                               <span className="text-lg"> </span>
                               <div>
-                                <span className="font-extrabold block">Certificação Anjinho de Zero Tela na Escola</span>
+                                <span className="font-extrabold block">Certificacao Anjinho de Zero Tela na Escola</span>
                                 <p className="text-[10px] leading-relaxed font-bold mt-0.5 text-slate-600 dark:text-slate-400">
-                                  Todas as atividades registradas no maternal e jardim hoje indicam <strong>0 minutos</strong> de exposição a computadores, TVs ou tablets. A tecnologia no colégio é de uso estrito e exclusivo dos professores para governança e relatórios familiares!
+                                  Todas as atividades registradas no maternal e jardim hoje indicam <strong>0 minutos</strong> de exposicao a computadores, TVs ou tablets. A tecnologia no colegio e de uso estrito e exclusivo dos professores para governanca e relatorios familiares!
                                 </p>
                               </div>
                             </div>
@@ -2722,13 +2722,13 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
                       } shadow-xs text-left`}>
                         <h5 className="text-xs font-black uppercase text-slate-500 flex items-center gap-1.5">
-                          <span className="p-1.5 bg-purple-50 dark:bg-purple-950/30 text-purple-600 rounded-lg">⏳</span> 
-                          5. Distribuição de Rotina
+                          <span className="p-1.5 bg-purple-50 dark:bg-purple-950/30 text-purple-600 rounded-lg"> </span> 
+                          5. Distribuicao de Rotina
                         </h5>
 
                         <div className="space-y-4">
                           <p className="text-[11px] font-semibold text-slate-500 leading-normal">
-                            Equilíbrio saudável conforme a Base Nacional Comum Curricular (BNCC), onde o brincar livre e a exploração são os eixos essenciais de aprendizagem.
+                            Equilibrio saudavel conforme a Base Nacional Comum Curricular (BNCC), onde o brincar livre e a exploracao sao os eixos essenciais de aprendizagem.
                           </p>
 
                           <div className="space-y-3 text-[11px] font-bold">
@@ -2756,7 +2756,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                             <div className="space-y-1">
                               <div className="flex justify-between text-[10px]">
                                 <span className="text-slate-500 dark:text-slate-400 font-extrabold">  Cuidados Especiais & Soneca</span>
-                                <span className="font-extrabold">20% <span className="text-[9px] text-slate-400 font-semibold">(Necessário)</span></span>
+                                <span className="font-extrabold">20% <span className="text-[9px] text-slate-400 font-semibold">(Necessario)</span></span>
                               </div>
                               <div className="h-2 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
                                 <div className="h-full bg-slate-400 dark:bg-slate-600 rounded-full" style={{ width: '20%' }}></div>
@@ -2764,7 +2764,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                             </div>
 
                             <div className="p-2.5 rounded-xl bg-indigo-50/50 dark:bg-indigo-950/30 text-[10px] text-indigo-800 dark:text-indigo-400 leading-normal font-semibold">
-                                <strong>Status Pedagógico:</strong> Equilíbrio excelente detectado! A proporção de brincadeiras e interações respeita os direitos de aprendizagem infantil.
+                                <strong>Status Pedagogico:</strong> Equilibrio excelente detectado! A proporcao de brincadeiras e interacoes respeita os direitos de aprendizagem infantil.
                             </div>
                           </div>
                         </div>
@@ -2775,21 +2775,21 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
                       } shadow-xs text-left`}>
                         <h5 className="text-xs font-black uppercase text-slate-500 flex items-center gap-1.5">
-                          <span className="p-1.5 bg-sky-50 dark:bg-sky-950/30 text-sky-600 rounded-lg">❤</span> 
-                          6. Engajamento & Participação Familiar
+                          <span className="p-1.5 bg-sky-50 dark:bg-sky-950/30 text-sky-600 rounded-lg"> </span> 
+                          6. Engajamento & Participacao Familiar
                         </h5>
 
                         <div className="space-y-3">
                           <p className="text-[11px] font-semibold text-slate-500 leading-normal">
-                            Famílias engajadas e que interagem de forma positiva criam alta fidelização de marca escolar e diminuem a evasão letiva.
+                            Familias engajadas e que interagem de forma positiva criam alta fidelizacao de marca escolar e diminuem a evasao letiva.
                           </p>
 
                           <div className="p-3.5 rounded-2xl bg-sky-50/50 dark:bg-sky-950/30 border border-sky-100 dark:border-sky-900/40 text-center space-y-1">
-                            <span className="text-[9px] font-black uppercase text-slate-400 block tracking-wider">Adesão Escolar Ativa</span>
+                            <span className="text-[9px] font-black uppercase text-slate-400 block tracking-wider">Adesao Escolar Ativa</span>
                             <div className="text-3xl font-black text-sky-600">88%</div>
-                            <span className="text-[10px] text-sky-800 dark:text-sky-300 font-extrabold block">Participação em Enquetes & Curtidas</span>
+                            <span className="text-[10px] text-sky-800 dark:text-sky-300 font-extrabold block">Participacao em Enquetes & Curtidas</span>
                             <p className="text-[9px] text-slate-400 leading-normal font-bold">
-                              Excelente! Pais ativamente integrados no processo elevam a rematrícula projetada para 94% no próximo período!
+                              Excelente! Pais ativamente integrados no processo elevam a rematricula projetada para 94% no proximo periodo!
                             </p>
                           </div>
                         </div>
@@ -2800,26 +2800,26 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'
                       } shadow-xs text-left`}>
                         <h5 className="text-xs font-black uppercase text-slate-500 flex items-center gap-1.5">
-                          <span className="p-1.5 bg-rose-50 dark:bg-rose-950/30 text-rose-600 rounded-lg">⚖</span> 
-                          7. Comportamento & Mediação de Conflitos
+                          <span className="p-1.5 bg-rose-50 dark:bg-rose-950/30 text-rose-600 rounded-lg"> </span> 
+                          7. Comportamento & Mediacao de Conflitos
                         </h5>
 
                         <div className="space-y-3">
                           <p className="text-[11px] font-semibold text-slate-500 leading-normal">
-                            Ocorrências recorrentes de agressividade ou isolamento requerem mediação precoce para evitar comportamentos atípicos e bullying infantil no Pré II e Fundamental I.
+                            Ocorrencias recorrentes de agressividade ou isolamento requerem mediacao precoce para evitar comportamentos atipicos e bullying infantil no Pre II e Fundamental I.
                           </p>
 
                           <div className="p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/20 border border-amber-200/50 text-amber-800 dark:text-amber-400 space-y-2">
-                            <span className="font-extrabold text-[10px] uppercase block tracking-wider">⚠ Registro Leve de Atrito (Pré II)</span>
+                            <span className="font-extrabold text-[10px] uppercase block tracking-wider">[!] Registro Leve de Atrito (Pre II)</span>
                             <p className="text-[10px] font-bold leading-normal">
-                              2 ocorrências pontuais de empurrões/disputa de brinquedos anotadas hoje. Professores conduziram din de acolhimento em roda imediatamente.
+                              2 ocorrencias pontuais de empurroes/disputa de brinquedos anotadas hoje. Professores conduziram din de acolhimento em roda imediatamente.
                             </p>
                             
                             <button
                               onClick={() => setShowStrategicConflictModal(true)}
                               className="w-full mt-1.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white font-black text-[9px] rounded-lg cursor-pointer transition-colors uppercase tracking-wider"
                             >
-                              Ver Plano de Mediação Escolar
+                              Ver Plano de Mediacao Escolar
                             </button>
                           </div>
                         </div>
@@ -2845,7 +2845,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800 pb-4">
             <div>
               <h3 className="text-base font-black text-slate-900 dark:text-white flex items-center gap-1.5">
-                <span> 🏫</span> Corpo Docente & Equipe Escolar
+                <span>   </span> Corpo Docente & Equipe Escolar
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold">
                 Quadro geral de professores, coordenadoras e colaboradores cadastrados com suas respectivas turmas vinculadas.
@@ -2898,7 +2898,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                             {t.tipo}
                           </span>
                           <span className="text-[9px] text-slate-400 font-bold">
-                            PIN: {t.pin || '••••'}
+                            PIN: {t.pin || '    '}
                           </span>
                         </div>
                       </div>
@@ -2906,14 +2906,14 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       <button
                         onClick={() => handleOpenEditTeacher(t)}
                         className="px-2.5 py-1 bg-indigo-50 hover:bg-indigo-100 dark:bg-indigo-950/50 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-300 text-[10px] font-black rounded-lg transition-colors flex items-center gap-1 cursor-pointer shrink-0"
-                        title="Editar Perfil e Vínculos"
+                        title="Editar Perfil e Vinculos"
                       >
                         <Edit className="w-3 h-3" /> Editar
                       </button>
                     </div>
 
                     <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block">
-                      Telefone: {t.telefone || '(Sem Número)'}
+                      Telefone: {t.telefone || '(Sem Numero)'}
                     </span>
 
                     <p className="text-[11px] text-slate-500 leading-relaxed font-medium line-clamp-1">
@@ -2953,7 +2953,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
           >
             <div className="flex items-center justify-between border-b border-slate-100/10 pb-3">
               <h4 className="text-base font-black flex items-center gap-1.5">
-                <span>🏫</span> Criar Nova Turma Escolar
+                <span>  </span> Criar Nova Turma Escolar
               </h4>
               <button 
                 type="button"
@@ -2992,8 +2992,8 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   >
                     <option value=" ">  Ursinho</option>
                     <option value=" ">  Mamadeira</option>
-                    <option value=" ">  Bebê</option>
-                    <option value=" ">  Balão</option>
+                    <option value=" ">  Bebe</option>
+                    <option value=" ">  Balao</option>
                     <option value=" ">  Pintor</option>
                     <option value=" ">  Pintinho</option>
                     <option value=" ">  Abelhinha</option>
@@ -3003,7 +3003,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase">Faixa Etária</label>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase">Faixa Etaria</label>
                   <input
                     type="text"
                     value={newClassAge}
@@ -3016,7 +3016,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase">Capacidade Máxima</label>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase">Capacidade Maxima</label>
                   <input
                     type="number"
                     value={newClassCapacity}
@@ -3032,11 +3032,11 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Foco Pedagógico / Descrição</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">Foco Pedagogico / Descricao</label>
                 <textarea
                   value={newClassDesc}
                   onChange={e => setNewClassDesc(e.target.value)}
-                  placeholder="Ex: Estimular coordenação de motricidade fina, início de letramento lúdico..."
+                  placeholder="Ex: Estimular coordenacao de motricidade fina, inicio de letramento ludico..."
                   rows={2}
                   className={`w-full px-3 py-2 text-xs rounded-xl border focus:ring-2 focus:ring-indigo-500/20 outline-none ${
                     isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-white border-slate-205'
@@ -3073,7 +3073,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
           }`}>
             <div className="flex items-center justify-between border-b border-slate-100/10 pb-3">
               <h4 className="text-base font-black flex items-center gap-1.5">
-                <span> 🏫</span> Alocar Professor(a)
+                <span>   </span> Alocar Professor(a)
               </h4>
               <button 
                 onClick={() => setEditingClassroom(null)}
@@ -3085,7 +3085,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
             <div className="space-y-3.5 text-xs font-semibold leading-relaxed">
               <p className="text-slate-500">
-                Selecione o(a) educador(a) responsável para gerenciar as rotinas e diários da turma <strong className="text-indigo-600 font-extrabold">{editingClassroom.name}</strong>:
+                Selecione o(a) educador(a) responsavel para gerenciar as rotinas e diarios da turma <strong className="text-indigo-600 font-extrabold">{editingClassroom.name}</strong>:
               </p>
 
               <div className="space-y-1">
@@ -3122,7 +3122,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 onClick={handleSaveTeacherAssignment}
                 className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-xl transition-all cursor-pointer shadow-3xs"
               >
-                Salvar Vínculo
+                Salvar Vinculo
               </button>
             </div>
           </div>
@@ -3140,7 +3140,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
           >
             <div className="flex items-center justify-between border-b border-slate-100/10 pb-3">
               <div className="flex items-center gap-2">
-                <span className="text-xl p-1.5 bg-indigo-50 dark:bg-indigo-950/50 rounded-xl"> 🏫</span>
+                <span className="text-xl p-1.5 bg-indigo-50 dark:bg-indigo-950/50 rounded-xl">   </span>
                 <div>
                   <h4 className="text-base font-black">Editar Colaborador(a) / Professor(a)</h4>
                   <p className="text-[11px] text-slate-400 font-semibold">Atualize dados cadastrais, PIN e salas vinculadas</p>
@@ -3171,7 +3171,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase">Função / Cargo</label>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase">Funcao / Cargo</label>
                   <select
                     value={editTeacherRole}
                     onChange={e => setEditTeacherRole(e.target.value as any)}
@@ -3188,7 +3188,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-[10px] font-bold text-slate-400 uppercase">PIN de Acesso (4 Dígitos)</label>
+                  <label className="text-[10px] font-bold text-slate-400 uppercase">PIN de Acesso (4 Digitos)</label>
                   <input
                     type="text"
                     maxLength={6}
@@ -3265,7 +3265,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               </div>
 
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Observações / Especialidade</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">Observacoes / Especialidade</label>
                 <textarea
                   rows={2}
                   value={editTeacherObs}
@@ -3299,7 +3299,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   type="submit"
                   className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-xl transition-all cursor-pointer shadow-3xs"
                 >
-                  Salvar Alterações
+                  Salvar Alteracoes
                 </button>
               </div>
             </div>
@@ -3315,7 +3315,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
           }`}>
             <div className="flex items-center justify-between border-b border-slate-100/10 pb-3">
               <h4 className="text-base font-black flex items-center gap-1.5 text-rose-600">
-                <AlertTriangle className="w-5 h-5 text-rose-500" /> Confirmar Exclusão de Turma
+                <AlertTriangle className="w-5 h-5 text-rose-500" /> Confirmar Exclusao de Turma
               </h4>
               <button 
                 onClick={() => setDeletingClassroom(null)}
@@ -3327,21 +3327,21 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
             <div className="space-y-3.5 text-xs font-semibold leading-relaxed">
               <p className={isDark ? 'text-slate-300' : 'text-slate-600'}>
-                Você tem certeza que deseja excluir permanentemente a turma <strong className="text-rose-600 font-extrabold">{deletingClassroom.name}</strong> ({deletingClassroom.emoji})? Esta ação não pode ser desfeita.
+                Voce tem certeza que deseja excluir permanentemente a turma <strong className="text-rose-600 font-extrabold">{deletingClassroom.name}</strong> ({deletingClassroom.emoji})? Esta acao nao pode ser desfeita.
               </p>
 
               
               {getStudentsInClassroom(deletingClassroom.name).length > 0 ? (
                 <div className="p-3.5 rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 text-amber-800 dark:text-amber-300 space-y-1">
-                  <span className="font-black text-[10px] uppercase tracking-wider block">⚠ Alunos Alocados Detectados</span>
+                  <span className="font-black text-[10px] uppercase tracking-wider block">[!] Alunos Alocados Detectados</span>
                   <p className="text-[11px] font-bold">
-                    Existem {getStudentsInClassroom(deletingClassroom.name).length} alunos vinculados a esta sala. Ao excluí-la, as visualizações e relatórios destes alunos podem ficar incompletos até que sejam reordenados para uma nova turma ativa no cadastro.
+                    Existem {getStudentsInClassroom(deletingClassroom.name).length} alunos vinculados a esta sala. Ao exclui-la, as visualizacoes e relatorios destes alunos podem ficar incompletos ate que sejam reordenados para uma nova turma ativa no cadastro.
                   </p>
                 </div>
               ) : (
                 <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-900/40 text-emerald-800 dark:text-emerald-400">
                   <p className="text-[11px] font-bold">
-                    Tudo limpo! Nenhum aluno ativo está alocado atualmente nesta sala.
+                    Tudo limpo! Nenhum aluno ativo esta alocado atualmente nesta sala.
                   </p>
                 </div>
               )}
@@ -3349,9 +3349,9 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               
               {teachers.some(t => t.salaAula?.split(',').includes(deletingClassroom.name)) && (
                 <div className="p-3.5 rounded-xl bg-sky-50 dark:bg-sky-950/20 border border-sky-100 dark:border-sky-900/40 text-sky-800 dark:text-sky-300">
-                  <span className="font-black text-[10px] uppercase tracking-wider block"> 🏫 Vínculo Docente</span>
+                  <span className="font-black text-[10px] uppercase tracking-wider block">    Vinculo Docente</span>
                   <p className="text-[11px] font-bold">
-                    O professor titular vinculado perderá o acesso automático de diário a este grupo, necessitando de uma nova alocação.
+                    O professor titular vinculado perdera o acesso automatico de diario a este grupo, necessitando de uma nova alocacao.
                   </p>
                 </div>
               )}
@@ -3369,7 +3369,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 onClick={() => handleDeleteClassroom(deletingClassroom.name)}
                 className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-black rounded-xl transition-all cursor-pointer shadow-3xs"
               >
-                Confirmar Exclusão  
+                Confirmar Exclusao  
               </button>
             </div>
           </div>
@@ -3385,7 +3385,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
             
             <div className="flex items-center justify-between border-b border-slate-100/10 pb-3">
               <h4 className="text-sm font-black flex items-center gap-1.5 text-indigo-600 dark:text-indigo-400">
-                <BookOpen className="w-5 h-5" /> Protocolo de Identificação Precoce & Triagem
+                <BookOpen className="w-5 h-5" /> Protocolo de Identificacao Precoce & Triagem
               </h4>
               <button 
                 onClick={() => setShowStrategicReferralModal(false)}
@@ -3397,30 +3397,30 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
             <div className="space-y-4 text-xs leading-relaxed font-semibold">
               <p className="text-[11px] text-slate-500">
-                O Anjinho auxilia na identificação de sinais atípicos através de relatos automatizados da rotina pedagógica. Use este painel para organizar a condução ética e acolhedora com os pais.
+                O Anjinho auxilia na identificacao de sinais atipicos atraves de relatos automatizados da rotina pedagogica. Use este painel para organizar a conducao etica e acolhedora com os pais.
               </p>
 
               <div className="space-y-3.5">
                 <div className="p-3 rounded-xl bg-indigo-550/5 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-150 space-y-1.5">
-                  <span className="font-extrabold text-[10px] uppercase text-indigo-700 dark:text-indigo-400 block tracking-wider"> ⚕ Lista de Sinais de Rastreamento Comum</span>
+                  <span className="font-extrabold text-[10px] uppercase text-indigo-700 dark:text-indigo-400 block tracking-wider">   Lista de Sinais de Rastreamento Comum</span>
                   <ul className="list-disc list-inside space-y-1 pl-1 text-[10px] text-slate-600 dark:text-slate-400 font-medium">
-                    <li><strong className="text-indigo-600 dark:text-indigo-300">Fonoaudiologia (Fala/Linguagem):</strong> Crianças acima de 2 anos com ausência de fala ou ecolalia persistente.</li>
-                    <li><strong className="text-indigo-600 dark:text-indigo-300">Psicologia (Socioemocional):</strong> Isolamento contínuo durante o brincar livre ou choro inconsolável com resistência ao toque.</li>
-                    <li><strong className="text-indigo-600 dark:text-indigo-300">Terapia Ocupacional (Integração Sensorial):</strong> Irritabilidade severa com barulhos de rotina ou texturas de alimentos.</li>
+                    <li><strong className="text-indigo-600 dark:text-indigo-300">Fonoaudiologia (Fala/Linguagem):</strong> Criancas acima de 2 anos com ausencia de fala ou ecolalia persistente.</li>
+                    <li><strong className="text-indigo-600 dark:text-indigo-300">Psicologia (Socioemocional):</strong> Isolamento continuo durante o brincar livre ou choro inconsolavel com resistencia ao toque.</li>
+                    <li><strong className="text-indigo-600 dark:text-indigo-300">Terapia Ocupacional (Integracao Sensorial):</strong> Irritabilidade severa com barulhos de rotina ou texturas de alimentos.</li>
                   </ul>
                 </div>
 
                 <div className="p-3 rounded-xl border border-slate-100 dark:border-slate-800 space-y-2">
-                  <span className="font-extrabold text-[10px] uppercase text-slate-400 block">Sugerir Mensagem Discreta de Acolhimento à Família</span>
+                  <span className="font-extrabold text-[10px] uppercase text-slate-400 block">Sugerir Mensagem Discreta de Acolhimento a Familia</span>
                   <textarea 
                     readOnly
                     className={`w-full p-2.5 rounded-lg border text-[10px] font-mono leading-relaxed h-28 select-all ${
                       isDark ? 'bg-slate-850 border-slate-700 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-600'
                     }`}
-                    value={`"Olá, [Nome do Pai/Mãe]! Esperamos que esteja bem. Observando o desenvolvimento de [Nome da Criança] nas nossas vivências e interações pedagógicas, notamos que ela tem demonstrado [descrever comportamento leve de forma amorosa, ex: um tempo maior para responder chamados na roda]. Gostaríamos de convidar vocês para um café com nossa coordenação na próxima quarta-feira para conversarmos sobre como podemos, em parceria escola-família, potencializar o desenvolvimento dela de forma integral. Contem conosco sempre!"`}
+                    value={`"Ola, [Nome do Pai/Mae]! Esperamos que esteja bem. Observando o desenvolvimento de [Nome da Crianca] nas nossas vivencias e interacoes pedagogicas, notamos que ela tem demonstrado [descrever comportamento leve de forma amorosa, ex: um tempo maior para responder chamados na roda]. Gostariamos de convidar voces para um cafe com nossa coordenacao na proxima quarta-feira para conversarmos sobre como podemos, em parceria escola-familia, potencializar o desenvolvimento dela de forma integral. Contem conosco sempre!"`}
                   />
                   <p className="text-[9px] text-amber-600 font-bold">
-                      <strong>Regra de Ouro:</strong> Nunca faça diagnósticos escolares. Ofereça um olhar de acolhimento focado nas interações e sugira a avaliação profissional especializada de forma complementar.
+                      <strong>Regra de Ouro:</strong> Nunca faca diagnosticos escolares. Ofereca um olhar de acolhimento focado nas interacoes e sugira a avaliacao profissional especializada de forma complementar.
                   </p>
                 </div>
               </div>
@@ -3436,7 +3436,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               </button>
               <button 
                 onClick={() => {
-                  alert('✓ Protocolo salvo com sucesso! O formulário de acompanhamento integrado foi enviado ao prontuário pedagógico confidencial.');
+                  alert('  Protocolo salvo com sucesso! O formulario de acompanhamento integrado foi enviado ao prontuario pedagogico confidencial.');
                   setShowStrategicReferralModal(false);
                 }}
                 className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-xl cursor-pointer"
@@ -3457,7 +3457,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
             
             <div className="flex items-center justify-between border-b border-slate-100/10 pb-3">
               <h4 className="text-sm font-black flex items-center gap-1.5 text-rose-600">
-                <Smile className="w-5 h-5 text-rose-500" /> Plano de Mediação de Conflitos Escolar
+                <Smile className="w-5 h-5 text-rose-500" /> Plano de Mediacao de Conflitos Escolar
               </h4>
               <button 
                 onClick={() => setShowStrategicConflictModal(false)}
@@ -3469,28 +3469,28 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
             <div className="space-y-4 text-xs leading-relaxed font-semibold">
               <p className="text-[11px] text-slate-500 leading-normal">
-                Conflitos leves, disputas por brinquedos ou agressividade física pontual (mordidas no Maternal II, empurrões no Pré) fazem parte da maturação social. Este plano orienta o acolhimento seguro.
+                Conflitos leves, disputas por brinquedos ou agressividade fisica pontual (mordidas no Maternal II, empurroes no Pre) fazem parte da maturacao social. Este plano orienta o acolhimento seguro.
               </p>
 
               <div className="space-y-3">
                 <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/20 border border-rose-100 text-rose-850 dark:text-rose-300 space-y-1">
-                  <span className="font-extrabold text-[10px] uppercase block tracking-wider text-rose-600">  Eixo 1: Ação Imediata de Proteção</span>
+                  <span className="font-extrabold text-[10px] uppercase block tracking-wider text-rose-600">  Eixo 1: Acao Imediata de Protecao</span>
                   <p className="text-[10px] leading-relaxed font-medium">
-                    Separar fisicamente as crianças de forma neutra, sem gritos ou punição humilhante. Priorizar o acolhimento da criança machucada / agredida e garantir sua integridade física e emocional.
+                    Separar fisicamente as criancas de forma neutra, sem gritos ou punicao humilhante. Priorizar o acolhimento da crianca machucada / agredida e garantir sua integridade fisica e emocional.
                   </p>
                 </div>
 
                 <div className="p-3 rounded-xl bg-amber-50 dark:bg-amber-950/10 border border-amber-200 text-amber-800 dark:text-amber-400 space-y-1">
-                  <span className="font-extrabold text-[10px] uppercase block tracking-wider">  Eixo 2: Círculo de Conversa e Empatia</span>
+                  <span className="font-extrabold text-[10px] uppercase block tracking-wider">  Eixo 2: Circulo de Conversa e Empatia</span>
                   <p className="text-[10px] leading-relaxed font-medium">
-                    Sentar em roda com os envolvidos. Utilizar linguagem de sentimentos (Ex: &quot;O amigo ficou triste porque doeu o braço&quot;). Estimular a reparação do atrito através do cuidado mútuo, ajudando a colocar um gelo ou entregando o brinquedo.
+                    Sentar em roda com os envolvidos. Utilizar linguagem de sentimentos (Ex: &quot;O amigo ficou triste porque doeu o braco&quot;). Estimular a reparacao do atrito atraves do cuidado mutuo, ajudando a colocar um gelo ou entregando o brinquedo.
                   </p>
                 </div>
 
                 <div className="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/10 border border-emerald-200 text-emerald-800 dark:text-emerald-400 space-y-1">
-                  <span className="font-extrabold text-[10px] uppercase block tracking-wider">  Eixo 3: Registro e Comunicação Responsável</span>
+                  <span className="font-extrabold text-[10px] uppercase block tracking-wider">  Eixo 3: Registro e Comunicacao Responsavel</span>
                   <p className="text-[10px] leading-relaxed font-medium">
-                    Anotar no Anjinho o ocorrido em termos objetivos (fatos, não julgamentos). No caso de mordidas, informar ambas as famílias de forma discreta e protetiva no privado, resguardando a identidade da outra criança envolvida para evitar estigmatizações.
+                    Anotar no Anjinho o ocorrido em termos objetivos (fatos, nao julgamentos). No caso de mordidas, informar ambas as familias de forma discreta e protetiva no privado, resguardando a identidade da outra crianca envolvida para evitar estigmatizacoes.
                   </p>
                 </div>
               </div>
@@ -3506,7 +3506,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               </button>
               <button 
                 onClick={() => {
-                  alert('✓ Plano de mediação registrado como revisado e ativo para o corpo pedagógico!');
+                  alert('  Plano de mediacao registrado como revisado e ativo para o corpo pedagogico!');
                   setShowStrategicConflictModal(false);
                 }}
                 className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black rounded-xl cursor-pointer"
@@ -3520,7 +3520,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
       
       {showReferralsClassModal && (() => {
-        const cleanClassName = showReferralsClassModal.name.replace(/ | |🏫| | | |⭐| /g, '').trim().toLowerCase();
+        const cleanClassName = showReferralsClassModal.name.replace(/ | |  | | | | | /g, '').trim().toLowerCase();
         
         // Filter students of this class
         const classStudents = seniors.filter(s => 
@@ -3559,7 +3559,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
             tipo: newReferralForm.tipo,
             reason: newReferralForm.reason,
             data: new Date().toISOString().split('T')[0],
-            registeredBy: 'Diretoria / Coordenação'
+            registeredBy: 'Diretoria / Coordenacao'
           };
           
           const updated = [newRef, ...pedagogicalReferrals];
@@ -3588,7 +3588,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
             case 'fonoaudiologia': return '  Fonoaudiologia';
             case 'psicologia': return '  Psicologia';
             case 'terapia_ocupacional': return '  Terapia Ocupacional';
-            default: return '  Geral / Coordenação';
+            default: return '  Geral / Coordenacao';
           }
         };
 
@@ -3612,10 +3612,10 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 <div className="space-y-0.5">
                   <h4 className="text-sm font-black flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
                     <GraduationCap className="w-5 h-5 text-indigo-500" />
-                    Encaminhamentos Pedagógicos — {showReferralsClassModal.name}
+                    Encaminhamentos Pedagogicos - {showReferralsClassModal.name}
                   </h4>
                   <p className="text-[10px] text-slate-400 font-semibold">
-                    Gerencie os registros confidenciais e direcione ações pedagógicas e multidisciplinares de forma estruturada.
+                    Gerencie os registros confidenciais e direcione acoes pedagogicas e multidisciplinares de forma estruturada.
                   </p>
                 </div>
                 <button 
@@ -3636,14 +3636,14 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 
                 <div className="md:col-span-7 space-y-4">
                   <h5 className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
-                    Histórico de Encaminhamentos ({classReferrals.length})
+                    Historico de Encaminhamentos ({classReferrals.length})
                   </h5>
                   
                   {classReferrals.length === 0 ? (
                     <div className="p-8 border border-dashed border-slate-200 dark:border-slate-800 rounded-2xl text-center space-y-2">
                       <span className="text-2xl block"> </span>
                       <p className="text-xs font-black text-slate-400">Nenhum encaminhamento registrado</p>
-                      <p className="text-[10px] text-slate-500 font-medium">Esta turma está em total equilíbrio pedagógico nesta semana.</p>
+                      <p className="text-[10px] text-slate-500 font-medium">Esta turma esta em total equilibrio pedagogico nesta semana.</p>
                     </div>
                   ) : (
                     <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-1">
@@ -3694,7 +3694,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 
                 <form onSubmit={handleAddReferral} className="md:col-span-5 space-y-4 border-t md:border-t-0 md:border-l border-slate-100/10 pt-4 md:pt-0 md:pl-6 text-left">
                   <h5 className="text-[11px] font-extrabold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-                    Lançar Novo Registro
+                    Lancar Novo Registro
                   </h5>
 
                   
@@ -3714,7 +3714,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                           {student.nome.split(' (')[0]}
                         </option>
                       ))}
-                      <option value="custom">✍ Outro Aluno (Digitar nome)...</option>
+                      <option value="custom">  Outro Aluno (Digitar nome)...</option>
                     </select>
                   </div>
 
@@ -3724,7 +3724,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       <label className="text-[10px] font-black text-slate-400 uppercase">Escreva o Nome do Aluno</label>
                       <input
                         type="text"
-                        placeholder="Ex: Joãozinho Santos"
+                        placeholder="Ex: Joaozinho Santos"
                         className={`w-full p-2.5 rounded-xl border text-xs font-semibold focus:ring-2 focus:ring-indigo-500/20 outline-none ${
                           isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
                         }`}
@@ -3746,7 +3746,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       value={newReferralForm.tipo}
                       onChange={(e) => setNewReferralForm({ ...newReferralForm, tipo: e.target.value })}
                     >
-                      <option value="pedagogico_geral">  Geral / Coordenação</option>
+                      <option value="pedagogico_geral">  Geral / Coordenacao</option>
                       <option value="fonoaudiologia">  Fonoaudiologia</option>
                       <option value="psicologia">  Psicologia (Socioemocional)</option>
                       <option value="terapia_ocupacional">  Terapia Ocupacional</option>
@@ -3755,9 +3755,9 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
                   
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-black text-slate-400 uppercase">Relato do Motivo / Observação</label>
+                    <label className="text-[10px] font-black text-slate-400 uppercase">Relato do Motivo / Observacao</label>
                     <textarea
-                      placeholder="Descreva de forma ética os comportamentos observados, reações físicas e justificativa do encaminhamento..."
+                      placeholder="Descreva de forma etica os comportamentos observados, reacoes fisicas e justificativa do encaminhamento..."
                       className={`w-full p-2.5 rounded-xl border text-xs font-semibold h-24 focus:ring-2 focus:ring-indigo-500/20 outline-none leading-relaxed ${
                         isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
                       }`}
@@ -3800,11 +3800,11 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
       
       {selectedStudent360 && (() => {
         const s = selectedStudent360;
-        const foodVal = parseInt(localStorage.getItem(`anjo_almoço_pct_${s.id}`) || (s.id === 'aluno_1' ? '30' : s.id === 'aluno_2' ? '45' : '90'), 10);
+        const foodVal = parseInt(localStorage.getItem(`anjo_almoco_pct_${s.id}`) || (s.id === 'aluno_1' ? '30' : s.id === 'aluno_2' ? '45' : '90'), 10);
         const tempVal = parseFloat(localStorage.getItem(`anjo_temp_deg_${s.id}`) || (s.id === 'aluno_1' ? '38.2' : s.id === 'aluno_4' ? '37.9' : '36.5'));
         const sleepVal = parseFloat(localStorage.getItem(`anjo_sleep_hr_${s.id}`) || (s.id === 'aluno_2' ? '0.5' : '2.0'));
-        const diaperStatus = localStorage.getItem(`anjo_diaper_${s.id}`) || (s.id === 'aluno_1' ? '3 trocas (Fezes Moles/Atenção)' : '3 trocas (Aspecto Normal)');
-        const medStatus = localStorage.getItem(`anjo_med_${s.id}`) || (s.id === 'aluno_1' ? 'Paracetamol 10mg/mL (12:00 ✓)' : s.id === 'aluno_4' ? 'Amoxicilina (Pendente 15:30 ⏰)' : 'Sem receita para hoje');
+        const diaperStatus = localStorage.getItem(`anjo_diaper_${s.id}`) || (s.id === 'aluno_1' ? '3 trocas (Fezes Moles/Atencao)' : '3 trocas (Aspecto Normal)');
+        const medStatus = localStorage.getItem(`anjo_med_${s.id}`) || (s.id === 'aluno_1' ? 'Paracetamol 10mg/mL (12:00  )' : s.id === 'aluno_4' ? 'Amoxicilina (Pendente 15:30 [T])' : 'Sem receita para hoje');
         const emotionalStatus = localStorage.getItem(`anjo_emotional_${s.id}`) || (s.id === 'aluno_1' ? 'Irritabilidade / Choro Dificultado' : 'Calmo, Participativo e Comunicativo');
         const savedDirectorNotes = localStorage.getItem(`anjo_director_note_${s.id}`) || '';
 
@@ -3831,7 +3831,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       </span>
                     </div>
                     <p className="text-xs text-slate-400 font-medium">
-                      Nascimento: {s.dataNascimento || '12/05/2022'} • Matrícula Ativa
+                      Nascimento: {s.dataNascimento || '12/05/2022'}   Matricula Ativa
                     </p>
                   </div>
                 </div>
@@ -3852,14 +3852,14 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                   <div className={`p-3 rounded-2xl border ${tempVal >= 37.8 ? 'bg-rose-500/10 border-rose-500/40 text-rose-300' : 'bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700'}`}>
                     <span className="text-[10px] font-bold uppercase block text-slate-400">  Temperatura</span>
-                    <span className="text-sm font-black">{tempVal}°C</span>
-                    <span className="text-[10px] block font-medium mt-0.5">{tempVal >= 37.8 ? '⚠ Febril' : '✓ Estável'}</span>
+                    <span className="text-sm font-black">{tempVal}oC</span>
+                    <span className="text-[10px] block font-medium mt-0.5">{tempVal >= 37.8 ? '[!] Febril' : '  Estavel'}</span>
                   </div>
 
                   <div className={`p-3 rounded-2xl border ${foodVal < 50 ? 'bg-amber-500/10 border-amber-500/40 text-amber-300' : 'bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700'}`}>
-                    <span className="text-[10px] font-bold uppercase block text-slate-400">  Almoço / Nutrição</span>
+                    <span className="text-[10px] font-bold uppercase block text-slate-400">  Almoco / Nutricao</span>
                     <span className="text-sm font-black">{foodVal}%</span>
-                    <span className="text-[10px] block font-medium mt-0.5">{foodVal < 50 ? '⚠ Recusa Parcial' : '✓ Alimentação Boa'}</span>
+                    <span className="text-[10px] block font-medium mt-0.5">{foodVal < 50 ? '[!] Recusa Parcial' : '  Alimentacao Boa'}</span>
                   </div>
 
                   <div className="p-3 rounded-2xl border bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700">
@@ -3874,12 +3874,12 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   </div>
 
                   <div className="p-3 rounded-2xl border bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700">
-                    <span className="text-[10px] font-bold uppercase block text-slate-400">💊 Prescrição Médica</span>
+                    <span className="text-[10px] font-bold uppercase block text-slate-400">   Prescricao Medica</span>
                     <span className="text-xs font-extrabold">{medStatus}</span>
                   </div>
 
                   <div className="p-3 rounded-2xl border bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700">
-                    <span className="text-[10px] font-bold uppercase block text-slate-400">  Sócioemocional</span>
+                    <span className="text-[10px] font-bold uppercase block text-slate-400">  Socioemocional</span>
                     <span className="text-xs font-extrabold text-indigo-400">{emotionalStatus}</span>
                   </div>
                 </div>
@@ -3889,9 +3889,9 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="p-3.5 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-200/50 dark:border-indigo-800/40 space-y-1.5">
                   <h6 className="text-[11px] font-black uppercase text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
-                    <PhoneCall className="w-3.5 h-3.5" /> Responsáveis Cadastrados
+                    <PhoneCall className="w-3.5 h-3.5" /> Responsaveis Cadastrados
                   </h6>
-                  <p className="text-xs font-bold">{s.contatoEmergencia?.nome || 'Clarice Souza (Mãe)'}</p>
+                  <p className="text-xs font-bold">{s.contatoEmergencia?.nome || 'Clarice Souza (Mae)'}</p>
                   <p className="text-xs text-indigo-600 dark:text-indigo-300 font-mono font-bold">
                       {s.contatoEmergencia?.telefone || '(11) 98765-4321'}
                   </p>
@@ -3900,27 +3900,27 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
                 <div className="p-3.5 rounded-2xl bg-rose-50/50 dark:bg-rose-950/30 border border-rose-200/50 dark:border-rose-800/40 space-y-1.5">
                   <h6 className="text-[11px] font-black uppercase text-rose-600 dark:text-rose-400 flex items-center gap-1">
-                    <Shield className="w-3.5 h-3.5" /> Prontuário Médico e Alergias
+                    <Shield className="w-3.5 h-3.5" /> Prontuario Medico e Alergias
                   </h6>
                   <p className="text-xs font-bold text-slate-700 dark:text-slate-200">
                     Alergias: <span className="text-rose-500 font-extrabold">{s.alergias?.join(', ') || 'Nenhuma declarada'}</span>
                   </p>
                   <p className="text-[11px] text-slate-500 font-medium">
-                    {s.condicoesMedicas?.join(' • ') || 'Acompanhamento pediátrico regular'}
+                    {s.condicoesMedicas?.join('   ') || 'Acompanhamento pediatrico regular'}
                   </p>
                 </div>
               </div>
 
               
               <div className="space-y-2">
-                <h6 className="text-xs font-black uppercase text-slate-400">  Registro da Professora & Notações da Diretoria</h6>
+                <h6 className="text-xs font-black uppercase text-slate-400">  Registro da Professora & Notacoes da Diretoria</h6>
                 <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/60 dark:border-slate-700 space-y-2">
                   <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed font-medium">
-                    <strong>Professora:</strong> "{s.observacoes || 'Criança participou ativamente das rodas de leitura e brincadeiras.'}"
+                    <strong>Professora:</strong> "{s.observacoes || 'Crianca participou ativamente das rodas de leitura e brincadeiras.'}"
                   </p>
                   {savedDirectorNotes && (
                     <div className="pt-2 border-t border-slate-200/50 dark:border-slate-700 text-xs text-indigo-600 dark:text-indigo-300">
-                      <strong>Notação da Diretora Nilva:</strong> "{savedDirectorNotes}"
+                      <strong>Notacao da Diretora Nilva:</strong> "{savedDirectorNotes}"
                     </div>
                   )}
                 </div>
@@ -3938,13 +3938,13 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 <button
                   type="button"
                   onClick={() => {
-                    setActionSuccessMessage(`  Comunicado do Diretor enviado para ${s.contatoEmergencia?.nome || 'Família de ' + s.nome}!`);
+                    setActionSuccessMessage(`  Comunicado do Diretor enviado para ${s.contatoEmergencia?.nome || 'Familia de ' + s.nome}!`);
                     setSelectedStudent360(null);
                     setTimeout(() => setActionSuccessMessage(null), 4000);
                   }}
                   className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-xl cursor-pointer flex items-center gap-1.5"
                 >
-                  <Send className="w-3.5 h-3.5" /> Notificar Responsáveis
+                  <Send className="w-3.5 h-3.5" /> Notificar Responsaveis
                 </button>
               </div>
 
@@ -3970,10 +3970,10 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </div>
                 <div>
                   <h4 className="text-sm font-black text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5">
-                    <Pencil className="w-4 h-4" /> Anotação da Diretoria — {directorNoteModalStudent.nome.split(' (')[0]}
+                    <Pencil className="w-4 h-4" /> Anotacao da Diretoria - {directorNoteModalStudent.nome.split(' (')[0]}
                   </h4>
                   <p className="text-[11px] text-slate-400 font-medium">
-                    {directorNoteModalStudent.salaAula || directorNoteModalStudent.quarto || 'Turma Geral'} • Resp: {directorNoteModalStudent.contatoEmergencia?.nome || 'Família'} ({directorNoteModalStudent.contatoEmergencia?.telefone || 'Sem tel'})
+                    {directorNoteModalStudent.salaAula || directorNoteModalStudent.quarto || 'Turma Geral'}   Resp: {directorNoteModalStudent.contatoEmergencia?.nome || 'Familia'} ({directorNoteModalStudent.contatoEmergencia?.telefone || 'Sem tel'})
                   </p>
                 </div>
               </div>
@@ -3986,7 +3986,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
             </div>
 
             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
-              Registre orientações da Diretora Nilva Amaral, registros de atendimentos, ligações ou decisões pedagógicas e de saúde.
+              Registre orientacoes da Diretora Nilva Amaral, registros de atendimentos, ligacoes ou decisoes pedagogicas e de saude.
             </p>
 
             <div className="flex items-center justify-between gap-2 bg-indigo-50/70 dark:bg-indigo-950/30 p-2.5 rounded-2xl border border-indigo-100 dark:border-indigo-900/40">
@@ -4011,7 +4011,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
             <textarea
               value={directorNoteText}
               onChange={(e) => setDirectorNoteText(e.target.value)}
-              placeholder="Ex: Entrei em contato com a mãe Clarice por telefone às 10:45. Orientado repouso em casa e alinhado acompanhamento de febre com a professora."
+              placeholder="Ex: Entrei em contato com a mae Clarice por telefone as 10:45. Orientado repouso em casa e alinhado acompanhamento de febre com a professora."
               className={`w-full p-3.5 rounded-2xl border text-xs font-medium h-28 outline-none focus:ring-2 focus:ring-indigo-500/20 leading-relaxed ${
                 isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
               }`}
@@ -4035,9 +4035,9 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
             }`}>
               <div className="flex items-center justify-between">
                 <span className="text-[11px] font-black uppercase tracking-wider text-indigo-600 dark:text-indigo-400 flex items-center gap-1.5">
-                  <Share2 className="w-3.5 h-3.5" /> Quem deve receber cópia deste comunicado?
+                  <Share2 className="w-3.5 h-3.5" /> Quem deve receber copia deste comunicado?
                 </span>
-                <span className="text-[10px] text-slate-400 font-medium">Critério da Direção</span>
+                <span className="text-[10px] text-slate-400 font-medium">Criterio da Direcao</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -4055,10 +4055,10 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   />
                   <div className="text-left">
                     <p className="text-xs font-bold leading-tight flex items-center gap-1">
-                       🏫 Professora da Sala
+                          Professora da Sala
                     </p>
                     <p className="text-[10px] opacity-80 mt-0.5">
-                      Diário de bordo e mural da equipe
+                      Diario de bordo e mural da equipe
                     </p>
                   </div>
                 </label>
@@ -4077,10 +4077,10 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   />
                   <div className="text-left">
                     <p className="text-xs font-bold leading-tight flex items-center gap-1">
-                         Coordenação Pedagógica
+                         Coordenacao Pedagogica
                     </p>
                     <p className="text-[10px] opacity-80 mt-0.5">
-                      Painel pedagógico da coordenação
+                      Painel pedagogico da coordenacao
                     </p>
                   </div>
                 </label>
@@ -4099,7 +4099,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   />
                   <div className="text-left">
                     <p className="text-xs font-bold leading-tight flex items-center gap-1">
-                          Mural da Família (App)
+                          Mural da Familia (App)
                     </p>
                     <p className="text-[10px] opacity-80 mt-0.5">
                       Publica na caderneta digital dos pais
@@ -4151,12 +4151,12 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     const cleanNote = directorNoteText.trim();
                     const studentShortName = s.nome.split(' (')[0];
                     localStorage.setItem(`anjo_director_note_${s.id}`, cleanNote);
-                    setActionSuccessMessage(`  Notação salva com sucesso no prontuário de ${studentShortName}! (Acesso estritamente interno da Diretoria)`);
+                    setActionSuccessMessage(`  Notacao salva com sucesso no prontuario de ${studentShortName}! (Acesso estritamente interno da Diretoria)`);
                     setDirectorNoteModalStudent(null);
                     setTimeout(() => setActionSuccessMessage(null), 4500);
                   }}
                   className="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 text-xs font-bold rounded-xl cursor-pointer flex items-center justify-center gap-1.5 transition-all"
-                  title="Salva no prontuário 360º sem emitir nenhuma notificação externa"
+                  title="Salva no prontuario 360o sem emitir nenhuma notificacao externa"
                 >
                   <Shield className="w-3.5 h-3.5 text-slate-500" /> Salvar Apenas Interno (Sigiloso)
                 </button>
@@ -4172,9 +4172,9 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     const now = new Date();
                     const dateFormatted = now.toLocaleDateString('pt-BR');
                     const timeFormatted = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                    const dateTimeStr = `${dateFormatted} às ${timeFormatted}`;
+                    const dateTimeStr = `${dateFormatted} as ${timeFormatted}`;
 
-                    // 1. Salva na Ficha 360º
+                    // 1. Salva na Ficha 360o
                     localStorage.setItem(`anjo_director_note_${s.id}`, cleanNote);
 
                     const dispatchedActions: string[] = [];
@@ -4186,13 +4186,13 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       const newOcc = {
                         id: `occ_dir_${Date.now()}`,
                         tipo: 'observacao_diretoria',
-                        titulo: '  Orientação da Direção Geral (Nilva Amaral)',
+                        titulo: '  Orientacao da Direcao Geral (Nilva Amaral)',
                         descricao: cleanNote,
                         dataHora: dateTimeStr,
                         autor: 'Diretora Nilva Amaral',
                         cargo: 'Diretora Geral',
                         salaAula: s.salaAula || s.quarto || 'Geral',
-                        tag: 'Direção',
+                        tag: 'Direcao',
                         importancia: 'alta'
                       };
                       occList.unshift(newOcc);
@@ -4201,7 +4201,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       dispatchedActions.push('Professora');
                     }
 
-                    // 3. Notificar Coordenação Pedagógica
+                    // 3. Notificar Coordenacao Pedagogica
                     if (noteNotifyCoordination) {
                       const coordKey = 'anjo_comunicados_coordenacao';
                       const coordList = getFromDB<any[]>(coordKey, []);
@@ -4211,8 +4211,8 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         alunoNome: studentShortName,
                         salaAula: s.salaAula || s.quarto || 'Todas',
                         remetente: 'Diretora Nilva Amaral',
-                        cargo: 'Direção Geral',
-                        titulo: `Orientação da Direção — ${studentShortName}`,
+                        cargo: 'Direcao Geral',
+                        titulo: `Orientacao da Direcao - ${studentShortName}`,
                         mensagem: cleanNote,
                         dataHora: dateTimeStr,
                         status: 'pendente',
@@ -4221,10 +4221,10 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       coordList.unshift(newCoordAlert);
                       saveToDB(coordKey, coordList);
                       window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: { localKey: coordKey } }));
-                      dispatchedActions.push('Coordenação');
+                      dispatchedActions.push('Coordenacao');
                     }
 
-                    // 4. Publicar no Mural da Família
+                    // 4. Publicar no Mural da Familia
                     if (noteNotifyFamilyMural) {
                       const muralKey = 'anjo_mural_recados';
                       const muralList = getFromDB<any[]>(muralKey, []);
@@ -4233,7 +4233,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         idosoId: s.id,
                         tipo: 'prof_para_pais',
                         categoria: 'geral',
-                        remetente: 'Direção Geral (Nilva Amaral)',
+                        remetente: 'Direcao Geral (Nilva Amaral)',
                         cargo: 'Diretora Geral',
                         mensagem: cleanNote,
                         dataHora: dateTimeStr,
@@ -4242,10 +4242,10 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       muralList.unshift(newMuralRecado);
                       saveToDB(muralKey, muralList);
                       window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: { localKey: muralKey } }));
-                      dispatchedActions.push('Mural da Família');
+                      dispatchedActions.push('Mural da Familia');
                     }
 
-                    // 5. Chamar Responsável no WhatsApp
+                    // 5. Chamar Responsavel no WhatsApp
                     if (noteCallWhatsApp) {
                       const phoneRaw = s.contatoEmergencia?.telefone || '';
                       const cleanDigits = phoneRaw.replace(/\D/g, '');
@@ -4254,12 +4254,12 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         formattedPhone = `55${cleanDigits}`;
                       }
 
-                      const waMessage = `*🏫 Colégio Anjinho Escolar Bauru — Comunicado da Direção Geral*\n\n` +
+                      const waMessage = `*   Colegio Anjinho Escolar Bauru - Comunicado da Direcao Geral*\n\n` +
                         `*Aluno(a):* ${studentShortName}\n` +
                         `*Diretora:* Nilva Amaral\n` +
                         `*Data:* ${dateTimeStr}\n\n` +
                         `*Mensagem da Diretoria:*\n${cleanNote}\n\n` +
-                        `_Colégio Anjinho Escolar — Cuidado, Afeto e Excelência Pedagógica_  `;
+                        `_Colegio Anjinho Escolar - Cuidado, Afeto e Excelencia Pedagogica_  `;
 
                       if (formattedPhone) {
                         window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(waMessage)}`, '_blank');
@@ -4270,13 +4270,13 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     }
 
                     const dispatchedStr = dispatchedActions.length > 0 ? ` Enviado para: ${dispatchedActions.join(', ')}.` : '';
-                    setActionSuccessMessage(`✓ Notação salva e encaminhada com sucesso!${dispatchedStr}`);
+                    setActionSuccessMessage(`  Notacao salva e encaminhada com sucesso!${dispatchedStr}`);
                     setDirectorNoteModalStudent(null);
                     setTimeout(() => setActionSuccessMessage(null), 5000);
                   }}
                   className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-xl cursor-pointer flex items-center justify-center gap-1.5 shadow-md transition-all"
                 >
-                  <Send className="w-3.5 h-3.5" /> Salvar e Enviar Notificações
+                  <Send className="w-3.5 h-3.5" /> Salvar e Enviar Notificacoes
                 </button>
               </div>
             </div>
@@ -4316,7 +4316,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
               
               
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Função / Cargo</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">Funcao / Cargo</label>
                 <select
                   value={newStaffRole}
                   onChange={(e) => setNewStaffRole(e.target.value as any)}
@@ -4324,11 +4324,11 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
                   }`}
                 >
-                  <option value="professor"> 🏫 Professora / Educador(a)</option>
-                  <option value="coordenador">🏫 Coordenador(a) Pedagógico(a)</option>
+                  <option value="professor">    Professora / Educador(a)</option>
+                  <option value="coordenador">   Coordenador(a) Pedagogico(a)</option>
                   <option value="pedagoga">  Pedagogo(a) Especialista</option>
                   <option value="cuidador">  Cuidador(a) / Monitor(a) Infantil</option>
-                  <option value="admin">  Administração Escolar</option>
+                  <option value="admin">  Administracao Escolar</option>
                 </select>
               </div>
 
@@ -4340,7 +4340,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   required
                   value={newStaffName}
                   onChange={(e) => setNewStaffName(e.target.value)}
-                  placeholder="Ex: Profª Fabiana Albuquerque"
+                  placeholder="Ex: Profa Fabiana Albuquerque"
                   className={`w-full px-3 py-2.5 text-xs rounded-xl border focus:ring-2 focus:ring-indigo-500/20 outline-none font-medium ${
                     isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
                   }`}
@@ -4378,7 +4378,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 <div className="space-y-1">
                   <label className="text-[10px] font-bold text-slate-400 uppercase flex items-center justify-between">
                     <span>PIN de Acesso</span>
-                    <span className="text-[9px] text-indigo-500 font-normal">4 dígitos</span>
+                    <span className="text-[9px] text-indigo-500 font-normal">4 digitos</span>
                   </label>
                   <input
                     type="text"
@@ -4395,7 +4395,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
               
               <div className="space-y-1.5">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Vincular Turmas de Atuação</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">Vincular Turmas de Atuacao</label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 p-2.5 rounded-xl border border-slate-200/60 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40">
                   {classrooms.map(room => {
                     const isSelected = newStaffClassrooms.includes(room.name);
@@ -4416,16 +4416,16 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     );
                   })}
                 </div>
-                <p className="text-[10px] text-slate-400">Pode selecionar múltiplas salas para professores volantes ou coordenadores.</p>
+                <p className="text-[10px] text-slate-400">Pode selecionar multiplas salas para professores volantes ou coordenadores.</p>
               </div>
 
               
               <div className="space-y-1">
-                <label className="text-[10px] font-bold text-slate-400 uppercase">Observações & Especialidades</label>
+                <label className="text-[10px] font-bold text-slate-400 uppercase">Observacoes & Especialidades</label>
                 <textarea
                   value={newStaffObs}
                   onChange={(e) => setNewStaffObs(e.target.value)}
-                  placeholder="Ex: Especialista em Educação Infantil, pós-graduada em Psicomotricidade."
+                  placeholder="Ex: Especialista em Educacao Infantil, pos-graduada em Psicomotricidade."
                   className={`w-full p-2.5 text-xs rounded-xl border focus:ring-2 focus:ring-indigo-500/20 outline-none font-medium h-20 ${
                     isDark ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-800'
                   }`}
@@ -4467,7 +4467,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 </div>
                 <div>
                   <h4 className="text-base font-black">Convidar Equipe Escolar</h4>
-                  <p className="text-[11px] text-slate-400 font-medium">Link de acesso exclusivo para professores e coordenação</p>
+                  <p className="text-[11px] text-slate-400 font-medium">Link de acesso exclusivo para professores e coordenacao</p>
                 </div>
               </div>
               <button 
@@ -4493,7 +4493,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 type="button"
                 onClick={() => {
                   const url = `${window.location.origin}/?convite=equipe_docente`;
-                  const msg = `Olá! A Diretoria da escola convida você para acessar o Anjinho App Escolar com perfil de Equipe Docente/Coordenação: ${url}`;
+                  const msg = `Ola! A Diretoria da escola convida voce para acessar o Anjinho App Escolar com perfil de Equipe Docente/Coordenacao: ${url}`;
                   window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(msg)}`, '_blank');
                 }}
                 className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl cursor-pointer flex items-center justify-center gap-2 shadow-sm transition-all"
