@@ -1,3 +1,4 @@
+// UTF-8 encoded: Ã¡Ã©Ã­Ã³ÃºÃ£ÃµÃ§
 // Vercel Production Build Commit: 1787865194
 // AI Studio Sync Version: 1787862757
 // Vercel build fix update: 514140926665909969
@@ -4088,9 +4089,40 @@ Acesse o boletim de cuidados completo pelo link seguro:
 
   // Direct 1-Click Stop Shift Handler (opens modal to record reason, preserve activities and log LGPD)
   const handleDirectStopShift = () => {
-    setStopShiftReason('Consulta Medica / Exame');
-    setStopShiftNote('');
-    setShowStopIndividualShiftModal(true);
+    try {
+      const horaStr = getNowTimeBr();
+      const cleanName = (idoso.nome || '').split(' (')[0].trim();
+      
+      const candidateKeysToClose = Array.from(new Set([
+        ...getAllPossibleStudentKeys(idoso.id),
+        idoso.id,
+        idoso.nome,
+        cleanName
+      ].filter(Boolean))) as string[];
+
+      candidateKeysToClose.forEach(k => {
+        localStorage.setItem('anjo_shift_active_' + k, 'false');
+        localStorage.removeItem('anjo_shift_start_time_' + k);
+      });
+
+      setShiftActiveStatesBatch(candidateKeysToClose.map(k => ({ targetKey: k, active: false })));
+      setIsShiftActive(false);
+      setShiftStartTime(null);
+      setElapsedShiftTime('00:00:00');
+
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
+        window.dispatchEvent(new CustomEvent('anjo_user_updated'));
+        window.dispatchEvent(new CustomEvent('db-vitals-update'));
+      }
+
+      showToast(' Cronometro desligado com sucesso!', 'success');
+    } catch (err) {
+      console.error('Erro ao desligar cronometro:', err);
+      setIsShiftActive(false);
+      setShiftStartTime(null);
+      setElapsedShiftTime('00:00:00');
+    }
   };
 
   const handleConfirmStopIndividualShift = () => {
@@ -6030,9 +6062,18 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Refeicao</label>
-                      <div className="w-full text-xs font-extrabold px-3 py-2 border border-slate-300 rounded-xl bg-slate-100 text-slate-700">
-                           Mamadeira de Leite
-                      </div>
+                      <select
+                        value={quickMeal.refeicao}
+                        onChange={e => setQuickMeal({ ...quickMeal, refeicao: e.target.value })}
+                        className="w-full text-xs font-bold px-2.5 py-2 border border-[#cbd5e1] rounded-xl bg-white text-slate-800 focus:ring-1 focus:outline-hidden"
+                      >
+                        <option value="mamadeira">ğŸ¼ Mamadeira de Leite</option>
+                        <option value="lanche_manha">ğŸ¥ª Lanche da Manha / Frutas</option>
+                        <option value="almoco">ğŸ² Almoco Saudavel / Papinha</option>
+                        <option value="lanche_tarde">ğŸ Frutinhas / Lanche da Tarde</option>
+                        <option value="jantar">ğŸ¥£ Jantar / Sopinha</option>
+                        <option value="agua">ğŸ’§ Garrafinha de Agua</option>
+                      </select>
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Aceitacao</label>
@@ -6042,6 +6083,7 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                         className="w-full text-xs font-semibold px-2 py-2 border border-[#cbd5e1] rounded-xl bg-slate-50"
                       >
                         <option value="muito_bem">Tomou Tudo / Super Bem</option>
+                        <option value="metade">Tomou a Maior Parte</option>
                         <option value="pouco">Tomou Pouquinho</option>
                         <option value="recusou">Recusou</option>
                       </select>
@@ -6061,8 +6103,8 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                       </div>
 
                       
-                      <div className="grid grid-cols-6 gap-1">
-                        {[90, 120, 150, 180, 210, 240].map(vol => (
+                      <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5">
+                        {[60, 90, 120, 150, 180, 210, 240, 300].map(vol => (
                           <button
                             key={vol}
                             type="button"
@@ -8460,18 +8502,14 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
-                      handleToggleHygieneCard('diaper');
-                    }
+                    handleToggleHygieneCard('diaper');
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
-                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
-                      : 'cursor-default opacity-95'
+                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
                   } ${
                     todayHygieneLog?.diaper 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Fralda / Toalete" : undefined}
                 >
@@ -8487,18 +8525,14 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
-                      handleToggleHygieneCard('teeth');
-                    }
+                    handleToggleHygieneCard('teeth');
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
-                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
-                      : 'cursor-default opacity-95'
+                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
                   } ${
                     todayHygieneLog?.teeth 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Escovacao de Dentes" : undefined}
                 >
@@ -8512,18 +8546,14 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
-                      handleToggleHygieneCard('clothes');
-                    }
+                    handleToggleHygieneCard('clothes');
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
-                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
-                      : 'cursor-default opacity-95'
+                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
                   } ${
                     todayHygieneLog?.clothes 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Troca de Roupa" : undefined}
                 >
@@ -8537,18 +8567,14 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
-                      handleToggleHygieneCard('hands');
-                    }
+                    handleToggleHygieneCard('hands');
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
-                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
-                      : 'cursor-default opacity-95'
+                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
                   } ${
                     (todayHygieneLog?.hands || todayHygieneLog?.bath) 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Maos / Banho" : undefined}
                 >
@@ -8562,18 +8588,14 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
-                      handleToggleHygieneCard('cream');
-                    }
+                    handleToggleHygieneCard('cream');
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all col-span-2 sm:col-span-1 ${
-                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
-                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
-                      : 'cursor-default opacity-95'
+                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
                   } ${
                     todayHygieneLog?.cream 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Pomada / Hidratacao" : undefined}
                 >
@@ -10000,33 +10022,8 @@ Segunda-feira:
       {duplicateWarning?.show && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-100 space-y-4 text-center animate-fade-in">
-            <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
-              <AlertTriangle className="w-6 h-6" />
-            </div>
-            <div className="space-y-1">
-              <h3 className="text-lg font-black text-slate-850">Aviso de Registro Duplicado</h3>
-              <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                Ja existe um registro recente para <strong>{duplicateWarning.studentName}</strong>.
-              </p>
-              {duplicateWarning.existingInfo && (
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-left text-xs text-amber-900 font-medium mt-2">
-                  {duplicateWarning.existingInfo}
-                </div>
-              )}
-            </div>
-            <div className="flex gap-2 justify-end pt-2">
-              <button
-                type="button"
-                onClick={() => setDuplicateWarning(null)}
-                className="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-extrabold text-xs rounded-xl cursor-pointer"
-              >
-                Entendido
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-// Versao corrigida da Vercel - Estavel e limpa
+            <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex itxœ”SMÚ0½ó+F9¬à`BA ~¤Uwí¡‡ªjÏ“xÜulËvØ ÿ½&a‰WZ5²ûùyæùÍ˜jÇ
+R,ümœåñuY·¯“İ_v/Éú_V ª$A!Ñ¹XÓ6yfØ³MéğL–rqA¹=êÄìCœn¿º%zj=“”Zy–K, ƒœDOìãz‘ìîÂià?©Î[‘¢@®³t¿Š˜(~ënƒn‹>]M\45HB.TÅ,Il‰GŠ¾#PRº}Ua©sZ„ì©j÷Â{mş U!ìÜù†ŞYÎ)K/´ùXtjÆiãH†0ù¦Jww0„Ë`Ø
+òŠa“eëäÚòĞ
+ıï/ƒV7Šg­ì’TzX×s?¬«=[¾á×{âO±ğ¸¥ f§ÿm»RR¶¼v?)æ-™YŞx¯U$ÅMˆÔo&Ñ®V_Ã½¶/ÓlwàÈ?Œn:U”³øŠƒ‡U˜#[Î×ç]º=¸»×²Ÿ¯ĞÙğÎÿç½­Öy–s-ùµB7å+ë´eF‹ó£ëKõhŠ®£†ìxçå€ÁòâÁ›}™œ&i
+¿É:ÔPhkE%8B+HƒGçñfRÔ'ÿ   ÿÿ ÒÁ[.
