@@ -498,6 +498,8 @@ export default function Dashboard({
     return getShiftActiveState(idoso.id).startTime;
   });
   const [elapsedShiftTime, setElapsedShiftTime] = useState<string>('00:00:00');
+  const timerIntervalRef = useRef<any>(null);
+  const isTimerActiveRef = useRef<boolean>(false);
 
   // 4. Offline sync queue states
   const [filaOffline, setFilaOffline] = useState<ItemFilaOffline[]>([]);
@@ -1190,52 +1192,75 @@ Equipe Anjinho Escolar`
     setFilaOffline(items);
   };
 
-  // Live timer for active caregiver shift duration
+  // Live timer for active caregiver shift duration (Ref-based, aggressive clear)
   useEffect(() => {
-    let intervalId: any;
+    // Limpa qualquer intervalo anterior ativo
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+      timerIntervalRef.current = null;
+    }
+
     if (isShiftActive && shiftStartTime) {
-      const updateTimer = () => {
-        let startMs = 0;
-        const activeStartTime = shiftStartTime || localStorage.getItem(`anjo_shift_start_time_${idoso.id}`);
-        
-        if (activeStartTime) {
-          const parsed = new Date(activeStartTime).getTime();
-          if (!isNaN(parsed) && parsed > 0) {
-            startMs = parsed;
-          } else if (typeof activeStartTime === 'string' && activeStartTime.includes(':')) {
-            const parts = activeStartTime.split(':');
-            const d = new Date();
-            d.setHours(parseInt(parts[0], 10) || 0, parseInt(parts[1], 10) || 0, 0, 0);
-            startMs = d.getTime();
-          }
-        }
+      isTimerActiveRef.current = true;
 
-        if (startMs === 0 || isNaN(startMs)) {
-          setElapsedShiftTime('00:00:00');
-          return;
-        }
-
-        const now = Date.now();
-        const diffMs = Math.max(0, now - startMs);
-
+      const calculateElapsed = (startMs: number): string => {
+        const diffMs = Math.max(0, Date.now() - startMs);
         const totalSecs = Math.floor(diffMs / 1000);
         const secs = totalSecs % 60;
         const mins = Math.floor(totalSecs / 60) % 60;
         const hours = Math.floor(totalSecs / 3600);
-
         const pad = (n: number) => String(n).padStart(2, '0');
-        setElapsedShiftTime(`${pad(hours)}:${pad(mins)}:${pad(secs)}`);
+        return pad(hours) + ':' + pad(mins) + ':' + pad(secs);
       };
-      
+
+      const updateTimer = () => {
+        const currentActive = localStorage.getItem('anjo_shift_active_' + idoso.id) || localStorage.getItem('anjo_shift_active');
+        if (currentActive === 'false' || !isTimerActiveRef.current) {
+          if (timerIntervalRef.current) {
+            clearInterval(timerIntervalRef.current);
+            timerIntervalRef.current = null;
+          }
+          isTimerActiveRef.current = false;
+          setIsShiftActive(false);
+          setShiftStartTime(null);
+          setElapsedShiftTime('00:00:00');
+          return;
+        }
+
+        let startMs = 0;
+        const activeStartTime = shiftStartTime || localStorage.getItem('anjo_shift_start_time_' + idoso.id);
+        if (activeStartTime) {
+          const parsed = new Date(activeStartTime).getTime();
+          if (!isNaN(parsed) && parsed > 0) {
+            startMs = parsed;
+          }
+        }
+
+        if (startMs === 0) {
+          setElapsedShiftTime('00:00:00');
+          return;
+        }
+
+        setElapsedShiftTime(calculateElapsed(startMs));
+      };
+
       updateTimer();
-      intervalId = setInterval(updateTimer, 1000);
+      timerIntervalRef.current = setInterval(updateTimer, 1000);
       document.addEventListener('visibilitychange', updateTimer);
 
       return () => {
-        if (intervalId) clearInterval(intervalId);
+        if (timerIntervalRef.current) {
+          clearInterval(timerIntervalRef.current);
+          timerIntervalRef.current = null;
+        }
         document.removeEventListener('visibilitychange', updateTimer);
       };
     } else {
+      isTimerActiveRef.current = false;
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+        timerIntervalRef.current = null;
+      }
       setElapsedShiftTime('00:00:00');
     }
   }, [isShiftActive, shiftStartTime, idoso.id]);
@@ -4090,39 +4115,54 @@ Acesse o boletim de cuidados completo pelo link seguro:
 
   // Direct 1-Click Stop Shift Handler (opens modal to record reason, preserve activities and log LGPD)
   const handleDirectStopShift = () => {
+    console.log('üõë [STOP SHIFT] Bot√£o Zerar/Desligar clicado!');
     try {
-      const cleanName = (idoso.nome || '').split(' (')[0].trim();
-      const currentTargetId = idoso.id;
-      
-      const candidateKeysToClose = Array.from(new Set([
-        ...getAllPossibleStudentKeys(idoso.id),
-        idoso.id,
-        idoso.nome,
-        cleanName,
-        currentTargetId,
-        'aluno_1',
-        'aluno_2',
-        'idoso_maria',
-        'idoso_joao'
-      ].filter(Boolean))) as string[];
+      // 1. Limpa intervalo imediatamente
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+        timerIntervalRef.current = null;
+      }
+      isTimerActiveRef.current = false;
 
-      // Clear all timer keys from localStorage
-      candidateKeysToClose.forEach(k => {
-        try {
-          localStorage.setItem('anjo_shift_active_' + k, 'false');
-          localStorage.removeItem('anjo_shift_start_time_' + k);
-          localStorage.removeItem('anjo_routine_reset_' + k);
-        } catch (e) {}
+      // 2. Apaga chaves de timer no localStorage
+      const allKeys = Object.keys(localStorage);
+      allKeys.forEach(k => {
+        if (
+          k === 'anjo_shift_active' ||
+          k === 'anjo_shift_start_time' ||
+          k.includes('shift_start_time') ||
+          k.includes('shift_active') ||
+          k.includes('routine_reset')
+        ) {
+          try {
+            localStorage.removeItem(k);
+          } catch(e) {}
+        }
       });
 
-      // Update state batch
-      setShiftActiveStatesBatch(candidateKeysToClose.map(k => ({ targetKey: k, active: false })));
-      
-      // Immediately zero out local state
+      // 3. For√ßa chaves como false
+      try {
+        localStorage.setItem('anjo_shift_active', 'false');
+        localStorage.setItem('anjo_shift_active_' + idoso.id, 'false');
+      } catch(e) {}
+
+      // 4. Limpa registro no banco local anjo_shift_states
+      try {
+        const existingStates = getFromDB<any[]>('anjo_shift_states', []);
+        const cleanStates = existingStates.filter(s => {
+          if (!s || !s.id) return false;
+          const sid = String(s.id).toLowerCase();
+          return !sid.includes(idoso.id.toLowerCase()) && !sid.includes('aluno') && !sid.includes('idoso');
+        });
+        saveToDB('anjo_shift_states', cleanStates);
+      } catch(e) {}
+
+      // 5. Zera estados visuais do React IMEDIATAMENTE
       setIsShiftActive(false);
       setShiftStartTime(null);
       setElapsedShiftTime('00:00:00');
 
+      // 6. Notifica outros componentes
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
         window.dispatchEvent(new CustomEvent('anjo_user_updated'));
@@ -4131,8 +4171,8 @@ Acesse o boletim de cuidados completo pelo link seguro:
       }
 
       showToast('Cron√¥metro zerado e desligado com sucesso!', 'success');
-    } catch (err) {
-      console.error('Erro ao desligar cronometro:', err);
+    } catch(err) {
+      console.error('Erro ao desligar:', err);
       setIsShiftActive(false);
       setShiftStartTime(null);
       setElapsedShiftTime('00:00:00');
@@ -9989,49 +10029,10 @@ Segunda-feira:
                             ch.tipo === 'exclusao' ? 'bg-rose-100 text-rose-800' :
                             'bg-amber-100 text-amber-800'
                           }`}>
-                            {ch.tipo === 'cadastro' ? 'Novo Cadastro' : ch.tipo === 'exclusao' ? 'Excluido' : ch.tipo === 'suspensao' ? 'Suspenso' : 'Reativado'}
+                            {ch.tipo === 'cadastro' ? 'Novo Cadastro' : ch.tipo === 'exclusao' ? 'Exclus√£o' : 'Edi√ß√£o / Ajuste'}
                           </span>
-                          <span className="text-[10px] text-slate-405 font-semibold">por {ch.autor}</span>
+                          <span className="font-bold text-[10px] text-slate-400">{ch.horario || ''}</span>
                         </div>
-                        <div className="font-semibold text-slate-800"> {ch.nome}</div>
-                        <div className="text-[11px] text-slate-500 leading-normal">{ch.detalhes}</div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-xs text-slate-500"> Nenhuma alteracao (Inclusao ou Exclusao) feita neste turno.</p>
-                )}
-              </div>
-
-            </div>
-
-            <div className="flex gap-3 justify-end border-t border-slate-100 pt-4">
-              <button
-                type="button"
-                onClick={() => {
-                  setShowShiftReviewModal(false);
-                  setShiftReviewPayload(null);
-                }}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 font-bold text-xs rounded-xl cursor-pointer"
-              >
-                Voltar e Ajustar Relato
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmEndShift}
-                className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-extrabold text-xs rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
-              >
-                <CheckCircle2 className="w-4 h-4" /> Registrar Presenca & Enviar WhatsApp
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      
-      {!lgpdAccepted && (
-        <LgpxúÑTﬂo⁄0~ÁØ8ÒPïÖµ0Um6m{ò¶ÌŸƒóƒ´c[∂aàˇ}ó(‡n†à¯ŒóªÔæ˚!çˆ®√W#∏£ímòmrÆÖ¬/ô≠Ê—Va¿-êµ4Ó/p∂ë¬x”◊¶ ˝`ﬁÅÊ◊€vvß›k#J´d¬˛‚NKù}Ï˚‹¨‡Í
-Æw& S!óê(Ó}„∫õ 
-Hÿ˛∞€!,2Êya˜√·`B2O^Ñ3ñ-TÈXÂ!UXÅXxñPNË‡wÈÉL◊{—≤w›˘!dî"¨rr ŒîZ†`„J—G(x≈V¨∞bi©¯ú≥b#∫^'»u˚⁄º¡[û [≥w∞
-{\À¢∂Hπ@&ı	öœä›å Øˇ/†v›8l≈	â{∞≤ã„e0gë)ˆÉB~8…u¶≈Ñ@L∫Ø%ﬁ}1 ∏ˇO`O¬M.6)©R£’ì*€fŸÚyw;ÏŒñ“ﬂ1ì>8Om_	3‰„(Äç¸Sã9≠©k¬(dYÄB.®9ôC≈©˜"ƒ ü9`E°»‹ÌQ8lòÀái≠“Ÿ<Í˘æ• ªŒv:ÿôıœAÏyÿÿSÉÅütjNáË_e∞l¸⁄Aı$ùÙl´uµu[LúP◊⁄ﬁüQW6zÉØK‡∑1∏•öÖr¡&Zıd‹≤—°˚Q∞o¡ú. åé†Ñµ≠7BsŸçnç~§º^fõÎÃÊ¥√”Y¶◊ö∆±ßx2XÕ»⁄5ıo_◊€±õõ%∫˜«ØÂø]O˜$:æ0J*tTæ§tﬁ8fç¨á˛\™g2”Çˆy‘ê-&ˇLq"Ó88Ëz:€Œ` ?—yn 1Œ…L
-Ùê.Aû}‡K:!(YXﬁ˘  ˇˇ öLÛ
+                        <p className="font-medium text-slate-7xú¨îΩn€0Öw?≈Öóÿ˝◊∏\€EdlÜËRt∏Ø-6Ø@R∂É$StË‘©è‡+Èø8ñ‹t®ëó¢xŒwÆ‘È‘«èI⁄í‰´dxzÇ07úQû]jOW?W?BŒé5œêë[÷k≠≥Áa;◊‡ƒ5t9H4:wÉçÍûñ^|ÈvÚÂWXèùFO‚º›íÀŸ∏’˜9ÈDyXx∂QO·
+¥ä/}Å˙„ã kY$(Ÿ6∞Öƒ√Ni∂•öW/6õœıö0ÄF’„y…Ê“YÂQ´&3±Hï'»≈;∞\IR,5LÿJ≤€€v[7íπ!ì§"√vªéo3∑4SŒ[î≤∞h¬Î…≈3»Æ~±‰VeP%Î∂∑•◊µP:4úãÛhk£πﬂŸy%30’¥ (s"°†“¬∑¬y5}d$Ã0Ω˙±Œ·§ûMIΩ»√Ÿõ≈ziïÕU†}?zl4a4G˛.Â≈]™¶˛ñÊäüX¢nLQ;™hÅCwÀ`/ΩóË™≤Í{â_D∑lºò∞ñ∞kâÉºSûìÏ±E:!@„îWljIa[ë≥ä§é-ñ„¸Ã⁄£Çh–°-Öªaıü˘¶h§¶+6Se≥k#◊àﬂ⁄ﬂµÏHºÊ˜<÷ïãÕIç…} øróÜøƒBd≤¢˚b«u[˝∑ŸØR
+á∏XÑÆH≈y⁄cÿ∫_√ø6s∑b]˝ˇ≠ä°ÙÂ^M∑˝∫Ø5?‘ûk   ˇˇ ó&©ø

@@ -1,3 +1,4 @@
+// UTF-8 encoded: √°√©√≠√≥√∫√£√µ√ß
 // Vercel Production Build Commit: 1787865194
 // AI Studio Sync Version: 1787862757
 // Vercel build fix update: 514140926665909969
@@ -497,6 +498,8 @@ export default function Dashboard({
     return getShiftActiveState(idoso.id).startTime;
   });
   const [elapsedShiftTime, setElapsedShiftTime] = useState<string>('00:00:00');
+  const timerIntervalRef = useRef<any>(null);
+  const isTimerActiveRef = useRef<boolean>(false);
 
   // 4. Offline sync queue states
   const [filaOffline, setFilaOffline] = useState<ItemFilaOffline[]>([]);
@@ -1189,51 +1192,75 @@ Equipe Anjinho Escolar`
     setFilaOffline(items);
   };
 
-  // Live timer for active caregiver shift duration
+  // Live timer for active caregiver shift duration (Ref-based, aggressive clear)
   useEffect(() => {
-    let intervalId: any;
-    if (isShiftActive) {
-      const updateTimer = () => {
-        let startMs = 0;
-        const activeStartTime = shiftStartTime || localStorage.getItem(`anjo_shift_start_time_${idoso.id}`) || localStorage.getItem(`anjo_routine_reset_${idoso.id}`);
-        
-        if (activeStartTime) {
-          const parsed = new Date(activeStartTime).getTime();
-          if (!isNaN(parsed)) {
-            startMs = parsed;
-          } else if (typeof activeStartTime === 'string' && activeStartTime.includes(':')) {
-            const parts = activeStartTime.split(':');
-            const d = new Date();
-            d.setHours(parseInt(parts[0], 10) || 0, parseInt(parts[1], 10) || 0, 0, 0);
-            startMs = d.getTime();
-          }
-        }
+    // Limpa qualquer intervalo anterior ativo
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+      timerIntervalRef.current = null;
+    }
 
-        if (startMs === 0 || isNaN(startMs)) {
-          startMs = Date.now() - 1000;
-        }
+    if (isShiftActive && shiftStartTime) {
+      isTimerActiveRef.current = true;
 
-        const now = Date.now();
-        const diffMs = Math.max(0, now - startMs);
-
+      const calculateElapsed = (startMs: number): string => {
+        const diffMs = Math.max(0, Date.now() - startMs);
         const totalSecs = Math.floor(diffMs / 1000);
         const secs = totalSecs % 60;
         const mins = Math.floor(totalSecs / 60) % 60;
         const hours = Math.floor(totalSecs / 3600);
-
         const pad = (n: number) => String(n).padStart(2, '0');
-        setElapsedShiftTime(`${pad(hours)}:${pad(mins)}:${pad(secs)}`);
+        return pad(hours) + ':' + pad(mins) + ':' + pad(secs);
       };
-      
+
+      const updateTimer = () => {
+        const currentActive = localStorage.getItem('anjo_shift_active_' + idoso.id) || localStorage.getItem('anjo_shift_active');
+        if (currentActive === 'false' || !isTimerActiveRef.current) {
+          if (timerIntervalRef.current) {
+            clearInterval(timerIntervalRef.current);
+            timerIntervalRef.current = null;
+          }
+          isTimerActiveRef.current = false;
+          setIsShiftActive(false);
+          setShiftStartTime(null);
+          setElapsedShiftTime('00:00:00');
+          return;
+        }
+
+        let startMs = 0;
+        const activeStartTime = shiftStartTime || localStorage.getItem('anjo_shift_start_time_' + idoso.id);
+        if (activeStartTime) {
+          const parsed = new Date(activeStartTime).getTime();
+          if (!isNaN(parsed) && parsed > 0) {
+            startMs = parsed;
+          }
+        }
+
+        if (startMs === 0) {
+          setElapsedShiftTime('00:00:00');
+          return;
+        }
+
+        setElapsedShiftTime(calculateElapsed(startMs));
+      };
+
       updateTimer();
-      intervalId = setInterval(updateTimer, 1000);
+      timerIntervalRef.current = setInterval(updateTimer, 1000);
       document.addEventListener('visibilitychange', updateTimer);
 
       return () => {
-        if (intervalId) clearInterval(intervalId);
+        if (timerIntervalRef.current) {
+          clearInterval(timerIntervalRef.current);
+          timerIntervalRef.current = null;
+        }
         document.removeEventListener('visibilitychange', updateTimer);
       };
     } else {
+      isTimerActiveRef.current = false;
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+        timerIntervalRef.current = null;
+      }
       setElapsedShiftTime('00:00:00');
     }
   }, [isShiftActive, shiftStartTime, idoso.id]);
@@ -4088,9 +4115,68 @@ Acesse o boletim de cuidados completo pelo link seguro:
 
   // Direct 1-Click Stop Shift Handler (opens modal to record reason, preserve activities and log LGPD)
   const handleDirectStopShift = () => {
-    setStopShiftReason('Consulta Medica / Exame');
-    setStopShiftNote('');
-    setShowStopIndividualShiftModal(true);
+    console.log('üõë [STOP SHIFT] Bot√£o Zerar/Desligar clicado!');
+    try {
+      // 1. Limpa intervalo imediatamente
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+        timerIntervalRef.current = null;
+      }
+      isTimerActiveRef.current = false;
+
+      // 2. Apaga chaves de timer no localStorage
+      const allKeys = Object.keys(localStorage);
+      allKeys.forEach(k => {
+        if (
+          k === 'anjo_shift_active' ||
+          k === 'anjo_shift_start_time' ||
+          k.includes('shift_start_time') ||
+          k.includes('shift_active') ||
+          k.includes('routine_reset')
+        ) {
+          try {
+            localStorage.removeItem(k);
+          } catch(e) {}
+        }
+      });
+
+      // 3. For√ßa chaves como false
+      try {
+        localStorage.setItem('anjo_shift_active', 'false');
+        localStorage.setItem('anjo_shift_active_' + idoso.id, 'false');
+      } catch(e) {}
+
+      // 4. Limpa registro no banco local anjo_shift_states
+      try {
+        const existingStates = getFromDB<any[]>('anjo_shift_states', []);
+        const cleanStates = existingStates.filter(s => {
+          if (!s || !s.id) return false;
+          const sid = String(s.id).toLowerCase();
+          return !sid.includes(idoso.id.toLowerCase()) && !sid.includes('aluno') && !sid.includes('idoso');
+        });
+        saveToDB('anjo_shift_states', cleanStates);
+      } catch(e) {}
+
+      // 5. Zera estados visuais do React IMEDIATAMENTE
+      setIsShiftActive(false);
+      setShiftStartTime(null);
+      setElapsedShiftTime('00:00:00');
+
+      // 6. Notifica outros componentes
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
+        window.dispatchEvent(new CustomEvent('anjo_user_updated'));
+        window.dispatchEvent(new CustomEvent('db-vitals-update'));
+        window.dispatchEvent(new Event('storage'));
+      }
+
+      showToast('Cron√¥metro zerado e desligado com sucesso!', 'success');
+    } catch(err) {
+      console.error('Erro ao desligar:', err);
+      setIsShiftActive(false);
+      setShiftStartTime(null);
+      setElapsedShiftTime('00:00:00');
+    }
   };
 
   const handleConfirmStopIndividualShift = () => {
@@ -5868,13 +5954,14 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                       <span className="text-[9px] font-bold text-slate-400 block uppercase tracking-wider">
                         {isEscolar ? 'TEMPO EM AULA' : 'DURACAO DO TURNO'}
                       </span>
-                      {isShiftActive && isStaffUser(usuarioAtual) && (
+                      {isStaffUser(usuarioAtual) && (
                         <button
+                          type="button"
                           onClick={handleDirectStopShift}
-                          className="text-[10px] font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-1.5 py-0.5 rounded cursor-pointer transition-all"
-                          title="Desligar cronometro imediatamente"
+                          className="text-[10px] font-black text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-2 py-0.5 rounded-md cursor-pointer transition-all border border-rose-200"
+                          title="Zerar cron√¥metro e encerrar contagem imediatamente"
                         >
-                           Desligar
+                          ‚èπ Zerar / Desligar
                         </button>
                       )}
                     </div>
@@ -6030,9 +6117,18 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Refeicao</label>
-                      <div className="w-full text-xs font-extrabold px-3 py-2 border border-slate-300 rounded-xl bg-slate-100 text-slate-700">
-                           Mamadeira de Leite
-                      </div>
+                      <select
+                        value={quickMeal.refeicao}
+                        onChange={e => setQuickMeal({ ...quickMeal, refeicao: e.target.value })}
+                        className="w-full text-xs font-bold px-2.5 py-2 border border-[#cbd5e1] rounded-xl bg-white text-slate-800 focus:ring-1 focus:outline-hidden"
+                      >
+                        <option value="mamadeira">üçº Mamadeira de Leite</option>
+                        <option value="lanche_manha">ü•™ Lanche da Manha / Frutas</option>
+                        <option value="almoco">üç≤ Almoco Saudavel / Papinha</option>
+                        <option value="lanche_tarde">üçé Frutinhas / Lanche da Tarde</option>
+                        <option value="jantar">ü•£ Jantar / Sopinha</option>
+                        <option value="agua">üíß Garrafinha de Agua</option>
+                      </select>
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Aceitacao</label>
@@ -6042,6 +6138,7 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                         className="w-full text-xs font-semibold px-2 py-2 border border-[#cbd5e1] rounded-xl bg-slate-50"
                       >
                         <option value="muito_bem">Tomou Tudo / Super Bem</option>
+                        <option value="metade">Tomou a Maior Parte</option>
                         <option value="pouco">Tomou Pouquinho</option>
                         <option value="recusou">Recusou</option>
                       </select>
@@ -6061,8 +6158,8 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                       </div>
 
                       
-                      <div className="grid grid-cols-6 gap-1">
-                        {[90, 120, 150, 180, 210, 240].map(vol => (
+                      <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5">
+                        {[60, 90, 120, 150, 180, 210, 240, 300].map(vol => (
                           <button
                             key={vol}
                             type="button"
@@ -8460,18 +8557,14 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
-                      handleToggleHygieneCard('diaper');
-                    }
+                    handleToggleHygieneCard('diaper');
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
-                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
-                      : 'cursor-default opacity-95'
+                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
                   } ${
                     todayHygieneLog?.diaper 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Fralda / Toalete" : undefined}
                 >
@@ -8487,18 +8580,14 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
-                      handleToggleHygieneCard('teeth');
-                    }
+                    handleToggleHygieneCard('teeth');
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
-                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
-                      : 'cursor-default opacity-95'
+                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
                   } ${
                     todayHygieneLog?.teeth 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Escovacao de Dentes" : undefined}
                 >
@@ -8512,18 +8601,14 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
-                      handleToggleHygieneCard('clothes');
-                    }
+                    handleToggleHygieneCard('clothes');
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
-                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
-                      : 'cursor-default opacity-95'
+                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
                   } ${
                     todayHygieneLog?.clothes 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Troca de Roupa" : undefined}
                 >
@@ -8537,18 +8622,14 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
-                      handleToggleHygieneCard('hands');
-                    }
+                    handleToggleHygieneCard('hands');
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
-                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
-                      : 'cursor-default opacity-95'
+                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
                   } ${
                     (todayHygieneLog?.hands || todayHygieneLog?.bath) 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Maos / Banho" : undefined}
                 >
@@ -8562,18 +8643,14 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
-                      handleToggleHygieneCard('cream');
-                    }
+                    handleToggleHygieneCard('cream');
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all col-span-2 sm:col-span-1 ${
-                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
-                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
-                      : 'cursor-default opacity-95'
+                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
                   } ${
                     todayHygieneLog?.cream 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Pomada / Hidratacao" : undefined}
                 >
@@ -9952,81 +10029,10 @@ Segunda-feira:
                             ch.tipo === 'exclusao' ? 'bg-rose-100 text-rose-800' :
                             'bg-amber-100 text-amber-800'
                           }`}>
-                            {ch.tipo === 'cadastro' ? 'Novo Cadastro' : ch.tipo === 'exclusao' ? 'Excluido' : ch.tipo === 'suspensao' ? 'Suspenso' : 'Reativado'}
+                            {ch.tipo === 'cadastro' ? 'Novo Cadastro' : ch.tipo === 'exclusao' ? 'Exclus√£o' : 'Edi√ß√£o / Ajuste'}
                           </span>
-                          <span className="text-[10px] text-slate-405 font-semibold">por {ch.autor}</span>
+                          <span className="font-bold text-[10px] text-slate-400">{ch.horario || ''}</span>
                         </div>
-                        <div className="font-semibold text-slate-800"> {ch.nome}</div>
-                        <div className="text-[11px] text-slate-500 leading-normal">{ch.detalhes}</div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-xs text-slate-500"> Nenhuma alteracao (Inclusao ou Exclusao) feita neste turno.</p>
-                )}
-              </div>
-
-            </div>
-
-            <div className="flex gap-3 justify-end border-t border-slate-100 pt-4">
-              <button
-                type="button"
-                onClick={() => {
-                  setShowShiftReviewModal(false);
-                  setShiftReviewPayload(null);
-                }}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 font-bold text-xs rounded-xl cursor-pointer"
-              >
-                Voltar e Ajustar Relato
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmEndShift}
-                className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-extrabold text-xs rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
-              >
-                <CheckCircle2 className="w-4 h-4" /> Registrar Presenca & Enviar WhatsApp
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      
-      {!lgpdAccepted && (
-        <LgpdConsentModal onAccept={handleLgpdAcceptComplete} seniorName={idoso.nome} />
-      )}
-
-      
-      {duplicateWarning?.show && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-100 space-y-4 text-center animate-fade-in">
-            <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
-              <AlertTriangle className="w-6 h-6" />
-            </div>
-            <div className="space-y-1">
-              <h3 className="text-lg font-black text-slate-850">Aviso de Registro Duplicado</h3>
-              <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                Ja existe um registro recente para <strong>{duplicateWarning.studentName}</strong>.
-              </p>
-              {duplicateWarning.existingInfo && (
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-left text-xs text-amber-900 font-medium mt-2">
-                  {duplicateWarning.existingInfo}
-                </div>
-              )}
-            </div>
-            <div className="flex gap-2 justify-end pt-2">
-              <button
-                type="button"
-                onClick={() => setDuplicateWarning(null)}
-                className="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-extrabold text-xs rounded-xl cursor-pointer"
-              >
-                Entendido
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-// Versao corrigida da Vercel - Estavel e limpa
+                        <p className="font-medium text-slate-7xú¨îΩn€0Öw?≈Öóÿ˝◊∏\€EdlÜËRt∏Ø-6Ø@R∂É$StË‘©è‡+Èø8ñ‹t®ëó¢xŒwÆ‘È‘«èI⁄í‰´dxzÇ07úQû]jOW?W?BŒé5œêë[÷k≠≥Áa;◊‡ƒ5t9H4:wÉçÍûñ^|ÈvÚÂWXèùFO‚º›íÀŸ∏’˜9ÈDyXx∂QO·
+¥ä/}Å˙„ã kY$(Ÿ6∞Öƒ√Ni∂•öW/6õœıö0ÄF’„y…Ê“YÂQ´&3±Hï'»≈;∞\IR,5LÿJ≤€€v[7íπ!ì§"√vªéo3∑4SŒ[î≤∞h¬Î…≈3»Æ~±‰VeP%Î∂∑•◊µP:4úãÛhk£πﬂŸy%30’¥ (s"°†“¬∑¬y5}d$Ã0Ω˙±Œ·§ûMIΩ»√Ÿõ≈ziïÕU†}?zl4a4G˛.Â≈]™¶˛ñÊäüX¢nLQ;™hÅCwÀ`/ΩóË™≤Í{â_D∑lºò∞ñ∞kâÉºSûìÏ±E:!@„îWljIa[ë≥ä§é-ñ„¸Ã⁄£Çh–°-Öªaıü˘¶h§¶+6Se≥k#◊àﬂ⁄ﬂµÏHºÊ˜<÷ïãÕIç…} øróÜøƒBd≤¢˚b«u[˝∑ŸØR
+á∏XÑÆH≈y⁄cÿ∫_√ø6s∑b]˝ˇ≠ä°ÙÂ^M∑˝∫Ø5?‘ûk   ˇˇ ó&©ø
