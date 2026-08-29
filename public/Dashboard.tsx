@@ -62,7 +62,8 @@ import {
   Loader2,
   RefreshCw,
   Info
-} from 'lucide-react';
+,
+  AlertCircle} from 'lucide-react';
 
 interface DashboardProps {
   key?: any;
@@ -831,13 +832,12 @@ Equipe Anjinho Escolar`
       title,
       description,
       onConfirm: () => {
-        onConfirm();
         setConfirmDialog(prev => ({ ...prev, isOpen: false }));
+        onConfirm();
       }
     });
   };
-
-  // Occurrence modal states
+// Occurrence modal states
   const [showOccurrenceModal, setShowOccurrenceModal] = useState(false);
   const [occurrenceForm, setOccurrenceForm] = useState({ tipo: 'queda', criticidade: 'amarelo', descricao: '' });
   const [emergencyMinimized, setEmergencyMinimized] = useState(true);
@@ -1192,9 +1192,8 @@ Equipe Anjinho Escolar`
     setFilaOffline(items);
   };
 
-  // Live timer for active caregiver shift duration (Ref-based, aggressive clear)
+  // Live timer for active caregiver shift duration (Ref-based, aggressive clear & auto-expire)
   useEffect(() => {
-    // Limpa qualquer intervalo anterior ativo
     if (timerIntervalRef.current) {
       clearInterval(timerIntervalRef.current);
       timerIntervalRef.current = null;
@@ -1238,6 +1237,24 @@ Equipe Anjinho Escolar`
 
         if (startMs === 0) {
           setElapsedShiftTime('00:00:00');
+          return;
+        }
+
+        // Auto-expire stale shifts older than 14 hours (e.g. 33 hrs)
+        if ((Date.now() - startMs) > (14 * 60 * 60 * 1000)) {
+          if (timerIntervalRef.current) {
+            clearInterval(timerIntervalRef.current);
+            timerIntervalRef.current = null;
+          }
+          isTimerActiveRef.current = false;
+          setIsShiftActive(false);
+          setShiftStartTime(null);
+          setElapsedShiftTime('00:00:00');
+          try {
+            localStorage.setItem('anjo_shift_active', 'false');
+            localStorage.setItem('anjo_shift_active_' + idoso.id, 'false');
+            localStorage.removeItem('anjo_shift_start_time_' + idoso.id);
+          } catch(e) {}
           return;
         }
 
@@ -3523,207 +3540,220 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
 
   const handleEndShiftGroup = (className: string) => {
     if (!isStaffUser(usuarioAtual)) {
-      alert(" [!]  Operacao Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o periodo letivo coletivo!");
+      alert(" [!] Opera√ß√£o Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o per√≠odo letivo coletivo!");
       return;
     }
     try {
-      const targetClass = getStudentClassName(idoso) || className || (usuarioAtual?.salaAula && usuarioAtual.salaAula !== 'Todas' ? usuarioAtual.salaAula : 'Maternal I - A');
+      const targetClass = getStudentClassName(idoso) || className || (usuarioAtual?.salaAula && usuarioAtual.salaAula !== 'Todas' ? usuarioAtual.salaAula : 'Ber√ß√°rio I - A');
+      
+      const executeStopGroup = () => {
+        try {
+          const nowTs = Date.now();
+          const nowStr = new Date().toISOString();
 
-      triggerConfirm(
-        'Encerrar Aulas Coletivo',
-        `Voce tem certeza que deseja encerrar as aulas de todos os alunos da classe ${targetClass} ao mesmo tempo? Todos os diarios de rotina serao finalizados.`,
-        () => {
-          try {
-            const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
-            // Only include classmates who are not absent and belong to targetClass
-            const classmates = allSeniors.filter(s => {
-              if (!s || typeof s !== 'object' || !s.id || !s.nome) return false;
-              const isMateAbsent = localStorage.getItem(`anjo_is_absent_${s.id}`) === 'true';
-              return s.id.startsWith('aluno_') && isStudentInRoom(s, targetClass) && !isMateAbsent;
-            });
-            
-            // Guarantee that the currently selected child is included if they are not absent
-            if (!isAbsent) {
-              if (!classmates.some(c => c.id === idoso.id)) {
-                classmates.push(idoso);
-              }
+          // 1. Kill timer immediately
+          if (timerIntervalRef.current) {
+            clearInterval(timerIntervalRef.current);
+            timerIntervalRef.current = null;
+          }
+          isTimerActiveRef.current = false;
+
+          // 2. Set global shift state to false in localStorage
+          localStorage.setItem('anjo_shift_active', 'false');
+          localStorage.setItem('anjo_shift_active_ts', String(nowTs));
+
+          // 3. Find all students in this class
+          const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
+          const classmates = allSeniors.filter(s => {
+            if (!s || typeof s !== 'object' || !s.id || !s.nome) return false;
+            return isStudentInRoom(s, targetClass);
+          });
+
+          if (!classmates.some(c => c.id === idoso.id)) {
+            classmates.push(idoso);
+          }
+
+          // 4. Gather all keys to turn off
+          const allKeysToTurnOff = new Set<string>();
+          allKeysToTurnOff.add(targetClass);
+          if (className) allKeysToTurnOff.add(className);
+
+          classmates.forEach(mate => {
+            if (!mate || !mate.id) return;
+            allKeysToTurnOff.add(mate.id);
+            getAllPossibleStudentKeys(mate.id).forEach(k => allKeysToTurnOff.add(k));
+            if (mate.nome) {
+              allKeysToTurnOff.add(mate.nome);
+              allKeysToTurnOff.add(mate.nome.split(' (')[0].trim());
             }
-            
-            const allTasksToday = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
-            const shareList: any[] = [];
-            const initialStatuses: Record<string, 'pendente' | 'aberto' | 'confirmado'> = {};
-            const allLogs = getFromDB<NotificacaoSimulada[]>('anjo_notificacoes', []);
-            const endShiftUpdates: { targetKey: string; active: boolean }[] = [
-              { targetKey: targetClass, active: false },
-              { targetKey: idoso.id, active: false }
-            ];
+          });
 
-            classmates.forEach(mate => {
-              if (!mate || !mate.id) return;
-              endShiftUpdates.push({ targetKey: mate.id, active: false });
-              
-              // Count metrics for this specific classmate to make a accurate summary log!
-              const mateTasks = allTasksToday.filter(t => t && t.idosoId === mate.id);
-              const mateConcluidas = mateTasks.filter(t => t.status === 'concluido');
-              
-              const mateHids = getTodayHydrationRecords(mate.id);
-              const mateTotalMl = mateHids.reduce((acc, h) => acc + (Number(h.quantidadeMl) || 0), 0);
+          // 5. Unconditionally turn off all keys in localStorage
+          allKeysToTurnOff.forEach(k => {
+            if (!k) return;
+            try {
+              localStorage.setItem('anjo_shift_active_' + k, 'false');
+              localStorage.setItem('anjo_shift_active_' + k + '_ts', String(nowTs));
+              localStorage.removeItem('anjo_shift_start_time_' + k);
+              localStorage.removeItem('anjo_routine_reset_' + k);
+            } catch(e) {}
+          });
 
-              const totalTasks = mateTasks.length > 0 ? mateTasks.length : 5;
-              const completedTasks = mateTasks.length > 0 ? mateConcluidas.length : 5;
-              const taxaConformidadeCalc = Math.round((completedTasks / totalTasks) * 100);
+          // 6. Update database anjo_shift_states
+          try {
+            const existingStates = getFromDB<any[]>('anjo_shift_states', []);
+            const updatedStates = existingStates.map(s => {
+              if (!s || !s.id) return s;
+              const sid = String(s.id).toLowerCase();
+              if (Array.from(allKeysToTurnOff).some(pk => pk.toLowerCase() === sid || sid.includes(pk.toLowerCase()))) {
+                return { ...s, active: false, startTime: null, updatedAt: nowStr };
+              }
+              return s;
+            });
+            saveToDB('anjo_shift_states', updatedStates);
+          } catch(e) {}
 
-              const summaryId = 'summary_id_' + Date.now() + '_' + mate.id;
-              const mateNameClean = (mate.nome || '').includes(' (') ? mate.nome.split(' (')[0] : (mate.nome || 'Aluno');
-              
-              const todayBr = new Date().toLocaleDateString('pt-BR');
-              const startHourStr = formatShiftTime(shiftStartTime, getNowTimeBr());
-              const endHourStr = getNowTimeBr();
+          // 7. Update batch
+          const endShiftUpdates = Array.from(allKeysToTurnOff).map(k => ({ targetKey: k, active: false }));
+          setShiftActiveStatesBatch(endShiftUpdates);
 
-              const mateMsg = ` A ARVORE DA INFANCIA HOJE:
-Hoje a arvore do(a) *${mateNameClean}* floresceu no Anjinho Escolar:
-  *Folhas verdes:* Nutricao balanceada e hidratacao regular (${mateTotalMl}ml);
-  *Flores e borboletas:* Momento acolhedor de sono e descanso tranquilo;
-  *Frutos e passarinhos:* Atividades pedagogicas, trabalhinhos e aprendizados;
-  *Tronco forte:* Cuidados diarios, higiene completa e saude acompanhada de perto (36.5oC).
+          // 8. Reset UI states immediately
+          setIsShiftActive(false);
+          setShiftStartTime(null);
+          setElapsedShiftTime('00:00:00');
 
- *PARTICIPE DA JORNADA DO(A) ${mateNameClean.toUpperCase()}!*
-Abra as fotos no aplicativo e regue a arvore do seu filho enviando uma das manifestacoes de afeto:
- *Que encanto!*   *Feito com amor*   *Puro brilho!*   *Orgulho da gente*   *Um tesouro!*
+          // 9. Generate summaries for classmates
+          const allTasksToday = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
+          const shareList: any[] = [];
+          const initialStatuses: Record<string, 'pendente' | 'aberto' | 'confirmado'> = {};
+          const allLogs = getFromDB<NotificacaoSimulada[]>('anjo_notificacoes', []);
 
-_(Cada manifestacao sua ilumina e rega a arvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
+          classmates.forEach(mate => {
+            if (!mate || !mate.id) return;
+            const mateTasks = allTasksToday.filter(t => t && t.idosoId === mate.id);
+            const mateConcluidas = mateTasks.filter(t => t.status === 'concluido');
+            const mateHids = getTodayHydrationRecords(mate.id);
+            const mateTotalMl = mateHids.reduce((acc, h) => acc + (Number(h.quantidadeMl) || 0), 0);
+            const totalTasks = mateTasks.length > 0 ? mateTasks.length : 5;
+            const completedTasks = mateTasks.length > 0 ? mateConcluidas.length : 5;
+            const taxaConformidadeCalc = Math.round((completedTasks / totalTasks) * 100);
+            const summaryId = 'summary_id_' + Date.now() + '_' + mate.id;
+            const mateNameClean = (mate.nome || '').includes(' (') ? mate.nome.split(' (')[0] : (mate.nome || 'Aluno');
+            const startHourStr = formatShiftTime(shiftStartTime, getNowTimeBr());
+            const endHourStr = getNowTimeBr();
 
-Acesse o diario de rotina escolar completo de hoje pelo link seguro:
- ${window.location.origin}/?relatorio=${summaryId}
+            const mateMsg = `üå≥ A √ÅRVORE DA INF√ÇNCIA HOJE:
+Hoje a √°rvore do(a) *${mateNameClean}* floresceu no Anjinho Escolar:
+üçÉ *Folhas verdes:* Nutri√ß√£o balanceada e hidrata√ß√£o regular (${mateTotalMl}ml);
+üå∏ *Flores e borboletas:* Momento acolhedor de sono e descanso tranquilo;
+üçé *Frutos e passarinhos:* Atividades pedag√≥gicas, trabalhinhos e aprendizados;
+ü™µ *Tronco forte:* Cuidados di√°rios, higiene completa e sa√∫de acompanhada de perto (36.5¬∞C).
+
+üåü *PARTICIPE DA JORNADA DO(A) ${mateNameClean.toUpperCase()}!*
+Abra as fotos no aplicativo e regue a √°rvore do seu filho enviando uma das manifesta√ß√µes de afeto:
+*Que encanto!* ‚ù§Ô∏è | *Feito com amor* üé® | *Puro brilho!* ‚ú® | *Orgulho da gente* üåü | *Um tesouro!* üíé
+_(Cada manifesta√ß√£o sua ilumina e rega a √°rvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
+
+Acesse o di√°rio de rotina escolar completo de hoje pelo link seguro: ${window.location.origin}/?relatorio=${summaryId}
 
 Com carinho,
 Equipe Anjinho Escolar`;
-     
-              // Ingest simulated WhatsApp log for this child individually
-              const primaryContact = mate.contatoEmergencia || { nome: 'Responsaveis', telefone: '11999999999' };
-              
-              const newLog: NotificacaoSimulada = {
-                id: 'log_coletivo_' + Date.now() + '_' + mate.id,
-                idosoId: mate.id,
-                familiarNome: primaryContact.nome || 'Responsaveis',
-                telefoneDestino: primaryContact.telefone || '11999999999',
-                tipoCompromisso: 'Resumo Diario da Aula (Coletivo)',
-                mensagem: mateMsg,
-                status: 'enviada_whatsapp',
-                dataEnvio: new Date().toISOString(),
-                canal: 'WhatsApp'
+
+            const primaryContact = mate.contatoEmergencia || { nome: 'Respons√°veis', telefone: '11999999999' };
+            const newLog: NotificacaoSimulada = {
+              id: 'log_coletivo_' + Date.now() + '_' + mate.id,
+              idosoId: mate.id,
+              familiarNome: primaryContact.nome || 'Respons√°veis',
+              telefoneDestino: primaryContact.telefone || '11999999999',
+              tipoCompromisso: 'Resumo Di√°rio da Aula (Coletivo)',
+              mensagem: mateMsg,
+              status: 'enviada_whatsapp',
+              dataEnvio: new Date().toISOString(),
+              canal: 'WhatsApp'
+            };
+            allLogs.push(newLog);
+
+            shareList.push({
+              id: mate.id,
+              nome: mateNameClean,
+              contatoNome: primaryContact.nome || 'Respons√°veis',
+              contatoTelefone: primaryContact.telefone || '11999999999',
+              mensagem: mateMsg
+            });
+            initialStatuses[mate.id] = 'pendente';
+
+            let pastSummaries = getFromDB<any[]>(`anjo_turn_summaries_${mate.id}`, []);
+            if (!Array.isArray(pastSummaries)) pastSummaries = [];
+            pastSummaries.unshift({
+              id: summaryId,
+              cuidador: usuarioAtual?.nome || 'Educador(a)',
+              data: new Date().toLocaleDateString('pt-BR'),
+              duracao: 'Per√≠odo Completo',
+              inicio: startHourStr,
+              fim: endHourStr,
+              taxaConformidade: taxaConformidadeCalc,
+              taxaQualidade: 100,
+              mensagemCompleta: mateMsg,
+              timestamp: new Date().toISOString()
+            });
+            saveToDB(`anjo_turn_summaries_${mate.id}`, pastSummaries);
+          });
+
+          saveToDB('anjo_notificacoes', allLogs);
+
+          // Reset tasks
+          const classmateIds = classmates.map(c => c.id);
+          const allTasksTodayCollective = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
+          const updatedTasksCollective = allTasksTodayCollective.map(t => {
+            if (classmateIds.includes(t.idosoId)) {
+              return {
+                ...t,
+                status: 'pendente' as const,
+                concluidaEm: undefined,
+                completadaPor: undefined,
+                observacao: undefined,
+                detalhes: undefined
               };
-              allLogs.push(newLog);
-
-              // Add to our collective share modal checklist
-              shareList.push({
-                id: mate.id,
-                nome: mateNameClean,
-                contatoNome: primaryContact.nome || 'Responsaveis',
-                contatoTelefone: primaryContact.telefone || '11999999999',
-                mensagem: mateMsg
-              });
-              initialStatuses[mate.id] = 'pendente';
-
-              // Save past summary reports into their historical tab so parents see it in their family panel
-              let pastSummaries = getFromDB<any[]>(`anjo_turn_summaries_${mate.id}`, []);
-              if (!Array.isArray(pastSummaries)) pastSummaries = [];
-              pastSummaries.unshift({
-                id: summaryId,
-                cuidador: usuarioAtual?.nome || 'Educador(a)',
-                data: new Date().toLocaleDateString('pt-BR'),
-                duracao: 'Periodo Completo',
-                inicio: startHourStr,
-                fim: endHourStr,
-                taxaConformidade: taxaConformidadeCalc,
-                taxaQualidade: 100,
-                mensagemCompleta: mateMsg,
-                timestamp: new Date().toISOString()
-              });
-              saveToDB(`anjo_turn_summaries_${mate.id}`, pastSummaries);
-              
-              // Add audit log
-              let logs = getFromDB<any[]>(`anjo_lgpd_auditoria_${mate.id}`, []);
-              if (!Array.isArray(logs)) logs = [];
-              logs.unshift({
-                id: 'log_' + Date.now() + '_' + mate.id,
-                autor: usuarioAtual?.nome || 'Educador(a)',
-                acao: `Encerramento de Periodo Escolar Coletivo da Classe ${targetClass}`,
-                data: new Date().toLocaleString('pt-BR'),
-                ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-                detalhes: `Fechamento sincronizado com toda a classe. Boletim do aluno gerado e registrado no historico.`
-              });
-              saveToDB(`anjo_lgpd_auditoria_${mate.id}`, logs);
-            });
-            
-            saveToDB('anjo_notificacoes', allLogs);
-            setShiftActiveStatesBatch(endShiftUpdates);
-
-            // Remove active status unconditionally for current selected student
-            setIsShiftActive(false);
-            setShiftStartTime(null);
-
-            // Reset daily tasks to 'pendente' for classmate students for the next day
-            const classmateIds = classmates.map(c => c.id);
-            const allTasksTodayCollective = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
-            const updatedTasksCollective = allTasksTodayCollective.map(t => {
-              if (classmateIds.includes(t.idosoId)) {
-                return {
-                  ...t,
-                  status: 'pendente' as const,
-                  concluidaEm: undefined,
-                  completadaPor: undefined,
-                  observacao: undefined,
-                  detalhes: undefined
-                };
-              }
-              return t;
-            });
-            saveToDB('anjo_tarefas_diarias', updatedTasksCollective);
-            setTarefas(updatedTasksCollective.filter(t => t.idosoId === idoso.id));
-            
-            // Simulated notify for active student
-            const endMsg = `Anjo Escolar: O Periodo Letivo para todos os alunos da classe ${targetClass} foi ENCERRADO por ${usuarioAtual?.nome || 'Educador(a)'} As ${getNowTimeBr()} de forma coletiva. Relatorios de rotina, sono e fraldas enviados para o WhatsApp dos responsaveis!`;
-            triggerWhatsAppSim('Aulas Encerradas em Grupo', endMsg);
-
-            // Populate states to trigger the custom high-fidelity collective confirmation notification panel
-            setCollectiveShareList(shareList);
-            setCollectiveShareStatuses(initialStatuses);
-            setShowCollectiveShareModal(true);
- 
-            showToast(`Periodo Escolar da classe ${targetClass} foi encerrado com sucesso para todos os alunos sincronizados!`, 'success');
-            if (typeof window !== 'undefined') {
-              window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
-              window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-              window.dispatchEvent(new CustomEvent('db-vitals-update'));
             }
-          } catch (err: any) {
-            console.error('Erro ao processar encerramento coletivo:', err);
-            setIsShiftActive(false);
-            setShiftStartTime(null);
-            setElapsedShiftTime('00:00:00');
-            if (typeof window !== 'undefined') {
-              window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
-              window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-              window.dispatchEvent(new CustomEvent('db-vitals-update'));
-            }
-            showToast(`Encerramento coletivo processado com sucesso.`, 'success');
+            return t;
+          });
+          saveToDB('anjo_tarefas_diarias', updatedTasksCollective);
+          setTarefas(updatedTasksCollective.filter(t => t.idosoId === idoso.id));
+
+          // 10. Dispatch events to notify all active listeners
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
+            window.dispatchEvent(new CustomEvent('anjo_user_updated'));
+            window.dispatchEvent(new CustomEvent('db-vitals-update'));
+            window.dispatchEvent(new Event('storage'));
           }
+
+          setCollectiveShareList(shareList);
+          setCollectiveShareStatuses(initialStatuses);
+          setShowCollectiveShareModal(true);
+
+          showToast(`Per√≠odo Coletivo da classe ${targetClass} encerrado com sucesso!`, 'success');
+        } catch(err) {
+          console.error('Erro ao encerrar coletivo:', err);
+          setIsShiftActive(false);
+          setShiftStartTime(null);
+          setElapsedShiftTime('00:00:00');
         }
+      };
+
+      triggerConfirm(
+        'Encerrar Aulas Coletivo',
+        `Voc√™ tem certeza que deseja encerrar as aulas de todos os alunos da classe ${targetClass} ao mesmo tempo? Todos os di√°rios de rotina ser√£o finalizados e o cron√¥metro ser√° desligado.`,
+        executeStopGroup
       );
-    } catch (e: any) {
-      console.error('Erro ao acionar encerramento coletivo:', e);
+    } catch(e) {
+      console.error('Erro ao acionar encerramento:', e);
       setIsShiftActive(false);
       setShiftStartTime(null);
       setElapsedShiftTime('00:00:00');
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
-      }
-      showToast(`Encerramento processado.`, 'success');
     }
   };
 
-  // 1. Double-Step Review Trigger
   const handleTriggerEndShiftReview = () => {
     if (!isStaffUser(usuarioAtual)) {
       alert(" [!]  Operacao Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o periodo letivo!");
@@ -3813,7 +3843,6 @@ Equipe Anjinho Escolar`;
     try {
       const targetClass = getStudentClassName(idoso) || idoso.salaAula || (usuarioAtual?.salaAula && usuarioAtual.salaAula !== 'Todas' ? usuarioAtual.salaAula : '');
       const currentStartTime = shiftStartTime || new Date().toISOString();
-
       const {
         concluidas = [],
         recusadas = [],
@@ -3832,290 +3861,207 @@ Equipe Anjinho Escolar`;
         medChanges = []
       } = shiftReviewPayload || {};
 
-    const todayBr = new Date().toLocaleDateString('pt-BR');
-    const nowTimeBr = getNowTimeBr();
-    const profName = usuarioAtual?.nome ? (usuarioAtual.nome.includes('Prof') ? usuarioAtual.nome : `Profa ${usuarioAtual.nome}`) : 'Profa Nilva Amaral';
+      const todayBr = new Date().toLocaleDateString('pt-BR');
+      const nowTimeBr = getNowTimeBr();
+      const profName = usuarioAtual?.nome ? (usuarioAtual.nome.includes('Prof') ? usuarioAtual.nome : `Profa ${usuarioAtual.nome}`) : 'Profa Nilva Amaral';
 
-    const mealSummaryStr = meals && meals.length > 0
-      ? meals.map((m: any) => `${m.refeicao === 'almoco' ? 'Almoco' : m.refeicao === 'cafe_manha' ? 'Cafe da Manha' : m.refeicao === 'lanche' ? 'Lanche' : 'Refeicao'} (${m.aceitacao === 'muito_bem' ? 'Comeu Tudo' : m.aceitacao === 'pouco' ? 'Comeu Pouco' : 'Recusou'})`).join(', ')
-      : 'Mamadeira / Refeicao (Comeu Tudo)';
+      const mealSummaryStr = meals && meals.length > 0
+        ? meals.map((m: any) => `${m.refeicao === 'almoco' ? 'Almo√ßo' : m.refeicao === 'cafe_manha' ? 'Caf√© da Manh√£' : m.refeicao === 'lanche' ? 'Lanche' : 'Refei√ß√£o'} (${m.aceitacao === 'muito_bem' ? 'Comeu Tudo' : m.aceitacao === 'pouco' ? 'Comeu Pouco' : 'Recusou'})`).join(', ')
+        : 'Mamadeira / Refei√ß√£o (Comeu Tudo)';
 
-    const hygieneSummaryStr = (ultimoSinal && ultimoSinal.fralda) 
-      ? ultimoSinal.fralda 
-      : 'Xixi, Coco (normal), Dentes Escovados, Banho Tomado, Roupa Trocada';
+      const hygieneSummaryStr = (ultimoSinal && ultimoSinal.fralda) 
+        ? ultimoSinal.fralda 
+        : 'Xixi, Coc√¥ (normal), Dentes Escovados, Banho Tomado, Roupa Trocada';
 
-    const sleepSummaryStr = (ultimoSinal && ultimoSinal.pressaoArterial)
-      ? ultimoSinal.pressaoArterial
-      : 'Dormiu 45min';
+      const sleepSummaryStr = (ultimoSinal && ultimoSinal.pressaoArterial)
+        ? ultimoSinal.pressaoArterial
+        : 'Dormiu 45min';
 
-    const healthTempStr = (ultimoSinal && ultimoSinal.temperatura) 
-      ? `${ultimoSinal.temperatura}oC` 
-      : '36.5oC';
+      const healthTempStr = (ultimoSinal && ultimoSinal.temperatura) 
+        ? `${ultimoSinal.temperatura}¬∞C` 
+        : '36.5¬∞C';
 
-    // A. Compilation of complete pre-formatted dashboard report (Available securely in Family history logs)
-    let fullReportMsg = isEscolar 
-      ? ` Anjo Escolar: Registro de ${idoso.nome} confirmed por ${profName}:
- Data: ${todayBr}     Horario: ${nowTimeBr}
+      // A. Compilation of complete pre-formatted dashboard report
+      let fullReportMsg = isEscolar 
+        ? `üå≥ Anjo Escolar: Di√°rio de Bordo de ${idoso.nome} confirmado por ${profName}:
+üìÖ Data: ${todayBr} | ‚è∞ Hor√°rio: ${nowTimeBr}
+üíß √Ågua: ${totalMl}ml | üçº Alimenta√ß√£o: ${mealSummaryStr}
+üí§ Sono: ${sleepSummaryStr} | üöº Higiene: ${hygieneSummaryStr}
+üòä Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'} | ü©∫ Sa√∫de: ${healthTempStr} | ‚öñÔ∏è Peso: ${idoso.peso || '15.5'} kg`
+        : `üõ°Ô∏è Anjo Cuidador: Registro de ${idoso.nome} confirmado por ${profName}:
+üìÖ Data: ${todayBr} | ‚è∞ Hor√°rio: ${nowTimeBr}
+üíß Hidrata√ß√£o: ${totalMl}ml | üç≤ Alimenta√ß√£o: ${mealSummaryStr}
+üí§ Repouso: ${sleepSummaryStr} | üöø Higiene: ${hygieneSummaryStr}
+üòä Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'} | ü©∫ Sinais: ${healthTempStr} | ‚öñÔ∏è Peso: ${idoso.peso || '65'} kg`;
 
- Agua: ${totalMl}ml
-  Refeicao: ${mealSummaryStr}
- Sono: ${sleepSummaryStr}
- Higiene: ${hygieneSummaryStr}
- Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}
-  Saude: ${healthTempStr}
- Peso: ${idoso.peso || '15.5'} kg
-
-`
-      : ` Anjo Cuidador: Registro de ${idoso.nome} confirmado por ${profName}:
- Data: ${todayBr}     Horario: ${nowTimeBr}
-
- Agua / Hidratacao: ${totalMl}ml
-  Alimentacao: ${mealSummaryStr}
- Repouso: ${sleepSummaryStr}
- Higiene / Cuidados: ${hygieneSummaryStr}
- Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}
-  Saude / Sinais: ${healthTempStr}
- Peso: ${idoso.peso || '65'} kg
+      fullReportMsg += `
+‚è±Ô∏è Per√≠odo: das ${startHour} √†s ${endHour} (Dura√ß√£o: ${elapsedShiftTime})
+`;
+      fullReportMsg += `üéØ Taxa de Rotinas Conclu√≠das: ${taxaC}%
 
 `;
 
-    fullReportMsg += ` *Periodo:* das ${startHour} As ${endHour} (Duracao: ${elapsedShiftTime})\n`;
-    fullReportMsg += ` *Taxa de Conformidade hoje:* ${taxaC}%    *Qualidade de Registro:* ${taxaQ}%\n\n`;
+      // B. Generate unique report key
+      const summaryId = 'summary_id_' + Date.now();
 
-    fullReportMsg += isEscolar ? ` *ATIVIDADES & ROTINAS CONCLUIDAS:*\n` : ` *MEDICACOES & CUIDADOS CONCLUIDOS:*\n`;
-    if (concluidas.length > 0) {
-      concluidas.forEach((m: any) => {
-        fullReportMsg += `   ${m.titulo} As ${m.concluidaEm || m.horarioPrevisto}${m.observacao ? ` ("${m.observacao}")` : ''}\n`;
-      });
-    } else {
-      fullReportMsg += isEscolar 
-        ? `  - Nenhuma atividade ou rotina concluida neste periodo.\n`
-        : `  - Nenhuma medicacao ou cuidado administrado neste turno.\n`;
-    }
+      // C. √Årvore da Inf√¢ncia / Di√°rio de Rotina WhatsApp Message
+      const studentCleanName = (idoso.nome || '').split(' (')[0].trim();
+      const shortWaMsg = isEscolar
+        ? `üå≥ A √ÅRVORE DA INF√ÇNCIA HOJE:
+Hoje a √°rvore do(a) *${studentCleanName}* floresceu no Anjinho Escolar:
+üçÉ *Folhas verdes:* Nutri√ß√£o (${mealSummaryStr}) e hidrata√ß√£o regular (${totalMl}ml);
+üå∏ *Flores e borboletas:* Momento acolhedor de sono e descanso (${sleepSummaryStr});
+üçé *Frutos e passarinhos:* Atividades pedag√≥gicas, trabalhinhos e aprendizados;
+ü™µ *Tronco forte:* Cuidados di√°rios, higiene (${hygieneSummaryStr}) e sa√∫de (${healthTempStr}).
 
-    if (recusadas.length > 0) {
-      fullReportMsg += isEscolar ? `\n *RECUSAS / JUSTIFICATIVAS:*\n` : `\n *RECUSAS JUSTIFICADAS:*\n`;
-      recusadas.forEach((r: any) => {
-        fullReportMsg += `  A ${r.titulo} As ${r.concluidaEm || r.horarioPrevisto}. Justificativa: "${r.observacao || 'Recusa geral'}"\n`;
-      });
-    }
+üåü *PARTICIPE DA JORNADA DO(A) ${studentCleanName.toUpperCase()}!*
+Abra as fotos no aplicativo e regue a √°rvore do seu filho enviando uma das manifesta√ß√µes de afeto:
+*Que encanto!* ‚ù§Ô∏è | *Feito com amor* üé® | *Puro brilho!* ‚ú® | *Orgulho da gente* üåü | *Um tesouro!* üíé
+_(Cada manifesta√ß√£o sua ilumina e rega a √°rvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
 
-    if (atrasadas.length > 0 || pendentes.length > 0) {
-      fullReportMsg += isEscolar ? `\n [!]  *PENDENCIAS / NAO CONCLUIDOS:*\n` : `\n [!]  *PENDENCIAS / NAO ADMINISTRADOS:*\n`;
-      if (atrasadas.length > 0) {
-        atrasadas.forEach((a: any) => {
-          fullReportMsg += `   [ATRASADO] ${a.titulo} prevista para ${a.horarioPrevisto}\n`;
-        });
-      }
-      if (pendentes.length > 0) {
-        pendentes.forEach((p: any) => {
-          fullReportMsg += `   [PENDENTE] ${p.titulo} prevista para ${p.horarioPrevisto}\n`;
-        });
-      }
-    }
-
-    fullReportMsg += `\n *ALIMENTACAO:*\n`;
-    if (meals.length > 0) {
-      meals.forEach((meal: any) => {
-        const mealTitle = meal.refeicao === 'cafe_manha' ? 'Cafe da manha' : meal.refeicao === 'almoco' ? 'Almoco' : meal.refeicao === 'lanche' ? 'Lanche da Tarde' : meal.refeicao === 'jantar' ? 'Jantar' : 'Ceia';
-        const accepts = meal.aceitacao === 'muito_bem' ? (isEscolar ? 'Comeu/Tomou tudo' : 'Aceitou muito bem') : meal.aceitacao === 'pouco' ? 'Comeu pouco' : 'Recusou';
-        fullReportMsg += `   ${mealTitle} (${meal.horario}): ${accepts}.${meal.observacoes ? ` Obs: "${meal.observacoes}"` : ''}\n`;
-      });
-    } else {
-      fullReportMsg += isEscolar ? `  - Sem refeicoes cadastradas neste periodo.\n` : `  - Sem refeicoes cadastradas neste turno.\n`;
-    }
-
-    const actualWaterCount = waterCount;
-    fullReportMsg += `\n *HIDRATACAO:*\n`;
-    if (isEscolar) {
-      fullReportMsg += `   Copos de Agua Ingeridos: ${actualWaterCount > 0 ? actualWaterCount : Math.max(1, Math.round(totalMl/250))} copo(s) (${totalMl}ml de agua)\n`;
-    } else {
-      fullReportMsg += `   Copos d'agua registrados: ${actualWaterCount > 0 ? actualWaterCount : Math.max(1, Math.round(totalMl/250))} copo(s) (totalizado: ${totalMl}ml de agua ingerida)\n`;
-    }
-
-    fullReportMsg += isEscolar ? `\n  *HUMOR & COMPORTAMENTO:*\n` : `\n  *HUMOR & BEM ESTAR:*\n`;
-    fullReportMsg += `   Estado observado: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}\n`;
-
-    if (ultimoSinal) {
-      if (isEscolar) {
-        fullReportMsg += `\n *SAUDE & SONECA RECENTES:*\n`;
-        fullReportMsg += `   Periodo de Sono/Soneca: ${ultimoSinal.pressaoArterial}\n`;
-        fullReportMsg += `   Fraldas e Trocas: ${ultimoSinal.fralda || 'Verificada e limpa'}\n`;
-        fullReportMsg += `   Temperatura Corporal: ${ultimoSinal.temperatura}oC\n`;
-      } else {
-        fullReportMsg += `\n *ULTIMOS SINAIS VITAIS AFERIDOS:*\n`;
-        fullReportMsg += `   Pressao Arterial: ${ultimoSinal.pressaoArterial}\n`;
-        fullReportMsg += `   Glicemia: ${ultimoSinal.glicemia} mg/dL\n`;
-        fullReportMsg += `   Oxigenacao O2: ${ultimoSinal.saturacao}%\n`;
-        fullReportMsg += `   Temperatura: ${ultimoSinal.temperatura}oC\n`;
-      }
-    }
-
-    if (ocorrencias.length > 0) {
-      fullReportMsg += isEscolar ? `\n *OCORRENCIAS / OBSERVACOES ATIPICAS NO PERIODO:*\n` : `\n *OCORRENCIAS / ANOTACOES ATIPICAS NO PLANTONISMO:*\n`;
-      ocorrencias.forEach((o: any) => {
-        fullReportMsg += `   [${(o.criticidade || 'informacao').toUpperCase()}] ${(o.tipo || 'ocorrencia').toUpperCase()} As ${o.horario || ''}: ${o.descricao || ''}\n`;
-      });
-    }
-
-    // Include modifications of medications during the shift
-    fullReportMsg += isEscolar ? `\n *ALTERACOES DE ROTINA/AGENDA (Inclusoes / Exclusoes):*\n` : `\n *ALTERACOES DE MEDICAMENTOS (Inclusoes / Exclusoes):*\n`;
-    if (medChanges && medChanges.length > 0) {
-      medChanges.forEach((ch: any) => {
-        const actionLabel = ch.tipo === 'cadastro' ? 'NOVO CADASTRADO' : ch.tipo === 'exclusao' ? 'EXCLUIDO' : ch.tipo === 'suspensao' ? 'SUSPENSO' : 'REATIVADO';
-        fullReportMsg += `   [${actionLabel}] ${ch.nome}: ${ch.detalhes} (por ${ch.autor || 'Educador(a)'})\n`;
-      });
-    } else {
-      fullReportMsg += `  - Nenhuma alteracao feita neste periodo.\n`;
-    }
-
-    fullReportMsg += `\n\n *Relatorio processado de maneira segura e em conformidade estrita com LGPD.*`;
-
-    // B. Generate unique report key
-    const summaryId = 'summary_id_' + Date.now();
-
-    // C. Composition of the revised SHORT WhatsApp direct alert
-    const studentCleanName = (idoso.nome || '').split(' (')[0];
-    const shortWaMsg = isEscolar
-      ? ` A ARVORE DA INFANCIA HOJE:
-Hoje a arvore do(a) *${studentCleanName}* floresceu no Anjinho Escolar:
-  *Folhas verdes:* Nutricao (${mealSummaryStr}) e hidratacao regular (${totalMl}ml);
-  *Flores e borboletas:* Momento acolhedor de soneca e descanso (${sleepSummaryStr});
-  *Frutos e passarinhos:* Atividades pedagogicas e trabalhinhos manuais;
-  *Tronco forte:* Cuidados diarios, higiene (${hygieneSummaryStr}) e saude (${healthTempStr}).
-
- *PARTICIPE DA JORNADA DO(A) ${studentCleanName.toUpperCase()}!*
-Abra as fotos no aplicativo e regue a arvore do seu filho enviando uma das manifestacoes de afeto:
- *Que encanto!*   *Feito com amor*   *Puro brilho!*   *Orgulho da gente*   *Um tesouro!*
-
-_(Cada manifestacao sua ilumina e rega a arvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
-
-Acesse o diario de rotina escolar completo pelo link seguro:
- ${window.location.origin}/?relatorio=${summaryId}
+Acesse o di√°rio de rotina escolar completo pelo link seguro: ${window.location.origin}/?relatorio=${summaryId}
 
 Com carinho,
 Equipe Anjinho Escolar`
-      : ` Anjo Cuidador: Registro de ${idoso.nome} confirmado por ${profName}:
- Data: ${todayBr}     Horario: ${nowTimeBr}
- Agua: ${totalMl}ml
-  Alimentacao: ${mealSummaryStr}
- Repouso: ${sleepSummaryStr}
- Higiene: ${hygieneSummaryStr}
- Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}
-  Saude: ${healthTempStr}
- Peso: ${idoso.peso || '65'} kg
+        : `üõ°Ô∏è Anjo Cuidador: Registro de ${idoso.nome} confirmado por ${profName}:
+Data: ${todayBr} | Hor√°rio: ${nowTimeBr} | Hidrata√ß√£o: ${totalMl}ml | Refei√ß√£o: ${mealSummaryStr}
+Acesse o boletim completo pelo link seguro: ${window.location.origin}/?relatorio=${summaryId}`;
 
-Acesse o boletim de cuidados completo pelo link seguro:
- ${window.location.origin}/?relatorio=${summaryId}`;
+      // Dispatch simulated WhatsApp notification
+      triggerWhatsAppSim(isEscolar ? 'Encerramento de Per√≠odo Letivo para Pais' : 'Encerramento de Turno para Fam√≠lia', shortWaMsg);
 
-    // Dispatch concise WA alarm
-    triggerWhatsAppSim(isEscolar ? 'Encerramento de Periodo Letivo Curto para Pais' : 'Encerramento de Turno Curto para Familia', shortWaMsg);
+      // Save summary in local database for parents visibility
+      const pastSummaries = getFromDB<any[]>(`anjo_turn_summaries_${idoso.id}`, []);
+      pastSummaries.unshift({
+        id: summaryId,
+        cuidador: usuarioAtual?.nome || 'Educador(a)',
+        data: new Date().toLocaleDateString('pt-BR'),
+        duracao: elapsedShiftTime || '00:00:00',
+        inicio: startHour,
+        fim: endHour,
+        taxaConformidade: taxaC,
+        taxaQualidade: taxaQ,
+        mensagemCompleta: fullReportMsg,
+        timestamp: new Date().toISOString()
+      });
+      saveToDB(`anjo_turn_summaries_${idoso.id}`, pastSummaries);
+      setTurnSummaries(pastSummaries);
 
-    // Save full shift history logs into local database for family portal visibility
-    const pastSummaries = getFromDB<any[]>(`anjo_turn_summaries_${idoso.id}`, []);
-    pastSummaries.unshift({
-      id: summaryId,
-      cuidador: usuarioAtual?.nome || 'Educador(a)',
-      data: new Date().toLocaleDateString('pt-BR'),
-      duracao: elapsedShiftTime || '00:00:00',
-      inicio: startHour,
-      fim: endHour,
-      taxaConformidade: taxaC,
-      taxaQualidade: taxaQ,
-      mensagemCompleta: fullReportMsg,
-      timestamp: new Date().toISOString()
-    });
-    saveToDB(`anjo_turn_summaries_${idoso.id}`, pastSummaries);
-    setTurnSummaries(pastSummaries);
+      // LGPD Audit Log
+      const logs = getFromDB<any[]>(`anjo_lgpd_auditoria_${idoso.id}`, []);
+      logs.unshift({
+        id: 'log_' + Date.now(),
+        autor: usuarioAtual?.nome || 'Educador(a)',
+        acao: `Encerramento de Turno e Relat√≥rio Seguro (${summaryId})`,
+        data: new Date().toLocaleString('pt-BR'),
+        ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
+        detalhes: `Calculado Conformidade de ${taxaC}%. Boletim gerado e compartilhado com respons√°veis.`
+      });
+      saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
+      setLgpdLogs(logs);
 
-    // LGPD closure traceability log
-    const logs = getFromDB<any[]>(`anjo_lgpd_auditoria_${idoso.id}`, []);
-    logs.unshift({
-      id: 'log_' + Date.now(),
-      autor: usuarioAtual?.nome || 'Educador(a)',
-      acao: `Encerramento de Turno e Relatorio Seguro do Boletim de Cuidados (${summaryId})`,
-      data: new Date().toLocaleString('pt-BR'),
-      ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-      detalhes: `Calculado Conformidade de ${taxaC}% e Qualidade de Registro de ${taxaQ}%. Link compartilhado com familiares autorizados.`
-    });
-    saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
-    setLgpdLogs(logs);
-
-    // End shift state unconditionally for all possible candidate keys (ID, name, room, classroom)
-    const studentRoom = idoso.salaAula || idoso.quarto || getStudentRoomName(idoso);
-    const candidateKeysToClose = Array.from(new Set([
-      idoso.id,
-      idoso.nome,
-      idoso.nome ? idoso.nome.split(' (')[0].trim() : '',
-      studentRoom
-    ].filter(Boolean))) as string[];
-
-    setShiftActiveStatesBatch(candidateKeysToClose.map(k => ({ targetKey: k, active: false })));
-
-    setIsShiftActive(false);
-    setShiftStartTime(null);
-    setElapsedShiftTime('00:00:00');
-
-    // Reset daily tasks to 'pendente' for the next day
-    const allTasksTodayIndividual = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
-    const updatedTasksIndividual = allTasksTodayIndividual.map(t => {
-      if (t.idosoId === idoso.id) {
-        return {
-          ...t,
-          status: 'pendente' as const,
-          concluidaEm: undefined,
-          completadaPor: undefined,
-          observacao: undefined,
-          detalhes: undefined
-        };
+      // üõë SHUT DOWN TIMER AND CLEAR ALL ACTIVE KEYS
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+        timerIntervalRef.current = null;
       }
-      return t;
-    });
-    saveToDB('anjo_tarefas_diarias', updatedTasksIndividual);
-    setTarefas(updatedTasksIndividual.filter(t => t.idosoId === idoso.id));
+      isTimerActiveRef.current = false;
 
-    // Close review modal & clean up
-    setShowShiftReviewModal(false);
-    setShiftReviewPayload(null);
-
-    // Dispatch global events to sync and refresh all screens/components
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
-      window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-      window.dispatchEvent(new CustomEvent('db-vitals-update'));
-    }
-
-    // Actively trigger the Assisted WhatsApp Envio popup for Shift Summary bulletin!
-    setManualShareOccurrenceMessage(shortWaMsg);
-    setActiveSharingOccurrenceId(null);
-    setShowManualOccurrenceShareModal(true);
-    } catch (err: any) {
-      console.error('Erro ao processar encerramento de turno:', err);
-      const candidateKeysToClose = Array.from(new Set([
+      const nowTs = Date.now();
+      const possibleKeys = Array.from(new Set([
+        ...getAllPossibleStudentKeys(idoso.id),
         idoso.id,
         idoso.nome,
+        studentCleanName,
+        targetClass,
         idoso.salaAula,
-        idoso.quarto,
-        getStudentClassName(idoso)
+        idoso.quarto
       ].filter(Boolean))) as string[];
-      setShiftActiveStatesBatch(candidateKeysToClose.map(k => ({ targetKey: k, active: false })));
+
+      localStorage.setItem('anjo_shift_active', 'false');
+      localStorage.setItem('anjo_shift_active_ts', String(nowTs));
+
+      possibleKeys.forEach(k => {
+        if (!k) return;
+        try {
+          localStorage.setItem('anjo_shift_active_' + k, 'false');
+          localStorage.setItem('anjo_shift_active_' + k + '_ts', String(nowTs));
+          localStorage.removeItem('anjo_shift_start_time_' + k);
+          localStorage.removeItem('anjo_routine_reset_' + k);
+        } catch(e) {}
+      });
+
+      // Update shift states in DB
+      try {
+        const existingStates = getFromDB<any[]>('anjo_shift_states', []);
+        const cleanStates = existingStates.map(s => {
+          if (!s || !s.id) return s;
+          const sid = String(s.id).toLowerCase();
+          if (possibleKeys.some(pk => pk.toLowerCase() === sid || sid.includes(pk.toLowerCase()))) {
+            return { ...s, active: false, startTime: null, updatedAt: new Date().toISOString() };
+          }
+          return s;
+        });
+        saveToDB('anjo_shift_states', cleanStates);
+      } catch(e) {}
+
+      setShiftActiveStatesBatch(possibleKeys.map(k => ({ targetKey: k, active: false })));
+
+      // Reset React UI states immediately
+      setIsShiftActive(false);
+      setShiftStartTime(null);
+      setElapsedShiftTime('00:00:00');
+
+      // Reset daily tasks for tomorrow
+      const allTasksTodayIndividual = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
+      const updatedTasksIndividual = allTasksTodayIndividual.map(t => {
+        if (t.idosoId === idoso.id) {
+          return {
+            ...t,
+            status: 'pendente' as const,
+            concluidaEm: undefined,
+            completadaPor: undefined,
+            observacao: undefined,
+            detalhes: undefined
+          };
+        }
+        return t;
+      });
+      saveToDB('anjo_tarefas_diarias', updatedTasksIndividual);
+      setTarefas(updatedTasksIndividual.filter(t => t.idosoId === idoso.id));
+
+      // Close review modal
+      setShowShiftReviewModal(false);
+      setShiftReviewPayload(null);
+
+      // Dispatch events
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
+        window.dispatchEvent(new CustomEvent('anjo_user_updated'));
+        window.dispatchEvent(new CustomEvent('db-vitals-update'));
+        window.dispatchEvent(new Event('storage'));
+      }
+
+      // Open WhatsApp Share popup
+      setManualShareOccurrenceMessage(shortWaMsg);
+      setActiveSharingOccurrenceId(null);
+      setShowManualOccurrenceShareModal(true);
+
+      showToast('Per√≠odo encerrado, cron√¥metro desligado e relat√≥rio enviado!', 'success');
+    } catch (err: any) {
+      console.error('Erro ao processar encerramento de turno:', err);
       setIsShiftActive(false);
       setShiftStartTime(null);
       setElapsedShiftTime('00:00:00');
       setShowShiftReviewModal(false);
       setShiftReviewPayload(null);
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
-        window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-        window.dispatchEvent(new CustomEvent('db-vitals-update'));
-      }
-      showToast('Periodo/Turno encerrado com sucesso!', 'success');
+      showToast('Per√≠odo encerrado com sucesso!', 'success');
     }
   };
 
   // Direct 1-Click Stop Shift Handler (opens modal to record reason, preserve activities and log LGPD)
   const handleDirectStopShift = () => {
-    console.log('üõë [STOP SHIFT] Bot√£o Zerar/Desligar clicado!');
+    console.log('üõë [STOP SHIFT] Desligando cron√¥metro e encerrando per√≠odo...');
     try {
       // 1. Limpa intervalo imediatamente
       if (timerIntervalRef.current) {
@@ -4124,35 +4070,53 @@ Acesse o boletim de cuidados completo pelo link seguro:
       }
       isTimerActiveRef.current = false;
 
-      // 2. Apaga chaves de timer no localStorage
+      const nowTs = Date.now();
+      const possibleKeys = getAllPossibleStudentKeys(idoso.id);
+      possibleKeys.push(idoso.id);
+      if (idoso.nome) {
+        possibleKeys.push(idoso.nome);
+        possibleKeys.push(idoso.nome.split(' (')[0].trim());
+      }
+      const room = getStudentClassName(idoso);
+      if (room) possibleKeys.push(room);
+
+      // 2. Apaga e marca como inativo com timestamp
+      localStorage.setItem('anjo_shift_active', 'false');
+      localStorage.setItem('anjo_shift_active_ts', String(nowTs));
+
+      possibleKeys.forEach(k => {
+        if (!k) return;
+        try {
+          localStorage.setItem('anjo_shift_active_' + k, 'false');
+          localStorage.setItem('anjo_shift_active_' + k + '_ts', String(nowTs));
+          localStorage.removeItem('anjo_shift_start_time_' + k);
+          localStorage.removeItem('anjo_routine_reset_' + k);
+        } catch(e) {}
+      });
+
+      // 3. Limpa todas as chaves residuais de start_time do localStorage
       const allKeys = Object.keys(localStorage);
       allKeys.forEach(k => {
-        if (
-          k === 'anjo_shift_active' ||
-          k === 'anjo_shift_start_time' ||
-          k.includes('shift_start_time') ||
-          k.includes('shift_active') ||
-          k.includes('routine_reset')
-        ) {
-          try {
-            localStorage.removeItem(k);
-          } catch(e) {}
+        if (k.includes('shift_start_time') || k.includes('shift_active')) {
+          if (!k.endsWith('_ts')) {
+            try {
+              localStorage.removeItem(k);
+              localStorage.setItem(k, 'false');
+            } catch(e) {}
+          }
         }
       });
 
-      // 3. For√ßa chaves como false
-      try {
-        localStorage.setItem('anjo_shift_active', 'false');
-        localStorage.setItem('anjo_shift_active_' + idoso.id, 'false');
-      } catch(e) {}
-
-      // 4. Limpa registro no banco local anjo_shift_states
+      // 4. Salva no banco anjo_shift_states como inativo
       try {
         const existingStates = getFromDB<any[]>('anjo_shift_states', []);
-        const cleanStates = existingStates.filter(s => {
-          if (!s || !s.id) return false;
+        const cleanStates = existingStates.map(s => {
+          if (!s || !s.id) return s;
           const sid = String(s.id).toLowerCase();
-          return !sid.includes(idoso.id.toLowerCase()) && !sid.includes('aluno') && !sid.includes('idoso');
+          if (possibleKeys.some(pk => pk.toLowerCase() === sid || sid.includes(pk.toLowerCase()))) {
+            return { ...s, active: false, startTime: null, updatedAt: new Date().toISOString() };
+          }
+          return s;
         });
         saveToDB('anjo_shift_states', cleanStates);
       } catch(e) {}
@@ -4162,7 +4126,7 @@ Acesse o boletim de cuidados completo pelo link seguro:
       setShiftStartTime(null);
       setElapsedShiftTime('00:00:00');
 
-      // 6. Notifica outros componentes
+      // 6. Notifica todos os componentes
       if (typeof window !== 'undefined') {
         window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
         window.dispatchEvent(new CustomEvent('anjo_user_updated'));
@@ -4170,7 +4134,7 @@ Acesse o boletim de cuidados completo pelo link seguro:
         window.dispatchEvent(new Event('storage'));
       }
 
-      showToast('Cron√¥metro zerado e desligado com sucesso!', 'success');
+      showToast('Per√≠odo encerrado e cron√¥metro desligado com sucesso!', 'success');
     } catch(err) {
       console.error('Erro ao desligar:', err);
       setIsShiftActive(false);
@@ -5975,38 +5939,44 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                       isShiftActive ? (
                         <>
                           <button
-                            onClick={() => {
-                              setOccurrenceForm({ tipo: 'queda', criticidade: 'vermelho', descricao: '' });
-                              setShowOccurrenceModal(true);
-                            }}
-                            className="px-3.5 py-2.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-black text-xs rounded-xl transition-all cursor-pointer shadow-md flex items-center justify-center gap-1.5 border border-red-500 hover:scale-102"
-                            title="Registrar intercorrencia medica ou ocorrencia do dia"
+                            onClick={handleTriggerEndShiftReview}
+                            className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-md flex items-center justify-center gap-1.5 hover:scale-102"
+                            title="Revisar rotinas apontadas, encerrar o per√≠odo escolar, desligar o cron√¥metro e enviar relat√≥rio para os pais"
                           >
-                            <ShieldAlert className="w-4 h-4 text-white animate-pulse" />  Registrar Ocorrencia
-                          </button>
-                          <button
-                            onClick={handleDirectStopShift}
-                            className="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 hover:scale-102"
-                            title="Desligar cronometro deste aluno individualmente"
-                          >
-                            <Square className="w-3.5 h-3.5 fill-current" /> {isEscolar ? ' Desligar Individual' : ' Desligar Turno'}
+                            <Check className="w-4 h-4" /> {isEscolar ? 'Encerrar e Enviar Relat√≥rio' : 'Encerrar Turno'}
                           </button>
                           <button
                             onClick={() => handleEndShiftGroup(teacherClassroom)}
                             className="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 hover:scale-102"
-                            title={`Desligar cronometro de todos os alunos da turma ${teacherClassroom} ao mesmo tempo`}
+                            title={`Desligar cronometro de todos os alunos da turma ${teacherClassroom} e enviar relat√≥rios coletivos`}
                           >
-                            <Users className="w-3.5 h-3.5" />  Desligar Coletivo ({teacherClassroom})
+                            <Users className="w-3.5 h-3.5" /> Desligar Coletivo ({teacherClassroom})
+                          </button>
+                          <button
+                            onClick={handleDirectStopShift}
+                            className="px-3 py-2.5 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-bold text-xs rounded-xl transition-all cursor-pointer shadow-xs flex items-center justify-center gap-1 hover:scale-102"
+                            title="Desligamento direto de emerg√™ncia do cron√¥metro"
+                          >
+                            <Square className="w-3.5 h-3.5 fill-current" /> Desligar Direto
+                          </button>
+                          <button
+                            onClick={() => {
+                              setOccurrenceForm({ tipo: 'queda', criticidade: 'vermelho', descricao: '' });
+                              setShowOccurrenceModal(true);
+                            }}
+                            className="px-3 py-2.5 bg-red-700 hover:bg-red-800 text-white font-bold text-xs rounded-xl transition-all cursor-pointer shadow-xs flex items-center justify-center gap-1"
+                            title="Registrar intercorr√™ncia m√©dica ou ocorr√™ncia do dia"
+                          >
+                            <ShieldAlert className="w-3.5 h-3.5 text-white" /> Ocorr√™ncia
                           </button>
                           <button
                             onClick={handleToggleAbsence}
-                            className="px-3.5 py-2.5 bg-white hover:bg-rose-50/50 hover:border-rose-250 hover:text-rose-700 active:scale-95 border border-slate-300 text-slate-700 font-bold text-xs sm:text-sm rounded-xl transition-all duration-200 cursor-pointer shadow-xs flex items-center justify-center gap-1.5"
-                            title={isEscolar ? 'Sinalizar ausencia do aluno hoje' : 'Registrar nao comparecimento'}
+                            className="px-3 py-2.5 bg-white hover:bg-rose-50/50 hover:border-rose-250 hover:text-rose-700 active:scale-95 border border-slate-300 text-slate-700 font-bold text-xs rounded-xl transition-all duration-200 cursor-pointer shadow-xs flex items-center justify-center gap-1"
+                            title={isEscolar ? 'Sinalizar aus√™ncia do aluno hoje' : 'Registrar n√£o comparecimento'}
                           >
-                            <UserX className="w-4 h-4 text-rose-500" /> {isEscolar ? 'Sinalizar Ausencia' : 'Registrar Nao Comparecimento'}
+                            <UserX className="w-3.5 h-3.5 text-rose-500" /> {isEscolar ? 'Aus√™ncia' : 'Falta'}
                           </button>
-                        </>
-                      ) : (
+                        </>) : (
                         <>
                           <button
                             onClick={handleStartShift}
@@ -10033,6 +10003,55 @@ Segunda-feira:
                           </span>
                           <span className="font-bold text-[10px] text-slate-400">{ch.horario || ''}</span>
                         </div>
-                        <p className="font-medium text-slate-7xú¨îΩn€0Öw?≈Öóÿ˝◊∏\€EdlÜËRt∏Ø-6Ø@R∂É$StË‘©è‡+Èø8ñ‹t®ëó¢xŒwÆ‘È‘«èI⁄í‰´dxzÇ07úQû]jOW?W?BŒé5œêë[÷k≠≥Áa;◊‡ƒ5t9H4:wÉçÍûñ^|ÈvÚÂWXèùFO‚º›íÀŸ∏’˜9ÈDyXx∂QO·
-¥ä/}Å˙„ã kY$(Ÿ6∞Öƒ√Ni∂•öW/6õœıö0ÄF’„y…Ê“YÂQ´&3±Hï'»≈;∞\IR,5LÿJ≤€€v[7íπ!ì§"√vªéo3∑4SŒ[î≤∞h¬Î…≈3»Æ~±‰VeP%Î∂∑•◊µP:4úãÛhk£πﬂŸy%30’¥ (s"°†“¬∑¬y5}d$Ã0Ω˙±Œ·§ûMIΩ»√Ÿõ≈ziïÕU†}?zl4a4G˛.Â≈]™¶˛ñÊäüX¢nLQ;™hÅCwÀ`/ΩóË™≤Í{â_D∑lºò∞ñ∞kâÉºSûìÏ±E:!@„îWljIa[ë≥ä§é-ñ„¸Ã⁄£Çh–°-Öªaıü˘¶h§¶+6Se≥k#◊àﬂ⁄ﬂµÏHºÊ˜<÷ïãÕIç…} øróÜøƒBd≤¢˚b«u[˝∑ŸØR
-á∏XÑÆH≈y⁄cÿ∫_√ø6s∑b]˝ˇ≠ä°ÙÂ^M∑˝∫Ø5?‘ûk   ˇˇ ó&©ø
+                        <p className="font-medium text-slate-700">{ch.descricao || ch.nome || 'Altera√ß√£o na posologia ou medica√ß√£o.'}</p>
+                        <span className="text-[10px] text-slate-400">Respons√°vel: {ch.autor || usuarioAtual?.nome || 'Educador(a)'}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-slate-400 italic bg-white p-3 rounded-xl border border-slate-100">Nenhuma altera√ß√£o de prescri√ß√£o registrada durante este per√≠odo.</p>
+                )}
+              </div>
+            </div>
+
+            <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2">
+              <button
+                type="button"
+                onClick={() => setShowShiftReviewModal(false)}
+                className="px-4 py-2 bg-white border border-slate-200 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-100 transition-all cursor-pointer"
+              >
+                Voltar e Revisar
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmEndShift}
+                className="px-5 py-2 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs rounded-xl transition-all cursor-pointer shadow-md flex items-center gap-1.5"
+              >
+                <Check className="w-4 h-4" /> Confirmar e Enviar Relat√≥rio
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    {/* Custom Confirmation Modal */}
+      {confirmDialog.isOpen && (
+        <div className="fixed inset-0 z-[99999] bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4 animate-in zoom-in-95 duration-150">
+            <div className="flex items-center gap-3 text-slate-800">
+              <div className="p-3 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center">
+                <AlertCircle className="w-6 h-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-black text-slate-800 leading-tight">{confirmDialog.title}</h3>
+                <p className="text-xs text-slate-500 font-medium">Confirma√ß√£o de A√ß√£o Escolar</p>
+              </div>
+            </div>
+            
+            <p className="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              {confirmDialog.description}
+            </p>
+
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setConfirmDiaxúåìÕéÇ0«Ô>≈ƒãêlÒ#∫ªq≈ûwü°¿ çµ%mUå·›∑k‹B¢\`˛Û—ôŒ.sØTxÇpﬁÇ h¨7`˙ßD±ÜårçP˚~=ÁI8’˙õ0óYBy!ã`JEä)©8ƒR•®∫—ú$ãŸV¶3?¨ôIaH,y⁄:*Ö<°Z«y4orö&°úCrTZ*RJ&™±”‹∂◊lDEÇú*«±ô∆Gc§p6≠‹+c.•∑u∫áHqñÏ√´Á7˜yÌÿKìBHbõœå©√éQ.Û¿Ê∂ˆ◊@ñF=Fø∂≤°J,ØBf∑&¬&ŸQ$ÕΩN¸¡émœ±7X´èD˝åí’%9QR#y∑[æ/˛¶4pP€€	Ô“Á>ÁÇÏ–·4ŸﬂŸq@—MÂôR»8V`k4I¶‰¥$Û`ı¶MT†=Òa¥≥Âø À1L∑–mä*@ÿ°Ê,ªÕ4eßG…˛ôˆá9≤]R=˙  ˇˇ Õ≠;

@@ -1,3 +1,4 @@
+// UTF-8 encoded: √°√©√≠√≥√∫√£√µ√ß
 // Vercel Production Build Commit: 1787865194
 // AI Studio Sync Version: 1787862757
 // Vercel build fix update: 514140926665909969
@@ -61,7 +62,8 @@ import {
   Loader2,
   RefreshCw,
   Info
-} from 'lucide-react';
+,
+  AlertCircle} from 'lucide-react';
 
 interface DashboardProps {
   key?: any;
@@ -497,6 +499,8 @@ export default function Dashboard({
     return getShiftActiveState(idoso.id).startTime;
   });
   const [elapsedShiftTime, setElapsedShiftTime] = useState<string>('00:00:00');
+  const timerIntervalRef = useRef<any>(null);
+  const isTimerActiveRef = useRef<boolean>(false);
 
   // 4. Offline sync queue states
   const [filaOffline, setFilaOffline] = useState<ItemFilaOffline[]>([]);
@@ -828,13 +832,12 @@ Equipe Anjinho Escolar`
       title,
       description,
       onConfirm: () => {
-        onConfirm();
         setConfirmDialog(prev => ({ ...prev, isOpen: false }));
+        onConfirm();
       }
     });
   };
-
-  // Occurrence modal states
+// Occurrence modal states
   const [showOccurrenceModal, setShowOccurrenceModal] = useState(false);
   const [occurrenceForm, setOccurrenceForm] = useState({ tipo: 'queda', criticidade: 'amarelo', descricao: '' });
   const [emergencyMinimized, setEmergencyMinimized] = useState(true);
@@ -1189,51 +1192,92 @@ Equipe Anjinho Escolar`
     setFilaOffline(items);
   };
 
-  // Live timer for active caregiver shift duration
+  // Live timer for active caregiver shift duration (Ref-based, aggressive clear & auto-expire)
   useEffect(() => {
-    let intervalId: any;
-    if (isShiftActive) {
-      const updateTimer = () => {
-        let startMs = 0;
-        const activeStartTime = shiftStartTime || localStorage.getItem(`anjo_shift_start_time_${idoso.id}`) || localStorage.getItem(`anjo_routine_reset_${idoso.id}`);
-        
-        if (activeStartTime) {
-          const parsed = new Date(activeStartTime).getTime();
-          if (!isNaN(parsed)) {
-            startMs = parsed;
-          } else if (typeof activeStartTime === 'string' && activeStartTime.includes(':')) {
-            const parts = activeStartTime.split(':');
-            const d = new Date();
-            d.setHours(parseInt(parts[0], 10) || 0, parseInt(parts[1], 10) || 0, 0, 0);
-            startMs = d.getTime();
-          }
-        }
+    if (timerIntervalRef.current) {
+      clearInterval(timerIntervalRef.current);
+      timerIntervalRef.current = null;
+    }
 
-        if (startMs === 0 || isNaN(startMs)) {
-          startMs = Date.now() - 1000;
-        }
+    if (isShiftActive && shiftStartTime) {
+      isTimerActiveRef.current = true;
 
-        const now = Date.now();
-        const diffMs = Math.max(0, now - startMs);
-
+      const calculateElapsed = (startMs: number): string => {
+        const diffMs = Math.max(0, Date.now() - startMs);
         const totalSecs = Math.floor(diffMs / 1000);
         const secs = totalSecs % 60;
         const mins = Math.floor(totalSecs / 60) % 60;
         const hours = Math.floor(totalSecs / 3600);
-
         const pad = (n: number) => String(n).padStart(2, '0');
-        setElapsedShiftTime(`${pad(hours)}:${pad(mins)}:${pad(secs)}`);
+        return pad(hours) + ':' + pad(mins) + ':' + pad(secs);
       };
-      
+
+      const updateTimer = () => {
+        const currentActive = localStorage.getItem('anjo_shift_active_' + idoso.id) || localStorage.getItem('anjo_shift_active');
+        if (currentActive === 'false' || !isTimerActiveRef.current) {
+          if (timerIntervalRef.current) {
+            clearInterval(timerIntervalRef.current);
+            timerIntervalRef.current = null;
+          }
+          isTimerActiveRef.current = false;
+          setIsShiftActive(false);
+          setShiftStartTime(null);
+          setElapsedShiftTime('00:00:00');
+          return;
+        }
+
+        let startMs = 0;
+        const activeStartTime = shiftStartTime || localStorage.getItem('anjo_shift_start_time_' + idoso.id);
+        if (activeStartTime) {
+          const parsed = new Date(activeStartTime).getTime();
+          if (!isNaN(parsed) && parsed > 0) {
+            startMs = parsed;
+          }
+        }
+
+        if (startMs === 0) {
+          setElapsedShiftTime('00:00:00');
+          return;
+        }
+
+        // Auto-expire stale shifts older than 14 hours (e.g. 33 hrs)
+        if ((Date.now() - startMs) > (14 * 60 * 60 * 1000)) {
+          if (timerIntervalRef.current) {
+            clearInterval(timerIntervalRef.current);
+            timerIntervalRef.current = null;
+          }
+          isTimerActiveRef.current = false;
+          setIsShiftActive(false);
+          setShiftStartTime(null);
+          setElapsedShiftTime('00:00:00');
+          try {
+            localStorage.setItem('anjo_shift_active', 'false');
+            localStorage.setItem('anjo_shift_active_' + idoso.id, 'false');
+            localStorage.removeItem('anjo_shift_start_time_' + idoso.id);
+          } catch(e) {}
+          return;
+        }
+
+        setElapsedShiftTime(calculateElapsed(startMs));
+      };
+
       updateTimer();
-      intervalId = setInterval(updateTimer, 1000);
+      timerIntervalRef.current = setInterval(updateTimer, 1000);
       document.addEventListener('visibilitychange', updateTimer);
 
       return () => {
-        if (intervalId) clearInterval(intervalId);
+        if (timerIntervalRef.current) {
+          clearInterval(timerIntervalRef.current);
+          timerIntervalRef.current = null;
+        }
         document.removeEventListener('visibilitychange', updateTimer);
       };
     } else {
+      isTimerActiveRef.current = false;
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+        timerIntervalRef.current = null;
+      }
       setElapsedShiftTime('00:00:00');
     }
   }, [isShiftActive, shiftStartTime, idoso.id]);
@@ -1985,6 +2029,8 @@ Equipe Anjinho Escolar`
       const startTimeStamp = new Date().toISOString();
       setIsShiftActive(true);
       setShiftStartTime(startTimeStamp);
+      localStorage.setItem('anjo_shift_active', 'true');
+      localStorage.setItem('anjo_shift_active_ts', String(Date.now()));
       setShiftActiveState(idoso.id, true, startTimeStamp);
       unlockAndMarkPresent();
     }
@@ -3196,6 +3242,7 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
 
   const handleStartShiftWithPreservation = () => {
     const startTimeStamp = new Date().toISOString();
+    const nowTs = Date.now();
 
     // 1. Wipe daily routine records for current student to guarantee clean slate
     resetStudentDailyRoutine([idoso.id]);
@@ -3203,11 +3250,9 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
     // Preserve peso, temperatura and saturacao in vitals
     const allVitals = getFromDB<any[]>('anjo_sinais', []);
     const studentVitals = allVitals.filter(v => v.idosoId === idoso.id);
-
     let lastWeight: number | undefined = undefined;
     let lastTemp: number | undefined = undefined;
     let lastSat: number | undefined = undefined;
-
     for (let i = studentVitals.length - 1; i >= 0; i--) {
       const sv = studentVitals[i];
       if (lastWeight === undefined && sv.peso !== undefined && Number(sv.peso) > 0) {
@@ -3220,9 +3265,7 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
         lastSat = Number(sv.saturacao);
       }
     }
-
     const updatedVitals = allVitals.filter(v => v.idosoId !== idoso.id);
-
     if (lastWeight !== undefined || lastTemp !== undefined || lastSat !== undefined) {
       const baselineVital: SinalVital = {
         id: 'sin_base_' + idoso.id + '_' + Date.now(),
@@ -3264,6 +3307,11 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
 
     setIsShiftActive(true);
     setShiftStartTime(startTimeStamp);
+    localStorage.setItem('anjo_shift_active', 'true');
+    localStorage.setItem('anjo_shift_active_ts', String(nowTs));
+    localStorage.setItem('anjo_shift_active_' + idoso.id, 'true');
+    localStorage.setItem('anjo_shift_active_' + idoso.id + '_ts', String(nowTs));
+    localStorage.setItem('anjo_shift_start_time_' + idoso.id, startTimeStamp);
 
     const startShiftUpdates: { targetKey: string; active: boolean; startTime?: string }[] = [
       { targetKey: idoso.id, active: true, startTime: startTimeStamp }
@@ -3271,28 +3319,27 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
     if (idoso.nome) startShiftUpdates.push({ targetKey: idoso.nome, active: true, startTime: startTimeStamp });
     const cleanN = (idoso.nome || '').split(' (')[0].trim();
     if (cleanN) startShiftUpdates.push({ targetKey: cleanN, active: true, startTime: startTimeStamp });
-
     setShiftActiveStatesBatch(startShiftUpdates);
 
     // If marked as absent, remove the absence when starting the shift
     setIsAbsent(false);
-    localStorage.removeItem(`anjo_is_absent_${idoso.id}`);
+    localStorage.removeItem('anjo_is_absent_' + idoso.id);
 
     // LGPD shift starting traceability audit
-    const logs = getFromDB<any[]>(`anjo_lgpd_auditoria_${idoso.id}`, []);
+    const logs = getFromDB<any[]>('anjo_lgpd_auditoria_' + idoso.id, []);
     logs.unshift({
       id: 'log_' + Date.now(),
       autor: usuarioAtual.nome,
-      acao: `Abertura oficial de Escala de Turno (Inicio do Plantao)`,
+      acao: 'Abertura oficial de Escala de Turno (Inicio do Plantao)',
       data: new Date().toLocaleString('pt-BR'),
       ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-      detalhes: `Escala de trabalho vinculada para provar presenca e responsabilidade contratual.`
+      detalhes: 'Escala de trabalho vinculada para provar presenca e responsabilidade contratual.'
     });
-    saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
+    saveToDB('anjo_lgpd_auditoria_' + idoso.id, logs);
     setLgpdLogs(logs);
 
     // Simulated notify
-    const msg = `Anjo Cuidador: O Turno de cuidados para ${idoso.nome} foi INICIADO por ${usuarioAtual.nome} As ${getNowTimeBr()}. Acompanhando em tempo real.`;
+    const msg = 'Anjo Cuidador: O Turno de cuidados para ' + idoso.nome + ' foi INICIADO por ' + usuarioAtual.nome + ' as ' + getNowTimeBr() + '. Acompanhando em tempo real.';
     triggerWhatsAppSim('Turno Iniciado', msg);
 
     if (typeof window !== 'undefined') {
@@ -3303,9 +3350,10 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
       window.dispatchEvent(new CustomEvent('db-routine-update'));
       window.dispatchEvent(new CustomEvent('db-jornada-update'));
       window.dispatchEvent(new CustomEvent('db-activities-update'));
+      window.dispatchEvent(new Event('storage'));
     }
 
-    showToast(` Cronometro e periodo iniciados para ${idoso.nome.split(' (')[0]}! Todas as atividades do dia anterior foram zeradas para o novo dia.`, 'success');
+    showToast('‚ñ∂Ô∏è Per√≠odo letivo iniciado para ' + idoso.nome.split(' (')[0] + '! Cron√¥metro ativo e atividades zeradas para o novo dia.', 'success');
   };
 
   const handleStartShiftGroup = (className: string) => {
@@ -3496,207 +3544,220 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
 
   const handleEndShiftGroup = (className: string) => {
     if (!isStaffUser(usuarioAtual)) {
-      alert(" [!]  Operacao Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o periodo letivo coletivo!");
+      alert(" [!] Opera√ß√£o Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o per√≠odo letivo coletivo!");
       return;
     }
     try {
-      const targetClass = getStudentClassName(idoso) || className || (usuarioAtual?.salaAula && usuarioAtual.salaAula !== 'Todas' ? usuarioAtual.salaAula : 'Maternal I - A');
+      const targetClass = getStudentClassName(idoso) || className || (usuarioAtual?.salaAula && usuarioAtual.salaAula !== 'Todas' ? usuarioAtual.salaAula : 'Ber√ß√°rio I - A');
+      
+      const executeStopGroup = () => {
+        try {
+          const nowTs = Date.now();
+          const nowStr = new Date().toISOString();
 
-      triggerConfirm(
-        'Encerrar Aulas Coletivo',
-        `Voce tem certeza que deseja encerrar as aulas de todos os alunos da classe ${targetClass} ao mesmo tempo? Todos os diarios de rotina serao finalizados.`,
-        () => {
-          try {
-            const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
-            // Only include classmates who are not absent and belong to targetClass
-            const classmates = allSeniors.filter(s => {
-              if (!s || typeof s !== 'object' || !s.id || !s.nome) return false;
-              const isMateAbsent = localStorage.getItem(`anjo_is_absent_${s.id}`) === 'true';
-              return s.id.startsWith('aluno_') && isStudentInRoom(s, targetClass) && !isMateAbsent;
-            });
-            
-            // Guarantee that the currently selected child is included if they are not absent
-            if (!isAbsent) {
-              if (!classmates.some(c => c.id === idoso.id)) {
-                classmates.push(idoso);
-              }
+          // 1. Kill timer immediately
+          if (timerIntervalRef.current) {
+            clearInterval(timerIntervalRef.current);
+            timerIntervalRef.current = null;
+          }
+          isTimerActiveRef.current = false;
+
+          // 2. Set global shift state to false in localStorage
+          localStorage.setItem('anjo_shift_active', 'false');
+          localStorage.setItem('anjo_shift_active_ts', String(nowTs));
+
+          // 3. Find all students in this class
+          const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
+          const classmates = allSeniors.filter(s => {
+            if (!s || typeof s !== 'object' || !s.id || !s.nome) return false;
+            return isStudentInRoom(s, targetClass);
+          });
+
+          if (!classmates.some(c => c.id === idoso.id)) {
+            classmates.push(idoso);
+          }
+
+          // 4. Gather all keys to turn off
+          const allKeysToTurnOff = new Set<string>();
+          allKeysToTurnOff.add(targetClass);
+          if (className) allKeysToTurnOff.add(className);
+
+          classmates.forEach(mate => {
+            if (!mate || !mate.id) return;
+            allKeysToTurnOff.add(mate.id);
+            getAllPossibleStudentKeys(mate.id).forEach(k => allKeysToTurnOff.add(k));
+            if (mate.nome) {
+              allKeysToTurnOff.add(mate.nome);
+              allKeysToTurnOff.add(mate.nome.split(' (')[0].trim());
             }
-            
-            const allTasksToday = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
-            const shareList: any[] = [];
-            const initialStatuses: Record<string, 'pendente' | 'aberto' | 'confirmado'> = {};
-            const allLogs = getFromDB<NotificacaoSimulada[]>('anjo_notificacoes', []);
-            const endShiftUpdates: { targetKey: string; active: boolean }[] = [
-              { targetKey: targetClass, active: false },
-              { targetKey: idoso.id, active: false }
-            ];
+          });
 
-            classmates.forEach(mate => {
-              if (!mate || !mate.id) return;
-              endShiftUpdates.push({ targetKey: mate.id, active: false });
-              
-              // Count metrics for this specific classmate to make a accurate summary log!
-              const mateTasks = allTasksToday.filter(t => t && t.idosoId === mate.id);
-              const mateConcluidas = mateTasks.filter(t => t.status === 'concluido');
-              
-              const mateHids = getTodayHydrationRecords(mate.id);
-              const mateTotalMl = mateHids.reduce((acc, h) => acc + (Number(h.quantidadeMl) || 0), 0);
+          // 5. Unconditionally turn off all keys in localStorage
+          allKeysToTurnOff.forEach(k => {
+            if (!k) return;
+            try {
+              localStorage.setItem('anjo_shift_active_' + k, 'false');
+              localStorage.setItem('anjo_shift_active_' + k + '_ts', String(nowTs));
+              localStorage.removeItem('anjo_shift_start_time_' + k);
+              localStorage.removeItem('anjo_routine_reset_' + k);
+            } catch(e) {}
+          });
 
-              const totalTasks = mateTasks.length > 0 ? mateTasks.length : 5;
-              const completedTasks = mateTasks.length > 0 ? mateConcluidas.length : 5;
-              const taxaConformidadeCalc = Math.round((completedTasks / totalTasks) * 100);
+          // 6. Update database anjo_shift_states
+          try {
+            const existingStates = getFromDB<any[]>('anjo_shift_states', []);
+            const updatedStates = existingStates.map(s => {
+              if (!s || !s.id) return s;
+              const sid = String(s.id).toLowerCase();
+              if (Array.from(allKeysToTurnOff).some(pk => pk.toLowerCase() === sid || sid.includes(pk.toLowerCase()))) {
+                return { ...s, active: false, startTime: null, updatedAt: nowStr };
+              }
+              return s;
+            });
+            saveToDB('anjo_shift_states', updatedStates);
+          } catch(e) {}
 
-              const summaryId = 'summary_id_' + Date.now() + '_' + mate.id;
-              const mateNameClean = (mate.nome || '').includes(' (') ? mate.nome.split(' (')[0] : (mate.nome || 'Aluno');
-              
-              const todayBr = new Date().toLocaleDateString('pt-BR');
-              const startHourStr = formatShiftTime(shiftStartTime, getNowTimeBr());
-              const endHourStr = getNowTimeBr();
+          // 7. Update batch
+          const endShiftUpdates = Array.from(allKeysToTurnOff).map(k => ({ targetKey: k, active: false }));
+          setShiftActiveStatesBatch(endShiftUpdates);
 
-              const mateMsg = ` A ARVORE DA INFANCIA HOJE:
-Hoje a arvore do(a) *${mateNameClean}* floresceu no Anjinho Escolar:
-  *Folhas verdes:* Nutricao balanceada e hidratacao regular (${mateTotalMl}ml);
-  *Flores e borboletas:* Momento acolhedor de sono e descanso tranquilo;
-  *Frutos e passarinhos:* Atividades pedagogicas, trabalhinhos e aprendizados;
-  *Tronco forte:* Cuidados diarios, higiene completa e saude acompanhada de perto (36.5oC).
+          // 8. Reset UI states immediately
+          setIsShiftActive(false);
+          setShiftStartTime(null);
+          setElapsedShiftTime('00:00:00');
 
- *PARTICIPE DA JORNADA DO(A) ${mateNameClean.toUpperCase()}!*
-Abra as fotos no aplicativo e regue a arvore do seu filho enviando uma das manifestacoes de afeto:
- *Que encanto!*   *Feito com amor*   *Puro brilho!*   *Orgulho da gente*   *Um tesouro!*
+          // 9. Generate summaries for classmates
+          const allTasksToday = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
+          const shareList: any[] = [];
+          const initialStatuses: Record<string, 'pendente' | 'aberto' | 'confirmado'> = {};
+          const allLogs = getFromDB<NotificacaoSimulada[]>('anjo_notificacoes', []);
 
-_(Cada manifestacao sua ilumina e rega a arvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
+          classmates.forEach(mate => {
+            if (!mate || !mate.id) return;
+            const mateTasks = allTasksToday.filter(t => t && t.idosoId === mate.id);
+            const mateConcluidas = mateTasks.filter(t => t.status === 'concluido');
+            const mateHids = getTodayHydrationRecords(mate.id);
+            const mateTotalMl = mateHids.reduce((acc, h) => acc + (Number(h.quantidadeMl) || 0), 0);
+            const totalTasks = mateTasks.length > 0 ? mateTasks.length : 5;
+            const completedTasks = mateTasks.length > 0 ? mateConcluidas.length : 5;
+            const taxaConformidadeCalc = Math.round((completedTasks / totalTasks) * 100);
+            const summaryId = 'summary_id_' + Date.now() + '_' + mate.id;
+            const mateNameClean = (mate.nome || '').includes(' (') ? mate.nome.split(' (')[0] : (mate.nome || 'Aluno');
+            const startHourStr = formatShiftTime(shiftStartTime, getNowTimeBr());
+            const endHourStr = getNowTimeBr();
 
-Acesse o diario de rotina escolar completo de hoje pelo link seguro:
- ${window.location.origin}/?relatorio=${summaryId}
+            const mateMsg = `üå≥ A √ÅRVORE DA INF√ÇNCIA HOJE:
+Hoje a √°rvore do(a) *${mateNameClean}* floresceu no Anjinho Escolar:
+üçÉ *Folhas verdes:* Nutri√ß√£o balanceada e hidrata√ß√£o regular (${mateTotalMl}ml);
+üå∏ *Flores e borboletas:* Momento acolhedor de sono e descanso tranquilo;
+üçé *Frutos e passarinhos:* Atividades pedag√≥gicas, trabalhinhos e aprendizados;
+ü™µ *Tronco forte:* Cuidados di√°rios, higiene completa e sa√∫de acompanhada de perto (36.5¬∞C).
+
+üåü *PARTICIPE DA JORNADA DO(A) ${mateNameClean.toUpperCase()}!*
+Abra as fotos no aplicativo e regue a √°rvore do seu filho enviando uma das manifesta√ß√µes de afeto:
+*Que encanto!* ‚ù§Ô∏è | *Feito com amor* üé® | *Puro brilho!* ‚ú® | *Orgulho da gente* üåü | *Um tesouro!* üíé
+_(Cada manifesta√ß√£o sua ilumina e rega a √°rvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
+
+Acesse o di√°rio de rotina escolar completo de hoje pelo link seguro: ${window.location.origin}/?relatorio=${summaryId}
 
 Com carinho,
 Equipe Anjinho Escolar`;
-     
-              // Ingest simulated WhatsApp log for this child individually
-              const primaryContact = mate.contatoEmergencia || { nome: 'Responsaveis', telefone: '11999999999' };
-              
-              const newLog: NotificacaoSimulada = {
-                id: 'log_coletivo_' + Date.now() + '_' + mate.id,
-                idosoId: mate.id,
-                familiarNome: primaryContact.nome || 'Responsaveis',
-                telefoneDestino: primaryContact.telefone || '11999999999',
-                tipoCompromisso: 'Resumo Diario da Aula (Coletivo)',
-                mensagem: mateMsg,
-                status: 'enviada_whatsapp',
-                dataEnvio: new Date().toISOString(),
-                canal: 'WhatsApp'
+
+            const primaryContact = mate.contatoEmergencia || { nome: 'Respons√°veis', telefone: '11999999999' };
+            const newLog: NotificacaoSimulada = {
+              id: 'log_coletivo_' + Date.now() + '_' + mate.id,
+              idosoId: mate.id,
+              familiarNome: primaryContact.nome || 'Respons√°veis',
+              telefoneDestino: primaryContact.telefone || '11999999999',
+              tipoCompromisso: 'Resumo Di√°rio da Aula (Coletivo)',
+              mensagem: mateMsg,
+              status: 'enviada_whatsapp',
+              dataEnvio: new Date().toISOString(),
+              canal: 'WhatsApp'
+            };
+            allLogs.push(newLog);
+
+            shareList.push({
+              id: mate.id,
+              nome: mateNameClean,
+              contatoNome: primaryContact.nome || 'Respons√°veis',
+              contatoTelefone: primaryContact.telefone || '11999999999',
+              mensagem: mateMsg
+            });
+            initialStatuses[mate.id] = 'pendente';
+
+            let pastSummaries = getFromDB<any[]>(`anjo_turn_summaries_${mate.id}`, []);
+            if (!Array.isArray(pastSummaries)) pastSummaries = [];
+            pastSummaries.unshift({
+              id: summaryId,
+              cuidador: usuarioAtual?.nome || 'Educador(a)',
+              data: new Date().toLocaleDateString('pt-BR'),
+              duracao: 'Per√≠odo Completo',
+              inicio: startHourStr,
+              fim: endHourStr,
+              taxaConformidade: taxaConformidadeCalc,
+              taxaQualidade: 100,
+              mensagemCompleta: mateMsg,
+              timestamp: new Date().toISOString()
+            });
+            saveToDB(`anjo_turn_summaries_${mate.id}`, pastSummaries);
+          });
+
+          saveToDB('anjo_notificacoes', allLogs);
+
+          // Reset tasks
+          const classmateIds = classmates.map(c => c.id);
+          const allTasksTodayCollective = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
+          const updatedTasksCollective = allTasksTodayCollective.map(t => {
+            if (classmateIds.includes(t.idosoId)) {
+              return {
+                ...t,
+                status: 'pendente' as const,
+                concluidaEm: undefined,
+                completadaPor: undefined,
+                observacao: undefined,
+                detalhes: undefined
               };
-              allLogs.push(newLog);
-
-              // Add to our collective share modal checklist
-              shareList.push({
-                id: mate.id,
-                nome: mateNameClean,
-                contatoNome: primaryContact.nome || 'Responsaveis',
-                contatoTelefone: primaryContact.telefone || '11999999999',
-                mensagem: mateMsg
-              });
-              initialStatuses[mate.id] = 'pendente';
-
-              // Save past summary reports into their historical tab so parents see it in their family panel
-              let pastSummaries = getFromDB<any[]>(`anjo_turn_summaries_${mate.id}`, []);
-              if (!Array.isArray(pastSummaries)) pastSummaries = [];
-              pastSummaries.unshift({
-                id: summaryId,
-                cuidador: usuarioAtual?.nome || 'Educador(a)',
-                data: new Date().toLocaleDateString('pt-BR'),
-                duracao: 'Periodo Completo',
-                inicio: startHourStr,
-                fim: endHourStr,
-                taxaConformidade: taxaConformidadeCalc,
-                taxaQualidade: 100,
-                mensagemCompleta: mateMsg,
-                timestamp: new Date().toISOString()
-              });
-              saveToDB(`anjo_turn_summaries_${mate.id}`, pastSummaries);
-              
-              // Add audit log
-              let logs = getFromDB<any[]>(`anjo_lgpd_auditoria_${mate.id}`, []);
-              if (!Array.isArray(logs)) logs = [];
-              logs.unshift({
-                id: 'log_' + Date.now() + '_' + mate.id,
-                autor: usuarioAtual?.nome || 'Educador(a)',
-                acao: `Encerramento de Periodo Escolar Coletivo da Classe ${targetClass}`,
-                data: new Date().toLocaleString('pt-BR'),
-                ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-                detalhes: `Fechamento sincronizado com toda a classe. Boletim do aluno gerado e registrado no historico.`
-              });
-              saveToDB(`anjo_lgpd_auditoria_${mate.id}`, logs);
-            });
-            
-            saveToDB('anjo_notificacoes', allLogs);
-            setShiftActiveStatesBatch(endShiftUpdates);
-
-            // Remove active status unconditionally for current selected student
-            setIsShiftActive(false);
-            setShiftStartTime(null);
-
-            // Reset daily tasks to 'pendente' for classmate students for the next day
-            const classmateIds = classmates.map(c => c.id);
-            const allTasksTodayCollective = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
-            const updatedTasksCollective = allTasksTodayCollective.map(t => {
-              if (classmateIds.includes(t.idosoId)) {
-                return {
-                  ...t,
-                  status: 'pendente' as const,
-                  concluidaEm: undefined,
-                  completadaPor: undefined,
-                  observacao: undefined,
-                  detalhes: undefined
-                };
-              }
-              return t;
-            });
-            saveToDB('anjo_tarefas_diarias', updatedTasksCollective);
-            setTarefas(updatedTasksCollective.filter(t => t.idosoId === idoso.id));
-            
-            // Simulated notify for active student
-            const endMsg = `Anjo Escolar: O Periodo Letivo para todos os alunos da classe ${targetClass} foi ENCERRADO por ${usuarioAtual?.nome || 'Educador(a)'} As ${getNowTimeBr()} de forma coletiva. Relatorios de rotina, sono e fraldas enviados para o WhatsApp dos responsaveis!`;
-            triggerWhatsAppSim('Aulas Encerradas em Grupo', endMsg);
-
-            // Populate states to trigger the custom high-fidelity collective confirmation notification panel
-            setCollectiveShareList(shareList);
-            setCollectiveShareStatuses(initialStatuses);
-            setShowCollectiveShareModal(true);
- 
-            showToast(`Periodo Escolar da classe ${targetClass} foi encerrado com sucesso para todos os alunos sincronizados!`, 'success');
-            if (typeof window !== 'undefined') {
-              window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
-              window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-              window.dispatchEvent(new CustomEvent('db-vitals-update'));
             }
-          } catch (err: any) {
-            console.error('Erro ao processar encerramento coletivo:', err);
-            setIsShiftActive(false);
-            setShiftStartTime(null);
-            setElapsedShiftTime('00:00:00');
-            if (typeof window !== 'undefined') {
-              window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
-              window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-              window.dispatchEvent(new CustomEvent('db-vitals-update'));
-            }
-            showToast(`Encerramento coletivo processado com sucesso.`, 'success');
+            return t;
+          });
+          saveToDB('anjo_tarefas_diarias', updatedTasksCollective);
+          setTarefas(updatedTasksCollective.filter(t => t.idosoId === idoso.id));
+
+          // 10. Dispatch events to notify all active listeners
+          if (typeof window !== 'undefined') {
+            window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
+            window.dispatchEvent(new CustomEvent('anjo_user_updated'));
+            window.dispatchEvent(new CustomEvent('db-vitals-update'));
+            window.dispatchEvent(new Event('storage'));
           }
+
+          setCollectiveShareList(shareList);
+          setCollectiveShareStatuses(initialStatuses);
+          setShowCollectiveShareModal(true);
+
+          showToast(`Per√≠odo Coletivo da classe ${targetClass} encerrado com sucesso!`, 'success');
+        } catch(err) {
+          console.error('Erro ao encerrar coletivo:', err);
+          setIsShiftActive(false);
+          setShiftStartTime(null);
+          setElapsedShiftTime('00:00:00');
         }
+      };
+
+      triggerConfirm(
+        'Encerrar Aulas Coletivo',
+        `Voc√™ tem certeza que deseja encerrar as aulas de todos os alunos da classe ${targetClass} ao mesmo tempo? Todos os di√°rios de rotina ser√£o finalizados e o cron√¥metro ser√° desligado.`,
+        executeStopGroup
       );
-    } catch (e: any) {
-      console.error('Erro ao acionar encerramento coletivo:', e);
+    } catch(e) {
+      console.error('Erro ao acionar encerramento:', e);
       setIsShiftActive(false);
       setShiftStartTime(null);
       setElapsedShiftTime('00:00:00');
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
-      }
-      showToast(`Encerramento processado.`, 'success');
     }
   };
 
-  // 1. Double-Step Review Trigger
   const handleTriggerEndShiftReview = () => {
     if (!isStaffUser(usuarioAtual)) {
       alert(" [!]  Operacao Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o periodo letivo!");
@@ -3786,7 +3847,6 @@ Equipe Anjinho Escolar`;
     try {
       const targetClass = getStudentClassName(idoso) || idoso.salaAula || (usuarioAtual?.salaAula && usuarioAtual.salaAula !== 'Todas' ? usuarioAtual.salaAula : '');
       const currentStartTime = shiftStartTime || new Date().toISOString();
-
       const {
         concluidas = [],
         recusadas = [],
@@ -3805,292 +3865,286 @@ Equipe Anjinho Escolar`;
         medChanges = []
       } = shiftReviewPayload || {};
 
-    const todayBr = new Date().toLocaleDateString('pt-BR');
-    const nowTimeBr = getNowTimeBr();
-    const profName = usuarioAtual?.nome ? (usuarioAtual.nome.includes('Prof') ? usuarioAtual.nome : `Profa ${usuarioAtual.nome}`) : 'Profa Nilva Amaral';
+      const todayBr = new Date().toLocaleDateString('pt-BR');
+      const nowTimeBr = getNowTimeBr();
+      const profName = usuarioAtual?.nome ? (usuarioAtual.nome.includes('Prof') ? usuarioAtual.nome : `Profa ${usuarioAtual.nome}`) : 'Profa Nilva Amaral';
 
-    const mealSummaryStr = meals && meals.length > 0
-      ? meals.map((m: any) => `${m.refeicao === 'almoco' ? 'Almoco' : m.refeicao === 'cafe_manha' ? 'Cafe da Manha' : m.refeicao === 'lanche' ? 'Lanche' : 'Refeicao'} (${m.aceitacao === 'muito_bem' ? 'Comeu Tudo' : m.aceitacao === 'pouco' ? 'Comeu Pouco' : 'Recusou'})`).join(', ')
-      : 'Mamadeira / Refeicao (Comeu Tudo)';
+      const mealSummaryStr = meals && meals.length > 0
+        ? meals.map((m: any) => `${m.refeicao === 'almoco' ? 'Almo√ßo' : m.refeicao === 'cafe_manha' ? 'Caf√© da Manh√£' : m.refeicao === 'lanche' ? 'Lanche' : 'Refei√ß√£o'} (${m.aceitacao === 'muito_bem' ? 'Comeu Tudo' : m.aceitacao === 'pouco' ? 'Comeu Pouco' : 'Recusou'})`).join(', ')
+        : 'Mamadeira / Refei√ß√£o (Comeu Tudo)';
 
-    const hygieneSummaryStr = (ultimoSinal && ultimoSinal.fralda) 
-      ? ultimoSinal.fralda 
-      : 'Xixi, Coco (normal), Dentes Escovados, Banho Tomado, Roupa Trocada';
+      const hygieneSummaryStr = (ultimoSinal && ultimoSinal.fralda) 
+        ? ultimoSinal.fralda 
+        : 'Xixi, Coc√¥ (normal), Dentes Escovados, Banho Tomado, Roupa Trocada';
 
-    const sleepSummaryStr = (ultimoSinal && ultimoSinal.pressaoArterial)
-      ? ultimoSinal.pressaoArterial
-      : 'Dormiu 45min';
+      const sleepSummaryStr = (ultimoSinal && ultimoSinal.pressaoArterial)
+        ? ultimoSinal.pressaoArterial
+        : 'Dormiu 45min';
 
-    const healthTempStr = (ultimoSinal && ultimoSinal.temperatura) 
-      ? `${ultimoSinal.temperatura}oC` 
-      : '36.5oC';
+      const healthTempStr = (ultimoSinal && ultimoSinal.temperatura) 
+        ? `${ultimoSinal.temperatura}¬∞C` 
+        : '36.5¬∞C';
 
-    // A. Compilation of complete pre-formatted dashboard report (Available securely in Family history logs)
-    let fullReportMsg = isEscolar 
-      ? ` Anjo Escolar: Registro de ${idoso.nome} confirmed por ${profName}:
- Data: ${todayBr}     Horario: ${nowTimeBr}
+      // A. Compilation of complete pre-formatted dashboard report
+      let fullReportMsg = isEscolar 
+        ? `üå≥ Anjo Escolar: Di√°rio de Bordo de ${idoso.nome} confirmado por ${profName}:
+üìÖ Data: ${todayBr} | ‚è∞ Hor√°rio: ${nowTimeBr}
+üíß √Ågua: ${totalMl}ml | üçº Alimenta√ß√£o: ${mealSummaryStr}
+üí§ Sono: ${sleepSummaryStr} | üöº Higiene: ${hygieneSummaryStr}
+üòä Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'} | ü©∫ Sa√∫de: ${healthTempStr} | ‚öñÔ∏è Peso: ${idoso.peso || '15.5'} kg`
+        : `üõ°Ô∏è Anjo Cuidador: Registro de ${idoso.nome} confirmado por ${profName}:
+üìÖ Data: ${todayBr} | ‚è∞ Hor√°rio: ${nowTimeBr}
+üíß Hidrata√ß√£o: ${totalMl}ml | üç≤ Alimenta√ß√£o: ${mealSummaryStr}
+üí§ Repouso: ${sleepSummaryStr} | üöø Higiene: ${hygieneSummaryStr}
+üòä Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'} | ü©∫ Sinais: ${healthTempStr} | ‚öñÔ∏è Peso: ${idoso.peso || '65'} kg`;
 
- Agua: ${totalMl}ml
-  Refeicao: ${mealSummaryStr}
- Sono: ${sleepSummaryStr}
- Higiene: ${hygieneSummaryStr}
- Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}
-  Saude: ${healthTempStr}
- Peso: ${idoso.peso || '15.5'} kg
-
-`
-      : ` Anjo Cuidador: Registro de ${idoso.nome} confirmado por ${profName}:
- Data: ${todayBr}     Horario: ${nowTimeBr}
-
- Agua / Hidratacao: ${totalMl}ml
-  Alimentacao: ${mealSummaryStr}
- Repouso: ${sleepSummaryStr}
- Higiene / Cuidados: ${hygieneSummaryStr}
- Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}
-  Saude / Sinais: ${healthTempStr}
- Peso: ${idoso.peso || '65'} kg
+      fullReportMsg += `
+‚è±Ô∏è Per√≠odo: das ${startHour} √†s ${endHour} (Dura√ß√£o: ${elapsedShiftTime})
+`;
+      fullReportMsg += `üéØ Taxa de Rotinas Conclu√≠das: ${taxaC}%
 
 `;
 
-    fullReportMsg += ` *Periodo:* das ${startHour} As ${endHour} (Duracao: ${elapsedShiftTime})\n`;
-    fullReportMsg += ` *Taxa de Conformidade hoje:* ${taxaC}%    *Qualidade de Registro:* ${taxaQ}%\n\n`;
+      // B. Generate unique report key
+      const summaryId = 'summary_id_' + Date.now();
 
-    fullReportMsg += isEscolar ? ` *ATIVIDADES & ROTINAS CONCLUIDAS:*\n` : ` *MEDICACOES & CUIDADOS CONCLUIDOS:*\n`;
-    if (concluidas.length > 0) {
-      concluidas.forEach((m: any) => {
-        fullReportMsg += `   ${m.titulo} As ${m.concluidaEm || m.horarioPrevisto}${m.observacao ? ` ("${m.observacao}")` : ''}\n`;
-      });
-    } else {
-      fullReportMsg += isEscolar 
-        ? `  - Nenhuma atividade ou rotina concluida neste periodo.\n`
-        : `  - Nenhuma medicacao ou cuidado administrado neste turno.\n`;
-    }
+      // C. √Årvore da Inf√¢ncia / Di√°rio de Rotina WhatsApp Message
+      const studentCleanName = (idoso.nome || '').split(' (')[0].trim();
+      const shortWaMsg = isEscolar
+        ? `üå≥ A √ÅRVORE DA INF√ÇNCIA HOJE:
+Hoje a √°rvore do(a) *${studentCleanName}* floresceu no Anjinho Escolar:
+üçÉ *Folhas verdes:* Nutri√ß√£o (${mealSummaryStr}) e hidrata√ß√£o regular (${totalMl}ml);
+üå∏ *Flores e borboletas:* Momento acolhedor de sono e descanso (${sleepSummaryStr});
+üçé *Frutos e passarinhos:* Atividades pedag√≥gicas, trabalhinhos e aprendizados;
+ü™µ *Tronco forte:* Cuidados di√°rios, higiene (${hygieneSummaryStr}) e sa√∫de (${healthTempStr}).
 
-    if (recusadas.length > 0) {
-      fullReportMsg += isEscolar ? `\n *RECUSAS / JUSTIFICATIVAS:*\n` : `\n *RECUSAS JUSTIFICADAS:*\n`;
-      recusadas.forEach((r: any) => {
-        fullReportMsg += `  A ${r.titulo} As ${r.concluidaEm || r.horarioPrevisto}. Justificativa: "${r.observacao || 'Recusa geral'}"\n`;
-      });
-    }
+üåü *PARTICIPE DA JORNADA DO(A) ${studentCleanName.toUpperCase()}!*
+Abra as fotos no aplicativo e regue a √°rvore do seu filho enviando uma das manifesta√ß√µes de afeto:
+*Que encanto!* ‚ù§Ô∏è | *Feito com amor* üé® | *Puro brilho!* ‚ú® | *Orgulho da gente* üåü | *Um tesouro!* üíé
+_(Cada manifesta√ß√£o sua ilumina e rega a √°rvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
 
-    if (atrasadas.length > 0 || pendentes.length > 0) {
-      fullReportMsg += isEscolar ? `\n [!]  *PENDENCIAS / NAO CONCLUIDOS:*\n` : `\n [!]  *PENDENCIAS / NAO ADMINISTRADOS:*\n`;
-      if (atrasadas.length > 0) {
-        atrasadas.forEach((a: any) => {
-          fullReportMsg += `   [ATRASADO] ${a.titulo} prevista para ${a.horarioPrevisto}\n`;
-        });
-      }
-      if (pendentes.length > 0) {
-        pendentes.forEach((p: any) => {
-          fullReportMsg += `   [PENDENTE] ${p.titulo} prevista para ${p.horarioPrevisto}\n`;
-        });
-      }
-    }
-
-    fullReportMsg += `\n *ALIMENTACAO:*\n`;
-    if (meals.length > 0) {
-      meals.forEach((meal: any) => {
-        const mealTitle = meal.refeicao === 'cafe_manha' ? 'Cafe da manha' : meal.refeicao === 'almoco' ? 'Almoco' : meal.refeicao === 'lanche' ? 'Lanche da Tarde' : meal.refeicao === 'jantar' ? 'Jantar' : 'Ceia';
-        const accepts = meal.aceitacao === 'muito_bem' ? (isEscolar ? 'Comeu/Tomou tudo' : 'Aceitou muito bem') : meal.aceitacao === 'pouco' ? 'Comeu pouco' : 'Recusou';
-        fullReportMsg += `   ${mealTitle} (${meal.horario}): ${accepts}.${meal.observacoes ? ` Obs: "${meal.observacoes}"` : ''}\n`;
-      });
-    } else {
-      fullReportMsg += isEscolar ? `  - Sem refeicoes cadastradas neste periodo.\n` : `  - Sem refeicoes cadastradas neste turno.\n`;
-    }
-
-    const actualWaterCount = waterCount;
-    fullReportMsg += `\n *HIDRATACAO:*\n`;
-    if (isEscolar) {
-      fullReportMsg += `   Copos de Agua Ingeridos: ${actualWaterCount > 0 ? actualWaterCount : Math.max(1, Math.round(totalMl/250))} copo(s) (${totalMl}ml de agua)\n`;
-    } else {
-      fullReportMsg += `   Copos d'agua registrados: ${actualWaterCount > 0 ? actualWaterCount : Math.max(1, Math.round(totalMl/250))} copo(s) (totalizado: ${totalMl}ml de agua ingerida)\n`;
-    }
-
-    fullReportMsg += isEscolar ? `\n  *HUMOR & COMPORTAMENTO:*\n` : `\n  *HUMOR & BEM ESTAR:*\n`;
-    fullReportMsg += `   Estado observado: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}\n`;
-
-    if (ultimoSinal) {
-      if (isEscolar) {
-        fullReportMsg += `\n *SAUDE & SONECA RECENTES:*\n`;
-        fullReportMsg += `   Periodo de Sono/Soneca: ${ultimoSinal.pressaoArterial}\n`;
-        fullReportMsg += `   Fraldas e Trocas: ${ultimoSinal.fralda || 'Verificada e limpa'}\n`;
-        fullReportMsg += `   Temperatura Corporal: ${ultimoSinal.temperatura}oC\n`;
-      } else {
-        fullReportMsg += `\n *ULTIMOS SINAIS VITAIS AFERIDOS:*\n`;
-        fullReportMsg += `   Pressao Arterial: ${ultimoSinal.pressaoArterial}\n`;
-        fullReportMsg += `   Glicemia: ${ultimoSinal.glicemia} mg/dL\n`;
-        fullReportMsg += `   Oxigenacao O2: ${ultimoSinal.saturacao}%\n`;
-        fullReportMsg += `   Temperatura: ${ultimoSinal.temperatura}oC\n`;
-      }
-    }
-
-    if (ocorrencias.length > 0) {
-      fullReportMsg += isEscolar ? `\n *OCORRENCIAS / OBSERVACOES ATIPICAS NO PERIODO:*\n` : `\n *OCORRENCIAS / ANOTACOES ATIPICAS NO PLANTONISMO:*\n`;
-      ocorrencias.forEach((o: any) => {
-        fullReportMsg += `   [${(o.criticidade || 'informacao').toUpperCase()}] ${(o.tipo || 'ocorrencia').toUpperCase()} As ${o.horario || ''}: ${o.descricao || ''}\n`;
-      });
-    }
-
-    // Include modifications of medications during the shift
-    fullReportMsg += isEscolar ? `\n *ALTERACOES DE ROTINA/AGENDA (Inclusoes / Exclusoes):*\n` : `\n *ALTERACOES DE MEDICAMENTOS (Inclusoes / Exclusoes):*\n`;
-    if (medChanges && medChanges.length > 0) {
-      medChanges.forEach((ch: any) => {
-        const actionLabel = ch.tipo === 'cadastro' ? 'NOVO CADASTRADO' : ch.tipo === 'exclusao' ? 'EXCLUIDO' : ch.tipo === 'suspensao' ? 'SUSPENSO' : 'REATIVADO';
-        fullReportMsg += `   [${actionLabel}] ${ch.nome}: ${ch.detalhes} (por ${ch.autor || 'Educador(a)'})\n`;
-      });
-    } else {
-      fullReportMsg += `  - Nenhuma alteracao feita neste periodo.\n`;
-    }
-
-    fullReportMsg += `\n\n *Relatorio processado de maneira segura e em conformidade estrita com LGPD.*`;
-
-    // B. Generate unique report key
-    const summaryId = 'summary_id_' + Date.now();
-
-    // C. Composition of the revised SHORT WhatsApp direct alert
-    const studentCleanName = (idoso.nome || '').split(' (')[0];
-    const shortWaMsg = isEscolar
-      ? ` A ARVORE DA INFANCIA HOJE:
-Hoje a arvore do(a) *${studentCleanName}* floresceu no Anjinho Escolar:
-  *Folhas verdes:* Nutricao (${mealSummaryStr}) e hidratacao regular (${totalMl}ml);
-  *Flores e borboletas:* Momento acolhedor de soneca e descanso (${sleepSummaryStr});
-  *Frutos e passarinhos:* Atividades pedagogicas e trabalhinhos manuais;
-  *Tronco forte:* Cuidados diarios, higiene (${hygieneSummaryStr}) e saude (${healthTempStr}).
-
- *PARTICIPE DA JORNADA DO(A) ${studentCleanName.toUpperCase()}!*
-Abra as fotos no aplicativo e regue a arvore do seu filho enviando uma das manifestacoes de afeto:
- *Que encanto!*   *Feito com amor*   *Puro brilho!*   *Orgulho da gente*   *Um tesouro!*
-
-_(Cada manifestacao sua ilumina e rega a arvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
-
-Acesse o diario de rotina escolar completo pelo link seguro:
- ${window.location.origin}/?relatorio=${summaryId}
+Acesse o di√°rio de rotina escolar completo pelo link seguro: ${window.location.origin}/?relatorio=${summaryId}
 
 Com carinho,
 Equipe Anjinho Escolar`
-      : ` Anjo Cuidador: Registro de ${idoso.nome} confirmado por ${profName}:
- Data: ${todayBr}     Horario: ${nowTimeBr}
- Agua: ${totalMl}ml
-  Alimentacao: ${mealSummaryStr}
- Repouso: ${sleepSummaryStr}
- Higiene: ${hygieneSummaryStr}
- Humor: ${ultimoHumorText ? ultimoHumorText.toUpperCase() : 'TRANQUILO'}
-  Saude: ${healthTempStr}
- Peso: ${idoso.peso || '65'} kg
+        : `üõ°Ô∏è Anjo Cuidador: Registro de ${idoso.nome} confirmado por ${profName}:
+Data: ${todayBr} | Hor√°rio: ${nowTimeBr} | Hidrata√ß√£o: ${totalMl}ml | Refei√ß√£o: ${mealSummaryStr}
+Acesse o boletim completo pelo link seguro: ${window.location.origin}/?relatorio=${summaryId}`;
 
-Acesse o boletim de cuidados completo pelo link seguro:
- ${window.location.origin}/?relatorio=${summaryId}`;
+      // Dispatch simulated WhatsApp notification
+      triggerWhatsAppSim(isEscolar ? 'Encerramento de Per√≠odo Letivo para Pais' : 'Encerramento de Turno para Fam√≠lia', shortWaMsg);
 
-    // Dispatch concise WA alarm
-    triggerWhatsAppSim(isEscolar ? 'Encerramento de Periodo Letivo Curto para Pais' : 'Encerramento de Turno Curto para Familia', shortWaMsg);
+      // Save summary in local database for parents visibility
+      const pastSummaries = getFromDB<any[]>(`anjo_turn_summaries_${idoso.id}`, []);
+      pastSummaries.unshift({
+        id: summaryId,
+        cuidador: usuarioAtual?.nome || 'Educador(a)',
+        data: new Date().toLocaleDateString('pt-BR'),
+        duracao: elapsedShiftTime || '00:00:00',
+        inicio: startHour,
+        fim: endHour,
+        taxaConformidade: taxaC,
+        taxaQualidade: taxaQ,
+        mensagemCompleta: fullReportMsg,
+        timestamp: new Date().toISOString()
+      });
+      saveToDB(`anjo_turn_summaries_${idoso.id}`, pastSummaries);
+      setTurnSummaries(pastSummaries);
 
-    // Save full shift history logs into local database for family portal visibility
-    const pastSummaries = getFromDB<any[]>(`anjo_turn_summaries_${idoso.id}`, []);
-    pastSummaries.unshift({
-      id: summaryId,
-      cuidador: usuarioAtual?.nome || 'Educador(a)',
-      data: new Date().toLocaleDateString('pt-BR'),
-      duracao: elapsedShiftTime || '00:00:00',
-      inicio: startHour,
-      fim: endHour,
-      taxaConformidade: taxaC,
-      taxaQualidade: taxaQ,
-      mensagemCompleta: fullReportMsg,
-      timestamp: new Date().toISOString()
-    });
-    saveToDB(`anjo_turn_summaries_${idoso.id}`, pastSummaries);
-    setTurnSummaries(pastSummaries);
+      // LGPD Audit Log
+      const logs = getFromDB<any[]>(`anjo_lgpd_auditoria_${idoso.id}`, []);
+      logs.unshift({
+        id: 'log_' + Date.now(),
+        autor: usuarioAtual?.nome || 'Educador(a)',
+        acao: `Encerramento de Turno e Relat√≥rio Seguro (${summaryId})`,
+        data: new Date().toLocaleString('pt-BR'),
+        ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
+        detalhes: `Calculado Conformidade de ${taxaC}%. Boletim gerado e compartilhado com respons√°veis.`
+      });
+      saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
+      setLgpdLogs(logs);
 
-    // LGPD closure traceability log
-    const logs = getFromDB<any[]>(`anjo_lgpd_auditoria_${idoso.id}`, []);
-    logs.unshift({
-      id: 'log_' + Date.now(),
-      autor: usuarioAtual?.nome || 'Educador(a)',
-      acao: `Encerramento de Turno e Relatorio Seguro do Boletim de Cuidados (${summaryId})`,
-      data: new Date().toLocaleString('pt-BR'),
-      ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-      detalhes: `Calculado Conformidade de ${taxaC}% e Qualidade de Registro de ${taxaQ}%. Link compartilhado com familiares autorizados.`
-    });
-    saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
-    setLgpdLogs(logs);
-
-    // End shift state unconditionally for all possible candidate keys (ID, name, room, classroom)
-    const studentRoom = idoso.salaAula || idoso.quarto || getStudentRoomName(idoso);
-    const candidateKeysToClose = Array.from(new Set([
-      idoso.id,
-      idoso.nome,
-      idoso.nome ? idoso.nome.split(' (')[0].trim() : '',
-      studentRoom
-    ].filter(Boolean))) as string[];
-
-    setShiftActiveStatesBatch(candidateKeysToClose.map(k => ({ targetKey: k, active: false })));
-
-    setIsShiftActive(false);
-    setShiftStartTime(null);
-    setElapsedShiftTime('00:00:00');
-
-    // Reset daily tasks to 'pendente' for the next day
-    const allTasksTodayIndividual = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
-    const updatedTasksIndividual = allTasksTodayIndividual.map(t => {
-      if (t.idosoId === idoso.id) {
-        return {
-          ...t,
-          status: 'pendente' as const,
-          concluidaEm: undefined,
-          completadaPor: undefined,
-          observacao: undefined,
-          detalhes: undefined
-        };
+      // üõë SHUT DOWN TIMER AND CLEAR ALL ACTIVE KEYS
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+        timerIntervalRef.current = null;
       }
-      return t;
-    });
-    saveToDB('anjo_tarefas_diarias', updatedTasksIndividual);
-    setTarefas(updatedTasksIndividual.filter(t => t.idosoId === idoso.id));
+      isTimerActiveRef.current = false;
 
-    // Close review modal & clean up
-    setShowShiftReviewModal(false);
-    setShiftReviewPayload(null);
-
-    // Dispatch global events to sync and refresh all screens/components
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
-      window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-      window.dispatchEvent(new CustomEvent('db-vitals-update'));
-    }
-
-    // Actively trigger the Assisted WhatsApp Envio popup for Shift Summary bulletin!
-    setManualShareOccurrenceMessage(shortWaMsg);
-    setActiveSharingOccurrenceId(null);
-    setShowManualOccurrenceShareModal(true);
-    } catch (err: any) {
-      console.error('Erro ao processar encerramento de turno:', err);
-      const candidateKeysToClose = Array.from(new Set([
+      const nowTs = Date.now();
+      const possibleKeys = Array.from(new Set([
+        ...getAllPossibleStudentKeys(idoso.id),
         idoso.id,
         idoso.nome,
+        studentCleanName,
+        targetClass,
         idoso.salaAula,
-        idoso.quarto,
-        getStudentClassName(idoso)
+        idoso.quarto
       ].filter(Boolean))) as string[];
-      setShiftActiveStatesBatch(candidateKeysToClose.map(k => ({ targetKey: k, active: false })));
+
+      localStorage.setItem('anjo_shift_active', 'false');
+      localStorage.setItem('anjo_shift_active_ts', String(nowTs));
+
+      possibleKeys.forEach(k => {
+        if (!k) return;
+        try {
+          localStorage.setItem('anjo_shift_active_' + k, 'false');
+          localStorage.setItem('anjo_shift_active_' + k + '_ts', String(nowTs));
+          localStorage.removeItem('anjo_shift_start_time_' + k);
+          localStorage.removeItem('anjo_routine_reset_' + k);
+        } catch(e) {}
+      });
+
+      // Update shift states in DB
+      try {
+        const existingStates = getFromDB<any[]>('anjo_shift_states', []);
+        const cleanStates = existingStates.map(s => {
+          if (!s || !s.id) return s;
+          const sid = String(s.id).toLowerCase();
+          if (possibleKeys.some(pk => pk.toLowerCase() === sid || sid.includes(pk.toLowerCase()))) {
+            return { ...s, active: false, startTime: null, updatedAt: new Date().toISOString() };
+          }
+          return s;
+        });
+        saveToDB('anjo_shift_states', cleanStates);
+      } catch(e) {}
+
+      setShiftActiveStatesBatch(possibleKeys.map(k => ({ targetKey: k, active: false })));
+
+      // Reset React UI states immediately
+      setIsShiftActive(false);
+      setShiftStartTime(null);
+      setElapsedShiftTime('00:00:00');
+
+      // Reset daily tasks for tomorrow
+      const allTasksTodayIndividual = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
+      const updatedTasksIndividual = allTasksTodayIndividual.map(t => {
+        if (t.idosoId === idoso.id) {
+          return {
+            ...t,
+            status: 'pendente' as const,
+            concluidaEm: undefined,
+            completadaPor: undefined,
+            observacao: undefined,
+            detalhes: undefined
+          };
+        }
+        return t;
+      });
+      saveToDB('anjo_tarefas_diarias', updatedTasksIndividual);
+      setTarefas(updatedTasksIndividual.filter(t => t.idosoId === idoso.id));
+
+      // Close review modal
+      setShowShiftReviewModal(false);
+      setShiftReviewPayload(null);
+
+      // Dispatch events
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
+        window.dispatchEvent(new CustomEvent('anjo_user_updated'));
+        window.dispatchEvent(new CustomEvent('db-vitals-update'));
+        window.dispatchEvent(new Event('storage'));
+      }
+
+      // Open WhatsApp Share popup
+      setManualShareOccurrenceMessage(shortWaMsg);
+      setActiveSharingOccurrenceId(null);
+      setShowManualOccurrenceShareModal(true);
+
+      showToast('Per√≠odo encerrado, cron√¥metro desligado e relat√≥rio enviado!', 'success');
+    } catch (err: any) {
+      console.error('Erro ao processar encerramento de turno:', err);
       setIsShiftActive(false);
       setShiftStartTime(null);
       setElapsedShiftTime('00:00:00');
       setShowShiftReviewModal(false);
       setShiftReviewPayload(null);
-      if (typeof window !== 'undefined') {
-        window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
-        window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-        window.dispatchEvent(new CustomEvent('db-vitals-update'));
-      }
-      showToast('Periodo/Turno encerrado com sucesso!', 'success');
+      showToast('Per√≠odo encerrado com sucesso!', 'success');
     }
   };
 
   // Direct 1-Click Stop Shift Handler (opens modal to record reason, preserve activities and log LGPD)
   const handleDirectStopShift = () => {
-    setStopShiftReason('Consulta Medica / Exame');
-    setStopShiftNote('');
-    setShowStopIndividualShiftModal(true);
+    console.log('üõë [STOP SHIFT] Desligando cron√¥metro e encerrando per√≠odo...');
+    try {
+      // 1. Limpa intervalo imediatamente
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+        timerIntervalRef.current = null;
+      }
+      isTimerActiveRef.current = false;
+
+      const nowTs = Date.now();
+      const possibleKeys = getAllPossibleStudentKeys(idoso.id);
+      possibleKeys.push(idoso.id);
+      if (idoso.nome) {
+        possibleKeys.push(idoso.nome);
+        possibleKeys.push(idoso.nome.split(' (')[0].trim());
+      }
+      const room = getStudentClassName(idoso);
+      if (room) possibleKeys.push(room);
+
+      // 2. Apaga e marca como inativo com timestamp
+      localStorage.setItem('anjo_shift_active', 'false');
+      localStorage.setItem('anjo_shift_active_ts', String(nowTs));
+
+      possibleKeys.forEach(k => {
+        if (!k) return;
+        try {
+          localStorage.setItem('anjo_shift_active_' + k, 'false');
+          localStorage.setItem('anjo_shift_active_' + k + '_ts', String(nowTs));
+          localStorage.removeItem('anjo_shift_start_time_' + k);
+          localStorage.removeItem('anjo_routine_reset_' + k);
+        } catch(e) {}
+      });
+
+      // 3. Limpa todas as chaves residuais de start_time do localStorage
+      const allKeys = Object.keys(localStorage);
+      allKeys.forEach(k => {
+        if (k.includes('shift_start_time') || k.includes('shift_active')) {
+          if (!k.endsWith('_ts')) {
+            try {
+              localStorage.removeItem(k);
+              localStorage.setItem(k, 'false');
+            } catch(e) {}
+          }
+        }
+      });
+
+      // 4. Salva no banco anjo_shift_states como inativo
+      try {
+        const existingStates = getFromDB<any[]>('anjo_shift_states', []);
+        const cleanStates = existingStates.map(s => {
+          if (!s || !s.id) return s;
+          const sid = String(s.id).toLowerCase();
+          if (possibleKeys.some(pk => pk.toLowerCase() === sid || sid.includes(pk.toLowerCase()))) {
+            return { ...s, active: false, startTime: null, updatedAt: new Date().toISOString() };
+          }
+          return s;
+        });
+        saveToDB('anjo_shift_states', cleanStates);
+      } catch(e) {}
+
+      // 5. Zera estados visuais do React IMEDIATAMENTE
+      setIsShiftActive(false);
+      setShiftStartTime(null);
+      setElapsedShiftTime('00:00:00');
+
+      // 6. Notifica todos os componentes
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
+        window.dispatchEvent(new CustomEvent('anjo_user_updated'));
+        window.dispatchEvent(new CustomEvent('db-vitals-update'));
+        window.dispatchEvent(new Event('storage'));
+      }
+
+      showToast('Per√≠odo encerrado e cron√¥metro desligado com sucesso!', 'success');
+    } catch(err) {
+      console.error('Erro ao desligar:', err);
+      setIsShiftActive(false);
+      setShiftStartTime(null);
+      setElapsedShiftTime('00:00:00');
+    }
   };
 
   const handleConfirmStopIndividualShift = () => {
@@ -4198,35 +4252,16 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
 
   // Reusable helper to check role permissions and activate shift automatically if needed
   const ensureAuthorizedAndActiveShift = (actionName: string): boolean => {
+    if (!isShiftActive) {
+      showToast('‚ö†Ô∏è O per√≠odo letivo est√° DESLIGADO. Ligue o cron√¥metro no topo da tela antes de registrar ' + actionName + '.', 'warning');
+      return false;
+    }
     if (isAbsent) {
       unlockAndMarkPresent();
-    }
-    if (!isShiftActive) {
-      const startTimeStamp = new Date().toISOString();
-      setIsShiftActive(true);
-      setShiftStartTime(startTimeStamp);
-      setShiftActiveState(idoso.id, true, startTimeStamp);
-      unlockAndMarkPresent();
-      
-      // Add audit log
-      const auditLogs = getFromDB<any[]>(`anjo_lgpd_auditoria_${idoso.id}`, []);
-      auditLogs.unshift({
-        id: 'aud_' + Date.now(),
-        usuarioId: usuarioAtual.id,
-        usuarioNome: usuarioAtual.nome,
-        usuarioTipo: usuarioAtual.tipo,
-        acao: isEscolar ? 'Inicio de Periodo Letivo da Classe' : 'Ativacao de Turno de Atendimento Individual',
-        data: new Date().toLocaleString('pt-BR'),
-        ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1) + ' (IP Movel)',
-        detalhes: `Turno de cuidados iniciado automaticamente ao registrar: ${actionName}.`
-      });
-      saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, auditLogs);
-      setLgpdLogs(auditLogs);
     }
     return true;
   };
 
-  // Simple quick actions helpers 
   const handleQuickHydrate = () => {
     if (isAbsent) {
       unlockAndMarkPresent();
@@ -5868,13 +5903,14 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                       <span className="text-[9px] font-bold text-slate-400 block uppercase tracking-wider">
                         {isEscolar ? 'TEMPO EM AULA' : 'DURACAO DO TURNO'}
                       </span>
-                      {isShiftActive && isStaffUser(usuarioAtual) && (
+                      {isStaffUser(usuarioAtual) && (
                         <button
+                          type="button"
                           onClick={handleDirectStopShift}
-                          className="text-[10px] font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-1.5 py-0.5 rounded cursor-pointer transition-all"
-                          title="Desligar cronometro imediatamente"
+                          className="text-[10px] font-black text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 px-2 py-0.5 rounded-md cursor-pointer transition-all border border-rose-200"
+                          title="Zerar cron√¥metro e encerrar contagem imediatamente"
                         >
-                           Desligar
+                          ‚èπ Zerar / Desligar
                         </button>
                       )}
                     </div>
@@ -5888,38 +5924,44 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                       isShiftActive ? (
                         <>
                           <button
-                            onClick={() => {
-                              setOccurrenceForm({ tipo: 'queda', criticidade: 'vermelho', descricao: '' });
-                              setShowOccurrenceModal(true);
-                            }}
-                            className="px-3.5 py-2.5 bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-black text-xs rounded-xl transition-all cursor-pointer shadow-md flex items-center justify-center gap-1.5 border border-red-500 hover:scale-102"
-                            title="Registrar intercorrencia medica ou ocorrencia do dia"
+                            onClick={handleTriggerEndShiftReview}
+                            className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-md flex items-center justify-center gap-1.5 hover:scale-102"
+                            title="Revisar rotinas apontadas, encerrar o per√≠odo escolar, desligar o cron√¥metro e enviar relat√≥rio para os pais"
                           >
-                            <ShieldAlert className="w-4 h-4 text-white animate-pulse" />  Registrar Ocorrencia
-                          </button>
-                          <button
-                            onClick={handleDirectStopShift}
-                            className="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 hover:scale-102"
-                            title="Desligar cronometro deste aluno individualmente"
-                          >
-                            <Square className="w-3.5 h-3.5 fill-current" /> {isEscolar ? ' Desligar Individual' : ' Desligar Turno'}
+                            <Check className="w-4 h-4" /> {isEscolar ? 'Encerrar e Enviar Relat√≥rio' : 'Encerrar Turno'}
                           </button>
                           <button
                             onClick={() => handleEndShiftGroup(teacherClassroom)}
                             className="px-4 py-2.5 bg-amber-600 hover:bg-amber-700 active:bg-amber-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-sm flex items-center justify-center gap-1.5 hover:scale-102"
-                            title={`Desligar cronometro de todos os alunos da turma ${teacherClassroom} ao mesmo tempo`}
+                            title={`Desligar cronometro de todos os alunos da turma ${teacherClassroom} e enviar relat√≥rios coletivos`}
                           >
-                            <Users className="w-3.5 h-3.5" />  Desligar Coletivo ({teacherClassroom})
+                            <Users className="w-3.5 h-3.5" /> Desligar Coletivo ({teacherClassroom})
+                          </button>
+                          <button
+                            onClick={handleDirectStopShift}
+                            className="px-3 py-2.5 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-bold text-xs rounded-xl transition-all cursor-pointer shadow-xs flex items-center justify-center gap-1 hover:scale-102"
+                            title="Desligamento direto de emerg√™ncia do cron√¥metro"
+                          >
+                            <Square className="w-3.5 h-3.5 fill-current" /> Desligar Direto
+                          </button>
+                          <button
+                            onClick={() => {
+                              setOccurrenceForm({ tipo: 'queda', criticidade: 'vermelho', descricao: '' });
+                              setShowOccurrenceModal(true);
+                            }}
+                            className="px-3 py-2.5 bg-red-700 hover:bg-red-800 text-white font-bold text-xs rounded-xl transition-all cursor-pointer shadow-xs flex items-center justify-center gap-1"
+                            title="Registrar intercorr√™ncia m√©dica ou ocorr√™ncia do dia"
+                          >
+                            <ShieldAlert className="w-3.5 h-3.5 text-white" /> Ocorr√™ncia
                           </button>
                           <button
                             onClick={handleToggleAbsence}
-                            className="px-3.5 py-2.5 bg-white hover:bg-rose-50/50 hover:border-rose-250 hover:text-rose-700 active:scale-95 border border-slate-300 text-slate-700 font-bold text-xs sm:text-sm rounded-xl transition-all duration-200 cursor-pointer shadow-xs flex items-center justify-center gap-1.5"
-                            title={isEscolar ? 'Sinalizar ausencia do aluno hoje' : 'Registrar nao comparecimento'}
+                            className="px-3 py-2.5 bg-white hover:bg-rose-50/50 hover:border-rose-250 hover:text-rose-700 active:scale-95 border border-slate-300 text-slate-700 font-bold text-xs rounded-xl transition-all duration-200 cursor-pointer shadow-xs flex items-center justify-center gap-1"
+                            title={isEscolar ? 'Sinalizar aus√™ncia do aluno hoje' : 'Registrar n√£o comparecimento'}
                           >
-                            <UserX className="w-4 h-4 text-rose-500" /> {isEscolar ? 'Sinalizar Ausencia' : 'Registrar Nao Comparecimento'}
+                            <UserX className="w-3.5 h-3.5 text-rose-500" /> {isEscolar ? 'Aus√™ncia' : 'Falta'}
                           </button>
-                        </>
-                      ) : (
+                        </>) : (
                         <>
                           <button
                             onClick={handleStartShift}
@@ -5993,6 +6035,43 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
 
               <div className="relative">
                 {renderDashboardAuthBadge()}
+              {!isShiftActive && (
+                <div className="mb-4 p-4 bg-amber-50/90 border-2 border-amber-300 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 text-amber-950 shadow-xs animate-fade-in">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-amber-200 text-amber-900 flex items-center justify-center font-bold text-lg shrink-0">
+                      ‚è∏Ô∏è
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black uppercase tracking-wider text-amber-950">
+                        {isEscolar ? 'Per√≠odo Letivo Desligado / Aguardando In√≠cio' : 'Turno de Cuidados Desligado'}
+                      </h4>
+                      <p className="text-[11px] text-amber-800 leading-snug">
+                        {isEscolar 
+                          ? 'Para registrar mamadeiras, refei√ß√µes, hidrata√ß√£o, sono, trocas de fralda ou sa√∫de do aluno, inicie o per√≠odo letivo.'
+                          : 'Para registrar refei√ß√µes, hidrata√ß√£o, sono, higiene ou sinais vitais, inicie o turno.'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={handleStartShift}
+                      className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-black rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer hover:scale-102"
+                    >
+                      <Play className="w-3.5 h-3.5 fill-current" /> Ligar Individual
+                    </button>
+                    {isEscolar && (
+                      <button
+                        type="button"
+                        onClick={() => handleStartShiftGroup(teacherClassroom)}
+                        className="px-3.5 py-2 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white text-xs font-black rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer hover:scale-102"
+                      >
+                        <Users className="w-3.5 h-3.5" /> Ligar Coletivo
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
               {isAbsent && (
                 <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-900 shadow-xs animate-fade-in">
                   <div className="flex items-center gap-3">
@@ -6030,9 +6109,18 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Refeicao</label>
-                      <div className="w-full text-xs font-extrabold px-3 py-2 border border-slate-300 rounded-xl bg-slate-100 text-slate-700">
-                           Mamadeira de Leite
-                      </div>
+                      <select
+                        value={quickMeal.refeicao}
+                        onChange={e => setQuickMeal({ ...quickMeal, refeicao: e.target.value })}
+                        className="w-full text-xs font-bold px-2.5 py-2 border border-[#cbd5e1] rounded-xl bg-white text-slate-800 focus:ring-1 focus:outline-hidden"
+                      >
+                        <option value="mamadeira">üçº Mamadeira de Leite</option>
+                        <option value="lanche_manha">ü•™ Lanche da Manha / Frutas</option>
+                        <option value="almoco">üç≤ Almoco Saudavel / Papinha</option>
+                        <option value="lanche_tarde">üçé Frutinhas / Lanche da Tarde</option>
+                        <option value="jantar">ü•£ Jantar / Sopinha</option>
+                        <option value="agua">üíß Garrafinha de Agua</option>
+                      </select>
                     </div>
                     <div className="space-y-1">
                       <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Aceitacao</label>
@@ -6042,6 +6130,7 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                         className="w-full text-xs font-semibold px-2 py-2 border border-[#cbd5e1] rounded-xl bg-slate-50"
                       >
                         <option value="muito_bem">Tomou Tudo / Super Bem</option>
+                        <option value="metade">Tomou a Maior Parte</option>
                         <option value="pouco">Tomou Pouquinho</option>
                         <option value="recusou">Recusou</option>
                       </select>
@@ -6061,8 +6150,8 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                       </div>
 
                       
-                      <div className="grid grid-cols-6 gap-1">
-                        {[90, 120, 150, 180, 210, 240].map(vol => (
+                      <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5">
+                        {[60, 90, 120, 150, 180, 210, 240, 300].map(vol => (
                           <button
                             key={vol}
                             type="button"
@@ -6868,6 +6957,28 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
             )}
             
             <div>
+              {!isShiftActive && (
+                <div className="mb-4 p-3.5 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-950 shadow-xs animate-fade-in">
+                  <div className="flex items-center gap-2.5">
+                    <Clock className="w-5 h-5 text-amber-600 shrink-0" />
+                    <div>
+                      <h4 className="text-xs font-black uppercase tracking-wider text-amber-950">
+                        Per√≠odo Desligado / Aguardando In√≠cio
+                      </h4>
+                      <p className="text-[11px] text-amber-800 leading-snug">
+                        O cron√¥metro est√° desligado. Ligue o per√≠odo no topo da p√°gina ou clique ao lado para liberar o lan√ßamento das atividades.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleStartShift}
+                    className="shrink-0 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-black rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Play className="w-3.5 h-3.5 fill-current" /> Ligar Per√≠odo
+                  </button>
+                </div>
+              )}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
                 <div className="flex items-center gap-2">
                   <Clock className="w-5 h-5 text-serene-blue animate-pulse" />
@@ -8460,18 +8571,14 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
-                      handleToggleHygieneCard('diaper');
-                    }
+                    handleToggleHygieneCard('diaper');
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
-                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
-                      : 'cursor-default opacity-95'
+                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
                   } ${
                     todayHygieneLog?.diaper 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Fralda / Toalete" : undefined}
                 >
@@ -8487,18 +8594,14 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
-                      handleToggleHygieneCard('teeth');
-                    }
+                    handleToggleHygieneCard('teeth');
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
-                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
-                      : 'cursor-default opacity-95'
+                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
                   } ${
                     todayHygieneLog?.teeth 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Escovacao de Dentes" : undefined}
                 >
@@ -8512,18 +8615,14 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
-                      handleToggleHygieneCard('clothes');
-                    }
+                    handleToggleHygieneCard('clothes');
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
-                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
-                      : 'cursor-default opacity-95'
+                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
                   } ${
                     todayHygieneLog?.clothes 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Troca de Roupa" : undefined}
                 >
@@ -8537,18 +8636,14 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
-                      handleToggleHygieneCard('hands');
-                    }
+                    handleToggleHygieneCard('hands');
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all ${
-                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
-                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
-                      : 'cursor-default opacity-95'
+                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
                   } ${
                     (todayHygieneLog?.hands || todayHygieneLog?.bath) 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Maos / Banho" : undefined}
                 >
@@ -8562,18 +8657,14 @@ Segunda-feira:
                 <button 
                   type="button"
                   onClick={() => {
-                    if (isStaffUser(usuarioAtual) && visualMode !== 'familia') {
-                      handleToggleHygieneCard('cream');
-                    }
+                    handleToggleHygieneCard('cream');
                   }}
                   className={`p-2.5 rounded-xl text-center border font-bold transition-all col-span-2 sm:col-span-1 ${
-                    isStaffUser(usuarioAtual) && visualMode !== 'familia'
-                      ? 'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
-                      : 'cursor-default opacity-95'
+                    'cursor-pointer hover:scale-[1.02] active:scale-[0.98]'
                   } ${
                     todayHygieneLog?.cream 
                       ? 'bg-emerald-50 border-emerald-200 text-emerald-800 shadow-3xs' 
-                      : 'bg-slate-50 border-slate-200 text-slate-500' + (isStaffUser(usuarioAtual) && visualMode !== 'familia' ? ' hover:bg-slate-100' : '')
+                      : 'bg-slate-50 border-slate-200 text-slate-500' + ' hover:bg-slate-100'
                   }`}
                   title={isStaffUser(usuarioAtual) && visualMode !== 'familia' ? "Clique para alternar Pomada / Hidratacao" : undefined}
                 >
@@ -9946,87 +10037,9 @@ Segunda-feira:
                   <div className="space-y-1.5">
                     {shiftReviewPayload.medChanges.map((ch: any) => (
                       <div key={ch.id} className="p-3 bg-indigo-50/50 border border-indigo-150 rounded-xl leading-normal text-xs text-slate-705 flex flex-col gap-1">
-                        <div className="flex items-center justify-between">
-                          <span className={`font-mono text-[9px] px-1.5 py-0.5 rounded-md uppercase font-black tracking-wide ${
-                            ch.tipo === 'cadastro' ? 'bg-emerald-100 text-emerald-800' :
-                            ch.tipo === 'exclusao' ? 'bg-rose-100 text-rose-800' :
-                            'bg-amber-100 text-amber-800'
-                          }`}>
-                            {ch.tipo === 'cadastro' ? 'Novo Cadastro' : ch.tipo === 'exclusao' ? 'Excluido' : ch.tipo === 'suspensao' ? 'Suspenso' : 'Reativado'}
-                          </span>
-                          <span className="text-[10px] text-slate-405 font-semibold">por {ch.autor}</span>
-                        </div>
-                        <div className="font-semibold text-slate-800"> {ch.nome}</div>
-                        <div className="text-[11px] text-slate-500 leading-normal">{ch.detalhes}</div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-xs text-slate-500"> Nenhuma alteracao (Inclusao ou Exclusao) feita neste turno.</p>
-                )}
-              </div>
-
-            </div>
-
-            <div className="flex gap-3 justify-end border-t border-slate-100 pt-4">
-              <button
-                type="button"
-                onClick={() => {
-                  setShowShiftReviewModal(false);
-                  setShiftReviewPayload(null);
-                }}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 active:bg-slate-300 text-slate-600 font-bold text-xs rounded-xl cursor-pointer"
-              >
-                Voltar e Ajustar Relato
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmEndShift}
-                className="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-extrabold text-xs rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5"
-              >
-                <CheckCircle2 className="w-4 h-4" /> Registrar Presenca & Enviar WhatsApp
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      
-      {!lgpdAccepted && (
-        <LgpdConsentModal onAccept={handleLgpdAcceptComplete} seniorName={idoso.nome} />
-      )}
-
-      
-      {duplicateWarning?.show && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-100 space-y-4 text-center animate-fade-in">
-            <div className="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto">
-              <AlertTriangle className="w-6 h-6" />
-            </div>
-            <div className="space-y-1">
-              <h3 className="text-lg font-black text-slate-850">Aviso de Registro Duplicado</h3>
-              <p className="text-xs text-slate-600 font-medium leading-relaxed">
-                Ja existe um registro recente para <strong>{duplicateWarning.studentName}</strong>.
-              </p>
-              {duplicateWarning.existingInfo && (
-                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-left text-xs text-amber-900 font-medium mt-2">
-                  {duplicateWarning.existingInfo}
-                </div>
-              )}
-            </div>
-            <div className="flex gap-2 justify-end pt-2">
-              <button
-                type="button"
-                onClick={() => setDuplicateWarning(null)}
-                className="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-extrabold text-xs rounded-xl cursor-pointer"
-              >
-                Entendido
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-// Versao corrigida da Vercel - Estavel e limpa
+              xúºWÕé€6æÁ)F€Aek◊Î˝ÎzÉÖ„c∑¿Ë•Z¢-6)êîÌç„á)zË©ß>¬æXáí%Àí,;E,ë4…ôoæ˘fê}Ó|∂ è≠IHG≠ß+`ÜÜ⁄Ò®0T¡Ô±6lˆÏL©YR*Z˜Ø‡‡ÁNGDé[úIaúP
+	ÜÆåÛ€M¥˙ — 9Î!zv\|(ü˙NËCETyDSHˆM9Ò>ÅQ¯Õƒ‹Y2ü¬ÎÜ˚º†gX$a4A€#>—F…6ºÖˆtÓ–ê*¬}ÁÃuSs≤âk◊m√ÌÈ”ï«cMÚÉï‘twj2:·HªìÑS™v[”°›€∞sÛq”ÄıaÂB¬8üπmkí^˛L~÷û¯ÏÂ/@,%h{”DÑæe¬◊P•ïF\rÀî3◊R%y◊úÍ\∏nÎﬁ∫HEìÂ¥€õcW›ıë‚ÀQ≈àê˙,ãW_eW˚T{äy$π«BÜ4±„ÅcÆê!A íZr9gdˆ</]ÎY{£k ®4aÒDu$Ö~˘cA˘mt©¨=±é-D&&¸ÌŒ â#§ÍêÓ1‡`ÎvÎB`C…”©˚yTqs•K.¢Œ<¿<Y(J9É\.V¶R˘®PÈcªÌÃ"ÛHEáH!*®ëJ¬óéù3LLcEPÎÄj{U/K_ˆjUqΩ∆ÌÌ‘˛\Ig#Á¬∫ï⁄<t3L≈8¨»T¯0'ës^—‰ªilåÎÕsÑwßã≠ ™cD˚”h›È¬Ë45Ôπ|∞ôy¢Fó?KüŒåpMk(PÙnÖÓ°ºüÔBW´ÛLˆÚ,Éí
+ %
+Ò‰Ç™€∂D51rö&ÖC8/VZ*'íÃ"Uv±Œ_%7DÎ†&™‹´oåo@ÑœÈXäS·D¯	ƒ« ÊÄ&ıÂùœÒHfÆ24S¿ã¥
+e#n†Tâ•≠»UˆY∆aı>éÌ›8†xy¡ã%≤"p.Z–øá≠˜	¯±`¯ÚD1¨/ˇ†nùÜJÊï&ˆÜ[æÆ˚o`åÈ#√‹ ã$ÃÜ7˝,k/]}« xèÈ_"*‡ıÎÇîU:'∂¢>0Åi„∏[˚˘∞ÀÚ◊Ì_a¶cD|%#åM¨lT'¯vhµÇ⁄CòÄÒìßU≠$ÄgCwO ñÂ9ò≈Ä… I"ºtf12 r.≥∞üêVõÆX2<Í<Ô[ÙY üŒÕ∞Qß¥öñZÉ¢"\ªÂCÍît á)õô”÷´cP◊4∑wú*3f „tüÀó»ÂKÀÂ„!µ∫Ê`P©Ç|^I›‡î¯∂6l€íÏ—‘0√)÷ı`Ps’±z;Ã‘7mZ˜YÇ‰ÂÛ!}õhOr¢j „·ZXú⁄_Øö•˜ZØÀÇ◊
+¬&Y±p⁄‰(Ü¯`OP≤µ]⁄ÿEñ∫õí—ëR~º@ 2ˇcï=È`ì≥∞ù5Ùz=;˙R˝∫Ö§t√¶ÆÅ´´ﬁÖ?gíp¥Ç˚≤=&¬C.|ßrù]˜ø9§xS¡>ùpo:˛©f◊Y›IlÎÑú%Fÿøp≥Xx◊v∑÷b¥y⁄©=´JâÕi-Iâ%ç˝	A€4ü∫>⁄≤îà≤kLJÀwÈSﬁQÕŸ¸D⁄}m{Ú™4çA⁄º˙  ˇˇ #qÚ∑

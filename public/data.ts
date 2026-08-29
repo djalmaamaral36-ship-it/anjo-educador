@@ -902,44 +902,46 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
   );
 
   const realId = studentObj?.id || targetStudentId;
-  const studentName = studentObj?.nome || "";
-  const studentCleanName = studentName.split(" (")[0].trim();
-  const studentRoom = studentObj?.salaAula || studentObj?.quarto || getStudentRoomName(studentObj || targetStudentId);
-
   const possibleKeys = getAllPossibleStudentKeys(realId);
 
-  // Check explicit absence first
+  // 1. Check explicit absence
   for (const k of possibleKeys) {
     if (localStorage.getItem("anjo_is_absent_" + k) === "true") {
       return { active: false, isAbsent: true, reason: "Ausente", startTime: null, lastResetTime: null };
     }
   }
 
-  // Check explicit individual localStorage active / inactive
-  let isExplicitlyInactiveLocally = false;
-  let isExplicitlyActiveLocally = false;
+  // 2. Check if global or any student key was explicitly turned off
+  if (localStorage.getItem("anjo_shift_active") === "false") {
+    return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
+  }
+
+  let latestInactiveTs = 0;
+  let latestActiveTs = 0;
   let localStartTime: string | null = null;
 
   for (const k of possibleKeys) {
     const act = localStorage.getItem("anjo_shift_active_" + k);
+    const ts = Number(localStorage.getItem("anjo_shift_active_" + k + "_ts")) || 0;
     if (act === "false") {
-      isExplicitlyInactiveLocally = true;
+      if (ts > latestInactiveTs) latestInactiveTs = ts;
     } else if (act === "true") {
-      isExplicitlyActiveLocally = true;
+      if (ts > latestActiveTs) latestActiveTs = ts;
       const st = localStorage.getItem("anjo_shift_start_time_" + k);
       if (st) localStartTime = st;
     }
   }
 
-  if (isExplicitlyInactiveLocally && !isExplicitlyActiveLocally) {
+  // If explicitly turned off and no newer activation exists, it is inactive
+  if (latestInactiveTs > 0 && latestInactiveTs >= latestActiveTs) {
     return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
   }
 
+  // 3. Check shiftStates database
   const shiftStates = customShiftStates && Array.isArray(customShiftStates) 
     ? customShiftStates 
     : getFromDB<ShiftState[]>("anjo_shift_states", []);
 
-  // Check state database for this student
   const directRecords: { record: ShiftState; time: number }[] = [];
   shiftStates.forEach(s => {
     if (!s || !s.id) return;
@@ -962,13 +964,36 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
       return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
     }
     if (latestDirect.active === true || String(latestDirect.active) === "true") {
-      const st = latestDirect.startTime || localStartTime || new Date().toISOString();
-      return { active: true, isAbsent: false, reason: null, startTime: st, lastResetTime: st };
+      const st = latestDirect.startTime || localStartTime;
+      // Auto-expire shifts older than 14 hours (e.g. 33 hours from yesterday)
+      if (st) {
+        const startMs = new Date(st).getTime();
+        if (!isNaN(startMs) && (Date.now() - startMs) > (14 * 60 * 60 * 1000)) {
+          // Stale shift from previous day -> auto turn off
+          try {
+            localStorage.setItem("anjo_shift_active_" + realId, "false");
+            localStorage.removeItem("anjo_shift_start_time_" + realId);
+          } catch(e) {}
+          return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
+        }
+        return { active: true, isAbsent: false, reason: null, startTime: st, lastResetTime: st };
+      }
     }
   }
 
-  if (isExplicitlyActiveLocally && localStartTime) {
-    return { active: true, isAbsent: false, reason: null, startTime: localStartTime, lastResetTime: localStartTime };
+  if (localStartTime) {
+    const startMs = new Date(localStartTime).getTime();
+    // Auto-expire shifts older than 14 hours
+    if (!isNaN(startMs) && (Date.now() - startMs) > (14 * 60 * 60 * 1000)) {
+      try {
+        localStorage.setItem("anjo_shift_active_" + realId, "false");
+        localStorage.removeItem("anjo_shift_start_time_" + realId);
+      } catch(e) {}
+      return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
+    }
+    if (latestActiveTs > latestInactiveTs) {
+      return { active: true, isAbsent: false, reason: null, startTime: localStartTime, lastResetTime: localStartTime };
+    }
   }
 
   return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
