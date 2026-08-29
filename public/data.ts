@@ -892,6 +892,7 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
     if (targetStudentId === "aluno_1") targetStudentId = "idoso_maria";
     else if (targetStudentId === "aluno_2") targetStudentId = "idoso_joao";
   }
+
   const allStudents = getFromDB<Idoso[]>("anjo_idosos", IDOSOS_INICIAIS);
   const studentObj = allStudents.find(s => 
     s.id === targetStudentId || 
@@ -900,20 +901,18 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
     (s.nome && keyMatches(s.nome, targetStudentId)) ||
     (s.nome && keyMatches(s.nome.split(" (")[0], targetStudentId))
   );
-
   const realId = studentObj?.id || targetStudentId;
   const possibleKeys = getAllPossibleStudentKeys(realId);
+  if (studentObj?.nome) {
+    possibleKeys.push(studentObj.nome);
+    possibleKeys.push(studentObj.nome.split(" (")[0].trim());
+  }
 
   // 1. Check explicit absence
   for (const k of possibleKeys) {
     if (localStorage.getItem("anjo_is_absent_" + k) === "true") {
       return { active: false, isAbsent: true, reason: "Ausente", startTime: null, lastResetTime: null };
     }
-  }
-
-  // 2. Check if global or any student key was explicitly turned off
-  if (localStorage.getItem("anjo_shift_active") === "false") {
-    return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
   }
 
   let latestInactiveTs = 0;
@@ -932,12 +931,7 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
     }
   }
 
-  // If explicitly turned off and no newer activation exists, it is inactive
-  if (latestInactiveTs > 0 && latestInactiveTs >= latestActiveTs) {
-    return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
-  }
-
-  // 3. Check shiftStates database
+  // Also check direct shiftStates DB
   const shiftStates = customShiftStates && Array.isArray(customShiftStates) 
     ? customShiftStates 
     : getFromDB<ShiftState[]>("anjo_shift_states", []);
@@ -961,15 +955,15 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
 
   if (latestDirect) {
     if (latestDirect.active === false || String(latestDirect.active) === "false") {
-      return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
-    }
-    if (latestDirect.active === true || String(latestDirect.active) === "true") {
+      const dbTime = latestDirect.updatedAt ? new Date(latestDirect.updatedAt).getTime() : 0;
+      if (dbTime >= latestActiveTs) {
+        return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
+      }
+    } else if (latestDirect.active === true || String(latestDirect.active) === "true") {
       const st = latestDirect.startTime || localStartTime;
-      // Auto-expire shifts older than 14 hours (e.g. 33 hours from yesterday)
       if (st) {
         const startMs = new Date(st).getTime();
         if (!isNaN(startMs) && (Date.now() - startMs) > (14 * 60 * 60 * 1000)) {
-          // Stale shift from previous day -> auto turn off
           try {
             localStorage.setItem("anjo_shift_active_" + realId, "false");
             localStorage.removeItem("anjo_shift_start_time_" + realId);
@@ -981,9 +975,8 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
     }
   }
 
-  if (localStartTime) {
+  if (latestActiveTs > 0 && latestActiveTs > latestInactiveTs && localStartTime) {
     const startMs = new Date(localStartTime).getTime();
-    // Auto-expire shifts older than 14 hours
     if (!isNaN(startMs) && (Date.now() - startMs) > (14 * 60 * 60 * 1000)) {
       try {
         localStorage.setItem("anjo_shift_active_" + realId, "false");
@@ -991,9 +984,7 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
       } catch(e) {}
       return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
     }
-    if (latestActiveTs > latestInactiveTs) {
-      return { active: true, isAbsent: false, reason: null, startTime: localStartTime, lastResetTime: localStartTime };
-    }
+    return { active: true, isAbsent: false, reason: null, startTime: localStartTime, lastResetTime: localStartTime };
   }
 
   return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };

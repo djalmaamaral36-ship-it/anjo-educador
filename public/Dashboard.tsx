@@ -2029,6 +2029,8 @@ Equipe Anjinho Escolar`
       const startTimeStamp = new Date().toISOString();
       setIsShiftActive(true);
       setShiftStartTime(startTimeStamp);
+      localStorage.setItem('anjo_shift_active', 'true');
+      localStorage.setItem('anjo_shift_active_ts', String(Date.now()));
       setShiftActiveState(idoso.id, true, startTimeStamp);
       unlockAndMarkPresent();
     }
@@ -3240,6 +3242,7 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
 
   const handleStartShiftWithPreservation = () => {
     const startTimeStamp = new Date().toISOString();
+    const nowTs = Date.now();
 
     // 1. Wipe daily routine records for current student to guarantee clean slate
     resetStudentDailyRoutine([idoso.id]);
@@ -3247,11 +3250,9 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
     // Preserve peso, temperatura and saturacao in vitals
     const allVitals = getFromDB<any[]>('anjo_sinais', []);
     const studentVitals = allVitals.filter(v => v.idosoId === idoso.id);
-
     let lastWeight: number | undefined = undefined;
     let lastTemp: number | undefined = undefined;
     let lastSat: number | undefined = undefined;
-
     for (let i = studentVitals.length - 1; i >= 0; i--) {
       const sv = studentVitals[i];
       if (lastWeight === undefined && sv.peso !== undefined && Number(sv.peso) > 0) {
@@ -3264,9 +3265,7 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
         lastSat = Number(sv.saturacao);
       }
     }
-
     const updatedVitals = allVitals.filter(v => v.idosoId !== idoso.id);
-
     if (lastWeight !== undefined || lastTemp !== undefined || lastSat !== undefined) {
       const baselineVital: SinalVital = {
         id: 'sin_base_' + idoso.id + '_' + Date.now(),
@@ -3308,6 +3307,11 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
 
     setIsShiftActive(true);
     setShiftStartTime(startTimeStamp);
+    localStorage.setItem('anjo_shift_active', 'true');
+    localStorage.setItem('anjo_shift_active_ts', String(nowTs));
+    localStorage.setItem('anjo_shift_active_' + idoso.id, 'true');
+    localStorage.setItem('anjo_shift_active_' + idoso.id + '_ts', String(nowTs));
+    localStorage.setItem('anjo_shift_start_time_' + idoso.id, startTimeStamp);
 
     const startShiftUpdates: { targetKey: string; active: boolean; startTime?: string }[] = [
       { targetKey: idoso.id, active: true, startTime: startTimeStamp }
@@ -3315,28 +3319,27 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
     if (idoso.nome) startShiftUpdates.push({ targetKey: idoso.nome, active: true, startTime: startTimeStamp });
     const cleanN = (idoso.nome || '').split(' (')[0].trim();
     if (cleanN) startShiftUpdates.push({ targetKey: cleanN, active: true, startTime: startTimeStamp });
-
     setShiftActiveStatesBatch(startShiftUpdates);
 
     // If marked as absent, remove the absence when starting the shift
     setIsAbsent(false);
-    localStorage.removeItem(`anjo_is_absent_${idoso.id}`);
+    localStorage.removeItem('anjo_is_absent_' + idoso.id);
 
     // LGPD shift starting traceability audit
-    const logs = getFromDB<any[]>(`anjo_lgpd_auditoria_${idoso.id}`, []);
+    const logs = getFromDB<any[]>('anjo_lgpd_auditoria_' + idoso.id, []);
     logs.unshift({
       id: 'log_' + Date.now(),
       autor: usuarioAtual.nome,
-      acao: `Abertura oficial de Escala de Turno (Inicio do Plantao)`,
+      acao: 'Abertura oficial de Escala de Turno (Inicio do Plantao)',
       data: new Date().toLocaleString('pt-BR'),
       ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
-      detalhes: `Escala de trabalho vinculada para provar presenca e responsabilidade contratual.`
+      detalhes: 'Escala de trabalho vinculada para provar presenca e responsabilidade contratual.'
     });
-    saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, logs);
+    saveToDB('anjo_lgpd_auditoria_' + idoso.id, logs);
     setLgpdLogs(logs);
 
     // Simulated notify
-    const msg = `Anjo Cuidador: O Turno de cuidados para ${idoso.nome} foi INICIADO por ${usuarioAtual.nome} As ${getNowTimeBr()}. Acompanhando em tempo real.`;
+    const msg = 'Anjo Cuidador: O Turno de cuidados para ' + idoso.nome + ' foi INICIADO por ' + usuarioAtual.nome + ' as ' + getNowTimeBr() + '. Acompanhando em tempo real.';
     triggerWhatsAppSim('Turno Iniciado', msg);
 
     if (typeof window !== 'undefined') {
@@ -3347,9 +3350,10 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
       window.dispatchEvent(new CustomEvent('db-routine-update'));
       window.dispatchEvent(new CustomEvent('db-jornada-update'));
       window.dispatchEvent(new CustomEvent('db-activities-update'));
+      window.dispatchEvent(new Event('storage'));
     }
 
-    showToast(` Cronometro e periodo iniciados para ${idoso.nome.split(' (')[0]}! Todas as atividades do dia anterior foram zeradas para o novo dia.`, 'success');
+    showToast('â–¶ï¸ PerÃ­odo letivo iniciado para ' + idoso.nome.split(' (')[0] + '! CronÃ´metro ativo e atividades zeradas para o novo dia.', 'success');
   };
 
   const handleStartShiftGroup = (className: string) => {
@@ -4248,35 +4252,16 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
 
   // Reusable helper to check role permissions and activate shift automatically if needed
   const ensureAuthorizedAndActiveShift = (actionName: string): boolean => {
+    if (!isShiftActive) {
+      showToast('âš ï¸ O perÃ­odo letivo estÃ¡ DESLIGADO. Ligue o cronÃ´metro no topo da tela antes de registrar ' + actionName + '.', 'warning');
+      return false;
+    }
     if (isAbsent) {
       unlockAndMarkPresent();
-    }
-    if (!isShiftActive) {
-      const startTimeStamp = new Date().toISOString();
-      setIsShiftActive(true);
-      setShiftStartTime(startTimeStamp);
-      setShiftActiveState(idoso.id, true, startTimeStamp);
-      unlockAndMarkPresent();
-      
-      // Add audit log
-      const auditLogs = getFromDB<any[]>(`anjo_lgpd_auditoria_${idoso.id}`, []);
-      auditLogs.unshift({
-        id: 'aud_' + Date.now(),
-        usuarioId: usuarioAtual.id,
-        usuarioNome: usuarioAtual.nome,
-        usuarioTipo: usuarioAtual.tipo,
-        acao: isEscolar ? 'Inicio de Periodo Letivo da Classe' : 'Ativacao de Turno de Atendimento Individual',
-        data: new Date().toLocaleString('pt-BR'),
-        ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1) + ' (IP Movel)',
-        detalhes: `Turno de cuidados iniciado automaticamente ao registrar: ${actionName}.`
-      });
-      saveToDB(`anjo_lgpd_auditoria_${idoso.id}`, auditLogs);
-      setLgpdLogs(auditLogs);
     }
     return true;
   };
 
-  // Simple quick actions helpers 
   const handleQuickHydrate = () => {
     if (isAbsent) {
       unlockAndMarkPresent();
@@ -6050,6 +6035,43 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
 
               <div className="relative">
                 {renderDashboardAuthBadge()}
+              {!isShiftActive && (
+                <div className="mb-4 p-4 bg-amber-50/90 border-2 border-amber-300 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 text-amber-950 shadow-xs animate-fade-in">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-amber-200 text-amber-900 flex items-center justify-center font-bold text-lg shrink-0">
+                      â¸ï¸
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-black uppercase tracking-wider text-amber-950">
+                        {isEscolar ? 'PerÃ­odo Letivo Desligado / Aguardando InÃ­cio' : 'Turno de Cuidados Desligado'}
+                      </h4>
+                      <p className="text-[11px] text-amber-800 leading-snug">
+                        {isEscolar 
+                          ? 'Para registrar mamadeiras, refeiÃ§Ãµes, hidrataÃ§Ã£o, sono, trocas de fralda ou saÃºde do aluno, inicie o perÃ­odo letivo.'
+                          : 'Para registrar refeiÃ§Ãµes, hidrataÃ§Ã£o, sono, higiene ou sinais vitais, inicie o turno.'}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={handleStartShift}
+                      className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-black rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer hover:scale-102"
+                    >
+                      <Play className="w-3.5 h-3.5 fill-current" /> Ligar Individual
+                    </button>
+                    {isEscolar && (
+                      <button
+                        type="button"
+                        onClick={() => handleStartShiftGroup(teacherClassroom)}
+                        className="px-3.5 py-2 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white text-xs font-black rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer hover:scale-102"
+                      >
+                        <Users className="w-3.5 h-3.5" /> Ligar Coletivo
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )}
               {isAbsent && (
                 <div className="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-900 shadow-xs animate-fade-in">
                   <div className="flex items-center gap-3">
@@ -6935,6 +6957,28 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
             )}
             
             <div>
+              {!isShiftActive && (
+                <div className="mb-4 p-3.5 bg-amber-50 border border-amber-200 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-3 text-amber-950 shadow-xs animate-fade-in">
+                  <div className="flex items-center gap-2.5">
+                    <Clock className="w-5 h-5 text-amber-600 shrink-0" />
+                    <div>
+                      <h4 className="text-xs font-black uppercase tracking-wider text-amber-950">
+                        PerÃ­odo Desligado / Aguardando InÃ­cio
+                      </h4>
+                      <p className="text-[11px] text-amber-800 leading-snug">
+                        O cronÃ´metro estÃ¡ desligado. Ligue o perÃ­odo no topo da pÃ¡gina ou clique ao lado para liberar o lanÃ§amento das atividades.
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleStartShift}
+                    className="shrink-0 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white text-xs font-black rounded-xl shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Play className="w-3.5 h-3.5 fill-current" /> Ligar PerÃ­odo
+                  </button>
+                </div>
+              )}
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 mb-4">
                 <div className="flex items-center gap-2">
                   <Clock className="w-5 h-5 text-serene-blue animate-pulse" />
@@ -9993,65 +10037,9 @@ Segunda-feira:
                   <div className="space-y-1.5">
                     {shiftReviewPayload.medChanges.map((ch: any) => (
                       <div key={ch.id} className="p-3 bg-indigo-50/50 border border-indigo-150 rounded-xl leading-normal text-xs text-slate-705 flex flex-col gap-1">
-                        <div className="flex items-center justify-between">
-                          <span className={`font-mono text-[9px] px-1.5 py-0.5 rounded-md uppercase font-black tracking-wide ${
-                            ch.tipo === 'cadastro' ? 'bg-emerald-100 text-emerald-800' :
-                            ch.tipo === 'exclusao' ? 'bg-rose-100 text-rose-800' :
-                            'bg-amber-100 text-amber-800'
-                          }`}>
-                            {ch.tipo === 'cadastro' ? 'Novo Cadastro' : ch.tipo === 'exclusao' ? 'ExclusÃ£o' : 'EdiÃ§Ã£o / Ajuste'}
-                          </span>
-                          <span className="font-bold text-[10px] text-slate-400">{ch.horario || ''}</span>
-                        </div>
-                        <p className="font-medium text-slate-700">{ch.descricao || ch.nome || 'AlteraÃ§Ã£o na posologia ou medicaÃ§Ã£o.'}</p>
-                        <span className="text-[10px] text-slate-400">ResponsÃ¡vel: {ch.autor || usuarioAtual?.nome || 'Educador(a)'}</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-xs text-slate-400 italic bg-white p-3 rounded-xl border border-slate-100">Nenhuma alteraÃ§Ã£o de prescriÃ§Ã£o registrada durante este perÃ­odo.</p>
-                )}
-              </div>
-            </div>
-
-            <div className="p-4 bg-slate-50 border-t border-slate-100 flex items-center justify-end gap-2">
-              <button
-                type="button"
-                onClick={() => setShowShiftReviewModal(false)}
-                className="px-4 py-2 bg-white border border-slate-200 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-100 transition-all cursor-pointer"
-              >
-                Voltar e Revisar
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmEndShift}
-                className="px-5 py-2 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs rounded-xl transition-all cursor-pointer shadow-md flex items-center gap-1.5"
-              >
-                <Check className="w-4 h-4" /> Confirmar e Enviar RelatÃ³rio
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    {/* Custom Confirmation Modal */}
-      {confirmDialog.isOpen && (
-        <div className="fixed inset-0 z-[99999] bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 space-y-4 animate-in zoom-in-95 duration-150">
-            <div className="flex items-center gap-3 text-slate-800">
-              <div className="p-3 bg-amber-100 text-amber-700 rounded-2xl flex items-center justify-center">
-                <AlertCircle className="w-6 h-6" />
-              </div>
-              <div>
-                <h3 className="text-lg font-black text-slate-800 leading-tight">{confirmDialog.title}</h3>
-                <p className="text-xs text-slate-500 font-medium">ConfirmaÃ§Ã£o de AÃ§Ã£o Escolar</p>
-              </div>
-            </div>
-            
-            <p className="text-sm text-slate-600 leading-relaxed bg-slate-50 p-4 rounded-2xl border border-slate-100">
-              {confirmDialog.description}
-            </p>
-
-            <div className="flex items-center justify-end gap-3 pt-2">
-              <button
-                type="button"
-                onClick={() => setConfirmDiaxœŒ“Í‚0Çï>ÅÄ‹lñ#º»qÅwŸ¡À µ%mUŒáİ·kÜB¢\`şóÑ™Î.s¯Tx‚pŞ‚ h¬7`ú§D±†ŒrPû~=çI8Õú›0—YBy!‹`JEŠ)©8ÄR¥¨ºÑœ$‹ÙV¦3?¬™IaH,yÚ:*…<¡ZÇy4orš&¡œCrTZ*RJ&ª±ÓÜ¶×lDE‚œ*Ç±™ÆGc¤p6­Ü+c.¥·uº‡Hq–ìÃ«ç7÷yíØK“BHb›ÏŒ©ÃQ.óÀæ¶ö×@–F=F¿¶²¡J,¯Bf·&Â&ÙQ$Í½NüÁmÏ±7X«DıŒ’Õ%9QR#y·[¾/ş¦4pPÛÛ	ïÒç>ç‚ìĞá4ÙßÙq@ÑMå™RÈ8V`k4Iğ¦ä´$ó`õ¦MT =ña´³å¿ Ë1L·ĞmŠ*@Ø¡æ,»Í4e§GÉş™ö‡9²]R=ú  ÿÿ Í­;
+              xœ¼WÍÛ6¾ç)FÛAek×ëıëzƒ…ãc·Àè¥Z¢-6)”íã‡)zè©§>Â¾X‡’%Ë’,;E,‘4É™o¾ùf}î|¶ ­IHG­§+`††Úñ¨0TÁï±6löìL©YR*Z÷¯ààçNGD[œIaœP
+	†®ŒóÛM´ú ÑÊ9ë!zv\|(ŸúNèCETyDSHöM9ñ>QøÍÄÜY2ŸÂë†û¼ gX$a4AÛ#>ÑFÉ6¼…ötîĞ*Â}çÌuSs²‰k×mÃíéÓ•ÇcMòƒ•Ôtwj2:áH»“„Sªv[Ó¡İÛ°sóqÓ€õaåBÂ8Ÿ¹mğk’^şL~Öøìå/@,%h{ÓD„¾eÂ×P¥•F\rË”3×R%y×œê\¸nëŞºHE“ğå´Û›cWİõ‘âËQÅˆú,‹W_eWûT{Šy$¹ÇB†4±ãc®!A ’Zr9gdö</]ëY{£kÊ¨4añDu$…~ùcAùmt©¬=±-D&&üíÎÊ‰#¤êî1à`ëvëB`CÉÓ©ûyTqs¥K.¢Î<À<Y(J9ƒ\.V¦Rù¨Péc»íÌ"óHE‡H!*¨‘JÂ—3LLğcEPë€j{U/K_öjUq½ÆííÔş\Ig#çÂº•Ú<t3LÅ8¬ÈTø0'‘s^Ñä»ilŒëÍs„w§‹­ÊªcDûÓhİéÂè45ï¹|°™y¢F—?KŸğÎŒpMk(Pôn…î¡¼ŸïBW«óLöò,ƒ’
+ %
+ñä‚ªÛ¶D51rš&…C8/VZ*'’Ì"Uv±Î_%7Dë &ªÜ«oŒo@„ÏéXŠSáDø	ÄÇ æ€&õåÏñHf®24SÀ‹´
+e#n T‰¥­ÈUöYÆaõ>íİ8 xyÁ‹%²"p.ZĞ¿‡­÷	ø±`øòD1¬/ÿ n†Jæ•&ö†[¾®ûo`Œé#ÃÜ ‹$Ì†7ı,k/]}ÇÊxé_"*àõë‚”U:'¶¢>0iã¸ğ[ûù°Ëò×í_a¦cD|%#ŒM¬lT'øvhµ‚ÚC˜€ñ“§U­$€gCwOÊ–å9˜Å€ÉÊI"¼tf12 r.³°ŸV›®X2<ê<ï[ôYÊŸÎÍğ°Q§´š–Zƒ¢"\»åCê”t ‡)›™ÓÖ«cP×4·wœ*3fÊãtŸË—ÈåKËåã!µºæğ`P©‚|^Iİà”ø¶6lÛ’ìÑÔ0Ã)Öõ`PsÕ±z;ÌÔ7mZ÷Y‚äåó!}›hOr¢jÊãáZXœÚ_¯š¥÷Z¯Ë‚×
+Â&Y±pÚä(†ø`OP²µ]ÚØE–º›’Ñ‘R~¼@ 2ÿc•=é`“³°5ôz=;úRıº…¤tÃ¦®««Ş…?g’p´‚û²=&ÂC.|§r]÷¿9¤xSÁ>po:ş©f×YİIlë„œ%FØ¿p³Xx×v·Öb´yÚ©=«J‰Íi-I‰%ı	AÛ4Ÿº>Ú²”ˆ²kLJËwéSŞQÍÙüDÚ}m{òª4AÚ¼ú  ÿÿ #qò·
