@@ -5,7 +5,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Idoso, TarefaDiaria, Usuario, TaskType, TaskStatus, RegistroAlimentacao, RegistroHidratacao, RegistroHumor, RegistroSono, RegistroAtividade, SinalVital, Medicamento, formatWhatsAppNumber, NotificacaoSimulada, Classroom, isStaffUser, isDirectorOrAdminUser, getRoleLabel } from '../types';
 import { getFromDB, saveToDB, checkFeedingCareAuthorization, SALAS_INICIAIS, getShiftActiveState, setShiftActiveState, setShiftActiveStatesBatch, getAssignedTeacherForRoom, getStudentRoomName, resetStudentDailyRoutine, checkBottleFeedingInterval, registerBottleAttemptNotice, purgeOrphanedStudentData, saveHygieneLog, getHygieneLog, saveMealRecord, getStudentMealsToday, isStudentIdMatch, getAllPossibleStudentKeys, downloadReportFile } from '../data';
-import { deleteFromFirestore, deleteStudentDataFromFirestore } from '../firebase';
+import { deleteFromFirestore, deleteStudentDataFromFirestore, db, forceReconnectFirestore, startFirebaseSync } from '../firebase';
+import { collection, getDocs } from 'firebase/firestore';
 import { 
   ItemFilaOffline, 
   adicionarItemFila, 
@@ -533,6 +534,64 @@ export default function Dashboard({
   const [selectedReportModal, setSelectedReportModal] = useState<any | null>(null);
 
   const [vitalsUpdateTrigger, setVitalsUpdateTrigger] = useState(0);
+  const [isSyncingParent, setIsSyncingParent] = useState(false);
+
+  const handleSyncParentShiftState = async () => {
+    setIsSyncingParent(true);
+    try {
+      await forceReconnectFirestore();
+      startFirebaseSync(true);
+
+      let remoteShiftStates: any[] = [];
+      try {
+        const snap = await getDocs(collection(db, 'anjo_shift_states'));
+        remoteShiftStates = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        if (remoteShiftStates.length > 0) {
+          localStorage.setItem('anjo_shift_states', JSON.stringify(remoteShiftStates));
+        }
+      } catch (e) {
+        console.warn('Direct Firestore fetch fallback:', e);
+      }
+
+      let targetId = idoso.id;
+      const currentMode = (localStorage.getItem('anjo_app_mode') as string) || appMode || 'escolar_infantil';
+      if (currentMode.startsWith('escolar')) {
+        if (targetId === 'idoso_maria') targetId = 'aluno_1';
+        else if (targetId === 'idoso_joao') targetId = 'aluno_2';
+      }
+      const possibleKeys = getAllPossibleStudentKeys(targetId);
+
+      const activeState = getShiftActiveState(targetId, remoteShiftStates.length > 0 ? remoteShiftStates : undefined);
+
+      if (activeState.active) {
+        possibleKeys.forEach(k => {
+          localStorage.removeItem(`anjo_is_absent_${k}`);
+          localStorage.setItem(`anjo_shift_active_${k}`, 'true');
+          if (activeState.startTime) {
+            localStorage.setItem(`anjo_shift_start_time_${k}`, activeState.startTime);
+          }
+        });
+        setIsAbsent(false);
+        setIsShiftActive(true);
+        setShiftStartTime(activeState.startTime);
+      } else {
+        setIsShiftActive(false);
+      }
+
+      window.dispatchEvent(new CustomEvent('anjo_shift_updated', { detail: { items: remoteShiftStates } }));
+      window.dispatchEvent(new CustomEvent('db-vitals-update'));
+
+      alert(
+        activeState.active
+          ? '✅ Cronômetro e diário escolar sincronizados com a escola em tempo real! (Período Letivo em andamento).'
+          : '✅ Cronômetro e diário escolar sincronizados com a nuvem! (Período Letivo não iniciado no momento).'
+      );
+    } catch (err) {
+      console.error('Erro ao sincronizar cronometro dos pais:', err);
+    } finally {
+      setIsSyncingParent(false);
+    }
+  };
 
   useEffect(() => {
     const list = getFromDB<any[]>(`anjo_turn_summaries_${idoso.id}`, []);
@@ -6003,12 +6062,24 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                         </>
                       )
                     ) : (
-                      <span className="text-xs font-semibold text-slate-600 bg-white/70 px-3.5 py-2.5 rounded-xl border border-slate-200 flex items-center gap-2 shadow-2xs">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        {isShiftActive 
-                          ? 'Sincronizado com a escola via nuvem em tempo real.'
-                          : ' Visualizacao dos responsaveis. Controles exclusivos dos educadores.'}
-                      </span>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-xs font-semibold text-slate-600 bg-white/70 px-3 py-2 rounded-xl border border-slate-200 flex items-center gap-2 shadow-2xs">
+                          <span className={`w-2 h-2 rounded-full ${isShiftActive ? 'bg-emerald-500 animate-pulse' : 'bg-slate-400'}`}></span>
+                          {isShiftActive
+                            ? 'Sincronizado com a escola em tempo real.'
+                            : 'Visualizacao dos responsaveis.'}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={handleSyncParentShiftState}
+                          disabled={isSyncingParent}
+                          className="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
+                          title="Clique para sincronizar o cronômetro com a escola via nuvem"
+                        >
+                          <RotateCw className={`w-3.5 h-3.5 ${isSyncingParent ? 'animate-spin' : ''}`} />
+                          <span>{isSyncingParent ? 'Sincronizando...' : '🔄 Sincronizar Cronômetro'}</span>
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>
@@ -8233,9 +8304,17 @@ Segunda-feira:
                     <strong className={`text-2xl font-mono tracking-tight ${isShiftActive ? 'text-emerald-700' : 'text-slate-400'}`}>
                       {isShiftActive ? elapsedShiftTime : '00:00:00'}
                     </strong>
-                  </div>                  <span className="text-xs font-semibold text-slate-500 bg-white/60 px-3 py-2 rounded-xl border border-slate-200/80">
-                     Modo Familia: Acesso de acompanhamento configurado (botoes de controle de turno, termino e faltas desabilitados).
-                  </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleSyncParentShiftState}
+                    disabled={isSyncingParent}
+                    className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-2 shrink-0"
+                    title="Sincronizar cronômetro com a escola em tempo real"
+                  >
+                    <RotateCw className={`w-4 h-4 ${isSyncingParent ? 'animate-spin' : ''}`} />
+                    <span>{isSyncingParent ? 'Sincronizando...' : '🔄 Sincronizar Cronômetro (Acompanhar)'}</span>
+                  </button>
                 </div>
               </div>
             </div>

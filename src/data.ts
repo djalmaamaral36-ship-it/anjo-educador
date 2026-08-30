@@ -937,7 +937,7 @@ export function getStudentMealsToday(idosoId: string): RegistroAlimentacao[] {
 
 export function getShiftActiveState(studentId: string, customShiftStates?: ShiftState[]): { active: boolean; isAbsent: boolean; reason?: string | null; startTime: string | null; lastResetTime: string | null } {
   if (typeof window === "undefined" || !studentId) return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
-  
+
   let targetStudentId = String(studentId).trim();
   const appMode = (localStorage.getItem("anjo_app_mode") as "idoso" | "escolar_infantil" | "escolar_fundamental") || "escolar_infantil";
   if (appMode.startsWith("escolar")) {
@@ -947,7 +947,6 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
     if (targetStudentId === "aluno_1") targetStudentId = "idoso_maria";
     else if (targetStudentId === "aluno_2") targetStudentId = "idoso_joao";
   }
-
   const allStudents = getFromDB<Idoso[]>("anjo_idosos", IDOSOS_INICIAIS);
   const studentObj = allStudents.find(s => 
     s.id === targetStudentId || 
@@ -963,17 +962,9 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
     possibleKeys.push(studentObj.nome.split(" (")[0].trim());
   }
 
-  // 1. Check explicit absence
-  for (const k of possibleKeys) {
-    if (localStorage.getItem("anjo_is_absent_" + k) === "true") {
-      return { active: false, isAbsent: true, reason: "Ausente", startTime: null, lastResetTime: null };
-    }
-  }
-
   let latestInactiveTs = 0;
   let latestActiveTs = 0;
   let localStartTime: string | null = null;
-
   for (const k of possibleKeys) {
     const act = localStorage.getItem("anjo_shift_active_" + k);
     const ts = Number(localStorage.getItem("anjo_shift_active_" + k + "_ts")) || 0;
@@ -986,7 +977,7 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
     }
   }
 
-  // Also check direct shiftStates DB
+  // Server-authoritative check: Firestore shiftStates
   const shiftStates = customShiftStates && Array.isArray(customShiftStates) 
     ? customShiftStates 
     : getFromDB<ShiftState[]>("anjo_shift_states", []);
@@ -1008,28 +999,42 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
   directRecords.sort((a, b) => b.time - a.time);
   const latestDirect = directRecords[0]?.record;
 
-  if (latestDirect) {
-    if (latestDirect.active === false || String(latestDirect.active) === "false") {
-      const dbTime = latestDirect.updatedAt ? new Date(latestDirect.updatedAt).getTime() : 0;
-      if (dbTime >= latestActiveTs) {
+  // 1. If Firestore specifically says active: true, server state wins!
+  if (latestDirect && (latestDirect.active === true || String(latestDirect.active) === "true")) {
+    const st = latestDirect.startTime || localStartTime;
+    if (st) {
+      const startMs = new Date(st).getTime();
+      if (!isNaN(startMs) && (Date.now() - startMs) > (14 * 60 * 60 * 1000)) {
+        try {
+          localStorage.setItem("anjo_shift_active_" + realId, "false");
+          localStorage.removeItem("anjo_shift_start_time_" + realId);
+        } catch(e) {}
         return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
       }
-    } else if (latestDirect.active === true || String(latestDirect.active) === "true") {
-      const st = latestDirect.startTime || localStartTime;
-      if (st) {
-        const startMs = new Date(st).getTime();
-        if (!isNaN(startMs) && (Date.now() - startMs) > (14 * 60 * 60 * 1000)) {
-          try {
-            localStorage.setItem("anjo_shift_active_" + realId, "false");
-            localStorage.removeItem("anjo_shift_start_time_" + realId);
-          } catch(e) {}
-          return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
-        }
-        return { active: true, isAbsent: false, reason: null, startTime: st, lastResetTime: st };
-      }
+      // Clear stale local absence if teacher activated shift in cloud
+      try {
+        possibleKeys.forEach(pk => localStorage.removeItem("anjo_is_absent_" + pk));
+      } catch(e) {}
+      return { active: true, isAbsent: false, reason: null, startTime: st, lastResetTime: st };
     }
   }
 
+  // 2. Otherwise, check explicit absence flag locally
+  for (const k of possibleKeys) {
+    if (localStorage.getItem("anjo_is_absent_" + k) === "true") {
+      return { active: false, isAbsent: true, reason: "Ausente", startTime: null, lastResetTime: null };
+    }
+  }
+
+  // 3. Check inactive state from Firestore
+  if (latestDirect && (latestDirect.active === false || String(latestDirect.active) === "false")) {
+    const dbTime = latestDirect.updatedAt ? new Date(latestDirect.updatedAt).getTime() : 0;
+    if (dbTime >= latestActiveTs) {
+      return { active: false, isAbsent: latestDirect.isAbsent || false, reason: latestDirect.reason || null, startTime: null, lastResetTime: null };
+    }
+  }
+
+  // 4. Local storage fallback
   if (latestActiveTs > 0 && latestActiveTs > latestInactiveTs && localStartTime) {
     const startMs = new Date(localStartTime).getTime();
     if (!isNaN(startMs) && (Date.now() - startMs) > (14 * 60 * 60 * 1000)) {
