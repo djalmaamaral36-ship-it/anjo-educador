@@ -134,7 +134,7 @@ const INITIAL_MEMORIES: Omit<JornadaEvent, 'id'>[] = [
   {
     idosoId: 'aluno_fun_1',
     tipo: 'atividade',
-    titulo: 'Construcao de Castelo Cooperativo  ',
+    titulo: 'Construcao de CasteloCooperativo  ',
     data: '2026-06-28',
     descricao: 'Arthur trabalhou em equipe com os coleguinhas para erguer uma grande torre de blocos logicos gigantes. Ele sugeriu colocar as pecas maiores na base para nao cair. Cooperacao nota dez!',
     imagemUrl: 'https://images.unsplash.com/photo-1596464716127-f2a82984de30?auto=format&fit=crop&q=80&w=600',
@@ -248,7 +248,7 @@ Estamos cuidando de cada detalhe para que os primeiros passos, risadas e vivenci
   const sleepEvents = sorted.filter(e => e.tipo === 'rotina' && (e.titulo.toLowerCase().includes('soneca') || e.titulo.toLowerCase().includes('sono') || e.descricao.toLowerCase().includes('descanso')));
   const mealEvents = sorted.filter(e => e.tipo === 'rotina' && (e.titulo.toLowerCase().includes('refeicao') || e.titulo.toLowerCase().includes('refeicao') || e.titulo.toLowerCase().includes('mamadeira') || e.descricao.toLowerCase().includes('alimentacao')));
   const hydEvents = sorted.filter(e => e.tipo === 'rotina' && (e.titulo.toLowerCase().includes('hidratacao') || e.titulo.toLowerCase().includes('hidratacao') || e.titulo.toLowerCase().includes('agua') || e.titulo.toLowerCase().includes('agua')));
-  const pedagogicalEvents = sorted.filter(e => (e.tipo as string) !== 'rotina' || e.dimensoesDesenvolvimento?.some(d => d.includes('Cognitivo') || d.includes('Motor') || d.includes('Social') || d.includes('Linguagem')));
+  const pedagógicalEvents = sorted.filter(e => (e.tipo as string) !== 'rotina' || e.dimensoesDesenvolvimento?.some(d => d.includes('Cognitivo') || d.includes('Motor') || d.includes('Social') || d.includes('Linguagem')));
 
   const paragraphs: string[] = [];
 
@@ -287,9 +287,9 @@ Estamos cuidando de cada detalhe para que os primeiros passos, risadas e vivenci
     paragraphs.push(`  *Hidratacao e Bem-Estar:*\nAo longo de todo o periodo, bebeu sua aguinha fresca com regularidade, mantendo-se sempre bem hidratado(a), saudavel e cheio(a) de disposicao.`);
   }
 
-  // 4. Pedagogical and interaction activities
-  if (pedagogicalEvents.length > 0) {
-    const act = pedagogicalEvents[0];
+  // 4. Pedagógical and interaction activities
+  if (pedagógicalEvents.length > 0) {
+    const act = pedagógicalEvents[0];
     const cleanTitle = act.titulo.replace(/[            ]/g, '').trim();
     paragraphs.push(`  *Vivencias e Descobertas:*\nNa atividade *${cleanTitle}*, demonstrou olhinhos brilhantes, curiosidade e grande delicadeza ao interagir com materiais e colegas, vivenciando um momento muito rico de estimulo e afeto.`);
   }
@@ -391,7 +391,7 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
         dimensoesDesenvolvimento: ['Social/Afetivo', 'Cognitivo'],
         likes: 6,
         reagido: false,
-        registradoPor: 'Coordenacao Pedagogica'
+        registradoPor: 'Coordenacao Pedagógica'
       },
       {
         id: `jornada_mock_g2_${studentId}`,
@@ -451,7 +451,7 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
       dimensoesDesenvolvimento: ['Social/Afetivo', 'Saude e Bem-Estar'],
       likes: 1,
       reagido: false,
-      registradoPor: s.registradoPor || 'Equipe Pedagogica'
+      registradoPor: s.registradoPor || 'Equipe Pedagógica'
     });
   });
 
@@ -533,7 +533,7 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
       tipo: 'atividade',
       titulo: `  ${a.titulo || 'Atividade Ludica Escolar'}`,
       data: a.data || '2026-05-30',
-      descricao: `${a.descricao || 'Atividade pedagogica e vivencia em sala de aula.'}`,
+      descricao: `${a.descricao || 'Atividade pedagógica e vivencia em sala de aula.'}`,
       imagemUrl: a.fotoTrabalhinho || 'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&q=80&w=600',
       dimensoesDesenvolvimento: [a.campoExperiencia || 'Cognitivo'],
       likes: 2,
@@ -800,7 +800,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
     let particleEmoji = ' ';
     
     if (gesto === 'encanto') {
-      feedbackText = '  Centelhas de encanto iluminaram a arvore!';
+      feedbackText = '  Centelhas de encanto iluminaram a árvore!';
       particleEmoji = ' ';
     } else if (gesto === 'amor') {
       feedbackText = '  Borboletas de amor pousaram nas flores!';
@@ -876,9 +876,9 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
     setRainingHearts(screenParticles.map(p => ({ id: p.id, left: p.left, delay: p.delay, emoji: p.emoji })));
 
     setLastAfetoFeedback({
-      label: 'Arvore Regada com Afeto',
+      label: 'Árvore Regada com Afeto',
       emoji: ' ',
-      text: 'A arvore foi regada com amor! Borboletas e passarinhos celebraram!'
+      text: 'A árvore foi regada com amor! Borboletas e passarinhos celebraram!'
     });
 
     setTimeout(() => {
@@ -925,14 +925,14 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
     }
   };
 
-  // Dynamic calculation for the "Indice de Cultivo" & "Estacoes da Arvore" (Camada Oculta de Inteligencia)
+  // Dynamic calculation for the "Indice de Cultivo" & "Estacoes da Árvore" (Camada Oculta de Inteligencia)
   const getCultivoStats = () => {
     // Determine baseline bonus based on age-group (strictly behind the scenes - Camada Oculta)
     let soilBonus = 0;
     let cycleName = 'Primavera do Bercario';
     let stationEmoji = ' ';
     let stationName = 'Primavera (Bercario)';
-    let stationDesc = 'Toda grande arvore comeca como uma semente. Nesta fase, cada cuidado e uma raiz que fortalece o futuro.';
+    let stationDesc = 'Toda grande árvore comeca como uma semente. Nesta fase, cada cuidado e uma raiz que fortalece o futuro.';
     let stationMetaphor = 'Acolhimento, afeto e as primeiras conexoes vitais com o mundo.';
     let svgBaseState = 'seed'; // will adjust based on total progress
     
@@ -943,7 +943,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
       cycleName = 'Verao do Maternal';
       stationEmoji = ' ';
       stationName = 'Verao (Maternal)';
-      stationDesc = 'Sua arvore ja comecou a criar novos brotos. Agora ela aprende explorando, descobrindo e criando vinculos.';
+      stationDesc = 'Sua árvore ja comecou a criar novos brotos. Agora ela aprende explorando, descobrindo e criando vinculos.';
       stationMetaphor = 'Tempo de socializacao, curiosidade ludica e expansao afetiva.';
       svgBaseState = 'sprout';
     } else if (name.includes('Jardim I') || name.includes('4 Anos')) {
@@ -951,7 +951,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
       cycleName = 'Outono do Jardim';
       stationEmoji = ' ';
       stationName = 'Outono (Jardim)';
-      stationDesc = 'Sua arvore ja possui raizes fortes. E tempo de florescer, desenvolver autonomia, criatividade e amizades.';
+      stationDesc = 'Sua árvore ja possui raizes fortes. E tempo de florescer, desenvolver autonomia, criatividade e amizades.';
       stationMetaphor = 'O desabrochar socioemocional, empatia e a beleza de conviver.';
       svgBaseState = 'roots';
     } else if (name.includes('Jardim II') || name.includes('Pre') || name.includes('5 Anos') || name.includes('6 Anos')) {
@@ -959,7 +959,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
       cycleName = 'Estacao da Colheita (Pre)';
       stationEmoji = ' ';
       stationName = 'Estacao da Colheita (Pre)';
-      stationDesc = 'Sua arvore esta no momento de colher os doces frutos da autonomia, das descobertas e de consolidar um lindo legado para o Ensino Fundamental.';
+      stationDesc = 'Sua árvore esta no momento de colher os doces frutos da autonomia, das descobertas e de consolidar um lindo legado para o Ensino Fundamental.';
       stationMetaphor = 'A colheita de conquistas, preparando asas fortes para voar alto.';
       svgBaseState = 'blossom';
     }
@@ -1075,7 +1075,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
     let cultivoLabel = 'Solo Acolhedor  ';
     let labelColor = 'bg-amber-50 border-amber-200/50 text-amber-900';
     if (progressPercent >= 90) {
-      cultivoLabel = 'Arvore em Pleno Florescimento  ';
+      cultivoLabel = 'Árvore em Pleno Florescimento  ';
       labelColor = 'bg-emerald-50 border-emerald-250 text-emerald-950';
     } else if (progressPercent >= 60) {
       cultivoLabel = 'Copas em Expansao  ';
@@ -1364,7 +1364,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
     loadJourneyEvents();
 
     const handleSync = (e: any) => {
-      console.log(`  [JornadaAnjinho Component] Evento de atualizacao capturado (${e?.type || 'sync'})! Recarregando eventos da jornada.`, { timestamp: new Date().toISOString() });
+      console.log(`  [JornadaAnjinhoComponent] Evento de atualizacao capturado (${e?.type || 'sync'})! Recarregando eventos da jornada.`, { timestamp: new Date().toISOString() });
       loadJourneyEvents();
     };
 
@@ -1686,7 +1686,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
   const getCategoryLabel = (tipo: JornadaEvent['tipo']) => {
     switch (tipo) {
       case 'foto': return '  Foto Historica';
-      case 'atividade': return '  Atividade Pedagogica';
+      case 'atividade': return '  Atividade Pedagógica';
       case 'evolucao': return '  Evolucao / Crescimento';
       case 'conquista': return '  Primeira Conquista';
       case 'relatorio': return '  Relatorio de Progresso';
@@ -1788,16 +1788,16 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
     let stageName = 'Semente no Solo';
     if (finalScore >= 110) {
       svgState = 'fruit';
-      stageName = 'Arvore de Frutos (Preservacao)  ';
+      stageName = 'Árvore de Frutos (Preservacao)  ';
     } else if (finalScore >= 76) {
       svgState = 'blossom';
-      stageName = 'Arvore Frondosa / Florescimento  ';
+      stageName = 'Árvore Frondosa / Florescimento  ';
     } else if (finalScore >= 41) {
       svgState = 'roots';
       stageName = 'Raizes Firmes e Folhas Ativas  ';
     } else if (finalScore >= 16) {
       svgState = 'sprout';
-      stageName = 'Brotinho Crescendo  ';
+      stageName = 'BrotinhoCrescendo  ';
     }
 
     return {
@@ -2011,7 +2011,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
             }`}
           >
             <Leaf className="w-3.5 h-3.5" />
-            <span>Arvore de {idoso.nome.split(' (')[0].split(' ')[0]}</span>
+            <span>Árvore de {idoso.nome.split(' (')[0].split(' ')[0]}</span>
           </button>
           <button
             onClick={() => setActiveViewTab('floresta')}
@@ -2171,10 +2171,10 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                       onChange={(e) => setNewType(e.target.value as JornadaEvent['tipo'])}
                       className="w-full border px-3 py-2.5 rounded-xl text-xs font-semibold focus:outline-indigo-500 bg-white text-slate-900 border-slate-200"
                     >
-                      <option value="atividade">  Atividade Pedagogica</option>
+                      <option value="atividade">  Atividade Pedagógica</option>
                       <option value="conquista">  Primeira Conquista / Marco</option>
                       <option value="foto">  Foto Historica / Sorriso</option>
-                      <option value="evolucao">  Evolucao Pedagogica</option>
+                      <option value="evolucao">  Evolucao Pedagógica</option>
                       <option value="data_importante">  Data Comemorativa Importante</option>
                       <option value="relatorio">  Relatorio Integral de Progresso</option>
                     </select>
@@ -2350,7 +2350,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
 
                     
                     <div className="pt-2">
-                      <label className="text-[10px] font-bold block mb-1 text-slate-600">Ou escolha uma ilustracao pedagogica rapida:</label>
+                      <label className="text-[10px] font-bold block mb-1 text-slate-600">Ou escolha uma ilustracao pedagógica rapida:</label>
                       <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 p-1 border rounded-xl bg-white border-slate-200">
                         {PRESET_IMAGES.map((img) => (
                           <button
@@ -2481,7 +2481,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                           Replicar para a Classe Toda ({studentRoom})
                       </label>
                       <p className="text-[10px] text-slate-700 leading-relaxed font-semibold">
-                        Selecione para salvar automaticamente esta mesma atividade pedagogica na linha do tempo de <strong>todos os alunos</strong> desta mesma turma de forma simult
+                        Selecione para salvar automaticamente esta mesma atividade pedagógica na linha do tempo de <strong>todos os alunos</strong> desta mesma turma de forma simult
                       </p>
                     </div>
                   </div>
@@ -2593,7 +2593,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
               </div>
             </div>
             <span className="text-[10px] uppercase font-black bg-white/80 text-amber-900 px-2.5 py-1 rounded-full border border-amber-200">
-              Arvore Regada  
+              Árvore Regada  
             </span>
           </div>
         )}
@@ -2751,10 +2751,10 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-200/50 pb-3">
               <div>
                 <span className="text-[10px] uppercase font-black tracking-wider bg-indigo-50 text-indigo-700 px-3 py-1 rounded-full border border-indigo-200/40">
-                  Metodo Arvore da Inf  
+                  Metodo Árvore da Inf  
                 </span>
                 <h3 className="text-xl font-black text-indigo-950 mt-1.5 flex items-center gap-2">
-                  A Arvore da Inf de {idoso.nome.split(' (')[0]}
+                  A Árvore da Inf de {idoso.nome.split(' (')[0]}
                 </h3>
                 <span className="inline-block mt-1 text-[9px] font-extrabold bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded-md border border-indigo-150 uppercase tracking-wider">
                     {stats.cycleName}   Estacao da Vida Ativa
@@ -2797,7 +2797,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
             
             <div className="space-y-1.5 pt-1">
               <div className="flex justify-between items-center text-[10px] font-black text-slate-500">
-                <span>Raizes do Ciclo</span>
+                <span>Raizes doCiclo</span>
                 <span className="text-indigo-600">Florescimento Pleno</span>
               </div>
               <div className="w-full h-3 rounded-full bg-slate-100 overflow-hidden border border-amber-100/60 relative">
@@ -2872,13 +2872,13 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
 
               <div className="text-center space-y-2 border-b border-amber-200/50 pb-4">
                 <span className="text-4xl block"> </span>
-                <h3 className="text-lg font-black text-indigo-950">Metodo Arvore da Inf</h3>
-                <p className="text-xs text-indigo-600 font-black uppercase tracking-wider">A Filosofia e Arquitetura do Nosso Cultivo</p>
+                <h3 className="text-lg font-black text-indigo-950">Metodo Árvore da Inf</h3>
+                <p className="text-xs text-indigo-600 font-black uppercase tracking-wider">A Filosofia e Arquitetura do NossoCultivo</p>
               </div>
 
               <div className="space-y-4 text-xs sm:text-sm text-slate-700 leading-relaxed max-h-[350px] overflow-y-auto pr-2">
                 <p className="font-semibold text-slate-800">
-                  O <strong>Metodo Arvore da Inf</strong> e uma abordagem pedagogica proprietaria do Anjinho Escolar estruturada em duas camadas complementares, criada para respeitar a individualidade de cada crianca:
+                  O <strong>Metodo Árvore da Inf</strong> e uma abordagem pedagógica proprietaria do Anjinho Escolar estruturada em duas camadas complementares, criada para respeitar a individualidade de cada crianca:
                 </p>
 
                 <div className="space-y-3 font-sans text-xs">
@@ -2888,7 +2888,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                         Camada Visivel (Afetiva & Narrativa)
                     </h4>
                     <p className="text-slate-700 leading-relaxed">
-                      Livre de rankings, notas frias ou tabelas competitivas de pontuacao. Pais e professores contemplam apenas o amadurecimento natural da arvore nas **Estacoes da Vida** e escutam a voz poetica da propria Arvore, que reflete marcos e afeto.
+                      Livre de rankings, notas frias ou tabelas competitivas de pontuacao. Pais e professores contemplam apenas o amadurecimento natural da árvore nas **Estacoes da Vida** e escutam a voz poetica da propria Árvore, que reflete marcos e afeto.
                     </p>
                   </div>
 
@@ -2902,8 +2902,8 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                     </p>
                     <ul className="list-disc pl-4 space-y-1 mt-1 text-slate-600">
                       <li><strong>Bercario & Maternal:</strong> O cuidado essencial (sono, alimentacao, higiene) recebe pesos multiplicadores maximos para consagrar a rotina vital.</li>
-                      <li><strong>Pre-Escola & Jardim:</strong> Os marcos socioemocionais (gentileza, cooperacao, autonomia) tornam-se o vetor central de maturidade da Arvore.</li>
-                      <li><strong>Preservacao:</strong> A arvore nunca reseta. Ela amadurece continuamente ao longo de todos os anos letivos.</li>
+                      <li><strong>Pre-Escola & Jardim:</strong> Os marcos socioemocionais (gentileza, cooperacao, autonomia) tornam-se o vetor central de maturidade da Árvore.</li>
+                      <li><strong>Preservacao:</strong> A árvore nunca reseta. Ela amadurece continuamente ao longo de todos os anos letivos.</li>
                     </ul>
                   </div>
                 </div>
@@ -2918,7 +2918,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                   onClick={() => setShowMethodModal(false)}
                   className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-black py-2.5 rounded-xl text-xs sm:text-sm shadow-sm transition-all cursor-pointer text-center"
                 >
-                  Entendi e Quero Cultivar!
+                  Entendi e QueroCultivar!
                 </button>
               </div>
             </motion.div>
@@ -3318,7 +3318,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
             <Camera className="w-12 h-12 text-slate-300 mx-auto" />
             <h4 className="text-base font-bold text-slate-700">Nenhum momento registrado nesta categoria</h4>
             <p className="text-xs text-slate-505 max-w-md mx-auto">
-              Adicione lembrancas pedagogicas, marcos de desenvolvimento ou fotos do dia-a-dia do aluno para construir a sua linda linha do tempo eterna.
+              Adicione lembrancas pedagógicas, marcos de desenvolvimento ou fotos do dia-a-dia do aluno para construir a sua linda linha do tempo eterna.
             </p>
             {canAddMoment && (
               <div className="pt-2">
@@ -3473,7 +3473,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                       <div className="pt-3 pb-1 border-t-2 border-amber-300/60 bg-amber-50/40 -mx-4 -mb-1 px-4 py-3 rounded-b-2xl">
                         <div className="flex items-center justify-between mb-2">
                           <span className="text-[10px] font-black uppercase tracking-wider text-amber-950 flex items-center gap-1.5 bg-white px-2.5 py-0.5 rounded-md border border-amber-200 shadow-3xs">
-                            <span className="text-sm"> </span> Gestos de Presenca & Afeto
+                            <span className="text-sm"> </span> Gestos de Presença & Afeto
                           </span>
                           {(e.likes || 0) > 0 && (
                             <span className="text-[10px] font-black text-amber-950 bg-amber-200/80 border border-amber-300 px-2.5 py-0.5 rounded-full shadow-3xs">
@@ -3530,7 +3530,7 @@ export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessi
                                 : 'Feito com amor';
                               const studentName = idoso.nome.split(' (')[0];
                               const textShare = `  *A ARVORE DA INFNCIA HOJE:*
-Hoje a arvore do(a) *${studentName}* floresceu com um momento lindo na escola:
+Hoje a árvore do(a) *${studentName}* floresceu com um momento lindo na escola:
 
   *${e.titulo}*
 ${e.descricao}
@@ -3538,10 +3538,10 @@ ${e.descricao}
   *Gesto de Afeto:* "${gestoTexto}"
 
    *PARTICIPE DA JORNADA DO(A) ${studentName.toUpperCase()}!*
-Abra as fotos no aplicativo e regue a arvore do seu filho enviando uma das manifestacoes de afeto:
+Abra as fotos no aplicativo e regue a árvore do seu filho enviando uma das manifestacoes de afeto:
   *Que encanto!*     *Feito com amor*     *Puro brilho!*     *Orgulho da gente*     *Um tesouro!*
 
-_(Cada manifestacao sua ilumina e rega a arvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
+_(Cada manifestacao sua ilumina e rega a árvore do desenvolvimento, deixando-a mais verde, forte e florida com puro afeto!)_
 
 Com carinho,
 Equipe Anjinho Escolar   `;
@@ -3595,7 +3595,7 @@ Equipe Anjinho Escolar   `;
               <div className="space-y-2 max-w-2xl">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="bg-amber-400 text-teal-950 font-black text-[10px] px-3 py-1 rounded-full uppercase tracking-wider shadow-sm border border-amber-350">
-                    Metodo Arvore da Inf
+                    Metodo Árvore da Inf
                   </span>
                   <span className="bg-emerald-600/70 border border-emerald-400/30 text-[10px] px-2.5 py-1 rounded-full text-emerald-100 font-extrabold uppercase tracking-wider">
                     A Floresta do Saber 
@@ -3605,7 +3605,7 @@ Equipe Anjinho Escolar   `;
                   A Floresta do Saber  <Trees className="w-8 h-8 text-emerald-300" />
                 </h2>
                 <p className="text-xs sm:text-sm text-teal-100 font-medium leading-relaxed">
-                  Toda escola e uma floresta viva. Aqui, contemplamos o crescimento coletivo, cultivado com afeto, respeito e tempo. Cada arvore representa uma semente unica florescendo em seu proprio tempo.
+                  Toda escola e uma floresta viva. Aqui, contemplamos o crescimento coletivo, cultivado com afeto, respeito e tempo. Cada árvore representa uma semente unica florescendo em seu proprio tempo.
                 </p>
               </div>
 
@@ -3618,7 +3618,7 @@ Equipe Anjinho Escolar   `;
                 className="flex items-center gap-2 bg-amber-400 hover:bg-amber-500 text-slate-900 font-black px-5 py-3.5 rounded-2xl text-xs sm:text-sm shadow-md transition-all shrink-0 cursor-pointer animate-pulse"
               >
                 <Droplet className="w-4 h-4 text-indigo-950 fill-indigo-950" />
-                <span>Chuva de Carinho Coletiva  </span>
+                <span>Chuva de CarinhoColetiva  </span>
               </button>
             </div>
           </div>
@@ -3627,7 +3627,7 @@ Equipe Anjinho Escolar   `;
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-[#FFFCEB] border border-amber-200/50 rounded-2xl p-4 shadow-sm flex flex-col justify-between space-y-3">
               <div className="flex justify-between items-start">
-                <span className="text-xs font-black text-slate-700">Arvores Plantadas</span>
+                <span className="text-xs font-black text-slate-700">Árvores Plantadas</span>
                 <span className="p-1.5 rounded-lg bg-amber-100 text-amber-900">
                   <Leaf className="w-4 h-4" />
                 </span>
@@ -3764,7 +3764,7 @@ Equipe Anjinho Escolar   `;
                     <span className="text-xs font-black text-indigo-950">Companheirismo e Amizade no {studentRoom}</span>
                   </div>
                   <p className="text-[11px] font-semibold text-slate-600 leading-relaxed">
-                    Sua arvore se desenvolve ao lado de outros amiguinhos. Para preservar a seguranca e privacidade de cada familia, as demais sementes aparecem de forma poetica e anonima como "Companheiro de Bosque". Mas repare como todos florescem juntos!
+                    Sua árvore se desenvolve ao lado de outros amiguinhos. Para preservar a seguranca e privacidade de cada familia, as demais sementes aparecem de forma poetica e anonima como "Companheiro de Bosque". Mas repare como todos florescem juntos!
                   </p>
                 </div>
               ) : usuarioAtual?.tipo === 'cuidador' ? (
@@ -3887,7 +3887,7 @@ Equipe Anjinho Escolar   `;
                         {(!isFamilyMode || isOwnChild) && (
                           <div className="absolute inset-0 bg-indigo-950/5 rounded-2xl opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
                             <span className="bg-white/95 text-slate-900 text-[8px] font-black py-1 px-2.5 rounded-lg border border-slate-200 shadow-sm uppercase tracking-wider">
-                              Ver Arvore  
+                              Ver Árvore  
                             </span>
                           </div>
                         )}
@@ -4086,7 +4086,7 @@ Equipe Anjinho Escolar   `;
                   {lastAfetoFeedback.label}
                 </span>
                 <span className="text-[10px] bg-amber-300 text-amber-950 font-black px-2.5 py-0.5 rounded-full border border-amber-400 shadow-sm">
-                  Arvore Iluminada!  
+                  Árvore Iluminada!  
                 </span>
               </div>
               <p className="text-xs sm:text-sm font-black text-slate-800 leading-snug">

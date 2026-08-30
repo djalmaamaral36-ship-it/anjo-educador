@@ -209,7 +209,7 @@ export default function FamilySection({
       finalParentesco = 'Direcao Geral';
     } else if (inviteRole === 'coordenador') {
       finalType = 'coordenador';
-      finalParentesco = 'Coordenacao Pedagogica';
+      finalParentesco = 'Coordenacao Pedagógica';
     } else if (inviteRole === 'cuidador' || inviteRole === 'professor') {
       finalType = 'professor';
       finalParentesco = isEscolar ? 'Professor(a) / Educador(a)' : 'Cuidador(a)';
@@ -1268,7 +1268,7 @@ export default function FamilySection({
                       {isEscolar ? (
                         <>
                           {canInviteDev && <option value="desenvolvedor">  Desenvolvedor (Dev)</option>}
-                          {canInviteDiretor && <option value="diretor">  Diretor(a) Geral (Acesso Completo)</option>}
+                          {canInviteDiretor && <option value="diretor">  Diretor(a) Geral (AcessoCompleto)</option>}
                           {canInviteCoordenador && <option value="coordenador">    Coordenador(a) Escolar (Salas Vinculadas)</option>}
                           {canInviteProfessor && (
                             <>
@@ -1684,7 +1684,7 @@ export default function FamilySection({
                           <option value="admin">Responsavel Financeiro/Admin</option>
                           <option value="familiar">Pais / Responsavel</option>
                           <option value="cuidador">Professor(a) Titular</option>
-                          <option value="diretor">Diretor(a) Geral (Acesso Completo)</option>
+                          <option value="diretor">Diretor(a) Geral (AcessoCompleto)</option>
                           <option value="coordenador">Coordenador(a) Escolar (Salas Vinculadas)</option>
                         </>
                       ) : (
@@ -1930,7 +1930,7 @@ export default function FamilySection({
                   <h4 className={`text-base font-black ${
                     accessibilitySettings.darkMode ? 'text-white' : 'text-indigo-950'
                   }`}>
-                    {inviteRole === 'diretor' ? '  Direcao Geral (Todas as Turmas)' : inviteRole === 'coordenador' ? '    Coordenacao Pedagogica' : inviteRole === 'cuidador' || inviteRole === 'professor' ? '    Equipe Pedagogica / Docente' : inviteRole === 'profissional' ? '   Profissional Especialista / Saude' : cleanStudentName}
+                    {inviteRole === 'diretor' ? '  Direcao Geral (Todas as Turmas)' : inviteRole === 'coordenador' ? '    Coordenacao Pedagógica' : inviteRole === 'cuidador' || inviteRole === 'professor' ? '    Equipe Pedagógica / Docente' : inviteRole === 'profissional' ? '   Profissional Especialista / Saude' : cleanStudentName}
                   </h4>
                   <p className={`text-xs ${
                     accessibilitySettings.darkMode ? 'text-indigo-300' : 'text-indigo-850'
@@ -1956,7 +1956,7 @@ export default function FamilySection({
                       </h4>
 
                       <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-500 block">Funcao do Convidado (Hierarquia Top-Down)</label>
+                        <label className="text-xs font-bold text-slate-500 block">Funcao doConvidado (Hierarquia Top-Down)</label>
                         <select
                           value={inviteRole}
                           onChange={(e: any) => {
@@ -2047,7 +2047,7 @@ export default function FamilySection({
                       )}
 
                       <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-500 block">Nome do Convidado (Opcional)</label>
+                        <label className="text-xs font-bold text-slate-500 block">Nome doConvidado (Opcional)</label>
                         <input
                           type="text"
                           placeholder="Ex: Clara, Professora Juliana"
@@ -2059,7 +2059,7 @@ export default function FamilySection({
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-xs font-bold text-slate-500 block">Celular / WhatsApp do Convidado (Opcional)</label>
+                        <label className="text-xs font-bold text-slate-500 block">Celular / WhatsApp doConvidado (Opcional)</label>
                         <input
                           type="text"
                           placeholder="Ex: (11) 98765-4321"
@@ -2093,7 +2093,7 @@ export default function FamilySection({
                           MENSAGEM WHATSAPP
                         </div>
                         <div className="font-sans text-slate-700 leading-relaxed whitespace-pre-wrap mt-2 select-all">
-                          {`*Convite de Acesso - ${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}*  \n\nOla${inviteRecipientName ? ' ' + inviteRecipientName : ''}! Voce foi convidado(a) por *${usuarioAtual.nome}* para acessar e acompanhar a rotina diaria de *${cleanStudentName}* no aplicativo Anjo.\n\n*Acesso:* ${getInviteAcessoLabel()}\n\nPara ativar seu perfil com seguranca e cadastrar seu PIN pessoal de acesso rapido, clique no link oficial abaixo:\n\n  ${window.location.origin}/entrar?token=convite_${Date.now().toString(36)}&ref=${idoso.id}&role=${inviteRole}`}
+                          {`*Convite de Acesso - ${isEscolar ? 'Anjinho Escolar' : 'AnjoCuidador'}*  \n\nOla${inviteRecipientName ? ' ' + inviteRecipientName : ''}! Voce foi convidado(a) por *${usuarioAtual.nome}* para acessar e acompanhar a rotina diaria de *${cleanStudentName}* no aplicativo Anjo.\n\n*Acesso:* ${getInviteAcessoLabel()}\n\nPara ativar seu perfil com seguranca e cadastrar seu PIN pessoal de acesso rapido, clique no link oficial abaixo:\n\n  ${window.location.origin}/entrar?token=convite_${Date.now().toString(36)}&ref=${idoso.id}&role=${inviteRole}`}
                         </div>
                       </div>
 
@@ -2102,7 +2102,7 @@ export default function FamilySection({
                         {inviteRecipientPhone.replace(/\D/g, "").length >= 10 ? (
                           <button
                             onClick={() => {
-                              const linkMsg = `*Convite de Acesso - ${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}*  \n\nOla${inviteRecipientName ? ' ' + inviteRecipientName : ''}! Voce foi convidado(a) por *${usuarioAtual.nome}* para acessar e acompanhar a rotina diaria de *${cleanStudentName}* no aplicativo Anjo.\n\n*Acesso:* ${getInviteAcessoLabel()}\n\nPara ativar seu perfil com seguranca e cadastrar seu PIN pessoal de acesso rapido, clique no link oficial abaixo:\n\n  ${window.location.origin}/entrar?token=convite_${Date.now().toString(36)}&ref=${idoso.id}&role=${inviteRole}`;
+                              const linkMsg = `*Convite de Acesso - ${isEscolar ? 'Anjinho Escolar' : 'AnjoCuidador'}*  \n\nOla${inviteRecipientName ? ' ' + inviteRecipientName : ''}! Voce foi convidado(a) por *${usuarioAtual.nome}* para acessar e acompanhar a rotina diaria de *${cleanStudentName}* no aplicativo Anjo.\n\n*Acesso:* ${getInviteAcessoLabel()}\n\nPara ativar seu perfil com seguranca e cadastrar seu PIN pessoal de acesso rapido, clique no link oficial abaixo:\n\n  ${window.location.origin}/entrar?token=convite_${Date.now().toString(36)}&ref=${idoso.id}&role=${inviteRole}`;
                               const cleanNum = inviteRecipientPhone.replace(/\D/g, "");
                               window.open(`https://api.whatsapp.com/send?phone=55${cleanNum}&text=${encodeURIComponent(linkMsg)}`, '_blank');
                             }}
@@ -2120,7 +2120,7 @@ export default function FamilySection({
                         <button
                           type="button"
                           onClick={() => {
-                            const linkMsg = `*Convite de Acesso - ${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}*  \n\nOla${inviteRecipientName ? ' ' + inviteRecipientName : ''}! Voce foi convidado(a) por *${usuarioAtual.nome}* para acessar e acompanhar a rotina diaria de *${cleanStudentName}* no aplicativo Anjo.\n\n*Acesso:* ${getInviteAcessoLabel()}\n\nPara ativar seu perfil com seguranca e cadastrar seu PIN pessoal de acesso rapido, clique no link oficial abaixo:\n\n  ${window.location.origin}/entrar?token=convite_${Date.now().toString(36)}&ref=${idoso.id}&role=${inviteRole}`;
+                            const linkMsg = `*Convite de Acesso - ${isEscolar ? 'Anjinho Escolar' : 'AnjoCuidador'}*  \n\nOla${inviteRecipientName ? ' ' + inviteRecipientName : ''}! Voce foi convidado(a) por *${usuarioAtual.nome}* para acessar e acompanhar a rotina diaria de *${cleanStudentName}* no aplicativo Anjo.\n\n*Acesso:* ${getInviteAcessoLabel()}\n\nPara ativar seu perfil com seguranca e cadastrar seu PIN pessoal de acesso rapido, clique no link oficial abaixo:\n\n  ${window.location.origin}/entrar?token=convite_${Date.now().toString(36)}&ref=${idoso.id}&role=${inviteRole}`;
                             handleCopyInviteLink(linkMsg);
                           }}
                           className={`w-full py-2.5 font-bold rounded-xl text-xs flex items-center justify-center gap-1.5 cursor-pointer transition-all ${
@@ -2131,7 +2131,7 @@ export default function FamilySection({
                         >
                           {copiedLink ? (
                             <>
-                              <Check className="w-4 h-4" /> Texto Copiado! Pronto para Enviar
+                              <Check className="w-4 h-4" /> TextoCopiado! Pronto para Enviar
                             </>
                           ) : (
                             <>
@@ -2169,7 +2169,7 @@ export default function FamilySection({
                       }}
                       className="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white font-extrabold rounded-xl text-xs flex items-center gap-1.5 cursor-pointer transition-colors shadow-xs"
                     >
-                      <ExternalLink className="w-3.5 h-3.5" /> Simular Clique no Link e Cadastro do Convidado
+                      <ExternalLink className="w-3.5 h-3.5" /> Simular Clique no Link e Cadastro doConvidado
                     </button>
                   </div>
                 </div>
@@ -2287,7 +2287,7 @@ export default function FamilySection({
                       onClick={() => setInviteSimulateActive(false)}
                       className="text-center text-[11px] text-slate-400 hover:text-slate-600 underline font-semibold block w-full mt-2"
                     >
-                        Voltar para a Tela do Convite
+                        Voltar para a Tela doConvite
                     </button>
                   </div>
                 </div>

@@ -518,7 +518,7 @@ export default function MedicalAgenda({
 
       const msg = isEscolar
         ? `Anjinho Escolar: Novo evento/reuniao escolar agendado para o(a) aluno(a) ${idoso.nome}. Compromisso: "${novoCompromisso.titulo}" com ${novoCompromisso.medico} em ${dateFormatted} as ${novoCompromisso.horario}. Local: ${novoCompromisso.local}. Detalhes: ${novoCompromisso.observacoes || 'Sem observacoes.'}`
-        : `Anjo Cuidador: Novo compromisso medico agendado para ${idoso.nome}. Compromisso: "${novoCompromisso.titulo}" com Dr(a). ${novoCompromisso.medico} em ${dateFormatted} as ${novoCompromisso.horario}. Local: ${novoCompromisso.local}.`;
+        : `AnjoCuidador: Novo compromisso medico agendado para ${idoso.nome}. Compromisso: "${novoCompromisso.titulo}" com Dr(a). ${novoCompromisso.medico} em ${dateFormatted} as ${novoCompromisso.horario}. Local: ${novoCompromisso.local}.`;
       triggerWhatsAppSim(isEscolar ? 'Evento Escolar Agendado' : 'Compromisso Agendado', msg);
     }
 
@@ -555,7 +555,7 @@ export default function MedicalAgenda({
   const executeToggleStatus = (tgt: CompromissoMedico, toggleAll: boolean) => {
     const allComp = getFromDB<CompromissoMedico[]>('anjo_agenda', []);
     const nextStatus = tgt.status === 'realizado' ? 'agendado' : 'realizado';
-    const systemName = isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador';
+    const systemName = isEscolar ? 'Anjinho Escolar' : 'AnjoCuidador';
     const labelTerm = isEscolar ? 'Evento/Reuniao' : 'Compromisso';
     const actionTerm = nextStatus === 'realizado' ? 'concluido' : 'agendado';
 
@@ -594,7 +594,7 @@ export default function MedicalAgenda({
     
     const msg = isEscolar
       ? `Anjinho Escolar: Lembrete de compromisso/reuniao escolar sobre o(a) aluno(a) ${idoso.nome}. Proximo dia (${dateFormatted}) as ${appt.horario} havera "${appt.titulo}" sob coordenacao de ${appt.medico}. Local: ${appt.local}. Informacoes: ${appt.observacoes || 'Sem observacoes.'}`
-      : `Anjo Cuidador: Lembrete de compromisso de ${idoso.nome}. Amanha (${dateFormatted}) as ${appt.horario} ha "${appt.titulo}" com Dr(a). ${appt.medico}. Local: ${appt.local}. Notas: ${appt.observacoes || 'Sem notas.'}`;
+      : `AnjoCuidador: Lembrete de compromisso de ${idoso.nome}. Amanha (${dateFormatted}) as ${appt.horario} ha "${appt.titulo}" com Dr(a). ${appt.medico}. Local: ${appt.local}. Notas: ${appt.observacoes || 'Sem notas.'}`;
     
     triggerWhatsAppSim(isEscolar ? 'Lembrete de Evento' : 'Lembrete de Compromisso', msg);
   };
@@ -626,7 +626,7 @@ export default function MedicalAgenda({
         isEscolar ? 'Evento Excluido' : 'Compromisso Excluido',
         isEscolar
           ? `Anjinho Escolar: O evento/reuniao "${deleteConfirmTarget.titulo}" de ${idoso.nome} foi removido da agenda.`
-          : `Anjo Cuidador: O compromisso "${deleteConfirmTarget.titulo}" de ${idoso.nome} foi removido por ${usuarioAtual.nome}.`
+          : `AnjoCuidador: O compromisso "${deleteConfirmTarget.titulo}" de ${idoso.nome} foi removido por ${usuarioAtual.nome}.`
       );
     }
 
@@ -811,7 +811,7 @@ export default function MedicalAgenda({
                   >
                     {isDone 
                       ? (isEscolar ? 'Reabrir Evento' : 'Reordenar Agenda') 
-                      : (isEscolar ? 'Marcar como Concluido' : 'Marcar como Realizado')}
+                      : (isEscolar ? 'Marcar comoConcluido' : 'Marcar como Realizado')}
                   </button>
                 </div>
               </div>
@@ -826,7 +826,7 @@ export default function MedicalAgenda({
           <div className="bg-white rounded-3xl p-6 border border-soft-gray max-w-lg w-full shadow-2xl relative max-h-[90vh] overflow-y-auto space-y-4">
             <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2 border-b pb-2">
               <Calendar className="w-6 h-6 text-indigo-600" />
-              {isEscolar ? 'Agendar Reuniao ou Evento Escolar' : 'Agendar Novo Compromisso Medico'}
+              {isEscolar ? 'Agendar Reuniao ou Evento Escolar' : 'Agendar NovoCompromisso Medico'}
             </h3>
 
             <form onSubmit={handleSaveAppointment} className="space-y-4 text-xs font-semibold">
@@ -834,7 +834,7 @@ export default function MedicalAgenda({
                 <div className="space-y-1 sm:col-span-2">
                   <div className="flex items-center justify-between">
                     <label className="text-xs font-bold text-slate-600 block">
-                      {isEscolar ? 'Titulo do Evento ou Reuniao *' : 'Titulo do Compromisso *'}
+                      {isEscolar ? 'Titulo do Evento ou Reuniao *' : 'Titulo doCompromisso *'}
                     </label>
                     <VoiceInput 
                       onTranscript={text => setNewAppt(prev => ({ ...prev, titulo: prev.titulo ? prev.titulo + ' ' + text : text }))} 

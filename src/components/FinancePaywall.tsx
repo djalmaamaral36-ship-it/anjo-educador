@@ -25,7 +25,7 @@ function generatePixPayload(key: string, name: string, amount: number, txid: str
     .replace(/[\u0300-\u036f]/g, "") // remove accents
     .replace(/[^a-zA-Z0-9 ]/g, "") // alphanumeric and spaces only
     .substring(0, 25)
-    .trim() || "Anjo Cuidador";
+    .trim() || "AnjoCuidador";
 
   const formattedAmount = amount.toFixed(2);
 
@@ -222,7 +222,7 @@ export default function FinancePaywall({
     const idosoNome = idoso?.nome || '';
     const idosoId = idoso?.id || '';
     const isEscolar = idosoNome.toLowerCase().includes('infantil') || idosoId.startsWith('aluno_') || appMode === 'escolar_infantil' || appMode === 'escolar_fundamental';
-    const appName = isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador';
+    const appName = isEscolar ? 'Anjinho Escolar' : 'AnjoCuidador';
     
     const message = `Ola, *${usuarioAtual.nome}*!  \n\nSua assinatura do aplicativo *${appName}* para acompanhar o(a) *${idosoNome}* esta pendente.\n\n  *Plano Escolhido:* ${activePlan.nome} (${activePlan.economia ? activePlan.economia : 'Ativacao imediata'})\n  *Valor:* R$ ${activePlan.preco.toFixed(2).replace('.', ',')}\n\n  *Pix Copia e Cola:* \n\`${dynamicPixKey}\`\n\n_Copie o codigo acima e pague no app do seu banco. O desbloqueio do painel de familiares sera feito em segundos apos o pagamento!_`;
     
@@ -298,7 +298,7 @@ export default function FinancePaywall({
             </div>
             <p className="text-[10px] text-slate-500 font-semibold mt-4 leading-relaxed">
               {customTipo === 'coletivo'
-                ? 'Desconto Coletivo Irmaos ativado para esta mensalidade!'
+                ? 'DescontoColetivo Irmaos ativado para esta mensalidade!'
                 : 'Tarifa mensal integral para um unico aluno cadastrado.'}
             </p>
           </button>

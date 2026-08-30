@@ -104,7 +104,7 @@ export const AGENDA_INICIAL: CompromissoMedico[] = [
     id: 'compromisso_maria_1',
     idosoId: 'idoso_maria',
     tipo: 'consulta',
-    titulo: 'Retorno Clinico de Geriatria',
+    titulo: 'RetornoClinico de Geriatria',
     medico: 'Dr. Roberto Kardec',
     especialidade: 'Geriatria & Cardiologia',
     local: 'Consultorio Dr. Kardec - Av. Paulista, 1500, cj 42',
@@ -1769,7 +1769,7 @@ RELATÓRIO DE ACOMPANHAMENTO E ROTINA DIGITAL
 Assistido/Aluno: ${studentName}
 Cuidador/Professora: ${report.cuidador || 'Equipe Escolar'}
 Data: ${report.data || new Date().toLocaleDateString('pt-BR')}
-Período: ${report.inicio || '07:30'} às ${report.fim || '17:30'} (${report.duracao || 'Período Completo'})
+Período: ${report.inicio || '07:30'} às ${report.fim || '17:30'} (${report.duracao || 'PeríodoCompleto'})
 Taxa de Conformidade: ${report.taxaConformidade || 100}% OK
 -----------------------------------------------------
 CONTEÚDO DO RELATÓRIO:

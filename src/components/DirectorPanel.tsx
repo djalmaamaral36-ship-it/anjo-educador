@@ -73,7 +73,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         <div className="space-y-1">
           <h2 className="text-lg font-black text-slate-800">Acesso Restrito ao Painel da Direcao</h2>
           <p className="text-xs font-bold text-rose-600">
-            Perfil Selecionado no Celular: {activeUser.nome} ({activeUser.tipo === 'familiar' ? 'Familiar Responsavel' : activeUser.tipo})
+            Perfil Selecionado noCelular: {activeUser.nome} ({activeUser.tipo === 'familiar' ? 'Familiar Responsavel' : activeUser.tipo})
           </p>
         </div>
         <p className="text-sm text-slate-500 max-w-md leading-relaxed">
@@ -157,7 +157,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
   const [showStrategicReferralModal, setShowStrategicReferralModal] = useState<boolean>(false);
   const [showStrategicConflictModal, setShowStrategicConflictModal] = useState<boolean>(false);
   const [showReferralsClassModal, setShowReferralsClassModal] = useState<Classroom | null>(null);
-  const [pedagogicalReferrals, setPedagogicalReferrals] = useState<any[]>([]);
+  const [pedagógicalReferrals, setPedagógicalReferrals] = useState<any[]>([]);
   const [newReferralForm, setNewReferralForm] = useState({
     studentName: '',
     tipo: 'pedagogico_geral',
@@ -246,7 +246,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         {
           id: 'ref_4',
           classroomName: 'Jardim II',
-          studentName: 'Enzo Costa',
+          studentName: 'EnzoCosta',
           tipo: 'psicologia',
           reason: 'Agitacao fisica intensa com episodios frequentes de morder brinquedos e disputar espaco com os colegas.',
           data: '2026-05-15',
@@ -299,9 +299,9 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         }
       ];
       saveToDB('anjo_encaminhamentos_pedagogicos', defaultReferrals);
-      setPedagogicalReferrals(defaultReferrals);
+      setPedagógicalReferrals(defaultReferrals);
     } else {
-      setPedagogicalReferrals(savedReferrals);
+      setPedagógicalReferrals(savedReferrals);
     }
   };
 
@@ -517,7 +517,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
       pin: finalPin,
       foto: defaultAvatars[newStaffRole] || defaultAvatars.professor,
       salaAula: newStaffClassrooms.length > 0 ? newStaffClassrooms.join(',') : undefined,
-      observacoes: newStaffObs.trim() || `${newStaffRole === 'coordenador' ? 'Coordenacao Pedagogica' : newStaffRole === 'pedagoga' ? 'Equipe Pedagogica' : newStaffRole === 'admin' ? 'Administracao Escolar' : 'Corpo Docente'} credenciado.`
+      observacoes: newStaffObs.trim() || `${newStaffRole === 'coordenador' ? 'Coordenacao Pedagógica' : newStaffRole === 'pedagoga' ? 'Equipe Pedagógica' : newStaffRole === 'admin' ? 'Administracao Escolar' : 'Corpo Docente'} credenciado.`
     };
 
     const updatedUsers = [...users, newCollaborator];
@@ -660,7 +660,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 <Shield className="w-5 h-5" />
               </span>
               <span className="text-[10px] font-black uppercase tracking-wider text-indigo-500 dark:text-indigo-400">
-                Direcao Geral & Gestao Pedagogica
+                Direcao Geral & Gestao Pedagógica
               </span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black font-display tracking-tight leading-none text-slate-900 dark:text-white">
@@ -750,7 +750,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   <span> </span> Visao 360o da Escola
                 </h2>
                 <p className="text-xs text-indigo-200/80 font-medium">
-                  Indicadores unificados de gestao operacional, pedagogica, saude e engajamento da comunidade escolar.
+                  Indicadores unificados de gestao operacional, pedagógica, saude e engajamento da comunidade escolar.
                 </p>
               </div>
 
@@ -842,7 +842,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     2 <span className="text-[11px] text-amber-200/80 font-semibold">turmas sob observacao</span>
                   </div>
                   <p className="text-[10px] text-amber-200/70 font-medium mt-1.5">
-                    Maternal I e Jardim II com variacao de intercorrencias
+                    Maternal I e Jardim II com variacao de intercorrências
                   </p>
                 </div>
               </div>
@@ -1154,7 +1154,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     <p className="text-slate-700 dark:text-slate-300">
                       Pai de <strong>Miguel Oliveira</strong> assinou eletronicamente o diario e confirmou envio de medicacao diaria.
                     </p>
-                    <span className="text-[9px] text-slate-400 font-bold block">1 hora atras   Autorizacao Confirmada</span>
+                    <span className="text-[9px] text-slate-400 font-bold block">1 hora atras   AutorizacaoConfirmada</span>
                   </div>
                 </div>
               </div>
@@ -1291,7 +1291,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 <span> </span> Monitor de Desempenho e Rotinas Coletivas
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold">
-                Analise pedagogica da rotina escolar, saude e engajamento das familias por meio de metaforas da natureza ou relatorios convencionais.
+                Analise pedagógica da rotina escolar, saude e engajamento das familias por meio de metaforas da natureza ou relatorios convencionais.
               </p>
             </div>
 
@@ -1305,7 +1305,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     : 'text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200'
                 }`}
               >
-                  Arvores em Evolucao
+                  Árvores em Evolucao
               </button>
               <button
                 onClick={() => setPedagogyViewMode('charts')}
@@ -1336,7 +1336,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200'
                   }`}
                 >
-                  <span> </span> Arvore Individual (Aluno)
+                  <span> </span> Árvore Individual (Aluno)
                 </button>
                 <button
                   onClick={() => setTreeLevel('class')}
@@ -1370,13 +1370,13 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   } shadow-xs`}>
                     
                     <div className="w-full flex items-center justify-between border-b border-slate-100 dark:border-slate-850 pb-3 mb-4">
-                      <span className="text-[10px] font-black uppercase text-indigo-500 tracking-wide">Plantacao Pedagogica</span>
+                      <span className="text-[10px] font-black uppercase text-indigo-500 tracking-wide">Plantacao Pedagógica</span>
                       <span className="text-[10px] font-bold text-slate-400">Tempo Real</span>
                     </div>
 
                     
                     <div className="w-full space-y-1 mb-4 text-left">
-                      <label className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wide block">Selecione o Aluno para Ver Sua Arvore</label>
+                      <label className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wide block">Selecione o Aluno para Ver Sua Árvore</label>
                       <select
                         value={selectedStudentForTree}
                         onChange={(e) => setSelectedStudentForTree(e.target.value)}
@@ -1551,9 +1551,9 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                             <span className="text-[10px] font-black uppercase text-slate-400 block leading-none">Estagio de Vida</span>
                             <span className="px-3 py-1 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-300 font-extrabold rounded-full text-xs inline-block shadow-3xs">
                               {compliance <= 20 ? '  Brotinho (Iniciando Sopro)' : 
-                               compliance <= 50 ? '  Arvore Jovem (Em Crescimento)' : 
-                               compliance <= 85 ? '  Arvore Frondosa (Saudavel e Forte)' : 
-                               '  Arvore Frutifera e Florida (Harmonia Completa)'}
+                               compliance <= 50 ? '  Árvore Jovem (Em Crescimento)' : 
+                               compliance <= 85 ? '  Árvore Frondosa (Saudavel e Forte)' : 
+                               '  Árvore Frutifera e Florida (Harmonia Completa)'}
                             </span>
                           </div>
 
@@ -1626,7 +1626,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                             <div className="space-y-2">
                               <h5 className="text-[10px] uppercase font-black tracking-wider text-indigo-500">Diagnostico Ecologico</h5>
                               <p className="text-xs text-slate-650 dark:text-slate-400 font-semibold leading-relaxed">
-                                A Arvore de Desenvolvimento de <strong>{selectedStudent.nome.split(' (')[0]}</strong> e uma representacao ludica de sua rotina. Ela responde de forma viva aos registros das professoras e a proximidade dos familiares.
+                                A Árvore de Desenvolvimento de <strong>{selectedStudent.nome.split(' (')[0]}</strong> e uma representacao ludica de sua rotina. Ela responde de forma viva aos registros das professoras e a proximidade dos familiares.
                               </p>
                             </div>
 
@@ -1656,7 +1656,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                               <div className="p-3 bg-slate-50 dark:bg-slate-850 rounded-2xl border border-slate-100/10 space-y-1">
                                 <span className="text-[9px] font-black uppercase text-slate-400 block">Fotossintese de Saude</span>
                                 <div className={`text-lg font-black flex items-center gap-1 ${hasAlert ? 'text-amber-500' : 'text-emerald-600'}`}>
-                                  <span> </span> {tempVal}oC
+                                  <span> </span> {tempVal}°C
                                 </div>
                                 <span className="text-[10px] text-slate-500 dark:text-slate-400 block font-medium leading-tight">
                                   {isFever ? 'Alerta de Febre: Folhagem desidratada/amarela.' : 'Temperatura corporal ideal. Clima ameno.'}
@@ -1702,7 +1702,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     
                     <div className="space-y-0.5 text-left">
                       <span className="text-[10px] font-black uppercase text-slate-400 block">Turma Sob Analise</span>
-                      <h4 className="text-sm font-extrabold text-slate-800 dark:text-white">Bosque do Desenvolvimento Coletivo</h4>
+                      <h4 className="text-sm font-extrabold text-slate-800 dark:text-white">Bosque do DesenvolvimentoColetivo</h4>
                     </div>
 
                     <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -1787,7 +1787,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                     setTreeLevel('individual');
                                   }}
                                   className="flex flex-col items-center cursor-pointer hover:scale-105 transition-all duration-300 group max-w-[120px] text-center"
-                                  title={`Ver Arvore Detalhada de ${student.nome.split(' (')[0]}`}
+                                  title={`Ver Árvore Detalhada de ${student.nome.split(' (')[0]}`}
                                 >
                                   
                                   <svg viewBox="0 0 160 160" className="w-20 h-20 overflow-visible">
@@ -1837,10 +1837,10 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                           <div className={`p-4 rounded-2xl border text-left ${
                             isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-205'
                           } shadow-3xs space-y-1`}>
-                            <span className="text-[10px] font-black uppercase text-slate-400 block">Arvores no Bosque</span>
+                            <span className="text-[10px] font-black uppercase text-slate-400 block">Árvores no Bosque</span>
                             <div className="text-2xl font-black text-indigo-600 dark:text-indigo-400">{classStudents.length} unidades</div>
                             <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-normal font-medium">
-                              Cada crianca matriculada cultiva sua propria arvore correspondente.
+                              Cada crianca matriculada cultiva sua propria árvore correspondente.
                             </p>
                           </div>
 
@@ -1860,7 +1860,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                             <span className="text-[10px] font-black uppercase text-slate-400 block">Precipitacao de Afeto (Regadas)</span>
                             <div className="text-2xl font-black text-sky-600">{totalClassWaterings} ml total</div>
                             <p className="text-[10px] text-slate-500 dark:text-slate-400 leading-normal font-medium">
-                              Regadas de afeto enviadas pelos familiares e pela direcao do Colegio.
+                              Regadas de afeto enviadas pelos familiares e pela direcao doColegio.
                             </p>
                           </div>
 
@@ -1888,7 +1888,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         <span> </span> Floresta Escolar: Ecossistema de Rotina e Cuidado
                       </h4>
                       <p className="text-xs text-slate-500 dark:text-slate-400 font-semibold leading-relaxed">
-                        A uniao dos bosques de todas as salas forma a Floresta Escolar da nossa instituicao. Cada arvore representa o desenvolvimento coletivo e a harmonia das familias parceiras!
+                        A uniao dos bosques de todas as salas forma a Floresta Escolar da nossa instituicao. Cada árvore representa o desenvolvimento coletivo e a harmonia das familias parceiras!
                       </p>
                     </div>
 
@@ -1896,7 +1896,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                       
                       <div className="p-4 bg-slate-50 dark:bg-slate-850 rounded-2xl space-y-1 border border-slate-100/10">
-                        <span className="text-[9px] font-black uppercase text-slate-400 block">Arvores Plantadas (Alunos)</span>
+                        <span className="text-[9px] font-black uppercase text-slate-400 block">Árvores Plantadas (Alunos)</span>
                         <div className="text-2xl font-black text-slate-800 dark:text-slate-100">{students.length}  </div>
                         <span className="text-[10px] text-slate-400 font-medium block">Total de ecossistemas individuais monitorados.</span>
                       </div>
@@ -1967,7 +1967,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                 <div className="space-y-1">
                                   <div className="flex justify-between text-[9px] font-black uppercase text-slate-400">
                                     <span>Clima: {avgCompliance}%</span>
-                                    <span>{classStudents.length} Arvores</span>
+                                    <span>{classStudents.length} Árvores</span>
                                   </div>
                                   <div className="h-1.5 w-28 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
                                     <div 
@@ -2007,7 +2007,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                           });
                           setTimeout(() => {
                             setIsWateringAnimate(false);
-                            alert('  Chuva de Afeto enviada! Todos os familiares receberam um convite de regada de amor e todas as arvores ganharam +1 fruto florido!');
+                            alert('  Chuva de Afeto enviada! Todos os familiares receberam um convite de regada de amor e todas as árvores ganharam +1 fruto florido!');
                           }, 1000);
                           loadData();
                           window.dispatchEvent(new Event('anjo_user_updated'));
@@ -2291,7 +2291,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                     tempVal >= 37.8 ? 'bg-rose-100/60 border-rose-300 text-rose-900 font-extrabold' : 'bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700'
                                   }`}>
                                     <span className="text-[9px] font-bold uppercase text-slate-400 block">  Temperatura</span>
-                                    <span className="font-black text-slate-800 dark:text-slate-100">{tempVal}oC</span>
+                                    <span className="font-black text-slate-800 dark:text-slate-100">{tempVal}°C</span>
                                     <span className="text-[9px] block text-slate-500 font-medium">{tempVal >= 37.8 ? 'Febril (Medicao 10:15)' : 'Estavel'}</span>
                                   </div>
 
@@ -2308,7 +2308,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                   <div className="p-2 rounded-xl border bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700 text-xs space-y-0.5">
                                     <span className="text-[9px] font-bold uppercase text-slate-400 block">  Sono / Repouso</span>
                                     <span className="font-black text-slate-800 dark:text-slate-100">{sleepVal}h</span>
-                                    <span className="text-[9px] block text-slate-500 font-medium">{sleepVal < 1.0 ? 'Repouso Curto' : 'Sono Tranquilo'}</span>
+                                    <span className="text-[9px] block text-slate-500 font-medium">{sleepVal < 1.0 ? 'RepousoCurto' : 'Sono Tranquilo'}</span>
                                   </div>
 
                                   
@@ -2337,7 +2337,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                 <div className="p-2.5 rounded-xl bg-slate-50/80 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/50 text-xs text-slate-600 dark:text-slate-300 flex items-start gap-2">
                                   <FileText className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
                                   <p className="leading-relaxed text-[11px] font-medium">
-                                    <strong className="text-slate-800 dark:text-slate-200">Relato da Professora:</strong> "{s.observacoes || 'Crianca apresentou boa disposicao nas vivencias pedagogicas e interacao harmoniosa com o grupo.'}"
+                                    <strong className="text-slate-800 dark:text-slate-200">Relato da Professora:</strong> "{s.observacoes || 'Crianca apresentou boa disposicao nas vivencias pedagógicas e interacao harmoniosa com o grupo.'}"
                                   </p>
                                 </div>
 
@@ -2349,7 +2349,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                       onClick={() => setSelectedStudent360(s)}
                                       className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black flex items-center gap-1.5 shadow-xs transition-all cursor-pointer"
                                     >
-                                      <Eye className="w-3.5 h-3.5" /> Ficha 360o Completa
+                                      <Eye className="w-3.5 h-3.5" /> Ficha 360°Completa
                                     </button>
 
                                     <button
@@ -2385,7 +2385,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                                         `Ola, responsaveis pelo(a) *${studentShortName}*!\n` +
                                         `Aqui e a Diretora *Nilva Amaral*. Gostaria de alinhar com voces algumas informacoes sobre a rotina e o bem-estar do(a) ${studentShortName}.\n\n` +
                                         `_Data:_ ${dateFormatted} as ${timeFormatted}\n` +
-                                        `_Colegio Anjinho Escolar - Cuidado, Afeto e Excelencia Pedagogica_  `;
+                                        `_Colegio Anjinho Escolar - Cuidado, Afeto e Excelencia Pedagógica_  `;
 
                                       if (formattedPhone) {
                                         window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(waMsg)}`, '_blank');
@@ -2465,7 +2465,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     <div className="space-y-1">
                       <span className="text-[10px] font-black uppercase text-indigo-500 block tracking-wider">Direcao Escolar Avancada</span>
                       <h4 className="text-sm font-black text-slate-800 dark:text-white flex items-center gap-1.5">
-                        <span> </span> Indicadores Estrategicos & Governanca Pedagogica
+                        <span> </span> Indicadores Estrategicos & Governanca Pedagógica
                       </h4>
                       <p className="text-[11px] text-slate-400 font-semibold leading-normal">
                         Monitore a evasao escolar, desenvolvimento cognitivo, tempo de tela e comportamento para intervencoes precoces eficientes.
@@ -2635,7 +2635,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                               .filter(c => selectedClassroomForMetrics === 'Todas' || c.name === selectedClassroomForMetrics)
                               .map(c => {
                                 // Dynamic referrals count
-                                const count = pedagogicalReferrals.filter(r => 
+                                const count = pedagógicalReferrals.filter(r => 
                                   r.classroomName === c.name || 
                                   (c.name && r.classroomName && (
                                     c.name.toLowerCase().includes(r.classroomName.toLowerCase()) || 
@@ -2868,7 +2868,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 id="btn-novo-professor-diretor"
               >
                 <UserPlus className="w-4 h-4" />
-                <span>+ Novo Colaborador / Professor</span>
+                <span>+ NovoColaborador / Professor</span>
               </button>
             </div>
           </div>
@@ -3397,12 +3397,12 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
             <div className="space-y-4 text-xs leading-relaxed font-semibold">
               <p className="text-[11px] text-slate-500">
-                O Anjinho auxilia na identificacao de sinais atipicos atraves de relatos automatizados da rotina pedagogica. Use este painel para organizar a conducao etica e acolhedora com os pais.
+                O Anjinho auxilia na identificacao de sinais atipicos atraves de relatos automatizados da rotina pedagógica. Use este painel para organizar a conducao etica e acolhedora com os pais.
               </p>
 
               <div className="space-y-3.5">
                 <div className="p-3 rounded-xl bg-indigo-550/5 bg-indigo-50 dark:bg-indigo-950/20 border border-indigo-150 space-y-1.5">
-                  <span className="font-extrabold text-[10px] uppercase text-indigo-700 dark:text-indigo-400 block tracking-wider">   Lista de Sinais de Rastreamento Comum</span>
+                  <span className="font-extrabold text-[10px] uppercase text-indigo-700 dark:text-indigo-400 block tracking-wider">   Lista de Sinais de RastreamentoComum</span>
                   <ul className="list-disc list-inside space-y-1 pl-1 text-[10px] text-slate-600 dark:text-slate-400 font-medium">
                     <li><strong className="text-indigo-600 dark:text-indigo-300">Fonoaudiologia (Fala/Linguagem):</strong> Criancas acima de 2 anos com ausencia de fala ou ecolalia persistente.</li>
                     <li><strong className="text-indigo-600 dark:text-indigo-300">Psicologia (Socioemocional):</strong> Isolamento continuo durante o brincar livre ou choro inconsolavel com resistencia ao toque.</li>
@@ -3417,7 +3417,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     className={`w-full p-2.5 rounded-lg border text-[10px] font-mono leading-relaxed h-28 select-all ${
                       isDark ? 'bg-slate-850 border-slate-700 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-600'
                     }`}
-                    value={`"Ola, [Nome do Pai/Mae]! Esperamos que esteja bem. Observando o desenvolvimento de [Nome da Crianca] nas nossas vivencias e interacoes pedagogicas, notamos que ela tem demonstrado [descrever comportamento leve de forma amorosa, ex: um tempo maior para responder chamados na roda]. Gostariamos de convidar voces para um cafe com nossa coordenacao na proxima quarta-feira para conversarmos sobre como podemos, em parceria escola-familia, potencializar o desenvolvimento dela de forma integral. Contem conosco sempre!"`}
+                    value={`"Ola, [Nome do Pai/Mae]! Esperamos que esteja bem. Observando o desenvolvimento de [Nome da Crianca] nas nossas vivencias e interacoes pedagógicas, notamos que ela tem demonstrado [descrever comportamento leve de forma amorosa, ex: um tempo maior para responder chamados na roda]. Gostariamos de convidar voces para um cafe com nossa coordenacao na proxima quarta-feira para conversarmos sobre como podemos, em parceria escola-familia, potencializar o desenvolvimento dela de forma integral. Contem conosco sempre!"`}
                   />
                   <p className="text-[9px] text-amber-600 font-bold">
                       <strong>Regra de Ouro:</strong> Nunca faca diagnosticos escolares. Ofereca um olhar de acolhimento focado nas interacoes e sugira a avaliacao profissional especializada de forma complementar.
@@ -3528,7 +3528,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
         );
 
         // Filter current referrals of this class
-        const classReferrals = pedagogicalReferrals.filter(r => 
+        const classReferrals = pedagógicalReferrals.filter(r => 
           r.classroomName === showReferralsClassModal.name || 
           (showReferralsClassModal.name && r.classroomName && (
             showReferralsClassModal.name.toLowerCase().includes(r.classroomName.toLowerCase()) || 
@@ -3562,8 +3562,8 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
             registeredBy: 'Diretoria / Coordenacao'
           };
           
-          const updated = [newRef, ...pedagogicalReferrals];
-          setPedagogicalReferrals(updated);
+          const updated = [newRef, ...pedagógicalReferrals];
+          setPedagógicalReferrals(updated);
           saveToDB('anjo_encaminhamentos_pedagogicos', updated);
           
           // Reset
@@ -3577,8 +3577,8 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
 
         const handleDeleteReferral = (id: string) => {
           if (window.confirm('Tem certeza que deseja excluir este encaminhamento?')) {
-            const updated = pedagogicalReferrals.filter(r => r.id !== id);
-            setPedagogicalReferrals(updated);
+            const updated = pedagógicalReferrals.filter(r => r.id !== id);
+            setPedagógicalReferrals(updated);
             saveToDB('anjo_encaminhamentos_pedagogicos', updated);
           }
         };
@@ -3615,7 +3615,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                     Encaminhamentos Pedagogicos - {showReferralsClassModal.name}
                   </h4>
                   <p className="text-[10px] text-slate-400 font-semibold">
-                    Gerencie os registros confidenciais e direcione acoes pedagogicas e multidisciplinares de forma estruturada.
+                    Gerencie os registros confidenciais e direcione acoes pedagógicas e multidisciplinares de forma estruturada.
                   </p>
                 </div>
                 <button 
@@ -3852,7 +3852,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
                   <div className={`p-3 rounded-2xl border ${tempVal >= 37.8 ? 'bg-rose-500/10 border-rose-500/40 text-rose-300' : 'bg-slate-50 dark:bg-slate-800 border-slate-200/50 dark:border-slate-700'}`}>
                     <span className="text-[10px] font-bold uppercase block text-slate-400">  Temperatura</span>
-                    <span className="text-sm font-black">{tempVal}oC</span>
+                    <span className="text-sm font-black">{tempVal}°C</span>
                     <span className="text-[10px] block font-medium mt-0.5">{tempVal >= 37.8 ? '[!] Febril' : '  Estavel'}</span>
                   </div>
 
@@ -3986,7 +3986,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
             </div>
 
             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
-              Registre orientacoes da Diretora Nilva Amaral, registros de atendimentos, ligacoes ou decisoes pedagogicas e de saude.
+              Registre orientacoes da Diretora Nilva Amaral, registros de atendimentos, ligacoes ou decisoes pedagógicas e de saude.
             </p>
 
             <div className="flex items-center justify-between gap-2 bg-indigo-50/70 dark:bg-indigo-950/30 p-2.5 rounded-2xl border border-indigo-100 dark:border-indigo-900/40">
@@ -4077,7 +4077,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   />
                   <div className="text-left">
                     <p className="text-xs font-bold leading-tight flex items-center gap-1">
-                         Coordenacao Pedagogica
+                         Coordenacao Pedagógica
                     </p>
                     <p className="text-[10px] opacity-80 mt-0.5">
                       Painel pedagogico da coordenacao
@@ -4201,7 +4201,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                       dispatchedActions.push('Professora');
                     }
 
-                    // 3. Notificar Coordenacao Pedagogica
+                    // 3. Notificar Coordenacao Pedagógica
                     if (noteNotifyCoordination) {
                       const coordKey = 'anjo_comunicados_coordenacao';
                       const coordList = getFromDB<any[]>(coordKey, []);
@@ -4259,7 +4259,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                         `*Diretora:* Nilva Amaral\n` +
                         `*Data:* ${dateTimeStr}\n\n` +
                         `*Mensagem da Diretoria:*\n${cleanNote}\n\n` +
-                        `_Colegio Anjinho Escolar - Cuidado, Afeto e Excelencia Pedagogica_  `;
+                        `_Colegio Anjinho Escolar - Cuidado, Afeto e Excelencia Pedagógica_  `;
 
                       if (formattedPhone) {
                         window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(waMessage)}`, '_blank');
@@ -4299,7 +4299,7 @@ export default function DirectorPanel({ accessibilitySettings, appMode }: Direct
                   <UserPlus className="w-5 h-5" />
                 </div>
                 <div>
-                  <h4 className="text-base font-black">Cadastrar Novo Colaborador</h4>
+                  <h4 className="text-base font-black">Cadastrar NovoColaborador</h4>
                   <p className="text-[11px] text-slate-400 font-medium">Adicione professores, coordenadoras ou equipe escolar</p>
                 </div>
               </div>

@@ -45,8 +45,8 @@ import { VoiceInput } from './VoiceInput';
 const AVATAR_OPTIONS = [
   { url: 'https://images.unsplash.com/photo-1519689680058-324335c77ebd?auto=format&fit=crop&q=80&w=150', label: 'Menina de Touca' },
   { url: 'https://images.unsplash.com/photo-1503919545889-aef636e10ad4?auto=format&fit=crop&q=80&w=150', label: 'Menino Sorrindo' },
-  { url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150', label: 'Menina de Cabelo Cacheado' },
-  { url: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=150', label: 'Menino Concentrado' },
+  { url: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=150', label: 'Menina de CabeloCacheado' },
+  { url: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=150', label: 'MeninoConcentrado' },
   { url: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=150', label: 'Menino de Camisa Azul' },
   { url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=150', label: 'Menina de Presilha' },
   { url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=150', label: 'Menino de Listras' },
@@ -164,7 +164,7 @@ export default function ClassroomList({
     responsavelParentesco: 'Mae',
     medicoNome: '',
     medicoFone: '',
-    planoCuidado: '',
+    planoDeCuidado: '',
     alergias: '',
     condicoes: '',
     salaAula: ''
@@ -306,7 +306,7 @@ export default function ClassroomList({
       responsavelParentesco: student.contatoEmergencia?.parentesco || 'Mae',
       medicoNome: student.medicoResponsavel?.nome || '',
       medicoFone: student.medicoResponsavel?.telefone || '',
-      planoCuidado: student.planoCuidado || '',
+      planoDeCuidado: student.planoDeCuidado || '',
       alergias: student.alergias ? student.alergias.join(', ') : '',
       condicoes: student.condicoesMedicas ? student.condicoesMedicas.join(', ') : '',
       salaAula: getStudentClassroom(student.nome)
@@ -338,7 +338,7 @@ export default function ClassroomList({
             telefone: editStudentForm.medicoFone,
             especialidade: s.medicoResponsavel?.especialidade || 'Pediatria'
           },
-          planoCuidado: editStudentForm.planoCuidado,
+          planoDeCuidado: editStudentForm.planoDeCuidado,
           alergias: editStudentForm.alergias.split(',').map(a => a.trim()).filter(Boolean),
           condicoesMedicas: editStudentForm.condicoes.split(',').map(c => c.trim()).filter(Boolean)
         };
@@ -574,9 +574,9 @@ export default function ClassroomList({
         parentesco: newStudentResponsibleParentesco,
         telefone: newStudentResponsiblePhone.trim() || '(11) 99999-9999'
       },
-      planoCuidado: newStudentCarePlanInput.trim() || 'Incentivar atividades ludicas coletivas e checar hidratacao regular.',
+      planoDeCuidado: newStudentCarePlanInput.trim() || 'Incentivar atividades ludicas coletivas e checar hidratacao regular.',
       medicoResponsavel: {
-        nome: 'Dr(a). Nao Cadastrado',
+        nome: 'Dr(a). NaoCadastrado',
         especialidade: 'Pediatria Geral',
         telefone: ''
       }
@@ -777,11 +777,11 @@ export default function ClassroomList({
           parentesco: student.guardianRelationship || 'Responsavel',
           telefone: student.guardianPhone || '(11) 99999-9999'
         },
-        planoCuidado: studentConditions.length > 0 
+        planoDeCuidado: studentConditions.length > 0 
           ? `Cuidados Especiais: ${studentConditions.join(', ')}.` 
           : 'Incentivar atividades ludicas coletivas e checar hidratacao regular.',
         medicoResponsavel: {
-          nome: 'Dr(a). Nao Cadastrado',
+          nome: 'Dr(a). NaoCadastrado',
           especialidade: 'Pediatria Geral',
           telefone: ''
         }
@@ -1057,7 +1057,7 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
       );
     } else {
       triggerConfirm(
-        'Confirmar Presenca do Aluno(a)',
+        'Confirmar Presença do Aluno(a)',
         `Tem certeza que deseja remover o registro de falta de HOJE para ${getStudentCleanName(student.nome)}? Ele(a) constara como Presente.`,
         () => {
           const updated = absenceDates.filter(d => d !== todayStr);
@@ -1078,7 +1078,7 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
           saveToDB(`anjo_lgpd_auditoria_${student.id}`, logs);
 
           window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-          showToast(`Presenca registrada para ${getStudentCleanName(student.nome)}!`, 'success');
+          showToast(`Presença registrada para ${getStudentCleanName(student.nome)}!`, 'success');
         }
       );
     }
@@ -1790,7 +1790,7 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
     if (selectedFilter === 'alergicos') {
       matchesFilter = student.alergias.length > 0;
     } else if (selectedFilter === 'cuidados_especiais') {
-      matchesFilter = student.condicoesMedicas.length > 0 || (student.planoCuidado && student.planoCuidado.length > 10);
+      matchesFilter = student.condicoesMedicas.length > 0 || (student.planoDeCuidado && student.planoDeCuidado.length > 10);
     }
 
     // Filter by assigned teacher's classroom (user request)
@@ -1815,7 +1815,7 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="bg-amber-400 text-amber-950 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">Modo Escolinha</span>
-              <span className="bg-teal-500 text-teal-950 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">Relacao Completa</span>
+              <span className="bg-teal-500 text-teal-950 text-[10px] font-black px-2.5 py-0.5 rounded-full uppercase tracking-wider">RelacaoCompleta</span>
             </div>
             <h2 className="text-xl md:text-2xl font-extrabold font-display leading-tight flex items-center gap-2">
               <span> </span> Caderneta da Turma - {students.length} Alunos
@@ -2710,7 +2710,7 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
                 <form onSubmit={handleSaveEditedStudentProfile} className="p-6 space-y-4 text-xs text-left bg-white">
                   <div className="bg-indigo-50/70 p-3 rounded-2xl border border-indigo-100 mb-1">
                     <h4 className="text-xs font-extrabold text-indigo-950 flex items-center gap-1.5">
-                        Edicao Completa de Cadastro
+                        EdicaoCompleta de Cadastro
                     </h4>
                     <p className="text-[10px] text-indigo-700 leading-snug">
                       Altere nome, data de nascimento, responsaveis, contatos de emergencia e historico de saude do aluno.
@@ -2830,8 +2830,8 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
                     <label className="text-[10px] font-extrabold text-slate-700 uppercase tracking-wider block">Diretrizes de Cuidados e Observacoes</label>
                     <textarea
                       rows={3}
-                      value={editStudentForm.planoCuidado}
-                      onChange={e => setEditStudentForm({ ...editStudentForm, planoCuidado: e.target.value })}
+                      value={editStudentForm.planoDeCuidado}
+                      onChange={e => setEditStudentForm({ ...editStudentForm, planoDeCuidado: e.target.value })}
                       className="w-full px-3 py-2 border border-slate-300 rounded-xl bg-slate-50 text-xs font-semibold"
                     />
                   </div>
@@ -3013,7 +3013,7 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
                                 : 'bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100 active:bg-rose-200'
                             }`}
                           >
-                            {isAbsentToday ? 'Marcar Presenca' : 'Marcar Falta'}
+                            {isAbsentToday ? 'Marcar Presença' : 'Marcar Falta'}
                           </button>
                         </div>
                       );
@@ -3149,12 +3149,12 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
                             <div>
                               <span className="font-extrabold text-slate-800 block text-xs">Saude / Vitais</span>
                               <span className="text-[10px] text-slate-500 font-medium">
-                                {lastSinal ? `Temp: ${lastSinal.temperatura || 36.5}oC | ${lastSinal.soneca || 'Sem queixas'}` : 'Nenhuma alteracao de saude'}
+                                {lastSinal ? `Temp: ${lastSinal.temperatura || 36.5}°C | ${lastSinal.soneca || 'Sem queixas'}` : 'Nenhuma alteracao de saude'}
                               </span>
                             </div>
                           </div>
                           <span className={`text-[10px] font-black px-2 py-0.5 rounded-md ${lastSinal?.temperatura ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}`}>
-                            {lastSinal?.temperatura ? `${lastSinal.temperatura}oC` : 'Em Dia'}
+                            {lastSinal?.temperatura ? `${lastSinal.temperatura}°C` : 'Em Dia'}
                           </span>
                         </div>
 
@@ -3251,7 +3251,7 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
                     <ClipboardList className="w-3.5 h-3.5 text-slate-400" /> Diretrizes de Orientacao e Cuidados
                   </p>
                   <p className="text-slate-600 font-semibold leading-relaxed bg-slate-50 px-3 py-2.5 rounded-xl border border-slate-100 text-[11px]">
-                    {selectedStudentForDetail.planoCuidado || 'Incentivar atividades ludicas coletivas e checar hidratacao regular.'}
+                    {selectedStudentForDetail.planoDeCuidado || 'Incentivar atividades ludicas coletivas e checar hidratacao regular.'}
                   </p>
                 </div>
 
@@ -3262,7 +3262,7 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
                   </p>
                   <div className="bg-slate-50 px-3 py-2.5 rounded-xl border border-slate-100 flex justify-between items-center text-[11px] font-semibold text-slate-755">
                     <div>
-                      <p className="font-extrabold text-slate-800">{selectedStudentForDetail.medicoResponsavel?.nome || 'Dr(a). Nao Cadastrado'}</p>
+                      <p className="font-extrabold text-slate-800">{selectedStudentForDetail.medicoResponsavel?.nome || 'Dr(a). NaoCadastrado'}</p>
                       <p className="text-[9px] text-slate-400 font-bold">{selectedStudentForDetail.medicoResponsavel?.especialidade || 'Pediatria Geral'}</p>
                     </div>
                     <span className="text-[10px] text-slate-500 font-mono font-bold">{selectedStudentForDetail.medicoResponsavel?.telefone || ''}</span>
@@ -3569,7 +3569,7 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
                             
                             
                             <label className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-[10px] font-bold border border-slate-300 cursor-pointer transition-colors">
-                              <Upload className="w-3.5 h-3.5 text-slate-600" /> Enviar Foto do Computador/Celular
+                              <Upload className="w-3.5 h-3.5 text-slate-600" /> Enviar Foto doComputador/Celular
                               <input 
                                 type="file" 
                                 accept="image/*" 
@@ -3905,7 +3905,7 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
                 <span className="text-xl shrink-0 mt-0.5"> </span>
                 <div>
                   <h4 className="text-xs font-black text-rose-900 group-hover:text-rose-950">
-                    Opcao 2: Excluir Tudo (Limpar Historico Completo)
+                    Opcao 2: Excluir Tudo (Limpar HistoricoCompleto)
                   </h4>
                   <p className="text-[10px] text-rose-700/80 font-bold leading-normal mt-1">
                     Apaga permanentemente o cadastro do aluno e limpa do banco de dados qualquer registro de sono, fraldas, refeicoes, medicacoes ou incidentes associados a ele. Acao definitiva e irreversivel.

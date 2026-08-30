@@ -49,13 +49,13 @@ export const USUARIOS_SIMULADOS: Usuario[] = [
   // 3. Coordenadoras (2)
   {
     id: 'user_coordenador_1',
-    nome: 'Renata Vasconcelos (Coordenadora Pedagogica)',
+    nome: 'Renata Vasconcelos (Coordenadora Pedagógica)',
     email: 'renata.coord@escola.com',
     telefone: '(11) 98765-1010',
     tipo: 'coordenador',
-    parentesco: 'Coordenacao Pedagogica',
+    parentesco: 'Coordenacao Pedagógica',
     foto: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=150',
-    observacoes: 'Coordenadora Pedagogica da Educacao Infantil.',
+    observacoes: 'Coordenadora Pedagógica da Educacao Infantil.',
     pin: '1010'
   },
   {
@@ -230,7 +230,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
       parentesco: 'Mae',
       telefone: '(11) 98765-4321'
     },
-    planoCuidado: 'Oferecer agua regularmente e verificar troca de fralda.',
+    planoDeCuidado: 'Oferecer agua regularmente e verificar troca de fralda.',
     medicoResponsavel: {
       nome: 'Dra. Luana Peixoto',
       especialidade: 'Pediatra Geral',
@@ -252,7 +252,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
       parentesco: 'Pai',
       telefone: '(11) 95555-4440'
     },
-    planoCuidado: 'Estimulacao motora e alimentacao orientada.',
+    planoDeCuidado: 'Estimulacao motora e alimentacao orientada.',
     medicoResponsavel: {
       nome: 'Dr. Lucas Mendes',
       especialidade: 'Pediatra',
@@ -274,7 +274,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
       parentesco: 'Mae',
       telefone: '(11) 99823-3310'
     },
-    planoCuidado: 'Estimulacao sensorial e contacao de historias.',
+    planoDeCuidado: 'Estimulacao sensorial e contacao de historias.',
     medicoResponsavel: {
       nome: 'Dra. Patricia Faro',
       especialidade: 'Pediatra',
@@ -296,7 +296,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
       parentesco: 'Pai',
       telefone: '(11) 97123-4567'
     },
-    planoCuidado: 'Cuidados pos-alimentacao e sonecas regulares.',
+    planoDeCuidado: 'Cuidados pos-alimentacao e sonecas regulares.',
     medicoResponsavel: {
       nome: 'Dr. Marcos Santos',
       especialidade: 'Pediatra',
@@ -318,7 +318,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
       parentesco: 'Mae',
       telefone: '(11) 98321-7654'
     },
-    planoCuidado: 'Acolhimento afetivo e rotina de sono calma.',
+    planoDeCuidado: 'Acolhimento afetivo e rotina de sono calma.',
     medicoResponsavel: {
       nome: 'Dra. Fernanda Lins',
       especialidade: 'Pediatra',
@@ -342,7 +342,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
       parentesco: 'Mae',
       telefone: '(11) 98844-3322'
     },
-    planoCuidado: 'Incentivo para ir ao banheiro a cada 2h e atividades ludicas.',
+    planoDeCuidado: 'Incentivo para ir ao banheiro a cada 2h e atividades ludicas.',
     medicoResponsavel: {
       nome: 'Dr. Roberto Kardec',
       especialidade: 'Pediatra',
@@ -364,7 +364,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
       parentesco: 'Pai',
       telefone: '(11) 97711-2233'
     },
-    planoCuidado: 'Restricao a amendoim e estimulo psicomotor.',
+    planoDeCuidado: 'Restricao a amendoim e estimulo psicomotor.',
     medicoResponsavel: {
       nome: 'Dra. Vanessa Luz',
       especialidade: 'Pediatra',
@@ -386,7 +386,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
       parentesco: 'Mae',
       telefone: '(11) 96622-3344'
     },
-    planoCuidado: 'Manter ambiente arejado e hidratacao frequente.',
+    planoDeCuidado: 'Manter ambiente arejado e hidratacao frequente.',
     medicoResponsavel: {
       nome: 'Dr. Lucas Mendes',
       especialidade: 'Alergista Pediatrico',
@@ -408,7 +408,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
       parentesco: 'Pai',
       telefone: '(11) 95533-4455'
     },
-    planoCuidado: 'Atividades em grupo e jogos motores.',
+    planoDeCuidado: 'Atividades em grupo e jogos motores.',
     medicoResponsavel: {
       nome: 'Dra. Luana Peixoto',
       especialidade: 'Pediatra',
@@ -430,7 +430,7 @@ export const IDOSOS_INICIAIS: Idoso[] = [
       parentesco: 'Mae',
       telefone: '(11) 94455-6677'
     },
-    planoCuidado: 'Desenvolvimento socioemocional e brincadeiras coletivas.',
+    planoDeCuidado: 'Desenvolvimento socioemocional e brincadeiras coletivas.',
     medicoResponsavel: {
       nome: 'Dra. Patricia Faro',
       especialidade: 'Pediatra',

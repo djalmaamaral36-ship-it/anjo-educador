@@ -311,7 +311,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
     setNewFamCrianca('');
     setCrmNewFamilyModal(false);
 
-    setCrmToast(`  Familia de ${newFamMae} (${newFamCrianca}) cadastrada com sucesso no CRM Bauru!`);
+    setCrmToast(`  Familia de ${newFamMae} (${newFamCrianca}) cadastrada com sucesso noCRM Bauru!`);
     setTimeout(() => setCrmToast(null), 4000);
   };
 
@@ -459,7 +459,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
   const getJourneyMessage = (day: 1 | 15 | 25 | 30, record: ConsentRecord) => {
     const usuarioNome = record.usuarioNome;
     const idosoNome = record.idosoNome;
-    const appName = record.modoApp.toLowerCase().includes('escolar') ? 'Anjinho Escolar' : 'Anjo Cuidador';
+    const appName = record.modoApp.toLowerCase().includes('escolar') ? 'Anjinho Escolar' : 'AnjoCuidador';
     const priceFormatted = getSubValorForConsent(record).toFixed(2).replace('.', ',');
     
     if (day === 1) {
@@ -480,7 +480,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
     
     const usuarioNome = billingModalUser.usuarioNome;
     const idosoNome = billingModalUser.idosoNome;
-    const appName = billingModalUser.modoApp === 'escolar_infantil' ? 'Anjinho Escolar' : 'Anjo Cuidador';
+    const appName = billingModalUser.modoApp === 'escolar_infantil' ? 'Anjinho Escolar' : 'AnjoCuidador';
     const priceFormatted = getSubValorForConsent(billingModalUser).toFixed(2).replace('.', ',');
     
     let template = '';
@@ -624,7 +624,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           usuarioTipo: 'admin',
           idosoNome: 'Dona Maria de Souza',
           dataConsentimento: new Date(Date.now() - 3600000 * 24).toLocaleString('pt-BR'),
-          modoApp: '  Anjo Cuidador',
+          modoApp: '  AnjoCuidador',
           deviceFingerprint: 'IP 189.14.88.221 (SSL   Android 14)',
           statusFinanceiro: 'pago'
         },
@@ -636,7 +636,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           usuarioTipo: 'cuidador',
           idosoNome: 'Dona Maria de Souza',
           dataConsentimento: new Date(Date.now() - 3600000 * 48).toLocaleString('pt-BR'),
-          modoApp: '  Anjo Cuidador',
+          modoApp: '  AnjoCuidador',
           deviceFingerprint: 'IP 177.33.102.13 (SSL   iOS 17)',
           statusFinanceiro: 'pago'
         },
@@ -648,7 +648,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
           usuarioTipo: 'familiar',
           idosoNome: 'Seu Joao Alencar',
           dataConsentimento: new Date(Date.now() - 3600000 * 12).toLocaleString('pt-BR'),
-          modoApp: '  Anjo Cuidador',
+          modoApp: '  AnjoCuidador',
           deviceFingerprint: 'IP 200.180.2.49 (SSL   Windows 11)',
           statusFinanceiro: 'atrasado'
         }
@@ -739,7 +739,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
       "Telefone WhatsApp",
       "Funcao",
       "Idoso Assistido",
-      "Data e Hora do Consentimento",
+      "Data e Hora doConsentimento",
       "Ambiente de Uso",
       "ID Digital (Dispositivo/IP)",
       "Adimplencia Financeira"
@@ -1974,7 +1974,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                 <span> </span> Estrategia Recomendada
               </div>
               <p className="text-[11px] text-slate-500 leading-relaxed">
-                Recomendamos imprimir um pequeno display acrilico para o balcao com a frase: <strong className="text-indigo-600">"Conecte sua familia com o cuidado que ela merece. Escaneie e ganhe 10 dias de teste gratis no aplicativo oficial Anjo Cuidador."</strong>
+                Recomendamos imprimir um pequeno display acrilico para o balcao com a frase: <strong className="text-indigo-600">"Conecte sua familia com o cuidado que ela merece. Escaneie e ganhe 10 dias de teste gratis no aplicativo oficial AnjoCuidador."</strong>
               </p>
             </div>
 
@@ -2064,7 +2064,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                         : isDark ? 'border-slate-700 text-slate-350 hover:bg-slate-750' : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-100'
                     }`}
                   >
-                      Anjo Cuidador
+                      AnjoCuidador
                   </button>
                   <button
                     onClick={() => setQrTargetMode('escolar_infantil')}
@@ -2203,7 +2203,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
                 Como Integrar de forma 100% Automatica com o Google Sheets?
             </h4>
             <p className="text-slate-500 text-xs leading-relaxed max-w-2xl font-medium">
-              Sua ideia de mandar automaticamente para a planilha e excelente! No mundo real, voce nao precisa exportar manualmente o arquivo CSV toda hora. Nos fazemos as informacoes se comunicarem de forma fluida.
+              Sua ideia de mandar automaticamente para a planilha e excelente! No mundo real, voce nao precisa exportar manualmente o arquivoCSV toda hora. Nos fazemos as informacoes se comunicarem de forma fluida.
             </p>
           </div>
 
@@ -2234,7 +2234,7 @@ export default function AdminPanel({ accessibilitySettings, triggerWhatsAppSim, 
 
             <div className="relative">
               <pre className="p-4 bg-slate-950 rounded-xl overflow-x-auto text-[11px] font-mono leading-relaxed text-emerald-400">
-{`// Codigo real de sincronizacao em segundo plano (Webhook automatico):
+{`// Codigo real de sincronização em segundo plano (Webhook automatico):
 async function enviarParaGoogleSheets(dadosConsentimento) {
   try {
     const webhookURL = "https://hook.us1.make.com/sua-chave-webhook-sheets";
@@ -2259,7 +2259,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
       console.log("Planilha do Google atualizada automaticamente!");
     }
   } catch (error) {
-    console.warn("Falha ao comunicar com Google Planilhas. Sincronizacao offline retentara em breve.", error);
+    console.warn("Falha ao comunicar com Google Planilhas. Sincronização offline retentara em breve.", error);
   }
 }`}
               </pre>
@@ -2495,7 +2495,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                       <td className="p-4">
                         <div className="space-y-1 font-bold text-slate-650">
                           {item.temperatura ? (
-                            <p className="flex items-center gap-1"><span className="text-red-500"> </span> {item.temperatura} oC</p>
+                            <p className="flex items-center gap-1"><span className="text-red-500"> </span> {item.temperatura} °C</p>
                           ) : null}
                           {isEscolarFun || isEscolarInf ? (
                             <>
@@ -3154,7 +3154,7 @@ async function enviarParaGoogleSheets(dadosConsentimento) {
                   type="submit"
                   className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black shadow-md transition-all cursor-pointer"
                 >
-                  Salvar no CRM Bauru
+                  Salvar noCRM Bauru
                 </button>
               </div>
             </form>

@@ -739,7 +739,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs font-black text-slate-900 dark:text-white leading-tight">
-                      Foto do Card
+                      Foto doCard
                     </p>
                     <p className="text-[9px] text-slate-500 font-semibold truncate">
                       {activePhotoUrl ? 'Foto anexada ao card' : 'Sem foto anexada ao evento'}
@@ -890,7 +890,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                   <span className="text-[10px] font-black uppercase tracking-wider">Seguranca & Legislacao (LGPD)</span>
                 </div>
                 <p className="text-[10px] text-slate-700 dark:text-slate-300 leading-relaxed font-semibold">
-                  <strong>Sim, e 100% permitido</strong> divulgar conquistas escolares com a autorizacao do responsavel (Artigo 14 da LGPD).
+                  <strong>Sim, e 100% permitido</strong> divulgar conquistas escolares com a autorizacao do responsavel (Artigo 🍼 da LGPD).
                 </p>
               </div>
 
@@ -943,7 +943,7 @@ ${customNote ? `\n  *Recadinho:* ${customNote}` : ''}
                   {downloading ? (
                     <>
                       <span className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Criando Card...
+                      CriandoCard...
                     </>
                   ) : (
                     <>

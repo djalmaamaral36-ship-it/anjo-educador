@@ -39,7 +39,7 @@ export default function Medications({
 }: MedicationsProps) {
   const appMode = localStorage.getItem('anjo_app_mode') || 'idoso';
   const isEscolar = appMode === 'escolar_infantil' || appMode === 'escolar_fundamental';
-  const prefixApp = isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador';
+  const prefixApp = isEscolar ? 'Anjinho Escolar' : 'AnjoCuidador';
 
   const renderAuthBadge = () => {
     const auth = checkFeedingCareAuthorization();
@@ -224,7 +224,7 @@ export default function Medications({
 
     // WhatsApp Simulation dispatch
     const alertMsg = `${prefixApp}: Novo medicamento "${novoMedicamento.nome}" (${novoMedicamento.dosagem}) programado por ${isEscolar && usuarioAtual.tipo !== 'familiar' && usuarioAtual.tipo !== 'admin' ? 'Profa ' : ''}${usuarioAtual.nome} para os horarios ${compiledHorarios.join(' e ')}.`;
-    triggerWhatsAppSim('Novo Medicamento Cadastrado', alertMsg);
+    triggerWhatsAppSim('Novo MedicamentoCadastrado', alertMsg);
 
     // Dispatch global sync events so Professor / Caregiver Dashboard reloads immediately
     if (typeof window !== 'undefined') {
@@ -495,7 +495,7 @@ export default function Medications({
         
         if (nextStatus === 'concluido') {
           triggerWhatsAppSim(
-            isEscolar ? 'Remedio Administrado' : 'Medicacao Confirmada',
+            isEscolar ? 'Remedio Administrado' : 'MedicacaoConfirmada',
             `${prefixApp}: ${idoso.nome} tomou o medicamento "${titleName}" as ${getNowTimeBr()}, confirmado por ${usuarioAtual.nome}.`
           );
         }

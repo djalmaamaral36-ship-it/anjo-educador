@@ -1,6 +1,6 @@
 /**
  * indexedDB.ts
- * Implementacao de fila local resiliente com IndexedDB para o Anjo Cuidador.
+ * Implementacao de fila local resiliente com IndexedDB para o AnjoCuidador.
  * Mantem os registros capturados offline seguros no dispositivo do cuidador.
  */
 
@@ -17,7 +17,7 @@ export interface ItemFilaOffline {
   horario_sincronizado_servidor?: string; // ISO String de quando subiu para o servidor
   observacao: string;
   modo_registro: 'online' | 'offline';
-  status_sincronizacao: 'pendente' | 'sincronizado';
+  status_sincronização: 'pendente' | 'sincronizado';
 }
 
 const DB_NAME = 'AnjoCuidadorLocalDB';
@@ -62,7 +62,7 @@ export function initOfflineDB(): Promise<IDBDatabase | null> {
 }
 
 /**
- * Adiciona um item na fila de sincronizacao offline (IndexedDB)
+ * Adiciona um item na fila de sincronização offline (IndexedDB)
  */
 export async function adicionarItemFila(item: ItemFilaOffline): Promise<boolean> {
   const db = await initOfflineDB();
@@ -99,14 +99,14 @@ export async function adicionarItemFila(item: ItemFilaOffline): Promise<boolean>
 }
 
 /**
- * Retorna todos os itens pendentes de sincronizacao
+ * Retorna todos os itens pendentes de sincronização
  */
 export async function obterItensPendentes(): Promise<ItemFilaOffline[]> {
   const db = await initOfflineDB();
   if (!db) {
     try {
       const local = JSON.parse(localStorage.getItem('anjo_fila_offline_fallback') || '[]');
-      return local.filter((x: ItemFilaOffline) => x.status_sincronizacao === 'pendente');
+      return local.filter((x: ItemFilaOffline) => x.status_sincronização === 'pendente');
     } catch (e) {
       return [];
     }
@@ -120,7 +120,7 @@ export async function obterItensPendentes(): Promise<ItemFilaOffline[]> {
 
       request.onsuccess = (event: any) => {
         const todos = event.target.result as ItemFilaOffline[];
-        resolve(todos.filter(item => item.status_sincronizacao === 'pendente'));
+        resolve(todos.filter(item => item.status_sincronização === 'pendente'));
       };
 
       request.onerror = () => {
@@ -140,7 +140,7 @@ export async function obterItensSincronizados(): Promise<ItemFilaOffline[]> {
   if (!db) {
     try {
       const local = JSON.parse(localStorage.getItem('anjo_fila_offline_fallback') || '[]');
-      return local.filter((x: ItemFilaOffline) => x.status_sincronizacao === 'sincronizado');
+      return local.filter((x: ItemFilaOffline) => x.status_sincronização === 'sincronizado');
     } catch (e) {
       return [];
     }
@@ -154,7 +154,7 @@ export async function obterItensSincronizados(): Promise<ItemFilaOffline[]> {
 
       request.onsuccess = (event: any) => {
         const todos = event.target.result as ItemFilaOffline[];
-        resolve(todos.filter(item => item.status_sincronizacao === 'sincronizado'));
+        resolve(todos.filter(item => item.status_sincronização === 'sincronizado'));
       };
 
       request.onerror = () => {
@@ -178,7 +178,7 @@ export async function atualizarStatusSincronizado(idLocal: string, servidorTime:
         if (x.id_local === idLocal) {
           return {
             ...x,
-            status_sincronizacao: 'sincronizado' as const,
+            status_sincronização: 'sincronizado' as const,
             horario_sincronizado_servidor: servidorTime
           };
         }
@@ -200,7 +200,7 @@ export async function atualizarStatusSincronizado(idLocal: string, servidorTime:
       getRequest.onsuccess = (event: any) => {
         const item = event.target.result as ItemFilaOffline;
         if (item) {
-          item.status_sincronizacao = 'sincronizado';
+          item.status_sincronização = 'sincronizado';
           item.horario_sincronizado_servidor = servidorTime;
           
           const updateRequest = store.put(item);

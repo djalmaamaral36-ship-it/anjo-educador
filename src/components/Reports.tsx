@@ -264,11 +264,11 @@ export default function Reports({ idoso, accessibilitySettings, keyTrigger, trig
       msgSinais = isEscolar
         ? `  Periodo de Sono/Soneca: ${ultimoSinal.pressaoArterial}
   Fraldas e Trocas (Urina/Fezes): ${ultimoSinal.fralda || 'Verificada e limpa'}
-  Temperatura Corporal: ${ultimoSinal.temperatura}oC
+  Temperatura Corporal: ${ultimoSinal.temperatura}°C
   Copos d'Agua oferecidos: ${coposCount} copo(s) (${totalMl}ml total de agua)`
         : `  Pressao Arterial: ${ultimoSinal.pressaoArterial} mmHg (as ${ultimoSinal.horario})
   Glicemia Capilar: ${ultimoSinal.glicemia} mg/dL (${ultimoSinal.tipoGlicemia || 'casual'})
-  Temperatura Corporal: ${ultimoSinal.temperatura}oC
+  Temperatura Corporal: ${ultimoSinal.temperatura}°C
   Freq. Cardiaca: ${ultimoSinal.frequenciaCardiaca} bpm
   Saturacao de O2: ${ultimoSinal.saturacao}%`;
     }
@@ -385,7 +385,7 @@ ${routinesLabel}
 ${msgRotinas}${obsTxt}
 
 ___
-  Relatorio gerado no aplicativo *Anjo Cuidador*.`;
+  Relatorio gerado no aplicativo *AnjoCuidador*.`;
   };
 
   const handleCopy = () => {
@@ -542,7 +542,7 @@ ___
           </div>
 
           <div className="text-center py-4 border-b border-soft-gray space-y-2">
-            <h1 className="text-2xl font-black text-slate-800 uppercase tracking-widest">{isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}</h1>
+            <h1 className="text-2xl font-black text-slate-800 uppercase tracking-widest">{isEscolar ? 'Anjinho Escolar' : 'AnjoCuidador'}</h1>
             <p className="text-xs text-slate-400">{isEscolar ? 'Relatorio Pedagogico Unificado de Atividades e Rotinas' : 'Relatorio Medico Unificado de Rotinas e Sinais Vitais'}</p>
             <div className="inline-flex gap-4 text-xs font-semibold text-slate-705">
               <span>{isEscolar ? 'Crianca/Aluno(a):' : 'Paciente:'} <strong className="text-slate-900 font-bold">{idoso.nome}</strong></span>
@@ -563,7 +563,7 @@ ___
             <div className="space-y-2">
               <h3 className="font-bold border-b pb-1 text-slate-800">{isEscolar ? 'Recomendacoes e Instrucoes dos Pais' : 'Instrucoes de Cuidados Atuais'}</h3>
               <p className="text-xs text-slate-600 italic">
-                "{idoso.planoCuidado}"
+                "{idoso.planoDeCuidado}"
               </p>
             </div>
           </div>
@@ -606,7 +606,7 @@ ___
                       <>
                         <td className="p-2 font-bold text-slate-700">{s.pressaoArterial}</td>
                         <td className="p-2 font-bold text-slate-700">{s.fralda || 'Verificada'}</td>
-                        <td className="p-2">{s.temperatura} oC</td>
+                        <td className="p-2">{s.temperatura} °C</td>
                         <td className="p-2">{s.frequenciaCardiaca} u</td>
                         <td className="p-2 font-semibold text-emerald-800">{s.saturacao} copos</td>
                       </>
@@ -614,7 +614,7 @@ ___
                       <>
                         <td className="p-2 font-bold">{s.pressaoArterial} mmHg</td>
                         <td className="p-2 font-bold">{s.glicemia} mg/dL ({s.tipoGlicemia || 'casual'})</td>
-                        <td className="p-2">{s.temperatura} oC</td>
+                        <td className="p-2">{s.temperatura} °C</td>
                         <td className="p-2">{s.frequenciaCardiaca} bpm</td>
                         <td className="p-2 font-semibold text-emerald-800">{s.saturacao} %</td>
                       </>
@@ -652,12 +652,12 @@ ___
               </span>
             </div>
             <div className="text-right text-[9px] text-slate-400 font-medium">
-                2026 Anjinho Escolar / Anjo Cuidador   Protegido pelas Leis 9.609/98 e 9.610/98   Autoria Registrada
+                2026 Anjinho Escolar / AnjoCuidador   Protegido pelas Leis 9.609/98 e 9.610/98   Autoria Registrada
             </div>
           </div>
 
           <p className="text-[10px] text-slate-400 text-center italic pt-1">
-            {isEscolar ? 'Anjinho Escolar - Onde os primeiros capitulos da inf sao guardados com amor.' : 'Anjo Cuidador - Cuidado, presenca e tranquilidade para quem voce ama.'} Relatorio compilado eletronicamente em {new Date().toLocaleDateString('pt-BR')}.
+            {isEscolar ? 'Anjinho Escolar - Onde os primeiros capitulos da inf sao guardados com amor.' : 'AnjoCuidador - Cuidado, presença e tranquilidade para quem voce ama.'} Relatorio compilado eletronicamente em {new Date().toLocaleDateString('pt-BR')}.
           </p>
         </div>
       )}
@@ -923,7 +923,7 @@ ___
                 <div>
                   <h4 className="font-extrabold text-slate-850 flex items-center gap-2 text-base">
                     <Scale className="w-5 h-5 text-indigo-600 animate-bounce" />
-                    Controle e Evolucao de Peso Corporal (Acompanhamento Geral)
+                    Controle e Evolucao de PesoCorporal (Acompanhamento Geral)
                   </h4>
                   <p className="text-xs text-slate-500">
                     {isEscolar 
@@ -976,7 +976,7 @@ ___
                         {trendIcon}
                       </div>
                       <div className="space-y-0.5">
-                        <span className="text-[10px] font-black uppercase tracking-wider opacity-65 block">Rastreabilidade / Variacao Corporal</span>
+                        <span className="text-[10px] font-black uppercase tracking-wider opacity-65 block">Rastreabilidade / VariacaoCorporal</span>
                         <p className="text-xs font-black">{diagnosisText}</p>
                       </div>
                     </div>
@@ -1300,7 +1300,7 @@ ___
                     </div>
                     <div className="flex-1 min-w-0">
                       <h4 className="text-sm font-bold text-white leading-tight truncate">Grupo de Cuidados - {idoso.nome.split(' ')[0]}</h4>
-                      <p className="text-[10px] text-emerald-200 leading-none">Visto por ultimo hoje   Anjo Cuidador</p>
+                      <p className="text-[10px] text-emerald-200 leading-none">Visto por ultimo hoje   AnjoCuidador</p>
                     </div>
                   </div>
 

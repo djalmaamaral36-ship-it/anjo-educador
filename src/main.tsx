@@ -9,12 +9,12 @@ if ('serviceWorker' in navigator && import.meta.env.PROD) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then(reg => {
-        console.log('Anjo Cuidador PWA: Service Worker registered successfully!', reg.scope);
+        console.log('AnjoCuidador PWA: Service Worker registered successfully!', reg.scope);
         // Force service worker update checks on loaded navigation to bypass browser caching of index
         reg.update();
       })
       .catch(err => {
-        console.error('Anjo Cuidador PWA: Service Worker registration failed:', err);
+        console.error('AnjoCuidador PWA: Service Worker registration failed:', err);
       });
   });
 }

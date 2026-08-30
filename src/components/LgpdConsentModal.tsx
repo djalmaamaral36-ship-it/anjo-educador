@@ -133,7 +133,7 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
             </p>
             <p className="font-bold text-slate-700">Direito de Revogacao de Consentimento:</p>
             <p>
-              O titular ou seu tutor pode solicitar o relatorio integral de logs, a portabilidade das informacoes ou a exclusao parcial de dados historicos diretamente aos canais administrativos do {isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'} a qualquer momento.
+              O titular ou seu tutor pode solicitar o relatorio integral de logs, a portabilidade das informacoes ou a exclusao parcial de dados historicos diretamente aos canais administrativos do {isEscolar ? 'Anjinho Escolar' : 'AnjoCuidador'} a qualquer momento.
             </p>
           </div>
         </div>
@@ -206,7 +206,7 @@ export function LgpdConsentModal({ onAccept, seniorName }: LgpdConsentModalProps
               </div>
             </div>
             <span className="text-xs text-slate-700 font-medium select-none leading-normal">
-              Concordo com os Termos de Uso e Politica de Privacidade do {isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'} e aceito o registro de auditoria de acessos via WhatsApp.
+              Concordo com os Termos de Uso e Politica de Privacidade do {isEscolar ? 'Anjinho Escolar' : 'AnjoCuidador'} e aceito o registro de auditoria de acessos via WhatsApp.
             </span>
           </label>
 

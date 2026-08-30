@@ -23,7 +23,7 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Anjo Cuidador ErrorBoundary capturou um erro:', error, errorInfo);
+    console.error('AnjoCuidador ErrorBoundary capturou um erro:', error, errorInfo);
   }
 
   handleReload = () => {

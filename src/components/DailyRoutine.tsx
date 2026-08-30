@@ -3,7 +3,7 @@ import { Idoso, Usuario, TarefaDiaria, RegistroAlimentacao, RegistroHidratacao, 
 import { getFromDB, saveToDB, checkFeedingCareAuthorization, compressImage, SALAS_INICIAIS, getShiftActiveState, setShiftActiveState, getNowTimeBr, checkBottleFeedingInterval, registerBottleAttemptNotice, isTodayOrDemoDate, purgeOrphanedStudentData, saveHygieneLog, getHygieneLog, saveMealRecord, getStudentMealsToday, isStudentIdMatch } from '../data';
 import { deleteStudentDataFromFirestore, deleteBatchFromFirestore } from '../firebase';
 import { VoiceInput } from './VoiceInput';
-import { parseAuraRawPlan, formatAuraTaskTitle, inferTaskType, realignPedagogicalActivity, isConversationalChatNoise, findMatchingMealTask } from '../utils/auraPlanParser';
+import { parseAuraRawPlan, formatAuraTaskTitle, inferTaskType, realignPedagógicalActivity, isConversationalChatNoise, findMatchingMealTask } from '../utils/auraPlanParser';
 import { 
   Coffee, 
   Droplets, 
@@ -642,7 +642,7 @@ export default function DailyRoutine({
     // Simulated WhatsApp Alerts
     const acceptText = mealForm.aceitacao === 'muito_bem' ? 'muito bem' : mealForm.aceitacao === 'pouco' ? 'muito pouco' : 'recusou a refeicao';
     const totalBottlesText = mealForm.refeicao === 'mamadeira' ? ` (Total do dia: ${totalBottlesToday} mamadeira(s))` : '';
-    const alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Registro de Alimentacao para ${idoso.nome}. Refeicao: ${mealLabelMap[mealForm.refeicao] || mealForm.refeicao}${novoFeed.quantidadeMl ? ` (${novoFeed.quantidadeMl}ml)` : ''} as ${novoFeed.horario}. Aceitacao: ${acceptText}.${totalBottlesText} Nota: "${novoFeed.observacoes || 'Sem observacoes'}", registrado por ${usuarioAtual.nome}.`;
+    const alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'AnjoCuidador'}: Registro de Alimentacao para ${idoso.nome}. Refeicao: ${mealLabelMap[mealForm.refeicao] || mealForm.refeicao}${novoFeed.quantidadeMl ? ` (${novoFeed.quantidadeMl}ml)` : ''} as ${novoFeed.horario}. Aceitacao: ${acceptText}.${totalBottlesText} Nota: "${novoFeed.observacoes || 'Sem observacoes'}", registrado por ${usuarioAtual.nome}.`;
     triggerWhatsAppSim('Acompanhamento Alimentar', alertMsg);
 
     setMealForm({ refeicao: isEscolar ? 'mamadeira' : 'cafe_manha', aceitacao: 'muito_bem', observacoes: '', quantidadeMl: mealForm.quantidadeMl || 180 });
@@ -723,7 +723,7 @@ export default function DailyRoutine({
     });
     saveToDB('anjo_tarefas_diarias', updatedTasks);
 
-    const alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Registro de Higiene para ${idoso.nome}. Banho realizado com sucesso assistido por ${usuarioAtual.nome}. Higiene bucal e hidratacao da pele concluidas. Obs: ${hygieneForm.obs || 'Nenhuma anormalidade na pele.'}`;
+    const alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'AnjoCuidador'}: Registro de Higiene para ${idoso.nome}. Banho realizado com sucesso assistido por ${usuarioAtual.nome}. Higiene bucal e hidratacao da pele concluidas. Obs: ${hygieneForm.obs || 'Nenhuma anormalidade na pele.'}`;
     triggerWhatsAppSim('Higiene & Banho', alertMsg);
 
     setHygieneForm({ banho: true, higieneBucal: true, trocaRoupa: true, trocaFralda: false, pele: true, obs: '' });
@@ -790,7 +790,7 @@ export default function DailyRoutine({
     // simulated dispatch
     triggerWhatsAppSim(
       'Hidratacao Registrada',
-      `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: ${idoso.nome} bebeu mais um copo de agua (${cupsMl}ml). Total acumulado hoje: ${totalMlNow}ml de uma meta de 1500ml. Registrado por ${usuarioAtual.nome}.`
+      `${isEscolar ? 'Anjinho Escolar' : 'AnjoCuidador'}: ${idoso.nome} bebeu mais um copo de agua (${cupsMl}ml). Total acumulado hoje: ${totalMlNow}ml de uma meta de 1500ml. Registrado por ${usuarioAtual.nome}.`
     );
 
     // Dispatch global events to sync other screens (including Reports & dashboard)
@@ -881,7 +881,7 @@ export default function DailyRoutine({
     }
 
     // Alerts
-    const alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Registro de Sono de ${idoso.nome}. Dormiu as ${sleepForm.dormiuEm}, acordou as ${sleepForm.acordouEm}. Total de ${horasProntas} horas sob qualidade "${sleepForm.qualidade.toUpperCase()}". ${sleepForm.interrupcoes} interrupcoes registradas. Nota: "${sleepForm.obs || 'Noite calma'}"`;
+    const alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'AnjoCuidador'}: Registro de Sono de ${idoso.nome}. Dormiu as ${sleepForm.dormiuEm}, acordou as ${sleepForm.acordouEm}. Total de ${horasProntas} horas sob qualidade "${sleepForm.qualidade.toUpperCase()}". ${sleepForm.interrupcoes} interrupcoes registradas. Nota: "${sleepForm.obs || 'Noite calma'}"`;
     triggerWhatsAppSim('Acompanhamento do Sono', alertMsg);
 
     setSleepForm({ 
@@ -942,8 +942,8 @@ export default function DailyRoutine({
     saveToDB('anjo_tarefas_diarias', updatedTasks);
 
     // Alerts
-    const alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Registro de Humor de ${idoso.nome}. Estado comportamental observado: ${humorForm.estado.toUpperCase()}. Nota: "${humorForm.obs || 'Sem anormalidades'}", registrado por ${usuarioAtual.nome}.`;
-    triggerWhatsAppSim('Acompanhamento Comportamental', alertMsg);
+    const alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'AnjoCuidador'}: Registro de Humor de ${idoso.nome}. Estado comportamental observado: ${humorForm.estado.toUpperCase()}. Nota: "${humorForm.obs || 'Sem anormalidades'}", registrado por ${usuarioAtual.nome}.`;
+    triggerWhatsAppSim('AcompanhamentoComportamental', alertMsg);
 
     setHumorForm({ estado: 'calmo', obs: '' });
     alert('Comportamento e humor salvos!');
@@ -1061,7 +1061,7 @@ export default function DailyRoutine({
         data: new Date().toLocaleString('pt-BR'),
         ip: '189.44.120.' + Math.floor(Math.random() * 254 + 1),
         acao: isEscolar 
-          ? (activityScope === 'coletivo' ? `Registrou atividade pedagogica coletiva: ${activityForm.tipo}` : `Registrou atividade pedagogica individual: ${activityForm.tipo}`)
+          ? (activityScope === 'coletivo' ? `Registrou atividade pedagógica coletiva: ${activityForm.tipo}` : `Registrou atividade pedagógica individual: ${activityForm.tipo}`)
           : `Registrou atividade diaria: ${activityForm.tipo}`,
         detalhes: `Atividade realizada por ${activityForm.duracao} minutos. Obs: ${activityForm.obs || 'Nenhuma'}`
       });
@@ -1072,9 +1072,9 @@ export default function DailyRoutine({
     const detailsExtra = activityForm.fotoTrabalhinho ? " [Foto do trabalhinho registrada com sucesso!] " : "";
     let alertMsg = "";
     if (isEscolar && activityScope === 'coletivo') {
-      alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Atividade Coletiva de ${activityForm.tipo} realizada por toda a classe (${currentClassroom}) por ${activityForm.duracao} minutos. Obs: "${activityForm.obs || 'Realizado com esforco positivo'}"${detailsExtra}`;
+      alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'AnjoCuidador'}: Atividade Coletiva de ${activityForm.tipo} realizada por toda a classe (${currentClassroom}) por ${activityForm.duracao} minutos. Obs: "${activityForm.obs || 'Realizado com esforco positivo'}"${detailsExtra}`;
     } else {
-      alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Registro de Atividade para ${idoso.nome}. Realizou "${activityForm.tipo}" por ${activityForm.duracao} minutos. Obs: "${activityForm.obs || 'Realizado com esforco positivo'}"${detailsExtra}`;
+      alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'AnjoCuidador'}: Registro de Atividade para ${idoso.nome}. Realizou "${activityForm.tipo}" por ${activityForm.duracao} minutos. Obs: "${activityForm.obs || 'Realizado com esforco positivo'}"${detailsExtra}`;
     }
     triggerWhatsAppSim('Acompanhamento de Atividades', alertMsg);
 
@@ -1089,7 +1089,7 @@ export default function DailyRoutine({
     if (isEscolar && activityScope === 'coletivo') {
       alert(`  Atividade coletiva registrada com sucesso para todos os ${createdCount} alunos da sala!`);
     } else {
-      alert(isEscolar ? 'Atividade pedagogica e registro salvos com sucesso!' : 'Atividade diaria salva com sucesso!');
+      alert(isEscolar ? 'Atividade pedagógica e registro salvos com sucesso!' : 'Atividade diaria salva com sucesso!');
     }
     loadTrackerData();
   };
@@ -1155,7 +1155,7 @@ export default function DailyRoutine({
         }
 
         const formattedList = data.activities.map((a: any) => {
-          const rawTitle = typeof a.title === 'string' ? a.title : (typeof a.tipo === 'string' ? a.tipo : 'Atividade Pedagogica');
+          const rawTitle = typeof a.title === 'string' ? a.title : (typeof a.tipo === 'string' ? a.tipo : 'Atividade Pedagógica');
           const cleanTitle = formatAuraTaskTitle(rawTitle, '', '');
           const safeDuration = typeof a.duration === 'number' ? a.duration : (parseInt(String(a.duration || '30'), 10) || 30);
           
@@ -1267,7 +1267,7 @@ export default function DailyRoutine({
     const seenDailyKeys = new Set<string>();
 
     dailyActsToApply.forEach((planItem, planIdx) => {
-      const { title: alignedTitle, tipo: detectedType } = realignPedagogicalActivity(
+      const { title: alignedTitle, tipo: detectedType } = realignPedagógicalActivity(
         planItem.tipo, 
         planItem.obs || '', 
         planItem.horario || '09:00', 
@@ -1341,7 +1341,7 @@ export default function DailyRoutine({
       ? (isUserTeacher ? `Profa. ${usuarioAtual.nome}` : `Pais de ${idoso.nome}`)
       : (isUserTeacher ? `Cuidador(a) ${usuarioAtual.nome}` : `Familia de ${idoso.nome}`);
     
-    const alertMsg = `${isEscolar ? 'Anjo Escolar' : 'Anjo Cuidador'}: Novo recado de ${senderDescription}. Categoria: ${newRecadoForm.categoria.toUpperCase()}. Mensagem: "${newRecadoForm.mensagem}"`;
+    const alertMsg = `${isEscolar ? 'Anjo Escolar' : 'AnjoCuidador'}: Novo recado de ${senderDescription}. Categoria: ${newRecadoForm.categoria.toUpperCase()}. Mensagem: "${newRecadoForm.mensagem}"`;
     triggerWhatsAppSim(isEscolar ? 'Diario Escolar / Recado' : 'Acompanhamento / Recado', alertMsg);
 
     setNewRecadoForm({ mensagem: '', categoria: 'geral' });
@@ -1411,7 +1411,7 @@ export default function DailyRoutine({
           </h2>
           <p className="text-sm text-slate-500">
             {isEscolar 
-              ? 'Acompanhe as rotinas, atividades pedagogicas e recados do aluno em tempo real.' 
+              ? 'Acompanhe as rotinas, atividades pedagógicas e recados do aluno em tempo real.' 
               : 'Selecione uma rotina para registrar o andamento do idoso.'}
           </p>
         </div>
@@ -1481,7 +1481,7 @@ export default function DailyRoutine({
         </button>
         <button onClick={() => setActiveTab('atividades')} className={getTabBtnClass('atividades')} id="btn-tab-atividades">
           <Activity className="w-4 h-4 sm:w-5 h-5 shrink-0" /> 
-          <span className="truncate">{isEscolar ? 'Atividade Pedagogica' : 'Atividade Fisica/Mental'}</span>
+          <span className="truncate">{isEscolar ? 'Atividade Pedagógica' : 'Atividade Fisica/Mental'}</span>
         </button>
         <button onClick={() => setActiveTab('recados')} className={getTabBtnClass('recados')} id="btn-tab-recados">
           <MessageSquare className="w-4 h-4 sm:w-5 h-5 shrink-0" /> 
@@ -1576,7 +1576,7 @@ export default function DailyRoutine({
                   {isEscolar ? 'Aluno(a) Marcado como Ausente Hoje' : 'Cliente Marcado como Ausente'}
                 </h4>
                 <p className="text-[11px] text-rose-800 leading-snug">
-                  Voce pode preencher a rotina normalmente. Ao salvar, a presenca sera reativada automaticamente.
+                  Voce pode preencher a rotina normalmente. Ao salvar, a presença sera reativada automaticamente.
                 </p>
               </div>
             </div>
@@ -2079,7 +2079,7 @@ export default function DailyRoutine({
                     <Award className="w-5 h-5 text-cyan-700" />
                   </div>
                   <div>
-                    <strong className="text-sm block font-bold leading-tight">Alerta de Hidratacao Constante</strong>
+                    <strong className="text-sm block font-bold leading-tight">Alerta de HidratacaoConstante</strong>
                     <span className="text-[11px] leading-relaxed block font-medium">Oferecer pequenas doses ao longo do dia, idealmente a cada 2 horas.</span>
                   </div>
                 </div>
@@ -2129,7 +2129,7 @@ export default function DailyRoutine({
                       className="py-3 px-2 border rounded-2xl transition-all cursor-pointer text-center group flex flex-col items-center gap-1 focus:ring-2 border-sky-200 hover:border-sky-300 bg-white hover:bg-sky-50/50 focus:ring-sky-300"
                     >
                       <Droplets className="w-5 h-5 text-sky-600 group-hover:scale-110 transition-transform" />
-                      <span className="text-[11px] font-bold text-slate-700 block">Copo Cheio</span>
+                      <span className="text-[11px] font-bold text-slate-700 block">CopoCheio</span>
                       <strong className="text-xs text-sky-700 font-mono font-black">200 ml</strong>
                     </button>
 
@@ -2507,7 +2507,7 @@ export default function DailyRoutine({
               </div>
               <div>
                 <h3 className="text-lg font-bold text-slate-800">
-                  {isEscolar ? 'Atividades Pedagogicas, Psicomotoras e Ludicas' : 'Atividades Fisicas e Estimulacao Cognitiva'}
+                  {isEscolar ? 'Atividades Pedagógicas, Psicomotoras e Ludicas' : 'Atividades Fisicas e EstimulacaoCognitiva'}
                 </h3>
                 <p className="text-xs text-slate-400">
                   {isEscolar 
@@ -2609,7 +2609,7 @@ Terca-feira:
                     <div className="bg-white p-4 rounded-xl border-2 border-indigo-200 shadow-xs space-y-2">
                       <div className="flex items-center justify-between border-b border-indigo-100 pb-2">
                         <h4 className="text-sm font-black text-indigo-950 flex items-center gap-1.5">
-                          <span> </span> Planejamento Diario: {parsedAuraMeta?.tema || 'Rotina Pedagogica'}
+                          <span> </span> Planejamento Diario: {parsedAuraMeta?.tema || 'Rotina Pedagógica'}
                         </h4>
                         <span className="text-[10px] font-bold px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-full border border-indigo-200">
                           {parsedWeeklyActivities.length} Atividades
@@ -3068,7 +3068,7 @@ Terca-feira:
               <p className="font-semibold mb-1">  Como funciona este Mural de Mao Dupla?</p>
               <p className="text-xs leading-relaxed text-slate-600">
                 Se os <strong>Pais</strong> escreverem, a <strong>Professora</strong> recebera um alerta em tempo real e dara visto. 
-                Se a <strong>Professora</strong> registrar uma tarefa pedagogica ou comportamento, os <strong>Pais</strong> receberao no WhatsApp! 
+                Se a <strong>Professora</strong> registrar uma tarefa pedagógica ou comportamento, os <strong>Pais</strong> receberao no WhatsApp! 
                 Seu perfil atual e: <span className="bg-white/80 px-2 py-0.5 rounded border font-bold text-slate-800 uppercase text-[10px]">{usuarioAtual.tipo} ({usuarioAtual.nome})</span>
               </p>
             </div>
@@ -3097,7 +3097,7 @@ Terca-feira:
                         <option value="geral">  Recado Geral</option>
                         <option value="saude_remedios">   Saude / Remedios</option>
                         <option value="alimentacao">  Alimentacao / Compras</option>
-                        <option value="intercorrencia">  Intercorrencia / Alerta</option>
+                        <option value="intercorrência">  Intercorrência / Alerta</option>
                       </>
                     )}
                   </select>
@@ -3171,8 +3171,8 @@ Terca-feira:
                           return <span className="bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">  Alimentacao</span>;
                         case 'pedagogico':
                           return <span className="bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">  Pedagogico</span>;
-                        case 'intercorrencia':
-                          return <span className="bg-rose-100 text-rose-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">  Intercorrencia</span>;
+                        case 'intercorrência':
+                          return <span className="bg-rose-100 text-rose-700 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">  Intercorrência</span>;
                         default:
                           return <span className="bg-slate-100 text-slate-650 px-2 py-0.5 rounded-md font-bold text-[9px] uppercase">  Comunicado</span>;
                       }
@@ -3340,7 +3340,7 @@ Terca-feira:
                           Nao existem fotos de trabalhinhos registradas {galleryFilter === 'aluno' ? `para ${idoso.nome}` : `para a sala ${currentClassroom}`} ate o momento. 
                         </p>
                         <p className="text-[11px] text-indigo-400 font-semibold bg-indigo-950/50 p-3 rounded-2xl border border-indigo-900/30">
-                            Dica: Ao registrar uma atividade pedagogica ou ludica na aba ao lado, voce pode bater foto do desenho ou pintura para que apareca nesta galeria!
+                            Dica: Ao registrar uma atividade pedagógica ou ludica na aba ao lado, voce pode bater foto do desenho ou pintura para que apareca nesta galeria!
                         </p>
                       </div>
                     );
@@ -3416,7 +3416,7 @@ Terca-feira:
                         {currentItem.observacoes ? (
                           <div className="space-y-1">
                             <span className="text-[10px] font-black uppercase text-indigo-600 tracking-widest block">
-                                Observacao Pedagogica
+                                Observacao Pedagógica
                             </span>
                             <p className="text-xs text-slate-650 italic bg-indigo-50/30 p-2.5 rounded-xl border border-dashed border-indigo-100 leading-relaxed">
                               "{currentItem.observacoes}"

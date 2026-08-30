@@ -1,5 +1,5 @@
 /**
- * Types & Interfaces for Anjo Cuidador
+ * Types & Interfaces for AnjoCuidador
  */
 
 export type UserType = 'admin' | 'familiar' | 'familiar_admin' | 'familiar_convidado' | 'cuidador' | 'professor' | 'coordenador' | 'diretor' | 'desenvolvedor' | 'profissional' | 'convidado' | string;
@@ -145,7 +145,7 @@ export const getRoleLabel = (user: { tipo?: string; nome?: string; parentesco?: 
     return isEscolar ? 'Direcao Escolar' : 'Administrador';
   }
   if (t === 'coordenador' || t === 'coordenadora' || (t === 'profissional' && isEscolar) || n.includes('coordenad') || id === 'user_medico_1') {
-    return isEscolar ? 'Coordenacao Pedagogica' : 'Profissional / Saude';
+    return isEscolar ? 'Coordenacao Pedagógica' : 'Profissional / Saude';
   }
   if (
     t === 'professor' ||
@@ -210,7 +210,7 @@ export interface Idoso {
     parentesco: string;
     telefone: string;
   };
-  planoCuidado: string;
+  planoDeCuidado: string;
   medicoResponsavel?: {
     nome: string;
     especialidade: string;
@@ -329,7 +329,7 @@ export interface RegistroAlimentacao {
 export interface RegistroAtividade {
   id: string;
   idosoId: string;
-  tipo: string; // e.g., 'Caminhada', 'Fisioterapia', 'Jogo Cognitivo', 'Banho de Sol'
+  tipo: string; // e.g., 'Caminhada', 'Fisioterapia', 'JogoCognitivo', 'Banho de Sol'
   duracaoMinutos: number;
   data: string;
   horario: string;

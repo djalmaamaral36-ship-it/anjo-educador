@@ -132,7 +132,7 @@ export default function SettingsPage({
     contatoFone: '',
     medicoNome: '',
     medicoFone: '',
-    planoCuidado: ''
+    planoDeCuidado: ''
   });
 
   const [savingMessage, setSavingMessage] = useState('');
@@ -396,7 +396,7 @@ export default function SettingsPage({
       contatoFone: idoso.contatoEmergencia.telefone,
       medicoNome: idoso.medicoResponsavel?.nome || '',
       medicoFone: idoso.medicoResponsavel?.telefone || '',
-      planoCuidado: idoso.planoCuidado
+      planoDeCuidado: idoso.planoDeCuidado
     });
   };
 
@@ -461,7 +461,7 @@ export default function SettingsPage({
             especialidade: sen.medicoResponsavel?.especialidade || (localStorage.getItem('anjo_app_mode') && localStorage.getItem('anjo_app_mode')!.startsWith('escolar') ? 'Pediatra' : 'Geriatra'),
             telefone: editedSenior.medicoFone
           },
-          planoCuidado: editedSenior.planoCuidado
+          planoDeCuidado: editedSenior.planoDeCuidado
         };
       }
       return sen;
@@ -1118,15 +1118,15 @@ export default function SettingsPage({
                   </label>
                   {isEditingSenior && (
                     <VoiceInput 
-                      onTranscript={text => setEditedSenior(prev => ({ ...prev, planoCuidado: prev.planoCuidado ? prev.planoCuidado + ' ' + text : text }))} 
+                      onTranscript={text => setEditedSenior(prev => ({ ...prev, planoDeCuidado: prev.planoDeCuidado ? prev.planoDeCuidado + ' ' + text : text }))} 
                       size="sm"
                     />
                   )}
                 </div>
                 <textarea 
                   rows={2}
-                  value={editedSenior.planoCuidado}
-                  onChange={e => setEditedSenior({ ...editedSenior, planoCuidado: e.target.value })}
+                  value={editedSenior.planoDeCuidado}
+                  onChange={e => setEditedSenior({ ...editedSenior, planoDeCuidado: e.target.value })}
                   disabled={!isEditingSenior}
                   className="w-full px-3 py-2 border border-slate-300 bg-slate-50 rounded-xl disabled:opacity-60 text-sm focus:ring-2 focus:ring-serene-blue/20"
                 ></textarea>
@@ -1336,7 +1336,7 @@ export default function SettingsPage({
                   <p className="text-slate-600 text-[11px]">
                     <strong>Autor Desenvolvedor:</strong> Djalma Amaral<br />
                     <strong>Gestao Institucional:</strong> Nilva Amaral<br />
-                    <strong>Plataforma:</strong> Anjinho Escolar / Anjo Cuidador SaaS
+                    <strong>Plataforma:</strong> Anjinho Escolar / AnjoCuidador SaaS
                   </p>
                 </div>
 
@@ -1437,7 +1437,7 @@ export default function SettingsPage({
                     className="p-3 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold text-xs rounded-xl shadow-xs flex items-center justify-center gap-2 transition cursor-pointer"
                   >
                     <Archive className="w-4 h-4" />
-                    <span>Baixar Projeto Completo (ZIP)</span>
+                    <span>Baixar ProjetoCompleto (ZIP)</span>
                   </button>
                 </div>
               </div>

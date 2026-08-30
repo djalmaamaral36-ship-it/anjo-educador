@@ -437,7 +437,7 @@ export default function EditProfileModal({
               >
                 <option value="familiar">    Familiar (Mae / Pai / Responsavel)</option>
                 <option value="professor">    Professor(a) / Educador(a)</option>
-                <option value="coordenador">    Coordenacao Pedagogica</option>
+                <option value="coordenador">    Coordenacao Pedagógica</option>
                 <option value="diretor">  Direcao Escolar / Gestao</option>
                 <option value="desenvolvedor">  Desenvolvedor Master</option>
               </select>

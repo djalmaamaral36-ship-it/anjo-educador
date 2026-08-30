@@ -115,7 +115,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
     { id: 'pilares', label: 'Pilares Emocionais', icon: <Star className="w-4 h-4" /> },
     { id: 'narrativa', label: 'Slogans & Narrativa', icon: <FileText className="w-4 h-4" /> },
     { id: 'experiencia', label: 'A Experiencia do Legado', icon: <Sparkles className="w-4 h-4" /> },
-    { id: 'metodo_arvore', label: 'Metodo Arvore da Inf', icon: <TreePine className="w-4 h-4" /> },
+    { id: 'metodo_árvore', label: 'Metodo Árvore da Inf', icon: <TreePine className="w-4 h-4" /> },
     { id: 'protecao_marca', label: 'BRAND-005 - Blindagem & IP  ', icon: <ShieldCheck className="w-4 h-4 text-emerald-500 font-bold" /> },
   ];
 
@@ -242,7 +242,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                   </div>
 
                   <p>
-                    Enquanto a concorrencia foca puramente no aspecto tecnico (gerenciar cobrancas, listar presencas, enviar avisos burocraticos frios), o <strong>Anjinho Escolar</strong> se posiciona no territorio emocional. Nosso compromisso e com a <strong>afetividade</strong>, a <strong>seguranca psicologica</strong> e o <strong>legado da inf</strong>.
+                    Enquanto a concorrencia foca puramente no aspecto tecnico (gerenciar cobrancas, listar presenças, enviar avisos burocraticos frios), o <strong>Anjinho Escolar</strong> se posiciona no territorio emocional. Nosso compromisso e com a <strong>afetividade</strong>, a <strong>seguranca psicologica</strong> e o <strong>legado da inf</strong>.
                   </p>
                 </div>
 
@@ -375,7 +375,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       <Lightbulb className="w-4 h-4 text-amber-300 animate-pulse" /> Nosso Posicionamento de Ouro:
                     </h4>
                     <p className="text-[11px] text-indigo-100 font-serif italic font-bold leading-relaxed mt-2">
-                      "Para a escola, somos a ferramenta de fidelizacao emocional definitiva e um selo de excelencia pedagogica afetuosa. Para os pais, somos a garantia diaria de presenca amorosa e o livro de memorias eternas do bem mais valioso de suas vidas."
+                      "Para a escola, somos a ferramenta de fidelizacao emocional definitiva e um selo de excelencia pedagógica afetuosa. Para os pais, somos a garantia diaria de presença amorosa e o livro de memorias eternas do bem mais valioso de suas vidas."
                     </p>
                   </div>
                 </div>
@@ -415,7 +415,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                         <h4 className="text-xs font-black text-slate-900">Acolhedora & Afetuosa</h4>
                       </div>
                       <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
-                        Acolhemos as preocupacoes dos pais com compaixao e carinho. Nossa presenca conforta, traz paz de espirito e estabelece um canal transparente e empatico de afeto mutuo.
+                        Acolhemos as preocupacoes dos pais com compaixao e carinho. Nossa presença conforta, traz paz de espirito e estabelece um canal transparente e empatico de afeto mutuo.
                       </p>
                     </div>
 
@@ -434,7 +434,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     <div className="p-4 rounded-2xl border border-amber-200 bg-white space-y-2">
                       <div className="flex items-center gap-2">
                         <span className="text-lg">  </span>
-                        <h4 className="text-xs font-black text-slate-900">Pedagogicamente Solida</h4>
+                        <h4 className="text-xs font-black text-slate-900">Pedagógicamente Solida</h4>
                       </div>
                       <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
                         Nao somos um brinquedo. Apoiamos nossas acoes nos marcos reais de desenvolvimento socioemocional e intelectual infantil (valores humanos, autonomia, empatia e coordenacao).
@@ -596,7 +596,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       Objetivo da Constituicao
                   </h3>
                   <p className="text-[11px] text-slate-700 font-semibold leading-relaxed">
-                    Definir como o <strong>Anjinho Escolar</strong> se comunica em todos os pontos de contato com diretoras, educadores, coordenacao pedagogica, familias e parceiros, garantindo uma linguagem consistente, acolhedora, humana e profundamente alinhada ao proposito da marca.
+                    Definir como o <strong>Anjinho Escolar</strong> se comunica em todos os pontos de contato com diretoras, educadores, coordenacao pedagógica, familias e parceiros, garantindo uma linguagem consistente, acolhedora, humana e profundamente alinhada ao proposito da marca.
                   </p>
                 </div>
 
@@ -670,7 +670,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     <div className="p-3 bg-white border border-amber-200 rounded-xl space-y-1.5">
                       <h4 className="text-[10px] font-black text-slate-500 uppercase">  Relacoes</h4>
-                      <p className="text-[9.5px] font-semibold text-slate-750 leading-relaxed">relacionamento, aproximacao, parceria, dialogo, presenca, vinculo, confianca, acolhimento, comunidade</p>
+                      <p className="text-[9.5px] font-semibold text-slate-750 leading-relaxed">relacionamento, aproximacao, parceria, dialogo, presença, vinculo, confianca, acolhimento, comunidade</p>
                     </div>
                     <div className="p-3 bg-white border border-amber-200 rounded-xl space-y-1.5">
                       <h4 className="text-[10px] font-black text-slate-500 uppercase">   Educacao</h4>
@@ -678,11 +678,11 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                     </div>
                     <div className="p-3 bg-white border border-amber-200 rounded-xl space-y-1.5">
                       <h4 className="text-[10px] font-black text-slate-500 uppercase">  Familia</h4>
-                      <p className="text-[9.5px] font-semibold text-slate-750 leading-relaxed">familias, responsaveis, participacao, conexao, presenca, compartilhamento</p>
+                      <p className="text-[9.5px] font-semibold text-slate-750 leading-relaxed">familias, responsaveis, participacao, conexao, presença, compartilhamento</p>
                     </div>
                     <div className="p-3 bg-white border border-amber-200 rounded-xl space-y-1.5">
                       <h4 className="text-[10px] font-black text-slate-500 uppercase">   Escola</h4>
-                      <p className="text-[9.5px] font-semibold text-slate-750 leading-relaxed">escola, educadores, professoras, coordenacao, direcao, equipe pedagogica</p>
+                      <p className="text-[9.5px] font-semibold text-slate-750 leading-relaxed">escola, educadores, professoras, coordenacao, direcao, equipe pedagógica</p>
                     </div>
                     <div className="p-3 bg-white border border-amber-200 rounded-xl space-y-1.5">
                       <h4 className="text-[10px] font-black text-slate-500 uppercase">  Produto</h4>
@@ -859,7 +859,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                             <div className="text-xs font-black">
                               {Object.values(checklistScore).filter(Boolean).length === 8 ? (
                                 <span className="text-emerald-400 flex items-center gap-1 font-serif text-sm">
-                                    100% Alinhado ao Cuidado do Anjinho Escolar!
+                                    100% Alinhado aoCuidado do Anjinho Escolar!
                                 </span>
                               ) : (
                                 <span>Aprovou {Object.values(checklistScore).filter(Boolean).length} de 8 criterios. {Object.values(checklistScore).filter(Boolean).length < 8 && 'Recomendamos ajustar para atingir o selo de ouro!'}</span>
@@ -1155,9 +1155,9 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
               </motion.div>
             )}
 
-            {activeChapter === 'metodo_arvore' && (
+            {activeChapter === 'metodo_árvore' && (
               <motion.div
-                key="metodo_arvore"
+                key="metodo_árvore"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
@@ -1166,7 +1166,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                 <div className="flex justify-between items-center border-b border-amber-200/50 pb-4">
                   <div>
                     <span className="text-[9px] uppercase font-black text-indigo-500 tracking-wider">Capitulo 9</span>
-                    <h2 className="text-xl sm:text-2xl font-serif font-black text-indigo-950">Metodo Arvore da Inf</h2>
+                    <h2 className="text-xl sm:text-2xl font-serif font-black text-indigo-950">Metodo Árvore da Inf</h2>
                   </div>
                   <span className="text-3xl"> </span>
                 </div>
@@ -1179,7 +1179,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                   </div>
 
                   <p>
-                    O <strong>Metodo Arvore da Inf</strong> e a nossa metodologia exclusiva e registrada de comunicacao afetiva, documentacao do desenvolvimento e preservacao de legados. Com ele, o Anjinho Escolar deixa de ser um mero software de rotina e se consolida como uma propriedade intelectual insubstituivel.
+                    O <strong>Metodo Árvore da Inf</strong> e a nossa metodologia exclusiva e registrada de comunicacao afetiva, documentacao do desenvolvimento e preservacao de legados. Com ele, o Anjinho Escolar deixa de ser um mero software de rotina e se consolida como uma propriedade intelectual insubstituivel.
                   </p>
 
                   <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wide">Os 5 Principios do Metodo</h3>
@@ -1197,7 +1197,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       <span className="text-2xl block"> </span>
                       <h4 className="text-xs font-black text-slate-900">2. Cultivar</h4>
                       <p className="text-[10px] text-slate-600 leading-relaxed font-semibold">
-                        Estimulo diario. Oficinas de arte, experiencias pedagogicas, fotos e descobertas.
+                        Estimulo diario. Oficinas de arte, experiencias pedagógicas, fotos e descobertas.
                       </p>
                     </div>
 
@@ -1228,7 +1228,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
                   <h3 className="text-xs font-black text-indigo-950 uppercase tracking-wide">As 5 Estacoes de Crescimento (Indice de Cultivo)</h3>
                   <p className="text-xs text-slate-700">
-                    A arvore da crianca cresce no aplicativo de forma org de acordo com o seu <strong>Indice de Cultivo</strong>. Este indice e um indicador de qualidade (nao apenas de volume), ponderando registros enriquecidos com fotos, momentos marcados como "Inesqueciveis" e valores vivenciados.
+                    A árvore da crianca cresce no aplicativo de forma org de acordo com o seu <strong>Indice de Cultivo</strong>. Este indice e um indicador de qualidade (nao apenas de volume), ponderando registros enriquecidos com fotos, momentos marcados como "Inesqueciveis" e valores vivenciados.
                   </p>
 
                   <div className="space-y-2.5 font-sans">
@@ -1248,7 +1248,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                         <span className="text-xl"> </span>
                         <div>
                           <h4 className="text-xs font-black text-indigo-950">Estacao 2: Os Primeiros Brotos</h4>
-                          <p className="text-[10px] text-slate-600">Curiosidade e exploracao ativa das novas din pedagogicas.</p>
+                          <p className="text-[10px] text-slate-600">Curiosidade e exploracao ativa das novas din pedagógicas.</p>
                         </div>
                       </div>
                       <span className="text-[10px] font-black bg-white px-2 py-0.5 rounded-full border border-emerald-200">16 - 40 pts</span>
@@ -1280,7 +1280,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       <div className="flex items-center gap-3">
                         <span className="text-xl"> </span>
                         <div>
-                          <h4 className="text-xs font-black text-indigo-950">Estacao 5: Arvore de Frutos</h4>
+                          <h4 className="text-xs font-black text-indigo-950">Estacao 5: Árvore de Frutos</h4>
                           <p className="text-[10px] text-slate-600">O legado completo da inf com memorias maduras, prontas para as proximas etapas da vida.</p>
                         </div>
                       </div>
@@ -1297,7 +1297,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                       <strong>2. Venda Consultiva para Diretores:</strong> O discurso nao e sobre tecnologia, e sobre cultivar a floresta de futuros. "Diretora, a senhora nao administra turmas, a senhora cultiva uma floresta inteira de futuros."
                     </p>
                     <p className="text-[11px] text-slate-700 leading-relaxed">
-                      <strong>3. Formacao Continuada para Professores:</strong> O treinamento deixa de ser um tutorial do sistema e passa a ser uma formacao na metodologia de observacao e afeto, valorizando a profissao do educador.
+                      <strong>3. FormacaoContinuada para Professores:</strong> O treinamento deixa de ser um tutorial do sistema e passa a ser uma formacao na metodologia de observacao e afeto, valorizando a profissao do educador.
                     </p>
                   </div>
                 </div>
@@ -1318,7 +1318,7 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
                 level = 'Moderado [!]';
                 riskBg = 'bg-amber-50 border-amber-200 text-amber-800';
                 barColor = 'bg-amber-500';
-                desc = 'Voce ja implementou as primeiras defesas (ex: NDA ou termos de uso), mas ainda possui vulnerabilidades criticas. Seu principal metodo ("Arvore da Inf") ou seu logotipo ainda podem ser imitados.';
+                desc = 'Voce ja implementou as primeiras defesas (ex: NDA ou termos de uso), mas ainda possui vulnerabilidades criticas. Seu principal metodo ("Árvore da Inf") ou seu logotipo ainda podem ser imitados.';
               } else if (percent >= 60 && percent < 90) {
                 level = 'Seguro & Blindado  ';
                 riskBg = 'bg-indigo-50 border-indigo-200 text-indigo-900';
@@ -1333,9 +1333,9 @@ export default function BrandBook({ accessibilitySettings, keyTrigger }: BrandBo
 
               const templateNda = `ACORDO DE CONFIDENCIALIDADE E NAO-CONCORRENCIA (NDA)
 
-Pelo presente instrumento particular, de um lado ANJINHO ESCOLAR TECNOLOGIA LTDA, e de outro lado o CONTRATADO, ajustam o seguinte:
+Pelo presente instrumento particular, de um lado ANJINHO ESCOLAR TECNOLOGIA LTDA, e de outro lado °CONTRATADO, ajustam o seguinte:
 
-1. OBJETO: O Contratado tera acesso a informacoes confidenciais relativas a arquitetura, codigo-fonte, metodologia "Arvore da Inf" e segredos de negocios do aplicativo Anjinho Escolar.
+1. OBJETO: O Contratado tera acesso a informacoes confidenciais relativas a arquitetura, codigo-fonte, metodologia "Árvore da Inf" e segredos de negocios do aplicativo Anjinho Escolar.
 2. OBRIGACAO DE SIGILO: O Contratado obriga-se a manter absoluto sigilo sobre todas as Informacoes Confidenciais, nao as revelando a terceiros nem utilizando-as para fins alheios ao projeto.
 3. NAO-CONCORRENCIA: O Contratado compromete-se a nao desenvolver, participar, prestar consultoria ou assessorar direta ou indiretamente qualquer software de gestao escolar, diario ou agenda escolar pelo prazo de 24 (vinte e quatro) meses a contar do termino deste vinculo.
 4. PENALIDADES: O descumprimento de qualquer clausula ensejara multa penal de R$ 100.000,00, sem prejuizo de perdas e danos e medidas criminais cabiveis.`;
@@ -1411,8 +1411,8 @@ Solicitamos que, no prazo improrrogavel de 48 (quarenta e oito) horas, cesse ime
                                 className="rounded text-indigo-600 focus:ring-indigo-500 w-4 h-4 mt-0.5 shrink-0"
                               />
                               <div className="space-y-0.5">
-                                <span className="block text-[11px] font-black text-slate-800">Direitos Autorais do Metodo Arvore da Inf</span>
-                                <span className="block text-[9px] text-slate-500 font-medium">Registro na Biblioteca Nacional impedindo o plagio da metodologia pedagogica.</span>
+                                <span className="block text-[11px] font-black text-slate-800">Direitos Autorais do Metodo Árvore da Inf</span>
+                                <span className="block text-[9px] text-slate-500 font-medium">Registro na Biblioteca Nacional impedindo o plagio da metodologia pedagógica.</span>
                               </div>
                             </label>
 
@@ -1557,7 +1557,7 @@ Solicitamos que, no prazo improrrogavel de 48 (quarenta e oito) horas, cesse ime
                         <span className="text-2xl"> </span>
                         <h4 className="text-xs font-black text-slate-900 leading-tight">3. Registro de Metodologia</h4>
                         <p className="text-[10px] text-slate-600 leading-relaxed">
-                          A apostila literaria e didatica do "Metodo Arvore da Inf" deve ser registrada como obra literaria e cientifica.
+                          A apostila literaria e didatica do "Metodo Árvore da Inf" deve ser registrada como obra literaria e cientifica.
                         </p>
                         <div className="text-[9px] text-slate-500 pt-1 font-bold">
                             Prazo: 30 a 90 dias<br />

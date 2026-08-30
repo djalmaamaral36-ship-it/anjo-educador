@@ -90,7 +90,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
       const adapted = filtered.map(l => {
         let cleanMsg = l.mensagem;
         cleanMsg = cleanMsg
-          .replace(/Anjo Cuidador/g, 'Anjo Escolar')
+          .replace(/AnjoCuidador/g, 'Anjo Escolar')
           .replace(/Dona Maria de Souza/g, 'Mariana Souza')
           .replace(/Dona Maria/g, 'Mariana')
           .replace(/Seu Joao/g, 'Enzo')
@@ -160,22 +160,22 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
       tit = isEscolar ? 'Rotina Realizada' : 'Tarefa Concluida';
       msg = isEscolar
         ? `Anjo Escolar: A rotina/refeicao de ${elderName} das 08:00 foi registrada como concluida pelo professor(a) ${caregiverName}.`
-        : `Anjo Cuidador: A medicacao de ${elderName} das 08:00 (Losartana) foi marcada como concluida por ${caregiverName}.`;
+        : `AnjoCuidador: A medicacao de ${elderName} das 08:00 (Losartana) foi marcada como concluida por ${caregiverName}.`;
     } else if (templateType === 'pendente') {
       tit = isEscolar ? 'Item Pendente ou Requerido' : 'Tarefa Proxima ou Pendente';
       msg = isEscolar
         ? `Anjo Escolar: Lembrete, a autorizacao especial ou item de higiene de ${elderName} para as 12:30 ainda nao foi registrado. Favor verificar com ${caregiverName}.`
-        : `Anjo Cuidador: Atencao, a medicacao de ${elderName} das 12:30 (Calcio + Vit D) ainda nao foi marcada como administrada. Favor verificar com ${caregiverName}.`;
+        : `AnjoCuidador: Atencao, a medicacao de ${elderName} das 12:30 (Calcio + Vit D) ainda nao foi marcada como administrada. Favor verificar com ${caregiverName}.`;
     } else if (templateType === 'atraso') {
       tit = isEscolar ? 'Alerta Critico de Atraso' : 'Alerta Importante de Atraso';
       msg = isEscolar
         ? `Anjo Escolar: Alerta de rotina. A rotina de "Banho/Fralda/Sono" de ${elderName} planejada para as 10:00 esta em aberto no painel de acompanhamento de ${caregiverName}.`
-        : `Anjo Cuidador: Alerta importante. A tarefa "Banho e Higiene" de ${elderName} planejada para as 10:00 esta atrasada e necessita de acompanhamento cuidador de ${caregiverName}.`;
+        : `AnjoCuidador: Alerta importante. A tarefa "Banho e Higiene" de ${elderName} planejada para as 10:00 esta atrasada e necessita de acompanhamento cuidador de ${caregiverName}.`;
     } else {
       tit = isEscolar ? 'Resumo de Aula do Dia (Diario)' : 'Resumo Diario do Acompanhamento';
       msg = isEscolar
-        ? `Anjo Escolar: Resumo do dia escolar de ${elderName}: alimentacao concluida, soneca de 1h30m realizada com sucesso, sem intercorrencias e bem acompanhado(a) por ${caregiverName}.`
-        : `Anjo Cuidador: Resumo do dia de ${elderName}: alimentacao concluida, medicacao feita, hidratacao parcial (800ml/1500ml) e rotina monitorada com sucesso por ${caregiverName}.`;
+        ? `Anjo Escolar: Resumo do dia escolar de ${elderName}: alimentacao concluida, soneca de 1h30m realizada com sucesso, sem intercorrências e bem acompanhado(a) por ${caregiverName}.`
+        : `AnjoCuidador: Resumo do dia de ${elderName}: alimentacao concluida, medicacao feita, hidratacao parcial (800ml/1500ml) e rotina monitorada com sucesso por ${caregiverName}.`;
     }
 
     triggerWhatsAppSim(tit, msg);
@@ -194,7 +194,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
           <p className={`text-sm ${isDark ? 'text-slate-350' : 'text-slate-500'}`}>
             {isEscolar
               ? 'O Anjo Escolar gera comunicados, rotinas e alertas padronizados de forma automatica, permitindo que voce envie um WhatsApp com um unico clique.'
-              : 'O Anjo Cuidador gera a mensagem padronizada e abre o WhatsApp para que o cuidador confirme o envio aos familiares cadastrados.'}
+              : 'O AnjoCuidador gera a mensagem padronizada e abre o WhatsApp para que o cuidador confirme o envio aos familiares cadastrados.'}
           </p>
         </div>
 
@@ -227,7 +227,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
                 : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
             }`}
           >
-            {isEscolar ? '[OK] Rotina Realizada' : '[OK] Ingestao Confirmada'}
+            {isEscolar ? '[OK] Rotina Realizada' : '[OK] IngestaoConfirmada'}
           </button>
           <button
             onClick={() => handleTestDispatchTemplates('pendente')}
@@ -330,7 +330,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
               </div>
               <div>
                 <h4 className="font-bold text-sm tracking-wide">
-                  {isEscolar ? 'Anjo Escolar Comunicados' : 'Anjo Cuidador Alertas'}
+                  {isEscolar ? 'Anjo Escolar Comunicados' : 'AnjoCuidador Alertas'}
                 </h4>
                 <p className={`text-[10px] font-medium flex items-center gap-1 ${
                   isDark ? 'text-[#8696a0]' : 'text-[#e0fbf4]'
@@ -513,7 +513,7 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
 
               <div className="bg-indigo-50/70 p-3 rounded-2xl border border-indigo-150 text-xs space-y-2 shrink-0">
                 <div className="flex items-center justify-between">
-                  <span className="font-extrabold text-indigo-950">  Conteudo do Comunicado:</span>
+                  <span className="font-extrabold text-indigo-950">  Conteudo doComunicado:</span>
                   <button
                     type="button"
                     onClick={() => {

@@ -1,5 +1,5 @@
 // Vercel Production Build Commit: 1787865194
-// Sync trigger: 2026-06-21 20:37 - Anjo Cuidador high-fidelity PNG logo update using bulletproof asset loading
+// Sync trigger: 2026-06-21 20:37 - AnjoCuidador high-fidelity PNG logo update using bulletproof asset loading
 import React, { useState, useEffect } from 'react';
 import { Usuario, Idoso, NotificacaoSimulada, formatWhatsAppNumber, isStaffUser, getRoleLabel, isDirectorOrAdminUser } from './types';
 import { initializeDB, getFromDB, saveToDB, SALAS_INICIAIS, IDOSOS_INICIAIS, USUARIOS_SIMULADOS } from './data';
@@ -58,7 +58,7 @@ export default function App() {
   const [usuarioAtual, setUsuarioAtual] = useState<Usuario | null>(null);
   const [idosoAtual, setIdosoAtual] = useState<Idoso | null>(null);
   
-  // Modo de aplicativo: Idoso (Anjo Cuidador), Pre-escolar (Anjinho Escolar) ou Fundamental (Ensino Fundamental I)
+  // Modo de aplicativo: Idoso (AnjoCuidador), Pre-escolar (Anjinho Escolar) ou Fundamental (Ensino Fundamental I)
   const [appMode, setAppMode] = useState<'idoso' | 'escolar_infantil' | 'escolar_fundamental'>(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
@@ -452,7 +452,7 @@ export default function App() {
     if (ref) {
       let canalAmigavel = 'Canal de Divulgacao';
       if (ref === 'recepcao') canalAmigavel = 'Recepcao Parceira / Clinica';
-      if (ref === 'panfleto') canalAmigavel = 'Panfleto Comercial (Pix)';
+      if (ref === 'panfleto') canalAmigavel = 'PanfletoComercial (Pix)';
       if (ref === 'parceiros') canalAmigavel = 'Grupo de Parceiros Clinicos';
       
       setTimeout(() => {
@@ -1488,7 +1488,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
       userRole = 'professor';
     }
 
-    const schoolContext = instName || (isEscolar ? 'Escola Pequeno Anjo' : 'Anjo Cuidador Residence');
+    const schoolContext = instName || (isEscolar ? 'Escola Pequeno Anjo' : 'AnjoCuidador Residence');
     const escolaId = (usuarioAdaptado as any)?.escolaId || 
       localStorage.getItem('anjo_escola_id') || 
       (isEscolar ? 'escola_pequeno_anjo' : 'anjo_cuidador_residence');
@@ -1537,7 +1537,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
           .slice(-5)
           .map(n => {
             let msg = n.mensagem || '';
-            msg = msg.replace(/^(Anjo Cuidador:|Anjo Escolar:)\s*/i, '');
+            msg = msg.replace(/^(AnjoCuidador:|Anjo Escolar:)\s*/i, '');
             if (n.dataEnvio) {
               try {
                 const d = new Date(n.dataEnvio);
@@ -1885,12 +1885,12 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
               {instLogo ? (
                 <img src={instLogo} alt={instName || "Logo"} className="w-full h-full object-contain" referrerPolicy="no-referrer" />
               ) : (
-                <img src="/logo.png?v=15" alt={isEscolar ? "Anjinho Escolar" : "Anjo Cuidador"} className="w-full h-full object-contain transform scale-[1.35]" referrerPolicy="no-referrer" />
+                <img src="/logo.png?v=15" alt={isEscolar ? "Anjinho Escolar" : "AnjoCuidador"} className="w-full h-full object-contain transform scale-[1.35]" referrerPolicy="no-referrer" />
               )}
             </div>
             <div className="min-w-0">
               <h1 className="text-sm sm:text-base md:text-lg font-bold font-display tracking-tight leading-none flex items-center flex-wrap gap-x-1 sm:gap-x-1.5">
-                <span className="truncate">{appMode === 'idoso' ? 'Anjo Cuidador' : (isFundamental ? 'Anjinho Fundamental' : 'Anjinho Escolar')}</span>
+                <span className="truncate">{appMode === 'idoso' ? 'AnjoCuidador' : (isFundamental ? 'Anjinho Fundamental' : 'Anjinho Escolar')}</span>
                 {instName && (
                   <>
                     <span className="text-xs opacity-50 font-normal">|</span>
@@ -2071,7 +2071,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
                 darkMode: !accessibility.darkMode 
               })}
               className="hidden md:flex p-2 hover:bg-white/10 text-white rounded-xl transition-all cursor-pointer items-center justify-center"
-              title={accessibility.darkMode ? "Mudar para Modo Claro" : "Mudar para Modo Noturno"}
+              title={accessibility.darkMode ? "Mudar para ModoClaro" : "Mudar para Modo Noturno"}
             >
               {accessibility.darkMode ? <Sun className="w-5 h-5 text-amber-300 fill-amber-300/15" /> : <Moon className="w-5 h-5 text-indigo-100" />}
             </button>
@@ -2467,7 +2467,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
           ? 'Anjinho Fundamental - Aprendizado, foco e desenvolvimento acompanhados de perto.'
           : isEscolar
             ? 'Anjinho Escolar - Cada dia vivido. Cada lembranca guardada.'
-            : 'Anjo Cuidador - Cuidado, presenca e tranquilidade para quem voce ama.'
+            : 'AnjoCuidador - Cuidado, presença e tranquilidade para quem voce ama.'
         }
       </footer>
 
@@ -2672,7 +2672,7 @@ const generateAuraJwtAsync = async (payload: any, secret: string): Promise<strin
                   </div>
                   <div>
                     <h4 className="font-extrabold text-sm text-slate-800 flex items-center gap-1.5">
-                      Anjo Cuidador
+                      AnjoCuidador
                     </h4>
                     <span className="text-[10px] uppercase font-black text-emerald-600 tracking-wider">Acompanhamento Senior</span>
                   </div>

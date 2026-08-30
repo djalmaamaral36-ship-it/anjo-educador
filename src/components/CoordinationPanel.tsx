@@ -73,7 +73,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
         </div>
         <h2 className="text-lg font-black text-slate-800">Acesso Restrito</h2>
         <p className="text-sm text-slate-500 max-w-md leading-relaxed">
-          Esta tela e exclusiva para a equipe de Coordenacao Pedagogica. Responsaveis tem acesso aos dados individuais de seus filhos atraves do Diario da Inf
+          Esta tela e exclusiva para a equipe de Coordenacao Pedagógica. Responsaveis tem acesso aos dados individuais de seus filhos atraves do Diario da Inf
         </p>
       </div>
     );
@@ -103,7 +103,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
   });
 
   // Referrals state (sharing with DirectorPanel storage key)
-  const [pedagogicalReferrals, setPedagogicalReferrals] = useState<any[]>([]);
+  const [pedagógicalReferrals, setPedagógicalReferrals] = useState<any[]>([]);
   const [showReferralForm, setShowReferralForm] = useState(false);
   const [newReferralForm, setNewReferralForm] = useState({
     studentName: '',
@@ -147,7 +147,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
       setSelectedClassroom(allRooms[0].name);
     }
 
-    // Load Pedagogical Referrals from DB
+    // Load Pedagógical Referrals from DB
     const savedReferrals = getFromDB<any[]>('anjo_encaminhamentos_pedagogicos', []);
     if (savedReferrals.length === 0) {
       const defaultReferrals = [
@@ -158,7 +158,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
           tipo: 'pedagogico_geral',
           reason: 'Dificuldade de socializacao em grupo e choro persistente na hora da despedida.',
           data: '2026-05-10',
-          registeredBy: 'Coordenacao Pedagogica'
+          registeredBy: 'Coordenacao Pedagógica'
         },
         {
           id: 'ref_2',
@@ -180,9 +180,9 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
         }
       ];
       saveToDB('anjo_encaminhamentos_pedagogicos', defaultReferrals);
-      setPedagogicalReferrals(defaultReferrals);
+      setPedagógicalReferrals(defaultReferrals);
     } else {
-      setPedagogicalReferrals(savedReferrals);
+      setPedagógicalReferrals(savedReferrals);
     }
 
     // Load Development Alerts
@@ -199,7 +199,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
           intensity: 'moderada',
           date: '2026-05-11',
           observations: 'Notado em interacoes na roda de musica. Prefere apontar ou puxar o braco da professora.',
-          registeredBy: 'Coordenacao Pedagogica'
+          registeredBy: 'Coordenacao Pedagógica'
         },
         {
           id: 'alert_2',
@@ -211,7 +211,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
           intensity: 'recorrente',
           date: '2026-05-15',
           observations: 'Brinca apenas no canto da sala enfileirando carrinhos de brinquedo na mesma ordem.',
-          registeredBy: 'Coordenacao Pedagogica'
+          registeredBy: 'Coordenacao Pedagógica'
         }
       ];
       saveToDB('anjo_alertas_desenvolvimento', defaultAlerts);
@@ -301,7 +301,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
       date: new Date().toISOString().split('T')[0],
       time: newAlertForm.time || getCurrentTime(),
       observations: newAlertForm.observations,
-      registeredBy: usuarioAtual?.nome || 'Coordenacao Pedagogica'
+      registeredBy: usuarioAtual?.nome || 'Coordenacao Pedagógica'
     };
 
     const updated = [newAlert, ...milestoneAlerts];
@@ -352,11 +352,11 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
       reason: newReferralForm.reason,
       data: new Date().toISOString().split('T')[0],
       time: newReferralForm.time || getCurrentTime(),
-      registeredBy: usuarioAtual?.nome || 'Coordenacao Pedagogica'
+      registeredBy: usuarioAtual?.nome || 'Coordenacao Pedagógica'
     };
 
-    const updated = [newRef, ...pedagogicalReferrals];
-    setPedagogicalReferrals(updated);
+    const updated = [newRef, ...pedagógicalReferrals];
+    setPedagógicalReferrals(updated);
     saveToDB('anjo_encaminhamentos_pedagogicos', updated);
 
     // Reset
@@ -373,8 +373,8 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
   // Handle deleting referral
   const handleDeleteReferral = (id: string) => {
     if (window.confirm('Excluir este encaminhamento?')) {
-      const updated = pedagogicalReferrals.filter(r => r.id !== id);
-      setPedagogicalReferrals(updated);
+      const updated = pedagógicalReferrals.filter(r => r.id !== id);
+      setPedagógicalReferrals(updated);
       saveToDB('anjo_encaminhamentos_pedagogicos', updated);
     }
   };
@@ -424,7 +424,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
 
   // Generate generic message
   const generateWelcomingMessage = (student: string, obs: string, cat: string) => {
-    return `"Ola, responsavel por ${student}! Esperamos que esteja bem. Observando o desenvolvimento de ${student} em nossas vivencias de ${cat} e interacoes pedagogicas, notamos que ela/ele tem demonstrado ${obs}. Gostariamos de convidar voces para um cafe com nossa coordenacao na proxima quarta-feira para conversarmos em parceria sobre como podemos potencializar o desenvolvimento infantil de forma integral. Contem conosco!"`;
+    return `"Ola, responsavel por ${student}! Esperamos que esteja bem. Observando o desenvolvimento de ${student} em nossas vivencias de ${cat} e interacoes pedagógicas, notamos que ela/ele tem demonstrado ${obs}. Gostariamos de convidar voces para um cafe com nossa coordenacao na proxima quarta-feira para conversarmos em parceria sobre como podemos potencializar o desenvolvimento infantil de forma integral. Contem conosco!"`;
   };
 
   const getReferralTipoLabel = (tipo: string) => {
@@ -448,15 +448,15 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div className="space-y-1">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-100/60 dark:bg-indigo-950/40 rounded-full text-[10px] font-black uppercase tracking-widest text-indigo-700 dark:text-indigo-400">
-                  Portal Confidencial da Coordenacao Pedagogica
+                  Portal Confidencial da Coordenacao Pedagógica
             </div>
             <h2 className="text-xl md:text-2xl font-black font-display tracking-tight flex items-center gap-2">
               <GraduationCap className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
               Painel de Coordenacao & Acompanhamento
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 max-w-3xl leading-relaxed font-semibold">
-              Espaco de monitoramento especifico da coordenacao pedagogica. Ao contrario do Diretor (gestao global e financeira), 
-              o Coordenador atua na orientacao das turmas, identificacao precoce de marcos de desenvolvimento de alunos e mediacao de conflitos.
+              Espaco de monitoramento especifico da coordenacao pedagógica. Ao contrario do Diretor (gestao global e financeira), 
+              °Coordenador atua na orientacao das turmas, identificacao precoce de marcos de desenvolvimento de alunos e mediacao de conflitos.
             </p>
           </div>
         </div>
@@ -519,7 +519,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
               : 'border-transparent text-slate-400 hover:text-slate-600'
           }`}
         >
-            Encaminhamentos ({pedagogicalReferrals.filter(r => selectedClassroom === 'Todas' || r.classroomName === selectedClassroom).length})
+            Encaminhamentos ({pedagógicalReferrals.filter(r => selectedClassroom === 'Todas' || r.classroomName === selectedClassroom).length})
         </button>
         <button
           onClick={() => setActiveTab('conflict_mediation')}
@@ -544,7 +544,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                 <AlertTriangle className="w-4 h-4 text-amber-500" /> Diretrizes de Identificacao
               </h4>
               <p className="text-[11px] leading-relaxed text-slate-500 font-semibold">
-                O Anjinho atua no rastreamento passivo da rotina pedagogica diaria. A coordenacao deve revisar e 
+                O Anjinho atua no rastreamento passivo da rotina pedagógica diaria. A coordenacao deve revisar e 
                 registrar sinais formais de atencao.
               </p>
               
@@ -1126,7 +1126,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
  
              
              {(() => {
-               const filtered = pedagogicalReferrals.filter(r => {
+               const filtered = pedagógicalReferrals.filter(r => {
                  const matchesSearch = r.studentName.toLowerCase().includes(searchReferrals.toLowerCase()) || 
                                        r.reason.toLowerCase().includes(searchReferrals.toLowerCase());
                  const matchesClassroom = selectedClassroom === 'Todas' || r.classroomName === selectedClassroom;
@@ -1391,7 +1391,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
 
                 <div className="space-y-1">
                   <div className="flex items-center justify-between">
-                    <label className="text-[10px] font-black text-slate-400 uppercase">Medidas Pedagogicas de Resolucao Adotadas</label>
+                    <label className="text-[10px] font-black text-slate-400 uppercase">Medidas Pedagógicas de Resolucao Adotadas</label>
                     <VoiceInput 
                       onTranscript={(text) => setNewMediationForm(prev => ({ ...prev, actionTaken: prev.actionTaken ? prev.actionTaken + ' ' + text : text }))} 
                       size="sm"
@@ -1443,7 +1443,7 @@ export default function CoordinationPanel({ accessibilitySettings, appMode, usua
                     type="submit"
                     className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-black rounded-xl cursor-pointer shadow-sm"
                   >
-                    Registrar no Livro Confidencial
+                    Registrar no LivroConfidencial
                   </button>
                 </div>
               </form>

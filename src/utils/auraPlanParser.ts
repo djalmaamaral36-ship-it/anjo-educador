@@ -122,7 +122,7 @@ export function resolveDayAndDate(rawDay?: string, rawDate?: string, refDate = n
   return { dia, dataStr, dataIso };
 }
 
-// Categoriza inteligentemente para os tipos oficiais do Anjo Cuidador / Anjinho Escolar
+// Categoriza inteligentemente para os tipos oficiais do AnjoCuidador / Anjinho Escolar
 export function inferTaskType(title: string, category: string, description: string): 'alimentacao' | 'medicacao' | 'atividade_fisica' | 'banho' | 'sono' | 'humor' {
   const text = `${title} ${category} ${description}`.toLowerCase();
 
@@ -160,7 +160,7 @@ export function normalizeTimeString(raw: string): string {
 }
 
 // Realinha inteligentemente titulos e horarios quando ha conflito sem ou deslocamento (shift) no texto
-export function realignPedagogicalActivity(
+export function realignPedagógicalActivity(
   rawTitle: string, 
   description: string, 
   time: string, 
@@ -174,7 +174,7 @@ export function realignPedagogicalActivity(
   // 1. Deteccao de Nome Explicito entre Aspas na Descricao (aspas duplas, simples ou curvas)
   // Ex: plantio da 'Minha Primeira Horta', apresentar a "Caixa Magica das Texturas" -> titulo real e "Minha Primeira Horta   "
   const quotedMatch = desc.match(/(?:apresentar|utilizar|explorar|conduzir|oferecer|trabalhar|realizar|plantio|oficina|projeto|din)\s+(?:a|o|com\s+a|com\s+o|da|do|de)?\s*[""'']([^""'']{3,60})[""'']/i)
-    || desc.match(/[""''](Minha Primeira Horta[^""'']*|Horta[^""'']*|Maos na Terra[^""'']*|Caixa\s+Magica[^""'']*|Pintura[^""'']*|Circuito[^""'']*|Massinha[^""'']*|Roda\s+de[^""'']*|Varal[^""'']*|Brincadeira[^""'']*|Oficina[^""'']*|Historia[^""'']*|Teatro[^""'']*|Tapete[^""'']*|Painel[^""'']*|Danca[^""'']*|Musica[^""'']*|Boliche[^""'']*|Culinaria[^""'']*|Quebra-cabeca[^""'']*|Jogos[^""'']*|Garrafa\s+Sensorial[^""'']*|Pique-[^""'']*|Mundo\s+das[^""'']*|Cesto\s+dos[^""'']*|Bicho[^""'']*|Bandinha[^""'']*|Fantoche[^""'']*|Arvore[^""'']*|Caixa\s+das\s+Sensacoes[^""'']*|Caixa\s+dos\s+Sentidos[^""'']*|Caixa\s+de\s+Texturas[^""'']*)/i);
+    || desc.match(/[""''](Minha Primeira Horta[^""'']*|Horta[^""'']*|Maos na Terra[^""'']*|Caixa\s+Magica[^""'']*|Pintura[^""'']*|Circuito[^""'']*|Massinha[^""'']*|Roda\s+de[^""'']*|Varal[^""'']*|Brincadeira[^""'']*|Oficina[^""'']*|Historia[^""'']*|Teatro[^""'']*|Tapete[^""'']*|Painel[^""'']*|Danca[^""'']*|Musica[^""'']*|Boliche[^""'']*|Culinaria[^""'']*|Quebra-cabeca[^""'']*|Jogos[^""'']*|Garrafa\s+Sensorial[^""'']*|Pique-[^""'']*|Mundo\s+das[^""'']*|Cesto\s+dos[^""'']*|Bicho[^""'']*|Bandinha[^""'']*|Fantoche[^""'']*|Árvore[^""'']*|Caixa\s+das\s+Sensacoes[^""'']*|Caixa\s+dos\s+Sentidos[^""'']*|Caixa\s+de\s+Texturas[^""'']*)/i);
 
   // Caso 1: Conflito flagrante - Titulo diz "Almoco", mas descricao e sobre "Horta / Natureza", "Caixa Magica", "exploracao sensorial", "texturas", "roda", etc.
   if (titleLower.includes('almoco') || titleLower.includes('almoco')) {
@@ -194,7 +194,7 @@ export function realignPedagogicalActivity(
       if (descLower.includes('textura') || descLower.includes('tatil') || descLower.includes('tatil') || descLower.includes('sensorial')) {
         return { title: 'Caixa Magica das Texturas   ', tipo: 'atividade_fisica' };
       }
-      return { title: 'Atividade Pedagogica & Sensorial   ', tipo: 'atividade_fisica' };
+      return { title: 'Atividade Pedagógica & Sensorial   ', tipo: 'atividade_fisica' };
     }
   }
 
@@ -246,7 +246,7 @@ export function realignPedagogicalActivity(
   }
 
   // Se tem nome cotado especifico na descricao e o titulo for generico
-  if (quotedMatch && (titleLower.includes('atividade pedagogica') || titleLower.includes('atividade') || titleLower.includes('almoco') || titleLower.includes('almoco') || titleLower.length <= 4)) {
+  if (quotedMatch && (titleLower.includes('atividade pedagógica') || titleLower.includes('atividade') || titleLower.includes('almoco') || titleLower.includes('almoco') || titleLower.length <= 4)) {
     return { title: formatAuraTaskTitle(quotedMatch[1], '', ''), tipo: inferTaskType(quotedMatch[1], category || '', desc) };
   }
 
@@ -343,7 +343,7 @@ export function formatAuraTaskTitle(rawTitle: string, subTitle: string, category
     if (category && !/^(horario|horario|atividade)$/i.test(category.trim())) {
       clean = category.replace(/^(?:Categoria|BNCC|Campo)\s*:\s*/i, '').trim();
     } else {
-      clean = 'Atividade Pedagogica';
+      clean = 'Atividade Pedagógica';
     }
   }
 
@@ -820,7 +820,7 @@ export function parseAuraRawPlan(text: string): {
         continue;
       }
 
-      // Linha solta que nao tem label: verifica se e um titulo curto ou uma descricao pedagogica
+      // Linha solta que nao tem label: verifica se e um titulo curto ou uma descricao pedagógica
       const cleanSimple = trimmed.replace(/[#\*_\|]/g, '').trim();
       if (!/^\d{1,2}[:h]\d{2}/.test(cleanSimple) && !isNoiseLine(cleanSimple)) {
         if (cleanSimple.length <= 60 && !/(?:promover|estimular|apresentar|incentivar|desenvolver|momento\s+da\s+principal|realizar)\b/i.test(cleanSimple)) {
@@ -855,7 +855,7 @@ export function parseAuraRawPlan(text: string): {
     rawTitle = cleanRepeatedEmojis(rawTitle);
 
     // Se o bloco nao tem horario e nao tem titulo explicito, ou e conversa da IA, ignora completamente
-    if (!startTime && (!rawTitle || /^(?:Atividade Pedagogica|Atividade|Horario|Horario)$/i.test(rawTitle))) {
+    if (!startTime && (!rawTitle || /^(?:Atividade Pedagógica|Atividade|Horario|Horario)$/i.test(rawTitle))) {
       continue;
     }
 
@@ -864,7 +864,7 @@ export function parseAuraRawPlan(text: string): {
     }
 
     if (!startTime) {
-      // Se nao ha horario no bloco, e nao e uma atividade pedagogica legitima com titulo reconhecido, pula
+      // Se nao ha horario no bloco, e nao e uma atividade pedagógica legitima com titulo reconhecido, pula
       if (rawTitle.length < 3) {
         continue;
       }
@@ -872,7 +872,7 @@ export function parseAuraRawPlan(text: string): {
     }
 
     if (!rawTitle) {
-      rawTitle = 'Atividade Pedagogica';
+      rawTitle = 'Atividade Pedagógica';
     }
 
     let finalDesc = detailedDesc;
@@ -906,7 +906,7 @@ export function parseAuraRawPlan(text: string): {
 
     finalDesc = cleanRepeatedEmojis(finalDesc);
 
-    const { title: finalTitle, tipo: taskType } = realignPedagogicalActivity(rawTitle, finalDesc, startTime, category);
+    const { title: finalTitle, tipo: taskType } = realignPedagógicalActivity(rawTitle, finalDesc, startTime, category);
 
     let duration = 30;
     if (startTime && endTime) {
@@ -1008,10 +1008,10 @@ export function parseAuraRawPlan(text: string): {
 
       if (time && timeIdx !== -1) {
         const otherParts = tabParts.filter((_, idx) => idx !== timeIdx);
-        let rawTitle = otherParts[0] || 'Atividade Pedagogica';
+        let rawTitle = otherParts[0] || 'Atividade Pedagógica';
         rawTitle = rawTitle.replace(/^(?:Horario|Atividade|Titulo)\s*:\s*/i, '').trim();
         if (!rawTitle || /^(horario|horario|atividade|titulo|titulo)$/i.test(rawTitle)) {
-          rawTitle = otherParts[1] || 'Atividade Pedagogica';
+          rawTitle = otherParts[1] || 'Atividade Pedagógica';
         }
 
         const rawDesc = otherParts.slice(1).join('\n\n') || rawTitle;
@@ -1067,10 +1067,10 @@ export function parseAuraRawPlan(text: string): {
 
       if (timeCellIndex !== -1) {
         const otherCells = cells.filter((_, idx) => idx !== timeCellIndex);
-        let rawAct = otherCells[0] || 'Atividade Pedagogica';
+        let rawAct = otherCells[0] || 'Atividade Pedagógica';
         rawAct = rawAct.replace(/^(?:Horario|Atividade|Titulo)\s*:\s*/i, '').trim();
         if (!rawAct || /^(horario|horario|atividade|titulo|titulo)$/i.test(rawAct)) {
-          rawAct = otherCells[1] || 'Atividade Pedagogica';
+          rawAct = otherCells[1] || 'Atividade Pedagógica';
         }
         
         let rawDesc = '';
@@ -1112,7 +1112,7 @@ export function parseAuraRawPlan(text: string): {
       }
     }
 
-    // Caso C: Linha simples em Topico (- 09:00: Roda de Leitura - Descricao: ...)
+    // CasoC: Linha simples em Topico (- 09:00: Roda de Leitura - Descricao: ...)
     const timeMatch = line.match(/\b(\d{1,2}(?:[:h]\d{2}|h\b))/i);
     if (timeMatch) {
       const time = normalizeTimeString(timeMatch[1]);
@@ -1286,7 +1286,7 @@ export function areTaskTitlesSimilar(
     return isParkA && isParkB;
   }
 
-  // 10. Palavras-chave de Atividades Pedagogicas Especificas
+  // 10. Palavras-chave de Atividades Pedagógicas Especificas
   const keywords = ['horta', 'caixa magica', 'textura', 'pintura', 'massinha', 'musica', 'musicalizacao', 'historia', 'teatro', 'espelho', 'boliche', 'culinaria', 'quebracabeca', 'garrafa sensorial'];
   for (const kw of keywords) {
     const hasA = normA.includes(kw);
@@ -1297,10 +1297,10 @@ export function areTaskTitlesSimilar(
   }
 
   // 11. Substituicao de Atividade Generica (ex: Atividade Dirigida BNCC) no mesmo bloco de horario (diferenca <= 45 min)
-  const isGenericPedagogicalA = normA.includes('atividade dirigida') || normA.includes('atividade pedagogica') || normA.includes('atividade bncc') || normA.includes('tema do dia');
-  const isGenericPedagogicalB = normB.includes('atividade dirigida') || normB.includes('atividade pedagogica') || normB.includes('atividade bncc') || normB.includes('tema do dia');
+  const isGenericPedagógicalA = normA.includes('atividade dirigida') || normA.includes('atividade pedagógica') || normA.includes('atividade bncc') || normA.includes('tema do dia');
+  const isGenericPedagógicalB = normB.includes('atividade dirigida') || normB.includes('atividade pedagógica') || normB.includes('atividade bncc') || normB.includes('tema do dia');
   
-  if ((isGenericPedagogicalA || isGenericPedagogicalB) && (typeA === 'atividade_fisica' || typeB === 'atividade_fisica' || !typeA || !typeB)) {
+  if ((isGenericPedagógicalA || isGenericPedagógicalB) && (typeA === 'atividade_fisica' || typeB === 'atividade_fisica' || !typeA || !typeB)) {
     if (timeA && timeB) {
       const getMins = (tStr: string) => {
         const parts = tStr.split(':');
@@ -1328,7 +1328,7 @@ export function mergeSimilarTasks(existingTasks: any[], newTasks: any[]): any[] 
       const ex = result[existingIndex];
       
       const isGeneric = (title: string) => 
-        /^(atividade|atividade dirigida|atividade pedagogica|refeicao|lanche|tarefa)$/i.test((title || '').replace(/[^\w\s]/gi, '').trim()) ||
+        /^(atividade|atividade dirigida|atividade pedagógica|refeicao|lanche|tarefa)$/i.test((title || '').replace(/[^\w\s]/gi, '').trim()) ||
         (title || '').toLowerCase().includes('tematica (bncc)');
       
       let bestTitle = ex.titulo;

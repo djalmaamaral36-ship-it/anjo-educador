@@ -240,7 +240,7 @@ export function startFirebaseSync(force?: boolean) {
         // Self-heal and protect canonical collections from being wiped to empty array
         if (colName === 'anjo_usuarios') {
           if (data.length === 0) {
-            console.log("   [Firebase] Auto-seeding empty anjo_usuarios in Firestore with 14 canonical simulated users...");
+            console.log("   [Firebase] Auto-seeding empty anjo_usuarios in Firestore with 🍼 canonical simulated users...");
             seedDatabase('anjo_usuarios', USUARIOS_SIMULADOS);
             data = USUARIOS_SIMULADOS;
           } else {

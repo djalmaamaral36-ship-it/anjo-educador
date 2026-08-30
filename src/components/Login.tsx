@@ -332,9 +332,9 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
 
     // Rastreamento amigavel
     let finalCampLabel = '  Divulgacao Geral';
-    if (refCampaign === 'recepcao') finalCampLabel = '  Recepcao Clinica';
+    if (refCampaign === 'recepcao') finalCampLabel = '  RecepcaoClinica';
     if (refCampaign === 'panfleto') finalCampLabel = '  Panfleto Promocional';
-    if (refCampaign === 'parceiros') finalCampLabel = '  Parceiro Credenciado';
+    if (refCampaign === 'parceiros') finalCampLabel = '  ParceiroCredenciado';
 
     const cleanRef = refCampaign || 'geral';
     const deviceHash = `IP ${Math.floor(Math.random() * 80 + 171)}.${Math.floor(Math.random() * 200)}.${Math.floor(Math.random() * 255)} (SSL   ${navigator.userAgent.includes('iPhone') ? 'iPhone OS' : 'Android OS 14'})`;
@@ -349,7 +349,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
       usuarioTipo: 'familiar',
       idosoNome: assistidoNome,
       dataConsentimento: new Date().toLocaleString('pt-BR'),
-      modoApp: selectedMode === 'escolar_infantil' ? '  Anjinho Escolar (Infantil)' : '  Anjo Cuidador',
+      modoApp: selectedMode === 'escolar_infantil' ? '  Anjinho Escolar (Infantil)' : '  AnjoCuidador',
       deviceFingerprint: `${deviceHash}   Ref: ${cleanRef.toUpperCase()}`,
       statusFinanceiro: 'pago' // Free 15-day trial is registered as Active/Adimplente directly
     };
@@ -401,7 +401,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
         parentesco: relacionamento,
         telefone: whatsapp
       },
-      planoCuidado: selectedMode === 'escolar_infantil'
+      planoDeCuidado: selectedMode === 'escolar_infantil'
         ? 'Apoiar adaptacao ludica, registrar alimentacao e hidratacao regular, sestas a tarde.'
         : 'Verificar batimentos e saturacao diariamente, alertar sobre remedios e hidratacao constante.',
       medicoResponsavel: {
@@ -452,12 +452,12 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                 ? 'bg-slate-800 border-slate-700 text-amber-300 hover:bg-slate-750 shadow-md' 
                 : 'bg-white border-slate-205 text-slate-700 hover:bg-slate-50 shadow-sm shadow-indigo-100'
             }`}
-            title={accessibility.darkMode ? "Mudar para Modo Claro" : "Conforto Visual (Modo Noturno)"}
+            title={accessibility.darkMode ? "Mudar para ModoClaro" : "Conforto Visual (Modo Noturno)"}
           >
             {accessibility.darkMode ? (
               <>
                 <Sun className="w-4 h-4 text-amber-300 fill-amber-300/15" />
-                <span className="hidden xs:inline">Modo Claro</span>
+                <span className="hidden xs:inline">ModoClaro</span>
               </>
             ) : (
               <>
@@ -478,7 +478,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
         
         <div className="flex flex-col items-center space-y-2 text-center">
           <div className="w-44 h-44 bg-white rounded-3xl overflow-hidden flex items-center justify-center shadow-lg border border-slate-100 relative group transform hover:scale-105 transition-all p-2">
-            <img src="/logo.png?v=15" alt="Anjo Cuidador Logo" className="w-full h-full object-contain transform scale-[1.45] rounded-2xl" referrerPolicy="no-referrer" />
+            <img src="/logo.png?v=15" alt="AnjoCuidador Logo" className="w-full h-full object-contain transform scale-[1.45] rounded-2xl" referrerPolicy="no-referrer" />
             <span className="absolute -top-1 -right-1 flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
@@ -487,12 +487,12 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
 
           <div className="space-y-1 w-full px-2">
             <h1 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-slate-100 tracking-tight font-display w-full text-center">
-              {selectedMode.startsWith('escolar') ? 'Anjinho Escolar' : 'Anjo Cuidador'}
+              {selectedMode.startsWith('escolar') ? 'Anjinho Escolar' : 'AnjoCuidador'}
             </h1>
             <p className="text-xs sm:text-sm text-serene-blue dark:text-indigo-300 font-extrabold tracking-wide uppercase leading-relaxed w-full text-center block">
               {selectedMode === 'escolar_infantil' 
                 ? 'Rotina, Seguranca e Conectividade para Educacao Infantil' 
-                : 'Tranquilidade, presenca e carinho para quem voce ama'
+                : 'Tranquilidade, presença e carinho para quem voce ama'
               }
             </p>
           </div>
@@ -619,7 +619,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                 }`}
               >
                 <span className="text-lg"> </span>
-                Anjo Cuidador (Idosos)
+                AnjoCuidador (Idosos)
               </button>
               <button
                 type="button"
@@ -633,7 +633,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
                 <div className="w-12 h-12 flex items-center justify-center overflow-hidden border border-slate-200/60 rounded-lg bg-white p-1 shadow-3xs shrink-0">
                   <img src="/logo.png?v=15" alt="Anjinho Logo" className="w-full h-full object-contain transform scale-[1.35]" referrerPolicy="no-referrer" />
                 </div>
-                Anjinho Creche/Maternal
+                AnjinhoCreche/Maternal
               </button>
             </div>
 
@@ -1330,7 +1330,7 @@ export default function Login({ onLoginSuccess, accessibility, onUpdateAccessibi
 
         
         <div className={`p-3.5 ${accessibility?.darkMode ? 'bg-indigo-950/20 border-indigo-900/50 text-indigo-300' : 'bg-indigo-50 border-indigo-200 text-indigo-800'} rounded-xl text-[10px] text-center leading-relaxed`}>
-            <strong>Nota Importante:</strong> O aplicativo {selectedMode.startsWith('escolar') ? 'Anjinho Escolar' : 'Anjo Cuidador'} foi desenvolvido de forma estrita em total concord com as diretrizes de protecao e privacidade da <strong>LGPD (Lei no 13.709/2018)</strong> brasileira.
+            <strong>Nota Importante:</strong> O aplicativo {selectedMode.startsWith('escolar') ? 'Anjinho Escolar' : 'AnjoCuidador'} foi desenvolvido de forma estrita em total concord com as diretrizes de protecao e privacidade da <strong>LGPD (Lei no 13.709/2018)</strong> brasileira.
         </div>
       </div>
     </div>
