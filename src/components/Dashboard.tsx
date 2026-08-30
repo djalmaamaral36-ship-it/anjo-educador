@@ -4400,8 +4400,10 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
           `Anjinho Escolar: ${idoso.nome} ja tomou mamadeira As ${check.lastHorario}. A tentativa de novo registro foi feita As ${defaultTime}. Por questoes de seguranca alimentar e intervalo minimo de 2h, a proxima mamadeira estara liberada a partir das ${check.nextAllowedHorario}.`
         );
 
-        alert(`${check.message}\n\n Um comunicado oficial foi gerado no mural e enviado aos responsaveis informando que a crianca ja tomou mamadeira recentemente.`);
-        return;
+        const confirmExtra = window.confirm(`${check.message}\n\n‚ö†Ô∏è Deseja registrar esta nova mamadeira / complemento alimentar para ${idoso.nome} mesmo assim?`);
+        if (!confirmExtra) {
+          return;
+        }
       }
     } else {
       const mealsStoreCheck = getFromDB<RegistroAlimentacao[]>('anjo_alimentacao', []);
@@ -4438,7 +4440,7 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
       }).then(() => {
         loadOfflineQueue();
         alert('Refeicao registrada offline com sucesso!');
-        setQuickMeal({ refeicao: 'cafe_manha', aceitacao: 'muito_bem', observacao: '' });
+        setQuickMeal({ refeicao: isEscolar ? 'mamadeira' : 'cafe_manha', aceitacao: 'muito_bem', observacao: '', quantidadeMl: quickMeal.quantidadeMl || 180 });
       });
       return;
     }
@@ -4500,7 +4502,7 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
     saveToDB('anjo_notificacoes', allNotifs);
 
     alert('Refeicao registrada com sucesso via canal on-line!');
-    setQuickMeal({ refeicao: 'cafe_manha', aceitacao: 'muito_bem', observacao: '' });
+    setQuickMeal({ refeicao: isEscolar ? 'mamadeira' : 'cafe_manha', aceitacao: 'muito_bem', observacao: '', quantidadeMl: quickMeal.quantidadeMl || 180 });
 
     // Dispatch global events to sync other screens (including Reports & dashboard)
     if (typeof window !== 'undefined') {
@@ -6113,9 +6115,39 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
               
               
               <div className="bg-white p-5 rounded-2xl border border-soft-gray space-y-4">
-                <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                  <Coffee className="text-amber-500 w-4.5 h-4.5" /> Registrar Mamadeira Rapida
-                </h4>
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                    <Coffee className="text-amber-500 w-4.5 h-4.5" />
+                    {isEscolar ? 'Alimenta√ß√£o & Mamadeira' : 'Refei√ß√£o R√°pida'}
+                  </h4>
+                  {isEscolar && (
+                    <span className="text-[10px] font-black bg-amber-100 text-amber-900 border border-amber-300 px-2 py-0.5 rounded-md">
+                      {studentBottlesToday.length} {studentBottlesToday.length === 1 ? 'mamadeira hoje' : 'mamadeiras hoje'}
+                    </span>
+                  )}
+                </div>
+
+                {isEscolar && studentBottlesToday.length > 0 && (
+                  <div className="p-2.5 bg-amber-50/80 border border-amber-200/90 rounded-xl space-y-1.5 text-xs">
+                    <div className="flex items-center justify-between text-[11px] font-bold text-amber-950">
+                      <span className="flex items-center gap-1">
+                        <span>üçº</span>
+                        <span>Mamadeiras Registradas Hoje ({studentBottlesToday.length}):</span>
+                      </span>
+                      <span className="font-mono bg-amber-200 text-amber-950 px-2 py-0.5 rounded font-black text-[11px]">
+                        Total: {studentBottlesToday.reduce((acc, curr) => acc + (Number(curr.quantidadeMl) || 180), 0)} ml
+                      </span>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 pt-0.5">
+                      {studentBottlesToday.map((b, idx) => (
+                        <span key={b.id || idx} className="text-[10px] font-semibold bg-white px-2 py-0.5 rounded-md border border-amber-200 text-amber-900 shadow-3xs flex items-center gap-1">
+                          <strong className="text-amber-950 font-black">{idx + 1}¬™ mamadeira:</strong> {b.horario} ({b.quantidadeMl || 180} ml)
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <form onSubmit={handleQuickMealSubmit} className="space-y-3">
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-1">
@@ -6230,7 +6262,9 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                     type="submit" 
                     className="w-full py-2 bg-amber-500 hover:bg-amber-600 active:bg-amber-700 text-white font-bold text-xs rounded-xl shadow-xs transition-colors cursor-pointer"
                   >
-                    Registrar Mamadeira
+                    {quickMeal.refeicao === 'mamadeira'
+                      ? `üçº Registrar Mamadeira (${quickMeal.quantidadeMl || 180} ml)`
+                      : 'Registrar Refei√ß√£o'}
                   </button>
                 </form>
               </div>
@@ -10002,66 +10036,10 @@ Segunda-feira:
                 <div className="border border-slate-150 p-3.5 rounded-xl">
                   <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1"> Liquidos Consumidos</h5>
                   <strong className="text-sm font-bold text-slate-800">{shiftReviewPayload.totalMl}ml de agua</strong>
-                  <p className="text-[10px] text-slate-500 mt-1">{Math.round(shiftReviewPayload.totalMl/250)} copos oferecidos.</p>
-                </div>
-                <div className="border border-slate-150 p-3.5 rounded-xl">
-                  <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">  Estado de Humor</h5>
-                  <strong className="text-sm font-bold text-slate-800">{shiftReviewPayload.ultimoHumorText.toUpperCase()}</strong>
-                  <p className="text-[10px] text-slate-500 mt-1">Ultimo humor reportado na escala.</p>
-                </div>
-              </div>
-
-              
-              {shiftReviewPayload.ultimoSinal && (
-                <div className="border border-slate-150 p-3.5 rounded-xl">
-                  <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1"> Sinais Vitais aferidos</h5>
-                  <div className="grid grid-cols-4 gap-2 text-center text-xs font-semibold *:bg-slate-50 *:p-1.5 *:rounded-lg">
-                    <div>PA: {shiftReviewPayload.ultimoSinal.pressaoArterial}</div>
-                    <div>Glicemia: {shiftReviewPayload.ultimoSinal.glicemia}</div>
-                    <div>O2: {shiftReviewPayload.ultimoSinal.saturacao}%</div>
-                    <div>Temp: {shiftReviewPayload.ultimoSinal.temperatura}oC</div>
-                  </div>
-                </div>
-              )}
-
-              
-              <div className="space-y-1.5">
-                <h5 className="text-xs font-black text-slate-400 uppercase tracking-wider"> Ocorrencias registradas ({shiftReviewPayload.ocorrencias.length})</h5>
-                {shiftReviewPayload.ocorrencias.length > 0 ? (
-                  <div className="space-y-1.5">
-                    {shiftReviewPayload.ocorrencias.map((o: any) => (
-                      <div key={o.id} className="p-3.5 bg-red-50/50 border border-red-200 rounded-xl leading-normal text-xs text-red-950 font-semibold flex items-center gap-2">
-                        <span className="font-mono text-[9px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded-md uppercase">{o.criticidade}</span>
-                        <span>{o.descricao} ({o.horario})</span>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-xs text-slate-500">Nenhuma ocorr√™ncia registrada.</p>
-                )}
-              </div>
-            </div>
-
-            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
-              <button
-                type="button"
-                onClick={() => setShowShiftReviewModal(false)}
-                className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-100 transition cursor-pointer"
-              >
-                Continuar Plant√£o
-              </button>
-              <button
-                type="button"
-                onClick={handleConfirmEndShift}
-                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-md transition cursor-pointer flex items-center gap-1.5"
-              >
-                <CheckCircle2 className="w-4 h-4" />
-                Finalizar e Enviar
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
+                  <p className="text-[10px] text-slate-500 mt-1">{Math.round(shiftReviewPayload.totalMl/250)} copos ofexú‘VÕé€6æÔSÿ(ˇd›4Æ◊E`l”KìE7È%ËÅiâ]äHjmw·ßÈ-ØëÀêÚèV¢¢]†ó˙`â#jÊ„7ﬂÃH≥òSe¢˘0_\†⁄o>§¸>`+ä1Ê=…ÿUo•4eïl±èß#î„W—iUH (ﬁä^”8KßU_ñm-˛<Â€ø–ZIãWÇƒw»õKœó£*ÚúÈòÜ¨Ü«\&x√ÜlÖ«ΩB◊∆™eË∑"Sz>Lß¡‡∆j%ì ìÇ+A´±çzãìÚµ˝É›s∂π!;°ç
+ay¶|¨è∞=≤ÍìÉ∏à˝¡~>,„!‰m«Øƒù¬ô3Îéˆ…B©ãÑ4Àïˆï1Aûë»É±f≠-€{À%Ë≈‘ˇ
+ƒÅÁ˝…≠ªê5”Æ
+ZeR;Oªë˚√±_¢Ñ‰xRbàô¥«ﬂoM	—∞å{)Ωú≠íSJaï„1rv§@$A
+Jãõ∑≥Æ|Dπf∆ıVNƒæ•ÑO>ﬂ	:“Ì99ÏÏt˘a“ÌÃ[@bà⁄ˇ–ÂÓ#ÀÚnáv1ÌΩÓ’≤’g[Gô˚é⁄®À¬‰$fxÁrHcH«GÅ<K√ ﬂ±“ö…òM ·–^Ö˚~à&uﬁ	&õÓa•?Ìm¥@#ÙK†ÏüÀ»SBf$Ô˜’π†´E0Í)Ú€]=®à”}DŸe†4Tÿt4Ñ {‹êú}ÑüåPG∏T:É.wLñø∫Ìo¿…„“^∂Edhé-¿7Öñc{»¿é¨ı3%UÁÛ◊„∏«ÄÔ˝5,Ú≠Ô˘è*=4£gŸ¿§RQ¨πÂ0‚	enAƒ@Ó%
+≥DsWù†(•JÕïSÕ˜|ßêPKO~aÄfaq5'Â1%ß)Ÿ[ºgÜ#A^D_ø8UJ$<Ë»B”≤.˜¶˛.åÂÎfíz=ºBπÖyqû≠çDáøédUX´d≤›Ân∞˙áΩ∆S%ó–≠ÔÆ˙æh≥∑©⁄‹ûKÌwEâËØâ0,êöjÒl.àlÚhP£–Dü%Z.ùHkQêÆT›3}ûÇ^÷öH*UPÖ6J„\q«^˝\Õƒ-¡?ó—ËFiø˛´â,)˙èiMâ§ÇAÙ5◊Ÿµ§ûŸ.ß!Ë˝√?'jºÂıëÕM
+äjå	†“§Â∑q%ﬂ `KWrÌ∏ì€˘2eÒ›íÎX∞Iı(PDä/{hÿ|ÈW7å˘?êÜÆÂ='˙I	i‘[ÕhyÏ…6¯˘bÒ  ˇˇ ‘ü’

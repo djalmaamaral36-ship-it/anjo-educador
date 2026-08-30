@@ -31,7 +31,10 @@ import {
   Shield,
   Award,
   Copyright,
-  Fingerprint
+  Fingerprint,
+  Download,
+  FileCode,
+  Archive
 } from 'lucide-react';
 
 interface SettingsProps {
@@ -1375,6 +1378,71 @@ export default function SettingsPage({
               </div>
 
               
+              {/* Download & Export Source Code Section */}
+              <div className="p-4 bg-indigo-50/70 border border-indigo-200 rounded-2xl space-y-3">
+                <div className="space-y-0.5">
+                  <h4 className="text-xs font-black text-indigo-950 flex items-center gap-1.5">
+                    <Download className="w-4 h-4 text-indigo-600" />
+                    Exportar Código-Fonte e Arquivos do Projeto
+                  </h4>
+                  <p className="text-[11px] text-indigo-800">
+                    Baixe os arquivos atualizados para backup ou deploy externo com um clique:
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        const res = await fetch('/api/download/dashboard');
+                        if (!res.ok) throw new Error('Falha');
+                        const blob = await res.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'Dashboard.tsx';
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                      } catch (e) {
+                        window.location.href = '/api/download/dashboard';
+                      }
+                    }}
+                    className="p-3 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-xs flex items-center justify-center gap-2 transition cursor-pointer"
+                  >
+                    <FileCode className="w-4 h-4" />
+                    <span>Baixar Dashboard.tsx</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        const res = await fetch('/api/download/zip');
+                        if (!res.ok) throw new Error('Falha');
+                        const blob = await res.blob();
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'anjinho_escolar_codigo_fonte.zip';
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+                      } catch (e) {
+                        window.location.href = '/api/download/zip';
+                      }
+                    }}
+                    className="p-3 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold text-xs rounded-xl shadow-xs flex items-center justify-center gap-2 transition cursor-pointer"
+                  >
+                    <Archive className="w-4 h-4" />
+                    <span>Baixar Projeto Completo (ZIP)</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Legal Notice */}
               <div className="p-3.5 bg-slate-900 text-slate-200 rounded-2xl text-[10px] leading-relaxed space-y-1 font-mono">
                 <p className="text-amber-400 font-bold uppercase tracking-wider">
                   [!] AVISO LEGAL DE DIREITOS RESERVADOS

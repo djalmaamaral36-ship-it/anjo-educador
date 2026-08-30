@@ -134,7 +134,7 @@ export default function DailyRoutine({
   const [alimentacaoToday, setAlimentacaoToday] = useState<RegistroAlimentacao[]>([]);
   
   // Input builders
-  const [mealForm, setMealForm] = useState({ refeicao: 'cafe_manha', aceitacao: 'muito_bem', observacoes: '', quantidadeMl: 180 });
+  const [mealForm, setMealForm] = useState({ refeicao: isEscolar ? 'mamadeira' : 'cafe_manha', aceitacao: 'muito_bem', observacoes: '', quantidadeMl: 180 });
   const [hygieneForm, setHygieneForm] = useState({ banho: true, higieneBucal: true, trocaRoupa: true, trocaFralda: false, pele: true, obs: '' });
   const [waterAmount, setWaterAmount] = useState(250);
   const [sleepForm, setSleepForm] = useState({ 
@@ -567,8 +567,10 @@ export default function DailyRoutine({
           `Anjinho Escolar: ${idoso.nome} ja tomou mamadeira as ${check.lastHorario}. A tentativa de novo registro foi feita as ${nowTime}. Para garantir a nutricao e o descanso digestivo de 2h, a proxima mamadeira estara liberada a partir das ${check.nextAllowedHorario}.`
         );
 
-        alert(`${check.message}\n\n  Foi gerado um comunicado oficial no mural e no diario do aluno informando os pais e a equipe.`);
-        return;
+        const confirmExtra = window.confirm(`${check.message}\n\n⚠️ Deseja registrar esta nova mamadeira / complemento alimentar para ${idoso.nome} mesmo assim?`);
+        if (!confirmExtra) {
+          return;
+        }
       }
     } else {
       const feeds = getFromDB<RegistroAlimentacao[]>('anjo_alimentacao', []);
@@ -643,7 +645,7 @@ export default function DailyRoutine({
     const alertMsg = `${isEscolar ? 'Anjinho Escolar' : 'Anjo Cuidador'}: Registro de Alimentacao para ${idoso.nome}. Refeicao: ${mealLabelMap[mealForm.refeicao] || mealForm.refeicao}${novoFeed.quantidadeMl ? ` (${novoFeed.quantidadeMl}ml)` : ''} as ${novoFeed.horario}. Aceitacao: ${acceptText}.${totalBottlesText} Nota: "${novoFeed.observacoes || 'Sem observacoes'}", registrado por ${usuarioAtual.nome}.`;
     triggerWhatsAppSim('Acompanhamento Alimentar', alertMsg);
 
-    setMealForm({ refeicao: 'cafe_manha', aceitacao: 'muito_bem', observacoes: '', quantidadeMl: 180 });
+    setMealForm({ refeicao: isEscolar ? 'mamadeira' : 'cafe_manha', aceitacao: 'muito_bem', observacoes: '', quantidadeMl: mealForm.quantidadeMl || 180 });
     alert('Alimentacao registrada com sucesso!');
     
     // Dispatch global events to sync other screens (including Reports & dashboard)

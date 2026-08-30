@@ -1314,6 +1314,33 @@ A resposta da Aura ("respostaAura") deve ser uma confirmação curta, afetuosa e
     }
   });
 
+  // Direct Download endpoints to prevent SPA routing issues
+  app.get(['/api/download/dashboard', '/download-dashboard', '/Dashboard.tsx'], (req, res) => {
+    const filePath = path.join(process.cwd(), 'src', 'components', 'Dashboard.tsx');
+    if (fs.existsSync(filePath)) {
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      res.setHeader('Content-Disposition', 'attachment; filename="Dashboard.tsx"');
+      return res.sendFile(filePath);
+    }
+    const publicPath = path.join(process.cwd(), 'public', 'Dashboard.tsx');
+    if (fs.existsSync(publicPath)) {
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      res.setHeader('Content-Disposition', 'attachment; filename="Dashboard.tsx"');
+      return res.sendFile(publicPath);
+    }
+    return res.status(404).send('Dashboard.tsx não encontrado.');
+  });
+
+  app.get(['/api/download/zip', '/download-zip', '/anjinho_escolar_codigo_fonte.zip'], (req, res) => {
+    const zipPath = path.join(process.cwd(), 'public', 'anjinho_escolar_codigo_fonte.zip');
+    if (fs.existsSync(zipPath)) {
+      res.setHeader('Content-Type', 'application/zip');
+      res.setHeader('Content-Disposition', 'attachment; filename="anjinho_escolar_codigo_fonte.zip"');
+      return res.sendFile(zipPath);
+    }
+    return res.status(404).send('Arquivo ZIP não encontrado.');
+  });
+
   // Map Netlify function: whatsapp-sender
   app.post('/.netlify/functions/whatsapp-sender', async (req, res) => {
     console.log('📬 Received whatsapp-sender proxy request');

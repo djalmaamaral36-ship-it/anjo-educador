@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db, forceReconnectFirestore, startFirebaseSync, lastSnapshotTime, snapshotCountTotal } from '../firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
-import { Wifi, WifiOff, RefreshCw, ShieldCheck, ChevronUp, ChevronDown, Terminal, MoveUp, MoveDown, EyeOff } from 'lucide-react';
+import { Wifi, WifiOff, RefreshCw, ShieldCheck, ChevronUp, ChevronDown, Terminal, MoveUp, MoveDown, EyeOff, Download, FileCode, Archive } from 'lucide-react';
 
 export default function FirebaseDiagnosticBar() {
   const [isConnected, setIsConnected] = useState<boolean>(true);
@@ -98,6 +98,25 @@ export default function FirebaseDiagnosticBar() {
       setTestResult(`  Erro nas regras ou conexao: ${err?.message || 'Acesso negado'}`);
     }
     setTimeout(() => setTestResult(null), 5000);
+  };
+
+  const handleDownloadFile = async (url: string, filename: string) => {
+    try {
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('Falha ao baixar');
+      const blob = await res.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = blobUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(blobUrl);
+      document.body.removeChild(a);
+      setTestResult(`[OK] Download de ${filename} iniciado!`);
+    } catch (err: any) {
+      window.location.href = url;
+    }
   };
 
   if (isHidden) {
@@ -216,6 +235,25 @@ export default function FirebaseDiagnosticBar() {
               >
                 <Terminal className="w-3 h-3" />
                 Logs ({logs.length})
+              </button>
+            </div>
+
+            <div className="grid grid-cols-2 gap-1 pt-1 border-t border-white/10">
+              <button
+                onClick={() => handleDownloadFile('/api/download/dashboard', 'Dashboard.tsx')}
+                className="py-1.5 px-2 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-[9px] sm:text-[10px] font-bold flex items-center justify-center gap-1 transition active:scale-95 shadow cursor-pointer"
+                title="Baixar Dashboard.tsx diretamente"
+              >
+                <FileCode className="w-3 h-3" />
+                Baixar Dashboard.tsx
+              </button>
+              <button
+                onClick={() => handleDownloadFile('/api/download/zip', 'anjinho_escolar_codigo_fonte.zip')}
+                className="py-1.5 px-2 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-[9px] sm:text-[10px] font-bold flex items-center justify-center gap-1 transition active:scale-95 shadow cursor-pointer"
+                title="Baixar pacote completo do projeto"
+              >
+                <Archive className="w-3 h-3" />
+                Baixar ZIP Completo
               </button>
             </div>
 
