@@ -1,12 +1,33 @@
 export function isRecordBeforeResetTimestamp(record: any, resetTimeStr: string | null): boolean {
   if (!resetTimeStr || !record) return false;
   try {
-    const recordTime = record.timestamp || record.data || record.horario || record.time;
-    if (!recordTime) return false;
-    const recDate = new Date(recordTime).getTime();
     const resetDate = new Date(resetTimeStr).getTime();
-    if (!isNaN(recDate) && !isNaN(resetDate)) {
-      return recDate < resetDate;
+    if (isNaN(resetDate)) return false;
+
+    // Check full timestamp first
+    if (record.timestamp || record.createdAt || record.criadoEm) {
+      const recDate = new Date(record.timestamp || record.createdAt || record.criadoEm).getTime();
+      if (!isNaN(recDate)) return recDate < resetDate;
+    }
+
+    // Combine date + time if available
+    const dateStr = record.data || record.date;
+    const timeStr = record.horario || record.time;
+    if (dateStr && timeStr && dateStr.length === 10 && timeStr.includes(':')) {
+      const fullIso = `${dateStr.split('T')[0]}T${timeStr.trim()}:00`;
+      const recDate = new Date(fullIso).getTime();
+      if (!isNaN(recDate)) return recDate < resetDate;
+    }
+
+    // If only date string is present (e.g. YYYY-MM-DD)
+    if (dateStr) {
+      const cleanD = String(dateStr).split(' ')[0].split('T')[0];
+      const todayIso = new Date().toISOString().split('T')[0];
+      const resetDateOnly = resetTimeStr.split('T')[0];
+      if (cleanD === todayIso || cleanD === resetDateOnly || cleanD === '2026-05-30') {
+        return false;
+      }
+      return cleanD < resetDateOnly;
     }
   } catch (e) {}
   return false;
@@ -1268,10 +1289,50 @@ export function wipeAllParentsPanelActivities() {
   window.dispatchEvent(new CustomEvent('db-activities-update'));
 }
 
+export function downloadReportFile(report: any, studentName: string = 'aluno') {
+  if (!report) return;
+  const fileName = `relatorio_rotina_${studentName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${report.id || Date.now()}.txt`;
+  const textContent = `=====================================================
+ANJO CUIDADOR / ANJINHO ESCOLAR
+RELATÓRIO DE ACOMPANHAMENTO E ROTINA DIGITAL
+=====================================================
+Assistido/Aluno: ${studentName}
+Cuidador/Professora: ${report.cuidador || 'Equipe Escolar'}
+Data: ${report.data || new Date().toLocaleDateString('pt-BR')}
+Período: ${report.inicio || '07:30'} às ${report.fim || '17:30'} (${report.duracao || 'Período Completo'})
+Taxa de Conformidade: ${report.taxaConformidade || 100}% OK
+-----------------------------------------------------
+
+CONTEÚDO DO RELATÓRIO:
+${report.mensagemCompleta || report.observacao || 'Nenhum detalhe adicional.'}
+
+-----------------------------------------------------
+Link Seguro do Diário: ${typeof window !== 'undefined' ? window.location.origin : ''}/?relatorio=${report.id || ''}
+Gerado em: ${new Date().toLocaleString('pt-BR')}
+=====================================================`;
+
+  if (typeof window !== 'undefined' && document) {
+    const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+}
+
 export function resetStudentDailyRoutine(studentIds: string[]) {
   if (typeof window === 'undefined' || !studentIds || studentIds.length === 0) return;
 
-  const validIds = new Set(studentIds.filter(Boolean));
+  const validIds = new Set<string>();
+  studentIds.filter(Boolean).forEach(id => {
+    validIds.add(id);
+    getAllPossibleStudentKeys(id).forEach(k => validIds.add(k));
+  });
+
   if (validIds.size === 0) return;
 
   const resetNowIso = new Date().toISOString();
@@ -1303,6 +1364,12 @@ export function resetStudentDailyRoutine(studentIds: string[]) {
 
   const allSinais = getFromDB<any[]>('anjo_sinais', []);
   saveToDB('anjo_sinais', allSinais.filter(s => !s || !s.idosoId || !validIds.has(s.idosoId)));
+
+  const allHyg = getFromDB<any[]>('anjo_higiene_global', []);
+  saveToDB('anjo_higiene_global', allHyg.filter(h => !h || !h.idosoId || !validIds.has(h.idosoId)));
+
+  const allOcorrencias = getFromDB<any[]>('anjo_ocorrencias', []);
+  saveToDB('anjo_ocorrencias', allOcorrencias.filter(o => !o || !o.idosoId || !validIds.has(o.idosoId)));
 
   const allRecados = getFromDB<any[]>('anjo_mural_recados', []);
   saveToDB('anjo_mural_recados', allRecados.filter(r => !r || !r.idosoId || !validIds.has(r.idosoId)));
@@ -1385,6 +1452,7 @@ export function resetStudentDailyRoutine(studentIds: string[]) {
   window.dispatchEvent(new CustomEvent('db-routine-update'));
   window.dispatchEvent(new CustomEvent('db-jornada-update'));
   window.dispatchEvent(new CustomEvent('db-activities-update'));
+  window.dispatchEvent(new Event('storage'));
 }
 
 export function setShiftActiveStatesBatch(updates: { targetKey: string; active: boolean; isAbsent?: boolean; reason?: string | null; startTime?: string }[]) {

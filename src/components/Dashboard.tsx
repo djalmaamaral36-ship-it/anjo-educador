@@ -4,7 +4,7 @@
 // Vercel build fix update: 514140926665909969
 import React, { useState, useEffect, useRef } from 'react';
 import { Idoso, TarefaDiaria, Usuario, TaskType, TaskStatus, RegistroAlimentacao, RegistroHidratacao, RegistroHumor, RegistroSono, RegistroAtividade, SinalVital, Medicamento, formatWhatsAppNumber, NotificacaoSimulada, Classroom, isStaffUser, isDirectorOrAdminUser, getRoleLabel } from '../types';
-import { getFromDB, saveToDB, checkFeedingCareAuthorization, SALAS_INICIAIS, getShiftActiveState, setShiftActiveState, setShiftActiveStatesBatch, getAssignedTeacherForRoom, getStudentRoomName, resetStudentDailyRoutine, checkBottleFeedingInterval, registerBottleAttemptNotice, purgeOrphanedStudentData, saveHygieneLog, getHygieneLog, saveMealRecord, getStudentMealsToday, isStudentIdMatch, getAllPossibleStudentKeys } from '../data';
+import { getFromDB, saveToDB, checkFeedingCareAuthorization, SALAS_INICIAIS, getShiftActiveState, setShiftActiveState, setShiftActiveStatesBatch, getAssignedTeacherForRoom, getStudentRoomName, resetStudentDailyRoutine, checkBottleFeedingInterval, registerBottleAttemptNotice, purgeOrphanedStudentData, saveHygieneLog, getHygieneLog, saveMealRecord, getStudentMealsToday, isStudentIdMatch, getAllPossibleStudentKeys, downloadReportFile } from '../data';
 import { deleteFromFirestore, deleteStudentDataFromFirestore } from '../firebase';
 import { 
   ItemFilaOffline, 
@@ -63,7 +63,7 @@ import {
   RefreshCw,
   Info
 ,
-  AlertCircle} from 'lucide-react';
+  AlertCircle, Download, Printer, Copy} from 'lucide-react';
 
 interface DashboardProps {
   key?: any;
@@ -9170,6 +9170,15 @@ Segunda-feira:
                         >
                           <span> </span> Abrir Diario Digital 360o
                         </button>
+
+                        <button
+                          type="button"
+                          onClick={() => downloadReportFile(report, idoso.nome)}
+                          className="px-2.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1 cursor-pointer transition-all shadow-xs"
+                          title="Baixar cÃ³pia do relatÃ³rio de rotina em arquivo"
+                        >
+                          <Download className="w-3.5 h-3.5" /> Baixar
+                        </button>
                         
                         <button
                           type="button"
@@ -10025,18 +10034,10 @@ Segunda-feira:
                         {shiftReviewPayload.pendentes.map((p: any) => (
                           <li key={p.id}>{p.titulo} - Nao preenchido (Previsto: {p.horarioPrevisto})</li>
                         ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              
-              <div className="grid grid-cols-2 gap-4">
-                <div className="border border-slate-150 p-3.5 rounded-xl">
-                  <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1"> Liquidos Consumidos</h5>
-                  <strong className="text-sm font-bold text-slate-800">{shiftReviewPayload.totalMl}ml de agua</strong>
-                  <p className="text-[10px] text-slate-500 mt-1">{Math.round(shiftReviewPayload.totalMl/250xœÔVÍŽÛ6¾ïSØä¿¬›ÆõºŒmzi²è&½=Ð"-±Kq’ZÛ]øizËkäÅ2¤ü·ú‰v^êƒ%Ž¨™ß|3£ÞŽÄ ÁXqÃcÁÀög=¿ ¥ßlÀÄ}­$–ÔÚ÷4ãW%Æ).‘•Ôñh4½êOˆ\1Î¢ìT]¡³trîËñ‹>†zóYrÑRÒøŽsáùr8$¹ÖÜÄÔrâ>*‰ÖÂcÈ–Ñ¨3'äÚ:Ê€0N~Ë30³A:©n•T Øl$;ýÓpØ™?ØT¬Üü^ðõÝJ ¬ŸK'2±>âö¾ƒOâ!v{»Ù ˆSA7ÿ,îÏœ9´O!I}$b¸ª(á6¦’>#‘{cÉZZ6öV(*É‹¤û?ˆ/,ùS8¡X¾
-eR:O‚»‰ÿ‹b6º$	ÕÑ¸Àså0N¸ßØ¢å™Rz9]&Ç”âJG#$àåô@Lj)(ÌoÞNÛòÑ×†[Ká­A‚Ê]C	}¾“"Ft´Ýs²ßÙêòÃ¸Ý™¥.ÇÄPØýÐæî#Ït»C‡»¸	^w°hôÙÔÑêÌ½]Km”ea5y´õ9­IcŽy–†Q¾b0†«XP‹M Ø^(ÃûnMpÚÜ—\%.Ýõê•þ´·ÉœÉ/5eÿ\Fž2£ºÛ…)¡jÛ#WóÚ¨ÇÈw|{õ }Ávç Š.ƒ…g°Â&ÃVÞã†äíc$üÔˆˆä”yÂ˜»Ü!Yáê·¿A'K{%ù†”¡=´€ÐŽ #;êhp˜‚"Îç7¾Çíqß1úk\èMèzÏzhÆN²ÁIýØ'pÄSÆýÂˆ-€üKg‰¾:QQÐOÁP#À«æ{¾SÈ=¬¥'¿Ð#ÓzqU'å!%Ç)Ù™¿ç
-‡#%AD_¿x•Hýx¬ «AV7-Ër¯jàïÜ:±ÚF\± ‡WD;œ{á¹ÒHôøËH–¹s *ÝVûÁv*OA-°[ß]=tCÑXînSXßžJíw`TvWTZ^“šóâÙ \ÙøÑ &u}|h±ô"-}DaºR¸çæ4ƒ¬UU
-X¹±`"Â³W>W5qô/TN¹‘T¹¯ÿB%‘Eÿ1­)ULrŒ¾&»V,0ÛÆã¤ŽÇ{Î£‘‡#5ÁòúÀæ:EEUÆRiSüò[û’od°¡+ùvÜÊíl‘òøn!L,ùøü(kTD]vÈ úÒ¯~‹0!œ\«{AÍ“R©·’áÑr/Ø£­÷óÅîâ   ÿÿ vÖ¤
+                xœÔYÍr¹¾ïS ªZ“ÜdHŠ4eK‘äÒRRÖµkK%Ë©­ÚÊœga€Y #’Ö²jS9ä9’ÜR•Sn9Fo’'IÃ!‡üSëø r@Ðèþº¿¯a„Ì¿ãVÊN¿@ŽÇ­€Þ»~jLKƒÎ¹³Á•ÑÕI0ù+õÇäd/”4@æç¦¼
+qâ=Ý+Û±úâ@È€H”}xŠaM¼ý^%^·ÙCR¤< 7fŽ¥`±¨W\K“±ö~Øo'ã? ¡àÚ0ìß!;œ­ü´ÝFi’écE–ð3å¡7¢Æ†xàíï¢ïè)„B}ÁU›¯Ç­¨çÜ_i)xX²AÅ³ýŠÛ?o·÷NTD‡ú†ÜS2ºÆ&pÐÔBcöŠMc†‚p˜âãV¶¶sÛ¤êÔ…½zpÔX›=¼Â:jZWÖ«÷nuzíÆù"£‹!‘Ä7Go·GÝ ûüƒ‹.”Æ0^þ&…üä‘M™¦±°{ÝÂtðö[cbL¬7¦1ÊoíF(2;!I!íA9FDù˜á¹U¨>ìÊ1COž úÿ!@ŒñT¡ßSm>0äÁÚ°¾>µe°“Ùà®aû}¬2‰©…ÒWGƒpRxJ¼}pÀWG¹XètAfÁéõÙÑ¦x4I”ÂâL‚³i%OÌÖü£>X‡7¯Îfn\òª³y1…u
+Ábúå¦ånIœl^PÃ,"íªSÑ¯\³ª¢¹†IwcG•`ŸxS%:pœd'|¯|!%á>Å
+Š@H¡¼à ¾×]n‹ÉMFx¨£iÃôíÞF§¨^8Ò~Wl³eŒ“z]!Ì'trêÜu¾ó™œ<ˆ&¦E#²*‰'!ÃzídÞrA2ãpø¢!Fp`Î…Œ¡ÊåÁ²Ÿfú!,²œÚCFÆˆU^lQ¨8¶5¼Ã‹†ÚcÁE¶Ï‡¦ÆÍìÞûæ»?ƒ‡dlkG2ñÚ…Ø S‰¦/©¦@ñ8 ††`Ç™—àIMv¢D3K*jÖ-°&‘UZùB¹ÁUfÊ<$s–Ü;}M8#FDÿ0(*¤ˆ›KÖ9,s±å*ÜËøcª4N<Â‹‡.J4ðÅxz…ý«–R­/™¬'‰!Vûã^éWÁûP­ïNê6iÑo"1z³HµW"À¬>ÄLGhŠÉ3sd%¢F.FïäÍHWD„+÷D.XÐÂZb® ¥’!•JH/Ôxoõ\åÀv×”§X¢k†¹~ü»(2sÑGvk„yÀì>¤2¾àõì&?ö\~¡ö§Ä; ?Ì]cGžåÞE€¨M€+UÊodR¾ÒƒUÉ”ã¾=îGÄ¿ëSé3Ò)eˆˆ ëC­òK—†Œé;Aüžb¹U@Jù¶2°ô¸àåEñ5	n¬¶ ^V¤¥¥c Ê!#¼6zgTØ‹‡ívë žÁÇ‰	ƒ´]™Õ³Gh‘‰ÝA8&NµXÊã’gAÍÐ$Äxìì·‘7LƒUPÎŸ½<Ø5¹‡9ÍwÊÑÊ½ù|'Dl>EfÞJ‰Ù¾†ˆÂó¥â…’ã2`óUD¹ú¦ÑØà;Ê
+:›	³Çƒ%ww—”Óž-£¹hî9Ñ¼¦ÿuw*ÝC±°Bá=wûª©ºPÐX@½@µsúøW _”Óš†ºíÿü»TY»!°àã¿Ì$èwoS	â	ºPqÍÍ»QwËV´D°ÙibÐ4®”tå¬lú©Ñ Ð³þôª]ü˜Ò„äGªMÑþ›ûµ kl^	‰¾…É×²^!%vìzW?Ë–PçÌ86ïÚ?ã‚ÂàA,2®@%@£Çßo—k‹÷Úª²Ò1wgb¨Ø1;cóÛµ1Äcå,9ŽS®êíòUÂÊu‰Ä€	HÜ‚¨>{söø—Ç?_U©áÊK¥²,2—I.Ôg½±Í•k"ÿ)Z'NÑ¢Vyä†ö§ôÅ7W7ºyù	]A9t/™'ÚÏŽºm(ž»Til§ígÓ>'½=y‹úW¯/¯n^½<?;¿ØÕ]$&³À›TxLã16Ê:WÛö§@²L¿DWßîà”m²z9eŸnÓ ™y‡k“Ý+‘¤ò¾dÑ$/”·ìèÐˆ<+±2Ky#‰a9]®pHâYÊYrÍEäý<U³Ö3ï6{ »h¯Yâa ,IÞ³Ã4ìyÖë´y¿ÙÝ¥ß|µVÁ¡›X´Ä£NU1'FÍD§Õ¿uÌ™º„«•]PÍó2«ºú®b[ yew•Ëu#Ÿ¶¥e1ƒW¯eÖÉ¹0ô2ÄT¢º>¿tH wÿûÃçäæÚ.K#±ëŽ\ù2ì¢ÉEìºq¨TAÞÏ#5s¶È¿`¨Îgž¨ŠÕ×˜ŽAÁôzýöûÛÆÖAsÿ‡Íg›±¾àJ#Fù:ÉÓ¸Ñ6¢M!¡áè×¨Öza*¶†qRƒ§
+\	Ç÷44ï6}F“À2hŽ$Þtyu³µ³R ºÝ
+¬t½ö1ô•\„Å	Püªö¾u¦›ÝÌZ gàth÷÷¾CÛë†r_$“*÷w$2~û%êÍnmÖ&Ø/3À®1ø@__?*]“m,k‡6Üž-Ä§_ü  ÿÿ æŠÅ:
