@@ -1213,8 +1213,8 @@ Equipe Anjinho Escolar`
       };
 
       const updateTimer = () => {
-        const currentActive = localStorage.getItem('anjo_shift_active_' + idoso.id) || localStorage.getItem('anjo_shift_active');
-        if (currentActive === 'false' || !isTimerActiveRef.current) {
+        const activeState = getShiftActiveState(idoso.id);
+        if (!activeState.active || !isTimerActiveRef.current) {
           if (timerIntervalRef.current) {
             clearInterval(timerIntervalRef.current);
             timerIntervalRef.current = null;
@@ -1227,7 +1227,7 @@ Equipe Anjinho Escolar`
         }
 
         let startMs = 0;
-        const activeStartTime = shiftStartTime || localStorage.getItem('anjo_shift_start_time_' + idoso.id);
+        const activeStartTime = activeState.startTime || shiftStartTime || localStorage.getItem('anjo_shift_start_time_' + idoso.id);
         if (activeStartTime) {
           const parsed = new Date(activeStartTime).getTime();
           if (!isNaN(parsed) && parsed > 0) {
@@ -8235,9 +8235,27 @@ Segunda-feira:
                     </strong>
                   </div>
                   
-                  <span className="text-xs font-semibold text-slate-500 bg-white/60 px-3 py-2 rounded-xl border border-slate-200/80">
-                     Modo Familia: Acesso de acompanhamento configurado (botoes de controle de turno, termino e faltas desabilitados).
-                  </span>
+                  {!isShiftActive ? (
+                    <button
+                      type="button"
+                      onClick={handleStartShift}
+                      className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-2 shrink-0"
+                      title="Ligar o cronometro do periodo letivo"
+                    >
+                      <Play className="w-4 h-4 fill-current" />
+                      <span>Ligar Cronometro</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleDirectStopShift}
+                      className="px-3.5 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold rounded-xl shadow-xs transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
+                      title="Desligar e zerar o cronometro"
+                    >
+                      <Square className="w-3.5 h-3.5 fill-current" />
+                      <span>Desligar Cronometro</span>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
