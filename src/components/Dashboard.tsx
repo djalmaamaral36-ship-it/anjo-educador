@@ -5090,7 +5090,8 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
     hands: Boolean(rawHygiene.hands ?? rawHygiene.banho ?? rawHygiene.bath),
     cream: Boolean(rawHygiene.cream ?? rawHygiene.pele),
     time: rawHygiene.time || '',
-    observations: rawHygiene.observations || rawHygiene.obs || ''
+    observations: rawHygiene.observations || rawHygiene.obs || '',
+    registradoPor: rawHygiene.registradoPor || ''
   } : {
     bath: false,
     teeth: false,
@@ -5099,7 +5100,8 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
     hands: false,
     cream: false,
     time: '',
-    observations: ''
+    observations: '',
+    registradoPor: ''
   };
 
   // Filter real vitals logged today in this active period (excluding baseline placeholder entries)
@@ -9025,7 +9027,139 @@ Segunda-feira:
             </div>
           </div>
 
-          
+          {/* CARD EXCLUSIVO DE HIGIENE & CUIDADOS PESSOAIS DO ALUNO NO PAINEL DOS PAIS (PORTAL PAX) */}
+          <div className="bg-white p-5 rounded-3xl border border-[#cbd5e1] space-y-4 shadow-xs">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 bg-indigo-50 border border-indigo-150 rounded-xl text-indigo-700">
+                  <Sparkles className="w-5 h-5 text-indigo-600" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-black text-slate-800 flex items-center gap-1.5">
+                    <span>ğŸ§¼</span>
+                    <span>{isEscolar ? 'Checklist de Higiene & Cuidados Pessoais do Aluno' : 'Checklist de Higiene & Cuidados do Cliente'}</span>
+                  </h3>
+                  <p className="text-[10px] text-slate-500 font-semibold">
+                    {todayHygieneLog?.time
+                      ? `Registrado Ã s ${todayHygieneLog.time}${todayHygieneLog.registradoPor ? ` por ${todayHygieneLog.registradoPor}` : ''}`
+                      : 'Acompanhamento de higiene em tempo real'}
+                  </p>
+                </div>
+              </div>
+              <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider ${
+                todayHygieneLog?.time
+                  ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                  : 'bg-amber-50 text-amber-800 border border-amber-200'
+              }`}>
+                {todayHygieneLog?.time ? 'âœ“ Atualizado Hoje' : 'Aguardando Registros'}
+              </span>
+            </div>
+
+            {/* Grid dos 5 Rituais de Higiene */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+              {/* ğŸ‘• Troca de Roupas */}
+              <div className={`p-3 rounded-2xl border flex items-center gap-2.5 transition-all ${
+                todayHygieneLog?.clothes
+                  ? 'bg-indigo-50/80 border-indigo-300 text-indigo-950 font-bold shadow-2xs'
+                  : 'bg-slate-50 border-slate-200 text-slate-500'
+              }`}>
+                <span className="text-2xl shrink-0">ğŸ‘•</span>
+                <div className="leading-tight">
+                  <span className="block text-xs font-black">Troca de Roupas</span>
+                  <span className={`text-[10px] font-extrabold ${todayHygieneLog?.clothes ? 'text-indigo-700' : 'text-slate-400'}`}>
+                    {todayHygieneLog?.clothes ? 'âœ“ Realizada' : 'Pendente'}
+                  </span>
+                </div>
+              </div>
+
+              {/* ğŸª¥ EscovaÃ§Ã£o Dentes */}
+              <div className={`p-3 rounded-2xl border flex items-center gap-2.5 transition-all ${
+                todayHygieneLog?.teeth
+                  ? 'bg-indigo-50/80 border-indigo-300 text-indigo-950 font-bold shadow-2xs'
+                  : 'bg-slate-50 border-slate-200 text-slate-500'
+              }`}>
+                <span className="text-2xl shrink-0">ğŸª¥</span>
+                <div className="leading-tight">
+                  <span className="block text-xs font-black">EscovaÃ§Ã£o Dentes</span>
+                  <span className={`text-[10px] font-extrabold ${todayHygieneLog?.teeth ? 'text-indigo-700' : 'text-slate-400'}`}>
+                    {todayHygieneLog?.teeth ? 'âœ“ Orientada' : 'Pendente'}
+                  </span>
+                </div>
+              </div>
+
+              {/* ğŸ§¼ MÃ£os e Rosto */}
+              <div className={`p-3 rounded-2xl border flex items-center gap-2.5 transition-all ${
+                todayHygieneLog?.hands
+                  ? 'bg-indigo-50/80 border-indigo-300 text-indigo-950 font-bold shadow-2xs'
+                  : 'bg-slate-50 border-slate-200 text-slate-500'
+              }`}>
+                <span className="text-2xl shrink-0">ğŸ§¼</span>
+                <div className="leading-tight">
+                  <span className="block text-xs font-black">MÃ£os e Rosto</span>
+                  <span className={`text-[10px] font-extrabold ${todayHygieneLog?.hands ? 'text-indigo-700' : 'text-slate-400'}`}>
+                    {todayHygieneLog?.hands ? 'âœ“ Lavados' : 'Pendente'}
+                  </span>
+                </div>
+              </div>
+
+              {/* ğŸ› Banho Tomado */}
+              <div className={`p-3 rounded-2xl border flex items-center gap-2.5 transition-all ${
+                todayHygieneLog?.bath
+                  ? 'bg-cyan-50/80 border-cyan-300 text-cyan-950 font-bold shadow-2xs'
+                  : 'bg-slate-50 border-slate-200 text-slate-500'
+              }`}>
+                <span className="text-2xl shrink-0">ğŸ›</span>
+                <div className="leading-tight">
+                  <span className="block text-xs font-black">Banho Tomado</span>
+                  <span className={`text-[10px] font-extrabold ${todayHygieneLog?.bath ? 'text-cyan-700' : 'text-slate-400'}`}>
+                    {todayHygieneLog?.bath ? 'âœ“ ConcluÃ­do' : 'Pendente'}
+                  </span>
+                </div>
+              </div>
+
+              {/* ğŸ§´ Pomada / Protetor */}
+              <div className={`p-3 rounded-2xl border flex items-center gap-2.5 transition-all ${
+                todayHygieneLog?.cream
+                  ? 'bg-teal-50/80 border-teal-300 text-teal-950 font-bold shadow-2xs'
+                  : 'bg-slate-50 border-slate-200 text-slate-500'
+              }`}>
+                <span className="text-2xl shrink-0">ğŸ§´</span>
+                <div className="leading-tight">
+                  <span className="block text-xs font-black">Pomada / Protetor</span>
+                  <span className={`text-[10px] font-extrabold ${todayHygieneLog?.cream ? 'text-teal-700' : 'text-slate-400'}`}>
+                    {todayHygieneLog?.cream ? 'âœ“ Aplicada' : 'Pendente'}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Bloco de Notas Gerais de SaÃºde & Rotina do BebÃª / ObservaÃ§Ãµes */}
+            <div className="pt-2 border-t border-slate-100 space-y-1.5">
+              <strong className="text-[10px] font-black text-slate-500 uppercase tracking-wider block">
+                ğŸ“ {isEscolar ? 'Notas Gerais de SaÃºde / Rotina do BebÃª:' : 'Notas Gerais de SaÃºde & Cuidados:'}
+              </strong>
+              <div className="bg-emerald-50/80 border border-emerald-200 p-3.5 rounded-2xl text-xs text-slate-800 leading-relaxed font-medium">
+                {todayHygieneLog?.observations ? (
+                  <div className="flex items-start gap-2.5">
+                    <span className="text-lg shrink-0">ğŸ’¬</span>
+                    <div>
+                      <p className="font-bold text-slate-900">"{todayHygieneLog.observations}"</p>
+                      {todayHygieneLog.registradoPor && (
+                        <span className="text-[10px] font-bold text-emerald-800 block mt-1">
+                          â€” Registrado por {todayHygieneLog.registradoPor}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  <p className="text-slate-400 italic text-xs">
+                    Nenhuma observaÃ§Ã£o ou nota geral de saÃºde registrada atÃ© o momento no turno.
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+
           <div className="space-y-4">
             <h3 className="text-md font-black text-slate-800 flex items-center gap-1.5">
               <Layers className="text-emerald-600 w-5 h-5" /> Linha do Tempo e Auditoria de Saude
@@ -9934,85 +10068,4 @@ Segunda-feira:
           <div className="bg-white rounded-3xl max-w-2xl w-full p-6 border border-slate-200 shadow-2xl space-y-5 my-8">
             <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
               <FileText className="text-blue-600 w-6 h-6" />
-              <div>
-                <h3 className="text-lg font-black text-slate-800">Revisao do Relatorio de Turno</h3>
-                <p className="text-xs text-slate-500">Revise os registros do seu plantao antes de enviar para os familiares</p>
-              </div>
-            </div>
-
-            <div className="space-y-4 max-h-[420px] overflow-y-auto pr-1">
-              
-              
-              <div className="grid grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-150">
-                <div className="text-center">
-                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider block">CONFORMIDADE DA ROTINA</span>
-                  <strong className="text-2xl font-black text-emerald-600 font-mono">{shiftReviewPayload.taxaC}%</strong>
-                  <p className="text-[10px] text-slate-500 mt-1">Percentual de cuidados executados com sucesso</p>
-                </div>
-                <div className="border-l border-slate-200 text-center">
-                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-wider block">QUALIDADE DO REGISTRO</span>
-                  <strong className="text-2xl font-black text-indigo-600 font-mono">{shiftReviewPayload.taxaQ}%</strong>
-                  <p className="text-[10px] text-slate-500 mt-1">Auditoria de registro correto (mesmo em recusa justificavel)</p>
-                </div>
-              </div>
-
-              
-              <div className="space-y-2">
-                <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1.5"> Status das medicacoes & Rotinas de Cuidado</h4>
-                <div className="space-y-1.5">
-                  {shiftReviewPayload.concluidas.length > 0 && (
-                    <div className="bg-emerald-50/50 border border-emerald-200/50 p-3 rounded-xl space-y-1">
-                      <span className="text-[10px] font-extrabold text-emerald-800 flex items-center gap-1"> CONCLUIDOS ({shiftReviewPayload.concluidas.length})</span>
-                      <ul className="text-xs text-emerald-950 space-y-1 pl-1.5 list-disc leading-normal">
-                        {shiftReviewPayload.concluidas.map((m: any) => (
-                          <li key={m.id}>{m.titulo} As {m.concluidaEm || m.horarioPrevisto}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {shiftReviewPayload.recusadas.length > 0 && (
-                    <div className="bg-amber-50/50 border border-amber-200 p-3 rounded-xl space-y-1">
-                      <span className="text-[10px] font-extrabold text-amber-800 flex items-center gap-1"> [!]  RECUSAS REGISTRADAS ({shiftReviewPayload.recusadas.length})</span>
-                      <ul className="text-xs text-amber-950 space-y-1 pl-1.5 list-disc leading-normal">
-                        {shiftReviewPayload.recusadas.map((r: any) => (
-                          <li key={r.id}>*${r.titulo}* - Recusado: "{r.observacao || 'Recusa geral'}"</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {shiftReviewPayload.atrasadas.length === 0 && shiftReviewPayload.pendentes.length === 0 ? (
-                    <p className="text-xs text-slate-500"> Nao ha pendencias na escala neste turno.</p>
-                  ) : (
-                    <div className="bg-rose-50/50 border border-rose-200 p-3 rounded-xl space-y-1">
-                      <span className="text-[10px] font-extrabold text-rose-800 flex items-center gap-1"> [!]  PENDENCIAS EM ABERTO ({shiftReviewPayload.atrasadas.length + shiftReviewPayload.pendentes.length})</span>
-                      <ul className="text-xs text-rose-950 space-y-1 pl-1.5 list-disc leading-normal">
-                        {shiftReviewPayload.atrasadas.map((a: any) => (
-                          <li key={a.id}>*${a.titulo}* - Atrasada (Prevista: ${a.horarioPrevisto})</li>
-                        ))}
-                        {shiftReviewPayload.pendentes.map((p: any) => (
-                          <li key={p.id}>{p.titulo} - Nao preenchido (Previsto: {p.horarioPrevisto})</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-3 border-t border-slate-200 flex justify-end gap-2">
-              <button
-                type="button"
-                onClick={() => setShiftReviewPayload(null)}
-                className="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded-xl"
-              >
-                Fechar / Entendido
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
+         xœÌX]s7}Ï¯¸eZÒYÀ6î$Ğ!@:IÀûÉ“±+@µvµ#i1ŒÃï•vÁ†1şjË°’Ğı8çÜ+€¯zÀfÍ7°õªOÁçD©	i£ é\{|cioÄ‰vHq¢©÷¾Z-4tÆP’á…‹DF¢^™;ŒÄ9suã“õÆ„I'Li‰ßĞˆ¢	ÄœDmâ;UÆfŒHˆ‰$æc2TÕ+ñ¶ız%y6´9†C÷İT1ñ©·ğj’¹7õ®jGÕxşÄŒÊ178E- –ŞaaÛæÏ·MM$À¼y¾àÊ;‚	‰Ñîh²N˜g)’( w4ç02 2ûÈ–TsäÙ´û3)«q=å~põÁÄî¦E­Z…$©ô	â§%N³hâİ0ë!şu¡Ùî÷>÷_Ï:­N:-ô/Îz­zÅs{øG“œ&öm/hH%á÷úaçB‰BóVMÙXVÑ›s²à‚eMæ¤½üíÚí–ód½:´ÈoBm€?Ç°1™	á†—~Â #éœú‰¶_}‚J|ª”p°ÓÉOnÔ|ó#tä¿AôÛeëKgİ¿Î†ƒşË Ê¢€MÄ¾x~{Q<[IÀLM#ÎU!B¥¤(öbHU(€†8å'ŠÀß‰ÒlÌ|2£¼´?¼®ô`™XU¤#—Ê§5W}¼cNçÀ4UÆ)[Ë'…&5Ñ	`¢ ¤Fí¬Ç0šEÄVævª lµ‡9½ŠÈîîÀÎ¹/"Ÿ#ªÌi4ÑShB èØÀ!£Éº^œT+XY7+éjuU±e÷x]v‘¨kŞZsn­¥„³hà³$#ÁƒÍâõŞİzL<–Ïö—Ë³NÅ½’²,í–¢õ3á;{òÊ¥˜€uÄØƒLÀQ^À”œ’ÀĞ&2$|gFD1$q±bs_” ÑÜcæ6gpMÛ°Ì‚e?4Ó	Kh)À§õ¶İ~ü€°<’àå\šÃ…Ëz…³İ–JË]ùª$Üı»å7[në{W2ÒZòF“p„Üuñ91]âõ©œÚú9‘¯~ùØ-Ú—ÃÖpÕ5ZÖZo'æ9¬N½{MNßyk)-Iii)ıîWü’‘úxxÆ¶›ŠS(à„)*gÄÇ³0Òûm:	£×·ËÂÿ’Ü9²AîF£‘ÒÛ±8¦ÈOsÈß\üç.)ìu±€¦kJ İÜgØ¨"Tù„ˆ¨ÒØÍå¥ììß+œî/E¼µP§íÄ¿#Dkjw{n¯}†òë~…Ö§îà¢ïbÄß÷Aï9rµ1¼¦ZïB²j%T+Y©•ÜWk+ÛŠYÇÁmÍ’í6TzªTİ±Ü%ŞÆ?2–8m¦ñº™zV2±¤(—)ÃKø*,C¸ìÅ¢yZáÙkíoı±FufŠÕù«–Tzæ_x˜t«§üy¼>J´QÎS½ˆM•°“…Ü¬ˆÚœù×Û¢…NQ=ÌA]ŒÎ9¸ÂÜ«AŒ×„»?ŒëSóÇÅézèxuq\ÿµ›—SMîÊÔ¶·yh>SJ$T ‹DÄ\ rˆ¤;AÙ9°ñ˜¾+}|³üøæ   ÿÿ ²K
