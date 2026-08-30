@@ -1,3 +1,4 @@
+import { getTodayIsoBr } from '../data';
 import React, { useState, useEffect, useRef } from 'react';
 import { Idoso, Usuario, JornadaEvent, GestoAfetoTipo } from '../types';
 import { getFromDB, saveToDB, isRecordBeforeResetTimestamp, getHygieneLog } from '../data';
@@ -576,14 +577,14 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
     if (clothes) details.push('Troca de roupinhas limpas');
     if (cream) details.push('Aplicacao de creme/hidratante protetor');
 
-    if (details.length > 0) {
+    if (details.length > 0 || obs) {
       synchronizedRoutineEvents.push({
         id: `sync_hyg_${studentId}_${hygLog.date || 'today'}`,
         idosoId: studentId,
         tipo: 'rotina',
         titulo: `  Higiene, Banho & Cuidados as ${time}`,
-        data: hygLog.date || '2026-05-30',
-        descricao: `${details.join('. ')}. ${obs ? `Obs: ${obs}` : ''}`,
+        data: hygLog.date || getTodayIsoBr(),
+        descricao: `${details.length > 0 ? details.join('. ') : 'Acompanhamento de higiene e bem-estar'}. ${obs ? `Obs: ${obs}` : ''}`,
         imagemUrl: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=600',
         dimensoesDesenvolvimento: ['Saude e Bem-Estar'],
         likes: 1,

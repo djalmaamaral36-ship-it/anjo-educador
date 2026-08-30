@@ -66,19 +66,42 @@ export function notifyCrossTabSync(key?: string) {
   }
 }
 
+export function cleanUndefinedFields(obj: any): any {
+  if (obj === null || obj === undefined) return undefined;
+  if (Array.isArray(obj)) {
+    return obj.map(cleanUndefinedFields).filter(v => v !== undefined);
+  }
+  if (typeof obj === 'object' && (obj.constructor === Object || !obj.constructor)) {
+    const cleaned: Record<string, any> = {};
+    for (const key of Object.keys(obj)) {
+      const value = obj[key];
+      if (value !== undefined) {
+        const cleanedValue = cleanUndefinedFields(value);
+        if (cleanedValue !== undefined) {
+          cleaned[key] = cleanedValue;
+        }
+      }
+    }
+    return cleaned;
+  }
+  return obj;
+}
+
 export async function saveToFirestore(collectionName: string, data: any) {
   if (!data) return;
   try {
     const colName = getFirestoreCollectionForKey(collectionName);
-    const docId = String(data.id || data.alunoId || data.targetKey || data.idosoId || `doc_${Date.now()}`).replace(/\//g, '_');
+    const cleanedData = cleanUndefinedFields(data);
+    if (!cleanedData) return;
+    const docId = String(cleanedData.id || cleanedData.alunoId || cleanedData.targetKey || cleanedData.idosoId || `doc_${Date.now()}`).replace(/\//g, '_');
     const docRef = doc(db, colName, docId);
-    await setDoc(docRef, data, { merge: true });
+    await setDoc(docRef, cleanedData, { merge: true });
     
     // If saving shift states, also duplicate into turnos_ativos for legacy compatibility
     if (colName === 'anjo_shift_states' || collectionName === 'anjo_shift_states') {
       try {
         const altRef = doc(db, 'turnos_ativos', docId);
-        await setDoc(altRef, data, { merge: true });
+        await setDoc(altRef, cleanedData, { merge: true });
       } catch (err) {}
     }
 
@@ -184,7 +207,10 @@ export async function seedDatabase(collectionName: string, localItems: any[]) {
       console.log(`   [Firebase] Seeding ${collectionName} with ${localItems.length} items.`);
       for (const item of localItems) {
         if (item && item.id) {
-          await setDoc(doc(db, collectionName, String(item.id).replace(/\//g, '_')), item, { merge: true });
+          const cleaned = cleanUndefinedFields(item);
+          if (cleaned) {
+            await setDoc(doc(db, collectionName, String(cleaned.id).replace(/\//g, '_')), cleaned, { merge: true });
+          }
         }
       }
     }

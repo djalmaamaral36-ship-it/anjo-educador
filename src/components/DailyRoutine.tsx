@@ -462,7 +462,7 @@ export default function DailyRoutine({
     setUltimoHumor(seniorHumors.length > 0 ? seniorHumors[0] : null);
 
     // Pre-fill Hygiene form state from stored hygiene log
-    const savedHyg = getFromDB<any>(`anjo_higiene_log_${idoso.id}`, null);
+    const savedHyg = getHygieneLog(idoso.id);
     if (savedHyg) {
       setHygieneForm({
         banho: Boolean(savedHyg.banho ?? savedHyg.bath ?? savedHyg.hands),
@@ -596,7 +596,7 @@ export default function DailyRoutine({
       idosoId: idoso.id,
       refeicao: mealForm.refeicao as any,
       aceitacao: mealForm.aceitacao as any,
-      quantidadeMl: mealForm.refeicao === 'mamadeira' ? (mealForm.quantidadeMl || 180) : undefined,
+      ...(mealForm.refeicao === 'mamadeira' ? { quantidadeMl: mealForm.quantidadeMl || 180 } : {}),
       horario: getNowTimeBr(),
       data: todayIso,
       observacoes: mealForm.observacoes,

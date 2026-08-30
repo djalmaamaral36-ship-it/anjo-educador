@@ -13,7 +13,7 @@ export function isRecordBeforeResetTimestamp(record: any, resetTimeStr: string |
 }
 
 import { Idoso, Usuario, Medicamento, CompromissoMedico, TarefaDiaria, SinalVital, RegistroHidratacao, RegistroSono, RegistroHumor, RegistroAlimentacao, RegistroAtividade, NotificacaoSimulada, Classroom } from './types';
-import { SYNC_COLLECTIONS_MAP, saveToFirestore, deleteFromFirestore, deleteBatchFromFirestore, getFirestoreCollectionForKey, notifyCrossTabSync, deleteStudentDataFromFirestore } from './firebase';
+import { SYNC_COLLECTIONS_MAP, saveToFirestore, deleteFromFirestore, deleteBatchFromFirestore, getFirestoreCollectionForKey, notifyCrossTabSync, deleteStudentDataFromFirestore, cleanUndefinedFields } from './firebase';
 import { USUARIOS_SIMULADOS, IDOSOS_INICIAIS, SALAS_INICIAIS } from './seedData';
 export { USUARIOS_SIMULADOS, IDOSOS_INICIAIS, SALAS_INICIAIS };
 
@@ -379,6 +379,8 @@ export function pruneLocalStorageToFreeSpace() {
 
 export function saveToDB(key: string, data: any) {
   if (typeof window === 'undefined') return;
+
+  data = cleanUndefinedFields(data);
 
   // 0. Auto-remove stale '_cleared_' flags when new data is saved for a student
   if (Array.isArray(data) && data.length > 0) {
@@ -762,23 +764,57 @@ export function isStudentIdMatch(idA: string | undefined | null, idB: string | u
 
 export function saveHygieneLog(idosoId: string, hygieneLog: any) {
   if (typeof window === 'undefined' || !idosoId || !hygieneLog) return;
+
+  const todayIso = hygieneLog.date || getTodayIsoBr();
+  const defaultTime = hygieneLog.time || getNowTimeBr();
+
+  const formattedLog = {
+    ...hygieneLog,
+    idosoId: idosoId,
+    date: todayIso,
+    time: defaultTime,
+    bath: Boolean(hygieneLog.bath ?? hygieneLog.banho),
+    teeth: Boolean(hygieneLog.teeth ?? hygieneLog.higieneBucal),
+    clothes: Boolean(hygieneLog.clothes ?? hygieneLog.trocaRoupa),
+    diaper: Boolean(hygieneLog.diaper ?? hygieneLog.trocaFralda),
+    hands: Boolean(hygieneLog.hands ?? hygieneLog.bath ?? hygieneLog.banho),
+    cream: Boolean(hygieneLog.cream ?? hygieneLog.pele),
+    banho: Boolean(hygieneLog.banho ?? hygieneLog.bath),
+    higieneBucal: Boolean(hygieneLog.higieneBucal ?? hygieneLog.teeth),
+    trocaRoupa: Boolean(hygieneLog.trocaRoupa ?? hygieneLog.clothes),
+    trocaFralda: Boolean(hygieneLog.trocaFralda ?? hygieneLog.diaper),
+    pele: Boolean(hygieneLog.pele ?? hygieneLog.cream),
+    observations: hygieneLog.observations || hygieneLog.obs || '',
+    obs: hygieneLog.observations || hygieneLog.obs || '',
+    registradoPor: hygieneLog.registradoPor || 'Responsavel / CUIDADOR'
+  };
+
+  const globalLogs = getFromDB<any[]>('anjo_higiene_global', []);
+  
+  // Find index for this student for today in globalLogs
+  const existingIdx = globalLogs.findIndex(l => 
+    (l && l.id && formattedLog.id && l.id === formattedLog.id) ||
+    (l && isStudentIdMatch(l.idosoId, idosoId) && isTodayOrDemoDate(l.date || l.data, idosoId))
+  );
+
+  const finalLogObj = {
+    ...formattedLog,
+    id: formattedLog.id || (existingIdx >= 0 && globalLogs[existingIdx]?.id ? globalLogs[existingIdx].id : `hyg_${idosoId}_${todayIso}`)
+  };
+
+  if (existingIdx >= 0) {
+    globalLogs[existingIdx] = { ...globalLogs[existingIdx], ...finalLogObj };
+  } else {
+    globalLogs.push(finalLogObj);
+  }
+
+  saveToDB('anjo_higiene_global', globalLogs);
+
+  // Also save to individual student keys
   const keys = getAllPossibleStudentKeys(idosoId);
   keys.forEach(k => {
-    saveToDB(`anjo_higiene_log_${k}`, hygieneLog);
+    saveToDB(`anjo_higiene_log_${k}`, finalLogObj);
   });
-  
-  const globalLogs = getFromDB<any[]>('anjo_higiene_global', []);
-  const newLog = { ...hygieneLog, idosoId: idosoId, id: hygieneLog.id || `hyg_${Date.now()}` };
-  
-  // Find existing log by ID or replace the latest one for this student for today
-  const existingIdx = globalLogs.findIndex(l => l.id === newLog.id);
-  if (existingIdx >= 0) {
-    globalLogs[existingIdx] = newLog;
-  } else {
-    // Optionally remove older logs for the same student to avoid growing too much, or keep them for history.
-    globalLogs.push(newLog);
-  }
-  saveToDB('anjo_higiene_global', globalLogs);
 
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: { localKey: `anjo_higiene_log_${idosoId}` } }));
@@ -789,18 +825,16 @@ export function saveHygieneLog(idosoId: string, hygieneLog: any) {
 
 export function getHygieneLog(idosoId: string): any {
   if (typeof window === 'undefined' || !idosoId) return null;
-  
+
   const globalLogs = getFromDB<any[]>('anjo_higiene_global', []);
   if (globalLogs && globalLogs.length > 0) {
-    const studentLogs = globalLogs.filter(l => isStudentIdMatch(l.idosoId, idosoId) && isTodayOrDemoDate(l.date || l.data, idosoId));
+    const studentLogs = globalLogs.filter(l => l && isStudentIdMatch(l.idosoId, idosoId) && isTodayOrDemoDate(l.date || l.data, idosoId));
     if (studentLogs.length > 0) {
-      // Return the most recent one based on time
+      // Return the most recent one based on time string comparison ("15:30" > "10:00")
       studentLogs.sort((a, b) => {
-        const dateA = a.date || getTodayIsoBr();
-        const dateB = b.date || getTodayIsoBr();
-        const timeA = new Date(dateA + 'T' + (a.time || '00:00') + ':00').getTime() || 0;
-        const timeB = new Date(dateB + 'T' + (b.time || '00:00') + ':00').getTime() || 0;
-        return timeB - timeA;
+        const timeA = String(a.time || '00:00');
+        const timeB = String(b.time || '00:00');
+        return timeB.localeCompare(timeA);
       });
       return studentLogs[0];
     }

@@ -1374,7 +1374,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
           id: `meal_${Date.now()}`,
           idosoId: idoso.id,
           refeicao: refKey,
-          quantidadeMl: undefined,
+          
           aceitacao: parsedData.alimentacao.aceitacao || 'muito_bem',
           horario: now,
           data: todayIso,

@@ -4450,7 +4450,7 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
       idosoId: idoso.id,
       refeicao: quickMeal.refeicao as any,
       aceitacao: quickMeal.aceitacao as any,
-      quantidadeMl: quickMeal.refeicao === 'mamadeira' ? (Number(quickMeal.quantidadeMl) || 180) : undefined,
+      ...(quickMeal.refeicao === 'mamadeira' ? { quantidadeMl: Number(quickMeal.quantidadeMl) || 180 } : {}),
       horario: defaultTime,
       data: getTodayIso(),
       observacoes: quickMeal.observacao,
@@ -4789,7 +4789,7 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
       idosoId: idoso.id,
       pressaoArterial: isEscolar ? (quickVitals.pressao || 'Sem registros') : (quickVitals.pressao || '120/80'),
       glicemia: isEscolar ? 0 : (Number(String(quickVitals.glicemia).replace(',', '.')) || 100),
-      tipoGlicemia: isEscolar ? undefined : 'casual',
+      ...(!isEscolar ? { tipoGlicemia: 'casual' as const } : {}),
       temperatura: Number(String(quickVitals.temp).replace(',', '.')) || 36.5,
       frequenciaCardiaca: isEscolar ? (parseFloat(String(quickVitals.fCard || quickVitals.sat).replace(/[^\d.,]/g, '').replace(',', '.')) || 0) : (Number(String(quickVitals.fCard).replace(',', '.')) || 75),
       saturacao: isEscolar ? (Number(String(quickVitals.sat).replace(',', '.')) || 0) : (Number(String(quickVitals.sat).replace(',', '.')) || 98),
@@ -10036,10 +10036,7 @@ Segunda-feira:
                 <div className="border border-slate-150 p-3.5 rounded-xl">
                   <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1"> Liquidos Consumidos</h5>
                   <strong className="text-sm font-bold text-slate-800">{shiftReviewPayload.totalMl}ml de agua</strong>
-                  <p className="text-[10px] text-slate-500 mt-1">{Math.round(shiftReviewPayload.totalMl/250)} copos ofexœÔVÍÛ6¾ïSØ(ÿdİ4®×E`lÓK“E7é%èi‰]ŠHjmwá§é-¯‘ËòV¢¢] —ú`‰#jæã7ßÌH³˜Se¢ù0_\ Úo>¤ü>`+Š1æ=ÉØUo¥4e•l±§#”ãWÑiUHÊ(ŞŠ^Ó8K§U_–m-ş<åÛ¿ĞZI‹W‚ÄwÈ›KÏ—£*òœé˜†¬†Ç\&xÃ†l…Ç½B×Æªeè·"Sz>L§ÁàÆj%“ “‚+A«±z‹“òµıƒİs¶¹!;¡
-ay¦|¬°=²ê“ƒ¸ˆıÁ~>,ã!ämÇ¯ÄÂ™3ëöÉB©‹„4Ë•ö•1A‘Èƒ±f­-Û{Ë%èÅÔÿ
-ÄçıÉ­»5Ó®
-ZeR;O»‘ûÃ±_¢„äxRbˆ™´ÇßoM	Ñ°Œ{)½œ­’SJa•ã1ğrv¤@$A
-J‹›·³®|D¹fÆõVNÄ¾¥„O>ß	:Òí99ììtùaÒíÌ[@bˆÚÿĞåî#Ëòn‡v1í½îÕ²Õg[G™ûÚ¨ËÂä$fxçrHcHÇG<KÃ ß±ÒšÉ˜M áĞ^…û~ˆ&uŞ	&›îa¥?ím´@#ôK ìŸËÈSBf$ï÷Õ¹ «E0ê)òÛ]=¨ˆÓ}DÙe ğ4TØt4„Ê{Üœ}„ŸŒPG¸T:ƒ.wL–¿ºíoÀÉãÒ^¶Edh-À7…–c{ÈÀ¬õ3%Uçó×ã¸Ç€ïı5,ò­ïù*=4£gÙÀ¤RQ¬¹å0â	enAÄ@î%
-³DsW (¥JÍ•SÍ÷|§PKO~a€faq5'å1%§)Ù[¼g†#A^D_¿8UJ$<èÈBÓ².÷¦ş.Œåëf’z=¼B¹…yq­D‡¿dUX«d²İån°ú‡½ÆS%—Ğ­ï®ú¾h³·©ÚÜKíwE‰è¯‰0,šjñl.ˆlòhP£ĞDŸ%Z.HkQ®Tİ3}‚^ÖšH*UP…6Jã\qÇ^ı\ÍÄ-Á?—ÑèFi¿ş«‰,)úiM‰¤‚Aô5×Ùµ¤Ù.§!èıÃ?'j¼åõ‘ÍM
-ŠjŒ	 Ò¤ğå·q%ßÊ`KWrí¸“Ûù2eñİ’ëX°Iõ(PDŠ/{hØ|éW7Œù?†®å='úI	iÔ[ÍğhyìÉ6øùbñ  ÿÿ ÔŸÕ
+                  <p className="text-[10px] text-slate-500 mt-1">{Math.round(shiftReviewPayload.totalMl/250xœÔVÍÛ6¾ïSØä¿¬›ÆõºŒmzi²è&½=Ğ"-±Kq’ZÛ]øizËkäÅ2¤ü·ú‰v^êƒ%¨™ß|3£ŞÄ ÁXqÃcÁÀög=¿ ¥ßlÀÄ}­$–ÔÚ÷4ãW%Æ).‘•Ôñh4½êOˆ\1Î¢ìT]¡³trîËñ‹>†zóYrÑRÒøsáùr8$¹ÖÜÄÔrâ>*‰ÖÂcÈ–Ñ¨3'äÚ:Ê€0N~Ë30³A:©n•T Øl$;ıÓpØ™?ØT¬Üü^ğõİJ ¬ŸK'2±>âö¾ƒOâ!v{»Ù ˆSA7ÿ,îÏœ9´O!I}$b¸ª(á6¦’>#‘{cÉZZ6öV(*É‹¤û?ˆ/,ùS8¡X¾
+eR:O‚»‰ÿ‹b6º$	ÕÑ¸Àså0N¸ßØ¢å™Rz9]&Ç”âJG#$àåô@Lj)(ÌoŞNÛòÑ×†[Ká­A‚Ê]C	}¾“"Ft´İs²ßÙêòÃ¸İ™¥.ÇÄPØıĞæî#Ït»C‡»¸	^w°hôÙÔÑêÌ½]Km”ea5y´õ9­Icy–†Q¾b0†«XP‹M Ø^(ÃûnMpÚÜ—\%.İõê•ş´·ÉœÉ/5eÿ\F2£ºÛ…)¡jÛ#WóÚ¨ÇÈw|{õ }Ávç Š.ƒ…g°Â&ÃVŞã†äíc$üÔˆˆä”yÂ˜»Ü!Yáê·¿A'K{%ù†”¡=´€Ğ #;êhp˜‚"Îç7¾Çíqß1úk\èMèzÏzhÆN²ÁIıØ'pÄSÆıÂˆ-€üKg‰¾:QQĞOÁP#À«æ{¾SÈ=¬¥'¿Ğ#ÓzqU'å!%Ç)Ù™¿ç
+‡#%AD_¿x•Hıx¬ «AV7-Ër¯jàïÜ:±ÚF\± ‡WD;œ{á¹ÒHôøËH–¹s *İVûÁv*OA-°[ß]=tCÑXînSXßJíw`TvWTZ^“šóâÙ \ÙøÑ &u}|h±ô"-}DaºR¸çæ4ƒ¬UU
+X¹±`"Â³W>W5qô/TN¹‘T¹¯ÿB%‘Eÿ1­)ULrŒ¾&»V,0ÛÆã¤Ç{Î£‘‡#5ÁòúÀæ:EEUÆRiSüò[û’od°¡+ùvÜÊíl‘òøn!L,ùøü(kTD]vÈ úÒ¯~‹0!œ\«{AÍ“R©·’áÑr/Ø£­÷óÅîâ   ÿÿ vÖ¤
