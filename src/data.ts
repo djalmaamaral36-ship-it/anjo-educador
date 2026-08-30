@@ -961,28 +961,17 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
     possibleKeys.push(studentObj.nome);
     possibleKeys.push(studentObj.nome.split(" (")[0].trim());
   }
-
-  let latestInactiveTs = 0;
-  let latestActiveTs = 0;
-  let localStartTime: string | null = null;
-  for (const k of possibleKeys) {
-    const act = localStorage.getItem("anjo_shift_active_" + k);
-    const ts = Number(localStorage.getItem("anjo_shift_active_" + k + "_ts")) || 0;
-    if (act === "false") {
-      if (ts > latestInactiveTs) latestInactiveTs = ts;
-    } else if (act === "true") {
-      if (ts > latestActiveTs) latestActiveTs = ts;
-      const st = localStorage.getItem("anjo_shift_start_time_" + k);
-      if (st) localStartTime = st;
-    }
+  if (studentObj?.salaAula) {
+    possibleKeys.push(studentObj.salaAula);
   }
 
-  // Server-authoritative check: Firestore shiftStates
+  // Check direct shiftStates DB (Firestore snapshot or local DB)
   const shiftStates = customShiftStates && Array.isArray(customShiftStates) 
     ? customShiftStates 
     : getFromDB<ShiftState[]>("anjo_shift_states", []);
 
-  const directRecords: { record: ShiftState; time: number }[] = [];
+  // Collect records matching any of possibleKeys
+  const matchingRecords: { record: ShiftState; time: number }[] = [];
   shiftStates.forEach(s => {
     if (!s || !s.id) return;
     const sid = String(s.id).trim();
@@ -992,472 +981,68 @@ export function getShiftActiveState(studentId: string, customShiftStates?: Shift
       if (!isNaN(p)) time = p;
     }
     if (possibleKeys.some(pk => pk === sid || keyMatches(pk, sid) || keyMatches(sid, pk))) {
-      directRecords.push({ record: s, time });
+      matchingRecords.push({ record: s, time });
     }
   });
 
-  directRecords.sort((a, b) => b.time - a.time);
-  const latestDirect = directRecords[0]?.record;
+  // Sort by time descending
+  matchingRecords.sort((a, b) => b.time - a.time);
 
-  // 1. If Firestore specifically says active: true, server state wins!
-  if (latestDirect && (latestDirect.active === true || String(latestDirect.active) === "true")) {
-    const st = latestDirect.startTime || localStartTime;
-    if (st) {
-      const startMs = new Date(st).getTime();
-      if (!isNaN(startMs) && (Date.now() - startMs) > (14 * 60 * 60 * 1000)) {
-        try {
-          localStorage.setItem("anjo_shift_active_" + realId, "false");
-          localStorage.removeItem("anjo_shift_start_time_" + realId);
-        } catch(e) {}
-        return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
-      }
-      // Clear stale local absence if teacher activated shift in cloud
-      try {
-        possibleKeys.forEach(pk => localStorage.removeItem("anjo_is_absent_" + pk));
-      } catch(e) {}
-      return { active: true, isAbsent: false, reason: null, startTime: st, lastResetTime: st };
+  const activeRecord = matchingRecords.find(r => r.record.active === true || String(r.record.active) === "true");
+  const inactiveRecord = matchingRecords.find(r => r.record.active === false || String(r.record.active) === "false");
+
+  // Also check localStorage flags across all possible keys
+  let localActive = false;
+  let localStartTime: string | null = null;
+  let latestActiveTs = 0;
+  let latestInactiveTs = 0;
+
+  for (const k of possibleKeys) {
+    const act = localStorage.getItem("anjo_shift_active_" + k);
+    const ts = Number(localStorage.getItem("anjo_shift_active_" + k + "_ts")) || 0;
+    if (act === "true") {
+      localActive = true;
+      if (ts > latestActiveTs) latestActiveTs = ts;
+      const st = localStorage.getItem("anjo_shift_start_time_" + k);
+      if (st) localStartTime = st;
+    } else if (act === "false") {
+      if (ts > latestInactiveTs) latestInactiveTs = ts;
     }
   }
 
-  // 2. Otherwise, check explicit absence flag locally
+  // 1. Server/DB State Wins: If activeRecord exists and is newer than or equal to inactiveRecord, it's active!
+  if (activeRecord && (!inactiveRecord || activeRecord.time >= inactiveRecord.time)) {
+    const st = activeRecord.record.startTime || localStartTime || activeRecord.record.updatedAt || new Date().toISOString();
+    const startMs = new Date(st).getTime();
+    if (!isNaN(startMs) && (Date.now() - startMs) > (14 * 60 * 60 * 1000)) {
+      return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
+    }
+    return { active: true, isAbsent: false, reason: null, startTime: st, lastResetTime: st };
+  }
+
+  // 2. Local state fallback: if localActive is true and not expired
+  if (localActive && latestActiveTs >= latestInactiveTs) {
+    const st = localStartTime || new Date().toISOString();
+    const startMs = new Date(st).getTime();
+    if (!isNaN(startMs) && (Date.now() - startMs) > (14 * 60 * 60 * 1000)) {
+      return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
+    }
+    return { active: true, isAbsent: false, reason: null, startTime: st, lastResetTime: st };
+  }
+
+  // 3. If explicitly inactive in DB and DB inactive is newer than local active
+  if (inactiveRecord && (!activeRecord || inactiveRecord.time > activeRecord.time) && inactiveRecord.time >= latestActiveTs) {
+    return { active: false, isAbsent: inactiveRecord.record.isAbsent || false, reason: inactiveRecord.record.reason || null, startTime: null, lastResetTime: null };
+  }
+
+  // 4. Check explicit absence flag locally
   for (const k of possibleKeys) {
     if (localStorage.getItem("anjo_is_absent_" + k) === "true") {
       return { active: false, isAbsent: true, reason: "Ausente", startTime: null, lastResetTime: null };
     }
   }
 
-  // 3. Check inactive state from Firestore
-  if (latestDirect && (latestDirect.active === false || String(latestDirect.active) === "false")) {
-    const dbTime = latestDirect.updatedAt ? new Date(latestDirect.updatedAt).getTime() : 0;
-    if (dbTime >= latestActiveTs) {
-      return { active: false, isAbsent: latestDirect.isAbsent || false, reason: latestDirect.reason || null, startTime: null, lastResetTime: null };
-    }
-  }
-
-  // 4. Local storage fallback
-  if (latestActiveTs > 0 && latestActiveTs > latestInactiveTs && localStartTime) {
-    const startMs = new Date(localStartTime).getTime();
-    if (!isNaN(startMs) && (Date.now() - startMs) > (14 * 60 * 60 * 1000)) {
-      try {
-        localStorage.setItem("anjo_shift_active_" + realId, "false");
-        localStorage.removeItem("anjo_shift_start_time_" + realId);
-      } catch(e) {}
-      return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
-    }
-    return { active: true, isAbsent: false, reason: null, startTime: localStartTime, lastResetTime: localStartTime };
-  }
-
   return { active: false, isAbsent: false, reason: null, startTime: null, lastResetTime: null };
-}
-
-export function generateDefaultTasksForStudent(idosoId: string): any[] {
-  const isEscolarStudent = idosoId.startsWith('aluno_') || idosoId.startsWith('aluno') || idosoId.startsWith('escola_');
-  if (isEscolarStudent) {
-    return [
-      {
-        id: 'task_s_entrada_' + idosoId,
-        idosoId,
-        tipo: 'atividade_fisica',
-        titulo: 'Acolhida & Entrada Afetiva   ',
-        descricao: 'Recepcao carinhosa dos alunos, acolhimento individual e organizacao de pertences.',
-        horarioPrevisto: '07:00',
-        status: 'pendente'
-      },
-      {
-        id: 'task_s_roda_' + idosoId,
-        idosoId,
-        tipo: 'atividade_fisica',
-        titulo: 'Roda de Conversa: Tema do Dia   ',
-        descricao: 'Apresentacao do tema diario, musicalizacao, chamada divertida e expressao das criancas.',
-        horarioPrevisto: '08:00',
-        status: 'pendente'
-      },
-      {
-        id: 'task_s_lanche_manha_' + idosoId,
-        idosoId,
-        tipo: 'alimentacao',
-        titulo: 'Lanche da Manha & Frutinhas   ',
-        descricao: 'Frutas frescas da estacao, biscoito integral e incentivo a hidratacao.',
-        horarioPrevisto: '09:00',
-        status: 'pendente'
-      },
-      {
-        id: 'task_s_parque_' + idosoId,
-        idosoId,
-        tipo: 'atividade_fisica',
-        titulo: 'Recreacao no Patio & Parquinho   ',
-        descricao: 'Brincadeiras ao ar livre para estimulo motor, socializacao e banho de sol adequado.',
-        horarioPrevisto: '09:45',
-        status: 'pendente'
-      },
-      {
-        id: 'task_s_dirigida_' + idosoId,
-        idosoId,
-        tipo: 'atividade_fisica',
-        titulo: 'Atividade Dirigida Tematica (BNCC)   ',
-        descricao: 'Atividade pratica pedagogica com foco no desenvolvimento cognitivo e sensorial.',
-        horarioPrevisto: '10:30',
-        status: 'pendente'
-      },
-      {
-        id: 'task_s_almoco_' + idosoId,
-        idosoId,
-        tipo: 'alimentacao',
-        titulo: 'Almoco Saudavel / Papinha   ',
-        descricao: 'Pratinho balanceado, introducao de novos sabores, verduras e carninha desfiada.',
-        horarioPrevisto: '11:30',
-        status: 'pendente'
-      },
-      {
-        id: 'task_s_higiene_escovacao_' + idosoId,
-        idosoId,
-        tipo: 'banho',
-        titulo: 'Higiene, Fraldas & Escovacao   ',
-        descricao: 'Troca de fraldas, lavagem das maos e estimulo a escovacao dental com carinho.',
-        horarioPrevisto: '12:15',
-        status: 'pendente'
-      },
-      {
-        id: 'task_s_soneca_' + idosoId,
-        idosoId,
-        tipo: 'sono',
-        titulo: 'Soneca & Repouso Restaurador   ',
-        descricao: 'Descanso nos colchonetes individuais com ambiente calmo, iluminacao suave e musica relaxante.',
-        horarioPrevisto: '12:30',
-        status: 'pendente'
-      },
-      {
-        id: 'task_s_lanche_tarde_' + idosoId,
-        idosoId,
-        tipo: 'alimentacao',
-        titulo: 'Lanche da Tarde & Frutinhas   ',
-        descricao: 'Frutas frescas da epoca fatiadas, biscoito integral e hidratacao da tarde.',
-        horarioPrevisto: '14:15',
-        status: 'pendente'
-      },
-      {
-        id: 'task_s_brincadeira_livre_' + idosoId,
-        idosoId,
-        tipo: 'atividade_fisica',
-        titulo: 'Brincadeira Livre & Socializacao   ',
-        descricao: 'Cantinhos tematicos com brinquedos educativos, blocos de montar e autonomia.',
-        horarioPrevisto: '14:45',
-        status: 'pendente'
-      },
-      {
-        id: 'task_s_historias_' + idosoId,
-        idosoId,
-        tipo: 'atividade_fisica',
-        titulo: 'Contacao de Historias & Musica   ',
-        descricao: 'Leitura de livros ilustrados, fantoches e cantigas de roda.',
-        horarioPrevisto: '15:30',
-        status: 'pendente'
-      },
-      {
-        id: 'task_s_saida_' + idosoId,
-        idosoId,
-        tipo: 'atividade_fisica',
-        titulo: 'Preparacao para Saida & Despedida Afetiva   ',
-        descricao: 'Organizacao das mochilinhas, fechamento da agenda do dia e entrega afetiva aos familiares.',
-        horarioPrevisto: '16:00',
-        status: 'pendente'
-      }
-    ];
-  }
-  return [
-    {
-      id: 'task_m_losartana_' + idosoId,
-      idosoId,
-      tipo: 'medicacao',
-      titulo: 'Losartana Potassica (Pressao)',
-      descricao: 'Dosagem: 50mg - 1 comprimido. Dar com meio copo d\'agua.',
-      horarioPrevisto: '08:00',
-      status: 'pendente'
-    },
-    {
-      id: 'task_m_cafe_' + idosoId,
-      idosoId,
-      tipo: 'alimentacao',
-      titulo: 'Cafe da manha',
-      descricao: 'Geleia sem acucar com pao integral + cafe com leite.',
-      horarioPrevisto: '08:30',
-      status: 'pendente'
-    },
-    {
-      id: 'task_m_banho_' + idosoId,
-      idosoId,
-      tipo: 'banho',
-      titulo: 'Banho & Higiene Geral',
-      descricao: 'Banho morno assistido, hidratacao da pele e troca de roupas limpas.',
-      horarioPrevisto: '10:00',
-      status: 'pendente'
-    },
-    {
-      id: 'task_m_almoco_' + idosoId,
-      idosoId,
-      tipo: 'alimentacao',
-      titulo: 'Almoco',
-      descricao: 'Arroz integral, pure de abobora, file de frango desfiado e brocolis cozido ao vapor.',
-      horarioPrevisto: '12:30',
-      status: 'pendente'
-    },
-    {
-      id: 'task_m_hidra_tarde_' + idosoId,
-      idosoId,
-      tipo: 'hidratacao',
-      titulo: 'Copos d\'Agua da Tarde',
-      descricao: 'Oferecer 250ml de agua gelada.',
-      horarioPrevisto: '15:00',
-      status: 'pendente'
-    }
-  ];
-}
-
-export function wipeAllParentsPanelActivities() {
-  if (typeof window === 'undefined') return;
-
-  const resetNowIso = new Date().toISOString();
-  const allStudents = getFromDB<Idoso[]>('anjo_idosos', IDOSOS_INICIAIS);
-  const studentIds = allStudents.map(s => s.id);
-
-  // 1. Wipe all global activity/routine tables completely
-  saveToDB('anjo_alimentacao', []);
-  saveToDB('anjo_hidratacao', []);
-  saveToDB('anjo_humor', []);
-  saveToDB('anjo_atividades', []);
-  saveToDB('anjo_sono', []);
-  saveToDB('anjo_sinais', []);
-  saveToDB('anjo_notificacoes', []);
-  saveToDB('anjo_mural_recados', []);
-  saveToDB('anjo_jornada_events', []);
-  saveToDB('anjo_ocorrencias', []);
-  saveToDB('anjo_encaminhamentos_pedagogicos', []);
-  saveToDB('anjo_alertas_desenvolvimento', []);
-  saveToDB('anjo_mediacao_conflitos', []);
-
-  // 2. Wipe per-student keys and set reset timestamps for all students
-  studentIds.forEach(id => {
-    localStorage.setItem(`anjo_tasks_initialized_${id}`, 'true');
-    localStorage.setItem(`anjo_routine_reset_${id}`, resetNowIso);
-    localStorage.removeItem(`anjo_activities_cleared_${id}`);
-    localStorage.removeItem(`anjo_routine_cleared_${id}`);
-    localStorage.removeItem(`anjo_tasks_cleared_${id}`);
-    localStorage.removeItem(`anjo_almoco_pct_${id}`);
-    localStorage.removeItem(`anjo_sleep_hr_${id}`);
-    localStorage.removeItem(`anjo_registro_agua_${id}`);
-    localStorage.removeItem(`anjo_hidratacao_${id}`);
-    localStorage.removeItem(`anjo_alimentacao_${id}`);
-    localStorage.removeItem(`anjo_humor_${id}`);
-    localStorage.removeItem(`anjo_atividades_${id}`);
-    localStorage.removeItem(`anjo_sono_${id}`);
-    localStorage.removeItem(`anjo_sinais_vitais_${id}`);
-    localStorage.removeItem(`anjo_is_absent_${id}`);
-
-    saveToDB(`anjo_registro_agua_${id}`, []);
-    saveToDB(`anjo_hidratacao_${id}`, []);
-    saveToDB(`anjo_alimentacao_${id}`, []);
-    saveToDB(`anjo_humor_${id}`, []);
-    saveToDB(`anjo_atividades_${id}`, []);
-    saveToDB(`anjo_sono_${id}`, []);
-    saveToDB(`anjo_ocorrencias_${id}`, []);
-
-    saveToDB(`anjo_higiene_log_${id}`, {
-      bath: false, teeth: false, clothes: false, diaper: false, hands: false, cream: false,
-      banho: false, higieneBucal: false, trocaRoupa: false, trocaFralda: false, pele: false,
-      time: '', observations: ''
-    });
-  });
-
-  // 3. Reset daily tasks to pendente
-  const allTasks = getFromDB<any[]>('anjo_tarefas_diarias', []);
-  const resetTasks = allTasks.map(t => ({
-    ...t,
-    status: 'pendente' as const,
-    concluidaEm: undefined,
-    completadaPor: undefined,
-    observacao: undefined,
-    detalhes: undefined
-  }));
-  saveToDB('anjo_tarefas_diarias', resetTasks);
-
-  // 4. Purge remote Firestore
-  deleteStudentDataFromFirestore(studentIds).catch(err => {
-    console.warn('[wipeAllParentsPanelActivities] Remote Firestore cleanup warning:', err);
-  });
-
-  // 5. Broadcast updates
-  window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-  window.dispatchEvent(new CustomEvent('db-vitals-update'));
-  window.dispatchEvent(new CustomEvent('db-tasks-update'));
-  window.dispatchEvent(new CustomEvent('db-routine-update'));
-  window.dispatchEvent(new CustomEvent('db-jornada-update'));
-  window.dispatchEvent(new CustomEvent('db-activities-update'));
-}
-
-export function downloadReportFile(report: any, studentName: string = 'aluno') {
-  if (!report) return;
-  const fileName = `relatorio_rotina_${studentName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${report.id || Date.now()}.txt`;
-  const textContent = `=====================================================
-ANJO CUIDADOR / ANJINHO ESCOLAR
-RELATÓRIO DE ACOMPANHAMENTO E ROTINA DIGITAL
-=====================================================
-Assistido/Aluno: ${studentName}
-Cuidador/Professora: ${report.cuidador || 'Equipe Escolar'}
-Data: ${report.data || new Date().toLocaleDateString('pt-BR')}
-Período: ${report.inicio || '07:30'} às ${report.fim || '17:30'} (${report.duracao || 'Período Completo'})
-Taxa de Conformidade: ${report.taxaConformidade || 100}% OK
------------------------------------------------------
-
-CONTEÚDO DO RELATÓRIO:
-${report.mensagemCompleta || report.observacao || 'Nenhum detalhe adicional.'}
-
------------------------------------------------------
-Link Seguro do Diário: ${typeof window !== 'undefined' ? window.location.origin : ''}/?relatorio=${report.id || ''}
-Gerado em: ${new Date().toLocaleString('pt-BR')}
-=====================================================`;
-
-  if (typeof window !== 'undefined' && document) {
-    const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  }
-}
-
-export function resetStudentDailyRoutine(studentIds: string[]) {
-  if (typeof window === 'undefined' || !studentIds || studentIds.length === 0) return;
-
-  const validIds = new Set<string>();
-  studentIds.filter(Boolean).forEach(id => {
-    validIds.add(id);
-    getAllPossibleStudentKeys(id).forEach(k => validIds.add(k));
-  });
-
-  if (validIds.size === 0) return;
-
-  const resetNowIso = new Date().toISOString();
-
-  // Set reset timestamp & remove cleared flags so newly logged activities during active shift are displayed
-  validIds.forEach(id => {
-    localStorage.setItem(`anjo_tasks_initialized_${id}`, 'true');
-    localStorage.setItem(`anjo_routine_reset_${id}`, resetNowIso);
-    localStorage.removeItem(`anjo_activities_cleared_${id}`);
-    localStorage.removeItem(`anjo_routine_cleared_${id}`);
-    localStorage.removeItem(`anjo_tasks_cleared_${id}`);
-  });
-
-  // 1. Clear routine activity tables for these students so they start at 0
-  const allMeals = getFromDB<any[]>('anjo_alimentacao', []);
-  saveToDB('anjo_alimentacao', allMeals.filter(m => !m || !m.idosoId || !validIds.has(m.idosoId)));
-
-  const allHids = getFromDB<any[]>('anjo_hidratacao', []);
-  saveToDB('anjo_hidratacao', allHids.filter(h => !h || !h.idosoId || !validIds.has(h.idosoId)));
-
-  const allHumor = getFromDB<any[]>('anjo_humor', []);
-  saveToDB('anjo_humor', allHumor.filter(h => !h || !h.idosoId || !validIds.has(h.idosoId)));
-
-  const allAtivs = getFromDB<any[]>('anjo_atividades', []);
-  saveToDB('anjo_atividades', allAtivs.filter(a => !a || !a.idosoId || !validIds.has(a.idosoId)));
-
-  const allSono = getFromDB<any[]>('anjo_sono', []);
-  saveToDB('anjo_sono', allSono.filter(s => !s || !s.idosoId || !validIds.has(s.idosoId)));
-
-  const allSinais = getFromDB<any[]>('anjo_sinais', []);
-  saveToDB('anjo_sinais', allSinais.filter(s => !s || !s.idosoId || !validIds.has(s.idosoId)));
-
-  const allHyg = getFromDB<any[]>('anjo_higiene_global', []);
-  saveToDB('anjo_higiene_global', allHyg.filter(h => !h || !h.idosoId || !validIds.has(h.idosoId)));
-
-  const allOcorrencias = getFromDB<any[]>('anjo_ocorrencias', []);
-  saveToDB('anjo_ocorrencias', allOcorrencias.filter(o => !o || !o.idosoId || !validIds.has(o.idosoId)));
-
-  const allRecados = getFromDB<any[]>('anjo_mural_recados', []);
-  saveToDB('anjo_mural_recados', allRecados.filter(r => !r || !r.idosoId || !validIds.has(r.idosoId)));
-
-  const allEvents = getFromDB<any[]>('anjo_jornada_events', []);
-  saveToDB('anjo_jornada_events', allEvents.filter(e => !e || !e.idosoId || !validIds.has(e.idosoId)));
-
-  // 2. Reset daily tasks checklist (anjo_tarefas_diarias) to 'pendente' for the new day
-  const allTasks = getFromDB<any[]>('anjo_tarefas_diarias', []);
-  const otherTasks = allTasks.filter(t => !t || !t.idosoId || !validIds.has(t.idosoId));
-  const newOrResetTasks: any[] = [];
-
-  validIds.forEach(id => {
-    const studentTasks = allTasks.filter(t => t && t.idosoId === id);
-    if (studentTasks.length > 0) {
-      studentTasks.forEach(t => {
-        newOrResetTasks.push({
-          ...t,
-          status: 'pendente' as const,
-          concluidaEm: undefined,
-          completadaPor: undefined,
-          observacao: undefined,
-          detalhes: undefined
-        });
-      });
-    } else {
-      newOrResetTasks.push(...generateDefaultTasksForStudent(id));
-    }
-  });
-
-  saveToDB('anjo_tarefas_diarias', [...otherTasks, ...newOrResetTasks]);
-
-  // 3. Clear individual per-student logs and hygiene checkboxes
-  validIds.forEach(id => {
-    localStorage.removeItem(`anjo_almoco_pct_${id}`);
-    localStorage.removeItem(`anjo_sleep_hr_${id}`);
-    localStorage.removeItem(`anjo_registro_agua_${id}`);
-    localStorage.removeItem(`anjo_hidratacao_${id}`);
-    localStorage.removeItem(`anjo_alimentacao_${id}`);
-    localStorage.removeItem(`anjo_humor_${id}`);
-    localStorage.removeItem(`anjo_atividades_${id}`);
-    localStorage.removeItem(`anjo_sono_${id}`);
-    localStorage.removeItem(`anjo_sinais_vitais_${id}`);
-    localStorage.removeItem(`anjo_is_absent_${id}`);
-
-    saveToDB(`anjo_registro_agua_${id}`, []);
-    saveToDB(`anjo_hidratacao_${id}`, []);
-    saveToDB(`anjo_alimentacao_${id}`, []);
-    saveToDB(`anjo_humor_${id}`, []);
-    saveToDB(`anjo_atividades_${id}`, []);
-    saveToDB(`anjo_sono_${id}`, []);
-    saveToDB(`anjo_ocorrencias_${id}`, []);
-
-    saveToDB(`anjo_higiene_log_${id}`, {
-      bath: false,
-      teeth: false,
-      clothes: false,
-      diaper: false,
-      hands: false,
-      cream: false,
-      banho: false,
-      higieneBucal: false,
-      trocaRoupa: false,
-      trocaFralda: false,
-      pele: false,
-      time: '',
-      observations: ''
-    });
-  });
-
-  // 4. Delete remote data in Firestore so onSnapshot listeners don't resurrect cleared activities
-  deleteStudentDataFromFirestore(Array.from(validIds)).catch((err) => {
-    console.warn('[resetStudentDailyRoutine] Remote Firestore cleanup error:', err);
-  });
-
-  // 5. Broadcast events to refresh all components instantly
-  window.dispatchEvent(new CustomEvent('anjo_user_updated'));
-  window.dispatchEvent(new CustomEvent('db-vitals-update'));
-  window.dispatchEvent(new CustomEvent('db-tasks-update'));
-  window.dispatchEvent(new CustomEvent('db-routine-update'));
-  window.dispatchEvent(new CustomEvent('db-jornada-update'));
-  window.dispatchEvent(new CustomEvent('db-activities-update'));
-  window.dispatchEvent(new Event('storage'));
 }
 
 export function setShiftActiveStatesBatch(updates: { targetKey: string; active: boolean; isAbsent?: boolean; reason?: string | null; startTime?: string }[]) {
@@ -2029,5 +1614,183 @@ export function deleteStudentEverywhere(studentId: string) {
   window.dispatchEvent(new CustomEvent('db-jornada-update'));
   window.dispatchEvent(new CustomEvent('db-mural-update'));
 }
+
+export function resetStudentDailyRoutine(studentIds: string[]) {
+  if (typeof window === 'undefined' || !studentIds || studentIds.length === 0) return;
+  const validIds = new Set<string>();
+  studentIds.filter(Boolean).forEach(id => {
+    validIds.add(id);
+    getAllPossibleStudentKeys(id).forEach(k => validIds.add(k));
+  });
+  if (validIds.size === 0) return;
+  const resetNowIso = new Date().toISOString();
+  validIds.forEach(id => {
+    localStorage.setItem(`anjo_tasks_initialized_${id}`, 'true');
+    localStorage.setItem(`anjo_routine_reset_${id}`, resetNowIso);
+    localStorage.removeItem(`anjo_activities_cleared_${id}`);
+    localStorage.removeItem(`anjo_routine_cleared_${id}`);
+    localStorage.removeItem(`anjo_tasks_cleared_${id}`);
+  });
+  const allMeals = getFromDB<any[]>('anjo_alimentacao', []);
+  saveToDB('anjo_alimentacao', allMeals.filter(m => !m || !m.idosoId || !validIds.has(m.idosoId)));
+  const allHids = getFromDB<any[]>('anjo_hidratacao', []);
+  saveToDB('anjo_hidratacao', allHids.filter(h => !h || !h.idosoId || !validIds.has(h.idosoId)));
+  const allHumor = getFromDB<any[]>('anjo_humor', []);
+  saveToDB('anjo_humor', allHumor.filter(h => !h || !h.idosoId || !validIds.has(h.idosoId)));
+  const allAtivs = getFromDB<any[]>('anjo_atividades', []);
+  saveToDB('anjo_atividades', allAtivs.filter(a => !a || !a.idosoId || !validIds.has(a.idosoId)));
+  const allSono = getFromDB<any[]>('anjo_sono', []);
+  saveToDB('anjo_sono', allSono.filter(s => !s || !s.idosoId || !validIds.has(s.idosoId)));
+  const allSinais = getFromDB<any[]>('anjo_sinais', []);
+  saveToDB('anjo_sinais', allSinais.filter(s => !s || !s.idosoId || !validIds.has(s.idosoId)));
+  const allHyg = getFromDB<any[]>('anjo_higiene_global', []);
+  saveToDB('anjo_higiene_global', allHyg.filter(h => !h || !h.idosoId || !validIds.has(h.idosoId)));
+  const allOcorrencias = getFromDB<any[]>('anjo_ocorrencias', []);
+  saveToDB('anjo_ocorrencias', allOcorrencias.filter(o => !o || !o.idosoId || !validIds.has(o.idosoId)));
+  const allRecados = getFromDB<any[]>('anjo_mural_recados', []);
+  saveToDB('anjo_mural_recados', allRecados.filter(r => !r || !r.idosoId || !validIds.has(r.idosoId)));
+  const allEvents = getFromDB<any[]>('anjo_jornada_events', []);
+  saveToDB('anjo_jornada_events', allEvents.filter(e => !e || !e.idosoId || !validIds.has(e.idosoId)));
+
+  const allTasks = getFromDB<any[]>('anjo_tarefas_diarias', []);
+  const otherTasks = allTasks.filter(t => !t || !t.idosoId || !validIds.has(t.idosoId));
+  const newOrResetTasks: any[] = [];
+  validIds.forEach(id => {
+    const studentTasks = allTasks.filter(t => t && t.idosoId === id);
+    if (studentTasks.length > 0) {
+      studentTasks.forEach(t => {
+        newOrResetTasks.push({
+          ...t,
+          status: 'pendente' as const,
+          concluidaEm: undefined,
+          completadaPor: undefined,
+          observacao: undefined,
+          detalhes: undefined
+        });
+      });
+    }
+  });
+  saveToDB('anjo_tarefas_diarias', [...otherTasks, ...newOrResetTasks]);
+
+  validIds.forEach(id => {
+    localStorage.removeItem(`anjo_almoco_pct_${id}`);
+    localStorage.removeItem(`anjo_sleep_hr_${id}`);
+    localStorage.removeItem(`anjo_registro_agua_${id}`);
+    localStorage.removeItem(`anjo_hidratacao_${id}`);
+    localStorage.removeItem(`anjo_alimentacao_${id}`);
+    localStorage.removeItem(`anjo_humor_${id}`);
+    localStorage.removeItem(`anjo_atividades_${id}`);
+    localStorage.removeItem(`anjo_sono_${id}`);
+    localStorage.removeItem(`anjo_sinais_vitais_${id}`);
+    localStorage.removeItem(`anjo_is_absent_${id}`);
+    saveToDB(`anjo_registro_agua_${id}`, []);
+    saveToDB(`anjo_hidratacao_${id}`, []);
+    saveToDB(`anjo_alimentacao_${id}`, []);
+    saveToDB(`anjo_humor_${id}`, []);
+    saveToDB(`anjo_atividades_${id}`, []);
+    saveToDB(`anjo_sono_${id}`, []);
+    saveToDB(`anjo_ocorrencias_${id}`, []);
+    saveToDB(`anjo_higiene_log_${id}`, {
+      bath: false, teeth: false, clothes: false, diaper: false, hands: false, cream: false,
+      banho: false, higieneBucal: false, trocaRoupa: false, trocaFralda: false, pele: false,
+      time: '', observations: ''
+    });
+  });
+
+  deleteStudentDataFromFirestore(Array.from(validIds)).catch((err) => {
+    console.warn('[resetStudentDailyRoutine] Remote Firestore cleanup error:', err);
+  });
+
+  window.dispatchEvent(new CustomEvent('anjo_user_updated'));
+  window.dispatchEvent(new CustomEvent('db-vitals-update'));
+  window.dispatchEvent(new CustomEvent('db-tasks-update'));
+  window.dispatchEvent(new CustomEvent('db-routine-update'));
+  window.dispatchEvent(new CustomEvent('db-jornada-update'));
+  window.dispatchEvent(new CustomEvent('db-activities-update'));
+  window.dispatchEvent(new Event('storage'));
+}
+
+export function wipeAllParentsPanelActivities() {
+  if (typeof window === 'undefined') return;
+  const allStudents = getFromDB<Idoso[]>('anjo_idosos', IDOSOS_INICIAIS);
+  const studentIds = allStudents.map(s => s.id);
+
+  studentIds.forEach(id => {
+    localStorage.setItem(`anjo_activities_cleared_${id}`, 'true');
+    localStorage.setItem(`anjo_routine_cleared_${id}`, 'true');
+    localStorage.setItem(`anjo_tasks_cleared_${id}`, 'true');
+    localStorage.removeItem(`anjo_routine_reset_${id}`);
+    localStorage.removeItem(`anjo_almoco_pct_${id}`);
+    localStorage.removeItem(`anjo_sleep_hr_${id}`);
+    saveToDB(`anjo_registro_agua_${id}`, []);
+    saveToDB(`anjo_hidratacao_${id}`, []);
+    saveToDB(`anjo_alimentacao_${id}`, []);
+    saveToDB(`anjo_humor_${id}`, []);
+    saveToDB(`anjo_atividades_${id}`, []);
+    saveToDB(`anjo_sono_${id}`, []);
+    saveToDB(`anjo_ocorrencias_${id}`, []);
+    saveToDB(`anjo_higiene_log_${id}`, {
+      bath: false, teeth: false, clothes: false, diaper: false, hands: false, cream: false,
+      banho: false, higieneBucal: false, trocaRoupa: false, trocaFralda: false, pele: false,
+      time: '', observations: ''
+    });
+  });
+
+  const allTasks = getFromDB<any[]>('anjo_tarefas_diarias', []);
+  const resetTasks = allTasks.map(t => ({
+    ...t,
+    status: 'pendente' as const,
+    concluidaEm: undefined,
+    completadaPor: undefined,
+    observacao: undefined,
+    detalhes: undefined
+  }));
+  saveToDB('anjo_tarefas_diarias', resetTasks);
+
+  deleteStudentDataFromFirestore(studentIds).catch(err => {
+    console.warn('[wipeAllParentsPanelActivities] Remote Firestore cleanup warning:', err);
+  });
+
+  window.dispatchEvent(new CustomEvent('anjo_user_updated'));
+  window.dispatchEvent(new CustomEvent('db-vitals-update'));
+  window.dispatchEvent(new CustomEvent('db-tasks-update'));
+  window.dispatchEvent(new CustomEvent('db-routine-update'));
+  window.dispatchEvent(new CustomEvent('db-jornada-update'));
+  window.dispatchEvent(new CustomEvent('db-activities-update'));
+}
+
+export function downloadReportFile(report: any, studentName: string = 'aluno') {
+  if (!report) return;
+  const fileName = `relatorio_rotina_${studentName.toLowerCase().replace(/[^a-z0-9]/g, '_')}_${report.id || Date.now()}.txt`;
+  const textContent = `=====================================================
+ANJO CUIDADOR / ANJINHO ESCOLAR
+RELATÓRIO DE ACOMPANHAMENTO E ROTINA DIGITAL
+=====================================================
+Assistido/Aluno: ${studentName}
+Cuidador/Professora: ${report.cuidador || 'Equipe Escolar'}
+Data: ${report.data || new Date().toLocaleDateString('pt-BR')}
+Período: ${report.inicio || '07:30'} às ${report.fim || '17:30'} (${report.duracao || 'Período Completo'})
+Taxa de Conformidade: ${report.taxaConformidade || 100}% OK
+-----------------------------------------------------
+CONTEÚDO DO RELATÓRIO:
+${report.mensagemCompleta || report.observacao || 'Nenhum detalhe adicional.'}
+-----------------------------------------------------
+Link Seguro do Diário: ${typeof window !== 'undefined' ? window.location.origin : ''}/?relatorio=${report.id || ''}
+Gerado em: ${new Date().toLocaleString('pt-BR')}
+=====================================================`;
+
+  if (typeof window !== 'undefined' && document) {
+    const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+}
+
 
 
