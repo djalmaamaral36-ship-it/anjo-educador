@@ -111,9 +111,9 @@ export default function Alerts({ idoso, usuarioAtual, keyTrigger, triggerWhatsAp
           mensagem: cleanMsg
         };
       });
-      setLogs(adapted.sort((a,b) => a.dataEnvio.localeCompare(b.dataEnvio)));
+      setLogs(adapted.sort((a,b) => (a.dataEnvio || '').localeCompare(b.dataEnvio || '')));
     } else {
-      setLogs(filtered.sort((a,b) => a.dataEnvio.localeCompare(b.dataEnvio)));
+      setLogs(filtered.sort((a,b) => (a.dataEnvio || '').localeCompare(b.dataEnvio || '')));
     }
   };
 

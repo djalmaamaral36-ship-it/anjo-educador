@@ -184,10 +184,10 @@ export default function Reports({ idoso, accessibilitySettings, keyTrigger, trig
       }
     }
 
-    setSinais(filteredSinais.sort((a, b) => a.data.localeCompare(b.data)));
+    setSinais(filteredSinais.sort((a, b) => (a.data || '').localeCompare(b.data || '')));
     setAlimentacao(filteredFeeds);
     setHidratacao(filteredHyd);
-    setSono(filteredSonos.sort((a, b) => a.data.localeCompare(b.data)));
+    setSono(filteredSonos.sort((a, b) => (a.data || '').localeCompare(b.data || '')));
     setHumores(filteredHum);
     setTodayTasks(allTasks.filter(t => t.idosoId === idoso.id));
   };

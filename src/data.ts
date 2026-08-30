@@ -798,7 +798,7 @@ export function saveHygieneLog(idosoId: string, hygieneLog: any) {
     teeth: Boolean(hygieneLog.teeth ?? hygieneLog.higieneBucal),
     clothes: Boolean(hygieneLog.clothes ?? hygieneLog.trocaRoupa),
     diaper: Boolean(hygieneLog.diaper ?? hygieneLog.trocaFralda),
-    hands: Boolean(hygieneLog.hands ?? hygieneLog.bath ?? hygieneLog.banho),
+    hands: Boolean(hygieneLog.hands),
     cream: Boolean(hygieneLog.cream ?? hygieneLog.pele),
     banho: Boolean(hygieneLog.banho ?? hygieneLog.bath),
     higieneBucal: Boolean(hygieneLog.higieneBucal ?? hygieneLog.teeth),
@@ -855,7 +855,7 @@ export function getHygieneLog(idosoId: string): any {
       studentLogs.sort((a, b) => {
         const timeA = String(a.time || '00:00');
         const timeB = String(b.time || '00:00');
-        return timeB.localeCompare(timeA);
+        return (timeB || '').localeCompare(timeA || '');
       });
       return studentLogs[0];
     }
@@ -916,7 +916,7 @@ export function getStudentMealsToday(idosoId: string): RegistroAlimentacao[] {
     if (!item) return;
     const itemStudentId = item.idosoId || idosoId;
     if (!isStudentIdMatch(itemStudentId, idosoId)) return;
-    if (!isTodayOrDemoDate(item.data)) return;
+    if (!isTodayOrDemoDate(item.data, idosoId)) return;
     const id = item.id || `meal_${idx}_${Date.now()}`;
     if (!mealsMap.has(id)) {
       mealsMap.set(id, {

@@ -1,7 +1,7 @@
 import { getTodayIsoBr } from '../data';
 import React, { useState, useEffect, useRef } from 'react';
 import { Idoso, Usuario, JornadaEvent, GestoAfetoTipo } from '../types';
-import { getFromDB, saveToDB, isRecordBeforeResetTimestamp, getHygieneLog } from '../data';
+import { getFromDB, isStudentIdMatch, saveToDB, isRecordBeforeResetTimestamp, getHygieneLog, isTodayOrDemoDate } from '../data';
 import { motion, AnimatePresence } from 'motion/react';
 import { SocialShareModal } from './SocialShareModal';
 import { 
@@ -232,7 +232,7 @@ Estamos cuidando de cada detalhe para que os primeiros passos, risadas e vivenci
   }
 
   // Sort events from newest to oldest
-  const sorted = [...studentEvents].sort((a,b) => b.data.localeCompare(a.data));
+  const sorted = [...studentEvents].sort((a,b) => (b.data || "").localeCompare(a.data || ""));
   
   // Format date based on most recent event if available to keep it synced
   let eventDateStr = formattedDate;
@@ -469,7 +469,7 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
   const feedsTimelineMap = new Map<string, any>();
   [...globalFeedsTimeline, ...studentFeedsTimeline].forEach((item, idx) => {
     if (!item) return;
-    if (item.idosoId && item.idosoId !== studentId) return;
+    if (item.idosoId && !isStudentIdMatch(item.idosoId, studentId)) return;
     const id = item.id || `feed_${idx}_${Date.now()}`;
     if (!feedsTimelineMap.has(id)) feedsTimelineMap.set(id, { ...item, id, idosoId: studentId });
   });
@@ -504,7 +504,7 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
   const hydTimelineMap = new Map<string, any>();
   [...globalHydTimeline, ...studentHyd1Timeline, ...studentHyd2Timeline].forEach((item, idx) => {
     if (!item) return;
-    if (item.idosoId && item.idosoId !== studentId) return;
+    if (item.idosoId && !isStudentIdMatch(item.idosoId, studentId)) return;
     const id = item.id || `hyd_${idx}_${Date.now()}`;
     if (!hydTimelineMap.has(id)) hydTimelineMap.set(id, { ...item, id, idosoId: studentId, quantidadeMl: Number(item.quantidadeMl || item.ml || item.quantidade || 150) });
   });
@@ -525,7 +525,7 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
   });
 
   const isActCleared = localStorage.getItem(`anjo_activities_cleared_${studentId}`) === 'true';
-  const atividades = (isActCleared || isRoutineClearedInJornada) ? [] : getFromDB<any[]>('anjo_atividades', []).filter(a => a.idosoId === studentId && !isRecordBeforeResetTimestamp(a, resetTimeStrInJornada));
+  const atividades = (isActCleared || isRoutineClearedInJornada) ? [] : getFromDB<any[]>('anjo_atividades', []).filter(a => isStudentIdMatch(a.idosoId, studentId) && !isRecordBeforeResetTimestamp(a, resetTimeStrInJornada));
   atividades.forEach(a => {
     synchronizedRoutineEvents.push({
       id: `sync_ativ_${a.id}`,
@@ -542,7 +542,7 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
     });
   });
 
-  const recados = isRoutineClearedInJornada ? [] : getFromDB<any[]>('anjo_mural_recados', []).filter(r => r.idosoId === studentId && !isRecordBeforeResetTimestamp(r, resetTimeStrInJornada));
+  const recados = isRoutineClearedInJornada ? [] : getFromDB<any[]>('anjo_mural_recados', []).filter(r => isStudentIdMatch(r.idosoId, studentId) && !isRecordBeforeResetTimestamp(r, resetTimeStrInJornada));
   recados.forEach(r => {
     synchronizedRoutineEvents.push({
       id: `sync_rec_${r.id}`,
@@ -558,20 +558,54 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
     });
   });
 
-  const hygLog = isRoutineClearedInJornada ? null : getHygieneLog(studentId);
-  if (hygLog && typeof hygLog === 'object' ) {
-    const time = hygLog.time || '11:00';
-    const bath = hygLog.bath || hygLog.banho;
-    const teeth = hygLog.teeth || hygLog.higieneBucal;
-    const clothes = hygLog.clothes || hygLog.trocaRoupa;
-    const diaper = hygLog.diaper || hygLog.trocaFralda;
-    const hands = hygLog.hands;
-    const cream = hygLog.cream || hygLog.pele;
+  // Hygiene & Care events synchronization for parents timeline
+  const globalHygTimeline = getFromDB<any[]>('anjo_higiene_global', []);
+  const studentHygTimeline = getFromDB<any[]>(`anjo_higiene_log_${studentId}`, []);
+  const hygTimelineMap = new Map<string, any>();
+
+  const collectHygItem = (item: any, idx: number) => {
+    if (!item || typeof item !== 'object') return;
+    const itemStudentId = item.idosoId || studentId;
+    if (!isStudentIdMatch(itemStudentId, studentId)) return;
+    if (!isTodayOrDemoDate(item.date || item.data, studentId)) return;
+    const id = item.id || `hyg_${idx}_${item.time || item.horario || Date.now()}`;
+    if (!hygTimelineMap.has(id)) {
+      hygTimelineMap.set(id, { ...item, id, idosoId: studentId });
+    }
+  };
+
+  globalHygTimeline.forEach((item, idx) => collectHygItem(item, idx));
+  if (Array.isArray(studentHygTimeline)) {
+    studentHygTimeline.forEach((item, idx) => collectHygItem(item, idx));
+  } else if (studentHygTimeline && typeof studentHygTimeline === 'object') {
+    collectHygItem(studentHygTimeline, 0);
+  }
+
+  const higieneList = isRoutineClearedInJornada
+    ? []
+    : Array.from(hygTimelineMap.values()).filter(h => !isRecordBeforeResetTimestamp(h, resetTimeStrInJornada));
+
+  higieneList.forEach((hygLog, hIdx) => {
+    const time = hygLog.time || hygLog.horario || '11:00';
+    const bath = Boolean(hygLog.bath ?? hygLog.banho);
+    const teeth = Boolean(hygLog.teeth ?? hygLog.higieneBucal);
+    const clothes = Boolean(hygLog.clothes ?? hygLog.trocaRoupa);
+    const diaper = Boolean(hygLog.diaper ?? hygLog.trocaFralda);
+    const hands = Boolean(hygLog.hands);
+    const cream = Boolean(hygLog.cream ?? hygLog.pele);
     const obs = hygLog.observations || hygLog.obs || '';
 
     const details: string[] = [];
     if (bath) details.push('Banho revigorante tomado com carinho');
-    if (diaper) details.push('Troca de fralda realizada com higienizacao completa');
+    if (diaper) {
+      if (obs && (obs.toLowerCase().includes('xixi') || obs.toLowerCase().includes('coco') || obs.toLowerCase().includes('limpa') || obs.toLowerCase().includes('seca') || obs.toLowerCase().includes('pomada'))) {
+        details.push(`Troca de fralda (${obs})`);
+      } else {
+        details.push('Troca de fralda realizada com higienizacao completa');
+      }
+    } else if (obs) {
+      details.push(`Cuidado de higiene: ${obs}`);
+    }
     if (hands) details.push('Maozinhas higienizadas');
     if (teeth) details.push('Higiene bucal realizada');
     if (clothes) details.push('Troca de roupinhas limpas');
@@ -579,12 +613,12 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
 
     if (details.length > 0 || obs) {
       synchronizedRoutineEvents.push({
-        id: `sync_hyg_${studentId}_${hygLog.date || 'today'}`,
+        id: `sync_hyg_${hygLog.id || studentId}_${time}_${hIdx}`,
         idosoId: studentId,
         tipo: 'rotina',
         titulo: `  Higiene, Banho & Cuidados as ${time}`,
-        data: hygLog.date || getTodayIsoBr(),
-        descricao: `${details.length > 0 ? details.join('. ') : 'Acompanhamento de higiene e bem-estar'}. ${obs ? `Obs: ${obs}` : ''}`,
+        data: hygLog.date || hygLog.data || getTodayIsoBr(),
+        descricao: `${details.join('. ')}${obs && !details.some(d => d.includes(obs)) ? `. Obs: ${obs}` : ''}`,
         imagemUrl: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&q=80&w=600',
         dimensoesDesenvolvimento: ['Saude e Bem-Estar'],
         likes: 1,
@@ -592,9 +626,51 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
         registradoPor: hygLog.registradoPor || 'Equipe Escolar'
       });
     }
-  }
+  });
 
-  const humores = isRoutineClearedInJornada ? [] : getFromDB<any[]>('anjo_humor', []).filter(h => h && h.idosoId === studentId && !isRecordBeforeResetTimestamp(h, resetTimeStrInJornada));
+  // Health, Sleep & Diaper records from anjo_sinais for parents timeline
+  const vitalsEvents = isRoutineClearedInJornada
+    ? []
+    : getFromDB<any[]>('anjo_sinais', []).filter(v => v && isStudentIdMatch(v.idosoId, studentId) && isTodayOrDemoDate(v.data, studentId) && !isRecordBeforeResetTimestamp(v, resetTimeStrInJornada));
+
+  vitalsEvents.forEach((v, vIdx) => {
+    if (v.id?.startsWith('sin_base_')) return;
+    const time = v.horario || '10:00';
+    const parts: string[] = [];
+    if (v.fralda && v.fralda !== 'Sem trocas') {
+      parts.push(`Fralda / Toalete: ${v.fralda}`);
+    }
+    if (v.soneca && v.soneca !== 'Sem registros') {
+      parts.push(`Soneca / Sono: ${v.soneca}`);
+    }
+    if (v.temperatura && v.temperatura > 0) {
+      parts.push(`Temperatura: ${v.temperatura}°C (${v.temperatura > 37.5 ? 'Febre / Atencao' : 'Normal'})`);
+    }
+    if (v.peso && v.peso > 0) {
+      parts.push(`Peso: ${v.peso} kg`);
+    }
+    if (v.observacoes) {
+      parts.push(`Obs: ${v.observacoes}`);
+    }
+
+    if (parts.length > 0) {
+      synchronizedRoutineEvents.push({
+        id: `sync_vital_${v.id || vIdx}_${time}`,
+        idosoId: studentId,
+        tipo: 'rotina',
+        titulo: `  Acompanhamento de Saude, Sono & Fralda as ${time}`,
+        data: v.data || getTodayIsoBr(),
+        descricao: parts.join('. '),
+        imagemUrl: 'https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&q=80&w=600',
+        dimensoesDesenvolvimento: ['Saude e Bem-Estar'],
+        likes: 1,
+        reagido: false,
+        registradoPor: v.registradoPor || 'Professora Titular / Cuidador'
+      });
+    }
+  });
+
+  const humores = isRoutineClearedInJornada ? [] : getFromDB<any[]>('anjo_humor', []).filter(h => h && isStudentIdMatch(h.idosoId, studentId) && !isRecordBeforeResetTimestamp(h, resetTimeStrInJornada));
   humores.forEach((h, idx) => {
     synchronizedRoutineEvents.push({
       id: `sync_hum_${h.id || idx}`,
@@ -663,7 +739,7 @@ function getJourneyEventsForStudent(studentId: string, studentName: string): Jor
     }
   });
 
-  return Array.from(combinedMap.values()).sort((a, b) => b.data.localeCompare(a.data));
+  return Array.from(combinedMap.values()).sort((a, b) => (b.data || "").localeCompare(a.data || ""));
 }
 
 export default function JornadaAnjinho({ idoso: idosoProp, usuarioAtual, accessibilitySettings, keyTrigger }: JornadaAnjinhoProps) {

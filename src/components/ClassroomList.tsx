@@ -963,7 +963,7 @@ export default function ClassroomList({
       return;
     }
 
-    const updated = [...absenceDates, retroDate].sort((a, b) => b.localeCompare(a));
+    const updated = [...absenceDates, retroDate].sort((a, b) => (b || '').localeCompare(a || ''));
     setAbsenceDates(updated);
     localStorage.setItem(`anjo_absences_history_${studentId}`, JSON.stringify(updated));
     
@@ -990,7 +990,7 @@ export default function ClassroomList({
         'Confirmar Registro de Falta',
         confirmMsg,
         () => {
-          const updated = [...absenceDates, todayStr].sort((a, b) => b.localeCompare(a));
+          const updated = [...absenceDates, todayStr].sort((a, b) => (b || '').localeCompare(a || ''));
           setAbsenceDates(updated);
           localStorage.setItem(`anjo_absences_history_${student.id}`, JSON.stringify(updated));
           localStorage.setItem(`anjo_is_absent_${student.id}`, 'true');
@@ -3667,7 +3667,7 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
                     placeholder="Ex: DD/MM/AAAA"
                     value={newStudentBirthDate}
                     onChange={e => {
-                      const clean = e.target.value.replace(/\D/g, "");
+                      const clean = e.target.value.replace(/\D/g, '');
                       const truncated = clean.slice(0, 8);
                       let formatted = truncated;
                       if (truncated.length > 2 && truncated.length <= 4) {

@@ -325,7 +325,7 @@ export default function MedicalAgenda({
   const loadAgenda = () => {
     const allComp = getFromDB<CompromissoMedico[]>('anjo_agenda', []);
     const seniorComp = allComp.filter(c => c.idosoId === idoso.id);
-    setCompromissos(seniorComp.sort((a, b) => a.data.localeCompare(b.data) || a.horario.localeCompare(b.horario)));
+    setCompromissos(seniorComp.sort((a, b) => (a.data || '').localeCompare(b.data || '') || (a.horario || '').localeCompare(b.horario || '')));
   };
 
   const getTipoLabel = (tipo: string) => {

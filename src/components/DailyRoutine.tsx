@@ -458,7 +458,7 @@ export default function DailyRoutine({
     setAlimentacaoToday(getStudentMealsToday(idoso.id));
 
     const allHumors = getFromDB<RegistroHumor[]>('anjo_humor', []);
-    const seniorHumors = allHumors.filter(hu => hu.idosoId === idoso.id).sort((a,b) => b.data.localeCompare(a.data) || b.horario.localeCompare(a.horario));
+    const seniorHumors = allHumors.filter(hu => hu.idosoId === idoso.id).sort((a,b) => (b.data || "").localeCompare(a.data || "") || (b.horario || "").localeCompare(a.horario || ""));
     setUltimoHumor(seniorHumors.length > 0 ? seniorHumors[0] : null);
 
     // Pre-fill Hygiene form state from stored hygiene log
@@ -687,7 +687,7 @@ export default function DailyRoutine({
       teeth: hygieneForm.higieneBucal,
       clothes: hygieneForm.trocaRoupa,
       diaper: hygieneForm.trocaFralda,
-      hands: hygieneForm.banho,
+      hands: false,
       cream: hygieneForm.pele,
       banho: hygieneForm.banho,
       higieneBucal: hygieneForm.higieneBucal,
@@ -1842,133 +1842,128 @@ export default function DailyRoutine({
 
         
         {activeTab === 'banho' && (
-          <form onSubmit={handleSaveHygiene} className="space-y-6">
+          <form onSubmit={handleSaveHygiene} className="space-y-6 bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
             <div className="flex items-center gap-3 pb-3 border-b border-slate-100">
-              <div className="p-3 bg-blue-50 rounded-2xl text-blue-500">
+              <div className="p-3 bg-indigo-50 rounded-2xl text-indigo-600">
                 <ShowerHead className="w-6 h-6" />
               </div>
               <div>
                 <h3 className="text-lg font-bold text-slate-800">
-                  {isFundamental ? 'Acompanhamento de Foco, Conduta & Organizacao' : (isEscolar ? 'Controle de Trocas, Higiene e Desfralde' : 'Banho, Roupas e Cuidados Esteticos')}
+                  {isFundamental ? 'Acompanhamento de Foco, Conduta & Organizacao' : (isEscolar ? 'Cuidados de Higiene & Bem-Estar do Aluno' : 'Banho, Roupas e Cuidados Esteticos')}
                 </h3>
-                <p className="text-xs text-slate-400">
-                  {isFundamental 
-                    ? 'Registre os aspectos comportamentais, atencao as aulas e convivencia escolar do aluno.'
-                    : isEscolar 
-                      ? 'Assinale os rituais de troca de fraldas, lavagem de maos e higiene escovar aplicados.' 
-                      : 'Assinale as atividades preventivas de higiene e protecao da pessoa idosa.'}
+                <p className="text-xs text-slate-500">
+                  {isEscolar
+                    ? 'Assinale os rituais de higiene e cuidados aplicados ao aluno. Registros sincronizados instantaneamente no diário dos pais.'
+                    : 'Assinale as atividades preventivas de higiene e protecao.'}
                 </p>
               </div>
             </div>
 
             {renderAuthBadge()}
 
-            <div className="space-y-3">
-              <label className="text-sm font-bold text-slate-700 block">Atividades Concluidas nesta Sessao</label>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <label className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
-                  <input 
-                    type="checkbox" 
-                    checked={isEscolar ? hygieneForm.trocaFralda : hygieneForm.banho}
-                    onChange={e => setHygieneForm({ ...hygieneForm, [isEscolar ? 'trocaFralda' : 'banho']: e.target.checked })}
-                    className="w-5 h-5 rounded border-slate-350 text-indigo-600"
-                  />
-                  <div>
-                    <strong className="text-sm font-bold block text-slate-750">
-                      {isFundamental ? 'Atencao & Concentracao nas Aulas' : (isEscolar ? 'Troca de Fralda / Cuidado de Toalete' : 'Banho de Chuveiro Realizado')}
-                    </strong>
-                    <span className="text-[11px] text-slate-500 font-medium">
-                      {isFundamental ? 'O aluno demonstrou bom foco nas explicacoes dos professores e participou das atividades.' : (isEscolar ? 'Fralda descartavel checada/trocada ou incentivo de uso do toalete.' : 'Controle de temperatura de agua e piso antiderrapante.')}
-                    </span>
-                  </div>
-                </label>
+            <div className="space-y-4">
+              <label className="text-xs font-black text-slate-700 uppercase tracking-wider block">
+                🧼 Checklist de Higiene & Cuidados Pessoais:
+              </label>
 
-                <label className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
-                  <input 
-                    type="checkbox" 
-                    checked={hygieneForm.higieneBucal}
-                    onChange={e => setHygieneForm({ ...hygieneForm, higieneBucal: e.target.checked })}
-                    className="w-5 h-5 rounded border-slate-350 text-indigo-600"
-                  />
-                  <div>
-                    <strong className="text-sm font-bold block text-slate-750">
-                      {isFundamental ? 'Respeito as Regras & Disciplina' : (isEscolar ? 'Escovacao de Dentes Orientada' : 'Higiene Bucal Completa')}
-                    </strong>
-                    <span className="text-[11px] text-slate-500 font-medium">
-                      {isFundamental ? 'Seguiu as orientacoes da equipe escolar, portando-se de maneira respeitosa e educada.' : (isEscolar ? 'Com escovinha individual e creme dental infantil de forma ludica.' : 'Uso de escova macia, higienizador de lingua ou solucao protetica.')}
-                    </span>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setHygieneForm(prev => ({ ...prev, trocaRoupa: !prev.trocaRoupa }))}
+                  className={`p-3 rounded-xl border flex items-center gap-2.5 cursor-pointer transition-all text-left ${
+                    hygieneForm.trocaRoupa
+                      ? 'bg-indigo-50 border-indigo-300 text-indigo-950 font-bold shadow-xs ring-1 ring-indigo-200'
+                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <span className="text-xl">👕</span>
+                  <div className="leading-tight">
+                    <span className="block text-xs font-bold">Troca de Roupas</span>
+                    <span className="text-[10px] opacity-75">{hygieneForm.trocaRoupa ? '✓ Realizada' : 'Pendente'}</span>
                   </div>
-                </label>
+                </button>
 
-                <label className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
-                  <input 
-                    type="checkbox" 
-                    checked={hygieneForm.trocaRoupa}
-                    onChange={e => setHygieneForm({ ...hygieneForm, trocaRoupa: e.target.checked })}
-                    className="w-5 h-5 rounded border-slate-350 text-indigo-600"
-                  />
-                  <div>
-                    <strong className="text-sm font-bold block text-slate-750">
-                      {isFundamental ? 'Organizacao dos Materiais' : (isEscolar ? 'Troca de Roupa (Mochila)' : 'Troca de Roupa por Limpas')}
-                    </strong>
-                    <span className="text-[11px] text-slate-500 font-medium">
-                      {isFundamental ? 'Manteve cadernos, estojo e mochila organizados, guardando seus pertences apos o uso.' : (isEscolar ? 'Crianca vestida com roupas limpas enviadas pelos pais apos sujar ou banho.' : 'Roupas frescas, faceis de vestir e adequadas ao clima.')}
-                    </span>
+                <button
+                  type="button"
+                  onClick={() => setHygieneForm(prev => ({ ...prev, higieneBucal: !prev.higieneBucal }))}
+                  className={`p-3 rounded-xl border flex items-center gap-2.5 cursor-pointer transition-all text-left ${
+                    hygieneForm.higieneBucal
+                      ? 'bg-indigo-50 border-indigo-300 text-indigo-950 font-bold shadow-xs ring-1 ring-indigo-200'
+                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <span className="text-xl">🪥</span>
+                  <div className="leading-tight">
+                    <span className="block text-xs font-bold">Escovacao Dentes</span>
+                    <span className="text-[10px] opacity-75">{hygieneForm.higieneBucal ? '✓ Orientada' : 'Pendente'}</span>
                   </div>
-                </label>
+                </button>
 
-                <label className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
-                  <input 
-                    type="checkbox" 
-                    checked={isEscolar ? hygieneForm.banho : hygieneForm.trocaFralda}
-                    onChange={e => setHygieneForm({ ...hygieneForm, [isEscolar ? 'banho' : 'trocaFralda']: e.target.checked })}
-                    className="w-5 h-5 rounded border-slate-350 text-indigo-600"
-                  />
-                  <div>
-                    <strong className="text-sm font-bold block text-slate-750">
-                      {isFundamental ? 'Relacoes Sociais & Parceria' : (isEscolar ? 'Lavagem das Maos e Rosto' : 'Troca de Fralda / Absorvente')}
-                    </strong>
-                    <span className="text-[11px] text-slate-500 font-medium">
-                      {isFundamental ? 'Colaborou com os colegas de classe, demonstrou empatia e trabalhou bem em equipe.' : (isEscolar ? 'Praticado antes e apos refeicoes e depois das brincadeiras de artes/patio.' : 'Se aplicavel, ou verificacao de vazamento urinario.')}
-                    </span>
+                <button
+                  type="button"
+                  onClick={() => setHygieneForm(prev => ({ ...prev, banho: !prev.banho }))}
+                  className={`p-3 rounded-xl border flex items-center gap-2.5 cursor-pointer transition-all text-left ${
+                    hygieneForm.banho
+                      ? 'bg-cyan-50 border-cyan-300 text-cyan-950 font-bold shadow-xs ring-1 ring-cyan-200'
+                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <span className="text-xl">🫧</span>
+                  <div className="leading-tight">
+                    <span className="block text-xs font-bold">Maos e Rosto</span>
+                    <span className="text-[10px] opacity-75">{hygieneForm.banho ? '✓ Lavados' : 'Pendente'}</span>
                   </div>
-                </label>
+                </button>
 
-                <label className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
-                  <input 
-                    type="checkbox" 
-                    checked={hygieneForm.pele}
-                    onChange={e => setHygieneForm({ ...hygieneForm, pele: e.target.checked })}
-                    className="w-5 h-5 rounded border-slate-350 text-indigo-600"
-                  />
-                  <div>
-                    <strong className="text-sm font-bold block text-slate-750">
-                      {isFundamental ? 'Zelo pelo Uniforme & Apresentacao' : (isEscolar ? 'Pomada Antiassadura / Protetor' : 'Hidratacao e Protecao da Pele')}
-                    </strong>
-                    <span className="text-[11px] text-slate-500 font-medium">
-                      {isFundamental ? 'Zelou pelo proprio uniforme escolar e pertences pessoais com cuidado e asseio.' : (isEscolar ? 'Aplicacao de pomada nas dobrinhas para prevencao de brotoejas ou assadura.' : 'Uso de cremes senior preventivos para escaras e ressecamento.')}
-                    </span>
+                <button
+                  type="button"
+                  onClick={() => setHygieneForm(prev => ({ ...prev, pele: !prev.pele }))}
+                  className={`p-3 rounded-xl border flex items-center gap-2.5 cursor-pointer transition-all text-left ${
+                    hygieneForm.pele
+                      ? 'bg-teal-50 border-teal-300 text-teal-950 font-bold shadow-xs ring-1 ring-teal-200'
+                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <span className="text-xl">🧴</span>
+                  <div className="leading-tight">
+                    <span className="block text-xs font-bold">Pomada / Protetor</span>
+                    <span className="text-[10px] opacity-75">{hygieneForm.pele ? '✓ Aplicada' : 'Pendente'}</span>
                   </div>
-                </label>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setHygieneForm(prev => ({ ...prev, trocaFralda: !prev.trocaFralda }))}
+                  className={`p-3 rounded-xl border flex items-center gap-2.5 cursor-pointer transition-all text-left ${
+                    hygieneForm.trocaFralda
+                      ? 'bg-emerald-50 border-emerald-300 text-emerald-950 font-bold shadow-xs ring-1 ring-emerald-200'
+                      : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <span className="text-xl">🛁</span>
+                  <div className="leading-tight">
+                    <span className="block text-xs font-bold">Banho Tomado</span>
+                    <span className="text-[10px] opacity-75">{hygieneForm.trocaFralda ? '✓ Concluido' : 'Pendente'}</span>
+                  </div>
+                </button>
               </div>
 
               <div className="space-y-1 pt-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-bold text-slate-705 block">
-                    {isFundamental ? 'Observacoes adicionais de comportamento e participacao' : (isEscolar ? 'Observacoes de higiene (assaduras detectadas, resistencia no fraldario, etc.)' : 'Observacoes do cuidador (pele machucada, resistencia para banhar etc.)')}
+                  <label className="text-xs font-bold text-slate-700 block">
+                    Observacoes de higiene e cuidados:
                   </label>
-                  <VoiceInput 
-                    onTranscript={text => setHygieneForm(prev => ({ ...prev, obs: prev.obs ? prev.obs + ' ' + text : text }))} 
+                  <VoiceInput
+                    onTranscript={text => setHygieneForm(prev => ({ ...prev, obs: prev.obs ? prev.obs + ' ' + text : text }))}
                     size="sm"
                   />
                 </div>
-                <textarea 
-                  placeholder={isFundamental ? "Ex: Se comportou muito bem, prestou bastante atencao as aulas e interagiu com os amigos." : (isEscolar ? "Ex: sem assaduras hoje. Cooperou bastante cantando a musiquinha do sapo para lavar as maos." : "Ex: sem queixas, pele saudavel. Dona Maria cooperou ouvindo musicas antigas.")}
-                  rows={2.5}
+                <textarea
+                  placeholder="Ex: Roupas trocadas apos aula de artes. Dentes escovados com alegria."
+                  rows={2}
                   value={hygieneForm.obs}
                   onChange={e => setHygieneForm({ ...hygieneForm, obs: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-300 bg-slate-50 rounded-xl focus:ring-2 focus:ring-indigo-500/20 text-sm"
+                  className="w-full px-3 py-2 border border-slate-300 bg-slate-50 rounded-xl focus:ring-2 focus:ring-indigo-500/20 text-xs"
                 ></textarea>
               </div>
             </div>
@@ -1977,7 +1972,7 @@ export default function DailyRoutine({
               type="submit"
               className={`px-5 py-3 ${isEscolar ? 'bg-indigo-600 hover:bg-indigo-700' : 'bg-serene-blue hover:bg-blue-600'} text-white font-bold rounded-xl active:scale-95 transition-all text-sm block ml-auto cursor-pointer shadow-sm`}
             >
-              {isFundamental ? 'Confirmar Avaliacao (Notificar Pais)' : (isEscolar ? 'Confirmar Higiene (Enviar para os Pais)' : 'Confirmar Banho & Higiene (Avisar Familia)')}
+              Confirmar Higiene & Cuidados (Notificar Pais)
             </button>
           </form>
         )}

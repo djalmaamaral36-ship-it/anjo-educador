@@ -22,7 +22,7 @@ import {
   Play
 } from 'lucide-react';
 import { Idoso, Usuario, SinalVital, isStaffUser } from '../types';
-import { getFromDB, saveToDB, getShiftActiveState, setShiftActiveStatesBatch, getNowTimeBr, resetStudentDailyRoutine } from '../data';
+import { getFromDB, saveToDB, saveHygieneLog, getShiftActiveState, setShiftActiveStatesBatch, getNowTimeBr, resetStudentDailyRoutine } from '../data';
 import { findMatchingMealTask } from '../utils/auraPlanParser';
 import { VoiceInput } from './VoiceInput';
 
@@ -1329,8 +1329,7 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
           fraldaTextStr = 'Troca de Fralda / Higiene';
         }
 
-        const hygKey = `anjo_higiene_log_${idoso.id}`;
-        saveToDB(hygKey, {
+        saveHygieneLog(idoso.id, {
           bath: parsedData.higiene.banho || false,
           teeth: parsedData.higiene.dentes || false,
           clothes: false,
@@ -1338,7 +1337,8 @@ export const AuraSmartRegisterModal: React.FC<AuraSmartRegisterModalProps> = ({
           hands: true,
           cream: true,
           time: now,
-          observations: fraldaTextStr
+          observations: fraldaTextStr,
+          registradoPor: usuarioAtual.nome
         });
 
         // Update tasks
