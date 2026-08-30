@@ -10037,9 +10037,31 @@ Segunda-feira:
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-500"> Nenhxœ¼WÍÛ6¾ïSŒ"¶ƒÊÖîÆ›dk;X8{LZ$@/E€Ğm±¡H¤üÇSôĞSO}„}±)K–%ÙŞi|°MR"g¾ùæ›a`ÂPH¥¨Ó,  èœi£HH@Pm(˜T	Ùö“ñT>İmejØÙb|Q™­>„Ï@À‰ÖoILG-€zkï²7€Ä¸Ÿ©T!UÉÿhNõ.}¿U7bÊ»º2ŞJÃL
-ãM9	>›Ê¶xæû&	úM4º¦p™‰¹·dx
-Ì8]34Ö^@-80'‰wÙÃÇ	$ÕRxCCD*ÆG¤†ÎFGlfŞÑ£Ë_ÈšKöbN""æT¿êq*æ&‚/_Àßv‡ıhPwáôğä	œ| ?b>¼‚Nmû“7 zŞ¤^L’N'ˆnˆuFãÆS‹“?ÑõhD=nËV$Ş5Lç!›Koà÷ş.àyÜwK—¸ d*Bz+œ’ĞFMHyÄKa~î²hÚ//<ä+ëÕ¹ğ{ª›­½)5KJÅ‰½p7X”¶Û|ttŒ¥™™¿½LV Ye¤_{>şäÆa‰¢e—Ù
-?lNœ€h–HFĞ0›1§eéÑFÄiŒlæ¡M¨Ìœ|â…ï·áöñÓUÀSMŠ•Ôt¿«=bKû&‰§ïâÕlhß=ñæöãöTÄÇQx+&ÅÌí	¿îİàáO÷Xû>dá úpg)AÛU,†}Ë„¯¡J+‹¸äá)—¾¥Ê¡†µÆÖµH*¢˜´ÒÒnoÏµÓæ£ËIÍÌw–Æ‡yµ;:¤:P(‚îpSgG¦”B‚@"µäråE¦;İtk=koCE9ŠÊ),ŞQH¡şXP~ë‚NR#•µ'Õ©…èÎ¤„¿Ú[y¦È©:¤{¸°ukõïÄ]$O£4'MÕ«R²˜!œV,—ŠXå,	â¡h–Šå[*¢K=)Eµ#Q.|Ù¸TğÃTÔ:puèáo~eéo˜:œ«èlâ=³ne6úßPùªs®ÈT„Nß¯jš<œ¦ÆHQ³Ş¬<;[lÕV¥˜ ÚŸF›+mšš÷‘\¾ßÄ72$¼3#\Ó
-”½[¡{(ïWûĞ5Åê*—½"Ë ¢H‰R¼#¹ ê¶€Í©&FN3Ã¤ğç¤JKå%Ò5yUëáüUrCP°j¢jÁÍ°úÆøb3r:‘bÆT|/Bñ9@ ®¾Ü ónæyfxµ<„ò$nØv¡J,mE>ÒbÿtÛá$¢xxÉ‹%²"òµ ?†÷ü{±`øçÅ°>üƒºõ¨0Ô2¯2q0ÜñuÓ
-LXÀ1öó l‚lõ5#(ã=¦N¨°é^Êj[Ñ/˜6Ÿ±Õ±Ÿû,éûıç˜é‘PÉc“*×±MğİĞj,¶›03º_«Z.€Ø&(@Õ²"óø_#b²ò\„—Ş,E$ŞMö«#ÒjÓ5ï ,ú,eŒ¿ŞËÁq£ÓjZj]—áEÃÍ§®¤®›nl¤lJäN[¯ÎAİtÍºãT™	S§‡\¾A.ßX.Ÿ¯™ÕMw¸ëZäó#w8£¸6ŒmIhj˜áëztİpÔ¹z;ÈÕ7kZã<AŠòy—ı»×x± ª¡<¯…å©ÃõºYú õº)y­P l’•§Mrˆö[+Ğe]b©»­8œ)åçôµ½ßÿUzRö¤ƒMÎÂİL7ĞëõìèGÈôë\é†mS×T½K—³’p¶‚û²=!"@.|§rİtïDiÁFpH'|7ÿÔğÖYÓNlë„œ9#ìn–ŠÀâÚî6ZŒ6O;{Õ)±}\KRaÉÉş„ mZL½8Û²Tˆ²oL*ËwéS^SÍÙü‘´ûÚöä¢2AÚ^ü  ÿÿ b—Ù
+                  <p className="text-xs text-slate-500">Nenhuma ocorrÃªncia registrada.</p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={() => setShowShiftReviewModal(false)}
+                className="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-100 transition cursor-pointer"
+              >
+                Continuar PlantÃ£o
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmEndShift}
+                className="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs shadow-md transition cursor-pointer flex items-center gap-1.5"
+              >
+                <CheckCircle2 className="w-4 h-4" />
+                Finalizar e Enviar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
