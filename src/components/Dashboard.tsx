@@ -344,6 +344,7 @@ export default function Dashboard({
   
   // Quick Actions forms
   const [quickVitals, setQuickVitals] = useState({ pressao: '', glicemia: '', temp: '', fCard: '', sat: '', peso: '', obs: '', bath: false, clothes: false, teeth: false, hands: false, cream: false });
+  const [quickSleepText, setQuickSleepText] = useState('');
   const [duplicateWarning, setDuplicateWarning] = useState<{
     show: boolean;
     studentName: string;
@@ -1121,12 +1122,31 @@ Equipe Anjinho Escolar`
 
     // Synchronize sleep state from localStorage
     const sonos = getFromDB<any[]>('anjo_sono', []).filter(s => s.idosoId === idoso.id && isTodayOrDemoDate(s.data));
-    if (sonos.length > 0 && !quickVitals.pressao) {
+    if (sonos.length > 0) {
       const lastSono = sonos[sonos.length - 1];
       if (lastSono.dormiuEm && lastSono.acordouEm) {
         setSleepStart(lastSono.dormiuEm);
         setSleepEnd(lastSono.acordouEm);
-        setQuickVitals(prev => (prev.pressao ? prev : { ...prev, pressao: `Dormiu das ${lastSono.dormiuEm} As ${lastSono.acordouEm}` }));
+        if (!isEscolar && !quickVitals.pressao) {
+          setQuickVitals(prev => (prev.pressao ? prev : { ...prev, pressao: `Dormiu das ${lastSono.dormiuEm} As ${lastSono.acordouEm}` }));
+        }
+      }
+    }
+  }, [idoso, keyTrigger, appMode]);
+
+  // Synchronize separate quickSleepText state for escolar mode
+  useEffect(() => {
+    if (isEscolar) {
+      const sonos = getFromDB<any[]>('anjo_sono', []).filter(s => s.idosoId === idoso.id && isTodayOrDemoDate(s.data));
+      if (sonos.length > 0) {
+        const lastSono = sonos[sonos.length - 1];
+        if (lastSono.observacoes) {
+          setQuickSleepText(lastSono.observacoes);
+        } else if (lastSono.dormiuEm && lastSono.acordouEm) {
+          setQuickSleepText('Dormiu das ' + lastSono.dormiuEm + ' As ' + lastSono.acordouEm);
+        }
+      } else {
+        setQuickSleepText('');
       }
     }
   }, [idoso, keyTrigger, appMode]);
@@ -5010,6 +5030,112 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
     }
   };
 
+  const handleQuickSleepSubmit = (e?: React.FormEvent | null, bypassDuplicateCheck?: boolean) => {
+    if (e) e.preventDefault();
+    if (isAbsent) {
+      unlockAndMarkPresent();
+      showToast(`PresenÃ§a ativada para ${idoso.nome}!`, 'success');
+    }
+    if (!ensureAuthorizedAndActiveShift("Saude e Sono")) {
+      return;
+    }
+    const defaultTime = getNowTimeBr();
+    const todayIso = getTodayIso();
+    
+    const sleepText = quickSleepText || `Dormiu das ${sleepStart} As ${sleepEnd}`;
+
+    if (!bypassDuplicateCheck) {
+      const vitalsStore = getFromDB<SinalVital[]>('anjo_sinais', []);
+      const sonosStore = getFromDB<RegistroSono[]>('anjo_sono', []);
+
+      // Cross-module duplicate check for sleep (Sono/Soneca) between Diario da Inf and Frequencia
+      const timeMatch = sleepText.match(/(\d{1,2}:\d{2})\s*(?:As|as|-|ate)\s*(\d{1,2}:\d{2})/i) || 
+                        [null, sleepStart, sleepEnd];
+      
+      let isDuplicateSleepWithSono = false;
+      let isDuplicateSleepWithSinais = false;
+
+      if (timeMatch && timeMatch[1] && timeMatch[2]) {
+        const startStr = timeMatch[1].padStart(5, '0');
+        const endStr = timeMatch[2].padStart(5, '0');
+        const startShort = startStr.replace(/^0/, '');
+        const endShort = endStr.replace(/^0/, '');
+
+        // Check against Frequencia (anjo_sono)
+        isDuplicateSleepWithSono = sonosStore.some(s => {
+          if (s.idosoId !== idoso.id || !isTodayOrDemoDate(s.data)) return false;
+          const sStart = (s.dormiuEm || '').trim();
+          const sEnd = (s.acordouEm || '').trim();
+          return (sStart === startStr && sEnd === endStr) || 
+                 (sStart.replace(/^0/, '') === startShort && sEnd.replace(/^0/, '') === endShort);
+        });
+
+        // Check against Diario da Inf (anjo_sinais)
+        isDuplicateSleepWithSinais = vitalsStore.some(v => {
+          if (v.idosoId !== idoso.id || !isTodayOrDemoDate(v.data)) return false;
+          const old = (v.soneca || v.pressaoArterial || '').toLowerCase();
+          if (!old || old === 'sem registros' || old === 'nao dormiu / sesta') return false;
+          return (old.includes(startStr) || old.includes(startShort)) && (old.includes(endStr) || old.includes(endShort));
+        });
+      }
+
+      if (isDuplicateSleepWithSono || isDuplicateSleepWithSinais) {
+        const sourceName = isDuplicateSleepWithSono ? 'Frequencia (Rotina)' : 'Diario da Inf';
+        alert(` [!] Registro Duplicado Bloqueado: Ja existe um registro de soneca/sono para ${idoso.nome} no mesmo horario (${timeMatch ? `${timeMatch[1]} As ${timeMatch[2]}` : sleepText}) lancado hoje no ${sourceName}!\n\nNao e permitido salvar registros duplicados para o mesmo horario.`);
+        return;
+      }
+    }
+
+    // Save Soneca record in anjo_sinais
+    const vitalsStore = getFromDB<SinalVital[]>('anjo_sinais', []);
+    const novoSinalSleep: SinalVital = {
+      id: 'sin_sleep_' + Date.now(),
+      idosoId: idoso.id,
+      pressaoArterial: sleepText,
+      glicemia: 0,
+      temperatura: 0,
+      frequenciaCardiaca: 0,
+      saturacao: 0,
+      data: todayIso,
+      horario: defaultTime,
+      registradoPor: usuarioAtual.nome,
+      observacoes: 'Registro de Soneca / Descanso realizado com sucesso.',
+      soneca: sleepText
+    };
+    vitalsStore.push(novoSinalSleep);
+    saveToDB('anjo_sinais', vitalsStore);
+
+    // Save to anjo_sono
+    const extractedStart = sleepStart || '13:00';
+    const extractedEnd = sleepEnd || '14:30';
+    const sonos = getFromDB<any[]>('anjo_sono', []);
+    sonos.push({
+      id: 'sono_' + Date.now(),
+      idosoId: idoso.id,
+      dormiuEm: extractedStart,
+      acordouEm: extractedEnd,
+      horasTotais: 1.5,
+      qualidade: 'boa',
+      data: todayIso,
+      observacoes: sleepText,
+      registradoPor: usuarioAtual.nome
+    });
+    saveToDB('anjo_sono', sonos);
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('anjo_user_updated', { detail: { localKey: 'anjo_sinais' } }));
+      window.dispatchEvent(new CustomEvent('db-vitals-update', { detail: { localKey: 'anjo_sinais' } }));
+    }
+    setVitalsUpdateTrigger(prev => prev + 1);
+
+    // Simulated WhatsApp message for sleep
+    const cleanName = idoso.nome.includes(' (') ? idoso.nome.split(' (')[0] : idoso.nome;
+    const msg = `Anjo Escolar  Registro de Soneca\nOlÃ¡! Registramos que *${cleanName}* tirou uma soneca hoje das ${extractedStart} Ã s ${extractedEnd} (${sleepText}).`;
+    triggerWhatsAppSim('Registro de Soneca', msg);
+
+    showToast(`Soneca de ${idoso.nome} salva com sucesso!`, 'success');
+  };
+
   const handleManualSyncLaunch = () => {
     handleSyncOfflineData();
   };
@@ -6520,67 +6646,66 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
               </div>
 
               
-              <div className="bg-white p-5 rounded-2xl border border-soft-gray space-y-4">
-                <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-                  <Activity className="text-rose-500 w-4.5 h-4.5 animate-pulse" /> {isEscolar ? 'Saude, Sono, Fralda & Cuidados do Aluno ' : 'Sinais Vitais, Peso & Cuidados do Idoso '}
-                </h4>
-                <form id="quick-vitals-form" onSubmit={handleQuickVitalsSubmit} className="space-y-3">
-                  <div className="grid grid-cols-2 gap-2 text-xs">
-                    <div className={`space-y-1 ${isEscolar ? 'col-span-2 md:col-span-1' : ''}`}>
-                      <label htmlFor="vital-pressao" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{isEscolar ? ' Soneca / Descanso' : 'PA (Pressao)'}</label>
-                      <input 
-                        id="vital-pressao"
-                        type="text" 
-                        placeholder={isEscolar ? 'Ex: Dormiu das 13:00 As 14:30' : 'Ex: 120/80'}
-                        value={quickVitals.pressao}
-                        onChange={e => setQuickVitals({...quickVitals, pressao: e.target.value})}
-                        className="w-full text-xs px-2.5 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1 focus:outline-hidden text-slate-800 font-bold"
-                      />
-                      {isEscolar && (
-                        <div className="mt-1.5 space-y-1.5 bg-indigo-50/50 p-2 rounded-xl border border-indigo-100/80">
+              {isEscolar ? (
+                <>
+                  {/* CARD 1: REGISTRO DE SONECA / DESCANSO DO ALUNO */}
+                  <div className="bg-white p-5 rounded-2xl border border-soft-gray space-y-4 shadow-2xs">
+                    <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                      <Activity className="text-indigo-500 w-4.5 h-4.5 animate-pulse" /> Soneca & Descanso do Aluno
+                    </h4>
+                    <form onSubmit={handleQuickSleepSubmit} className="space-y-3">
+                      <div className="space-y-1">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Soneca / Descanso</label>
+                        <input 
+                          type="text" 
+                          placeholder="Ex: Dormiu das 13:00 As 14:30"
+                          value={quickSleepText}
+                          onChange={e => setQuickSleepText(e.target.value)}
+                          className="w-full text-xs px-2.5 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1 focus:outline-hidden text-slate-800 font-bold"
+                        />
+                        <div className="mt-1.5 space-y-1.5 bg-indigo-50/50 p-2.5 rounded-xl border border-indigo-100/80">
                           <div className="flex items-center justify-between">
-                            <span className="text-[9px] font-extrabold text-indigo-700 flex items-center gap-1 uppercase tracking-wider"> Toque Rapido (Soneca):</span>
+                            <span className="text-[9px] font-extrabold text-indigo-700 flex items-center gap-1 uppercase tracking-wider">Toque Rapido (Soneca):</span>
                           </div>
                           <div className="flex flex-wrap gap-1">
                             <button
                               type="button"
-                              onClick={() => setQuickVitals(prev => ({ ...prev, pressao: 'Dormiu 30 minutos' }))}
+                              onClick={() => setQuickSleepText('Dormiu 30 minutos')}
                               className="px-2 py-1 bg-white hover:bg-indigo-100/50 border border-indigo-100 active:scale-95 text-indigo-800 rounded-lg text-[9px] font-extrabold transition-all cursor-pointer shadow-2xs"
                             >
                               30m
                             </button>
                             <button
                               type="button"
-                              onClick={() => setQuickVitals(prev => ({ ...prev, pressao: 'Dormiu 1 hora' }))}
+                              onClick={() => setQuickSleepText('Dormiu 1 hora')}
                               className="px-2 py-1 bg-white hover:bg-indigo-100/50 border border-indigo-100 active:scale-95 text-indigo-800 rounded-lg text-[9px] font-extrabold transition-all cursor-pointer shadow-2xs"
                             >
                               1h
                             </button>
                             <button
                               type="button"
-                              onClick={() => setQuickVitals(prev => ({ ...prev, pressao: 'Dormiu 1h30' }))}
+                              onClick={() => setQuickSleepText('Dormiu 1h30')}
                               className="px-2 py-1 bg-white hover:bg-indigo-100/50 border border-indigo-100 active:scale-95 text-indigo-800 rounded-lg text-[9px] font-extrabold transition-all cursor-pointer shadow-2xs"
                             >
                               1h30
                             </button>
                             <button
                               type="button"
-                              onClick={() => setQuickVitals(prev => ({ ...prev, pressao: 'Dormiu 2 horas' }))}
+                              onClick={() => setQuickSleepText('Dormiu 2 horas')}
                               className="px-2 py-1 bg-white hover:bg-indigo-100/50 border border-indigo-100 active:scale-95 text-indigo-800 rounded-lg text-[9px] font-extrabold transition-all cursor-pointer shadow-2xs"
                             >
                               2h
                             </button>
                             <button
                               type="button"
-                              onClick={() => setQuickVitals(prev => ({ ...prev, pressao: 'Nao dormiu / sesta' }))}
+                              onClick={() => setQuickSleepText('Nao dormiu / sesta')}
                               className="px-2 py-1 bg-rose-50 hover:bg-rose-100 border border-rose-100 active:scale-95 text-rose-700 rounded-lg text-[9px] font-extrabold transition-all cursor-pointer shadow-2xs"
                             >
                               Nao dormiu
                             </button>
                           </div>
-
                           <div className="pt-1.5 border-t border-indigo-100/60 flex items-center justify-between gap-1">
-                            <span className="text-[9px] font-bold text-slate-500 flex items-center gap-1 shrink-0"> Reloginho:</span>
+                            <span className="text-[9px] font-bold text-slate-500 flex items-center gap-1 shrink-0">Reloginho:</span>
                             <div className="flex items-center gap-1">
                               <input 
                                 type="time" 
@@ -6589,7 +6714,7 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                                 onChange={e => {
                                   const val = e.target.value;
                                   setSleepStart(val);
-                                  setQuickVitals(prev => ({ ...prev, pressao: `Dormiu das ${val} As ${sleepEnd}` }));
+                                  setQuickSleepText(`Dormiu das ${val} As ${sleepEnd}`);
                                 }}
                               />
                               <span className="text-[9px] font-bold text-slate-400">As</span>
@@ -6600,349 +6725,448 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                                 onChange={e => {
                                   const val = e.target.value;
                                   setSleepEnd(val);
-                                  setQuickVitals(prev => ({ ...prev, pressao: `Dormiu das ${sleepStart} As ${val}` }));
+                                  setQuickSleepText(`Dormiu das ${sleepStart} As ${val}`);
                                 }}
                               />
                             </div>
                           </div>
                         </div>
-                      )}
-                    </div>
-                    <div className={`space-y-1 ${isEscolar ? 'col-span-2 md:col-span-1' : ''}`}>
-                      <div className="flex items-center justify-between">
-                        <label htmlFor="vital-glicemia" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{isEscolar ? ' Fralda (Xixi ou Coco)' : 'Glicemia (mg/dL)'}</label>
-                        {isEscolar && (
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-[9px] font-extrabold text-slate-400 uppercase">Falar:</span>
-                            <VoiceInput 
-                              onTranscript={text => setQuickVitals(prev => ({ ...prev, glicemia: text }))} 
-                              size="sm"
-                            />
-                          </div>
-                        )}
                       </div>
-                      <input 
-                        id="vital-glicemia"
-                        type="text" 
-                        placeholder={isEscolar ? 'Ex: Fez Coco / Pomada' : 'Ex: 104'}
-                        value={quickVitals.glicemia}
-                        onChange={e => setQuickVitals({...quickVitals, glicemia: e.target.value})}
-                        className="w-full text-xs px-2.5 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1 focus:outline-hidden text-slate-800 font-bold"
-                      />
-                      {isEscolar && (
-                        <div className="mt-1.5 space-y-1.5 bg-emerald-50/60 p-2.5 rounded-xl border border-emerald-200/80">
+                      <button 
+                        type="submit" 
+                        className="w-full py-2 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-black text-xs rounded-xl shadow-xs transition-colors cursor-pointer"
+                      >
+                        Salvar Soneca & Notificar Pais
+                      </button>
+                    </form>
+                  </div>
+
+                  {/* CARD 2: SAUDE, FRALDA & CUIDADOS DO ALUNO */}
+                  <div className="bg-white p-5 rounded-2xl border border-soft-gray space-y-4 shadow-2xs">
+                    <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                      <Activity className="text-rose-500 w-4.5 h-4.5 animate-pulse" /> Saude, Fralda & Cuidados do Aluno
+                    </h4>
+                    <form id="quick-vitals-form" onSubmit={handleQuickVitalsSubmit} className="space-y-3">
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="col-span-2 md:col-span-1 space-y-1">
                           <div className="flex items-center justify-between">
-                            <span className="text-[9px] font-black text-emerald-800 uppercase tracking-wider block">
-                              ğŸ“ Selecao Rapida de Fralda / Toalete:
-                            </span>
-                            {quickVitals.glicemia && (
-                              <span className="text-[9px] font-extrabold text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded-md">
-                                {quickVitals.glicemia}
-                              </span>
-                            )}
+                            <label htmlFor="vital-glicemia-escolar" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Fralda (Xixi ou Coco)</label>
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[9px] font-extrabold text-slate-400 uppercase">Falar:</span>
+                              <VoiceInput 
+                                onTranscript={text => setQuickVitals(prev => ({ ...prev, glicemia: text }))} 
+                                size="sm"
+                              />
+                            </div>
                           </div>
-                          <div className="flex flex-wrap gap-1.5">
-                            <button
-                              type="button"
-                              onClick={() => setQuickVitals(prev => ({ ...prev, glicemia: 'Apenas Xixi' }))}
-                              className={`px-2 py-1 rounded-lg text-[10px] font-black transition-all cursor-pointer flex items-center gap-1 border shadow-2xs ${
-                                (quickVitals.glicemia === 'Apenas Xixi' || quickVitals.glicemia === 'Fez Xixi')
-                                  ? 'bg-sky-500 text-white border-sky-600 ring-2 ring-sky-300'
-                                  : 'bg-white text-sky-800 border-sky-200 hover:bg-sky-50'
-                              }`}
-                            >
-                              <span>ğŸ’§</span> Apenas Xixi {(quickVitals.glicemia === 'Apenas Xixi' || quickVitals.glicemia === 'Fez Xixi') && 'âœ“'}
-                            </button>
+                          <input 
+                            id="vital-glicemia-escolar"
+                            type="text" 
+                            placeholder="Ex: Fez Coco / Pomada"
+                            value={quickVitals.glicemia}
+                            onChange={e => setQuickVitals({...quickVitals, glicemia: e.target.value})}
+                            className="w-full text-xs px-2.5 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1 focus:outline-hidden text-slate-800 font-bold"
+                          />
+                          <div className="mt-1.5 space-y-1.5 bg-emerald-50/60 p-2.5 rounded-xl border border-emerald-200/80">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[9px] font-black text-emerald-800 uppercase tracking-wider block">
+                                ğŸ“ Selecao Rapida de Fralda / Toalete:
+                              </span>
+                              {quickVitals.glicemia && (
+                                <span className="text-[9px] font-extrabold text-emerald-800 bg-emerald-100 px-1.5 py-0.5 rounded-md">
+                                  {quickVitals.glicemia}
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex flex-wrap gap-1">
+                              <button
+                                type="button"
+                                onClick={() => setQuickVitals(prev => ({ ...prev, glicemia: 'Apenas Xixi' }))}
+                                className={`px-2 py-1 rounded-lg text-[10px] font-black transition-all cursor-pointer flex items-center gap-1 border shadow-2xs ${
+                                  (quickVitals.glicemia === 'Apenas Xixi' || quickVitals.glicemia === 'Fez Xixi')
+                                    ? 'bg-sky-500 text-white border-sky-600 ring-2 ring-sky-300'
+                                    : 'bg-white text-sky-800 border-sky-200 hover:bg-sky-50'
+                                }`}
+                              >
+                                <span>ğŸ’§</span> Xixi
+                              </button>
 
-                            <button
-                              type="button"
-                              onClick={() => setQuickVitals(prev => ({ ...prev, glicemia: 'Apenas Coco' }))}
-                              className={`px-2 py-1 rounded-lg text-[10px] font-black transition-all cursor-pointer flex items-center gap-1 border shadow-2xs ${
-                                (quickVitals.glicemia === 'Apenas Coco' || quickVitals.glicemia === 'Fez Coco')
-                                  ? 'bg-amber-700 text-white border-amber-800 ring-2 ring-amber-400'
-                                  : 'bg-white text-amber-900 border-amber-200 hover:bg-amber-50'
-                              }`}
-                            >
-                              <span>ğŸ’©</span> Apenas Coco {(quickVitals.glicemia === 'Apenas Coco' || quickVitals.glicemia === 'Fez Coco') && 'âœ“'}
-                            </button>
+                              <button
+                                type="button"
+                                onClick={() => setQuickVitals(prev => ({ ...prev, glicemia: 'Coco (Consistencia Normal)' }))}
+                                className={`px-2 py-1 rounded-lg text-[10px] font-black transition-all cursor-pointer flex items-center gap-1 border shadow-2xs ${
+                                  quickVitals.glicemia === 'Coco (Consistencia Normal)'
+                                    ? 'bg-amber-600 text-white border-amber-700 ring-2 ring-amber-300'
+                                    : 'bg-white text-amber-850 border-amber-200 hover:bg-amber-50'
+                                }`}
+                              >
+                                <span>ğŸ’©</span> Coco Normal
+                              </button>
 
-                            <button
-                              type="button"
-                              onClick={() => setQuickVitals(prev => ({ ...prev, glicemia: 'Xixi e Coco' }))}
-                              className={`px-2 py-1 rounded-lg text-[10px] font-black transition-all cursor-pointer flex items-center gap-1 border shadow-2xs ${
-                                (quickVitals.glicemia === 'Xixi e Coco' || quickVitals.glicemia === 'Ambos')
-                                  ? 'bg-purple-600 text-white border-purple-700 ring-2 ring-purple-300'
-                                  : 'bg-white text-purple-800 border-purple-200 hover:bg-purple-50'
-                              }`}
-                            >
-                              <span>ğŸ’§ğŸ’©</span> Xixi e Coco {(quickVitals.glicemia === 'Xixi e Coco' || quickVitals.glicemia === 'Ambos') && 'âœ“'}
-                            </button>
+                              <button
+                                type="button"
+                                onClick={() => setQuickVitals(prev => ({ ...prev, glicemia: 'Coco Pastoso / Diarreia' }))}
+                                className={`px-2 py-1 rounded-lg text-[10px] font-black transition-all cursor-pointer flex items-center gap-1 border shadow-2xs ${
+                                  quickVitals.glicemia === 'Coco Pastoso / Diarreia'
+                                    ? 'bg-rose-600 text-white border-rose-700 ring-2 ring-rose-300'
+                                    : 'bg-white text-rose-800 border-rose-200 hover:bg-rose-50'
+                                }`}
+                              >
+                                <span>ğŸ’©âš ï¸</span> Pastoso/Liquido
+                              </button>
 
-                            <button
-                              type="button"
-                              onClick={() => setQuickVitals(prev => ({
-                                ...prev,
-                                cream: true,
-                                glicemia: prev.glicemia && !prev.glicemia.includes('Pomada') ? `${prev.glicemia} (+Pomada)` : (prev.glicemia || 'Troca com Pomada')
-                              }))}
-                              className={`px-2 py-1 rounded-lg text-[10px] font-black transition-all cursor-pointer flex items-center gap-1 border shadow-2xs ${
-                                quickVitals.cream || quickVitals.glicemia.includes('Pomada')
-                                  ? 'bg-teal-600 text-white border-teal-700 ring-2 ring-teal-300'
-                                  : 'bg-white text-teal-800 border-teal-200 hover:bg-teal-50'
-                              }`}
-                            >
-                              <span>ğŸ§´</span> + Pomada {(quickVitals.cream || quickVitals.glicemia.includes('Pomada')) && 'âœ“'}
-                            </button>
+                              <button
+                                type="button"
+                                onClick={() => setQuickVitals(prev => ({ ...prev, glicemia: 'Xixi e Coco' }))}
+                                className={`px-2 py-1 rounded-lg text-[10px] font-black transition-all cursor-pointer flex items-center gap-1 border shadow-2xs ${
+                                  quickVitals.glicemia === 'Xixi e Coco'
+                                    ? 'bg-indigo-600 text-white border-indigo-700 ring-2 ring-indigo-300'
+                                    : 'bg-white text-indigo-800 border-indigo-200 hover:bg-indigo-50'
+                                }`}
+                              >
+                                <span>ğŸ”„</span> Ambos
+                              </button>
 
+                              <button
+                                type="button"
+                                onClick={() => setQuickVitals(prev => ({
+                                  ...prev,
+                                  cream: true,
+                                  glicemia: prev.glicemia && !prev.glicemia.includes('Pomada') ? `${prev.glicemia} (+Pomada)` : (prev.glicemia || 'Troca com Pomada')
+                                }))}
+                                className={`px-2 py-1 rounded-lg text-[10px] font-black transition-all cursor-pointer flex items-center gap-1 border shadow-2xs ${
+                                  quickVitals.cream || quickVitals.glicemia.includes('Pomada')
+                                    ? 'bg-teal-600 text-white border-teal-700 ring-2 ring-teal-300'
+                                    : 'bg-white text-teal-800 border-teal-200 hover:bg-teal-50'
+                                }`}
+                              >
+                                <span>ğŸ§´</span> + Pomada {(quickVitals.cream || quickVitals.glicemia.includes('Pomada')) && 'âœ“'}
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={() => setQuickVitals(prev => ({ ...prev, glicemia: 'Fralda Seca / Limpa' }))}
+                                className={`px-2 py-1 rounded-lg text-[10px] font-black transition-all cursor-pointer flex items-center gap-1 border shadow-2xs ${
+                                  quickVitals.glicemia === 'Fralda Seca / Limpa'
+                                    ? 'bg-emerald-600 text-white border-emerald-700 ring-2 ring-emerald-300'
+                                    : 'bg-white text-emerald-800 border-emerald-200 hover:bg-emerald-50'
+                                }`}
+                              >
+                                <span>âœ¨</span> Seca / Limpa {quickVitals.glicemia === 'Fralda Seca / Limpa' && 'âœ“'}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-1 col-span-2 md:col-span-1">
+                          <label htmlFor="vital-temperatura-escolar" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block font-bold text-orange-650">Febre / Temp (Â°C)</label>
+                          <input 
+                            id="vital-temperatura-escolar"
+                            type="number" 
+                            step="0.1"
+                            placeholder="Ex: 36.5"
+                            value={quickVitals.temp}
+                            onChange={e => setQuickVitals({...quickVitals, temp: e.target.value})}
+                            className="w-full text-xs px-2.5 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1 focus:outline-hidden text-slate-800 font-bold"
+                          />
+                          <div className="mt-1 flex flex-wrap gap-1">
                             <button
                               type="button"
-                              onClick={() => setQuickVitals(prev => ({ ...prev, glicemia: 'Fralda Seca / Limpa' }))}
-                              className={`px-2 py-1 rounded-lg text-[10px] font-black transition-all cursor-pointer flex items-center gap-1 border shadow-2xs ${
-                                quickVitals.glicemia === 'Fralda Seca / Limpa'
-                                  ? 'bg-emerald-600 text-white border-emerald-700 ring-2 ring-emerald-300'
-                                  : 'bg-white text-emerald-800 border-emerald-200 hover:bg-emerald-50'
-                              }`}
+                              onClick={() => setQuickVitals(prev => ({ ...prev, temp: '36.5' }))}
+                              className="px-1.5 py-0.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 text-emerald-800 rounded text-[9px] font-extrabold transition-all cursor-pointer"
                             >
-                              <span>âœ¨</span> Seca / Limpa {quickVitals.glicemia === 'Fralda Seca / Limpa' && 'âœ“'}
+                              36,5Â°C
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setQuickVitals(prev => ({ ...prev, temp: '37.0' }))}
+                              className="px-1.5 py-0.5 bg-amber-50 hover:bg-amber-100 border border-amber-100 text-amber-800 rounded text-[9px] font-extrabold transition-all cursor-pointer"
+                            >
+                              37,0Â°C
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setQuickVitals(prev => ({ ...prev, temp: '37.5' }))}
+                              className="px-1.5 py-0.5 bg-orange-50 hover:bg-orange-100 border border-orange-100 text-orange-800 rounded text-[9px] font-extrabold transition-all cursor-pointer"
+                            >
+                              37,5Â°C
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => setQuickVitals(prev => ({ ...prev, temp: '38.0' }))}
+                              className="px-1.5 py-0.5 bg-rose-50 hover:bg-rose-100 border border-rose-100 text-rose-800 rounded text-[9px] font-extrabold transition-all cursor-pointer"
+                            >
+                              38,0Â°C [!]
                             </button>
                           </div>
                         </div>
-                      )}
+
+                        <div className="col-span-2 space-y-1">
+                          <label htmlFor="vital-peso-escolar" className="text-[10px] font-black text-indigo-650 uppercase tracking-wider block font-black">Peso Corporal (Kg)</label>
+                          <input 
+                            id="vital-peso-escolar"
+                            type="number" 
+                            step="0.1"
+                            placeholder="Ex: 14.5"
+                            value={quickVitals.peso}
+                            onChange={e => setQuickVitals({...quickVitals, peso: e.target.value})}
+                            className="w-full text-xs font-bold text-indigo-700 placeholder-indigo-300 px-2.5 py-2 border border-indigo-200 rounded-xl bg-indigo-50/50 focus:ring-1 focus:outline-hidden"
+                          />
+                        </div>
+                      </div>
+
+                      {(() => {
+                        const studentBottlesToday = todaysMealsList.filter(m => {
+                          if (!m || !m.refeicao) return false;
+                          const ref = String(m.refeicao).toLowerCase();
+                          return ref === 'mamadeira' || ref.includes('mamad') || (m.observacoes && m.observacoes.toLowerCase().includes('mamadeira'));
+                        });
+                        const totalBottlesMl = studentBottlesToday.reduce((acc, curr) => acc + (Number(curr.quantidadeMl) || 180), 0);
+
+                        return (
+                          <div className="p-2.5 bg-gradient-to-r from-amber-50/80 via-slate-50 to-cyan-50/80 rounded-xl border border-slate-200 text-xs flex flex-wrap items-center justify-between gap-2">
+                            <div className="flex items-center gap-2.5 text-[11px] font-bold text-slate-700">
+                              <span className="flex items-center gap-1">
+                                <span> Mamadeiras Hoje:</span>
+                                <strong className="text-amber-800 font-black">{studentBottlesToday.length} {studentBottlesToday.length === 1 ? 'servida' : 'servidas'} ({totalBottlesMl} ml)</strong>
+                              </span>
+                              <span className="text-slate-300"></span>
+                              <span className="flex items-center gap-1">
+                                <span> Hidratacao Total:</span>
+                                <strong className="text-cyan-800 font-black">{totalWaterMl} ml</strong>
+                              </span>
+                            </div>
+                            <span className="text-[9px] font-extrabold uppercase px-2 py-0.5 bg-white text-slate-600 rounded-md border border-slate-200">
+                               Sincronizado
+                            </span>
+                          </div>
+                        );
+                      })()}
+
+                      <div className="pt-2.5 pb-1 border-t border-slate-200 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <label className="text-[10px] font-black text-slate-700 uppercase tracking-wider block">
+                            ğŸ§¼ Checklist de Higiene & Cuidados Pessoais do Aluno:
+                          </label>
+                          <span className="text-[9px] font-bold text-slate-400">
+                            Toque para marcar
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                          <button
+                            type="button"
+                            onClick={() => setQuickVitals(prev => ({ ...prev, clothes: !prev.clothes }))}
+                            className={`p-2 rounded-xl border flex items-center gap-2 cursor-pointer transition-all text-left ${
+                              quickVitals.clothes
+                                ? 'bg-indigo-50 border-indigo-300 text-indigo-950 font-bold shadow-2xs ring-1 ring-indigo-200'
+                                : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                            }`}
+                          >
+                            <span className="text-base">ğŸ‘•</span>
+                            <div className="leading-tight">
+                              <span className="block text-[11px] font-bold">Troca de Roupas</span>
+                              <span className="text-[9px] opacity-75">{quickVitals.clothes ? 'âœ“ Realizada' : 'Pendente'}</span>
+                            </div>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setQuickVitals(prev => ({ ...prev, teeth: !prev.teeth }))}
+                            className={`p-2 rounded-xl border flex items-center gap-2 cursor-pointer transition-all text-left ${
+                              quickVitals.teeth
+                                ? 'bg-indigo-50 border-indigo-300 text-indigo-950 font-bold shadow-2xs ring-1 ring-indigo-200'
+                                : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                            }`}
+                          >
+                            <span className="text-base">ğŸª¥</span>
+                            <div className="leading-tight">
+                              <span className="block text-[11px] font-bold">Escovacao Dentes</span>
+                              <span className="text-[9px] opacity-75">{quickVitals.teeth ? 'âœ“ Orientada' : 'Pendente'}</span>
+                            </div>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setQuickVitals(prev => ({ ...prev, hands: !prev.hands }))}
+                            className={`p-2 rounded-xl border flex items-center gap-2 cursor-pointer transition-all text-left ${
+                              quickVitals.hands
+                                ? 'bg-indigo-50 border-indigo-300 text-indigo-950 font-bold shadow-2xs ring-1 ring-indigo-200'
+                                : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                            }`}
+                          >
+                            <span className="text-base">ğŸ§¼</span>
+                            <div className="leading-tight">
+                              <span className="block text-[11px] font-bold">Maos e Rosto</span>
+                              <span className="text-[9px] opacity-75">{quickVitals.hands ? 'âœ“ Lavados' : 'Pendente'}</span>
+                            </div>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setQuickVitals(prev => ({ ...prev, bath: !prev.bath }))}
+                            className={`p-2 rounded-xl border flex items-center gap-2 cursor-pointer transition-all text-left ${
+                              quickVitals.bath
+                                ? 'bg-cyan-50 border-cyan-300 text-cyan-950 font-bold shadow-2xs ring-1 ring-cyan-200'
+                                : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                            }`}
+                          >
+                            <span className="text-base">ğŸ›</span>
+                            <div className="leading-tight">
+                              <span className="block text-[11px] font-bold">Banho Tomado</span>
+                              <span className="text-[9px] opacity-75">{quickVitals.bath ? 'âœ“ Concluido' : 'Pendente'}</span>
+                            </div>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setQuickVitals(prev => ({ ...prev, cream: !prev.cream }))}
+                            className={`p-2 rounded-xl border flex items-center gap-2 cursor-pointer transition-all text-left sm:col-span-2 ${
+                              quickVitals.cream
+                                ? 'bg-teal-50 border-teal-300 text-teal-950 font-bold shadow-2xs ring-1 ring-teal-200'
+                                : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+                            }`}
+                          >
+                            <span className="text-base">ğŸ§´</span>
+                            <div className="leading-tight">
+                              <span className="block text-[11px] font-bold">Pomada / Protetor</span>
+                              <span className="text-[9px] opacity-75">{quickVitals.cream ? 'âœ“ Aplicada' : 'Pendente'}</span>
+                            </div>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Notas Gerais de Saude / Rotina do Bebe</label>
+                          <VoiceInput 
+                            onTranscript={text => setQuickVitals(prev => ({ ...prev, obs: prev.obs ? prev.obs + ' ' + text : text }))} 
+                            size="sm"
+                          />
+                        </div>
+                        <input 
+                          id="vital-observacoes"
+                          type="text" 
+                          placeholder="Notas do dia (ex: Brincou muito na areia, comeu toda papinha, dormiu tranquilo no colinho...)"
+                          value={quickVitals.obs}
+                          onChange={e => setQuickVitals({...quickVitals, obs: e.target.value})}
+                          className="w-full text-xs px-3 py-2 border border-[#cbd5e1] rounded-xl focus:ring-1 focus:outline-hidden"
+                        />
+                      </div>
+
+                      <button 
+                        id="save-vitals-btn"
+                        type="submit" 
+                        className="w-full py-2 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-black text-xs rounded-xl shadow-xs transition-colors cursor-pointer"
+                      >
+                        Salvar Situacao de Saude & Alertar Pais
+                      </button>
+                    </form>
+                  </div>
+                </>
+              ) : (
+                /* CARD DE IDOSO ORIGINAL */
+                <div className="bg-white p-5 rounded-2xl border border-soft-gray space-y-4">
+                  <h4 className="text-sm font-bold text-slate-800 flex items-center gap-2">
+                    <Activity className="text-rose-500 w-4.5 h-4.5 animate-pulse" /> Sinais Vitais, Peso & Cuidados do Idoso
+                  </h4>
+                  <form id="quick-vitals-form" onSubmit={handleQuickVitalsSubmit} className="space-y-3">
+                    <div className="grid grid-cols-2 gap-2 text-xs">
+                      <div className="space-y-1 col-span-2 md:col-span-1">
+                        <label htmlFor="vital-pressao" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">PA (Pressao)</label>
+                        <input 
+                          id="vital-pressao"
+                          type="text" 
+                          placeholder="Ex: 120/80"
+                          value={quickVitals.pressao}
+                          onChange={e => setQuickVitals({...quickVitals, pressao: e.target.value})}
+                          className="w-full text-xs px-2.5 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1 focus:outline-hidden text-slate-800 font-bold"
+                        />
+                      </div>
+                      <div className="space-y-1 col-span-2 md:col-span-1">
+                        <label htmlFor="vital-glicemia" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Glicemia (mg/dL)</label>
+                        <input 
+                          id="vital-glicemia"
+                          type="text" 
+                          placeholder="Ex: 95"
+                          value={quickVitals.glicemia}
+                          onChange={e => setQuickVitals({...quickVitals, glicemia: e.target.value})}
+                          className="w-full text-xs px-2.5 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1 focus:outline-hidden text-slate-800 font-bold"
+                        />
+                      </div>
+                      <div className="space-y-1 col-span-2 md:col-span-1">
+                        <label htmlFor="vital-temperatura" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block font-bold text-orange-650">Temp (Â°C)</label>
+                        <input 
+                          id="vital-temperatura"
+                          type="number" 
+                          step="0.1"
+                          placeholder="Ex: 36.5"
+                          value={quickVitals.temp}
+                          onChange={e => setQuickVitals({...quickVitals, temp: e.target.value})}
+                          className="w-full text-xs px-2.5 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1 focus:outline-hidden text-slate-800 font-bold"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label htmlFor="vital-oxigenio" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">O2 (Saturacao %)</label>
+                        <input 
+                          id="vital-oxigenio"
+                          type="number" 
+                          placeholder="Ex: 98"
+                          value={quickVitals.sat}
+                          onChange={e => setQuickVitals({...quickVitals, sat: e.target.value})}
+                          className="w-full text-xs px-2.5 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1 focus:outline-hidden text-slate-800 font-bold"
+                        />
+                      </div>
+                      <div className="space-y-1">
+                        <label htmlFor="vital-fcardiaca" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">F. Cardiaca (bpm)</label>
+                        <input 
+                          id="vital-fcardiaca"
+                          type="number" 
+                          placeholder="Ex: 75"
+                          value={quickVitals.fCard}
+                          onChange={e => setQuickVitals({...quickVitals, fCard: e.target.value})}
+                          className="w-full text-xs px-2.5 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1 focus:outline-hidden text-slate-800 font-bold"
+                        />
+                      </div>
+                      <div className="space-y-1 col-span-2">
+                        <label htmlFor="vital-peso" className="text-[10px] font-black text-indigo-650 uppercase tracking-wider block font-black">PesoCorporal (Kg)</label>
+                        <input 
+                          id="vital-peso"
+                          type="number" 
+                          step="0.1"
+                          placeholder="Ex: 65.5"
+                          value={quickVitals.peso}
+                          onChange={e => setQuickVitals({...quickVitals, peso: e.target.value})}
+                          className="w-full text-xs font-bold text-indigo-700 placeholder-indigo-300 px-2.5 py-2 border border-indigo-200 rounded-xl bg-indigo-50/50 focus:ring-1 focus:outline-hidden"
+                        />
+                      </div>
                     </div>
                     <div className="space-y-1">
-                      <label htmlFor="vital-temperatura" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block font-bold text-orange-650">{isEscolar ? '  Febre / Temp (Â°C)' : 'Temp (Â°C)'}</label>
-                      <input 
-                        id="vital-temperatura"
-                        type="number" 
-                        step="0.1"
-                        placeholder="Ex: 36.5"
-                        value={quickVitals.temp}
-                        onChange={e => setQuickVitals({...quickVitals, temp: e.target.value})}
-                        className="w-full text-xs px-2.5 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1 focus:outline-hidden text-slate-800 font-bold"
-                      />
-                      {isEscolar && (
-                        <div className="mt-1 flex flex-wrap gap-1">
-                          <button
-                            type="button"
-                            onClick={() => setQuickVitals(prev => ({ ...prev, temp: '36.5' }))}
-                            className="px-1.5 py-0.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 text-emerald-800 rounded text-[9px] font-extrabold transition-all cursor-pointer"
-                          >
-                            36,5Â°C
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setQuickVitals(prev => ({ ...prev, temp: '37.0' }))}
-                            className="px-1.5 py-0.5 bg-amber-50 hover:bg-amber-100 border border-amber-100 text-amber-800 rounded text-[9px] font-extrabold transition-all cursor-pointer"
-                          >
-                            37,0Â°C
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setQuickVitals(prev => ({ ...prev, temp: '37.5' }))}
-                            className="px-1.5 py-0.5 bg-orange-50 hover:bg-orange-100 border border-orange-100 text-orange-800 rounded text-[9px] font-extrabold transition-all cursor-pointer"
-                          >
-                            37,5Â°C
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setQuickVitals(prev => ({ ...prev, temp: '38.0' }))}
-                            className="px-1.5 py-0.5 bg-rose-50 hover:bg-rose-100 border border-rose-100 text-rose-800 rounded text-[9px] font-extrabold transition-all cursor-pointer"
-                          >
-                            38,0Â°C  [!] 
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                    {!isEscolar ? (
-                      <>
-                        <div className="space-y-1">
-                          <label htmlFor="vital-oxigenio" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
-                            O2 (Saturacao %)
-                          </label>
-                          <input 
-                            id="vital-oxigenio"
-                            type="number" 
-                            placeholder="Ex: 98"
-                            value={quickVitals.sat}
-                            onChange={e => setQuickVitals({...quickVitals, sat: e.target.value})}
-                            className="w-full text-xs px-2.5 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1 focus:outline-hidden text-slate-800 font-bold"
-                          />
-                        </div>
-                        <div className="space-y-1">
-                          <label htmlFor="vital-fcardiaca" className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">
-                            F. Cardiaca (bpm)
-                          </label>
-                          <input 
-                            id="vital-fcardiaca"
-                            type="number" 
-                            placeholder="Ex: 75"
-                            value={quickVitals.fCard}
-                            onChange={e => setQuickVitals({...quickVitals, fCard: e.target.value})}
-                            className="w-full text-xs px-2.5 py-2 border border-slate-300 rounded-xl bg-slate-50 focus:ring-1 focus:outline-hidden text-slate-800 font-bold"
-                          />
-                        </div>
-                      </>
-                    ) : null}
-                    <div className={`space-y-1 ${isEscolar ? 'col-span-2' : ''}`}>
-                      <label htmlFor="vital-peso" className="text-[10px] font-black text-indigo-650 uppercase tracking-wider block font-black">{isEscolar ? ' PesoCorporal (Kg)' : ' PesoCorporal (Recomendado Semanal)'}</label>
-                      <input 
-                        id="vital-peso"
-                        type="number" 
-                        step="0.1"
-                        placeholder="Ex: 14.5"
-                        value={quickVitals.peso}
-                        onChange={e => setQuickVitals({...quickVitals, peso: e.target.value})}
-                        className="w-full text-xs font-bold text-indigo-700 placeholder-indigo-300 px-2.5 py-2 border border-indigo-200 rounded-xl bg-indigo-50/50 focus:ring-1 focus:outline-hidden"
-                      />
-                    </div>
-                  </div>
-
-                  {isEscolar && (() => {
-                    const studentBottlesToday = todaysMealsList.filter(m => {
-                      if (!m || !m.refeicao) return false;
-                      const ref = String(m.refeicao).toLowerCase();
-                      return ref === 'mamadeira' || ref.includes('mamad') || (m.observacoes && m.observacoes.toLowerCase().includes('mamadeira'));
-                    });
-                    const totalBottlesMl = studentBottlesToday.reduce((acc, curr) => acc + (Number(curr.quantidadeMl) || 180), 0);
-
-                    return (
-                      <div className="p-2.5 bg-gradient-to-r from-amber-50/80 via-slate-50 to-cyan-50/80 rounded-xl border border-slate-200 text-xs flex flex-wrap items-center justify-between gap-2">
-                        <div className="flex items-center gap-2.5 text-[11px] font-bold text-slate-700">
-                          <span className="flex items-center gap-1">
-                            <span> Mamadeiras Hoje:</span>
-                            <strong className="text-amber-800 font-black">{studentBottlesToday.length} {studentBottlesToday.length === 1 ? 'servida' : 'servidas'} ({totalBottlesMl} ml)</strong>
-                          </span>
-                          <span className="text-slate-300"></span>
-                          <span className="flex items-center gap-1">
-                            <span> Hidratacao Total:</span>
-                            <strong className="text-cyan-800 font-black">{totalWaterMl} ml</strong>
-                          </span>
-                        </div>
-                        <span className="text-[9px] font-extrabold uppercase px-2 py-0.5 bg-white text-slate-600 rounded-md border border-slate-200">
-                           Sincronizado
-                        </span>
-                      </div>
-                    );
-                  })()}
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between">
-                      {isEscolar && (
-                    <div className="pt-2.5 pb-1 border-t border-slate-200 space-y-2">
                       <div className="flex items-center justify-between">
-                        <label className="text-[10px] font-black text-slate-700 uppercase tracking-wider block">
-                          ğŸ§¼ Checklist de Higiene & Cuidados Pessoais do Aluno:
-                        </label>
-                        <span className="text-[9px] font-bold text-slate-400">
-                          Toque para marcar
-                        </span>
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Notas Gerais de Saude / Rotina</label>
+                        <VoiceInput 
+                          onTranscript={text => setQuickVitals(prev => ({ ...prev, obs: prev.obs ? prev.obs + ' ' + text : text }))} 
+                          size="sm"
+                        />
                       </div>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
-                        <button
-                          type="button"
-                          onClick={() => setQuickVitals(prev => ({ ...prev, clothes: !prev.clothes }))}
-                          className={`p-2 rounded-xl border flex items-center gap-2 cursor-pointer transition-all text-left ${
-                            quickVitals.clothes
-                              ? 'bg-indigo-50 border-indigo-300 text-indigo-950 font-bold shadow-2xs ring-1 ring-indigo-200'
-                              : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
-                          }`}
-                        >
-                          <span className="text-base">ğŸ‘•</span>
-                          <div className="leading-tight">
-                            <span className="block text-[11px] font-bold">Troca de Roupas</span>
-                            <span className="text-[9px] opacity-75">{quickVitals.clothes ? 'âœ“ Realizada' : 'Pendente'}</span>
-                          </div>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setQuickVitals(prev => ({ ...prev, teeth: !prev.teeth }))}
-                          className={`p-2 rounded-xl border flex items-center gap-2 cursor-pointer transition-all text-left ${
-                            quickVitals.teeth
-                              ? 'bg-indigo-50 border-indigo-300 text-indigo-950 font-bold shadow-2xs ring-1 ring-indigo-200'
-                              : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
-                          }`}
-                        >
-                          <span className="text-base">ğŸª¥</span>
-                          <div className="leading-tight">
-                            <span className="block text-[11px] font-bold">Escovacao Dentes</span>
-                            <span className="text-[9px] opacity-75">{quickVitals.teeth ? 'âœ“ Orientada' : 'Pendente'}</span>
-                          </div>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setQuickVitals(prev => ({ ...prev, hands: !prev.hands }))}
-                          className={`p-2 rounded-xl border flex items-center gap-2 cursor-pointer transition-all text-left ${
-                            quickVitals.hands
-                              ? 'bg-indigo-50 border-indigo-300 text-indigo-950 font-bold shadow-2xs ring-1 ring-indigo-200'
-                              : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
-                          }`}
-                        >
-                          <span className="text-base">ğŸ§¼</span>
-                          <div className="leading-tight">
-                            <span className="block text-[11px] font-bold">Maos e Rosto</span>
-                            <span className="text-[9px] opacity-75">{quickVitals.hands ? 'âœ“ Lavados' : 'Pendente'}</span>
-                          </div>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setQuickVitals(prev => ({ ...prev, bath: !prev.bath }))}
-                          className={`p-2 rounded-xl border flex items-center gap-2 cursor-pointer transition-all text-left ${
-                            quickVitals.bath
-                              ? 'bg-cyan-50 border-cyan-300 text-cyan-950 font-bold shadow-2xs ring-1 ring-cyan-200'
-                              : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
-                          }`}
-                        >
-                          <span className="text-base">ğŸ›</span>
-                          <div className="leading-tight">
-                            <span className="block text-[11px] font-bold">Banho Tomado</span>
-                            <span className="text-[9px] opacity-75">{quickVitals.bath ? 'âœ“ Concluido' : 'Pendente'}</span>
-                          </div>
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setQuickVitals(prev => ({ ...prev, cream: !prev.cream }))}
-                          className={`p-2 rounded-xl border flex items-center gap-2 cursor-pointer transition-all text-left sm:col-span-2 ${
-                            quickVitals.cream
-                              ? 'bg-teal-50 border-teal-300 text-teal-950 font-bold shadow-2xs ring-1 ring-teal-200'
-                              : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
-                          }`}
-                        >
-                          <span className="text-base">ğŸ§´</span>
-                          <div className="leading-tight">
-                            <span className="block text-[11px] font-bold">Pomada / Protetor</span>
-                            <span className="text-[9px] opacity-75">{quickVitals.cream ? 'âœ“ Aplicada' : 'Pendente'}</span>
-                          </div>
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">{isEscolar ? 'Notas Gerais de Saude / Rotina do Bebe' : 'Notas Gerais de Saude / Rotina'}</label>
-                      <VoiceInput 
-                        onTranscript={text => setQuickVitals(prev => ({ ...prev, obs: prev.obs ? prev.obs + ' ' + text : text }))} 
-                        size="sm"
+                      <input 
+                        id="vital-observacoes-idoso"
+                        type="text" 
+                        placeholder="Notas ou observacoes adicionais..."
+                        value={quickVitals.obs}
+                        onChange={e => setQuickVitals({...quickVitals, obs: e.target.value})}
+                        className="w-full text-xs px-3 py-2 border border-[#cbd5e1] rounded-xl focus:ring-1 focus:outline-hidden"
                       />
                     </div>
-                    <input 
-                      id="vital-observacoes"
-                      type="text" 
-                      placeholder={isEscolar ? 'Notas do dia (ex: Brincou muito na areia, comeu toda papinha, dormiu tranquilo no colinho...)' : 'Notas ou observacoes adicionais...'}
-                      value={quickVitals.obs}
-                      onChange={e => setQuickVitals({...quickVitals, obs: e.target.value})}
-                      className="w-full text-xs px-3 py-2 border border-[#cbd5e1] rounded-xl focus:ring-1 focus:outline-hidden"
-                    />
-                  </div>
-                  <button 
-                    id="save-vitals-btn"
-                    type="submit" 
-                    className="w-full py-2 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-black text-xs rounded-xl shadow-xs transition-colors cursor-pointer"
-                  >
-                    {isEscolar ? 'Salvar Situacao de Saude & Alertar Pais' : 'Salvar Sinais Vitais & PesoCorporal + Notificar'}
-                  </button>
-                </form>
-              </div>
+                    <button 
+                      id="save-vitals-btn"
+                      type="submit" 
+                      className="w-full py-2 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-black text-xs rounded-xl shadow-xs transition-colors cursor-pointer"
+                    >
+                      Salvar Sinais Vitais & PesoCorporal + Notificar
+                    </button>
+                  </form>
+                </div>
+              )}
 
               </div>
 
@@ -9844,216 +10068,16 @@ Segunda-feira:
                               setFamiliarShareStatuses(prev => ({ ...prev, 'emergencia': 'aberto' }));
                               handleWhatsAppClicked(activeSharingOccurrenceId);
                             }}
-                            className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-black text-[10px] rounded-lg shadow-xs transition-all cursor-pointer flex items-center gap-1 shrink-0 border border-emerald-500/10 hover:text-white"
-                          >
-                            <span></span> Abrir WhatsApp
-                          </a>
-                        </div>
-
-                        
-                        <div className="flex items-center gap-1 mt-0.5 pt-1 border-t border-red-200/40 text-[9px] font-bold">
-                          <span className="text-slate-450 cursor-default shrink-0">Status:</span>
-                          <div className="flex gap-1 overflow-x-auto">
-                            <button
-                              type="button"
-                              onClick={() => setFamiliarShareStatuses(prev => ({ ...prev, 'emergencia': 'pendente' }))}
-                              className={`px-1.5 py-0.5 rounded-md text-[8px] font-black tracking-wide cursor-pointer transition-all ${
-                                status === 'pendente' ? 'bg-slate-200 text-slate-700 font-bold border border-slate-350' : 'bg-slate-100/50 text-slate-400 hover:bg-slate-100'
-                              }`}
-                            >
-                              Ainda nao enviado 
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setFamiliarShareStatuses(prev => ({ ...prev, 'emergencia': 'aberto' }))}
-                              className={`px-1.5 py-0.5 rounded-md text-[8px] font-black tracking-wide cursor-pointer transition-all ${
-                                status === 'aberto' ? 'bg-amber-100 text-amber-800 font-bold border border-amber-300' : 'bg-slate-100/50 text-slate-400 hover:bg-slate-100'
-                              }`}
-                            >
-                              WhatsApp aberto 
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => setFamiliarShareStatuses(prev => ({ ...prev, 'emergencia': 'confirmado' }))}
-                              className={`px-1.5 py-0.5 rounded-md text-[8px] font-black tracking-wide cursor-pointer transition-all ${
-                                status === 'confirmado' ? 'bg-emerald-100 text-emerald-800 font-bold border border-emerald-300' : 'bg-slate-100/50 text-slate-400 hover:bg-slate-100'
-                              }`}
-                            >
-                              Confirmado 
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })()}
-                </div>
-              </div>
-
-              
-              <div className="border-t border-slate-150 pt-4 space-y-4">
-                <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-center space-y-3.5">
-                  <span className="text-xs font-black text-slate-800 block">
-                    {activeSharingOccurrenceId ? 'Passo 2: Voce enviou esta mensagem para a familia?' : 'Confirmacao doCompartilhamento'}
-                  </span>
-                  
-                  <div className="flex flex-col sm:flex-row gap-2.5 justify-center">
-                    <button
-                      type="button"
-                      onClick={() => handleConfirmWhatsAppSent(activeSharingOccurrenceId)}
-                      className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs rounded-xl cursor-pointer shadow-xs active:scale-95 transition-all text-center leading-normal"
-                    >
-                      Sim, enviei no WhatsApp 
-                    </button>
-                    
-                    <button
-                      type="button"
-                      onClick={handleNotSentYet}
-                      className="px-4 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-extrabold text-xs rounded-xl cursor-pointer transition-all text-center leading-normal"
-                    >
-                      Ainda nao enviei
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        );
-      })()}
-
-      {showCollectiveShareModal && collectiveShareList.length > 0 && (
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 z-55 overflow-y-auto animate-fade-in" id="collective-share-modal">
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 md:p-8 border border-slate-200 shadow-2xl space-y-6 my-8">
-            
-            
-            <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
-              <div className="p-3 bg-emerald-100 text-emerald-600 rounded-2xl shrink-0">
-                <Users className="w-6 h-6" />
-              </div>
-              <div className="min-w-0">
-                <h3 className="text-lg font-black text-slate-800">Confirmacao de EncerramentoColetivo</h3>
-                <p className="text-xs text-slate-500">
-                  {isEscolar
-                    ? 'Diarios gerados com sucesso! Revise e abra o WhatsApp para os familiares de cada aluno da classe.'
-                    : 'Relatorios gerados! Compartilhe o boletim de cuidados com a familia de cada assistido.'}
-                </p>
-              </div>
-            </div>
-
-            
-            <div className="space-y-4 max-h-[50vh] overflow-y-auto pr-1">
-              {collectiveShareList.map((item, index) => {
-                const number = formatWhatsAppNumber(item.contatoTelefone);
-                const text = encodeURIComponent(item.mensagem);
-                const waLink = `https://wa.me/${number}?text=${text}`;
-                const status = collectiveShareStatuses[item.id] || 'pendente';
-
-                return (
-                  <div key={item.id} className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <h4 className="text-sm font-black text-slate-800">{item.nome}</h4>
-                        <span className="text-[10px] font-mono text-slate-400 font-bold block">
-                          Responsavel: {item.contatoNome} ({item.contatoTelefone})
-                        </span>
-                      </div>
-                      
-                      <div className="flex items-center gap-2">
-                        
-                        <button
-                          type="button"
-                          onClick={() => {
-                            navigator.clipboard.writeText(item.mensagem);
-                            setCopiedCollectiveIndex(index);
-                            setTimeout(() => setCopiedCollectiveIndex(null), 2000);
-                          }}
-                          className={`px-2.5 py-1.5 text-[10px] uppercase font-black rounded-lg border transition-all cursor-pointer ${
-                            copiedCollectiveIndex === index
-                              ? 'border-emerald-300 bg-emerald-50 text-emerald-700'
-                              : 'border-slate-200 bg-white text-slate-600 hover:border-slate-350'
-                          }`}
-                        >
-                          {copiedCollectiveIndex === index ? ' Copiado' : ' Copiar'}
-                        </button>
-
-                        
-                        <a
-                          href={waLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => {
-                            setCollectiveShareStatuses(prev => ({ ...prev, [item.id]: 'aberto' }));
-                          }}
-                          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-black text-[10px] rounded-lg shadow-xs transition-all cursor-pointer flex items-center gap-1 shrink-0 border border-emerald-500/10 hover:text-white"
-                        >
-                          <span></span> Enviar WA
-                        </a>
-                      </div>
-                    </div>
-
-                    
-                    <div className="bg-white border border-slate-150 rounded-xl p-3 text-[11px] font-mono text-slate-600 max-h-24 overflow-y-auto whitespace-pre-wrap select-all">
-                      {item.mensagem}
-                    </div>
-
-                    
-                    <div className="flex items-center gap-1.5 text-[9px] font-bold">
-                      <span className="text-slate-400 cursor-default shrink-0">Status do Envio:</span>
-                      <div className="flex gap-1 overflow-x-auto">
-                        <button
-                          type="button"
-                          onClick={() => setCollectiveShareStatuses(prev => ({ ...prev, [item.id]: 'pendente' }))}
-                          className={`px-2 py-0.5 rounded-md text-[8px] font-black tracking-wide cursor-pointer transition-all ${
-                            status === 'pendente'
-                              ? 'bg-slate-200 text-slate-700 font-bold border border-slate-300'
-                              : 'bg-white text-slate-400 border border-slate-150 hover:bg-slate-50'
-                          }`}
-                        >
-                          Pendente 
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setCollectiveShareStatuses(prev => ({ ...prev, [item.id]: 'aberto' }))}
-                          className={`px-2 py-0.5 rounded-md text-[8px] font-black tracking-wide cursor-pointer transition-all ${
-                            status === 'aberto'
-                              ? 'bg-amber-100 text-amber-700 font-bold border border-amber-300'
-                              : 'bg-white text-slate-400 border border-slate-150 hover:bg-slate-50'
-                          }`}
-                        >
-                          WA Aberto 
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setCollectiveShareStatuses(prev => ({ ...prev, [item.id]: 'confirmado' }))}
-                          className={`px-2 py-0.5 rounded-md text-[8px] font-black tracking-wide cursor-pointer transition-all ${
-                            status === 'confirmado'
-                              ? 'bg-emerald-100 text-emerald-800 font-bold border border-emerald-300'
-                              : 'bg-white text-slate-400 border border-slate-150 hover:bg-slate-50'
-                          }`}
-                        >
-                          Confirmado 
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            
-            <div className="border-t border-slate-100 pt-4 flex justify-between items-center">
-              <p className="text-[10px] text-slate-400 font-medium">
-                Marque cada diario como enviado A medida que concluir as transmissoes.
-              </p>
-              <button
-                type="button"
-                onClick={() => {
-                  setShowCollectiveShareModal(false);
-                  showToast('Fechamento de diarios finalizado com sucesso!', 'success');
-                }}
-                className="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer hover:scale-101"
- xœÌX[s7~÷¯8eÚÒ‘Á6ö$Ğ!˜t<“œ'OÄ®`UkW;’Ö@ş{´,·]bì$my°W×sù¾s$€µ_ë ¶~y"á
-n_ÂÖp£:LŒ‘Ñæ²FÕç÷­ƒƒ\Oa³2Ïf>è@N™>»çlòQúTÀ‹ W}×t&$õmoyµn Z_Ñ5K#>e>ğH3Cj0-¨aäM­V=Ã6õî|%c2‰"S#Á¦À5ñXd˜‚¿møh–5cR‡¿Éiä=S#!'dFhb$Ğˆ‡vçõáQiİÛJ¡“ ¥€’Iä3ŸœL„tJ&ä¿&d”¢Î`(•RÓİk5tõe:[ÇÔc¨Å)„3òº´åÿmwäìÓ˜g†›’PR<$'¥m.4ŞsÁnØÔ¬ïm°mÉÈ®› ö9+A5·xƒ ËŞà$·™ÃHFvSÄ	\WªØëZ­Ô²,ĞTr±Ï°[*†ìT‘lTƒ“!qN‚¾¶ñércRƒbc®Â/¢Y± ‘¡mÃ´Æ¢{N‘TQ»`DC.°ƒéF5Î^ÍY<fÀuG‘€ÜÖkñôK±"G9¤¾İÜ5VÜû‡xRhä…eG}6È{ÛÎhkéWÄĞ£ÓZN‘¼0çö”…³q>åÜ¾±¶Ó¢¼Kâ˜)"~Fá00Ö¸ÓPHï®Ôêô®Ş÷ú//Ú]¸hC¿wsyÕnT­°b-ÿhœÓÃÚ¾­™¢Âwüwc¡Œd©õOZ‡†NigşÊuÛJÎ“õöÈ!¿IXşÍFg&˜'‘—^Â}LØ”y‰qŸA'ÓZ°³ŸE¸- ù¬ôß úésûÃÎô»^nú½(|>–ûâùé‡âÙN|nsµpf‰1TŠa°—C¦C	,Ä!/ÑtQ§¸Gï™¨ìoQz4Mdé¸(ÊƒzQ}¼Åµêèğ´Ô‚¡&ÁL5„ÌG«=‰ùøô¥áu™¹“F ‚úãœÎ,r»`W¹—‡P‡CÁ¢±	 µÍÓÈ·DbRÍòÅi­Š™u3“fcWU—vO–iw­èçşR\q¬¥„sh`[Ñ¡şfòzmÉ^ìzt<¦ÏÎ‡Ï—½”÷rÊ¼²;‰ØY“3•Ş –c¶0À€ >×F}K›HªŠyÅÆårxÅ}Vfkµ‡;6k>„‡ÜŸ·ğŸá&rmØZnÛáëW©(P®•=\9oTß­iÂ;WQ¼nGú^?V?æŒ4—|£i8Dîñ9±UâçS9•õm"ßşò°Zt>Úƒ¬j´/Ú;h½í˜ïauªİÏäôJ[GiõDJ+GéW¿âÇ‚Ô¯€àÛm*Ï¡„r¨™º§…‘Ş/ÓAÛx}9/ı/ÉM‘#än6›)½&Çùiù›“ÿØ
-{],à
-İPH7÷8ªˆÓ"¦ñFhìåå°°~£­p¾(â­…F¢øwÑ‰Ú#¯»Wİ«Î%†_÷#´ßuû7½â@Ìøû>è}O¸:~f´®LrÑJŸ­4‹Vº­íÅ¦P^TÜÖNÙ.C•ç†j±-+Ç;[â'Ú§Å4^SâB&VÃ%àx	ÏÌÁ4„Ó~˜5ÏK<{Í}æ­?6‹ˆ5ù«–¨ìm
-¾ãäjÒG¹œ¦fÛ,áK¹Qu÷îšeffƒº%Bø`İ„)©C<³ÏKã5Õûpq¾ì:É.Ë§Ø¼4Øl²JSÛÚæ¡yÏ¼€*¨B‰ˆ8_>å©rgÇöKåF_åíÁüíÁ?   ÿÿ sWø÷
+                            className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-black text-[10px] rounded-lg shadow-xs transition-all cursor-poixœÜ[YsÛ8~Ï¯À¨²cy6”äC9Ë)­íl¹*±3¶³©­Tj‘„	IpĞ²G£ÿ¾ğE‚‡|Ì$«K$Aİ_ßm_&.¹ATOX6ñÕ)¬$fœúß¬3îÀİèË"áØu¬~¯×İé¡»&| É´æ3˜¥õ•~+!t ìtõ9åèÓK1
+‚Šº¸|Şƒ®C¯Ÿ”>/ŞC¶‹…8Ã¶ÊˆäI«×é£@Âï˜@2ùÁ‰cí•ö{HÓçó«àæš0_Zcæ:­*rhbd7 g.–ÄÚï÷rÁ¸å	]™òªux)±Å &cÕ
+¦F‡R,¸lnİX8”¬r£0Ñ8”’ù•c’·,­Âˆú0ÿÈ¥ö·á¢½†‡Hù{Ô¥˜_Î0'Ñ‰hœ\«íêt:êêÚRøœß¦xk€¶â;Š_[h¹½½¬YwEÅ×àÆÚQŒ½Õüå,„yËsbV¾\±ÒÅö7$9ü¥şÔšS‡$Ü	ÕP‡¾ ’2ßÂ®‹.jöĞGDÃá0{„7hk<A ÀBL¼€ËY9‰Fìõ{[h™a Ù_›d¿—ÈsvĞVÍn—_«éZ„FÔw0ò1CÄ¿¦ØaåR©>İD?0(ñ˜pÉ~`H&ˆ ‰=¸TH‰6]¾¬ d4b¯÷21:(:æÿ=mæO(÷@ò~`HfÁ2qTR`&7ª ™ŒùnÁy”óş¸Œ½£;=®x¸ıÚp{¹İ6 Ë8‹ÙiËÊ¹/yç+f°|³}ŞM¬[kßàÌ¦JØÙÏû¾+Ó›@}÷ÆEÌ¯q{†ÉZ{¾Ñu2ûv7bMRV8Sp»ÌşVâ‡-°-é5Qb¢unƒXqmrê(Aø «0´;@ÿb6Ñ–…ˆ€ä øO‰‡Ì1Âhé7÷	Ìl0Ë;b’ÔÁ~}Ğü&—»œ¦Á&ïSı±læ"áôoÎæÚ%İåò[($ÜÆD.¡Eµm¢_szu†}Ç%15Ãp	[h—R½Tfzs_iMu°ŒªzU)ÉÍ‰şÒñU$€›Œ€ÅœN3Ps5&Úî@ØØ%Ö«~^Ûfñëì(%í3 €k&T™Z¸¤Ş32B‘ÏV¦ÔÌ­JõØX{Æ¤bç¿‰Üœm+u³{%Î9ÜâX[zÖ=ƒÖ½mB7fL‰âo¬És7RëYŒøb!fl~Ä\—¤bGŞ3»èçŸ‘½~ÿ²ã*gèõÔˆv:}AñĞâ êƒ¥R	_¹× fg\ÈµŠ.äÖõ’6¿[ış*ˆ¾ÕA4Â>õÔÌì‹ú-DakµsK¨­[:Óšr3X§H$ĞÙìxøÆškc4·&¡«lÒsä9ƒÀzYjÂbİ ^J,¼sk½ÌéÖò‹fI’½déqÎ6Ã‚±Á"ç§ÕSTøsÏsöx•)¢ô£ \d'ŸÃ¡gÖóê–€·zoõğÆ¥f{ïNËm|ëpÍætÖ„óÈàò	 „tg{†¥“7‘™¾ß3í¤ŠŠÄÜ¨À}8†€‚2¦@j¾mæ!ÚœŠŸĞ¹¦œ
+”ÀƒÈh{íQÀèØ¥àD¨Ù4vC°ğCï˜tÌş2x ¶Î²‹ÿ„V~åÆš(:¤Nº¿Ô•Y-*èê°Ás9èXoRe•ÂzœZ8gÖç~ïzö¥ ˆœ¼Y˜4š‡ƒv[I×3PW¹ÑşI1H‚@HHä‡*ÆFCÀ J&œ9Ó·õ,ñ»".Pƒ×M¥psÃòñâT1Æƒ¤§IÜÈÒ÷çøˆ#Ìğu&e İîÃ[İ§‹h“Ë7j…áÓ…úZ~-›&	öòÚ>‰t?ëİPçúãLÒìu1ùË‰¹Ÿ±	9&~#·ÃE<Ûr]í£Mƒƒ4(óXËu(œ˜ËÔ¾Œ‰œâG*µ4%{PÑÍö‹9e¯J'Etğ™G– {ö+¦65Ÿwzi
+Àc ø¹ø9†WD8Ñç‚ÀÀ×Ä EÂgj{¨½0Áz¹]ßVåÈ+£ß
+ê×ÄİŠc–o¶6ƒÔ4{”‹pªÓ,>¾¦S¥‡;¶Kƒ1ÃÜéÌ9é
+Y« ²p°X@‰³òâN•kGÊ¬öå+êÊvšï2Ïæƒ÷³ıö*ç\V¥ar)®İ(Å¥2]YT‡A@¸ÅZL–È>˜úX=äùœ›_“æ²M‡Ô/M¶šd‘J„òZY_ªŸs¥^Ô'°éœ+…—ú¤ñÎÄ²ù2D[*ÒcUÊaQC(E
+¤£„ƒä‚3ÑgİAZqÅ^gœL†‹È,V¡Ôÿ”Èaë?€,ÿ[•Hsâ[>c`õ R’	¸„?˜Ğâf4»Æsj‹×‹ *ßK„±Iæ$Î{dî¾¬Î§ÄÂ‘ãU¥Z”ÿ¬Bzmİ8-¢Ÿ¨‚GŸF /­WÀª²z#/'U&J%m3yşÅœÙ)u&ÿ#?{w¿àcë¥"GğiÍ9 Ñ
+ÍŠ¥Öx±fŞÌø¼7%J@“šš†=•ı½Ú~ä0VÓ8ğ MæÊÜCK5îÈ»EíËØĞÀ¸{ï@3·Àà(ì•Éx.iú8Á‡˜>¶º¶Rö=¶aÁ÷×xÛÀjì+¨ëª¯àë§Õôü˜hİ Åà{ClfëP{ï¶ƒ»MêÀ[ïr6~P6–9ÔmœĞ-é0èÅÚÊ'ë²]±ÎQLÛÇÁ‡)Kæ‡†Á­zùÃ8Ñíèt½Ê‚¯ºéFH½
+õ(æÛnH9Âq4ãQ!B¼˜/Ñ+ÕÚ¤A˜	zå²¤º×`W˜RÓğ¼rÅ°í­·ÄTÆß‰Kêc—ş®H­Zl=C[ğ[]l&6Ä¡ëÑg¿P ~U, ×Ä˜ë…ß8¾TŠ­2¾ŒÖˆ*ø;½<­‹È8J˜}¥Ò,‹E©ÈÉ×Úe®>{9£©ŠBdÖfÅêŞ|ë2ìü%õØ^m=öaj®[û¦bkÃruIµX8xK]²-h d=WBÍÿë›º\¨û‰PZÜS{rÿ^•Í¸	2ÏÉ”
+É™h	Qàb_bÅm!I”)V(ï^¬­üíïj­Ş¨ôW}™_jÊ©ƒÔÕ6% 
+ëE*u-H•8	úâ2-(ôµe3yX(ã¶Ê¢¯9p<©Ÿ½=¿xz<:>AÇ#tq~uz6*OS(şûÓÂ>ÔÙó»ÈfÓ´RëpQTZ‰oğÑòo°®Ş¸r{ŞW‰*©ÿÄAOf+Øä†Ø¡ÌÛè,oÅ1;.nQ+ı5ıõãè]ÌÎstqòÏÓË«‹ó‡a(õ:eMùùëƒòs:Té4İv("à!ç„½í¡œ2Ù¡À±¢¶ªgn7gïšcdª<šjÂ¥½¨•ì-Me¶Q’f·Sy£6¶ÁéD?£&ÁMÓšù(’ s™¹ìD;%=¶&–Ç¾/ì¡´;¬jÉµ²Y·PşOíFâ*kõñ’ın˜ÁÍĞsİƒkq¥™ô@xPŸGï>Ÿ_BpŞ„(Ëíšpè–ÚädK¯€ é‰Áë|¶a9TØùşÅò¨²fÃº#Æ€q¿ÕÁ…™ñ¶]5vè®Cø’T†.[¢‘@o5í‰§H¼ÎŒqG|àÊ¹lyĞuiùNËsİĞİ0¤]¹ÕuÄˆtÉ=¥ÌLx(+ñøPÎüËP)?ÿôµ8úx9ºL¬ÆèxTë<aîƒêhw‰éÕn5¤ù†æÒ¿<…1¨AøØzR6@-xÀÆ‚ğkİ[¨ú£¢‡º³ÎİZ¶¾KpcÀÈ¸U>®g*;I$7øM™(4
+,Ğk†Q4¹MÁPù‚cä¡Rp*xéí7œš‹"D-Ä(‰úÁŸ#ˆz©røáäìøäìèÄïä=ıãäâêÜ,ˆ&ş½	÷î#®ú)­«#iiÅJ+N¤g¥uOŠÚ±ÅiÕ¼Ú¾«¨šÏ²"¼>K°áY‚È˜©1µ´Èœ€¸Ì(áÉq@Á°;ÍİO£±wŒú¹êt—ÅPk-=D/é|$«N¨æYuÆÕe7£oÙäŸ[ÒTg4(m²RSõiJ¾å¨‹N ˆÀ9l“Teé|¦ríŞöë'Ë×Oş  ÿÿ ˆLà
