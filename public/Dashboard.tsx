@@ -3554,34 +3554,37 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
         try {
           const nowTs = Date.now();
           const nowStr = new Date().toISOString();
-
+          
           // 1. Kill timer immediately
           if (timerIntervalRef.current) {
             clearInterval(timerIntervalRef.current);
             timerIntervalRef.current = null;
           }
           isTimerActiveRef.current = false;
-
+          
           // 2. Set global shift state to false in localStorage
           localStorage.setItem('anjo_shift_active', 'false');
           localStorage.setItem('anjo_shift_active_ts', String(nowTs));
-
+          localStorage.removeItem('anjo_shift_start_time');
+          
           // 3. Find all students in this class
           const allSeniors = getFromDB<Idoso[]>('anjo_idosos', []);
           const classmates = allSeniors.filter(s => {
             if (!s || typeof s !== 'object' || !s.id || !s.nome) return false;
             return isStudentInRoom(s, targetClass);
           });
-
           if (!classmates.some(c => c.id === idoso.id)) {
             classmates.push(idoso);
           }
+          const classmateIds = classmates.map(c => c.id);
 
-          // 4. Gather all keys to turn off
+          // 4. Reset & zero ALL daily routines and checklists for every student in this classroom
+          resetStudentDailyRoutine(classmateIds);
+
+          // 5. Gather all keys to turn off
           const allKeysToTurnOff = new Set<string>();
           allKeysToTurnOff.add(targetClass);
           if (className) allKeysToTurnOff.add(className);
-
           classmates.forEach(mate => {
             if (!mate || !mate.id) return;
             allKeysToTurnOff.add(mate.id);
@@ -3592,7 +3595,7 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
             }
           });
 
-          // 5. Unconditionally turn off all keys in localStorage
+          // 6. Unconditionally turn off all keys in localStorage and clean storage keys
           allKeysToTurnOff.forEach(k => {
             if (!k) return;
             try {
@@ -3603,7 +3606,32 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
             } catch(e) {}
           });
 
-          // 6. Update database anjo_shift_states
+          // 7. Reset hygiene logs, lunch pct, sleep hrs for all classmates
+          classmates.forEach(mate => {
+            if (!mate || !mate.id) return;
+            try {
+              localStorage.removeItem(`anjo_almoco_pct_${mate.id}`);
+              localStorage.removeItem(`anjo_sleep_hr_${mate.id}`);
+              saveToDB(`anjo_ocorrencias_${mate.id}`, []);
+              saveToDB(`anjo_higiene_log_${mate.id}`, {
+                bath: false,
+                teeth: false,
+                clothes: false,
+                diaper: false,
+                hands: false,
+                cream: false,
+                banho: false,
+                higieneBucal: false,
+                trocaRoupa: false,
+                trocaFralda: false,
+                pele: false,
+                time: '',
+                observations: ''
+              });
+            } catch(e) {}
+          });
+
+          // 8. Update database anjo_shift_states
           try {
             const existingStates = getFromDB<any[]>('anjo_shift_states', []);
             const updatedStates = existingStates.map(s => {
@@ -3617,16 +3645,16 @@ Desejamos um excelente dia e esperamos ve-lo(a) de volta em breve! Qualquer duvi
             saveToDB('anjo_shift_states', updatedStates);
           } catch(e) {}
 
-          // 7. Update batch
+          // 9. Update batch
           const endShiftUpdates = Array.from(allKeysToTurnOff).map(k => ({ targetKey: k, active: false }));
           setShiftActiveStatesBatch(endShiftUpdates);
 
-          // 8. Reset UI states immediately
+          // 10. Reset React UI states immediately
           setIsShiftActive(false);
           setShiftStartTime(null);
           setElapsedShiftTime('00:00:00');
 
-          // 9. Generate summaries for classmates
+          // 11. Generate summaries for classmates & parents WhatsApp
           const allTasksToday = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
           const shareList: any[] = [];
           const initialStatuses: Record<string, 'pendente' | 'aberto' | 'confirmado'> = {};
@@ -3702,29 +3730,13 @@ Equipe Anjinho Escolar`;
             });
             saveToDB(`anjo_turn_summaries_${mate.id}`, pastSummaries);
           });
-
           saveToDB('anjo_notificacoes', allLogs);
 
-          // Reset tasks
-          const classmateIds = classmates.map(c => c.id);
-          const allTasksTodayCollective = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
-          const updatedTasksCollective = allTasksTodayCollective.map(t => {
-            if (classmateIds.includes(t.idosoId)) {
-              return {
-                ...t,
-                status: 'pendente' as const,
-                concluidaEm: undefined,
-                completadaPor: undefined,
-                observacao: undefined,
-                detalhes: undefined
-              };
-            }
-            return t;
-          });
-          saveToDB('anjo_tarefas_diarias', updatedTasksCollective);
-          setTarefas(updatedTasksCollective.filter(t => t.idosoId === idoso.id));
+          // 12. Reset tasks for current student in UI
+          const allTasksAfterReset = getFromDB<TarefaDiaria[]>('anjo_tarefas_diarias', []);
+          setTarefas(allTasksAfterReset.filter(t => t.idosoId === idoso.id));
 
-          // 10. Dispatch events to notify all active listeners
+          // 13. Dispatch events to notify all active listeners across tabs and components
           if (typeof window !== 'undefined') {
             window.dispatchEvent(new CustomEvent('anjo_shift_updated'));
             window.dispatchEvent(new CustomEvent('anjo_user_updated'));
@@ -3735,8 +3747,7 @@ Equipe Anjinho Escolar`;
           setCollectiveShareList(shareList);
           setCollectiveShareStatuses(initialStatuses);
           setShowCollectiveShareModal(true);
-
-          showToast(`PerÃ­odo Coletivo da classe ${targetClass} encerrado com sucesso!`, 'success');
+          showToast(`PerÃ­odo Coletivo da classe ${targetClass} desligado e zerado com sucesso!`, 'success');
         } catch(err) {
           console.error('Erro ao encerrar coletivo:', err);
           setIsShiftActive(false);
@@ -3746,8 +3757,8 @@ Equipe Anjinho Escolar`;
       };
 
       triggerConfirm(
-        'Encerrar Aulas Coletivo',
-        `VocÃª tem certeza que deseja encerrar as aulas de todos os alunos da classe ${targetClass} ao mesmo tempo? Todos os diÃ¡rios de rotina serÃ£o finalizados e o cronÃ´metro serÃ¡ desligado.`,
+        'Desligar e Zerar Aulas (Coletivo)',
+        `VocÃª tem certeza que deseja desligar e zerar as aulas de todos os alunos da classe ${targetClass}? O cronÃ´metro serÃ¡ desligado (00:00:00), todos os diÃ¡rios serÃ£o zerados e os relatÃ³rios estarÃ£o prontos para os pais.`,
         executeStopGroup
       );
     } catch(e) {
@@ -3758,7 +3769,7 @@ Equipe Anjinho Escolar`;
     }
   };
 
-  const handleTriggerEndShiftReview = () => {
+    const handleTriggerEndShiftReview = () => {
     if (!isStaffUser(usuarioAtual)) {
       alert(" [!]  Operacao Bloqueada: Apenas educadores/cuidadores autorizados podem encerrar o periodo letivo!");
       return;
@@ -5925,10 +5936,10 @@ As atividades e registros do dia permanecem salvos no relatorio escolar. Qualque
                         <>
                           <button
                             onClick={handleTriggerEndShiftReview}
-                            className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-md flex items-center justify-center gap-1.5 hover:scale-102"
+                            className="px-4 py-2.5 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-bold text-xs sm:text-sm rounded-xl transition-all cursor-pointer shadow-md flex items-center justify-center gap-1.5 hover:scale-102"
                             title="Revisar rotinas apontadas, encerrar o perÃ­odo escolar, desligar o cronÃ´metro e enviar relatÃ³rio para os pais"
                           >
-                            <Check className="w-4 h-4" /> {isEscolar ? 'Encerrar e Enviar RelatÃ³rio' : 'Encerrar Turno'}
+                            <Square className="w-3.5 h-3.5 fill-current" /> {isEscolar ? 'Desligar Individual' : 'Desligar Turno'}
                           </button>
                           <button
                             onClick={() => handleEndShiftGroup(teacherClassroom)}
@@ -10026,20 +10037,9 @@ Segunda-feira:
                     ))}
                   </div>
                 ) : (
-                  <p className="text-xs text-slate-500"> Nenhuma intercorrencia fisica registrada neste turno.</p>
-                )}
-              </div>
-
-              
-              <div className="space-y-1.5 pt-1.5 border-t border-slate-100">
-                <h5 className="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center gap-1"> Alteracoes de Medicamentos ({shiftReviewPayload.medChanges?.length || 0})</h5>
-                {shiftReviewPayload.medChanges && shiftReviewPayload.medChanges.length > 0 ? (
-                  <div className="space-y-1.5">
-                    {shiftReviewPayload.medChanges.map((ch: any) => (
-                      <div key={ch.id} className="p-3 bg-indigo-50/50 border border-indigo-150 rounded-xl leading-normal text-xs text-slate-705 flex flex-col gap-1">
-              xœ¼WÍÛ6¾ç)FÛAek×ëıëzƒ…ãc·Àè¥Z¢-6)”íã‡)zè©§>Â¾X‡’%Ë’,;E,‘4É™o¾ùf}î|¶ ­IHG­§+`††Úñ¨0TÁï±6löìL©YR*Z÷¯ààçNGD[œIaœP
-	†®ŒóÛM´ú ÑÊ9ë!zv\|(ŸúNèCETyDSHöM9ñ>QøÍÄÜY2ŸÂë†û¼ gX$a4AÛ#>ÑFÉ6¼…ötîĞ*Â}çÌuSs²‰k×mÃíéÓ•ÇcMòƒ•Ôtwj2:áH»“„Sªv[Ó¡İÛ°sóqÓ€õaåBÂ8Ÿ¹mğk’^şL~Öøìå/@,%h{ÓD„¾eÂ×P¥•F\rË”3×R%y×œê\¸nëŞºHE“ğå´Û›cWİõ‘âËQÅˆú,‹W_eWûT{Šy$¹ÇB†4±ãc®!A ’Zr9gdö</]ëY{£kÊ¨4añDu$…~ùcAùmt©¬=±-D&&üíÎÊ‰#¤êî1à`ëvëB`CÉÓ©ûyTqs¥K.¢Î<À<Y(J9ƒ\.V¦Rù¨Péc»íÌ"óHE‡H!*¨‘JÂ—3LLğcEPë€j{U/K_öjUq½ÆííÔş\Ig#çÂº•Ú<t3LÅ8¬ÈTø0'‘s^Ñä»ilŒëÍs„w§‹­ÊªcDûÓhİéÂè45ï¹|°™y¢F—?KŸğÎŒpMk(Pôn…î¡¼ŸïBW«óLöò,ƒ’
- %
-ñä‚ªÛ¶D51rš&…C8/VZ*'’Ì"Uv±Î_%7Dë &ªÜ«oŒo@„ÏéXŠSáDø	ÄÇ æ€&õåÏñHf®24SÀ‹´
-e#n T‰¥­ÈUöYÆaõ>íİ8 xyÁ‹%²"p.ZĞ¿‡­÷	ø±`øòD1¬/ÿ n†Jæ•&ö†[¾®ûo`Œé#ÃÜ ‹$Ì†7ı,k/]}ÇÊxé_"*àõë‚”U:'¶¢>0iã¸ğ[ûù°Ëò×í_a¦cD|%#ŒM¬lT'øvhµ‚ÚC˜€ñ“§U­$€gCwOÊ–å9˜Å€ÉÊI"¼tf12 r.³°ŸV›®X2<ê<ï[ôYÊŸÎÍğ°Q§´š–Zƒ¢"\»åCê”t ‡)›™ÓÖ«cP×4·wœ*3fÊãtŸË—ÈåKËåã!µºæğ`P©‚|^Iİà”ø¶6lÛ’ìÑÔ0Ã)Öõ`PsÕ±z;ÌÔ7mZ÷Y‚äåó!}›hOr¢jÊãáZXœÚ_¯š¥÷Z¯Ë‚×
-Â&Y±pÚä(†ø`OP²µ]ÚØE–º›’Ñ‘R~¼@ 2ÿc•=é`“³°5ôz=;úRıº…¤tÃ¦®««Ş…?g’p´‚û²=&ÂC.|§r]÷¿9¤xSÁ>po:ş©f×YİIlë„œ%FØ¿p³Xx×v·Öb´yÚ©=«J‰Íi-I‰%ı	AÛ4Ÿº>Ú²”ˆ²kLJËwéSŞQÍÙüDÚ}m{òª4AÚ¼ú  ÿÿ #qò·
+                  <p className="text-xs text-slate-500"> Nenhxœ¼WÍÛ6¾ïSŒ"¶ƒÊÖîÆ›dk;X8{LZ$@/E€Ğm±¡H¤üÇSôĞSO}„}±)K–%ÙŞi|°MR"g¾ùæ›a`ÂPH¥¨Ó,  èœi£HH@Pm(˜T	Ùö“ñT>İmejØÙb|Q™­>„Ï@À‰ÖoILG-€zkï²7€Ä¸Ÿ©T!UÉÿhNõ.}¿U7bÊ»º2ŞJÃL
+ãM9	>›Ê¶xæû&	úM4º¦p™‰¹·dx
+Ì8]34Ö^@-80'‰wÙÃÇ	$ÕRxCCD*ÆG¤†ÎFGlfŞÑ£Ë_ÈšKöbN""æT¿êq*æ&‚/_Àßv‡ıhPwáôğä	œ| ?b>¼‚Nmû“7 zŞ¤^L’N'ˆnˆuFãÆS‹“?ÑõhD=nËV$Ş5Lç!›Koà÷ş.àyÜwK—¸ d*Bz+œ’ĞFMHyÄKa~î²hÚ//<ä+ëÕ¹ğ{ª›­½)5KJÅ‰½p7X”¶Û|ttŒ¥™™¿½LV Ye¤_{>şäÆa‰¢e—Ù
+?lNœ€h–HFĞ0›1§eéÑFÄiŒlæ¡M¨Ìœ|â…ï·áöñÓUÀSMŠ•Ôt¿«=bKû&‰§ïâÕlhß=ñæöãöTÄÇQx+&ÅÌí	¿îİàáO÷Xû>dá úpg)AÛU,†}Ë„¯¡J+‹¸äá)—¾¥Ê¡†µÆÖµH*¢˜´ÒÒnoÏµÓæ£ËIÍÌw–Æ‡yµ;:¤:P(‚îpSgG¦”B‚@"µäråE¦;İtk=koCE9ŠÊ),ŞQH¡şXP~ë‚NR#•µ'Õ©…èÎ¤„¿Ú[y¦È©:¤{¸°ukõïÄ]$O£4'MÕ«R²˜!œV,—ŠXå,	â¡h–Šå[*¢K=)Eµ#Q.|Ù¸TğÃTÔ:puèáo~eéo˜:œ«èlâ=³ne6úßPùªs®ÈT„Nß¯jš<œ¦ÆHQ³Ş¬<;[lÕV¥˜ ÚŸF›+mšš÷‘\¾ßÄ72$¼3#\Ó
+”½[¡{(ïWûĞ5Åê*—½"Ë ¢H‰R¼#¹ ê¶€Í©&FN3Ã¤ğç¤JKå%Ò5yUëáüUrCP°j¢jÁÍ°úÆøb3r:‘bÆT|/Bñ9@ ®¾Ü ónæyfxµ<„ò$nØv¡J,mE>ÒbÿtÛá$¢xxÉ‹%²"òµ ?†÷ü{±`øçÅ°>üƒºõ¨0Ô2¯2q0ÜñuÓ
+LXÀ1öó l‚lõ5#(ã=¦N¨°é^Êj[Ñ/˜6Ÿ±Õ±Ÿû,éûıç˜é‘PÉc“*×±MğİĞj,¶›03º_«Z.€Ø&(@Õ²"óø_#b²ò\„—Ş,E$ŞMö«#ÒjÓ5ï ,ú,eŒ¿ŞËÁq£ÓjZj]—áEÃÍ§®¤®›nl¤lJäN[¯ÎAİtÍºãT™	S§‡\¾A.ßX.Ÿ¯™ÕMw¸ëZäó#w8£¸6ŒmIhj˜áëztİpÔ¹z;ÈÕ7kZã<AŠòy—ı»×x± ª¡<¯…å©ÃõºYú õº)y­P l’•§Mrˆö[+Ğe]b©»­8œ)åçôµ½ßÿUzRö¤ƒMÎÂİL7ĞëõìèGÈôë\é†mS×T½K—³’p¶‚û²=!"@.|§rİtïDiÁFpH'|7ÿÔğÖYÓNlë„œ9#ìn–ŠÀâÚî6ZŒ6O;{Õ)±}\KRaÉÉş„ mZL½8Û²Tˆ²oL*ËwéS^SÍÙü‘´ûÚöä¢2AÚ^ü  ÿÿ b—Ù
