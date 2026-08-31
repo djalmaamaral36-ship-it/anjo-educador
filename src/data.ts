@@ -818,13 +818,40 @@ export function saveHygieneLog(idosoId: string, hygieneLog: any) {
     (l && isStudentIdMatch(l.idosoId, idosoId) && isTodayOrDemoDate(l.date || l.data, idosoId))
   );
 
-  const finalLogObj = {
+  let finalLogObj = {
     ...formattedLog,
     id: formattedLog.id || (existingIdx >= 0 && globalLogs[existingIdx]?.id ? globalLogs[existingIdx].id : `hyg_${idosoId}_${todayIso}`)
   };
 
   if (existingIdx >= 0) {
-    globalLogs[existingIdx] = { ...globalLogs[existingIdx], ...finalLogObj };
+    const existing = globalLogs[existingIdx];
+    finalLogObj = {
+      ...existing,
+      ...finalLogObj,
+      // Merge boolean values with logical OR to prevent data-loss/clobbering
+      bath: Boolean(existing.bath || finalLogObj.bath),
+      banho: Boolean(existing.banho || finalLogObj.banho),
+      teeth: Boolean(existing.teeth || finalLogObj.teeth),
+      higieneBucal: Boolean(existing.higieneBucal || finalLogObj.higieneBucal),
+      clothes: Boolean(existing.clothes || finalLogObj.clothes),
+      trocaRoupa: Boolean(existing.trocaRoupa || finalLogObj.trocaRoupa),
+      diaper: Boolean(existing.diaper || finalLogObj.diaper),
+      trocaFralda: Boolean(existing.trocaFralda || finalLogObj.trocaFralda),
+      hands: Boolean(existing.hands || finalLogObj.hands),
+      cream: Boolean(existing.cream || finalLogObj.cream),
+      pele: Boolean(existing.pele || finalLogObj.pele),
+      // Merge observations cleanly
+      observations: [existing.observations || existing.obs, finalLogObj.observations || finalLogObj.obs]
+        .filter(Boolean)
+        .filter((v, i, arr) => arr.indexOf(v) === i)
+        .join('. '),
+      obs: [existing.observations || existing.obs, finalLogObj.observations || finalLogObj.obs]
+        .filter(Boolean)
+        .filter((v, i, arr) => arr.indexOf(v) === i)
+        .join('. '),
+      time: finalLogObj.time || existing.time || defaultTime
+    };
+    globalLogs[existingIdx] = finalLogObj;
   } else {
     globalLogs.push(finalLogObj);
   }
