@@ -473,24 +473,25 @@ async function startServer() {
   // Dedicated endpoint for the integrated AI Assistant (Anjinho AI) - chat route
   app.post('/api/chat', async (req, res) => {
     try {
-      const { message, sessionId, model, geminiKey, groqKey, groqApiKey } = req.body || {};
+      const { message, sessionId, model, geminiKey } = req.body || {};
       if (!message) {
         return res.status(400).json({ error: 'Falta o campo obrigatório "message" no corpo da requisição.' });
       }
+
+      const client = getGeminiClient(geminiKey);
 
       const systemInstruction = `Você é a "Aura", a assistente e inteligência artificial inteligente integrada ao aplicativo "Anjo Escolar" / "Anjinho Escolar".
 Sua missão é ajudar, apoiar e encantar as professoras, educadoras, coordenadoras, diretoras e familiares em sua rotina pedagógica, de cuidado e de comunicação escolar.
 Seja carinhosa, empática, profissional, pedagógica, humana e acolhedora.
 Sempre que apropriado, estruture suas respostas de forma elegante usando Markdown limpo com listas, tópicos ou emoticons fofos e afetivos (🌈, 💖, ✨, 🧸, 🏫, 👶, 👵, 😊).`;
 
-      const response = await unifiedGenerateContent({
-        model: model || 'gemini-2.5-flash',
+      const response = await client.models.generateContent({
+        model: model || 'gemini-3.8-flash',
         contents: message,
-        systemInstruction,
-        temperature: 0.7,
-        geminiKey,
-        groqKey,
-        groqApiKey
+        config: {
+          systemInstruction,
+          temperature: 0.7,
+        }
       });
 
       const responseText = response.text || '';

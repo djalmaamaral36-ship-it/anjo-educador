@@ -8,6 +8,18 @@
         "id": { "type": "string" },
         "studentId": { "type": "string" }
       }
+    },
+    "HydrationRecord": {
+      "title": "HydrationRecord",
+      "description": "Hydration registration record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "studentId": { "type": "string" },
+        "amountMl": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["studentId", "amountMl", "timestamp"]
     }
   },
   "firestore": {
@@ -18,6 +30,10 @@
     "/anjo_shift_states/{shiftId}": {
       "schema": "Shift",
       "description": "Shift states collection"
+    },
+    "/hidratacao/{recordId}": {
+      "schema": "HydrationRecord",
+      "description": "Hydration records"
     }
   }
 }
