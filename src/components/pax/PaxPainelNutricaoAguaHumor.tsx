@@ -110,7 +110,7 @@ export default function PaxPainelNutricaoAguaHumor({ student }: Props) {
               ref.status?.toLowerCase().includes('boa') ||
               ref.status?.toLowerCase().includes('comeu');
             const isPartial = ref.status?.toLowerCase().includes('parcial');
-            const isRefused = ref.status?.toLowerCase().includes('recus') || ref.status?.toLowerCase().includes('não');
+            const isRefused = ref.status?.toLowerCase().includes('recus') || ref.status?.toLowerCase().includes('não') || ref.status?.toLowerCase().includes('rejeit');
 
             return (
               <div

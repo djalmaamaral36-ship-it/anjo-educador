@@ -703,9 +703,12 @@ export default function PainelRotinaUnificado({
     );
   };
 
-  const handleSalvarRefeicaoDireta = (refeicaoNome: string, aceitacaoValor: string) => {
+  const [justificandoRefeicao, setJustificandoRefeicao] = useState<string | null>(null);
+  const [justificativaTexto, setJustificativaTexto] = useState<string>('');
+
+  const handleSalvarRefeicaoDireta = (refeicaoNome: string, aceitacaoValor: string, observacaoPersonalizada?: string) => {
     if (!isProfessor) return;
-    if (!validarCronometroAtivo(`Alimentação (${refeicaoNome})`, () => handleSalvarRefeicaoDireta(refeicaoNome, aceitacaoValor))) {
+    if (!validarCronometroAtivo(`Alimentação (${refeicaoNome})`, () => handleSalvarRefeicaoDireta(refeicaoNome, aceitacaoValor, observacaoPersonalizada))) {
       return;
     }
 
@@ -729,7 +732,7 @@ export default function PainelRotinaUnificado({
           ...ref,
           status: aceitacaoValor,
           horario: horaAtual,
-          observacao: 'Registro de 1 clique efetuado com carinho.',
+          observacao: observacaoPersonalizada || (aceitacaoValor === 'Rejeitou' ? 'Alimento recusado pela criança.' : 'Registro de 1 clique efetuado com carinho.'),
         };
       }
       return ref;
@@ -740,7 +743,7 @@ export default function PainelRotinaUnificado({
       hora: horaAtual,
       tipo: 'alimentacao' as const,
       titulo: `Alimentação & Nutrição: ${refeicaoNome}`,
-      descricao: `${student.nome} alimentou-se: ${refeicaoNome}. Aceitação: ${aceitacaoValor}.`,
+      descricao: `${student.nome} alimentou-se: ${refeicaoNome}. Aceitação: ${aceitacaoValor}.${observacaoPersonalizada ? ` Justificativa: ${observacaoPersonalizada}` : ''}`,
       responsavel: student.professoraTitular || 'Ana Silva (Professora Titular)',
       verificado: true,
     };
@@ -2260,33 +2263,132 @@ export default function PainelRotinaUnificado({
               const horarioReg = refeicaoDoAluno?.horario ? ` às ${refeicaoDoAluno.horario}` : '';
               
               return (
-                <div key={item.nome} className="p-3 bg-slate-50/80 border border-slate-200/80 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs hover:bg-white hover:shadow-2xs transition">
-                  <div className="flex items-center gap-2.5">
-                    <span className="text-base">{item.ícone}</span>
-                    <div>
-                      <span className="font-extrabold text-slate-800 block text-xs">{item.nome}</span>
-                      <span className="text-[10px] font-medium text-slate-500 block mt-0.5">
-                        Status: <strong className={statusAtual !== 'SEM REGISTRO' ? 'text-emerald-600 font-extrabold' : 'text-slate-400 font-medium'}>{statusAtual}{horarioReg}</strong>
-                      </span>
+                <div key={item.nome} className="p-3 bg-slate-50/80 border border-slate-200/80 rounded-2xl flex flex-col gap-2.5 text-xs hover:bg-white hover:shadow-2xs transition">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-2.5">
+                      <span className="text-base">{item.ícone}</span>
+                      <div>
+                        <span className="font-extrabold text-slate-800 block text-xs">{item.nome}</span>
+                        <span className="text-[10px] font-medium text-slate-500 block mt-0.5">
+                          Status: <strong className={statusAtual !== 'SEM REGISTRO' ? (statusAtual === 'Rejeitou' ? 'text-rose-600 font-black' : 'text-emerald-600 font-black') : 'text-slate-400 font-medium'}>{statusAtual}{horarioReg}</strong>
+                        </span>
+                      </div>
                     </div>
+                    
+                    {isProfessor && (
+                      <div className="flex items-center gap-1.5 self-start sm:self-auto shrink-0 flex-wrap">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setJustificandoRefeicao(null);
+                            handleSalvarRefeicaoDireta(item.nome, 'Comeu Tudo');
+                          }}
+                          className={`px-2.5 py-1.5 text-[10px] font-black rounded-lg transition shadow-2xs cursor-pointer ${
+                            statusAtual === 'Comeu Tudo'
+                              ? 'bg-emerald-600 text-white ring-2 ring-emerald-300'
+                              : 'bg-emerald-500 hover:bg-emerald-600 text-white'
+                          }`}
+                        >
+                          ✓ Comeu Tudo
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setJustificandoRefeicao(null);
+                            handleSalvarRefeicaoDireta(item.nome, 'Aceitou Bem');
+                          }}
+                          className={`px-2.5 py-1.5 text-[10px] font-black rounded-lg transition shadow-2xs cursor-pointer ${
+                            statusAtual === 'Aceitou Bem'
+                              ? 'bg-sky-600 text-white ring-2 ring-sky-300'
+                              : 'bg-sky-500 hover:bg-sky-600 text-white'
+                          }`}
+                        >
+                          Aceitou Bem
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setJustificandoRefeicao(item.nome);
+                            setJustificativaTexto(refeicaoDoAluno?.observacao && refeicaoDoAluno?.observacao !== 'Registro de 1 clique efetuado com carinho.' && refeicaoDoAluno?.observacao !== 'Alimento recusado pela criança.' ? refeicaoDoAluno.observacao : '');
+                          }}
+                          className={`px-2.5 py-1.5 text-[10px] font-black rounded-lg transition shadow-2xs cursor-pointer ${
+                            statusAtual === 'Rejeitou'
+                              ? 'bg-rose-700 text-white ring-2 ring-rose-300'
+                              : 'bg-rose-500 hover:bg-rose-600 text-white'
+                          }`}
+                        >
+                          ✕ Rejeitou
+                        </button>
+                      </div>
+                    )}
                   </div>
-                  
-                  {isProfessor && (
-                    <div className="flex items-center gap-1.5 self-start sm:self-auto shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => handleSalvarRefeicaoDireta(item.nome, 'Comeu Tudo')}
-                        className="px-2.5 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-black rounded-lg transition shadow-2xs cursor-pointer"
-                      >
-                        ✓ Comeu Tudo
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleSalvarRefeicaoDireta(item.nome, 'Aceitou Bem')}
-                        className="px-2.5 py-1.5 bg-sky-500 hover:bg-sky-600 text-white text-[10px] font-black rounded-lg transition shadow-2xs cursor-pointer"
-                      >
-                        Aceitou Bem
-                      </button>
+
+                  {/* Justification Form Area for Rejection */}
+                  {justificandoRefeicao === item.nome && (
+                    <div className="p-3 bg-rose-50/80 border border-rose-200 rounded-xl space-y-2.5 mt-1">
+                      <span className="text-[10px] font-black text-rose-800 uppercase block tracking-wider">
+                        Justificativa / Motivo da Recusa Alimentar:
+                      </span>
+                      
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <input
+                          type="text"
+                          value={justificativaTexto}
+                          onChange={(e) => setJustificativaTexto(e.target.value)}
+                          placeholder="Ex: Dormiu no horário da refeição / Estava sem apetite"
+                          className="flex-1 bg-white border border-rose-200 rounded-lg px-3 py-2 text-xs text-slate-800 outline-none focus:border-rose-400 placeholder-slate-400 font-medium"
+                        />
+                        <div className="flex gap-1.5 shrink-0 justify-end">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (!justificativaTexto.trim()) {
+                                triggerCardConfirmacao(
+                                  '⚠️ Justificativa Necessária',
+                                  'Por favor, explique ou justifique o motivo da recusa alimentar para governança.',
+                                  'higiene'
+                                );
+                                return;
+                              }
+                              handleSalvarRefeicaoDireta(item.nome, 'Rejeitou', justificativaTexto.trim());
+                              setJustificandoRefeicao(null);
+                            }}
+                            className="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-[10px] font-black rounded-lg transition shadow-2xs cursor-pointer shrink-0"
+                          >
+                            Salvar Justificativa
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setJustificandoRefeicao(null)}
+                            className="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-[10px] font-black rounded-lg transition cursor-pointer"
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                      </div>
+                      
+                      {/* Sugestões Rápidas de Justificativa */}
+                      <div className="flex flex-wrap gap-1.5 pt-2 border-t border-rose-100">
+                        <span className="text-[9px] font-black text-rose-700 uppercase tracking-wide mr-1 mt-1">
+                          Motivos Recorrentes:
+                        </span>
+                        {[
+                          'Estava com soninho / dormiu',
+                          'Não demonstrou apetite',
+                          'Recusou sólidos / preferiu mamadeira',
+                          'Disse estar com a barriguinha cheia',
+                          'Indisposição passageira'
+                        ].map((sugestao) => (
+                          <button
+                            key={sugestao}
+                            type="button"
+                            onClick={() => setJustificativaTexto(sugestao)}
+                            className="px-2 py-0.5 bg-white border border-rose-200/60 hover:bg-rose-100 hover:border-rose-300 text-rose-950 text-[9px] font-semibold rounded-md transition cursor-pointer"
+                          >
+                            {sugestao}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
