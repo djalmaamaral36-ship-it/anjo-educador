@@ -435,6 +435,17 @@ export default function PainelRotinaUnificado({
         'sono'
       );
     }
+
+    // Mapeia para dar baixa automática na agenda de atividades (Aura Planner)
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('anjinho:rotina-registrada', {
+        detail: {
+          itemKey: 'sono',
+          status: 'Realizado',
+          observacao: `Soneca realizada: ${desc}`
+        }
+      }));
+    }
   };
 
   // Handlers de 1-Clique (Toque Rápido) com validação de cronômetro e detecção de duplicidade
@@ -765,6 +776,25 @@ export default function PainelRotinaUnificado({
       });
     }
 
+    // Mapeia para dar baixa automática na agenda de atividades (Aura Planner)
+    if (typeof window !== 'undefined') {
+      let itemKey = '';
+      if (refeicaoNome === 'Lanchinho da Manhã') itemKey = 'lanche_manha';
+      else if (refeicaoNome === 'Papinha / Almocinho') itemKey = 'almoco';
+      else if (refeicaoNome === 'Lanchinho da Tarde') itemKey = 'lanche_tarde';
+      else if (refeicaoNome === 'Jantinha Escolar') itemKey = 'jantar';
+
+      if (itemKey) {
+        window.dispatchEvent(new CustomEvent('anjinho:rotina-registrada', {
+          detail: {
+            itemKey,
+            status: aceitacaoValor,
+            observacao: observacaoPersonalizada || (aceitacaoValor === 'Rejeitou' ? 'Recusou o alimento.' : 'Alimentou-se adequadamente.')
+          }
+        }));
+      }
+    }
+
     triggerCardConfirmacao(
       '🍴 Refeição Registrada',
       `O registro de ${refeicaoNome} (${aceitacaoValor}) de ${student.nome} foi salvo e enviado aos pais!`,
@@ -819,6 +849,17 @@ export default function PainelRotinaUnificado({
         higieneChecklist: novoChecklist,
         auditoriaLinhaDoTempo: novaLinhaTempo,
       });
+    }
+
+    // Mapeia para dar baixa automática na agenda de atividades (Aura Planner)
+    if (nextState === 'Realizado' && typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('anjinho:rotina-registrada', {
+        detail: {
+          itemKey: 'higiene',
+          status: 'Realizado',
+          observacao: `Cuidado de higiene realizado: ${label}`
+        }
+      }));
     }
 
     if (nextState === 'Realizado') {

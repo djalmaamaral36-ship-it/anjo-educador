@@ -938,9 +938,39 @@ export default function AuraPlannerIntegration({ onConcluirAtividadePedagogica, 
       setStatusFilter('todas');
     };
 
+    const handleRotinaRegistrada = (e: Event) => {
+      const customEvent = e as CustomEvent<{ itemKey: string; status: string; observacao?: string }>;
+      if (!customEvent.detail) return;
+      const { itemKey, status, observacao } = customEvent.detail;
+      
+      setActivities((prev) =>
+        prev.map((act) => {
+          const isLancheManha = itemKey === 'lanche_manha' && act.titulo.toLowerCase().includes('lanche da manhã');
+          const isAlmoco = itemKey === 'almoco' && act.titulo.toLowerCase().includes('almoço');
+          const isLancheTarde = itemKey === 'lanche_tarde' && act.titulo.toLowerCase().includes('lanche da tarde');
+          const isSono = itemKey === 'sono' && act.titulo.toLowerCase().includes('soneca');
+          const isHigiene = itemKey === 'higiene' && act.titulo.toLowerCase().includes('higiene');
+          
+          const matchesKey = act.item_key === itemKey || isLancheManha || isAlmoco || isLancheTarde || isSono || isHigiene;
+            
+          if (matchesKey) {
+            return {
+              ...act,
+              status: status === 'Rejeitou' ? 'recusou' as const : 'entregue' as const,
+              entregue: status !== 'Rejeitou',
+              observacao: observacao || `Sincronizado da Rotina Diária: ${status}`,
+            };
+          }
+          return act;
+        })
+      );
+    };
+
     window.addEventListener('anjinho:reset-activities-to-pending', handleResetAllToPending);
+    window.addEventListener('anjinho:rotina-registrada', handleRotinaRegistrada);
     return () => {
       window.removeEventListener('anjinho:reset-activities-to-pending', handleResetAllToPending);
+      window.removeEventListener('anjinho:rotina-registrada', handleRotinaRegistrada);
     };
   }, []);
 
