@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { RefreshCw, CheckCircle2, ShieldCheck, Activity } from 'lucide-react';
 import { StudentPaxData } from '../../types';
+import { DEFAULT_INITIAL_ACTIVITIES as PLAN_ACTIVITIES } from '../../data/weeklyPlan';
+import { deduplicateActivities } from '../rotina/AuraPlannerIntegration';
 
 interface Props {
   student: StudentPaxData;
@@ -87,71 +89,106 @@ export default function PaxPresencaGovernanca({ student, userRole = 'familia', o
     student.presenca?.tempoEmAulaFormatado === '00:00:00' ||
     student.presenca?.status === 'sem_aula';
 
-  // 1. Contagem de rotinas executadas na realidade do aluno no dia
-  let rotinasRealizadas = 0;
-  let rotinasRecusas = 0;
+  // Obter as atividades semanais desduplicadas
+  const deduplicatedAll = deduplicateActivities(PLAN_ACTIVITIES);
+  
+  // Filtramos para a Quarta-feira, dia letivo simulado cheio
+  const simulatedDay = 'Quarta-feira';
+  const plannedForToday = deduplicatedAll.filter(act => (act.dia || 'Quarta-feira') === simulatedDay);
 
-  // A. Hidratação
-  if ((student.agua?.consumoMl && student.agua.consumoMl > 0) || (student.agua?.coposServidos && student.agua.coposServidos > 0)) {
-    rotinasRealizadas += 1;
-  }
+  let plannedCompletedCount = 0;
+  let totalRefeicoesRecusadas = 0;
 
-  // B. Alimentação / Mamadeira
-  if (student.alimentacao?.mamadeirasServidas && student.alimentacao.mamadeirasServidas > 0) {
-    rotinasRealizadas += 1;
-  }
+  plannedForToday.forEach(p => {
+    let isCompleted = false;
 
-  // C. Refeições (Papa, lanche, almoço)
-  if (student.alimentacao?.refeicoes && student.alimentacao.refeicoes.length > 0) {
-    student.alimentacao.refeicoes.forEach((ref) => {
-      if (ref.status && ref.status !== 'SEM REGISTRO' && !ref.status.includes('PREVISTO')) {
-        rotinasRealizadas += 1;
-        if (ref.status.toLowerCase().includes('recus') || ref.status.toLowerCase().includes('rejeit')) {
-          rotinasRecusas += 1;
+    // A. Verifica se há um registro correspondente na linha do tempo de auditoria
+    const normalizedPlanned = p.titulo.toLowerCase().trim();
+    const auditItem = (student.auditoriaLinhaDoTempo || []).find(item => {
+      const normalizedAudit = item.titulo.replace(/Atividade Pedagógica: |Alimentação & Nutrição: /g, '').toLowerCase().trim();
+      return normalizedAudit.includes(normalizedPlanned) || normalizedPlanned.includes(normalizedAudit);
+    });
+
+    if (auditItem) {
+      isCompleted = true;
+    }
+
+    // B. Fallbacks para garantir que ações diretas nos cartões de saúde/alimentação também dêem baixa sem duplicar:
+    if (!isCompleted) {
+      if (p.item_key === 'sono' || p.tipo === 'sono') {
+        const sonecaVal = student.saudeCards?.soneca?.valor;
+        if (sonecaVal && sonecaVal !== 'Sem Soneca Ainda' && sonecaVal !== 'Sem registros' && sonecaVal !== 'Sem Registros') {
+          isCompleted = true;
+        }
+      } else if (p.item_key === 'almoco' || p.item_key === 'lanche' || p.tipo === 'alimentacao') {
+        const matchingRef = (student.alimentacao?.refeicoes || []).find(ref => {
+          const rName = ref.nome.toLowerCase();
+          return rName.includes(normalizedPlanned) || normalizedPlanned.includes(rName);
+        });
+        if (matchingRef && matchingRef.status && matchingRef.status !== 'SEM REGISTRO' && !matchingRef.status.includes('PREVISTO')) {
+          isCompleted = true;
+          if (matchingRef.status.toLowerCase().includes('recus') || matchingRef.status.toLowerCase().includes('rejeit')) {
+            totalRefeicoesRecusadas += 1;
+          }
+        }
+      } else if (p.item_key === 'higiene' || p.tipo === 'banho') {
+        const fraldaVal = student.saudeCards?.fraldas?.valor;
+        if (fraldaVal && fraldaVal !== 'Nenhuma Troca' && fraldaVal !== 'Sem trocas' && fraldaVal !== 'Verificada / Limpa') {
+          isCompleted = true;
+        }
+      } else if ((p.tipo as string) === 'presenca') {
+        if (student.presenca?.status === 'em_aula' || student.presenca?.status === 'encerrada') {
+          isCompleted = true;
         }
       }
-    });
-  }
+    }
 
-  // D. Soneca / Descanso
-  const sonecaVal = student.saudeCards?.soneca?.valor;
-  if (sonecaVal && sonecaVal !== 'Sem Soneca Ainda' && sonecaVal !== 'Sem registros' && sonecaVal !== 'Sem Registros') {
-    rotinasRealizadas += 1;
-  }
+    if (isCompleted) {
+      plannedCompletedCount += 1;
+    }
+  });
 
-  // E. Fralda / Higiene
+  // Outras rotinas complementares essenciais que não estão no cronograma pedagógico principal:
+  let extraRoutinesExpected = 0;
+  let extraRoutinesCompleted = 0;
+
+  // Fraldas:
   const fraldaVal = student.saudeCards?.fraldas?.valor;
-  if (fraldaVal && fraldaVal !== 'Nenhuma Troca' && fraldaVal !== 'Sem trocas' && fraldaVal !== 'Verificada / Limpa') {
-    rotinasRealizadas += 1;
+  if (fraldaVal && fraldaVal !== 'Nenhuma Troca' && fraldaVal !== 'Sem trocas') {
+    extraRoutinesExpected += 1;
+    extraRoutinesCompleted += 1;
   }
 
-  // F. Atividades Pedagógicas e Auditoria de Sala (todos os itens da linha do tempo contam como rotina auditada)
-  if (student.auditoriaLinhaDoTempo && student.auditoriaLinhaDoTempo.length > 0) {
-    rotinasRealizadas += student.auditoriaLinhaDoTempo.length;
+  // Hidratação extra:
+  const copoVal = student.agua?.coposServidos || 0;
+  if (copoVal > 0) {
+    extraRoutinesExpected += 1;
+    extraRoutinesCompleted += 1;
   }
 
-  // Fallback para valores salvos em student.governanca se existirem
-  if (student.governanca?.rotinasRealizadasHoje !== undefined && student.governanca.rotinasRealizadasHoje > rotinasRealizadas) {
-    rotinasRealizadas = student.governanca.rotinasRealizadasHoje;
-    rotinasRecusas = student.governanca.rotinasRecusasHoje || rotinasRecusas;
-  }
+  // Carga e realização total desduplicada
+  const totalExpected = plannedForToday.length + extraRoutinesExpected;
+  const totalCompleted = plannedCompletedCount + extraRoutinesCompleted;
 
-  // Se o timer estiver em zero E nenhuma rotina foi realizada e nenhum item na linha do tempo existe, conformidade é 0
+  // Quantidade de rotinas realizadas e recusas finais
+  let rotinasRealizadas = totalCompleted;
+  let rotinasRecusas = totalRefeicoesRecusadas;
+
+  // Se o timer estiver em zero e nenhuma rotina foi iniciada
   if (isTimerAtZero && rotinasRealizadas === 0 && (!student.auditoriaLinhaDoTempo || student.auditoriaLinhaDoTempo.length === 0)) {
     rotinasRealizadas = 0;
     rotinasRecusas = 0;
   }
 
-  // Meta de rotinas esperadas por turno
-  const metaRotinasTurno = 8;
-  const conformidadeCalculada = Math.min(100, Math.round((rotinasRealizadas / metaRotinasTurno) * 100));
+  // Calculamos a porcentagem de conformidade com precisão baseada em planejamento e realização reais
+  const conformidadeCalculada = totalExpected > 0 ? Math.min(100, Math.round((rotinasRealizadas / totalExpected) * 100)) : 0;
   const conformidade = rotinasRealizadas > 0 
     ? Math.max(conformidadeCalculada, student.governanca?.conformidadePercent || 0)
     : (student.governanca?.conformidadePercent || (rotinasRealizadas > 0 ? 100 : 0));
 
-  // Qualidade começa em 100% e desconta eventuais recusas ou febre
+  // Qualidade baseada em anomalias (Febre, Recusas, Atrasos, etc.)
   const isFebril = parseFloat(student.saudeCards?.temperatura?.valor || '36.5') >= 37.8;
-  const qualidadeCalculada = Math.max(70, Math.min(100, 100 - rotinasRecusas * 5 - (isFebril ? 5 : 0)));
+  const qualidadeCalculada = Math.max(70, Math.min(100, 100 - rotinasRecusas * 10 - (isFebril ? 15 : 0)));
   const qualidade = student.governanca?.qualidadePercent !== undefined && student.governanca.qualidadePercent > 0
     ? student.governanca.qualidadePercent
     : qualidadeCalculada;

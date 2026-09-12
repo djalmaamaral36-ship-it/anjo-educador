@@ -35,23 +35,25 @@ export function sortActivitiesBySchedule(list: ParsedAuraActivity[]): ParsedAura
 // Remove duplicidades de horário dentro do mesmo dia, priorizando atividades customizadas/importadas
 export function deduplicateActivities(list: ParsedAuraActivity[]): ParsedAuraActivity[] {
   const result: ParsedAuraActivity[] = [];
-  const WEEKDAY_NAMES = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'];
+
+  const getNormalizedDay = (day: string): string => {
+    const d = (day || '').toLowerCase();
+    if (d.includes('seg')) return 'Segunda-feira';
+    if (d.includes('ter')) return 'Terça-feira';
+    if (d.includes('qua')) return 'Quarta-feira';
+    if (d.includes('qui')) return 'Quinta-feira';
+    if (d.includes('sex')) return 'Sexta-feira';
+    if (d.includes('sab')) return 'Sábado';
+    if (d.includes('dom')) return 'Domingo';
+    return 'Quarta-feira';
+  };
 
   for (const act of list) {
-    let dayKey = act.dia || 'Quarta-feira';
-    const matchedDay = WEEKDAY_NAMES.find(d => dayKey.toLowerCase().includes(d.split('-')[0].toLowerCase()));
-    if (matchedDay) {
-      dayKey = matchedDay;
-    }
-
+    const dayKey = getNormalizedDay(act.dia || 'Quarta-feira');
     const timeKey = (act.horario || '').trim();
 
     const existingIndex = result.findIndex(item => {
-      let itemDay = item.dia || 'Quarta-feira';
-      const mDay = WEEKDAY_NAMES.find(d => itemDay.toLowerCase().includes(d.split('-')[0].toLowerCase()));
-      if (mDay) {
-        itemDay = mDay;
-      }
+      const itemDay = getNormalizedDay(item.dia || 'Quarta-feira');
       return itemDay === dayKey && (item.horario || '').trim() === timeKey;
     });
 
