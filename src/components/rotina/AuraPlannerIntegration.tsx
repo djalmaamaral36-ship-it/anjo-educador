@@ -5,6 +5,7 @@ import {
   XCircle, Filter, RefreshCw, AlertTriangle, ArrowUpDown, Layers
 } from 'lucide-react';
 import { parseAuraRawPlan, ParsedAuraActivity } from '../../utils/auraPlanParser';
+import { DEFAULT_INITIAL_ACTIVITIES as PLAN_ACTIVITIES } from '../../data/weeklyPlan';
 
 interface Props {
   onConcluirAtividadePedagogica?: (act: ParsedAuraActivity) => void;
@@ -890,7 +891,7 @@ interface ConflictState {
 
 export default function AuraPlannerIntegration({ onConcluirAtividadePedagogica, studentNome = 'Mariana Souza' }: Props) {
   const [inputText, setInputText] = useState('');
-  const [activities, setActivities] = useState<ParsedAuraActivity[]>(DEFAULT_INITIAL_ACTIVITIES);
+  const [activities, setActivities] = useState<ParsedAuraActivity[]>(sortActivitiesBySchedule(PLAN_ACTIVITIES));
   const [selectedDayTab, setSelectedDayTab] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<'todas' | 'pendentes' | 'entregues' | 'recusadas'>('todas');
   const [isProcessing, setIsProcessing] = useState(false);
