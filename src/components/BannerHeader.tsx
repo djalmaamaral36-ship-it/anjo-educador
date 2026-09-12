@@ -162,7 +162,6 @@ export default function BannerHeader({
   const primaryNavItems = [
     { id: 'diario_escolar', label: 'Diário Escolar', icon: BookOpen },
     { id: 'turma', label: 'Turma & Alunos', icon: Users },
-    { id: 'rotina', label: 'Diário de Rotina', icon: ClipboardList },
     { id: 'agenda', label: 'Agenda', icon: Calendar },
     { id: 'familias', label: 'Famílias', icon: HeartHandshake },
   ];

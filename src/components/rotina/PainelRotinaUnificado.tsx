@@ -642,6 +642,125 @@ export default function PainelRotinaUnificado({
     );
   };
 
+  const handleSalvarHumorDireto = (estado: string) => {
+    if (!isProfessor) return;
+    if (!validarCronometroAtivo('Estado de Humor', () => handleSalvarHumorDireto(estado))) {
+      return;
+    }
+    
+    const obsPorEstado: Record<string, string> = {
+      'Feliz': 'Demonstrou-se feliz, participativo e muito dócil.',
+      'Calmo / Sereno': 'Muito tranquilo, sereno e concentrado.',
+      'Cansado / Sonolento': 'Demonstrou leve cansaço ou sonolência.',
+      'Choroso / Inquieto': 'Demonstrou inquietação ou choro pontual.'
+    };
+    
+    const obs = obsPorEstado[estado] || 'Observação registrada com carinho.';
+    const horaAtual = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+    const novoItem = {
+      id: `audit_humor_${Date.now()}`,
+      hora: horaAtual,
+      tipo: 'comportamento' as const,
+      titulo: `Estado de Humor & Desenvolvimento: ${estado}`,
+      descricao: `${student.nome} demonstrou estado: ${estado}. Observação: ${obs}`,
+      responsavel: student.professoraTitular || 'Ana Silva (Professora Titular)',
+      verificado: true,
+    };
+
+    const novosCards = {
+      ...student.saudeCards,
+      humor: {
+        valor: estado,
+        periodo: obs,
+      },
+    };
+
+    const novaLinhaTempo = addOrUpdateLinhaTempo(student.auditoriaLinhaDoTempo, novoItem);
+
+    if (onUpdateStudent) {
+      onUpdateStudent({
+        saudeCards: novosCards,
+        auditoriaLinhaDoTempo: novaLinhaTempo,
+      });
+    }
+
+    setHumorEstado(estado);
+    setHumorObs(obs);
+
+    triggerCardConfirmacao(
+      '😊 Registros de Humor Salvos',
+      `Estado de humor (${estado}) de ${student.nome} salvo e transmitido instantaneamente ao painel dos pais!`,
+      'humor'
+    );
+  };
+
+  const handleSalvarRefeicaoDireta = (refeicaoNome: string, aceitacaoValor: string) => {
+    if (!isProfessor) return;
+    if (!validarCronometroAtivo(`Alimentação (${refeicaoNome})`, () => handleSalvarRefeicaoDireta(refeicaoNome, aceitacaoValor))) {
+      return;
+    }
+
+    const horaAtual = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+    const defaultRefeicoes = [
+      { nome: 'Lanchinho da Manhã', status: 'SEM REGISTRO' },
+      { nome: 'Papinha / Almocinho', status: 'SEM REGISTRO' },
+      { nome: 'Lanchinho da Tarde', status: 'SEM REGISTRO' },
+      { nome: 'Jantinha Escolar', status: 'SEM REGISTRO' },
+    ];
+
+    const currentRefeicoes =
+      student.alimentacao?.refeicoes && student.alimentacao.refeicoes.length > 0
+        ? student.alimentacao.refeicoes
+        : defaultRefeicoes;
+
+    const novasRefeicoes = currentRefeicoes.map((ref) => {
+      if (ref.nome === refeicaoNome) {
+        return {
+          ...ref,
+          status: aceitacaoValor,
+          horario: horaAtual,
+          observacao: 'Registro de 1 clique efetuado com carinho.',
+        };
+      }
+      return ref;
+    });
+
+    const novoItem = {
+      id: `audit_alim_${Date.now()}`,
+      hora: horaAtual,
+      tipo: 'alimentacao' as const,
+      titulo: `Alimentação & Nutrição: ${refeicaoNome}`,
+      descricao: `${student.nome} alimentou-se: ${refeicaoNome}. Aceitação: ${aceitacaoValor}.`,
+      responsavel: student.professoraTitular || 'Ana Silva (Professora Titular)',
+      verificado: true,
+    };
+
+    const existingList = student.auditoriaLinhaDoTempo || [];
+    const filteredList = existingList.filter(item => 
+      !item.titulo.toLowerCase().includes(refeicaoNome.toLowerCase())
+    );
+
+    const novaLinhaTempo = [novoItem, ...filteredList];
+
+    if (onUpdateStudent) {
+      onUpdateStudent({
+        alimentacao: {
+          ...student.alimentacao,
+          refeicoes: novasRefeicoes,
+        },
+        auditoriaLinhaDoTempo: novaLinhaTempo,
+      });
+    }
+
+    triggerCardConfirmacao(
+      '🍴 Refeição Registrada',
+      `O registro de ${refeicaoNome} (${aceitacaoValor}) de ${student.nome} foi salvo e enviado aos pais!`,
+      'alimentacao'
+    );
+  };
+
   const handleSalvarHumor = () => {
     if (!isProfessor) return;
     if (!validarCronometroAtivo('Estado de Humor', () => handleSalvarHumor())) {
@@ -2035,83 +2154,67 @@ export default function PainelRotinaUnificado({
 
       {/* 3. HUMOR & SAÚDE, SONO, FRALDA & HIGIENE (Foto 28) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* BLOCO ESQUERDA: ESTADO DE HUMOR / NOTA DO CUIDADOR (Foto 28) */}
+        {/* BLOCO ESQUERDA: REGISTRO RÁPIDO DE REFEIÇÕES SÓLIDAS (1-Clique) */}
         <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
-          <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
-            <span className="text-xl">😊</span>
-            <h4 className="text-base font-black text-slate-800">Estado de Humor / Nota do Cuidador</h4>
-          </div>
-
-          <div>
-            <label className="font-bold text-slate-600 block mb-1 text-xs">
-              ESTADO GERAL DE HUMOR
-            </label>
-            {isProfessor ? (
-              <select
-                value={humorEstado}
-                onChange={(e) => setHumorEstado(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 font-bold text-slate-800 text-xs outline-none focus:border-indigo-500"
-              >
-                <option value="Calmo / Sereno">Calmo / Sereno</option>
-                <option value="Alegre / Brincalhão">Alegre / Brincalhão</option>
-                <option value="Choroso / Inquieto">Choroso / Inquieto</option>
-                <option value="Cansado / Sonolento">Cansado / Sonolento</option>
-              </select>
-            ) : (
-              <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-900 rounded-xl font-bold text-xs">
-                {humorEstado}
-              </div>
-            )}
-          </div>
-
-          <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="font-bold text-slate-600 block text-xs">
-                OBSERVAÇÃO DO HUMOR / ESTADO
-              </label>
-              {isProfessor && (
-                <span className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
-                  1-clique no mic para gravar
-                </span>
-              )}
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🍛</span>
+              <h4 className="text-base font-black text-slate-800">Cardápio & Refeições Rápidas</h4>
             </div>
-            {isProfessor ? (
-              <div className="relative">
-                <input
-                  type="text"
-                  value={humorObs}
-                  onChange={(e) => setHumorObs(e.target.value)}
-                  placeholder="Nota rápida (ex: Dormiu bem à tarde, descansou no soninho e acordou bem disposto)"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-3.5 pr-10 py-2.5 text-xs text-slate-800 outline-none focus:border-indigo-500"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleVoiceRecord('humor')}
-                  title="Gravar por voz (Microfone)"
-                  className={`absolute right-2 top-1/2 -translate-y-1/2 p-1.5 rounded-lg transition cursor-pointer ${
-                    isListeningHumor
-                      ? 'bg-rose-500 text-white animate-pulse'
-                      : 'text-indigo-600 hover:bg-indigo-100/80 bg-indigo-50'
-                  }`}
-                >
-                  <Mic size={15} />
-                </button>
-              </div>
-            ) : (
-              <div className="p-3 bg-slate-50 border border-slate-100 rounded-xl text-xs text-slate-700 italic leading-relaxed">
-                "{humorObs}"
-              </div>
-            )}
+            <span className="text-xs font-black text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+              1-Clique para Registrar
+            </span>
           </div>
 
-          {isProfessor && (
-            <button
-              onClick={handleSalvarHumor}
-              className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs rounded-xl transition shadow-xs cursor-pointer flex items-center justify-center gap-2"
-            >
-              <span>Salvar Registros de Humor</span>
-            </button>
-          )}
+          <p className="text-xs text-slate-500">
+            Acompanhe ou registre instantaneamente a aceitação das refeições sólidas diárias de {student.nome}.
+          </p>
+
+          <div className="space-y-3 pt-1">
+            {[
+              { nome: 'Lanchinho da Manhã', ícone: '🍎' },
+              { nome: 'Papinha / Almocinho', ícone: '🍛' },
+              { nome: 'Lanchinho da Tarde', ícone: '🍌' },
+              { nome: 'Jantinha Escolar', ícone: '🍲' }
+            ].map((item) => {
+              const refeicaoDoAluno = (student.alimentacao?.refeicoes || []).find(r => r.nome === item.nome);
+              const statusAtual = refeicaoDoAluno?.status || 'SEM REGISTRO';
+              const horarioReg = refeicaoDoAluno?.horario ? ` às ${refeicaoDoAluno.horario}` : '';
+              
+              return (
+                <div key={item.nome} className="p-3 bg-slate-50/80 border border-slate-200/80 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs hover:bg-white hover:shadow-2xs transition">
+                  <div className="flex items-center gap-2.5">
+                    <span className="text-base">{item.ícone}</span>
+                    <div>
+                      <span className="font-extrabold text-slate-800 block text-xs">{item.nome}</span>
+                      <span className="text-[10px] font-medium text-slate-500 block mt-0.5">
+                        Status: <strong className={statusAtual !== 'SEM REGISTRO' ? 'text-emerald-600 font-extrabold' : 'text-slate-400 font-medium'}>{statusAtual}{horarioReg}</strong>
+                      </span>
+                    </div>
+                  </div>
+                  
+                  {isProfessor && (
+                    <div className="flex items-center gap-1.5 self-start sm:self-auto shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => handleSalvarRefeicaoDireta(item.nome, 'Comeu Tudo')}
+                        className="px-2.5 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white text-[10px] font-black rounded-lg transition shadow-2xs cursor-pointer"
+                      >
+                        ✓ Comeu Tudo
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSalvarRefeicaoDireta(item.nome, 'Aceitou Bem')}
+                        className="px-2.5 py-1.5 bg-sky-500 hover:bg-sky-600 text-white text-[10px] font-black rounded-lg transition shadow-2xs cursor-pointer"
+                      >
+                        Aceitou Bem
+                      </button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* BLOCO DIREITA: SAÚDE, SONO, FRALDA & CUIDADOS (Foto 28) */}
@@ -2121,6 +2224,58 @@ export default function PainelRotinaUnificado({
             <h4 className="text-base font-black text-slate-800">
               Saúde, Sono, Fralda & Cuidados do Aluno
             </h4>
+          </div>
+
+          {/* SEÇÃO RÁPIDA DE ESTADO DE HUMOR INTEGRADA (Foto 28) */}
+          <div className="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/95 space-y-2.5">
+            <div className="flex items-center justify-between">
+              <label className="font-black text-slate-700 block text-[11px] uppercase tracking-wider flex items-center gap-1.5">
+                <span>😊</span>
+                <span>Estado de Humor do Aluno</span>
+              </label>
+              <span className="text-[10px] font-bold text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-lg shadow-2xs">
+                Humor atual: <strong className="text-indigo-600 font-extrabold">{student.saudeCards?.humor?.valor || 'Calmo / Sereno'}</strong>
+              </span>
+            </div>
+
+            {isProfessor ? (
+              <div className="grid grid-cols-4 gap-2">
+                {[
+                  { estado: 'Feliz', emoji: '😊', bg: 'hover:bg-emerald-50 hover:border-emerald-300' },
+                  { estado: 'Calmo / Sereno', emoji: '😌', bg: 'hover:bg-sky-50 hover:border-sky-300' },
+                  { estado: 'Cansado / Sonolento', emoji: '😴', bg: 'hover:bg-amber-50 hover:border-amber-300' },
+                  { estado: 'Choroso / Inquieto', emoji: '😢', bg: 'hover:bg-rose-50 hover:border-rose-300' },
+                ].map((item) => {
+                  const isActive = (student.saudeCards?.humor?.valor || 'Calmo / Sereno') === item.estado;
+                  return (
+                    <button
+                      key={item.estado}
+                      type="button"
+                      onClick={() => handleSalvarHumorDireto(item.estado)}
+                      className={`p-2 rounded-xl border flex flex-col items-center justify-center gap-1 transition cursor-pointer text-center ${
+                        isActive
+                          ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs scale-102 font-extrabold'
+                          : `bg-white border-slate-200 text-slate-700 ${item.bg}`
+                      }`}
+                    >
+                      <span className="text-base">{item.emoji}</span>
+                      <span className="text-[9px] font-bold tracking-tight block leading-none">
+                        {item.estado.split(' ')[0]}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="p-2.5 bg-white border border-slate-200 rounded-xl text-center shadow-2xs">
+                <span className="text-xl mr-2">
+                  {student.saudeCards?.humor?.valor === 'Feliz' ? '😊' : student.saudeCards?.humor?.valor === 'Cansado / Sonolento' ? '😴' : student.saudeCards?.humor?.valor === 'Choroso / Inquieto' ? '😢' : '😌'}
+                </span>
+                <span className="text-xs font-bold text-slate-700">
+                  {student.nome} está demonstrando estado {student.saudeCards?.humor?.valor || 'Calmo / Sereno'} hoje.
+                </span>
+              </div>
+            )}
           </div>
 
           {/* DUAS SUB-COLUNAS LADO A LADO (Foto 28) */}

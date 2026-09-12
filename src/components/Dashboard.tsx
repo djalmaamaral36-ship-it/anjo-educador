@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import BannerHeader from './BannerHeader';
 import JornadaDoAnjinho from './JornadaDoAnjinho';
-import DiarioDeRotinaConsolidado from './rotina/DiarioDeRotinaConsolidado';
 import PaxPortalDeTranquilidade from './pax/PaxPortalDeTranquilidade';
 import PaxModeSwitcher from './pax/PaxModeSwitcher';
 import AgendaEscolar from './agenda/AgendaEscolar';
@@ -141,11 +140,6 @@ export default function Dashboard({ user }: Props) {
             onSelectStudentId={setSelectedStudentId}
             onOpenFullMedicationsTab={() => setActiveTab('medicamentos')}
           />
-        )}
-
-        {/* ABA: DIÁRIO DE ROTINA CONSOLIDADO */}
-        {activeTab === 'rotina' && (
-          <DiarioDeRotinaConsolidado />
         )}
 
         {/* ABA: MEDICAMENTOS (Exclusivo para Pais cadastrarem/suspenderem com PIN; Professores apenas ministram) */}
