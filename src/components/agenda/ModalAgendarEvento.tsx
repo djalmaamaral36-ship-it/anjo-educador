@@ -4,6 +4,7 @@ import {
   Sparkles, CheckCircle2, AlertCircle 
 } from 'lucide-react';
 import { EventoEscolar, StudentPaxData } from '../../types';
+import { salvarAvisoMural } from '../../services/muralDiariosService';
 
 interface Props {
   isOpen: boolean;
@@ -33,6 +34,7 @@ export default function ModalAgendarEvento({
   const [horario, setHorario] = useState('10:00');
   const [observacoes, setObservacoes] = useState('');
   const [cadastrarEmMassa, setCadastrarEmMassa] = useState(true);
+  const [publicarNoMural, setPublicarNoMural] = useState(true);
   const [notificarWhatsApp, setNotificarWhatsApp] = useState(true);
   
   // Voice dictation simulation/feedback
@@ -121,9 +123,26 @@ export default function ModalAgendarEvento({
 
     onAddEvento(novoEvento);
 
+    const dataFormatada = data.split('-').reverse().join('/');
+
+    // Se marcado para publicar no Mural de Avisos da Família
+    if (publicarNoMural) {
+      salvarAvisoMural({
+        id: `mural_${Date.now()}`,
+        titulo: `📅 Agenda: ${titulo.trim()}`,
+        categoria: 'evento',
+        turma: currentStudent.turma,
+        autorNome: professorResponsavel.trim() || 'Equipe Pedagógica',
+        data: new Date().toLocaleDateString('pt-BR'),
+        conteudo: `Gostaríamos de convidá-los para o nosso próximo compromisso escolar:\n\n📌 *${novoEvento.titulo}*\n🏷️ *Tipo*: ${novoEvento.tipo}\n🗓️ *Data*: ${dataFormatada} às ${novoEvento.horario}\n📍 *Local*: ${novoEvento.local}\n👩‍🏫 *Responsável*: ${novoEvento.professorResponsavel}\n${novoEvento.observacoes ? `\n📝 *Avisos*: ${novoEvento.observacoes}` : ''}`,
+        tags: ['Agenda', tipo],
+        destinatarios: getPublicoAlvoTexto(),
+        criadoEm: `${new Date().toLocaleDateString('pt-BR')} às ${new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}`,
+      });
+    }
+
     // Se marcado para notificar via WhatsApp, abre ou prepara link
     if (notificarWhatsApp) {
-      const dataFormatada = data.split('-').reverse().join('/');
       const msg = encodeURIComponent(
         `📅 *COMUNICADO DA ESCOLINHA — ANJO CUIDADOR*\n\n` +
         `Olá, família de *${currentStudent.nome}*!\n` +
@@ -458,7 +477,21 @@ export default function ModalAgendarEvento({
             </label>
           </div>
 
-          {/* CHECKBOX 2: NOTIFICAR WHATSAPP (Foto 16) */}
+          {/* CHECKBOX 2: PUBLICAR NO MURAL DE AVISOS */}
+          <div className="flex items-center gap-3 px-1">
+            <input
+              type="checkbox"
+              id="chkMural"
+              checked={publicarNoMural}
+              onChange={(e) => setPublicarNoMural(e.target.checked)}
+              className="w-5 h-5 rounded-md accent-indigo-600 cursor-pointer"
+            />
+            <label htmlFor="chkMural" className="text-xs font-bold text-slate-700 cursor-pointer">
+              Publicar este compromisso automaticamente no Mural de Avisos geral.
+            </label>
+          </div>
+
+          {/* CHECKBOX 3: NOTIFICAR WHATSAPP (Foto 16) */}
           <div className="flex items-center gap-3 px-1">
             <input
               type="checkbox"
@@ -468,7 +501,7 @@ export default function ModalAgendarEvento({
               className="w-5 h-5 rounded-md accent-indigo-600 cursor-pointer"
             />
             <label htmlFor="chkWpp" className="text-xs font-bold text-slate-700 cursor-pointer">
-              Notificar envio deste evento no mural/WhatsApp dos pais ou responsáveis.
+              Disparar notificação e modelo do evento via WhatsApp dos pais ou responsáveis.
             </label>
           </div>
 
