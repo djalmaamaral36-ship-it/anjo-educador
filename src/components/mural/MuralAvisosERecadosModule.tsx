@@ -971,6 +971,64 @@ export default function MuralAvisosERecadosModule({
           </button>
         </div>
 
+        {/* COMPROMISSOS FIXADOS IMPORTANTES (AURA ANJO CUIDADOR) */}
+        {feedUnificado.some(item => item.categoria === 'evento' || item.titulo.includes('📅 Agenda:')) && (
+          <div className="bg-amber-50/60 border border-amber-200 rounded-3xl p-4 sm:p-5 space-y-3 shadow-xs">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-black uppercase text-amber-800 tracking-wider flex items-center gap-2">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+                </span>
+                📌 FIXADO: Compromissos & Reuniões de Pais Importantes
+              </span>
+              <span className="text-[10px] text-amber-800 bg-amber-100/90 border border-amber-200 px-2.5 py-0.5 rounded-full font-black animate-pulse">
+                Presença Solicitada 🔔
+              </span>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+              {feedUnificado
+                .filter(item => item.categoria === 'evento' || item.titulo.includes('📅 Agenda:'))
+                .slice(0, 2)
+                .map(evt => (
+                  <div key={`pinned_${evt.id}`} className="bg-white p-3.5 rounded-2xl border border-amber-200 hover:border-amber-300 shadow-2xs hover:shadow-xs transition duration-200 space-y-2.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-amber-500 text-white flex items-center justify-center text-sm shadow-2xs font-bold">
+                        📅
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h4 className="text-xs sm:text-sm font-black text-slate-800 truncate">
+                          {evt.titulo.replace('📅 Agenda: ', '').replace('📅 Agenda:', '')}
+                        </h4>
+                        <p className="text-[10px] text-slate-500 truncate">
+                          Por: <strong>{evt.origem}</strong> • {evt.dataHora}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="text-[11px] leading-relaxed text-slate-700 font-medium bg-slate-50 p-2.5 rounded-xl border border-slate-100 line-clamp-3">
+                      {evt.conteudo}
+                    </div>
+                    
+                    <div className="flex items-center justify-between gap-2 pt-1">
+                      <span className="text-[9px] font-black uppercase text-amber-800 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-100 animate-pulse">
+                        ⚠️ Atenção Família
+                      </span>
+                      <button
+                        onClick={() => handleCurtirItem(evt.id)}
+                        className="px-2.5 py-1 bg-amber-600 hover:bg-amber-700 active:scale-98 text-white font-black rounded-lg text-[10px] transition cursor-pointer flex items-center gap-1 shadow-2xs"
+                      >
+                        <Heart size={10} className="fill-white" />
+                        <span>Confirmar Leitura & Presença ({curtidasMap[evt.id] || 0})</span>
+                      </button>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+
         {/* FEED DE CARDS EM PADRÃO WHATSAPP */}
         <div className="space-y-3.5">
           {feedFiltrado.length === 0 ? (
@@ -982,6 +1040,7 @@ export default function MuralAvisosERecadosModule({
             feedFiltrado.map((item) => {
               const isFamilia = item.origemTipo === 'familia';
               const isDiario = item.tipo === 'diario';
+              const isEvento = item.categoria === 'evento' || item.titulo.includes('📅 Agenda:');
               const curtidas = curtidasMap[item.id] || 0;
 
               return (
@@ -992,6 +1051,8 @@ export default function MuralAvisosERecadosModule({
                       ? 'bg-emerald-50/40 border-emerald-200'
                       : isFamilia
                       ? 'bg-indigo-50/30 border-indigo-200'
+                      : isEvento
+                      ? 'bg-amber-50/60 border-amber-300 ring-2 ring-amber-400/10 shadow-xs'
                       : 'bg-slate-50/80 border-slate-200'
                   }`}
                 >
@@ -1004,10 +1065,12 @@ export default function MuralAvisosERecadosModule({
                             ? 'bg-emerald-600 text-white'
                             : isFamilia
                             ? 'bg-indigo-600 text-white'
+                            : isEvento
+                            ? 'bg-amber-500 text-white'
                             : 'bg-slate-800 text-white'
                         }`}
                       >
-                        {item.icone}
+                        {isEvento ? '📅' : item.icone}
                       </div>
 
                       <div>
@@ -1019,10 +1082,12 @@ export default function MuralAvisosERecadosModule({
                                 ? 'bg-emerald-100 text-emerald-900 border-emerald-200'
                                 : isFamilia
                                 ? 'bg-indigo-100 text-indigo-900 border-indigo-200'
+                                : isEvento
+                                ? 'bg-amber-100 text-amber-900 border-amber-300 animate-pulse'
                                 : 'bg-slate-200 text-slate-800 border-slate-300'
                             }`}
                           >
-                            {isDiario ? 'Diário Consolidado' : isFamilia ? 'Enviado pelos Pais' : 'Educadora / Mural'}
+                            {isDiario ? 'Diário Consolidado' : isFamilia ? 'Enviado pelos Pais' : isEvento ? '🚨 COMPROMISSO IMPORTANTE' : 'Educadora / Mural'}
                           </span>
                         </div>
                         <p className="text-[11px] text-slate-500">
@@ -1034,11 +1099,13 @@ export default function MuralAvisosERecadosModule({
                     <div className="flex items-center gap-1.5 self-start sm:self-auto text-xs">
                       <button
                         onClick={() => handleCurtirItem(item.id)}
-                        className="px-2.5 py-1 bg-white hover:bg-rose-50 text-rose-600 font-bold rounded-xl border border-slate-200 transition flex items-center gap-1 cursor-pointer text-xs"
-                        title="Confirmar leitura / curtir"
+                        className={`px-2.5 py-1 hover:bg-rose-50 text-rose-600 font-bold rounded-xl border transition flex items-center gap-1 cursor-pointer text-xs ${
+                          isEvento ? 'bg-amber-100 border-amber-300' : 'bg-white border-slate-200'
+                        }`}
+                        title={isEvento ? 'Confirmar leitura e presença' : 'Confirmar leitura / curtir'}
                       >
                         <Heart size={13} className="fill-rose-500 text-rose-500" />
-                        <span>{curtidas}</span>
+                        <span>{isEvento ? `Confirmar Presença (${curtidas})` : curtidas}</span>
                       </button>
                     </div>
                   </div>

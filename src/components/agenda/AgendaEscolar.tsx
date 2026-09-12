@@ -136,18 +136,42 @@ export default function AgendaEscolar({ currentStudent, userRole = 'professor' }
         </div>
       ) : (
         <div className="space-y-4">
-          <div className="flex items-center justify-between text-xs font-bold text-slate-500 px-1">
+          {/* BANNER DE ATENÇÃO DA FAMÍLIA (AURA ANJO CUIDADOR) */}
+          <div className="bg-amber-50/70 border border-amber-200 rounded-3xl p-4 flex items-start gap-3.5 shadow-2xs">
+            <div className="w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center flex-shrink-0 text-lg shadow-sm">
+              🔔
+            </div>
+            <div className="space-y-1">
+              <h4 className="text-sm font-black text-amber-950 flex items-center gap-1.5">
+                Compromissos Familiares Relevantes
+                <span className="text-[9px] uppercase font-black bg-amber-200 text-amber-900 px-2 py-0.5 rounded-full animate-pulse">
+                  Presença Importante
+                </span>
+              </h4>
+              <p className="text-xs text-amber-900/80 leading-relaxed">
+                Olá, família! Há novos compromissos e reuniões importantes marcados na agenda de <strong>{currentStudent.nome}</strong>. Por favor, verifique as datas abaixo para planejar sua presença e apoiar a jornada de desenvolvimento do seu pequeno com carinho.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between text-xs font-bold text-slate-500 px-1 pt-2">
             <span>Compromissos Agendados ({eventos.length})</span>
             <span>Aluno em Exibição: {currentStudent.nome}</span>
           </div>
 
           <div className="grid grid-cols-1 gap-4">
-            {eventos.map((evt) => {
+            {eventos.map((evt, idx) => {
               const dataFormatada = evt.data.split('-').reverse().join('/');
+              const isRecent = idx === 0 || evt.id.startsWith('evt_'); // newly added or first in list
+
               return (
                 <div
                   key={evt.id}
-                  className="bg-white rounded-3xl p-5 sm:p-6 border border-slate-200 shadow-xs hover:border-indigo-200 transition space-y-4"
+                  className={`rounded-3xl p-5 sm:p-6 border transition space-y-4 ${
+                    isRecent 
+                      ? 'bg-amber-50/50 border-amber-300 ring-2 ring-amber-400/10 shadow-xs' 
+                      : 'bg-white border-slate-200 shadow-xs hover:border-indigo-200'
+                  }`}
                 >
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                     <div className="space-y-1">
@@ -155,6 +179,12 @@ export default function AgendaEscolar({ currentStudent, userRole = 'professor' }
                         <span className="text-[10px] font-black uppercase bg-indigo-50 text-indigo-700 border border-indigo-100 px-2.5 py-0.5 rounded-full">
                           {evt.tipo}
                         </span>
+                        {isRecent && (
+                          <span className="text-[10px] font-black uppercase bg-amber-500 text-white px-2.5 py-0.5 rounded-full flex items-center gap-1 animate-pulse">
+                            <Sparkles size={11} className="fill-white" />
+                            <span>Novo Compromisso!</span>
+                          </span>
+                        )}
                         {evt.emMassa && (
                           <span className="text-[10px] font-black uppercase bg-emerald-50 text-emerald-700 border border-emerald-100 px-2.5 py-0.5 rounded-full flex items-center gap-1">
                             <Users size={11} />
