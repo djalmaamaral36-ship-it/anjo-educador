@@ -228,6 +228,8 @@ export default function BannerHeader({
   const primaryNavItems = [
     { id: 'diario_escolar', label: 'Diário Escolar', icon: BookOpen },
     { id: 'turma', label: 'Turma & Alunos', icon: Users },
+    { id: 'mural', label: 'Mural de Avisos', icon: Bell },
+    { id: 'medicamentos', label: 'Medicamentos', icon: Pill },
     { id: 'agenda', label: 'Agenda', icon: Calendar },
     { id: 'familias', label: 'Famílias', icon: HeartHandshake },
   ];
@@ -282,12 +284,6 @@ export default function BannerHeader({
           icon: BookOpen,
           badge: 'Principal',
           badgeColor: 'bg-teal-100 text-teal-800',
-        },
-        {
-          id: 'rotina',
-          label: 'Diário de Rotina Consolidado',
-          sub: 'Painel unificado e linha do tempo de cuidados diários',
-          icon: ClipboardList,
         },
         {
           id: 'turma',

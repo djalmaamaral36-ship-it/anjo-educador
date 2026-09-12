@@ -149,11 +149,11 @@ export default function PainelRotinaUnificado({
     );
     setAulaFinalizada(student.presenca.status === 'encerrada');
     setChecklist({
-      trocaRoupas: student.higieneChecklist?.trocaRoupas || 'Realizado',
+      trocaRoupas: student.higieneChecklist?.trocaRoupas || 'Pendente',
       escovacaoDentes: student.higieneChecklist?.escovacaoDentes || 'Pendente',
-      maosERosto: student.higieneChecklist?.maosERosto || 'Realizado',
+      maosERosto: student.higieneChecklist?.maosERosto || 'Pendente',
       banhoTomado: student.higieneChecklist?.banhoTomado || 'Pendente',
-      pomadaProtetor: student.higieneChecklist?.pomadaProtetor || 'Realizado',
+      pomadaProtetor: student.higieneChecklist?.pomadaProtetor || 'Pendente',
     });
   }, [
     student.id,
@@ -952,11 +952,11 @@ export default function PainelRotinaUnificado({
     banhoTomado: 'Realizado' | 'Pendente';
     pomadaProtetor: 'Realizado' | 'Pendente';
   }>({
-    trocaRoupas: student.higieneChecklist?.trocaRoupas || 'Realizado',
+    trocaRoupas: student.higieneChecklist?.trocaRoupas || 'Pendente',
     escovacaoDentes: student.higieneChecklist?.escovacaoDentes || 'Pendente',
-    maosERosto: student.higieneChecklist?.maosERosto || 'Realizado',
+    maosERosto: student.higieneChecklist?.maosERosto || 'Pendente',
     banhoTomado: student.higieneChecklist?.banhoTomado || 'Pendente',
-    pomadaProtetor: student.higieneChecklist?.pomadaProtetor || 'Realizado',
+    pomadaProtetor: student.higieneChecklist?.pomadaProtetor || 'Pendente',
   });
 
   // Modais de Ocorrência, Relatório WhatsApp, Confirmação Coletiva e Desligamento Individual
@@ -1131,6 +1131,13 @@ export default function PainelRotinaUnificado({
         estado: 'Calmo / Sereno',
         turno: 'Manhã',
         observacao: 'Novo período de aula iniciado.',
+      },
+      higieneChecklist: {
+        trocaRoupas: 'Pendente',
+        escovacaoDentes: 'Pendente',
+        maosERosto: 'Pendente',
+        banhoTomado: 'Pendente',
+        pomadaProtetor: 'Pendente',
       },
       saudeCards: {
         soneca: { valor: 'Sem Soneca Ainda', periodo: 'Hoje' },
@@ -1448,6 +1455,13 @@ export default function PainelRotinaUnificado({
         estado: 'Calmo / Sereno',
         turno: 'Manhã',
         observacao: 'Diário de rotina zerado para reiniciar do zero.',
+      },
+      higieneChecklist: {
+        trocaRoupas: 'Pendente',
+        escovacaoDentes: 'Pendente',
+        maosERosto: 'Pendente',
+        banhoTomado: 'Pendente',
+        pomadaProtetor: 'Pendente',
       },
       saudeCards: {
         soneca: { valor: 'Sem Soneca Ainda', periodo: 'Hoje' },

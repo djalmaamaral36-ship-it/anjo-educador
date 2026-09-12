@@ -521,7 +521,8 @@ export default function MuralAvisosERecadosModule({
       const matchBusca =
         item.conteudo.toLowerCase().includes(filtroBusca.toLowerCase()) ||
         item.titulo.toLowerCase().includes(filtroBusca.toLowerCase()) ||
-        item.origem.toLowerCase().includes(filtroBusca.toLowerCase());
+        item.origem.toLowerCase().includes(filtroBusca.toLowerCase()) ||
+        item.dataHora.toLowerCase().includes(filtroBusca.toLowerCase());
       if (!matchBusca) return false;
     }
 
