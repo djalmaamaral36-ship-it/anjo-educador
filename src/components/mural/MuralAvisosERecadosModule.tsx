@@ -506,7 +506,33 @@ export default function MuralAvisosERecadosModule({
       lido: true,
       studentNome: currentStudent.nome,
     })),
-  ].sort((a, b) => b.id.localeCompare(a.id));
+  ].sort((a, b) => {
+    const parseDataHora = (str: string): number => {
+      if (!str) return 0;
+      try {
+        const partes = str.split(' às ');
+        const dataPart = partes[0];
+        const horaPart = partes[1] || '00:00';
+        const [dia, mes, ano] = dataPart.split('/').map(Number);
+        const [hora, min] = horaPart.split(':').map(Number);
+        if (dia && mes && ano) {
+          return new Date(ano, mes - 1, dia, hora || 0, min || 0, 0).getTime();
+        }
+      } catch (e) {
+        console.error('Erro ao converter data:', str, e);
+      }
+      return 0;
+    };
+
+    const timeA = parseDataHora(a.dataHora);
+    const timeB = parseDataHora(b.dataHora);
+    if (timeB !== timeA) {
+      return timeB - timeA;
+    }
+    const numA = parseInt(a.id.replace(/\D/g, '')) || 0;
+    const numB = parseInt(b.id.replace(/\D/g, '')) || 0;
+    return numB - numA;
+  });
 
   // Filtros do Feed
   const feedFiltrado = feedUnificado.filter((item) => {

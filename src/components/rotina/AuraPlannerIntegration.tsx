@@ -32,6 +32,53 @@ export function sortActivitiesBySchedule(list: ParsedAuraActivity[]): ParsedAura
   });
 }
 
+// Remove duplicidades de horário dentro do mesmo dia, priorizando atividades customizadas/importadas
+export function deduplicateActivities(list: ParsedAuraActivity[]): ParsedAuraActivity[] {
+  const result: ParsedAuraActivity[] = [];
+  const WEEKDAY_NAMES = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado', 'Domingo'];
+
+  for (const act of list) {
+    let dayKey = act.dia || 'Quarta-feira';
+    const matchedDay = WEEKDAY_NAMES.find(d => dayKey.toLowerCase().includes(d.split('-')[0].toLowerCase()));
+    if (matchedDay) {
+      dayKey = matchedDay;
+    }
+
+    const timeKey = (act.horario || '').trim();
+
+    const existingIndex = result.findIndex(item => {
+      let itemDay = item.dia || 'Quarta-feira';
+      const mDay = WEEKDAY_NAMES.find(d => itemDay.toLowerCase().includes(d.split('-')[0].toLowerCase()));
+      if (mDay) {
+        itemDay = mDay;
+      }
+      return itemDay === dayKey && (item.horario || '').trim() === timeKey;
+    });
+
+    if (existingIndex !== -1) {
+      const existingItem = result[existingIndex];
+      // Se a existente for rotina padrão e a nova não for (ex: importada/customizada), substitui
+      if (existingItem.isRotinaPadrao && !act.isRotinaPadrao) {
+        result[existingIndex] = act;
+      } else if (!existingItem.isRotinaPadrao && act.isRotinaPadrao) {
+        // Mantém a customizada (ignora a padrão que está duplicando)
+      } else {
+        // Se ambas têm o mesmo tipo, escolhe a que tem mais informações (título longo/descrição longa)
+        if ((act.titulo || '').length > (existingItem.titulo || '').length) {
+          result[existingIndex] = act;
+        }
+      }
+    } else {
+      result.push({
+        ...act,
+        dia: dayKey
+      });
+    }
+  }
+
+  return result;
+}
+
 const DEFAULT_INITIAL_ACTIVITIES: ParsedAuraActivity[] = sortActivitiesBySchedule([
   // --- SEGUNDA-FEIRA ---
   {
@@ -891,7 +938,7 @@ interface ConflictState {
 
 export default function AuraPlannerIntegration({ onConcluirAtividadePedagogica, studentNome = 'Mariana Souza' }: Props) {
   const [inputText, setInputText] = useState('');
-  const [activities, setActivities] = useState<ParsedAuraActivity[]>(sortActivitiesBySchedule(PLAN_ACTIVITIES));
+  const [activities, setActivities] = useState<ParsedAuraActivity[]>(() => sortActivitiesBySchedule(deduplicateActivities(PLAN_ACTIVITIES)));
   const [selectedDayTab, setSelectedDayTab] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<'todas' | 'pendentes' | 'entregues' | 'recusadas'>('todas');
   const [isProcessing, setIsProcessing] = useState(false);
@@ -1091,7 +1138,7 @@ export default function AuraPlannerIntegration({ onConcluirAtividadePedagogica, 
           entregue: false,
           observacao: undefined,
         }));
-        setActivities((prev) => sortActivitiesBySchedule([...prev, ...pendingImportedActivities]));
+        setActivities((prev) => sortActivitiesBySchedule(deduplicateActivities([...prev, ...pendingImportedActivities])));
       }
       setSelectedDayTab('all');
       setShowForm(false);
@@ -1142,7 +1189,7 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
       entregue: false,
       observacao: undefined
     }));
-    setActivities(allPendingDefaults);
+    setActivities(sortActivitiesBySchedule(deduplicateActivities(allPendingDefaults)));
     setSelectedDayTab('all');
     setStatusFilter('todas');
     setActivityNotes({});
@@ -1168,7 +1215,7 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
         // Adiciona nova atividade
         updated = [...prev, newAct];
       }
-      return sortActivitiesBySchedule(updated);
+      return sortActivitiesBySchedule(deduplicateActivities(updated));
     });
 
     // Se a aba estiver filtrada em outro dia, ajusta para o dia da atividade criada para exibição imediata
@@ -1419,6 +1466,68 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
             <Plus size={16} />
             <span>+ Nova Atividade</span>
           </button>
+        </div>
+      </div>
+
+      {/* PAINEL DE MÉTRICAS DE GOVERNANÇA (EXIGIDO PARA MÉTRICAS DO DIRETOR) */}
+      <div className="bg-slate-50 border border-slate-200/90 rounded-3xl p-5 flex flex-col gap-4 shadow-2xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="space-y-0.5">
+            <h4 className="text-xs font-black uppercase tracking-widest text-indigo-700 flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-pulse" />
+              Métricas de Governança — Distribuição de Atividades Aura
+            </h4>
+            <p className="text-xs text-slate-600 leading-normal">
+              Controle de volumetria de atividades diárias integradas com a inteligência da <strong>Anjinha Aura</strong> para assegurar conformidade do plano de aula.
+            </p>
+          </div>
+          <div className="bg-indigo-50 border border-indigo-200 text-indigo-950 px-3.5 py-1.5 rounded-2xl flex items-center gap-2 flex-shrink-0 self-start sm:self-center">
+            <Layers size={14} className="text-indigo-600" />
+            <span className="text-xs font-black">
+              Carga Total: {activities.length} Atividades
+            </span>
+          </div>
+        </div>
+
+        {/* Grid de Dias da Semana com Indicadores e Carga de Trabalho */}
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-1">
+          {daySummaries.map((ds) => {
+            const isSelected = selectedDayTab === ds.dia;
+            return (
+              <div 
+                key={ds.dia}
+                onClick={() => setSelectedDayTab(ds.dia)}
+                className={`p-4 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 ${
+                  isSelected 
+                    ? 'bg-gradient-to-br from-indigo-600 to-blue-600 border-indigo-600 text-white shadow-md scale-[1.02]' 
+                    : 'bg-white border-slate-200 hover:border-slate-300 text-slate-800 hover:shadow-2xs'
+                }`}
+              >
+                <div className="flex items-center justify-between gap-1.5">
+                  <span className={`text-[10px] uppercase font-black tracking-wide ${isSelected ? 'text-indigo-100' : 'text-slate-500'}`}>
+                    {ds.dia.split('-')[0]}
+                  </span>
+                  <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full ${
+                    isSelected 
+                      ? 'bg-white/20 text-white' 
+                      : ds.count >= 12 
+                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
+                        : 'bg-amber-50 text-amber-700 border border-amber-100'
+                  }`}>
+                    {ds.count >= 12 ? 'Meta ✓' : 'Planejado'}
+                  </span>
+                </div>
+                <div className="space-y-0.5">
+                  <span className="text-2xl font-black block tracking-tight">
+                    {ds.count}
+                  </span>
+                  <span className={`text-[9px] block ${isSelected ? 'text-indigo-200' : 'text-slate-400'}`}>
+                    atividades registradas
+                  </span>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 
@@ -1893,13 +2002,18 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
             <button
               type="button"
               onClick={() => setSelectedDayTab('all')}
-              className={`px-3 py-1 rounded-xl text-xs font-bold transition cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
                 selectedDayTab === 'all'
                   ? 'bg-blue-600 text-white shadow-xs font-black'
                   : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
               }`}
             >
-              Todos os Dias
+              <span>Todos os Dias</span>
+              <span className={`px-1.5 py-0.5 text-[9px] rounded-full font-black ${
+                selectedDayTab === 'all' ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-500'
+              }`}>
+                {activities.length}
+              </span>
             </button>
 
             {daySummaries.map((ds) => (
@@ -1907,13 +2021,18 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                 key={ds.dia}
                 type="button"
                 onClick={() => setSelectedDayTab(ds.dia)}
-                className={`px-3 py-1 rounded-xl text-xs font-bold transition cursor-pointer ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
                   selectedDayTab === ds.dia
                     ? 'bg-blue-600 text-white shadow-xs font-black'
                     : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
                 }`}
               >
-                {ds.dia}
+                <span>{ds.dia}</span>
+                <span className={`px-1.5 py-0.5 text-[9px] rounded-full font-black ${
+                  selectedDayTab === ds.dia ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-500'
+                }`}>
+                  {ds.count}
+                </span>
               </button>
             ))}
           </div>
