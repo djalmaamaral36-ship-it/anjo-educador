@@ -148,6 +148,13 @@ export default function PainelRotinaUnificado({
         : 'em_aula'
     );
     setAulaFinalizada(student.presenca.status === 'encerrada');
+    setChecklist({
+      trocaRoupas: student.higieneChecklist?.trocaRoupas || 'Realizado',
+      escovacaoDentes: student.higieneChecklist?.escovacaoDentes || 'Pendente',
+      maosERosto: student.higieneChecklist?.maosERosto || 'Realizado',
+      banhoTomado: student.higieneChecklist?.banhoTomado || 'Pendente',
+      pomadaProtetor: student.higieneChecklist?.pomadaProtetor || 'Realizado',
+    });
   }, [
     student.id,
     student.presenca?.status,
@@ -159,6 +166,7 @@ export default function PainelRotinaUnificado({
     student.saudeCards?.soneca?.valor,
     student.saudeCards?.fraldas?.valor,
     student.saudeCards?.temperatura?.valor,
+    student.higieneChecklist,
   ]);
 
   // Reconhecimento de Voz (Microfone) para Diário do Professor
@@ -761,6 +769,70 @@ export default function PainelRotinaUnificado({
     );
   };
 
+  const handleToggleHigieneDireto = (key: string, label: string) => {
+    if (!isProfessor) return;
+    
+    const statusAtual = checklist[key as keyof typeof checklist] || 'Pendente';
+    const nextState = statusAtual === 'Realizado' ? 'Pendente' : 'Realizado';
+    
+    if (nextState === 'Realizado') {
+      if (!validarCronometroAtivo(`Cuidado: ${label}`, () => handleToggleHigieneDireto(key, label))) {
+        return;
+      }
+    }
+
+    const horaAtual = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+    const novoChecklist = {
+      ...checklist,
+      [key]: nextState,
+    };
+    setChecklist(novoChecklist);
+
+    let novaLinhaTempo = student.auditoriaLinhaDoTempo || [];
+    if (nextState === 'Realizado') {
+      const novoItem = {
+        id: `audit_higiene_${key}_${Date.now()}`,
+        hora: horaAtual,
+        tipo: 'higiene' as const,
+        titulo: `Higiene & Cuidados: ${label}`,
+        descricao: `Cuidado de higiene "${label}" realizado com sucesso para ${student.nome}.`,
+        responsavel: student.professoraTitular || 'Ana Silva (Professora Titular)',
+        verificado: true,
+      };
+      
+      const filteredList = novaLinhaTempo.filter(item => 
+        !item.titulo.toLowerCase().includes(label.toLowerCase())
+      );
+      novaLinhaTempo = [novoItem, ...filteredList];
+    } else {
+      novaLinhaTempo = novaLinhaTempo.filter(item => 
+        !item.titulo.toLowerCase().includes(label.toLowerCase())
+      );
+    }
+
+    if (onUpdateStudent) {
+      onUpdateStudent({
+        higieneChecklist: novoChecklist,
+        auditoriaLinhaDoTempo: novaLinhaTempo,
+      });
+    }
+
+    if (nextState === 'Realizado') {
+      triggerCardConfirmacao(
+        `✨ ${label} Marcado`,
+        `Cuidado de higiene "${label}" de ${student.nome} marcado como realizado e transmitido ao painel dos pais!`,
+        'higiene'
+      );
+    } else {
+      triggerCardConfirmacao(
+        `🔄 ${label} Removido`,
+        `Cuidado de higiene "${label}" de ${student.nome} desfeito e sincronizado no painel dos pais!`,
+        'higiene'
+      );
+    }
+  };
+
   const handleSalvarHumor = () => {
     if (!isProfessor) return;
     if (!validarCronometroAtivo('Estado de Humor', () => handleSalvarHumor())) {
@@ -829,12 +901,18 @@ export default function PainelRotinaUnificado({
   };
 
   // Checklist de Higiene (Foto 13)
-  const [checklist, setChecklist] = useState({
-    trocaRoupas: 'Realizado',
-    escovacaoDentes: 'Pendente',
-    maosERosto: 'Realizado',
-    banhoTomado: 'Pendente',
-    pomadaProtetor: 'Realizado',
+  const [checklist, setChecklist] = useState<{
+    trocaRoupas: 'Realizado' | 'Pendente';
+    escovacaoDentes: 'Realizado' | 'Pendente';
+    maosERosto: 'Realizado' | 'Pendente';
+    banhoTomado: 'Realizado' | 'Pendente';
+    pomadaProtetor: 'Realizado' | 'Pendente';
+  }>({
+    trocaRoupas: student.higieneChecklist?.trocaRoupas || 'Realizado',
+    escovacaoDentes: student.higieneChecklist?.escovacaoDentes || 'Pendente',
+    maosERosto: student.higieneChecklist?.maosERosto || 'Realizado',
+    banhoTomado: student.higieneChecklist?.banhoTomado || 'Pendente',
+    pomadaProtetor: student.higieneChecklist?.pomadaProtetor || 'Realizado',
   });
 
   // Modais de Ocorrência, Relatório WhatsApp, Confirmação Coletiva e Desligamento Individual
@@ -2650,40 +2728,10 @@ export default function PainelRotinaUnificado({
                     key={item.key}
                     type="button"
                     disabled={!isProfessor}
-                    onClick={() => {
-                      if (!isProfessor) return;
-                      const nextState = !isOk;
-                      if (nextState) {
-                        if (!validarCronometroAtivo(`Cuidado: ${item.label}`, () => {
-                          setChecklist((prev) => ({
-                            ...prev,
-                            [item.key]: 'Realizado',
-                          }));
-                          triggerCardConfirmacao(
-                            `✨ ${item.label} Marcado`,
-                            `Cuidado de higiene "${item.label}" de ${student.nome} marcado como realizado e transmitido ao painel dos pais!`,
-                            'higiene'
-                          );
-                        })) {
-                          return;
-                        }
-                      }
-                      setChecklist((prev) => ({
-                        ...prev,
-                        [item.key]: nextState ? 'Realizado' : 'Pendente',
-                      }));
-                      
-                      if (nextState) {
-                        triggerCardConfirmacao(
-                          `✨ ${item.label} Marcado`,
-                          `Cuidado de higiene "${item.label}" de ${student.nome} marcado como realizado e transmitido ao painel dos pais!`,
-                          'higiene'
-                        );
-                      }
-                    }}
+                    onClick={() => handleToggleHigieneDireto(item.key, item.label)}
                     className={`p-2.5 rounded-xl border text-left transition flex items-center justify-between ${
                       isOk
-                        ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
+                        ? 'bg-emerald-500 border-emerald-600 text-white font-extrabold shadow-2xs scale-102'
                         : 'bg-slate-50 border-slate-200 text-slate-500'
                     } ${isProfessor ? 'cursor-pointer hover:border-slate-300' : 'cursor-default'}`}
                   >
@@ -2691,7 +2739,7 @@ export default function PainelRotinaUnificado({
                       <span className="mr-1.5">{item.icon}</span>
                       <span className="font-bold text-[11px]">{item.label}</span>
                     </div>
-                    <span className="text-[9px] font-black uppercase">
+                    <span className="text-[10px] font-black uppercase bg-white/20 px-1.5 py-0.5 rounded-md">
                       {isOk ? '✓' : '...'}
                     </span>
                   </button>

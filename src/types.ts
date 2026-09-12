@@ -223,6 +223,13 @@ export interface StudentPaxData {
   faltasTotais?: number;
   presenteHoje?: boolean;
   cuidadosEspeciais?: boolean;
+  higieneChecklist?: {
+    trocaRoupas?: 'Realizado' | 'Pendente';
+    escovacaoDentes?: 'Realizado' | 'Pendente';
+    maosERosto?: 'Realizado' | 'Pendente';
+    banhoTomado?: 'Realizado' | 'Pendente';
+    pomadaProtetor?: 'Realizado' | 'Pendente';
+  };
 }
 
 export interface OcorrenciaEscolar {
