@@ -121,7 +121,8 @@ export default function BannerHeader({
       });
       const data = await response.json();
       if (data.url) {
-        window.open(data.url, '_blank');
+        // Redirecionamento direto no navegador para evitar popup-blockers e problemas de iframe/SSO
+        window.location.href = data.url;
       } else {
         alert('Falha ao conectar com a Anjinha Aura.');
       }

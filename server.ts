@@ -1385,9 +1385,9 @@ A resposta da Aura ("respostaAura") deve ser uma confirmação curta, afetuosa e
   // =========================================================================
 
   // Chaves de segurança (devem vir do .env em prod, aqui fazemos fallback para simulação)
-  const ANJINHO_SSO_SECRET = process.env.ANJINHO_SSO_SECRET || 'anjinho-aura-secret-key-2026';
-  const MURAL_WEBHOOK_SECRET = process.env.MURAL_WEBHOOK_SECRET || 'anjinho-mural-secret-2026';
-  const AURA_INBOUND_SECRET = process.env.AURA_INBOUND_SECRET || 'anjinha-inbound-secret-2026';
+  const ANJINHO_SSO_SECRET = (process.env.ANJINHO_SSO_SECRET || 'anjinho-aura-secret-key-2026').trim();
+  const MURAL_WEBHOOK_SECRET = (process.env.MURAL_WEBHOOK_SECRET || 'anjinho-mural-secret-2026').trim();
+  const AURA_INBOUND_SECRET = (process.env.AURA_INBOUND_SECRET || 'anjinha-inbound-secret-2026').trim();
 
   // 1. Endpoint para gerar o JWT de SSO para pular para a Aura
   app.post('/api/aura/sso', express.json(), (req, res) => {
