@@ -1,6 +1,7 @@
 import React from 'react';
 import { auth, googleProvider, signInWithPopup } from '../services/firebase';
 import { useNavigate } from 'react-router-dom';
+import TelaAtalhoSimuladorModal, { AtalhoPerfil } from './comum/TelaAtalhoSimuladorModal';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -11,21 +12,33 @@ export default function Login() {
       navigate('/');
     } catch (error) {
       console.error('Erro ao fazer login:', error);
-      alert('Falha no login. Tente novamente.');
+      alert('Falha no login com Google. Você pode simular qualquer perfil abaixo.');
     }
   };
 
+  const handleConfirmProfile = (perfil: AtalhoPerfil) => {
+    localStorage.setItem(
+      'anjinho_simulated_user',
+      JSON.stringify({
+        displayName: perfil.tituloExibicao,
+        email: `${perfil.id}@escola.com`,
+        role: perfil.role,
+        tabDestino: perfil.tabDestino,
+        alunoPadraoId: perfil.alunoPadraoId,
+      })
+    );
+    navigate('/');
+  };
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50">
-      <div className="p-8 bg-white rounded-xl shadow-md">
-        <h1 className="text-xl font-bold mb-4">Login Anjinho Educador</h1>
-        <button 
-          onClick={handleGoogleLogin}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-        >
-          Entrar com Google
-        </button>
-      </div>
+    <div className="min-h-screen bg-[#fbf9f4] flex flex-col items-center justify-center p-3 sm:p-6">
+      <TelaAtalhoSimuladorModal
+        isOpen={true}
+        onClose={() => {}}
+        activeRole="professor"
+        activeTab="diario_escolar"
+        onConfirmProfile={handleConfirmProfile}
+      />
     </div>
   );
 }

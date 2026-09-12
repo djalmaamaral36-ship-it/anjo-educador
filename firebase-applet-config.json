@@ -6,5 +6,7 @@
   "firestoreDatabaseId": "ai-studio-anjocuidador-01abcee4-4a2e-48b5-acbd-97d93f09f7ef",
   "storageBucket": "capable-weaver-583b3.firebasestorage.app",
   "messagingSenderId": "480442416005",
-  "measurementId": ""
+  "measurementId": "",
+  "oAuthClientId": "480442416005-po00i31s0knr6a4ddam957ejm31q2eeu.apps.googleusercontent.com",
+  "recaptchaSiteKey": ""
 }

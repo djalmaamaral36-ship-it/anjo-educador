@@ -1,7 +1,7 @@
 {
-  "name": "Anjo Cuidador — Presença e Cuidado Familiar",
-  "short_name": "Anjo Cuidador",
-  "description": "Aplicativo premium para assistência, saúde e acompanhamento de idosos conectando famílias e cuidadores.",
+  "name": "Anjinho Educador — Onde a infância é registrada para sempre",
+  "short_name": "Anjinho Educador",
+  "description": "Agenda escolar completa para educação infantil: gestão de rotinas, diário de infância, acompanhamento pedagógico e comunicação com famílias.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f8fafc",

@@ -1,39 +1,22 @@
 {
   "entities": {
-    "Shift": {
-      "title": "Shift",
-      "description": "Shift data",
+    "students": {
+      "title": "Student Pax Data",
+      "description": "Real-time synced student data including presence, timer status, activities, and logs",
       "type": "object",
       "properties": {
         "id": { "type": "string" },
-        "studentId": { "type": "string" }
-      }
-    },
-    "HydrationRecord": {
-      "title": "HydrationRecord",
-      "description": "Hydration registration record",
-      "type": "object",
-      "properties": {
-        "id": { "type": "string" },
-        "studentId": { "type": "string" },
-        "amountMl": { "type": "number" },
-        "timestamp": { "type": "string", "format": "date-time" }
+        "nome": { "type": "string" },
+        "presenca": { "type": "object" },
+        "timelineEvents": { "type": "array" }
       },
-      "required": ["studentId", "amountMl", "timestamp"]
+      "required": ["id", "nome"]
     }
   },
-  "firestore": {
-    "/turnos_ativos/{shiftId}": {
-      "schema": "Shift",
-      "description": "Shift collection"
-    },
-    "/anjo_shift_states/{shiftId}": {
-      "schema": "Shift",
-      "description": "Shift states collection"
-    },
-    "/hidratacao/{recordId}": {
-      "schema": "HydrationRecord",
-      "description": "Hydration records"
+  "securityRules": {
+    "students": {
+      "read": "true",
+      "write": "true"
     }
   }
 }

@@ -11,8 +11,13 @@ export interface ParsedAuraActivity {
   descricao: string;
   tipo: 'alimentacao' | 'medicacao' | 'atividade_fisica' | 'banho' | 'sono' | 'humor';
   duracao?: number;
+  item_key?: string;
   objetivoBNCC?: string;
   materiais?: string[];
+  entregue?: boolean;
+  isRotinaPadrao?: boolean;
+  status?: 'pendente' | 'entregue' | 'recusou';
+  observacao?: string;
 }
 
 export interface AuraDaySummary {
@@ -60,6 +65,93 @@ export function getWeekDatesMap(refDate = new Date()): Record<string, { iso: str
 }
 
 // Resolves day name and date into consistent Brazilian format (DD/MM/YYYY) and ISO format (YYYY-MM-DD)
+export function parsePortugueseDate(text: string, refDate = new Date()): { day: number; month: number; year: number; dateStr: string; dateIso: string; dia: string } | null {
+  if (!text) return null;
+  const currentYear = refDate.getFullYear();
+
+  const monthMap: Record<string, number> = {
+    jan: 1, janeiro: 1,
+    fev: 2, fevereiro: 2,
+    mar: 3, marco: 3, março: 3,
+    abr: 4, abril: 4,
+    mai: 5, maio: 5,
+    jun: 6, junho: 6,
+    jul: 7, julho: 7,
+    ago: 8, agosto: 8,
+    set: 9, setembro: 9,
+    out: 10, outubro: 10,
+    nov: 11, novembro: 11,
+    dez: 12, dezembro: 12
+  };
+
+  const daysArr = ['Domingo', 'Segunda-feira', 'Terca-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sabado'];
+
+  // Match "9 de setembro", "09 de setembro", "9 de set", "9/setembro", "9 de setembro de 2026"
+  const textMatch = text.match(/(?:dia\s+)?(\d{1,2})\s*(?:de\s+|\/)?\s*(jan(?:eiro)?|fev(?:ereiro)?|mar(?:[çc]o)?|abr(?:il)?|mai(?:o)?|jun(?:ho)?|jul(?:ho)?|ago(?:sto)?|set(?:embro)?|out(?:ubro)?|nov(?:embro)?|dez(?:embro)?)(?:\s*(?:de\s+|\/)?\s*(\d{2,4}))?/i);
+  if (textMatch) {
+    const d = parseInt(textMatch[1], 10);
+    const mKey = textMatch[2].toLowerCase();
+    const m = monthMap[mKey] || 9;
+    const y = textMatch[3] ? (textMatch[3].length === 2 ? parseInt(`20${textMatch[3]}`, 10) : parseInt(textMatch[3], 10)) : currentYear;
+
+    const dPad = String(d).padStart(2, '0');
+    const mPad = String(m).padStart(2, '0');
+    const dateStr = `${dPad}/${mPad}/${y}`;
+    const dateIso = `${y}-${mPad}-${dPad}`;
+
+    let dia = 'Segunda-feira';
+    try {
+      const dObj = new Date(y, m - 1, d);
+      dia = daysArr[dObj.getDay()] || 'Segunda-feira';
+    } catch (e) {}
+
+    return { day: d, month: m, year: y, dateStr, dateIso, dia };
+  }
+
+  // Match slash date: "09/09", "9/9/2026", "2026-09-09"
+  const slashMatch = text.match(/(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?/);
+  if (slashMatch) {
+    const d = parseInt(slashMatch[1], 10);
+    const m = parseInt(slashMatch[2], 10);
+    const y = slashMatch[3] ? (slashMatch[3].length === 2 ? parseInt(`20${slashMatch[3]}`, 10) : parseInt(slashMatch[3], 10)) : currentYear;
+
+    const dPad = String(d).padStart(2, '0');
+    const mPad = String(m).padStart(2, '0');
+    const dateStr = `${dPad}/${mPad}/${y}`;
+    const dateIso = `${y}-${mPad}-${dPad}`;
+
+    let dia = 'Segunda-feira';
+    try {
+      const dObj = new Date(y, m - 1, d);
+      dia = daysArr[dObj.getDay()] || 'Segunda-feira';
+    } catch (e) {}
+
+    return { day: d, month: m, year: y, dateStr, dateIso, dia };
+  }
+
+  const isoMatch = text.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (isoMatch) {
+    const y = parseInt(isoMatch[1], 10);
+    const m = parseInt(isoMatch[2], 10);
+    const d = parseInt(isoMatch[3], 10);
+
+    const dPad = String(d).padStart(2, '0');
+    const mPad = String(m).padStart(2, '0');
+    const dateStr = `${dPad}/${mPad}/${y}`;
+    const dateIso = `${y}-${mPad}-${dPad}`;
+
+    let dia = 'Segunda-feira';
+    try {
+      const dObj = new Date(y, m - 1, d);
+      dia = daysArr[dObj.getDay()] || 'Segunda-feira';
+    } catch (e) {}
+
+    return { day: d, month: m, year: y, dateStr, dateIso, dia };
+  }
+
+  return null;
+}
+
 export function resolveDayAndDate(rawDay?: string, rawDate?: string, refDate = new Date()): { dia: string; dataStr: string; dataIso: string } {
   const weekMap = getWeekDatesMap(refDate);
   const now = refDate;
@@ -69,49 +161,39 @@ export function resolveDayAndDate(rawDay?: string, rawDate?: string, refDate = n
   let dataStr = '';
   let dataIso = '';
 
-  // 1. Check if rawDate is provided (e.g. 19/08 or 19/08/2026 or 2026-08-19)
+  // 1. Check if rawDate is provided or can be parsed
   if (rawDate) {
-    const cleanDate = rawDate.trim();
-    const slashMatch = cleanDate.match(/^(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?$/);
-    if (slashMatch) {
-      const d = slashMatch[1].padStart(2, '0');
-      const m = slashMatch[2].padStart(2, '0');
-      const y = slashMatch[3] ? (slashMatch[3].length === 2 ? `20${slashMatch[3]}` : slashMatch[3]) : String(currentYear);
-      dataStr = `${d}/${m}/${y}`;
-      dataIso = `${y}-${m}-${d}`;
-
-      try {
-        const dObj = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
-        const dayIdx = dObj.getDay();
-        const daysArr = ['Domingo', 'Segunda-feira', 'Terca-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sabado'];
-        dia = daysArr[dayIdx];
-      } catch (e) {}
-    } else if (/^\d{4}-\d{2}-\d{2}$/.test(cleanDate)) {
-      dataIso = cleanDate;
-      const [y, m, d] = cleanDate.split('-');
-      dataStr = `${d}/${m}/${y}`;
-      try {
-        const dObj = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
-        const dayIdx = dObj.getDay();
-        const daysArr = ['Domingo', 'Segunda-feira', 'Terca-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sabado'];
-        dia = daysArr[dayIdx];
-      } catch (e) {}
+    const parsed = parsePortugueseDate(rawDate, refDate);
+    if (parsed) {
+      dataStr = parsed.dateStr;
+      dataIso = parsed.dateIso;
+      dia = parsed.dia;
     }
   }
 
   // 2. If rawDay is given, normalize day name
   if (rawDay) {
     const lower = rawDay.toLowerCase();
-    if (lower.includes('seg')) dia = 'Segunda-feira';
-    else if (lower.includes('ter')) dia = 'Terca-feira';
-    else if (lower.includes('qua')) dia = 'Quarta-feira';
-    else if (lower.includes('qui')) dia = 'Quinta-feira';
-    else if (lower.includes('sex')) dia = 'Sexta-feira';
-    else if (lower.includes('sab') || lower.includes('sab')) dia = 'Sabado';
+    if (lower.includes('seg') || lower.includes('2a') || lower.includes('2ª')) dia = 'Segunda-feira';
+    else if (lower.includes('ter') || lower.includes('3a') || lower.includes('3ª')) dia = 'Terca-feira';
+    else if (lower.includes('qua') || lower.includes('4a') || lower.includes('4ª')) dia = 'Quarta-feira';
+    else if (lower.includes('qui') || lower.includes('5a') || lower.includes('5ª')) dia = 'Quinta-feira';
+    else if (lower.includes('sex') || lower.includes('6a') || lower.includes('6ª')) dia = 'Sexta-feira';
+    else if (lower.includes('sab') || lower.includes('sáb')) dia = 'Sabado';
     else if (lower.includes('dom')) dia = 'Domingo';
   }
 
-  // 3. If dataIso wasn't determined from rawDate, use the week map for this day
+  // 3. If dataIso wasn't determined from rawDate, check if rawDay contains a date
+  if (!dataIso && rawDay) {
+    const parsedFromDay = parsePortugueseDate(rawDay, refDate);
+    if (parsedFromDay) {
+      dataStr = parsedFromDay.dateStr;
+      dataIso = parsedFromDay.dateIso;
+      dia = parsedFromDay.dia;
+    }
+  }
+
+  // 4. Fallback to week map if dataIso is missing
   if (!dataIso && weekMap[dia]) {
     dataIso = weekMap[dia].iso;
     dataStr = weekMap[dia].br;
@@ -124,15 +206,15 @@ export function resolveDayAndDate(rawDay?: string, rawDate?: string, refDate = n
 
 // Categoriza inteligentemente para os tipos oficiais do AnjoCuidador / Anjinho Escolar
 export function inferTaskType(title: string, category: string, description: string): 'alimentacao' | 'medicacao' | 'atividade_fisica' | 'banho' | 'sono' | 'humor' {
-  const text = `${title} ${category} ${description}`.toLowerCase();
+  const text = `${title} ${category} ${description}`.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
   if (text.includes('medicamento') || text.includes('remedio') || text.includes('dosagem') || text.includes('gotas') || text.includes('pomada')) {
     return 'medicacao';
   }
-  if (text.includes('lanche') || text.includes('almoco') || text.includes('almoco') || text.includes('cafe') || text.includes('cafe') || 
-      text.includes('desjejum') || text.includes('colacao') || text.includes('colacao') || text.includes('mamadeira') || text.includes('fruta') || 
-      text.includes('refeicao') || text.includes('refeicao') || text.includes('papinha') || text.includes('jantar') || text.includes('formula') || 
-      text.includes('formula') || text.includes('alimentar') || text.includes('nutricao') || text.includes('nutricao')) {
+  if (text.includes('lanche') || text.includes('almoco') || text.includes('cafe') || 
+      text.includes('desjejum') || text.includes('colacao') || text.includes('mamadeira') || text.includes('fruta') || 
+      text.includes('refeicao') || text.includes('papinha') || text.includes('jantar') || text.includes('formula') || 
+      text.includes('alimentar') || text.includes('nutricao')) {
     return 'alimentacao';
   }
   if (text.includes('sono') || text.includes('soneca') || text.includes('dormir') || text.includes('repouso') || text.includes('descanso') || 
@@ -147,6 +229,68 @@ export function inferTaskType(title: string, category: string, description: stri
 }
 
 // Normaliza strings de horario como "11:30", "11h30", "11h", "11:30h", "11h30min" para "11:30"
+
+// Padroniza as atividades de acordo com o formato esperado pelo sistema
+export function standardizeAuraActivity(rawTime: string, rawTitle: string, rawDesc: string): { titulo: string, item_key: string, tipo: 'alimentacao' | 'medicacao' | 'atividade_fisica' | 'banho' | 'sono' | 'humor' } {
+  const text = `${rawTitle} ${rawDesc}`.toLowerCase();
+  
+  if (text.includes('acolhida') || text.includes('entrada') || text.includes('recepcao')) {
+    return { titulo: 'Acolhida / entrada', item_key: 'acolhida', tipo: 'atividade_fisica' };
+  }
+  if (text.includes('roda') || text.includes('conversa')) {
+    return { titulo: 'Roda de conversa', item_key: 'roda', tipo: 'atividade_fisica' };
+  }
+  if ((text.includes('lanche') && text.includes('manha')) || rawTime === '09:30' || text.includes('colacao')) {
+    return { titulo: 'Lanche da manhã', item_key: 'lanche', tipo: 'alimentacao' };
+  }
+  if (text.includes('lanche') && text.includes('tarde') || rawTime === '14:30') {
+    return { titulo: 'Lanche da tarde', item_key: 'lanche_tarde', tipo: 'alimentacao' };
+  }
+  if (text.includes('parque') || text.includes('patio') || text.includes('ar livre') || text.includes('brincadeira dirigida')) {
+    return { titulo: 'Parque / pátio', item_key: 'parque', tipo: 'atividade_fisica' };
+  }
+  if (text.includes('almoco') || text.includes('almoço')) {
+    return { titulo: 'Almoço', item_key: 'almoco', tipo: 'alimentacao' };
+  }
+  if (text.includes('higiene') || text.includes('escovacao') || text.includes('escovação') || text.includes('banheiro') || text.includes('fralda')) {
+    return { titulo: 'Higiene / escovação', item_key: 'higiene', tipo: 'banho' };
+  }
+  if (text.includes('soneca') || text.includes('repouso') || text.includes('sono') || text.includes('dormir') || text.includes('descanso')) {
+    return { titulo: 'Soneca / repouso', item_key: 'sono', tipo: 'sono' };
+  }
+  if (text.includes('brincadeira livre') || text.includes('livre')) {
+    return { titulo: 'Brincadeira livre', item_key: 'brincadeira_livre', tipo: 'atividade_fisica' };
+  }
+  if (text.includes('historia') || text.includes('história') || text.includes('leitura') || text.includes('conto')) {
+    return { titulo: 'Contação de histórias', item_key: 'leitura', tipo: 'atividade_fisica' };
+  }
+  if (text.includes('saida') || text.includes('saída') || text.includes('despedida') || text.includes('preparacao')) {
+    return { titulo: 'Preparação para saída', item_key: 'saida', tipo: 'atividade_fisica' };
+  }
+  if (text.includes('atividade dirigida') || text.includes('pedagogica') || text.includes('pedagógica') || text.includes('exploracao')) {
+    return { titulo: 'Atividade dirigida', item_key: 'atividade', tipo: 'atividade_fisica' };
+  }
+
+  // Fallbacks by exact time matching
+  if (rawTime === '07:30') return { titulo: 'Acolhida / entrada', item_key: 'acolhida', tipo: 'atividade_fisica' };
+  if (rawTime === '08:30') return { titulo: 'Roda de conversa', item_key: 'roda', tipo: 'atividade_fisica' };
+  if (rawTime === '09:30') return { titulo: 'Lanche da manhã', item_key: 'lanche', tipo: 'alimentacao' };
+  if (rawTime === '10:00') return { titulo: 'Parque / pátio', item_key: 'parque', tipo: 'atividade_fisica' };
+  if (rawTime === '10:30') return { titulo: 'Atividade dirigida', item_key: 'atividade', tipo: 'atividade_fisica' };
+  if (rawTime === '11:30') return { titulo: 'Almoço', item_key: 'almoco', tipo: 'alimentacao' };
+  if (rawTime === '12:15') return { titulo: 'Higiene / escovação', item_key: 'higiene', tipo: 'banho' };
+  if (rawTime === '12:30') return { titulo: 'Soneca / repouso', item_key: 'sono', tipo: 'sono' };
+  if (rawTime === '14:30') return { titulo: 'Lanche da tarde', item_key: 'lanche_tarde', tipo: 'alimentacao' };
+  if (rawTime === '15:00') return { titulo: 'Brincadeira livre', item_key: 'brincadeira_livre', tipo: 'atividade_fisica' };
+  if (rawTime === '15:45') return { titulo: 'Contação de histórias', item_key: 'leitura', tipo: 'atividade_fisica' };
+  if (rawTime === '16:30') return { titulo: 'Preparação para saída', item_key: 'saida', tipo: 'atividade_fisica' };
+
+  // Strict fallback
+  const tipo = inferTaskType(rawTitle, '', rawDesc);
+  const finalTitle = formatAuraTaskTitle(rawTitle, '', '');
+  return { titulo: finalTitle, item_key: 'atividade', tipo };
+}
+
 export function normalizeTimeString(raw: string): string {
   if (!raw) return '09:00';
   const clean = raw.trim().toLowerCase().replace(/[^\d:h]/g, '');
@@ -157,6 +301,171 @@ export function normalizeTimeString(raw: string): string {
     return `${h}:${m}`;
   }
   return '09:00';
+}
+
+// Verifica se o horario esta dentro da janela escolar padrao (07:30 as 16:30)
+export function isWithinSchoolSchedule(timeStr: string): boolean {
+  if (!timeStr) return true;
+  const clean = timeStr.trim().toLowerCase().replace(/[^\d:h]/g, '');
+  const match = clean.match(/^(\d{1,2})(?:[:h](\d{2}))?/);
+  if (!match) return true;
+  const h = parseInt(match[1], 10);
+  const m = match[2] ? parseInt(match[2], 10) : 0;
+  const totalMin = h * 60 + m;
+  // 07:30 (450 min) ate 16:30 (990 min)
+  return totalMin >= 450 && totalMin <= 990;
+}
+
+// Identifica se a atividade faz parte da rotina padrao diaria (alimentacao, sono, higiene, recepcao, despedida)
+export function isStandardRoutineActivity(title: string, tipo?: string, time?: string): boolean {
+  const t = (title || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  if (tipo === 'alimentacao' || tipo === 'sono' || tipo === 'banho') return true;
+  if (
+    t.includes('lanche') ||
+    t.includes('lanchinho') ||
+    t.includes('almoco') ||
+    t.includes('almocinho') ||
+    t.includes('soneca') ||
+    t.includes('sono') ||
+    t.includes('soninho') ||
+    t.includes('repouso') ||
+    t.includes('higiene') ||
+    t.includes('fralda') ||
+    t.includes('escovacao') ||
+    t.includes('acolhida') ||
+    t.includes('entrada') ||
+    t.includes('saida') ||
+    t.includes('despedida') ||
+    t.includes('cafe') ||
+    t.includes('mamadeira')
+  ) {
+    return true;
+  }
+  if (time === '07:30' || time === '09:30' || time === '11:30' || time === '12:15' || time === '12:30' || time === '14:30' || time === '16:30') {
+    return true;
+  }
+  return false;
+}
+
+// Descricoes afetivas ricas de referencia pedagogica da educacao infantil com BNCC
+export function getStandardPedagogicalDescription(title: string, time: string = ''): { desc: string; bncc: string } {
+  const t = (title || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const cleanTime = time.trim();
+
+  if (t.includes('acolhida') || t.includes('entrada') || cleanTime === '07:30') {
+    return {
+      desc: 'Recepção alegre e personalizada para cada criança, com um sorriso e abraço, facilitando a transição da casa para a escola.',
+      bncc: 'O eu, o outro e o nós'
+    };
+  }
+  if (t.includes('roda') || t.includes('conversa') || cleanTime === '08:30') {
+    return {
+      desc: 'Interação com os bebês utilizando espelhos seguros e coloridos, estimulando o reconhecimento da própria imagem e a percepção do eu.',
+      bncc: 'O eu, o outro e o nós'
+    };
+  }
+  if ((t.includes('lanche') && t.includes('manha')) || (t.includes('lanche') && !t.includes('tarde')) || cleanTime === '09:30') {
+    return {
+      desc: 'Oferecer o lanche da manhã com carinho, permitindo que os bebês explorem a comida com as mãos (sob supervisão) e desenvolvam a autonomia.',
+      bncc: 'Corpo, gestos e movimentos'
+    };
+  }
+  if (t.includes('espelho') || t.includes('magico') || cleanTime === '10:00' && (t.includes('patio') || t.includes('parque') || t.includes('espelho'))) {
+    return {
+      desc: 'Exploração de espelhos inquebráveis em diferentes posições, incentivando o reconhecimento facial, a interação e a expressão de sentimentos.',
+      bncc: 'O eu, o outro e o nós'
+    };
+  }
+  if (t.includes('parque') || t.includes('patio') || t.includes('ar livre') || cleanTime === '10:00') {
+    return {
+      desc: 'Circuito motor e brincadeiras ao ar livre no pátio, trabalhando o equilíbrio, a coordenação motora ampla e a exploração do espaço.',
+      bncc: 'Corpo, gestos e movimentos'
+    };
+  }
+  if (t.includes('tatil') || t.includes('agua') || t.includes('descoberta') || t.includes('dirigida') || t.includes('sensorial') || t.includes('pintura') || cleanTime === '10:30') {
+    return {
+      desc: 'Brincadeira com potes de água em pequena quantidade (sob supervisão total) e estímulo tátil, permitindo a exploração sensorial do líquido e seus efeitos.',
+      bncc: 'Corpo, gestos e movimentos'
+    };
+  }
+  if (t.includes('almoco') || cleanTime === '11:30') {
+    return {
+      desc: 'Momento de refeição guiado pelo educador, garantindo que cada criança seja alimentada de forma segura e receba a atenção necessária.',
+      bncc: 'Corpo, gestos e movimentos'
+    };
+  }
+  if (t.includes('higiene') || t.includes('fralda') || t.includes('escovacao') || cleanTime === '12:15') {
+    return {
+      desc: 'Troca de fraldas e higiene pessoal com delicadeza, conversando com o bebê e nomeando as ações, fortalecendo a segurança e o vínculo.',
+      bncc: 'Corpo, gestos e movimentos'
+    };
+  }
+  if (t.includes('soneca') || t.includes('repouso') || t.includes('soninho') || t.includes('sono') || t.includes('descanso') || cleanTime === '12:30') {
+    return {
+      desc: 'Acompanhamento individual dos bebês para o sono, com acalanto e presença afetiva, favorecendo um repouso reparador.',
+      bncc: 'Corpo, gestos e movimentos'
+    };
+  }
+  if ((t.includes('lanche') && t.includes('tarde')) || cleanTime === '14:30') {
+    return {
+      desc: 'Oferta do lanche da tarde, priorizando a alimentação em ambiente tranquilo e acolhedor para que os bebês se sintam seguros para comer.',
+      bncc: 'Corpo, gestos e movimentos'
+    };
+  }
+  if (t.includes('encaixe') || t.includes('bloco') || t.includes('brinquedo') || t.includes('livre') || cleanTime === '15:00') {
+    return {
+      desc: 'Brincadeira livre com peças grandes de encaixe, estimulando a coordenação motora ampla e a percepção de causa e efeito.',
+      bncc: 'Espaços, tempos, quantidades, relações e transformações'
+    };
+  }
+  if (t.includes('musica') || t.includes('tecido') || t.includes('som') || t.includes('historia') || cleanTime === '15:45') {
+    return {
+      desc: 'Movimento suave com tecidos coloridos, ao som de músicas instrumentais, estimulando a percepção visual e a exploração de movimentos corporais.',
+      bncc: 'Corpo, gestos e movimentos'
+    };
+  }
+  if (t.includes('saida') || t.includes('despedida') || t.includes('preparacao') || cleanTime === '16:30') {
+    return {
+      desc: 'Organização dos pertences e momento de despedida, com uma música calma e palavras de carinho, encerrando o dia de forma harmoniosa.',
+      bncc: 'O eu, o outro e o nós'
+    };
+  }
+
+  return {
+    desc: 'Atividade planejada para o desenvolvimento lúdico, motor e afetivo da criança.',
+    bncc: 'Corpo, gestos e movimentos'
+  };
+}
+
+// Normaliza a descricao pedagogica seguindo o padrao direto, afetivo e sem boilerplate redundante
+export function buildStepByStepPedagógicalGuide(
+  title: string,
+  rawDesc: string = '',
+  bncc?: string,
+  materials?: string[]
+): string {
+  const cleanTitle = (title || 'Atividade Pedagógica').trim();
+  let baseDesc = rawDesc.trim();
+
+  if (!baseDesc || baseDesc === `Atividade de rotina: ${cleanTitle}.` || baseDesc.length < 5) {
+    const std = getStandardPedagogicalDescription(cleanTitle);
+    baseDesc = std.desc;
+    if (!bncc) bncc = std.bncc;
+  }
+
+  // Remove qualquer boilerplate antigo indesejado que possa ter vindo colado
+  baseDesc = baseDesc
+    .replace(/📋\s*PASSO A PASSO DA ATIVIDADE PARA A PROFESSORA:[\s\S]*?(?=\n\n|$)/gi, '')
+    .trim();
+
+  if (bncc && !baseDesc.includes('BNCC:')) {
+    baseDesc = `${baseDesc} (BNCC: ${bncc})`;
+  }
+  if (materials && materials.length > 0 && !baseDesc.includes(materials[0])) {
+    baseDesc += `\n🎨 Materiais: ${materials.join(', ')}`;
+  }
+
+  return baseDesc;
 }
 
 // Realinha inteligentemente titulos e horarios quando ha conflito sem ou deslocamento (shift) no texto
@@ -234,15 +543,14 @@ export function realignPedagógicalActivity(
     return { title: 'Almoco   ', tipo: 'alimentacao' };
   }
 
-  // Caso 6: Se o horario for 10:30 ou 10:00 e a descricao falar de atividade/textura/horta/natureza/caixa magica:
-  if ((t === '10:30' || t === '10:00') && (descLower.includes('horta') || descLower.includes('terra') || descLower.includes('semente') || descLower.includes('plantar') || descLower.includes('plantio') || descLower.includes('natureza') || descLower.includes('jardim') || descLower.includes('maos na terra') || descLower.includes('textura') || descLower.includes('caixa magica') || descLower.includes('sensorial') || descLower.includes('tatil') || descLower.includes('tatil'))) {
+  // Caso 6: Se o horario for 10:30 ou 10:00 e o titulo for generico ("Atividade", "Atividade Dirigida", "Atividade Pedagógica"), infere nome se houver:
+  if ((t === '10:30' || t === '10:00') && (titleLower.includes('atividade') || titleLower.length <= 4)) {
     if (quotedMatch) {
       return { title: formatAuraTaskTitle(quotedMatch[1], '', ''), tipo: 'atividade_fisica' };
     }
     if (descLower.includes('horta') || descLower.includes('semente') || descLower.includes('terra') || descLower.includes('plantio') || descLower.includes('plantar') || descLower.includes('natureza')) {
       return { title: 'Minha Primeira Horta   ', tipo: 'atividade_fisica' };
     }
-    return { title: 'Caixa Magica das Texturas   ', tipo: 'atividade_fisica' };
   }
 
   // Se tem nome cotado especifico na descricao e o titulo for generico
@@ -277,6 +585,13 @@ export function isConversationalChatNoise(text: string): boolean {
   if (/rotina da [a-z ]+ e de toda a turma/i.test(clean)) return true;
   if (/ideal para voc[ee] usar no sistema/i.test(clean)) return true;
   if (/no formato de linhas/i.test(clean)) return true;
+  if (/para que eu possa preparar/i.test(clean)) return true;
+  if (/voc[ee] poderia me informar/i.test(clean)) return true;
+  if (/enquanto isso/i.test(clean) && /(?:rotina|preparar|vou usar|configurada)/i.test(clean)) return true;
+  if (/assim que tiver/i.test(clean)) return true;
+  if (/posso ajustar tudo para voc[ee]/i.test(clean)) return true;
+  if (/com certeza!/i.test(clean)) return true;
+  if (/faixa et[aa]ria/i.test(clean) && /(?:informar|priorizar|espec[ii]fica|configurada|crian[cc]as)/i.test(clean)) return true;
 
   return false;
 }
@@ -419,29 +734,38 @@ export function formatAuraTaskTitle(rawTitle: string, subTitle: string, category
 // Detecta se uma linha representa um cabecalho de Dia da Semana ou Data
 function detectDayHeader(line: string): { dia?: string; dataStr?: string; dataIso?: string; tema?: string; turma?: string } | null {
   const clean = line.replace(/[#\*\_]/g, '').trim();
-  if (!clean || clean.length < 3) return null;
+  if (!clean || clean.length < 2) return null;
 
-  // Se for apenas um horario de atividade (ex: 08:00 - 08:30), nao e cabecalho de dia
-  if (/^\d{1,2}:\d{2}/.test(clean) && !/(segunda|terca|terca|quarta|quinta|sexta|sabado|sabado|domingo)/i.test(clean)) {
+  // Se for apenas um horario de atividade (ex: 08:00 - 08:30), nao e cabecalho de dia a menos que mencione um dia da semana ou mes
+  if (/^\d{1,2}:\d{2}/.test(clean) && !/(segunda|terca|terça|quarta|quinta|sexta|sabado|sábado|domingo|setembro|outubro|novembro|dezembro|janeiro|fevereiro|março|abril|maio|junho|julho|agosto)/i.test(clean)) {
     return null;
   }
 
-  const dayRegex = /\b(Segunda|Terca|Terca|Quarta|Quinta|Sexta|Sabado|Sabado|Domingo)(?:-feira)?\b/i;
-  const dateSlashRegex = /\b(\d{1,2}\/\d{1,2}(?:\/\d{2,4})?)\b/;
-  const dateIsoRegex = /\b(\d{4}-\d{2}-\d{2})\b/;
+  let detectedDay: string | undefined = undefined;
+  if (/segunda/i.test(clean) || /\b2[ªa]\b/i.test(clean)) detectedDay = 'Segunda-feira';
+  else if (/ter[çc]a/i.test(clean) || /\b3[ªa]\b/i.test(clean)) detectedDay = 'Terca-feira';
+  else if (/quarta/i.test(clean) || /\b4[ªa]\b/i.test(clean)) detectedDay = 'Quarta-feira';
+  else if (/quinta/i.test(clean) || /\b5[ªa]\b/i.test(clean)) detectedDay = 'Quinta-feira';
+  else if (/sexta/i.test(clean) || /\b6[ªa]\b/i.test(clean)) detectedDay = 'Sexta-feira';
+  else if (/s[áa]bado/i.test(clean)) detectedDay = 'Sabado';
+  else if (/domingo/i.test(clean)) detectedDay = 'Domingo';
+
+  const parsedDate = parsePortugueseDate(clean);
+
   const temaRegex = /(?:Tema(?:\s+do\s+Dia)?|Subtema|Eixo|Projeto|Planejamento\s+Di[aa]rio)\s*[---:]\s*([^\n\(\)]+)/i;
   const turmaRegex = /Turma\s*:\s*([^\n\(\)]+)/i;
 
-  const dayMatch = clean.match(dayRegex);
-  const dateMatch = clean.match(dateSlashRegex) || clean.match(dateIsoRegex);
   const temaMatch = clean.match(temaRegex);
   const turmaMatch = clean.match(turmaRegex);
 
-  // Considera cabecalho se encontrou dia da semana, ou data explicita, ou "Rotina Diaria - ..."
-  if (dayMatch || dateMatch || /Rotina\s+Di[aa]ria/i.test(clean) || /Planejamento\s+(?:Semanal|Di[aa]rio)/i.test(clean)) {
-    const rawDay = dayMatch ? dayMatch[1] : undefined;
-    const rawDate = dateMatch ? dateMatch[1] : undefined;
-    const resolved = resolveDayAndDate(rawDay, rawDate);
+  const isDayHeader = !!detectedDay || !!parsedDate || /^(?:dia|dias)\s+\d+/i.test(clean) || /Rotina\s+Di[aa]ria/i.test(clean) || /Planejamento\s+(?:Semanal|Di[aa]rio)/i.test(clean);
+
+  if (isDayHeader) {
+    let dia = detectedDay || (parsedDate ? parsedDate.dia : undefined);
+    let dataStr = parsedDate ? parsedDate.dateStr : undefined;
+    let dataIso = parsedDate ? parsedDate.dateIso : undefined;
+
+    const resolved = resolveDayAndDate(dia, dataStr);
 
     let tema = temaMatch ? temaMatch[1].trim() : undefined;
     if (!tema && clean.includes('Tema:')) {
@@ -450,8 +774,8 @@ function detectDayHeader(line: string): { dia?: string; dataStr?: string; dataIs
     }
 
     return {
-      dia: resolved.dia,
-      dataStr: resolved.dataStr,
+      dia: resolved.dia || 'Segunda-feira',
+      dataStr: resolved.dataStr || (dataStr || resolved.dia),
       dataIso: resolved.dataIso,
       tema,
       turma: turmaMatch ? turmaMatch[1].trim() : undefined
@@ -517,7 +841,7 @@ export function parseAuraRawPlan(text: string): {
   defaultDataStr = initialResolved.dataStr;
   defaultDataIso = initialResolved.dataIso;
 
-  const activities: ParsedAuraActivity[] = [];
+  let activities: ParsedAuraActivity[] = [];
 
   // 2. PARSER ROBUSTO LINHA A LINHA (Zero regex lock, Instant < 2ms)
   let currentDia = defaultDia;
@@ -573,38 +897,31 @@ export function parseAuraRawPlan(text: string): {
     }
 
     // B. Verifica se a linha inicia uma nova atividade (Altamente flexivel para qualquer formato de IA/Aura)
-    // 1. Horario puro (ex: "10:30", "10h30", "10:30 as 11:30", "[T] 10:30", "   08:00")
-    const isPlainTimeLine = /^(?:[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]\s*)?\d{1,2}(?:[:h]\d{2}|h\b)(?:\s*(?:[---]|as|as|ate|ate|a)\s*\d{1,2}(?:[:h]\d{2}|h\b))?$/u.test(trimmed);
+    // 1. Linha com horario (puro, com marcador markdown/bullet, ou com titulo na mesma linha)
+    // Ex: "10:30", "* 07:30", "* 07:30 Acolhida & Entrada", "- 08:30: Roda de Conversa", "10:00 - Parque", "09h30 Lanche"
+    const isTimeLeadLine = /^(?:[--- *+•·\t]\s*)?(?:\*\*)?(?:[\u{1F300}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]\s*)?\d{1,2}(?:[:h]\d{2}|h\b)/u.test(trimmed);
     
-    // 2. Horario com titulo na mesma linha (ex: "08:00 - Acolhida", "   08:30: Cafe", "10h - Pintura")
-    const isTimeWithDashOrColon = /^(?:[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]\s*)?\d{1,2}(?:[:h]\d{2}|h\b)\s*[---:]\s*(.+)$/u.test(trimmed);
-    
-    // 3. Cabecalhos Markdown (ex: "## Acolhida", "### 08:00 - Cafe", "#### Atividade 1")
+    // 2. Cabecalhos Markdown (ex: "## Acolhida", "### 08:00 - Cafe", "#### Atividade 1")
     const isMdHeader = /^#{2,5}\s+(?!\s*(?:Planejamento|Tema|Eixo|Projeto|Turma|Rotina|Semana)\b)/i.test(trimmed);
     
-    // 4. Numeracao ou Marcadores de Atividade (ex: "1. Acolhida", "**1. Acolhida**", "* 1. ...", "1 - ...", "1) ...", "Atividade 1:")
+    // 3. Numeracao ou Marcadores de Atividade (ex: "1. Acolhida", "**1. Acolhida**", "* 1. ...", "1 - ...", "1) ...", "Atividade 1:")
     const isNumberedOrBulletActivity = /^(?:[--- *+]\s*)?(?:\*\*)?(?:Atividade\s+\d+[\.:\---\s]*|\d+[\.):\---]\s+)(?:[A-ZA-U\u{1F300}-\u{1F9FF}\d]|\*\*)/iu.test(trimmed);
     
-    // 5. Palavra-chave explicita de inicio de atividade (ex: "**Atividade 1:**", "Nome da Atividade:", "Titulo:")
+    // 4. Palavra-chave explicita de inicio de atividade (ex: "**Atividade 1:**", "Nome da Atividade:", "Titulo:")
     const isActivityKeywordLine = /^(?:[--- *+]\s*)?(?:\*\*)?(?:Atividade\s+\d+|Nome\s*da\s*Atividade|T[ii]tulo\s*(?:da\s*Atividade|sugerido)?|Momento\s*\d*|Oficina\s*\d*|Roteiro\s*\d*)\s*[:\---]/i.test(trimmed);
     
-    // 6. Rotulo explicito de horario (ex: "Horario: 08:00", "* **Horario:** 08h30")
+    // 5. Rotulo explicito de horario (ex: "Horario: 08:00", "* **Horario:** 08h30")
     const isExplicitTimeLine = /^(?:[--- *+]\s*)?(?:\*\*)?(?:Hor[aa]rio|Horario|Hora)\s*:\s*(?:\*\*)?\s*\d{1,2}(?:[:h]\d{2}|h\b)/i.test(trimmed);
-    
-    // 7. Marcador com horario (ex: "- 08:00", "* 09:30", "  11:30")
-    const isBulletTimeLine = /^[--- *+]\s*(?:[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]\s*)?\d{1,2}(?:[:h]\d{2}|h\b)/u.test(trimmed);
 
     const hasExplicitTimeAlready = currentBlock && currentBlock.lines.some(l => /(?:Hor[aa]rio|Horario)\s*:\s*\**\s*\d{1,2}[:h]|\b\d{1,2}[:h]\d{2}\b/i.test(l));
     const blockHasEnoughLines = currentBlock && currentBlock.lines.filter(l => l.trim().length > 0).length >= 2;
 
     if (
-      isPlainTimeLine || 
-      isTimeWithDashOrColon || 
+      isTimeLeadLine || 
       isMdHeader || 
       isNumberedOrBulletActivity || 
       isActivityKeywordLine || 
-      (isExplicitTimeLine && (hasExplicitTimeAlready || blockHasEnoughLines)) || 
-      (isBulletTimeLine && (hasExplicitTimeAlready || blockHasEnoughLines))
+      (isExplicitTimeLine && (hasExplicitTimeAlready || blockHasEnoughLines))
     ) {
       if (currentBlock && currentBlock.lines.length > 0) {
         blocks.push(currentBlock);
@@ -612,26 +929,24 @@ export function parseAuraRawPlan(text: string): {
 
       let headerTitle = '';
       const cleanLine = trimmed.replace(/[#\*_\|]/g, '').trim();
-      if (!/^\d{1,2}[:h]\d{2}/.test(cleanLine) && !/^(?:horario|horario|atividade|rotina|data|tema)\s*:/i.test(cleanLine)) {
-        headerTitle = cleanLine.replace(/^\d+[\.\)]\s*/, '').replace(/^(?:Atividade\s*\d*|Titulo)\s*[---:]\s*/i, '').trim();
-      } else if (cleanLine.includes('|')) {
-        const parts = cleanLine.split('|').map(p => p.trim()).filter(Boolean);
-        if (parts.length > 1) {
-          headerTitle = parts.find(p => !/\d{1,2}[:h]\d{2}/.test(p) && !/^(?:horario|horario|atividade)$/i.test(p)) || '';
-        }
-      } else if (isTimeWithDashOrColon) {
-        const afterTime = cleanLine
-          .replace(/^[--- *+]*\s*/, '')
-          .replace(/^(?:[\u{1F300}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]\s*)?\d{1,2}(?:[:h]\d{2}|h\b)\s*[---:]\s*/u, '')
-          .trim();
-        if (afterTime && !/^(?:horario|horario|atividade)$/i.test(afterTime)) {
-          // Se contiver separador de descricao na mesma linha (ex: "Titulo - Descricao"), extrai apenas o titulo no headerTitle
+      const timeLeadingMatch = cleanLine.match(/^(?:[--- *+•·\t]\s*)?(?:[\u{1F300}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]\s*)?\d{1,2}(?:[:h]\d{2}|h\b)(?:\s*(?:[---]|as|as|ate|ate|a)\s*\d{1,2}(?:[:h]\d{2}|h\b))?(?:\s*[---:]\s*|\s+)(.+)$/iu);
+      
+      if (timeLeadingMatch && timeLeadingMatch[1]) {
+        const afterTime = timeLeadingMatch[1].trim();
+        if (afterTime && !/^(?:horario|horario|atividade|rotina)$/i.test(afterTime)) {
           if (afterTime.includes(' - ') || afterTime.includes(' - ') || afterTime.includes(' - ')) {
             const splitted = afterTime.split(/\s+[---]\s+/);
             headerTitle = splitted[0].trim();
           } else {
             headerTitle = afterTime;
           }
+        }
+      } else if (!/^\d{1,2}[:h]\d{2}/.test(cleanLine) && !/^(?:horario|horario|atividade|rotina|data|tema)\s*:/i.test(cleanLine)) {
+        headerTitle = cleanLine.replace(/^\d+[\.\)]\s*/, '').replace(/^(?:Atividade\s*\d*|Titulo)\s*[---:]\s*/i, '').trim();
+      } else if (cleanLine.includes('|')) {
+        const parts = cleanLine.split('|').map(p => p.trim()).filter(Boolean);
+        if (parts.length > 1) {
+          headerTitle = parts.find(p => !/\d{1,2}[:h]\d{2}/.test(p) && !/^(?:horario|horario|atividade)$/i.test(p)) || '';
         }
       }
 
@@ -725,14 +1040,17 @@ export function parseAuraRawPlan(text: string): {
       }
 
       // Verifica se e uma linha compacta com horario + titulo + descricao (ex: "- 10:00: Parque / Patio: Banho de Sol - Levar os bebes...")
-      const singleLineCompact = trimmed.replace(/^[--- *+]*\s*/, '').replace(/[#\*_]/g, '').trim();
-      const compactTimeMatch = singleLineCompact.match(/^(?:[\u{1F300}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]\s*)?(\d{1,2}(?:[:h]\d{2}|h\b))\s*[---:]\s*(.+)$/u);
+      const singleLineCompact = trimmed.replace(/^[--- *+•·\t]*\s*/, '').replace(/[#\*_]/g, '').trim();
+      const compactTimeMatch = singleLineCompact.match(/^(?:[\u{1F300}-\u{1FAFF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]\s*)?(\d{1,2}(?:[:h]\d{2}|h\b))(?:\s*(?:[---]|as|as|ate|ate|a)\s*(\d{1,2}(?:[:h]\d{2}|h\b)))?(?:\s*[---:]\s*|\s+)(.+)$/u);
       
       if (compactTimeMatch) {
         if (!startTime) {
           startTime = normalizeTimeString(compactTimeMatch[1]);
         }
-        const afterTime = compactTimeMatch[2].trim();
+        if (compactTimeMatch[2] && !endTime) {
+          endTime = normalizeTimeString(compactTimeMatch[2]);
+        }
+        const afterTime = (compactTimeMatch[3] || compactTimeMatch[2] || '').trim();
         
         // Verifica se tem separador " - " ou " - " separando o Titulo da Descricao
         if (afterTime.includes(' - ') || afterTime.includes(' - ') || afterTime.includes(' - ')) {
@@ -760,6 +1078,8 @@ export function parseAuraRawPlan(text: string): {
               continue;
             }
           }
+        } else if (afterTime && !explicitTitle && !/^(?:horario|horario|atividade|rotina)$/i.test(afterTime)) {
+          explicitTitle = afterTime;
         }
       }
 
@@ -864,24 +1184,35 @@ export function parseAuraRawPlan(text: string): {
     }
 
     if (!startTime) {
-      // Se nao ha horario no bloco, e nao e uma atividade pedagógica legitima com titulo reconhecido, pula
-      if (rawTitle.length < 3) {
+      // Se e um cabecalho de secao (ex: "Rotina Padrao da Educacao Infantil:", "Planejamento Semanal..."), ignora
+      if (
+        /^(?:Rotina|Planejamento|Semana|Cronograma|Hor[aa]rios|Sugest[aa]o|Grade|Atividades|Quarta|Quinta|Sexta|Segunda|Ter[cc]a|S[aa]bado|Domingo)\b/i.test(rawTitle) ||
+        /:\s*$/.test(rawTitle) ||
+        (!detailedDesc && rawTitle.length < 50)
+      ) {
         continue;
       }
       startTime = '09:00';
+    }
+
+    // Filtra para manter estritamente a janela escolar de 07:30 as 16:30
+    if (!isWithinSchoolSchedule(startTime)) {
+      continue;
     }
 
     if (!rawTitle) {
       rawTitle = 'Atividade Pedagógica';
     }
 
+    const defaultPedag = getStandardPedagogicalDescription(rawTitle, startTime);
     let finalDesc = detailedDesc;
     if (!finalDesc || finalDesc.trim().length === 0) {
-      finalDesc = `Atividade de rotina: ${rawTitle}.`;
+      finalDesc = defaultPedag.desc;
+      if (!bnccObjective) bnccObjective = defaultPedag.bncc;
     } else {
       // Limpa prefixos de horario ou de titulo duplicados na descricao
       finalDesc = finalDesc
-        .replace(/^[--- *+]*\s*\d{1,2}[:h]\d{2}\s*[---:]\s*/i, '')
+        .replace(/^[--- *+•·\t]*\s*\d{1,2}[:h]\d{2}\s*[---:]\s*/i, '')
         .trim();
 
       // Se a descricao comecar com o mesmo texto do titulo seguido de hifen/dois-pontos, remove a duplicacao
@@ -889,14 +1220,15 @@ export function parseAuraRawPlan(text: string): {
       if (cleanRawTitle && finalDesc.toLowerCase().startsWith(cleanRawTitle.toLowerCase())) {
         finalDesc = finalDesc.slice(cleanRawTitle.length).replace(/^[\s\---:]+/, '').trim();
       }
-      if (!finalDesc) {
-        finalDesc = `Atividade de rotina: ${rawTitle}.`;
+      if (!finalDesc || finalDesc.length < 5) {
+        finalDesc = defaultPedag.desc;
+        if (!bnccObjective) bnccObjective = defaultPedag.bncc;
       }
     }
 
     // Se a descricao termina com os campos da BNCC entre parenteses, extrai como bnccObjective e limpa a descricao
     if (!bnccObjective) {
-      const inlineBnccMatch = finalDesc.match(/\((?:Campo(?:\s+de\s+Experi[ee]ncia)?\s*:\s*)?([^\)]*(?:O Eu,\s*o Outro|Corpo,\s*Gestos|Tracos,\s*Sons|Escuta,\s*Fala|Espacos,\s*Tempos|BNCC|EI\d{2}[A-Z]{2}\d{2})[^\)]*)\)\s*$/i)
+      const inlineBnccMatch = finalDesc.match(/\((?:Campo(?:\s+de\s+Experi[ee]ncia)?\s*:\s*|BNCC\s*:\s*)?([^\)]*(?:O Eu,\s*o Outro|Corpo,\s*Gestos|Tracos,\s*Sons|Escuta,\s*Fala|Espacos,\s*Tempos|BNCC|EI\d{2}[A-Z]{2}\d{2})[^\)]*)\)\s*$/i)
         || finalDesc.match(/\(([^\)]*(?:O Eu, o Outro e o Nos|Corpo, Gestos e Movimentos|Tracos, Sons, Cores e Formas|Escuta, Fala, Pensamento e Imaginacao|Espacos, Tempos, Quantidades, Relacoes e Transformacoes)[^\)]*)\)/i);
       if (inlineBnccMatch) {
         bnccObjective = inlineBnccMatch[1].trim();
@@ -904,9 +1236,22 @@ export function parseAuraRawPlan(text: string): {
       }
     }
 
+    // Remove qualquer boilerplate antigo de passo a passo
+    finalDesc = finalDesc
+      .replace(/📋\s*PASSO A PASSO DA ATIVIDADE PARA A PROFESSORA:[\s\S]*?(?=\n\n|$)/gi, '')
+      .trim();
+
     finalDesc = cleanRepeatedEmojis(finalDesc);
 
     const { title: finalTitle, tipo: taskType } = realignPedagógicalActivity(rawTitle, finalDesc, startTime, category);
+
+    if (!bnccObjective) {
+      bnccObjective = defaultPedag.bncc;
+    }
+
+    if (bnccObjective && !finalDesc.includes('BNCC:')) {
+      finalDesc = `${finalDesc} (BNCC: ${bnccObjective})`;
+    }
 
     let duration = 30;
     if (startTime && endTime) {
@@ -917,6 +1262,9 @@ export function parseAuraRawPlan(text: string): {
         duration = diff;
       }
     }
+
+    const isRotina = isStandardRoutineActivity(finalTitle, taskType, startTime);
+    const itemKey = standardizeAuraActivity(startTime, finalTitle, finalDesc).item_key;
 
     activities.push({
       id: `act-${activities.length + 1}`,
@@ -931,8 +1279,11 @@ export function parseAuraRawPlan(text: string): {
       descricao: finalDesc,
       tipo: taskType,
       duracao: duration,
-      objetivoBNCC: bnccObjective || category || 'Desenvolvimento Ludico e BNCC',
-      materiais: materials
+      item_key: itemKey,
+      objetivoBNCC: bnccObjective || category || 'Desenvolvimento Lúdico e BNCC',
+      materiais: materials,
+      entregue: isRotina,
+      isRotinaPadrao: isRotina
     });
   }
 
@@ -1163,6 +1514,21 @@ export function parseAuraRawPlan(text: string): {
       }
     }
   }
+
+
+  // Post-process activities to enforce standardization keys and titles, ensuring pending state
+  activities = activities.map(act => {
+    const std = standardizeAuraActivity(act.horario, act.titulo, act.descricao);
+    return {
+      ...act,
+      titulo: std.titulo,
+      item_key: std.item_key,
+      tipo: std.tipo,
+      status: 'pendente' as const,
+      entregue: false,
+      observacao: undefined
+    };
+  });
 
   // Calcula resumo por dia
   const summaryMap = new Map<string, AuraDaySummary>();

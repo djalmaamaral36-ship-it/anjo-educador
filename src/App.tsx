@@ -4,7 +4,6 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './services/firebase';
 import Login from './components/Login';
 import Dashboard from './components/Dashboard';
-import AuraPage from './components/AuraPage';
 
 export default function App() {
   const [user, setUser] = useState<any>(null);
@@ -12,7 +11,22 @@ export default function App() {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+      if (currentUser) {
+        setUser(currentUser);
+      } else {
+        const stored = localStorage.getItem('anjinho_simulated_user');
+        if (stored) {
+          try {
+            setUser(JSON.parse(stored));
+          } catch {
+            setUser({ displayName: 'Ana Silva (Professora Titular)', email: 'ana.silva@escola.com' });
+          }
+        } else {
+          const defaultSimulated = { displayName: 'Ana Silva (Professora Titular)', email: 'ana.silva@escola.com' };
+          localStorage.setItem('anjinho_simulated_user', JSON.stringify(defaultSimulated));
+          setUser(defaultSimulated);
+        }
+      }
       setLoading(false);
     });
     return unsubscribe;
@@ -27,7 +41,6 @@ export default function App() {
       <Routes>
         <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
         <Route path="/" element={user ? <Dashboard user={user} /> : <Navigate to="/login" />} />
-        <Route path="/aura" element={user ? <AuraPage studentId="aluno_exemplo_123" /> : <Navigate to="/login" />} />
       </Routes>
     </Router>
   );

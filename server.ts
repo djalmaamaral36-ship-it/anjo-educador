@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
 import { GoogleGenAI, Type } from '@google/genai';
 
 // Lazy-initialized Gemini client to prevent crashing if the key is missing on startup
@@ -1378,6 +1379,158 @@ A resposta da Aura ("respostaAura") deve ser uma confirmação curta, afetuosa e
       res.status(500).json({ error: error.message });
     }
   });
+
+  // =========================================================================
+  // ANJINHA AURA - INTEGRAÇÃO DE ROTINA (BRAND-005)
+  // =========================================================================
+
+  // Chaves de segurança (devem vir do .env em prod, aqui fazemos fallback para simulação)
+  const ANJINHO_SSO_SECRET = process.env.ANJINHO_SSO_SECRET || 'anjinho-aura-secret-key-2026';
+  const MURAL_WEBHOOK_SECRET = process.env.MURAL_WEBHOOK_SECRET || 'anjinho-mural-secret-2026';
+  const AURA_INBOUND_SECRET = process.env.AURA_INBOUND_SECRET || 'anjinha-inbound-secret-2026';
+
+  // 1. Endpoint para gerar o JWT de SSO para pular para a Aura
+  app.post('/api/aura/sso', express.json(), (req, res) => {
+    try {
+      const { 
+        email, 
+        userId, 
+        userName, 
+        tipo, 
+        escola, 
+        escola_id, 
+        returnUrl, 
+        student_id, 
+        studentNome, 
+        studentAge, 
+        turma, 
+        alergias, 
+        condicoes, 
+        historico, 
+        telefone, 
+        foto 
+      } = req.body;
+      
+      // Normalização de tipo de usuário: diretor | coordenador | professor | familiar | especialista
+      let cargoNormalizado = 'professor';
+      const rawTipo = String(tipo || '').toLowerCase();
+      if (rawTipo.includes('diret') || rawTipo === 'admin') cargoNormalizado = 'diretor';
+      else if (rawTipo.includes('coord')) cargoNormalizado = 'coordenador';
+      else if (rawTipo.includes('fam') || rawTipo.includes('pai') || rawTipo.includes('mãe')) cargoNormalizado = 'familiar';
+      else if (rawTipo.includes('especialista') || rawTipo.includes('psico') || rawTipo.includes('fono')) cargoNormalizado = 'especialista';
+      else cargoNormalizado = 'professor';
+
+      const payload: any = {
+        email: email || 'educador@arvoredainfancia.com.br',
+        userId: userId || 'usr_prof_123',
+        userName: userName || 'Educadora Anjinho',
+        tipo: cargoNormalizado,
+        escola: escola || 'Escola Árvore da Infância',
+        escola_id: escola_id || 'esc_001',
+        returnUrl: returnUrl || 'https://anjinho-escolar.com/painel',
+      };
+
+      // Contexto opcional de aluno para Histórico do Aluno e Memória Viva
+      if (student_id) payload.student_id = student_id;
+      if (studentNome) payload.studentNome = studentNome;
+      if (studentAge) payload.studentAge = studentAge;
+      if (turma) payload.turma = turma;
+      if (alergias) payload.alergias = alergias;
+      if (condicoes) payload.condicoes = condicoes;
+      if (historico) payload.historico = historico;
+      if (telefone) payload.telefone = telefone;
+      if (foto) payload.foto = foto;
+
+      // Gera JWT HS256 assinado com ANJINHO_SSO_SECRET e validade de 5 minutos
+      const token = jwt.sign(payload, ANJINHO_SSO_SECRET, { algorithm: 'HS256', expiresIn: '5m' });
+      
+      const auraUrl = `https://anjinha-aura.lovable.app/api/sso?token=${token}`;
+      return res.status(200).json({ success: true, url: auraUrl, token });
+    } catch (err: any) {
+      console.error('Erro ao gerar SSO Aura:', err);
+      return res.status(500).json({ error: 'Falha ao gerar ticket de acesso para a Aura.' });
+    }
+  });
+
+  // 2. Receber de volta o planejamento da Aura (Webhook de Inbound)
+  app.post('/api/aura/inbound/atividades', express.json({ type: '*/*' }), (req, res) => {
+    try {
+      const signature = req.headers['x-anjinho-signature'];
+      if (!signature) {
+        return res.status(401).json({ error: 'Assinatura ausente.' });
+      }
+
+      // Valida assinatura HMAC
+      const bodyString = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+      const expectedSignature = `sha256=${crypto.createHmac('sha256', AURA_INBOUND_SECRET).update(bodyString).digest('hex')}`;
+
+      if (signature !== expectedSignature) {
+        return res.status(403).json({ error: 'Assinatura inválida.' });
+      }
+
+      console.log('✨ Planejamento pedagógico recebido da Aura com sucesso:', typeof req.body === 'string' ? JSON.parse(req.body) : req.body);
+      return res.status(200).json({ success: true, message: 'Planejamento recebido com carinho!' });
+    } catch (err: any) {
+      console.error('Erro Webhook Aura Inbound:', err);
+      return res.status(500).json({ error: 'Erro processando webhook.' });
+    }
+  });
+
+  // 3. Espelhar mensagens do mural / rotina para a Aura (Webhook Outbound em Tempo Real)
+  app.post('/api/aura/mural/sync', express.json(), async (req, res) => {
+    try {
+      const rawPayload = req.body;
+      const items = Array.isArray(rawPayload) ? rawPayload : [rawPayload];
+
+      // Formata itens no padrão exato esperado pela Anjinha Aura
+      const formattedItems = items.map((item: any) => ({
+        escola: item.escola || 'Escola Árvore da Infância',
+        escola_id: item.escola_id || 'esc_001',
+        turma: item.turma || 'Berçário I - A',
+        student_id: item.student_id || undefined,
+        student_name: item.student_name || item.studentNome || undefined,
+        tipo: item.tipo || 'aviso', // aviso | saude | ocorrencia | financeiro | pedagogico | rotina | autorizacao | lgpd
+        autor: item.autor || 'Equipe Anjinho Escolar',
+        texto: item.texto || item.conteudo || '',
+        posted_at: item.posted_at || new Date().toISOString(),
+        extra: {
+          canal: item.extra?.canal || 'sistema',
+          notificado_em: item.extra?.notificado_em || new Date().toISOString(),
+          visualizado_em: item.extra?.visualizado_em || undefined,
+          ...(item.extra || {})
+        }
+      }));
+
+      // Assina o corpo bruto exatamente como enviado, sem re-serializar
+      const payloadString = JSON.stringify(formattedItems);
+      const hmac = crypto.createHmac('sha256', MURAL_WEBHOOK_SECRET)
+                         .update(payloadString)
+                         .digest('hex');
+      const signature = `sha256=${hmac}`;
+
+      // Envia para a Anjinha Aura na Lovable App
+      const response = await fetch('https://anjinha-aura.lovable.app/api/public/mural', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-anjinho-signature': signature
+        },
+        body: payloadString
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        console.warn(`[Aura Webhook] Aviso de envio para Lovable (Status ${response.status}): ${errText}`);
+      }
+
+      return res.status(200).json({ success: true, count: formattedItems.length, message: 'Dados espelhados para a Anjinha Aura com sucesso.' });
+    } catch (err: any) {
+      console.error('Erro Sync Mural com Anjinha Aura:', err);
+      return res.status(500).json({ error: 'Falha ao sincronizar com a Aura.' });
+    }
+  });
+
+  // =========================================================================
 
   if (!isProduction) {
     console.log("Starting server in DEVELOPMENT mode (Vite Middleware)");
