@@ -381,7 +381,7 @@ export default function BannerHeader({
           </div>
 
           {/* Center Navigation Links (Desktop) */}
-          <nav className="hidden xl:flex items-center gap-1 xl:gap-1.5">
+          <nav className="hidden 2xl:flex items-center gap-1.5">
             {primaryNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -389,13 +389,13 @@ export default function BannerHeader({
                 <button
                   key={item.id}
                   onClick={() => onSelectTab(item.id)}
-                  className={`px-2 py-1 xl:px-2.5 xl:py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 xl:gap-1.5 cursor-pointer whitespace-nowrap ${
+                  className={`px-2.5 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
                     isActive
                       ? 'bg-white/25 text-white shadow-xs backdrop-blur font-black'
                       : 'text-indigo-100 hover:bg-white/10 hover:text-white'
                   }`}
                 >
-                  <Icon size={12} className="flex-shrink-0 xl:w-3.5 xl:h-3.5" />
+                  <Icon size={14} className="flex-shrink-0" />
                   <span>{item.label}</span>
                 </button>
               );
@@ -406,9 +406,9 @@ export default function BannerHeader({
             <button
               onClick={handleAuraSSO}
               disabled={isAuraLoading}
-              className={`ml-1 xl:ml-1.5 px-2 py-1 xl:px-2.5 xl:py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-amber-950 shadow-md transition flex items-center gap-1 cursor-pointer active:scale-95 whitespace-nowrap ${isAuraLoading ? 'opacity-70 cursor-wait' : ''}`}
+              className={`ml-1.5 px-2.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-amber-950 shadow-md transition flex items-center gap-1 cursor-pointer active:scale-95 whitespace-nowrap ${isAuraLoading ? 'opacity-70 cursor-wait' : ''}`}
             >
-              {isAuraLoading ? <RotateCcw className="animate-spin" size={11} /> : <Sparkles size={11} />}
+              {isAuraLoading ? <RotateCcw className="animate-spin" size={13} /> : <Sparkles size={13} />}
               <span>Anjinha Aura</span>
             </button>
           </nav>
@@ -443,14 +443,14 @@ export default function BannerHeader({
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="text-left hidden md:block lg:hidden xl:block">
-                  <p className="text-[10px] sm:text-[11px] font-black leading-tight truncate max-w-[80px] md:max-w-[110px] xl:max-w-[180px]">
+                <div className="text-left hidden md:block">
+                  <p className="text-[10px] sm:text-[11px] font-black leading-tight truncate max-w-[100px] md:max-w-[160px] 2xl:max-w-[200px]">
                     {currentProfileName ||
                       (userRole === 'professor'
                         ? 'Ana Silva (Professora Titular)'
                         : 'Thiago Alencar (Pai)')}
                   </p>
-                  <p className="text-[8px] text-indigo-200 uppercase tracking-wider leading-none truncate max-w-[80px] md:max-w-[110px] xl:max-w-[180px]">
+                  <p className="text-[8px] text-indigo-200 uppercase tracking-wider leading-none truncate max-w-[100px] md:max-w-[160px] 2xl:max-w-[200px]">
                     {currentProfileRoleTitle ||
                       (userRole === 'professor' ? 'MASTER (DEV) BERÇÁRIO I - A' : 'RESPONSÁVEL FAMILIAR')}
                   </p>
@@ -552,7 +552,7 @@ export default function BannerHeader({
         </div>
 
         {/* Mobile Sub-Navigation Bar (Horizontal scroll for small screens) */}
-        <div className="xl:hidden flex items-center gap-1.5 overflow-x-auto pt-2 pb-0.5 text-xs no-scrollbar">
+        <div className="2xl:hidden flex items-center gap-1.5 overflow-x-auto pt-2 pb-0.5 text-xs no-scrollbar">
           {primaryNavItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
