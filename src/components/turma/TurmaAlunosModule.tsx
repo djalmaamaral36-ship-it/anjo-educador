@@ -3,7 +3,7 @@ import {
   Users, UserCheck, Search, Plus, UserPlus, Phone, ShieldCheck, 
   Baby, Lock, Edit3, Trash2, Camera, Download, AlertTriangle, 
   CheckCircle2, Clock, Milk, Heart, Calendar, MessageSquare, X, Mic,
-  FileText, Printer
+  FileText, Printer, QrCode, KeyRound, Smartphone
 } from 'lucide-react';
 import { StudentPaxData } from '../../types';
 import { PAX_STUDENTS } from '../../data/paxStudentsData';
@@ -11,6 +11,7 @@ import { subscribeToStudents } from '../../services/firebaseSyncService';
 import CampoFotoUpload from '../comum/CampoFotoUpload';
 import CampoTextoVoz from '../comum/CampoTextoVoz';
 import ModalExportarRelatoriosPdf from '../relatorios/ModalExportarRelatoriosPdf';
+import ModalQrCodeInstalacao from './ModalQrCodeInstalacao';
 
 interface Props {
   currentStudent: StudentPaxData;
@@ -34,6 +35,8 @@ export default function TurmaAlunosModule({
   const [pinFeedback, setPinFeedback] = useState<string | null>(null);
   const [actionNotice, setActionNotice] = useState<string | null>(null);
   const [showPdfModal, setShowPdfModal] = useState(false);
+  const [showQrModal, setShowQrModal] = useState(false);
+  const [qrModalStudent, setQrModalStudent] = useState<StudentPaxData | null>(null);
 
   // Local state for students allowing dynamic edits
   const [studentsList, setStudentsList] = useState<StudentPaxData[]>(Object.values(PAX_STUDENTS));
@@ -56,6 +59,7 @@ export default function TurmaAlunosModule({
   const [novoTurma, setNovoTurma] = useState('Berçário I - A');
   const [novoNasc, setNovoNasc] = useState('2023-08-15');
   const [novoAlergia, setNovoAlergia] = useState('');
+  const [novoPin, setNovoPin] = useState('');
   const [novoFotoUrl, setNovoFotoUrl] = useState('https://images.unsplash.com/photo-1544717305-2782549b5136?w=300&auto=format&fit=crop&q=80');
   const [novoCuidados, setNovoCuidados] = useState('Acolhimento pedagógico, carinho e rotina equilibrada.');
 
@@ -96,9 +100,11 @@ export default function TurmaAlunosModule({
     if (!novoNome.trim()) return;
 
     const novoId = `aluno_${Date.now()}`;
+    const generatedPin = novoPin.trim() || Math.floor(1000 + Math.random() * 9000).toString();
     const novoAluno: StudentPaxData = {
       id: novoId,
       codigoAl: `AL-${studentsList.length + 1}`,
+      pinAcesso: generatedPin,
       nome: novoNome.trim(),
       nascimento: novoNasc.split('-').reverse().join('/'),
       idadeStr: '1 ano',
@@ -171,7 +177,10 @@ export default function TurmaAlunosModule({
     setNovoResp('');
     setNovoTel('');
     setNovoAlergia('');
-    triggerNotice(`Aluno(a) ${novoAluno.nome} cadastrado(a) com sucesso!`);
+    setNovoPin('');
+    setQrModalStudent(novoAluno);
+    setShowQrModal(true);
+    triggerNotice(`Aluno(a) ${novoAluno.nome} cadastrado(a) com sucesso! Cartão de acesso gerado.`);
   };
 
   const triggerNotice = (msg: string) => {
@@ -549,12 +558,24 @@ export default function TurmaAlunosModule({
           />
         </div>
 
-        {/* Botões de Cadastrar Aluno & Convidar Pais */}
-        <div className="flex items-center gap-2.5">
+        {/* Botões de Cadastrar Aluno & Convidar Pais & QR Code Secretaria */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <button
+            onClick={() => {
+              setQrModalStudent(selectedStudent);
+              setShowQrModal(true);
+            }}
+            className="flex-1 sm:flex-none px-4 py-3 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-indigo-900 font-black text-xs rounded-2xl shadow-2xs transition flex items-center justify-center gap-1.5 cursor-pointer"
+            title="Gerar e Imprimir QR Code de Instalação e Acesso Familiar"
+          >
+            <QrCode size={16} className="text-indigo-600" />
+            <span>QR Code da Família</span>
+          </button>
+
           {isProfessor && (
             <button
               onClick={() => setShowModalCadastrar(true)}
-              className="flex-1 sm:flex-none px-5 py-3 bg-indigo-600 hover:bg-indigo-700 active:scale-98 text-white font-black text-xs rounded-2xl shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer"
+              className="flex-1 sm:flex-none px-4 py-3 bg-indigo-600 hover:bg-indigo-700 active:scale-98 text-white font-black text-xs rounded-2xl shadow-xs transition flex items-center justify-center gap-1.5 cursor-pointer"
             >
               <Plus size={16} />
               <span>Cadastrar Aluno</span>
@@ -563,10 +584,10 @@ export default function TurmaAlunosModule({
 
           <button
             onClick={() => handleSendInviteWhatsApp(selectedStudent)}
-            className="flex-1 sm:flex-none px-5 py-3 bg-white hover:bg-emerald-50 border border-emerald-300 text-emerald-800 font-black text-xs rounded-2xl shadow-2xs transition flex items-center justify-center gap-1.5 cursor-pointer"
+            className="flex-1 sm:flex-none px-4 py-3 bg-white hover:bg-emerald-50 border border-emerald-300 text-emerald-800 font-black text-xs rounded-2xl shadow-2xs transition flex items-center justify-center gap-1.5 cursor-pointer"
           >
             <UserPlus size={16} className="text-emerald-600" />
-            <span>Convidar Pais / Famílias</span>
+            <span>Convidar Pais</span>
           </button>
         </div>
       </div>
@@ -683,11 +704,26 @@ export default function TurmaAlunosModule({
                   </span>
                 </div>
 
-                {/* BOTÃO ATIVAR PERFIL OU STATUS */}
-                <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-slate-500">
-                    {isSelected ? '✓ Diário Aberto Agora' : 'Pronto para registros'}
-                  </span>
+                {/* BOTÃO ATIVAR PERFIL OU STATUS & QR CODE */}
+                <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setQrModalStudent(st);
+                        setShowQrModal(true);
+                      }}
+                      className="p-1.5 rounded-lg bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-[10px] font-black flex items-center gap-1 transition"
+                      title="Ver e Imprimir QR Code deste aluno"
+                    >
+                      <QrCode size={13} />
+                      <span className="hidden sm:inline">QR Code</span>
+                    </button>
+                    <span className="text-[11px] font-bold text-slate-500">
+                      {isSelected ? '✓ Diário Aberto' : 'Disponível'}
+                    </span>
+                  </div>
 
                   {isSelected ? (
                     <span className="px-3 py-1 bg-emerald-500 text-white text-[11px] font-black rounded-xl shadow-2xs flex items-center gap-1">
@@ -766,8 +802,21 @@ export default function TurmaAlunosModule({
                 <Edit3 size={12} className="text-slate-400 cursor-pointer" />
               </div>
 
-              {/* Botão Oficial de Exportação em PDF */}
-              <div className="mt-3 flex justify-center">
+              {/* Botões Oficiais: Exportação em PDF e QR Code de Acesso Familiar */}
+              <div className="mt-3 flex flex-wrap items-center justify-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQrModalStudent(selectedStudent);
+                    setShowQrModal(true);
+                  }}
+                  className="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 active:scale-95 text-indigo-900 border border-indigo-200 text-xs font-black rounded-xl shadow-2xs transition flex items-center gap-2 cursor-pointer"
+                  title="Gerar e Imprimir Cartão com QR Code e PIN Familiar"
+                >
+                  <QrCode size={14} className="text-indigo-600" />
+                  <span>Cartão QR Code / PIN</span>
+                </button>
+
                 <button
                   type="button"
                   onClick={() => setShowPdfModal(true)}
@@ -995,13 +1044,28 @@ export default function TurmaAlunosModule({
                 </p>
               </div>
 
-              <button
-                onClick={() => handleSendInviteWhatsApp(selectedStudent)}
-                className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black rounded-xl shadow-2xs transition flex items-center gap-1.5 cursor-pointer flex-shrink-0"
-              >
-                <MessageSquare size={13} />
-                <span>Convidar</span>
-              </button>
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQrModalStudent(selectedStudent);
+                    setShowQrModal(true);
+                  }}
+                  className="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-black rounded-xl border border-indigo-200 transition flex items-center gap-1 cursor-pointer"
+                  title="Ver QR Code e PIN de Acesso do Responsável"
+                >
+                  <QrCode size={13} />
+                  <span>QR Code</span>
+                </button>
+
+                <button
+                  onClick={() => handleSendInviteWhatsApp(selectedStudent)}
+                  className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black rounded-xl shadow-2xs transition flex items-center gap-1.5 cursor-pointer"
+                >
+                  <MessageSquare size={13} />
+                  <span>Convidar</span>
+                </button>
+              </div>
             </div>
           </div>
 
@@ -1142,6 +1206,36 @@ export default function TurmaAlunosModule({
                 />
               </div>
 
+              {/* Definição de PIN de Acesso Familiar (Secretaria define ou gera automático) */}
+              <div className="bg-indigo-50/70 border border-indigo-100 rounded-2xl p-3.5 space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-black text-indigo-900 flex items-center gap-1.5">
+                    <KeyRound size={13} className="text-indigo-600" />
+                    <span>PIN de Acesso Familiar (4 dígitos)</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setNovoPin(Math.floor(1000 + Math.random() * 9000).toString())}
+                    className="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 underline cursor-pointer"
+                  >
+                    Gerar Aleatório
+                  </button>
+                </div>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="text"
+                    maxLength={4}
+                    value={novoPin}
+                    onChange={(e) => setNovoPin(e.target.value.replace(/\D/g, ''))}
+                    placeholder="Ex: 1234 (opcional)"
+                    className="w-32 p-2 bg-white border border-indigo-200 rounded-xl text-center font-black tracking-widest text-sm text-indigo-900 outline-none focus:border-indigo-500"
+                  />
+                  <p className="text-[11px] text-slate-500 font-normal leading-tight">
+                    Se deixado em branco, o sistema gerará um PIN seguro automaticamente e criará o QR Code com o cartão da família.
+                  </p>
+                </div>
+              </div>
+
               {/* Alergias com Voz */}
               <CampoTextoVoz
                 label="Alergias ou Restrições Alimentares (Opcional)"
@@ -1240,6 +1334,22 @@ export default function TurmaAlunosModule({
         isOpen={showPdfModal}
         onClose={() => setShowPdfModal(false)}
         student={selectedStudent}
+      />
+
+      {/* Modal de QR Code de Instalação e Cartão de Acesso da Família (Secretaria) */}
+      <ModalQrCodeInstalacao
+        isOpen={showQrModal}
+        onClose={() => {
+          setShowQrModal(false);
+          setQrModalStudent(null);
+        }}
+        student={qrModalStudent || selectedStudent}
+        allStudents={studentsList}
+        onSelectStudent={(id) => {
+          onSelectStudent(id);
+          const found = studentsList.find((s) => s.id === id);
+          if (found) setQrModalStudent(found);
+        }}
       />
     </div>
   );

@@ -23,20 +23,29 @@ import {
   Sparkles,
   ExternalLink,
   Copy,
+  QrCode,
+  Smartphone,
+  Printer,
 } from 'lucide-react';
-import { MembroVinculo, CategoriaVinculo } from '../../types';
+import { MembroVinculo, CategoriaVinculo, StudentPaxData } from '../../types';
 import { VINCULO_MEMBROS_INICIAIS } from '../../data/vinculoFamiliarData';
+import { PAX_STUDENTS } from '../../data/paxStudentsData';
 import CampoFotoUpload from '../comum/CampoFotoUpload';
 import CampoTextoVoz from '../comum/CampoTextoVoz';
+import ModalQrCodeInstalacao from '../turma/ModalQrCodeInstalacao';
 
 interface Props {
   currentStudentName: string;
+  currentStudent?: StudentPaxData;
   userRole?: 'professor' | 'familia';
+  onSelectStudent?: (studentId: string) => void;
 }
 
 export default function VinculoFamiliarModule({
   currentStudentName,
+  currentStudent,
   userRole = 'professor',
+  onSelectStudent,
 }: Props) {
   // State for members
   const [members, setMembers] = useState<MembroVinculo[]>(() => {
@@ -56,6 +65,8 @@ export default function VinculoFamiliarModule({
   // Modals state
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
   const [isAddEditModalOpen, setIsAddEditModalOpen] = useState(false);
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+  const [selectedQrStudent, setSelectedQrStudent] = useState<StudentPaxData | null>(null);
   const [editingMember, setEditingMember] = useState<MembroVinculo | null>(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [copiedPin, setCopiedPin] = useState<string | null>(null);
@@ -344,6 +355,19 @@ export default function VinculoFamiliarModule({
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center gap-3 w-full sm:w-auto">
             <button
+              onClick={() => {
+                const targetStudent = currentStudent || PAX_STUDENTS['mariana_souza'];
+                setSelectedQrStudent(targetStudent);
+                setIsQrModalOpen(true);
+              }}
+              className="flex-1 sm:flex-initial bg-indigo-500 hover:bg-indigo-400 text-white font-bold text-xs sm:text-sm px-4 py-3 rounded-2xl shadow-lg shadow-indigo-950/40 flex items-center justify-center gap-2 transition cursor-pointer active:scale-95 border border-indigo-400/40"
+              title="Gerar QR Code para a família instalar no celular ou levar impresso"
+            >
+              <QrCode size={16} className="text-amber-300" />
+              <span>QR Code de Instalação</span>
+            </button>
+
+            <button
               onClick={() => setIsInviteModalOpen(true)}
               className="flex-1 sm:flex-initial bg-[#10b981] hover:bg-[#059669] text-white font-bold text-xs sm:text-sm px-4 py-3 rounded-2xl shadow-lg shadow-emerald-950/30 flex items-center justify-center gap-2 transition cursor-pointer active:scale-95"
             >
@@ -604,22 +628,38 @@ export default function VinculoFamiliarModule({
                       </p>
                     )}
 
-                    {/* Edit & Delete Action Icons */}
-                    <div className="flex items-center gap-3 pt-1 text-slate-400">
-                      <button
-                        onClick={() => handleOpenEdit(member)}
-                        className="hover:text-indigo-600 transition cursor-pointer p-1 hover:bg-slate-100 rounded"
-                        title="Editar Membro"
-                      >
-                        <Edit2 size={15} />
-                      </button>
+                    {/* Edit & Delete & QR Code Action Icons */}
+                    <div className="flex items-center justify-between pt-1 text-slate-400">
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={() => handleOpenEdit(member)}
+                          className="hover:text-indigo-600 transition cursor-pointer p-1 hover:bg-slate-100 rounded"
+                          title="Editar Membro"
+                        >
+                          <Edit2 size={15} />
+                        </button>
+
+                        <button
+                          onClick={() => setDeleteConfirmId(member.id)}
+                          className="hover:text-rose-600 transition cursor-pointer p-1 hover:bg-slate-100 rounded"
+                          title="Remover Membro"
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
 
                       <button
-                        onClick={() => setDeleteConfirmId(member.id)}
-                        className="hover:text-rose-600 transition cursor-pointer p-1 hover:bg-slate-100 rounded"
-                        title="Remover Membro"
+                        type="button"
+                        onClick={() => {
+                          const targetStudent = currentStudent || PAX_STUDENTS['mariana_souza'];
+                          setSelectedQrStudent(targetStudent);
+                          setIsQrModalOpen(true);
+                        }}
+                        className="text-xs font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 hover:bg-indigo-100 px-2.5 py-1 rounded-lg border border-indigo-200 transition flex items-center gap-1 cursor-pointer"
+                        title="Ver QR Code e Cartão de Acesso para esta Família"
                       >
-                        <Trash2 size={15} />
+                        <QrCode size={13} />
+                        <span>Ver QR Code</span>
                       </button>
                     </div>
                   </div>
@@ -1130,6 +1170,26 @@ export default function VinculoFamiliarModule({
             </div>
           </div>
         </div>
+      )}
+
+      {/* MODAL DE QR CODE DE INSTALAÇÃO & ACESSO FAMILIAR */}
+      {selectedQrStudent && (
+        <ModalQrCodeInstalacao
+          isOpen={isQrModalOpen}
+          onClose={() => {
+            setIsQrModalOpen(false);
+            setSelectedQrStudent(null);
+          }}
+          student={selectedQrStudent}
+          allStudents={Object.values(PAX_STUDENTS)}
+          onSelectStudent={(id) => {
+            const found = PAX_STUDENTS[id as keyof typeof PAX_STUDENTS];
+            if (found) {
+              setSelectedQrStudent(found);
+              if (onSelectStudent) onSelectStudent(id);
+            }
+          }}
+        />
       )}
     </div>
   );

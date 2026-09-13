@@ -214,6 +214,8 @@ export interface StudentPaxData {
   }[];
   ocorrenciasHoje?: OcorrenciaEscolar[];
   codigoAl?: string;
+  pinAcesso?: string;
+  responsavelEmail?: string;
   pediatra?: {
     nome: string;
     telefone: string;

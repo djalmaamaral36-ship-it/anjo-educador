@@ -37,6 +37,25 @@ export default function Dashboard({ user }: Props) {
 
   const currentStudent = PAX_STUDENTS[selectedStudentId] || PAX_STUDENTS['mariana_souza'] || PAX_STUDENTS['enzo_alencar'];
 
+  // Verifica parâmetros de URL caso o responsável tenha escaneado o QR Code
+  useEffect(() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const urlAlunoId = params.get('alunoId');
+      const urlOrigem = params.get('origem');
+      if (urlAlunoId && PAX_STUDENTS[urlAlunoId]) {
+        setSelectedStudentId(urlAlunoId);
+        if (urlOrigem === 'qrcode_secretaria') {
+          setUserRole('familia');
+          setActiveMode('pax');
+          setActiveTab('diario_escolar');
+        }
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
   // Verifica se o responsável já assinou os termos LGPD para o aluno (Primeira tela obrigatória para a família)
   useEffect(() => {
     if (userRole === 'familia') {
@@ -140,7 +159,9 @@ export default function Dashboard({ user }: Props) {
         {activeTab === 'familias' && (
           <VinculoFamiliarModule
             currentStudentName={currentStudent.nome}
+            currentStudent={currentStudent}
             userRole={userRole}
+            onSelectStudent={setSelectedStudentId}
           />
         )}
 
