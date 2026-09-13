@@ -26,6 +26,7 @@ interface Props {
   currentStudentId?: string;
   onSelectStudentId?: (id: string) => void;
   onOpenFullMedicationsTab?: () => void;
+  simulatedProfile?: any;
 }
 
 export default function PaxPortalDeTranquilidade({
@@ -36,6 +37,7 @@ export default function PaxPortalDeTranquilidade({
   currentStudentId = 'mariana_souza',
   onSelectStudentId,
   onOpenFullMedicationsTab,
+  simulatedProfile,
 }: Props) {
   const [studentsMap, setStudentsMap] = useState<Record<string, StudentPaxData>>(PAX_STUDENTS);
   const [selectedStudentId, setSelectedStudentId] = useState<string>(currentStudentId);
@@ -192,6 +194,9 @@ export default function PaxPortalDeTranquilidade({
         onChangeUserRole={onChangeUserRole}
         selectedStudentName={currentStudent.nome}
         onOpenStudentModal={() => setShowClassListModal(true)}
+        selectedStudentResponsibleName={currentStudent.responsavelNome}
+        selectedStudentResponsibleRelation={currentStudent.responsavelParentesco}
+        simulatedProfile={simulatedProfile}
       />
 
       {/* Banner Informativo do Modo Atual */}

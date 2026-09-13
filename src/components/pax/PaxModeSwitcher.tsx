@@ -11,6 +11,7 @@ import {
   AlertCircle,
   Sparkles,
 } from 'lucide-react';
+import { VINCULO_MEMBROS_INICIAIS } from '../../data/vinculoFamiliarData';
 
 interface Props {
   activeMode: 'aula' | 'pax';
@@ -19,6 +20,9 @@ interface Props {
   onChangeUserRole: (role: 'professor' | 'familia') => void;
   selectedStudentName: string;
   onOpenStudentModal?: () => void;
+  selectedStudentResponsibleName?: string;
+  selectedStudentResponsibleRelation?: string;
+  simulatedProfile?: any;
 }
 
 export default function PaxModeSwitcher({
@@ -28,9 +32,49 @@ export default function PaxModeSwitcher({
   onChangeUserRole,
   selectedStudentName,
   onOpenStudentModal,
+  selectedStudentResponsibleName,
+  selectedStudentResponsibleRelation,
+  simulatedProfile,
 }: Props) {
   const [showAccessDeniedModal, setShowAccessDeniedModal] = useState(false);
   const [showRoleModal, setShowRoleModal] = useState(false);
+
+  // Obter detalhes dinâmicos do perfil ativo
+  const getActiveProfileDetails = () => {
+    if (userRole === 'professor') {
+      return {
+        name: 'Ana Silva (Professora Titular)',
+        roleTitle: 'Professora Titular / Educador',
+        photo: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80',
+      };
+    }
+
+    if (simulatedProfile) {
+      return {
+        name: simulatedProfile.tituloExibicao || simulatedProfile.nome,
+        roleTitle: simulatedProfile.subtituloCargo || 'Responsável Familiar / Consulta',
+        photo: simulatedProfile.fotoUrl || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80',
+      };
+    }
+
+    // Busca o membro correspondente na lista inicial se houver
+    const matchedMembro = VINCULO_MEMBROS_INICIAIS.find(
+      (m) => m.nome.toLowerCase() === (selectedStudentResponsibleName || '').toLowerCase()
+    );
+
+    const rel = selectedStudentResponsibleRelation || 'Mãe';
+    const cleanStudentFirstName = selectedStudentName.split(' ')[0];
+
+    return {
+      name: matchedMembro 
+        ? `${matchedMembro.nome} (${rel} de ${cleanStudentFirstName})`
+        : `${selectedStudentResponsibleName || 'Mariana Castro'} (${rel} de ${cleanStudentFirstName})`,
+      roleTitle: 'Responsável Familiar / Consulta',
+      photo: matchedMembro?.fotoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+    };
+  };
+
+  const activeProfile = getActiveProfileDetails();
 
   const handleModeClick = (mode: 'aula' | 'pax') => {
     if (mode === 'aula' && userRole === 'familia') {
@@ -110,11 +154,7 @@ export default function PaxModeSwitcher({
         <div className="flex items-center gap-3">
           <div className="w-11 h-11 rounded-full overflow-hidden bg-amber-200 border-2 border-indigo-200 flex-shrink-0">
             <img
-              src={
-                userRole === 'professor'
-                  ? 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80'
-                  : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80'
-              }
+              src={activeProfile.photo}
               alt="Perfil Ativo"
               className="w-full h-full object-cover"
             />
@@ -124,9 +164,7 @@ export default function PaxModeSwitcher({
               PERFIL ATIVO DO SISTEMA
             </span>
             <h4 className="text-sm sm:text-base font-black text-slate-800 leading-tight">
-              {userRole === 'professor'
-                ? 'Ana Silva (Professora Titular)'
-                : 'Thiago Alencar (Pai do Enzo)'}
+              {activeProfile.name}
             </h4>
             <span
               className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md inline-block mt-0.5 ${
@@ -135,9 +173,7 @@ export default function PaxModeSwitcher({
                   : 'bg-emerald-50 text-emerald-800'
               }`}
             >
-              {userRole === 'professor'
-                ? 'Professora Titular / Educador'
-                : 'Responsável Familiar / Consulta'}
+              {activeProfile.roleTitle}
             </span>
           </div>
         </div>
@@ -263,13 +299,19 @@ export default function PaxModeSwitcher({
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full overflow-hidden bg-emerald-200 flex-shrink-0">
                     <img
-                      src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80"
-                      alt="Thiago Alencar"
+                      src={
+                        VINCULO_MEMBROS_INICIAIS.find(
+                          (m) => m.nome.toLowerCase() === (selectedStudentResponsibleName || '').toLowerCase()
+                        )?.fotoUrl || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'
+                      }
+                      alt={selectedStudentResponsibleName || 'Responsável'}
                       className="w-full h-full object-cover"
                     />
                   </div>
                   <div>
-                    <h4 className="font-black text-sm text-slate-800">Thiago Alencar (Pai do Enzo)</h4>
+                    <h4 className="font-black text-sm text-slate-800">
+                      {selectedStudentResponsibleName || 'Mariana Castro'} ({selectedStudentResponsibleRelation || 'Mãe'} de {selectedStudentName.split(' ')[0]})
+                    </h4>
                     <p className="text-[11px] text-slate-500">Acesso Exclusivo: PAX (somente leitura e tranquilidade)</p>
                   </div>
                 </div>

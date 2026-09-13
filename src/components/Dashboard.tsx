@@ -91,9 +91,24 @@ export default function Dashboard({ user }: Props) {
         onToggleRole={handleToggleRole}
         onOpenStudentModal={() => setIsStudentModalOpen(true)}
         onOpenShortcutModal={() => setIsShortcutModalOpen(true)}
-        currentProfileName={simulatedProfile?.tituloExibicao}
-        currentProfilePhoto={simulatedProfile?.fotoUrl}
-        currentProfileRoleTitle={simulatedProfile?.subtituloCargo}
+        currentProfileName={
+          simulatedProfile?.tituloExibicao ||
+          (userRole === 'professor'
+            ? 'Ana Silva (Professora Titular)'
+            : `${currentStudent.responsavelNome} (${currentStudent.responsavelParentesco || 'Responsável'} de ${currentStudent.nome.split(' ')[0]})`)
+        }
+        currentProfilePhoto={
+          simulatedProfile?.fotoUrl ||
+          (userRole === 'professor'
+            ? 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80'
+            : (currentStudent.responsavelNome === 'Mariana Castro'
+                ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'
+                : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80'))
+        }
+        currentProfileRoleTitle={
+          simulatedProfile?.subtituloCargo ||
+          (userRole === 'professor' ? 'MASTER (DEV) BERÇÁRIO I - A' : 'RESPONSÁVEL FAMILIAR / CONSULTA')
+        }
       />
 
       {/* Main Content Area */}
@@ -139,6 +154,7 @@ export default function Dashboard({ user }: Props) {
             currentStudentId={selectedStudentId}
             onSelectStudentId={setSelectedStudentId}
             onOpenFullMedicationsTab={() => setActiveTab('medicamentos')}
+            simulatedProfile={simulatedProfile}
           />
         )}
 
