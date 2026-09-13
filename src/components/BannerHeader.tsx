@@ -373,7 +373,7 @@ export default function BannerHeader({
                     Anjinho Escolar
                   </span>
                 </div>
-                <p className="text-[9px] sm:text-[10px] text-indigo-100/90 font-medium leading-none mt-1 hidden sm:block lg:hidden xl:block truncate max-w-[170px] md:max-w-none">
+                <p className="text-[9px] sm:text-[10px] text-indigo-100/90 font-medium leading-none mt-1 hidden sm:block lg:hidden xl:block truncate max-w-[100px] md:max-w-[130px] xl:max-w-[250px]">
                   Onde a infância é registrada para sempre
                 </p>
               </div>
@@ -414,14 +414,14 @@ export default function BannerHeader({
           </nav>
 
           {/* Right Profile & Controls */}
-          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+          <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
             {/* Aura Button on mobile */}
             <button
               onClick={handleAuraSSO}
               disabled={isAuraLoading}
               className={`lg:hidden px-2 py-1 rounded-xl text-[10px] font-black bg-amber-400 text-amber-950 flex items-center gap-1 shadow flex-shrink-0 ${isAuraLoading ? 'opacity-70 cursor-wait' : ''}`}
             >
-              {isAuraLoading ? <RotateCcw className="animate-spin" size={12} /> : <Sparkles size={12} />}
+              {isAuraLoading ? <RotateCcw className="animate-spin" size={11} /> : <Sparkles size={11} />}
               <span>Aura</span>
             </button>
 
@@ -429,7 +429,7 @@ export default function BannerHeader({
             <div className="relative">
               <div
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center gap-1.5 sm:gap-2 bg-white/10 hover:bg-white/15 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-2xl cursor-pointer transition border border-white/15"
+                className="flex items-center gap-1 sm:gap-1.5 bg-white/10 hover:bg-white/15 px-1.5 py-1 sm:px-2 sm:py-1 rounded-2xl cursor-pointer transition border border-white/15"
               >
                 <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full overflow-hidden bg-amber-300 flex items-center justify-center text-amber-950 font-black text-xs border border-white/40 flex-shrink-0">
                   <img
@@ -444,18 +444,18 @@ export default function BannerHeader({
                   />
                 </div>
                 <div className="text-left hidden md:block lg:hidden xl:block">
-                  <p className="text-[11px] font-black leading-tight truncate max-w-[150px] xl:max-w-[200px]">
+                  <p className="text-[10px] sm:text-[11px] font-black leading-tight truncate max-w-[80px] md:max-w-[110px] xl:max-w-[180px]">
                     {currentProfileName ||
                       (userRole === 'professor'
                         ? 'Ana Silva (Professora Titular)'
                         : 'Thiago Alencar (Pai)')}
                   </p>
-                  <p className="text-[8px] text-indigo-200 uppercase tracking-wider leading-none">
+                  <p className="text-[8px] text-indigo-200 uppercase tracking-wider leading-none truncate max-w-[80px] md:max-w-[110px] xl:max-w-[180px]">
                     {currentProfileRoleTitle ||
                       (userRole === 'professor' ? 'MASTER (DEV) BERÇÁRIO I - A' : 'RESPONSÁVEL FAMILIAR')}
                   </p>
                 </div>
-                <ChevronDown size={12} className="text-indigo-200" />
+                <ChevronDown size={11} className="text-indigo-200" />
               </div>
 
               {/* Profile Dropdown */}

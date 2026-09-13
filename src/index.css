@@ -17,6 +17,7 @@
 /* Custom global overrides for accessibility and cozy-cream default background */
 html, body {
   max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
