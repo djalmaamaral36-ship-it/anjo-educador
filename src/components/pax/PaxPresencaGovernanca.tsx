@@ -92,8 +92,29 @@ export default function PaxPresencaGovernanca({ student, userRole = 'familia', o
   // Obter as atividades semanais desduplicadas
   const deduplicatedAll = deduplicateActivities(PLAN_ACTIVITIES);
   
-  // Filtramos para a Quarta-feira, dia letivo simulado cheio
-  const simulatedDay = 'Quarta-feira';
+  // Determinar dinamicamente o dia simulado ativo: buscamos o dia da semana que possui o maior número de
+  // atividades correspondidas na linha de tempo do aluno. Se nenhum tiver correspondência, usamos 'Quarta-feira' como padrão.
+  const WEEKDAYS = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira'];
+  let simulatedDay = 'Quarta-feira';
+  let maxMatches = 0;
+
+  WEEKDAYS.forEach(day => {
+    const dayActivities = deduplicatedAll.filter(act => (act.dia || 'Quarta-feira') === day);
+    let matches = 0;
+    dayActivities.forEach(p => {
+      const normalizedPlanned = p.titulo.toLowerCase().trim();
+      const hasMatch = (student.auditoriaLinhaDoTempo || []).some(item => {
+        const normalizedAudit = item.titulo.replace(/Atividade Pedagógica: |Alimentação & Nutrição: /g, '').toLowerCase().trim();
+        return normalizedAudit.includes(normalizedPlanned) || normalizedPlanned.includes(normalizedAudit);
+      });
+      if (hasMatch) matches++;
+    });
+    if (matches > maxMatches) {
+      maxMatches = matches;
+      simulatedDay = day;
+    }
+  });
+
   const plannedForToday = deduplicatedAll.filter(act => (act.dia || 'Quarta-feira') === simulatedDay);
 
   let plannedCompletedCount = 0;
@@ -111,6 +132,10 @@ export default function PaxPresencaGovernanca({ student, userRole = 'familia', o
 
     if (auditItem) {
       isCompleted = true;
+      const descLower = (auditItem.descricao || '').toLowerCase();
+      if (descLower.includes('recusa') || descLower.includes('recusou') || descLower.includes('rejeit')) {
+        totalRefeicoesRecusadas += 1;
+      }
     }
 
     // B. Fallbacks para garantir que ações diretas nos cartões de saúde/alimentação também dêem baixa sem duplicar:
@@ -180,18 +205,25 @@ export default function PaxPresencaGovernanca({ student, userRole = 'familia', o
     rotinasRecusas = 0;
   }
 
+  // Se o usuário interagiu com o aplicativo, usamos 100% da métrica dinâmica calculada em tempo real para não ser sobreposta por mock estático
+  const hasInteraction = (student.auditoriaLinhaDoTempo && student.auditoriaLinhaDoTempo.length > 0) || 
+                         (student.saudeCards?.soneca?.valor && student.saudeCards.soneca.valor !== 'Sem Soneca Ainda' && student.saudeCards.soneca.valor !== 'Sem registros' && student.saudeCards.soneca.valor !== 'Sem Registros') ||
+                         (student.saudeCards?.fraldas?.valor && student.saudeCards.fraldas.valor !== 'Nenhuma Troca' && student.saudeCards.fraldas.valor !== 'Sem trocas') ||
+                         (student.agua?.coposServidos !== undefined && student.agua.coposServidos > 0) ||
+                         (student.alimentacao?.refeicoes && student.alimentacao.refeicoes.some(r => r.status && r.status !== 'SEM REGISTRO' && !r.status.includes('PREVISTO')));
+
   // Calculamos a porcentagem de conformidade com precisão baseada em planejamento e realização reais
   const conformidadeCalculada = totalExpected > 0 ? Math.min(100, Math.round((rotinasRealizadas / totalExpected) * 100)) : 0;
-  const conformidade = rotinasRealizadas > 0 
-    ? Math.max(conformidadeCalculada, student.governanca?.conformidadePercent || 0)
-    : (student.governanca?.conformidadePercent || (rotinasRealizadas > 0 ? 100 : 0));
+  const conformidade = hasInteraction 
+    ? conformidadeCalculada 
+    : (student.governanca?.conformidadePercent !== undefined ? student.governanca.conformidadePercent : conformidadeCalculada);
 
   // Qualidade baseada em anomalias (Febre, Recusas, Atrasos, etc.)
   const isFebril = parseFloat(student.saudeCards?.temperatura?.valor || '36.5') >= 37.8;
-  const qualidadeCalculada = Math.max(70, Math.min(100, 100 - rotinasRecusas * 10 - (isFebril ? 15 : 0)));
-  const qualidade = student.governanca?.qualidadePercent !== undefined && student.governanca.qualidadePercent > 0
-    ? student.governanca.qualidadePercent
-    : qualidadeCalculada;
+  const qualidadeCalculada = Math.max(70, Math.min(100, 100 - rotinasRecusas * 15 - (isFebril ? 15 : 0)));
+  const qualidade = hasInteraction 
+    ? qualidadeCalculada 
+    : (student.governanca?.qualidadePercent !== undefined ? student.governanca.qualidadePercent : qualidadeCalculada);
 
   return (
     <div className="space-y-4">
