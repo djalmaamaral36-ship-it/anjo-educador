@@ -414,7 +414,7 @@ export default function BannerHeader({
           </nav>
 
           {/* Right Profile & Controls */}
-          <div className="flex items-center gap-1.5 sm:gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
             {/* Aura Button on mobile */}
             <button
               onClick={handleAuraSSO}
@@ -443,7 +443,7 @@ export default function BannerHeader({
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="text-left hidden md:block">
+                <div className="text-left hidden md:block lg:hidden xl:block">
                   <p className="text-[11px] font-black leading-tight truncate max-w-[150px] xl:max-w-[200px]">
                     {currentProfileName ||
                       (userRole === 'professor'
@@ -527,7 +527,7 @@ export default function BannerHeader({
             {onToggleRole && (
               <button
                 onClick={() => onToggleRole(userRole === 'professor' ? 'familia' : 'professor')}
-                className="p-1.5 sm:p-2 rounded-xl bg-white/10 hover:bg-white/20 text-indigo-100 hover:text-white transition cursor-pointer"
+                className="p-1 sm:p-2 rounded-xl bg-white/10 hover:bg-white/20 text-indigo-100 hover:text-white transition cursor-pointer"
                 title={userRole === 'professor' ? 'Mudar para perfil de Família' : 'Mudar para perfil de Professor'}
               >
                 {userRole === 'professor' ? <Moon size={15} /> : <Sun size={15} />}
@@ -543,7 +543,7 @@ export default function BannerHeader({
                   signOut(auth);
                 }
               }}
-              className="p-1.5 sm:p-2 rounded-xl bg-white/10 hover:bg-white/25 text-indigo-100 hover:text-white transition cursor-pointer shadow-xs"
+              className="p-1 sm:p-2 rounded-xl bg-white/10 hover:bg-white/25 text-indigo-100 hover:text-white transition cursor-pointer shadow-xs"
               title="Tela de Atalho (Simular Perfil)"
             >
               <LogOut size={15} />
