@@ -381,7 +381,7 @@ export default function BannerHeader({
           </div>
 
           {/* Center Navigation Links (Desktop) */}
-          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1.5">
+          <nav className="hidden xl:flex items-center gap-1 xl:gap-1.5">
             {primaryNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -389,7 +389,7 @@ export default function BannerHeader({
                 <button
                   key={item.id}
                   onClick={() => onSelectTab(item.id)}
-                  className={`px-1.5 py-1 xl:px-2.5 xl:py-1.5 rounded-xl text-[10px] xl:text-xs font-bold transition flex items-center gap-1 xl:gap-1.5 cursor-pointer whitespace-nowrap ${
+                  className={`px-2 py-1 xl:px-2.5 xl:py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 xl:gap-1.5 cursor-pointer whitespace-nowrap ${
                     isActive
                       ? 'bg-white/25 text-white shadow-xs backdrop-blur font-black'
                       : 'text-indigo-100 hover:bg-white/10 hover:text-white'
@@ -406,7 +406,7 @@ export default function BannerHeader({
             <button
               onClick={handleAuraSSO}
               disabled={isAuraLoading}
-              className={`ml-0.5 xl:ml-1.5 px-1.5 py-1 xl:px-2.5 xl:py-1.5 rounded-xl text-[10px] xl:text-xs font-black bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-amber-950 shadow-md transition flex items-center gap-1 cursor-pointer active:scale-95 whitespace-nowrap ${isAuraLoading ? 'opacity-70 cursor-wait' : ''}`}
+              className={`ml-1 xl:ml-1.5 px-2 py-1 xl:px-2.5 xl:py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-amber-950 shadow-md transition flex items-center gap-1 cursor-pointer active:scale-95 whitespace-nowrap ${isAuraLoading ? 'opacity-70 cursor-wait' : ''}`}
             >
               {isAuraLoading ? <RotateCcw className="animate-spin" size={11} /> : <Sparkles size={11} />}
               <span>Anjinha Aura</span>
@@ -552,7 +552,7 @@ export default function BannerHeader({
         </div>
 
         {/* Mobile Sub-Navigation Bar (Horizontal scroll for small screens) */}
-        <div className="lg:hidden flex items-center gap-1.5 overflow-x-auto pt-2 pb-0.5 text-xs no-scrollbar">
+        <div className="xl:hidden flex items-center gap-1.5 overflow-x-auto pt-2 pb-0.5 text-xs no-scrollbar">
           {primaryNavItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
