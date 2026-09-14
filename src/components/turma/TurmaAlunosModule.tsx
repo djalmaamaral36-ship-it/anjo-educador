@@ -964,10 +964,20 @@ export default function TurmaAlunosModule({
               <div className="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between">
                 <div>
                   <h6 className="text-xs font-black text-slate-800">Fralda / Higiene</h6>
-                  <p className="text-[11px] text-slate-500">Pendente de registro</p>
+                  <p className="text-[11px] text-slate-500">
+                    {selectedStudent.saudeCards?.fraldas?.valor && selectedStudent.saudeCards.fraldas.valor !== 'Nenhuma Troca'
+                      ? `${selectedStudent.saudeCards.fraldas.valor} (${selectedStudent.saudeCards.fraldas.periodo || 'Hoje'})`
+                      : 'Pendente de registro'}
+                  </p>
                 </div>
-                <span className="text-[10px] font-black uppercase bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md">
-                  Pendente
+                <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md ${
+                  selectedStudent.saudeCards?.fraldas?.valor && selectedStudent.saudeCards.fraldas.valor !== 'Nenhuma Troca'
+                    ? 'bg-teal-100 text-teal-800'
+                    : 'bg-slate-100 text-slate-600'
+                }`}>
+                  {selectedStudent.saudeCards?.fraldas?.valor && selectedStudent.saudeCards.fraldas.valor !== 'Nenhuma Troca'
+                    ? 'Registrado'
+                    : 'Pendente'}
                 </span>
               </div>
 
@@ -975,10 +985,20 @@ export default function TurmaAlunosModule({
               <div className="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between">
                 <div>
                   <h6 className="text-xs font-black text-slate-800">Sono / Sesta</h6>
-                  <p className="text-[11px] text-slate-500">Sem registro de soneca hoje</p>
+                  <p className="text-[11px] text-slate-500">
+                    {selectedStudent.saudeCards?.soneca?.valor && selectedStudent.saudeCards.soneca.valor !== 'Sem Soneca Ainda' && selectedStudent.saudeCards.soneca.valor !== 'Sem registros'
+                      ? `${selectedStudent.saudeCards.soneca.valor} (${selectedStudent.saudeCards.soneca.periodo || 'Hoje'})`
+                      : 'Sem registro de soneca hoje'}
+                  </p>
                 </div>
-                <span className="text-[10px] font-black uppercase bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md">
-                  Pendente
+                <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md ${
+                  selectedStudent.saudeCards?.soneca?.valor && selectedStudent.saudeCards.soneca.valor !== 'Sem Soneca Ainda' && selectedStudent.saudeCards.soneca.valor !== 'Sem registros'
+                    ? 'bg-indigo-100 text-indigo-800'
+                    : 'bg-slate-100 text-slate-600'
+                }`}>
+                  {selectedStudent.saudeCards?.soneca?.valor && selectedStudent.saudeCards.soneca.valor !== 'Sem Soneca Ainda' && selectedStudent.saudeCards.soneca.valor !== 'Sem registros'
+                    ? 'Registrado'
+                    : 'Pendente'}
                 </span>
               </div>
 
@@ -986,10 +1006,12 @@ export default function TurmaAlunosModule({
               <div className="bg-white p-3 rounded-xl border border-slate-200 flex items-center justify-between">
                 <div>
                   <h6 className="text-xs font-black text-slate-800">Saúde / Vitais</h6>
-                  <p className="text-[11px] text-slate-500">Nenhuma alteração de saúde</p>
+                  <p className="text-[11px] text-slate-500">
+                    Peso: {selectedStudent.saudeCards?.peso?.valor || '14.0 kg'} | Temp: {selectedStudent.saudeCards?.temperatura?.valor || '36.5°C'}
+                  </p>
                 </div>
                 <span className="text-[10px] font-black uppercase bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md">
-                  Em Dia
+                  {selectedStudent.saudeCards?.peso?.status || 'Em Dia'}
                 </span>
               </div>
 

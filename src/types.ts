@@ -409,3 +409,6 @@ export interface LgpdLogRegistro {
   baseLegalLgpd: string; // ex: "Art. 14, §1º da Lei 13.709/18 (Melhor Interesse da Criança)"
 }
 
+// Modelos do Álbum da 1ª Infância®
+export * from './types/albumInfancia';
+
