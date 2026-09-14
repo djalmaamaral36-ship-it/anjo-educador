@@ -380,7 +380,7 @@ export default function BannerHeader({
             </div>
           </div>
 
-          {/* Center Navigation Links (Desktop) */}
+          {/* Center Navigation Links (Desktop 2XL) */}
           <nav className="hidden 2xl:flex items-center gap-1.5">
             {primaryNavItems.map((item) => {
               const Icon = item.icon;
@@ -400,29 +400,25 @@ export default function BannerHeader({
                 </button>
               );
             })}
-
-
-            {/* Link Aura Destacado */}
-            <button
-              onClick={handleAuraSSO}
-              disabled={isAuraLoading}
-              className={`ml-1.5 px-2.5 py-1.5 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-amber-950 shadow-md transition flex items-center gap-1 cursor-pointer active:scale-95 whitespace-nowrap ${isAuraLoading ? 'opacity-70 cursor-wait' : ''}`}
-            >
-              {isAuraLoading ? <RotateCcw className="animate-spin" size={13} /> : <Sparkles size={13} />}
-              <span>Anjinha Aura</span>
-            </button>
           </nav>
 
           {/* Right Profile & Controls */}
-          <div className="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
-            {/* Aura Button on mobile */}
+          <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+            {/* Botão de Destaque Oficial: Anjinha Aura IA (Sempre visível em todos os tamanhos de tela) */}
             <button
               onClick={handleAuraSSO}
               disabled={isAuraLoading}
-              className={`lg:hidden px-2 py-1 rounded-xl text-[10px] font-black bg-amber-400 text-amber-950 flex items-center gap-1 shadow flex-shrink-0 ${isAuraLoading ? 'opacity-70 cursor-wait' : ''}`}
+              title="Acessar Anjinha Aura - Inteligência Artificial & Apoio Pedagógico"
+              className={`px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs sm:text-xs font-black bg-gradient-to-r from-amber-400 via-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-amber-950 shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 whitespace-nowrap border border-amber-300/60 ${isAuraLoading ? 'opacity-70 cursor-wait' : ''}`}
             >
-              {isAuraLoading ? <RotateCcw className="animate-spin" size={11} /> : <Sparkles size={11} />}
-              <span>Aura</span>
+              {isAuraLoading ? (
+                <RotateCcw className="animate-spin text-amber-950" size={13} />
+              ) : (
+                <Sparkles size={14} className="text-amber-950 animate-pulse flex-shrink-0" />
+              )}
+              <span className="inline">
+                {isAuraLoading ? 'Conectando...' : 'Anjinha Aura'}
+              </span>
             </button>
 
             {/* Teacher / Family Profile Pill */}
