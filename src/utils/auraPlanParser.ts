@@ -18,6 +18,8 @@ export interface ParsedAuraActivity {
   isRotinaPadrao?: boolean;
   status?: 'pendente' | 'entregue' | 'recusou';
   observacao?: string;
+  escopo?: 'coletivo' | 'individual';
+  isColetivo?: boolean;
 }
 
 export interface AuraDaySummary {

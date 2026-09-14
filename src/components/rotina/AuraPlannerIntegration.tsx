@@ -972,6 +972,9 @@ export default function AuraPlannerIntegration({ onConcluirAtividadePedagogica, 
   const [activityNotes, setActivityNotes] = useState<Record<string, string>>({});
   const [listeningNoteId, setListeningNoteId] = useState<string | null>(null);
 
+  // Escopo de aplicação por cartão: 'coletivo' (toda a turma) ou 'individual' (apenas este aluno)
+  const [activityScopes, setActivityScopes] = useState<Record<string, 'coletivo' | 'individual'>>({});
+
   // Sincroniza com o cronômetro / novo período: quando o cronômetro é iniciado ou religado,
   // todas as atividades da agenda entram/retornam para o status pendente
   useEffect(() => {
@@ -1314,9 +1317,10 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
   };
 
   // Marcar como Entregue / Concluído
-  const handleMarkEntregue = (act: ParsedAuraActivity, idx: number) => {
+  const handleMarkEntregue = (act: ParsedAuraActivity, idx: number, customScope?: 'coletivo' | 'individual') => {
     const actId = act.id || `act-${idx}`;
     const note = activityNotes[actId] || '';
+    const scope = customScope || activityScopes[actId] || 'coletivo';
     
     setActivities((prev) =>
       prev.map((a, i) => {
@@ -1333,15 +1337,18 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
         ...act,
         entregue: true,
         status: 'entregue',
+        escopo: scope,
+        isColetivo: scope === 'coletivo',
         descricao: note ? `${act.descricao}\n\n💬 Observação da Professora: ${note}` : act.descricao
       });
     }
   };
 
   // Marcar como Recusou
-  const handleMarkRecusou = (act: ParsedAuraActivity, idx: number) => {
+  const handleMarkRecusou = (act: ParsedAuraActivity, idx: number, customScope?: 'coletivo' | 'individual') => {
     const actId = act.id || `act-${idx}`;
     const note = activityNotes[actId] || '';
+    const scope = customScope || activityScopes[actId] || 'coletivo';
 
     setActivities((prev) =>
       prev.map((a, i) => {
@@ -1358,6 +1365,8 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
         ...act,
         entregue: false,
         status: 'recusou',
+        escopo: scope,
+        isColetivo: scope === 'coletivo',
         descricao: `${act.descricao}\n\n⚠️ Status: Criança recusou participar da atividade.${note ? `\n💬 Motivo/Obs: ${note}` : ''}`
       });
     }
@@ -2262,32 +2271,81 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                 />
               </div>
 
-              {/* Botões de Ação: [Recusou] e [Entregue] */}
-              <div className="flex items-center justify-end gap-2 pt-1">
-                <button
-                  type="button"
-                  onClick={() => handleMarkRecusou(act, idx)}
-                  className={`px-4 py-2 text-xs font-black rounded-xl transition cursor-pointer active:scale-95 ${
-                    isRecusou
-                      ? 'bg-rose-100 text-rose-800 border border-rose-300'
-                      : 'bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-200'
-                  }`}
-                >
-                  Recusou
-                </button>
+              {/* Botões de Ação: [Individual / Coletivo] + [Recusou] + [Entregue] */}
+              <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 mt-1">
+                {/* Seletor Individual / Coletivo Padronizado no Próprio Cartão */}
+                <div className="flex items-center bg-slate-100/90 p-0.5 rounded-xl border border-slate-200 shadow-2xs">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setActivityScopes((prev) => ({
+                        ...prev,
+                        [actId]: 'coletivo',
+                      }))
+                    }
+                    className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer ${
+                      (activityScopes[actId] || 'coletivo') === 'coletivo'
+                        ? 'bg-indigo-600 text-white shadow-2xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                    title="Modo Coletivo: Salva para toda a turma de uma vez"
+                  >
+                    <span>👥 Coletivo</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setActivityScopes((prev) => ({
+                        ...prev,
+                        [actId]: 'individual',
+                      }))
+                    }
+                    className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer ${
+                      activityScopes[actId] === 'individual'
+                        ? 'bg-emerald-600 text-white shadow-2xs'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                    title={`Modo Individual: Salva apenas para ${studentNome.split(' ')[0]}`}
+                  >
+                    <span>👤 Individual</span>
+                  </button>
+                </div>
 
-                <button
-                  type="button"
-                  onClick={() => handleMarkEntregue(act, idx)}
-                  className={`px-5 py-2 text-xs font-black rounded-xl transition cursor-pointer shadow-xs active:scale-95 flex items-center gap-1.5 ${
-                    isEntregue
-                      ? 'bg-emerald-600 text-white font-black'
-                      : 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                  }`}
-                >
-                  <Check size={14} />
-                  <span>Entregue</span>
-                </button>
+                {/* Botões de Ação: [Recusou] e [Entregue] */}
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleMarkRecusou(act, idx)}
+                    className={`px-3.5 py-2 text-xs font-black rounded-xl transition cursor-pointer active:scale-95 ${
+                      isRecusou
+                        ? 'bg-rose-100 text-rose-800 border border-rose-300'
+                        : 'bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-200'
+                    }`}
+                  >
+                    Recusou
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleMarkEntregue(act, idx)}
+                    className={`px-4 py-2 text-xs font-black rounded-xl transition cursor-pointer shadow-xs active:scale-95 flex items-center gap-1.5 ${
+                      isEntregue
+                        ? 'bg-emerald-600 text-white font-black'
+                        : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                    }`}
+                    title={
+                      (activityScopes[actId] || 'coletivo') === 'coletivo'
+                        ? 'Salvar e replicar para toda a turma'
+                        : `Salvar apenas para ${studentNome.split(' ')[0]}`
+                    }
+                  >
+                    <Check size={14} />
+                    <span>Entregue</span>
+                    <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md bg-emerald-800/60 text-emerald-100 uppercase tracking-tight">
+                      {(activityScopes[actId] || 'coletivo') === 'coletivo' ? 'Turma' : 'Indiv.'}
+                    </span>
+                  </button>
+                </div>
               </div>
             </div>
           );

@@ -169,10 +169,47 @@ export default function PaxPortalDeTranquilidade({
       updatedAlimentacao = { ...updatedAlimentacao, refeicoes: updatedRefeicoes };
     }
 
-    handleUpdateStudent({
-      alimentacao: updatedAlimentacao,
-      auditoriaLinhaDoTempo: updatedTimeline,
-    });
+    const isColetivo = act.escopo === 'coletivo' || act.isColetivo;
+
+    if (isColetivo) {
+      handleUpdateAllStudents((st) => {
+        const studentExistingList = st.auditoriaLinhaDoTempo || [];
+        const studentFilteredList = studentExistingList.filter(item => 
+          !item.titulo.toLowerCase().includes(act.titulo.toLowerCase()) &&
+          !act.titulo.toLowerCase().includes(item.titulo.replace(/Atividade Pedagógica: |Alimentação & Nutrição: /g, '').toLowerCase())
+        );
+
+        const studentNovaLinhaTempo = {
+          ...novaLinhaTempoItem,
+          id: `audit_${isMeal ? 'alim' : 'pedag'}_${st.id}_${Date.now()}`,
+          responsavel: st.professoraTitular || 'Ana Silva (Professora Titular)',
+        };
+
+        const studentUpdatedTimeline = [studentNovaLinhaTempo, ...studentFilteredList];
+
+        let studentAlim = st.alimentacao;
+        if (isMeal && studentAlim?.refeicoes) {
+          const updatedRef = studentAlim.refeicoes.map(ref => {
+            if (ref.nome.toLowerCase().includes(act.titulo.toLowerCase()) || act.titulo.toLowerCase().includes(ref.nome.toLowerCase())) {
+              return { ...ref, status: act.status === 'recusou' ? 'Recusou' : 'Comeu Tudo', horario: act.horario || horaAtual };
+            }
+            return ref;
+          });
+          studentAlim = { ...studentAlim, refeicoes: updatedRef };
+        }
+
+        return {
+          ...st,
+          alimentacao: studentAlim,
+          auditoriaLinhaDoTempo: studentUpdatedTimeline,
+        };
+      });
+    } else {
+      handleUpdateStudent({
+        alimentacao: updatedAlimentacao,
+        auditoriaLinhaDoTempo: updatedTimeline,
+      });
+    }
   };
 
   return (
