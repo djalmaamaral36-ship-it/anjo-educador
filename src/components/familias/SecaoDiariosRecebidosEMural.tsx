@@ -2,21 +2,12 @@ import React, { useState, useEffect } from 'react';
 import {
   FileText,
   Bell,
-  MessageSquare,
-  Clock,
   CheckCircle2,
-  Calendar,
-  Sparkles,
-  ChevronDown,
-  ChevronUp,
   Copy,
   Check,
-  Send,
-  User,
-  Baby,
-  Droplet,
-  ExternalLink,
+  Phone,
   Search,
+  Heart,
 } from 'lucide-react';
 import { DiarioRotinaRecebido, AvisoMural } from '../../types';
 import { getDiariosRecebidos, getMuralAvisos } from '../../services/muralDiariosService';
@@ -33,8 +24,8 @@ export default function SecaoDiariosRecebidosEMural({
   const [activeSubTab, setActiveSubTab] = useState<'diarios' | 'mural'>('diarios');
   const [diarios, setDiarios] = useState<DiarioRotinaRecebido[]>(() => getDiariosRecebidos());
   const [mural, setMural] = useState<AvisoMural[]>(() => getMuralAvisos());
-  const [expandedDiarioId, setExpandedDiarioId] = useState<string | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [curtidasMap, setCurtidasMap] = useState<Record<string, number>>({});
   const [filtroTexto, setFiltroTexto] = useState('');
 
   // Sincroniza em tempo real com eventos do app e Firestore Nuvem
@@ -63,6 +54,13 @@ export default function SecaoDiariosRecebidosEMural({
     navigator.clipboard.writeText(texto);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2500);
+  };
+
+  const handleCurtir = (id: string) => {
+    setCurtidasMap((prev) => ({
+      ...prev,
+      [id]: (prev[id] || 0) + 1,
+    }));
   };
 
   const filteredDiarios = diarios.filter(
@@ -140,7 +138,7 @@ export default function SecaoDiariosRecebidosEMural({
         </div>
       </div>
 
-      {/* CONTEÚDO 1: DIÁRIOS DE ROTINA RECEBIDOS */}
+      {/* CONTEÚDO 1: DIÁRIOS DE ROTINA RECEBIDOS (EXATO FORMATO DA IMAGEM 2) */}
       {activeSubTab === 'diarios' && (
         <div className="space-y-4">
           {filteredDiarios.length === 0 ? (
@@ -153,135 +151,96 @@ export default function SecaoDiariosRecebidosEMural({
             </div>
           ) : (
             filteredDiarios.map((diario) => {
-              const isExpanded = expandedDiarioId === diario.id;
+              const curtidas = curtidasMap[diario.id] || 0;
 
               return (
                 <div
                   key={diario.id}
-                  className="p-4 sm:p-5 rounded-2xl border border-slate-200/80 hover:border-emerald-200 bg-slate-50/50 hover:bg-emerald-50/20 transition space-y-3"
+                  className="p-4 sm:p-5 rounded-3xl border transition space-y-3 shadow-2xs hover:shadow-xs bg-emerald-50/40 border-emerald-200"
                 >
-                  {/* LINHA SUPERIOR DO DIÁRIO */}
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 font-black flex items-center justify-center flex-shrink-0 text-sm border border-emerald-200">
-                        {diario.studentNome.charAt(0)}
+                  {/* TOPO DO CARD */}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-black/5 pb-2.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black text-sm flex-shrink-0 shadow-2xs">
+                        📋
                       </div>
+
                       <div>
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-black text-sm text-slate-800">
-                            {diario.studentNome}
-                          </h4>
-                          <span className="text-[10px] font-bold text-slate-500 bg-slate-200/70 px-2 py-0.5 rounded-md">
-                            {diario.turma}
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <strong className="text-xs sm:text-sm text-slate-900">
+                            🎓 Diário de Aula Consolidado ({diario.horarioEncerramento})
+                          </strong>
+                          <span className="text-[9px] font-bold px-2 py-0.5 rounded-full border bg-emerald-100 text-emerald-900 border-emerald-200">
+                            Diário Consolidado
                           </span>
                         </div>
-                        <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-2">
-                          <span>📅 {diario.data} às {diario.horarioEncerramento}</span>
-                          <span>•</span>
-                          <span>👩‍🏫 {diario.professoraNome}</span>
+                        <p className="text-[11px] text-slate-500 mt-0.5">
+                          De: <strong>{diario.professoraNome}</strong> • 📅 {diario.data} às {diario.horarioEncerramento}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2 self-end sm:self-auto">
-                      <span className="text-[10px] font-black text-emerald-800 bg-emerald-100 border border-emerald-200 px-2.5 py-1 rounded-full flex items-center gap-1">
-                        <CheckCircle2 size={12} />
-                        <span>Enviado via WhatsApp</span>
-                      </span>
-
+                    <div className="flex items-center gap-1.5 self-start sm:self-auto text-xs">
                       <button
-                        onClick={() => setExpandedDiarioId(isExpanded ? null : diario.id)}
-                        className="px-2.5 py-1 text-xs font-bold text-slate-600 hover:text-slate-900 bg-white border border-slate-200 rounded-xl hover:bg-slate-100 transition flex items-center gap-1 cursor-pointer"
+                        type="button"
+                        onClick={() => handleCurtir(diario.id)}
+                        className="px-2.5 py-1 hover:bg-rose-50 text-rose-600 font-bold rounded-xl border bg-white border-slate-200 transition flex items-center gap-1 cursor-pointer text-xs shadow-2xs"
+                        title="Confirmar leitura / curtir"
                       >
-                        <span>{isExpanded ? 'Recolher' : 'Ver Detalhes'}</span>
-                        {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                        <Heart size={13} className="fill-rose-500 text-rose-500" />
+                        <span>{curtidas}</span>
                       </button>
                     </div>
                   </div>
 
-                  {/* RESUMO EM GRADE COMPACTA */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-                    <div className="p-2.5 bg-white rounded-xl border border-slate-100">
-                      <span className="text-[9px] font-black text-slate-400 uppercase block">
-                        TEMPO EM SALA
-                      </span>
-                      <strong className="text-emerald-700 font-mono">{diario.tempoEmAula}</strong>
-                    </div>
-
-                    <div className="p-2.5 bg-white rounded-xl border border-slate-100">
-                      <span className="text-[9px] font-black text-slate-400 uppercase block">
-                        ÁGUA & HIDRATAÇÃO
-                      </span>
-                      <strong className="text-sky-700">{diario.aguaMl}ml ingeridos</strong>
-                    </div>
-
-                    <div className="p-2.5 bg-white rounded-xl border border-slate-100">
-                      <span className="text-[9px] font-black text-slate-400 uppercase block">
-                        ALIMENTAÇÃO
-                      </span>
-                      <strong className="text-amber-700 truncate block">
-                        {diario.mamadeirasContador} mamadeiras
-                      </strong>
-                    </div>
-
-                    <div className="p-2.5 bg-white rounded-xl border border-slate-100">
-                      <span className="text-[9px] font-black text-slate-400 uppercase block">
-                        SONINHO & DESCANSO
-                      </span>
-                      <span className="text-indigo-700 font-bold truncate block" title={diario.soneca}>
-                        {diario.soneca}
-                      </span>
-                    </div>
+                  {/* CONTEÚDO DO DIÁRIO / BALÃO FORMATADO */}
+                  <div className="bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 text-xs sm:text-[13px] text-slate-800 whitespace-pre-wrap leading-relaxed font-mono">
+                    {diario.textoWhatsApp}
                   </div>
 
-                  {/* DETALHES EXPANDIDOS COM TEXTO DO WHATSAPP */}
-                  {isExpanded && (
-                    <div className="pt-3 border-t border-slate-200/80 space-y-3 animate-in fade-in duration-150">
-                      <div className="p-3.5 bg-slate-900 text-slate-100 rounded-xl font-mono text-[11px] leading-relaxed whitespace-pre-wrap border border-slate-800">
-                        {diario.textoWhatsApp}
-                      </div>
-
-                      <div className="flex flex-wrap items-center justify-between gap-2 text-xs pt-1">
-                        <span className="text-[11px] text-slate-500">
-                          Disparado para: <strong>{diario.destinatarioNome}</strong> ({diario.destinatarioTelefone})
-                        </span>
-
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => handleCopy(diario.id, diario.textoWhatsApp)}
-                            className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer text-xs"
-                          >
-                            {copiedId === diario.id ? (
-                              <>
-                                <Check size={14} className="text-emerald-600" />
-                                <span className="text-emerald-700 font-black">Copiado!</span>
-                              </>
-                            ) : (
-                              <>
-                                <Copy size={14} />
-                                <span>Copiar Relatório</span>
-                              </>
-                            )}
-                          </button>
-
-                          <button
-                            onClick={() => {
-                              const tel = diario.destinatarioTelefone.replace(/\D/g, '');
-                              const num = tel.length >= 10 ? `55${tel}` : '5511988442211';
-                              const url = `https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(
-                                diario.textoWhatsApp
-                              )}`;
-                              window.open(url, '_blank');
-                            }}
-                            className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl transition flex items-center gap-1.5 cursor-pointer text-xs"
-                          >
-                            <Send size={14} />
-                            <span>Abrir no WhatsApp</span>
-                          </button>
-                        </div>
-                      </div>
+                  {/* AÇÕES RÁPIDAS NO CARD */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs">
+                    <div className="flex items-center gap-1.5 text-[11px] text-emerald-800 font-semibold">
+                      <CheckCircle2 size={13} className="text-emerald-600" />
+                      <span>Registrado no Diário & Histórico Oficial</span>
                     </div>
-                  )}
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleCopy(diario.id, diario.textoWhatsApp)}
+                        className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer text-xs"
+                      >
+                        {copiedId === diario.id ? (
+                          <>
+                            <Check size={13} className="text-emerald-600" />
+                            <span className="text-emerald-700 font-black">Copiado!</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy size={13} />
+                            <span>Copiar</span>
+                          </>
+                        )}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const tel = (diario.destinatarioTelefone || '').replace(/\D/g, '');
+                          const num = tel.length >= 10 ? `55${tel}` : '5511988442211';
+                          const url = `https://api.whatsapp.com/send?phone=${num}&text=${encodeURIComponent(
+                            diario.textoWhatsApp
+                          )}`;
+                          window.open(url, '_blank');
+                        }}
+                        className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl transition flex items-center gap-1.5 cursor-pointer text-xs shadow-2xs"
+                      >
+                        <Phone size={13} />
+                        <span>Enviar no WhatsApp</span>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               );
             })
@@ -301,7 +260,7 @@ export default function SecaoDiariosRecebidosEMural({
             filteredMural.map((aviso) => (
               <div
                 key={aviso.id}
-                className="p-4 sm:p-5 rounded-2xl border border-slate-200 bg-white hover:border-indigo-300 transition space-y-2.5"
+                className="p-4 sm:p-5 rounded-2xl border border-slate-200 bg-white hover:border-indigo-300 transition space-y-2.5 shadow-2xs"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-2.5">
                   <div className="flex items-center gap-2">
@@ -315,7 +274,7 @@ export default function SecaoDiariosRecebidosEMural({
                   </span>
                 </div>
 
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-slate-600 leading-relaxed whitespace-pre-wrap">
                   {aviso.conteudo}
                 </p>
 
