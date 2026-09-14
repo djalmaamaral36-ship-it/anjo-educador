@@ -1439,19 +1439,7 @@ export default function PainelRotinaUnificado({
   };
 
   const handleEncerrarAulaConfirmado = () => {
-    setTimerRunning(false);
-    setAulaFinalizada(true);
-    showFeedback('🎓 Aula finalizada! Boletim enviado para os responsáveis.');
-    if (onUpdateStudent) {
-      onUpdateStudent({
-        presenca: {
-          ...student.presenca,
-          status: 'encerrada',
-          titulo: 'Aula Encerrada no Período',
-          descricao: 'As atividades escolares de hoje foram concluídas e o relatório foi transmitido aos pais.',
-        },
-      });
-    }
+    handleConfirmarEncerramentoColetivo({ enviarWhatsApp: true, publicarMural: true });
   };
 
   // Encerramento Coletivo das Aulas com confirmação, disparo WhatsApp, Mural de Avisos e Diários Recebidos
@@ -1578,16 +1566,41 @@ export default function PainelRotinaUnificado({
     }
 
     if (onUpdateAllStudents) {
-      onUpdateAllStudents((st) => ({
-        ...st,
-        presenca: {
-          ...st.presenca,
-          status: 'encerrada',
-          titulo: 'Aula Encerrada no Período',
-          descricao: 'As atividades escolares de hoje foram concluídas e o relatório foi transmitido aos pais.',
-        },
-      }));
+      onUpdateAllStudents((st) => {
+        const studentExistingList = st.auditoriaLinhaDoTempo || [];
+        const novaLinhaTempoItem = {
+          id: `audit_encerramento_${st.id}_${Date.now()}`,
+          hora: agoraHora,
+          titulo: '🎓 Encerramento do Período Letivo & Diário Consolidado',
+          descricao: `Atividades letivas finalizadas com sucesso. Tempo total de aula: ${tempoEmAula}. Diário de rotina arquivado e transmitido aos responsáveis.`,
+          tipo: 'presenca' as const,
+          responsavel: st.professoraTitular || 'Ana Silva (Professora Titular)',
+          verificado: true,
+        };
+
+        return {
+          ...st,
+          presenca: {
+            ...st.presenca,
+            status: 'encerrada',
+            titulo: 'Aula Encerrada no Período',
+            descricao: 'As atividades escolares de hoje foram concluídas e o relatório foi transmitido aos pais.',
+          },
+          auditoriaLinhaDoTempo: [novaLinhaTempoItem, ...studentExistingList],
+        };
+      });
     } else if (onUpdateStudent) {
+      const studentExistingList = student.auditoriaLinhaDoTempo || [];
+      const novaLinhaTempoItem = {
+        id: `audit_encerramento_${student.id}_${Date.now()}`,
+        hora: agoraHora,
+        titulo: '🎓 Encerramento do Período Letivo & Diário Consolidado',
+        descricao: `Atividades letivas finalizadas com sucesso. Tempo total de aula: ${tempoEmAula}. Diário de rotina arquivado e transmitido aos responsáveis.`,
+        tipo: 'presenca' as const,
+        responsavel: student.professoraTitular || 'Ana Silva (Professora Titular)',
+        verificado: true,
+      };
+
       onUpdateStudent({
         presenca: {
           ...student.presenca,
@@ -1595,6 +1608,7 @@ export default function PainelRotinaUnificado({
           titulo: 'Aula Encerrada no Período',
           descricao: 'As atividades escolares de hoje foram concluídas e o relatório foi registrado no sistema.',
         },
+        auditoriaLinhaDoTempo: [novaLinhaTempoItem, ...studentExistingList],
       });
     }
 

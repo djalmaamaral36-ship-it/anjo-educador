@@ -37,7 +37,7 @@ export default function SecaoDiariosRecebidosEMural({
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [filtroTexto, setFiltroTexto] = useState('');
 
-  // Sincroniza em tempo real com eventos do app
+  // Sincroniza em tempo real com eventos do app e Firestore Nuvem
   useEffect(() => {
     const handleUpdate = () => {
       setDiarios(getDiariosRecebidos());
@@ -46,9 +46,16 @@ export default function SecaoDiariosRecebidosEMural({
 
     window.addEventListener('anjo_diario_atualizado', handleUpdate);
     window.addEventListener('anjo_mural_atualizado', handleUpdate);
+    window.addEventListener('anjo_diarios_sync_nuvem', handleUpdate);
+    window.addEventListener('anjo_mural_sync_nuvem', handleUpdate);
+    window.addEventListener('storage', handleUpdate);
+
     return () => {
       window.removeEventListener('anjo_diario_atualizado', handleUpdate);
       window.removeEventListener('anjo_mural_atualizado', handleUpdate);
+      window.removeEventListener('anjo_diarios_sync_nuvem', handleUpdate);
+      window.removeEventListener('anjo_mural_sync_nuvem', handleUpdate);
+      window.removeEventListener('storage', handleUpdate);
     };
   }, []);
 

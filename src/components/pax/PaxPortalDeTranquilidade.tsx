@@ -8,6 +8,7 @@ import PaxMedicacoes from './PaxMedicacoes';
 import PaxPainelNutricaoAguaHumor from './PaxPainelNutricaoAguaHumor';
 import PaxSaudeHorizontalCards from './PaxSaudeHorizontalCards';
 import PaxLinhaDoTempoAuditoria from './PaxLinhaDoTempoAuditoria';
+import SecaoDiariosRecebidosEMural from '../familias/SecaoDiariosRecebidosEMural';
 import AuraPlannerIntegration from '../rotina/AuraPlannerIntegration';
 import { PAX_STUDENTS } from '../../data/paxStudentsData';
 import { StudentPaxData } from '../../types';
@@ -348,6 +349,12 @@ export default function PaxPortalDeTranquilidade({
       {effectiveRole === 'familia' && (
         <PaxLinhaDoTempoAuditoria student={currentStudent} />
       )}
+
+      {/* 10. Diários de Rotina Recebidos & Mural de Avisos em Tempo Real */}
+      <SecaoDiariosRecebidosEMural
+        currentStudentName={currentStudent.nome}
+        userRole={effectiveRole}
+      />
 
       {/* Modal de Lista de Alunos da Turma */}
       {showClassListModal && (

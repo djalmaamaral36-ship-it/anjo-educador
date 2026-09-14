@@ -292,11 +292,19 @@ export default function MuralAvisosERecadosModule({
     window.addEventListener('anjo_mural_atualizado', syncData);
     window.addEventListener('anjo_recados_atualizado', syncData);
     window.addEventListener('anjo_diario_atualizado', syncData);
+    window.addEventListener('anjo_mural_sync_nuvem', syncData);
+    window.addEventListener('anjo_recados_sync_nuvem', syncData);
+    window.addEventListener('anjo_diarios_sync_nuvem', syncData);
+    window.addEventListener('storage', syncData);
 
     return () => {
       window.removeEventListener('anjo_mural_atualizado', syncData);
       window.removeEventListener('anjo_recados_atualizado', syncData);
       window.removeEventListener('anjo_diario_atualizado', syncData);
+      window.removeEventListener('anjo_mural_sync_nuvem', syncData);
+      window.removeEventListener('anjo_recados_sync_nuvem', syncData);
+      window.removeEventListener('anjo_diarios_sync_nuvem', syncData);
+      window.removeEventListener('storage', syncData);
     };
   }, [currentStudent.turma, currentStudent.id]);
 
