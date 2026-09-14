@@ -238,6 +238,17 @@ export function salvarDiarioRecebido(diario: DiarioRotinaRecebido): void {
   }
 }
 
+export function excluirDiarioRecebido(diarioId: string): void {
+  try {
+    const list = getDiariosRecebidos();
+    const updated = list.filter((d) => d.id !== diarioId);
+    localStorage.setItem(STORAGE_DIARIOS_KEY, JSON.stringify(updated));
+    window.dispatchEvent(new CustomEvent('anjo_diario_atualizado', { detail: { id: diarioId, excluido: true } }));
+  } catch (e) {
+    console.error('Erro ao excluir diário recebido', e);
+  }
+}
+
 // MURAL DE AVISOS
 export function getMuralAvisos(turma?: string): AvisoMural[] {
   try {

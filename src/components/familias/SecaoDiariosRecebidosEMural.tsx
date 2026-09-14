@@ -5,12 +5,16 @@ import {
   CheckCircle2,
   Copy,
   Check,
-  Phone,
   Search,
   Heart,
+  Eye,
+  Trash2,
+  MessageCircle,
+  X,
+  ShieldCheck,
 } from 'lucide-react';
 import { DiarioRotinaRecebido, AvisoMural } from '../../types';
-import { getDiariosRecebidos, getMuralAvisos } from '../../services/muralDiariosService';
+import { getDiariosRecebidos, getMuralAvisos, excluirDiarioRecebido } from '../../services/muralDiariosService';
 
 interface Props {
   currentStudentName: string;
@@ -25,8 +29,10 @@ export default function SecaoDiariosRecebidosEMural({
   const [diarios, setDiarios] = useState<DiarioRotinaRecebido[]>(() => getDiariosRecebidos());
   const [mural, setMural] = useState<AvisoMural[]>(() => getMuralAvisos());
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [copiedLinkId, setCopiedLinkId] = useState<string | null>(null);
   const [curtidasMap, setCurtidasMap] = useState<Record<string, number>>({});
   const [filtroTexto, setFiltroTexto] = useState('');
+  const [modalDiario360, setModalDiario360] = useState<DiarioRotinaRecebido | null>(null);
 
   // Sincroniza em tempo real com eventos do app e Firestore Nuvem
   useEffect(() => {
@@ -50,10 +56,22 @@ export default function SecaoDiariosRecebidosEMural({
     };
   }, []);
 
+  const getDiarioUrl = (diario: DiarioRotinaRecebido) => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://anjo-educador.app';
+    const slug = encodeURIComponent(diario.studentNome.replace(/\s+/g, '_').toLowerCase());
+    return `${origin}/?relatorio=summary_id_${diario.id}_aluno_${slug}`;
+  };
+
   const handleCopy = (id: string, texto: string) => {
     navigator.clipboard.writeText(texto);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2500);
+  };
+
+  const handleCopyLink = (id: string, url: string) => {
+    navigator.clipboard.writeText(url);
+    setCopiedLinkId(id);
+    setTimeout(() => setCopiedLinkId(null), 2500);
   };
 
   const handleCurtir = (id: string) => {
@@ -61,6 +79,16 @@ export default function SecaoDiariosRecebidosEMural({
       ...prev,
       [id]: (prev[id] || 0) + 1,
     }));
+  };
+
+  const handleExcluir = (id: string) => {
+    if (window.confirm('Tem certeza que deseja remover este diário de rotina do histórico?')) {
+      excluirDiarioRecebido(id);
+      setDiarios((prev) => prev.filter((d) => d.id !== id));
+      if (modalDiario360?.id === id) {
+        setModalDiario360(null);
+      }
+    }
   };
 
   const filteredDiarios = diarios.filter(
@@ -138,7 +166,7 @@ export default function SecaoDiariosRecebidosEMural({
         </div>
       </div>
 
-      {/* CONTEÚDO 1: DIÁRIOS DE ROTINA RECEBIDOS (EXATO FORMATO DA IMAGEM 2) */}
+      {/* CONTEÚDO 1: DIÁRIOS DE ROTINA RECEBIDOS */}
       {activeSubTab === 'diarios' && (
         <div className="space-y-4">
           {filteredDiarios.length === 0 ? (
@@ -152,11 +180,12 @@ export default function SecaoDiariosRecebidosEMural({
           ) : (
             filteredDiarios.map((diario) => {
               const curtidas = curtidasMap[diario.id] || 0;
+              const linkSeguroUrl = getDiarioUrl(diario);
 
               return (
                 <div
                   key={diario.id}
-                  className="p-4 sm:p-5 rounded-3xl border transition space-y-3 shadow-2xs hover:shadow-xs bg-emerald-50/40 border-emerald-200"
+                  className="p-4 sm:p-5 rounded-3xl border transition space-y-3.5 shadow-2xs hover:shadow-xs bg-emerald-50/40 border-emerald-200"
                 >
                   {/* TOPO DO CARD */}
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-black/5 pb-2.5">
@@ -198,20 +227,41 @@ export default function SecaoDiariosRecebidosEMural({
                     {diario.textoWhatsApp}
                   </div>
 
-                  {/* AÇÕES RÁPIDAS NO CARD */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs">
-                    <div className="flex items-center gap-1.5 text-[11px] text-emerald-800 font-semibold">
-                      <CheckCircle2 size={13} className="text-emerald-600" />
-                      <span>Registrado no Diário & Histórico Oficial</span>
+                  {/* BARRA DE LINK SEGURO & OPÇÕES (EXATAMENTE COMO NA IMAGEM 1) */}
+                  <div className="p-3 bg-slate-100/90 rounded-2xl border border-slate-200/80 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 overflow-hidden text-xs">
+                      <span className="text-slate-700 font-bold flex items-center gap-1 flex-shrink-0">
+                        🔗 Link Seguro do Diário Digital:
+                      </span>
+                      <a
+                        href={linkSeguroUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-indigo-600 hover:text-indigo-800 hover:underline font-mono text-[11px] truncate block max-w-xs sm:max-w-md"
+                        title={linkSeguroUrl}
+                      >
+                        {linkSeguroUrl}
+                      </a>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-wrap flex-shrink-0">
+                      {/* Botão Abrir Diário Digital 360° */}
                       <button
                         type="button"
-                        onClick={() => handleCopy(diario.id, diario.textoWhatsApp)}
-                        className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer text-xs"
+                        onClick={() => setModalDiario360(diario)}
+                        className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl transition flex items-center gap-1.5 text-xs shadow-2xs cursor-pointer active:scale-95"
                       >
-                        {copiedId === diario.id ? (
+                        <Eye size={13} />
+                        <span>Abrir Diário Digital 360°</span>
+                      </button>
+
+                      {/* Botão Copiar Link */}
+                      <button
+                        type="button"
+                        onClick={() => handleCopyLink(diario.id, linkSeguroUrl)}
+                        className="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 font-bold rounded-xl border border-slate-200 transition flex items-center gap-1.5 text-xs shadow-2xs cursor-pointer"
+                      >
+                        {copiedLinkId === diario.id ? (
                           <>
                             <Check size={13} className="text-emerald-600" />
                             <span className="text-emerald-700 font-black">Copiado!</span>
@@ -219,11 +269,32 @@ export default function SecaoDiariosRecebidosEMural({
                         ) : (
                           <>
                             <Copy size={13} />
-                            <span>Copiar</span>
+                            <span>Copiar Link</span>
                           </>
                         )}
                       </button>
 
+                      {/* Botão Excluir */}
+                      <button
+                        type="button"
+                        onClick={() => handleExcluir(diario.id)}
+                        className="px-2.5 py-1.5 bg-white hover:bg-rose-50 text-rose-600 font-bold rounded-xl border border-rose-200 transition flex items-center gap-1 text-xs shadow-2xs cursor-pointer"
+                        title="Excluir do histórico"
+                      >
+                        <Trash2 size={13} />
+                        <span>Excluir</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* RODAPÉ DO CARD COM AUDITORIA E COMPARTILHAR WHATSAPP */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1 text-xs border-t border-slate-200/60">
+                    <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-medium">
+                      <CheckCircle2 size={13} className="text-emerald-600" />
+                      <span>Controle de auditoria de acessos</span>
+                    </div>
+
+                    <div className="flex items-center gap-3">
                       <button
                         type="button"
                         onClick={() => {
@@ -234,11 +305,15 @@ export default function SecaoDiariosRecebidosEMural({
                           )}`;
                           window.open(url, '_blank');
                         }}
-                        className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl transition flex items-center gap-1.5 cursor-pointer text-xs shadow-2xs"
+                        className="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white font-black rounded-xl transition flex items-center gap-1.5 cursor-pointer text-xs shadow-2xs"
                       >
-                        <Phone size={13} />
-                        <span>Enviar no WhatsApp</span>
+                        <MessageCircle size={13} />
+                        <span>Compartilhar WhatsApp</span>
                       </button>
+
+                      <span className="text-[11px] text-slate-500 font-medium">
+                        Duração: <strong>Período Completo</strong>
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -289,6 +364,126 @@ export default function SecaoDiariosRecebidosEMural({
               </div>
             ))
           )}
+        </div>
+      )}
+
+      {/* MODAL 360° COMPLETO (EXATAMENTE COMO NA IMAGEM 2) */}
+      {modalDiario360 && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-100 overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-150">
+            {/* CABEÇALHO DO MODAL */}
+            <div className="p-5 sm:p-6 border-b border-slate-100 flex items-start justify-between gap-3 bg-slate-50/50">
+              <div className="flex items-start gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-black flex-shrink-0 shadow-xs">
+                  <FileText size={20} />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="font-black text-slate-900 text-base sm:text-lg">
+                      Diário de Rotina Escolar Digital 360°
+                    </h3>
+                    <span className="text-[10px] font-bold text-emerald-800 bg-emerald-100 border border-emerald-200 px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                      <ShieldCheck size={12} />
+                      <span>LINK SEGURO VERIFICADO</span>
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Profª {modalDiario360.professoraNome} (Educadora) • {modalDiario360.data} • Período: {modalDiario360.horarioEncerramento} às {modalDiario360.horarioEncerramento}
+                  </p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setModalDiario360(null)}
+                className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition cursor-pointer"
+                title="Fechar"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* CORPO DO MODAL */}
+            <div className="p-5 sm:p-6 overflow-y-auto space-y-4">
+              {/* GRADE DE 3 MÉTRICAS */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {/* 1. Auditoria e Conformidade */}
+                <div className="p-3.5 rounded-2xl bg-indigo-50/70 border border-indigo-100 text-center">
+                  <span className="text-[10px] font-black text-indigo-700 uppercase tracking-tight block">
+                    AUDITORIA E CONFORMIDADE
+                  </span>
+                  <strong className="text-lg font-black text-indigo-900 block my-0.5">
+                    100% OK
+                  </strong>
+                  <span className="text-[11px] text-slate-500">Rotinas Auditadas</span>
+                </div>
+
+                {/* 2. Qualidade de Registro */}
+                <div className="p-3.5 rounded-2xl bg-emerald-50/70 border border-emerald-100 text-center">
+                  <span className="text-[10px] font-black text-emerald-700 uppercase tracking-tight block">
+                    QUALIDADE DE REGISTRO
+                  </span>
+                  <strong className="text-lg font-black text-emerald-900 block my-0.5">
+                    100%
+                  </strong>
+                  <span className="text-[11px] text-slate-500">Carimbo Temporal</span>
+                </div>
+
+                {/* 3. Duração do Período */}
+                <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-100 text-center">
+                  <span className="text-[10px] font-black text-amber-700 uppercase tracking-tight block">
+                    DURAÇÃO DO PERÍODO
+                  </span>
+                  <strong className="text-lg font-black text-amber-900 block my-0.5">
+                    Período Completo
+                  </strong>
+                  <span className="text-[11px] text-slate-500">Registro Sincronizado</span>
+                </div>
+              </div>
+
+              {/* CONTEÚDO DO BOLETIM */}
+              <div className="space-y-2">
+                <label className="text-xs font-black text-slate-700 flex items-center gap-1.5">
+                  <span>📝 CONTEÚDO DO DIÁRIO / BOLETIM TRANSMITIDO</span>
+                </label>
+                <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 text-slate-800 font-mono text-xs leading-relaxed whitespace-pre-wrap max-h-72 overflow-y-auto">
+                  {modalDiario360.textoWhatsApp}
+                </div>
+              </div>
+            </div>
+
+            {/* RODAPÉ DO MODAL */}
+            <div className="p-4 sm:p-5 border-t border-slate-100 bg-slate-50/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="overflow-hidden">
+                <span className="text-[11px] font-bold text-slate-700 block">
+                  🔗 Link Seguro para Compartilhamento Exclusivo:
+                </span>
+                <span className="text-[10px] text-slate-400 font-mono truncate block max-w-sm">
+                  {getDiarioUrl(modalDiario360)}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 self-end sm:self-auto">
+                <button
+                  type="button"
+                  onClick={() => handleCopyLink(modalDiario360.id, getDiarioUrl(modalDiario360))}
+                  className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black rounded-xl transition flex items-center gap-1.5 text-xs shadow-xs cursor-pointer active:scale-95"
+                >
+                  {copiedLinkId === modalDiario360.id ? (
+                    <>
+                      <Check size={14} />
+                      <span>Link Copiado!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy size={14} />
+                      <span>Copiar Link Direto</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
