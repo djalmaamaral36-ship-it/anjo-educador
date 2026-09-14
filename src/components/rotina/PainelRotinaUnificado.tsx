@@ -66,6 +66,7 @@ export const ATIVIDADES_PREDEFINIDAS = [
   { id: 'movimento', titulo: 'Brincadeiras no Parque', icone: '🌳', sub: 'Ar Livre & Psicomotricidade', descPadrao: 'Circuito psicomotor, exploração do espaço externo, corrida e socialização no parque.' },
   { id: 'encaixe', titulo: 'Jogos de Encaixe & Blocos', icone: '🧩', sub: 'Raciocínio & Coordenação', descPadrao: 'Desafio lúdico com blocos lógicos, encaixe e desenvolvimento da coordenação motora fina.' },
   { id: 'natureza', titulo: 'Horta & Contato com a Terra', icone: '🌱', sub: 'Natureza & Investigação', descPadrao: 'Vivência de conexão com o meio ambiente, plantio de mudas e exploração tátil de elementos naturais.' },
+  { id: 'personalizada', titulo: 'Outra Atividade Livre', icone: '✨', sub: 'Tema / Projeto Livre', descPadrao: 'Vivência pedagógica especial desenvolvida com a turma.' },
 ];
 
 export default function PainelRotinaUnificado({
@@ -1031,8 +1032,10 @@ export default function PainelRotinaUnificado({
     const atvId = atividadeIdParam || atividadeSelecionada;
     const escopo = escopoParam || atividadeEscopo;
     const predef = ATIVIDADES_PREDEFINIDAS.find((a) => a.id === atvId);
+    
+    // Título customizado direto (ex: "Parque / Pátio: Explorando Formas e Cores") ou o título pré-definido
     const titulo = atividadeTemaCustom.trim()
-      ? `Atividade Pedagógica: ${atividadeTemaCustom.trim()}`
+      ? atividadeTemaCustom.trim()
       : (predef ? predef.titulo : 'Atividade Pedagógica');
 
     const rotuloParticipacao =
@@ -2243,31 +2246,49 @@ export default function PainelRotinaUnificado({
           </div>
         </div>
 
-        {/* FAIXA INFORMATIVA DO WHATSAPP (Foto 9 e 10) */}
-        <div className="bg-amber-50/80 border border-amber-200/90 rounded-2xl p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-amber-950">
-          <div className="flex items-center gap-2.5">
-            <span className="text-base">💡</span>
-            <p>
-              No final do período, <strong>termine a aula</strong> para salvar e publicar o <strong>relatório oficial de rotina</strong> com opção de envio aos pais!
-            </p>
-          </div>
-          {isProfessor ? (
-            <button
-              onClick={() => setShowModalRelatorio(true)}
-              className="text-xs font-black bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer flex-shrink-0 shadow-2xs"
-            >
-              <MessageSquare size={14} />
-              <span>Gerar Boletim Agora</span>
-            </button>
-          ) : (
-            <button
-              onClick={() => setShowModalRelatorio(true)}
-              className="text-xs font-black bg-white hover:bg-emerald-50 border border-emerald-200 text-emerald-800 px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 cursor-pointer flex-shrink-0"
-            >
-              <MessageSquare size={14} />
-              <span>Visualizar Boletim em Tempo Real</span>
-            </button>
-          )}
+        {/* BARRA DE ATALHOS RÁPIDOS DA ROTINA */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+          <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider shrink-0">
+            Ir para:
+          </span>
+          <button
+            type="button"
+            onClick={() => document.getElementById('secao-alimentacao')?.scrollIntoView({ behavior: 'smooth' })}
+            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold shrink-0 transition flex items-center gap-1.5 cursor-pointer"
+          >
+            <span>🍼 Alimentação</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => document.getElementById('secao-refeicoes')?.scrollIntoView({ behavior: 'smooth' })}
+            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold shrink-0 transition flex items-center gap-1.5 cursor-pointer"
+          >
+            <span>🍛 Refeições</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => document.getElementById('secao-soneca')?.scrollIntoView({ behavior: 'smooth' })}
+            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold shrink-0 transition flex items-center gap-1.5 cursor-pointer"
+          >
+            <span>💤 Soneca</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => document.getElementById('secao-saude')?.scrollIntoView({ behavior: 'smooth' })}
+            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold shrink-0 transition flex items-center gap-1.5 cursor-pointer"
+          >
+            <span>🧷 Fraldas & Saúde</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => document.getElementById('secao-atividades-pedagogicas')?.scrollIntoView({ behavior: 'smooth' })}
+            className="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black shrink-0 transition flex items-center gap-1.5 cursor-pointer shadow-xs animate-pulse"
+          >
+            <span>🎨 Atividades Pedagógicas</span>
+            <span className="bg-indigo-800 text-[9px] px-1.5 py-0.5 rounded-md uppercase tracking-wider font-extrabold">
+              Coletivo / Individual
+            </span>
+          </button>
         </div>
       </div>
 
@@ -2348,7 +2369,7 @@ export default function PainelRotinaUnificado({
       ) : (
       <>
       {/* 2. PAINEL "UM-TOQUE" DE REGISTROS DIÁRIOS (Fotos 10, 11, 12, 13) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div id="secao-alimentacao" className="grid grid-cols-1 lg:grid-cols-2 gap-6 scroll-mt-24">
         
         {/* BLOCO ESQUERDA: ALIMENTAÇÃO & MAMADEIRA (Foto 11) */}
         <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
@@ -2537,7 +2558,7 @@ export default function PainelRotinaUnificado({
       </div>
 
       {/* 3. HUMOR & SAÚDE, SONO, FRALDA & HIGIENE (Foto 28) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div id="secao-refeicoes" className="grid grid-cols-1 lg:grid-cols-2 gap-6 scroll-mt-24">
         {/* BLOCO ESQUERDA: REGISTRO RÁPIDO DE REFEIÇÕES SÓLIDAS (1-Clique) */}
         <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
@@ -2701,7 +2722,7 @@ export default function PainelRotinaUnificado({
         </div>
 
         {/* BLOCO DIREITA: SAÚDE, SONO, FRALDA & CUIDADOS (Foto 28) */}
-        <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
+        <div id="secao-saude" className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4 scroll-mt-24">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <span className="text-xl">🩺</span>
             <h4 className="text-base font-black text-slate-800">
@@ -3257,7 +3278,7 @@ export default function PainelRotinaUnificado({
       </div>
 
       {/* 4. VIVÊNCIAS & ATIVIDADES PEDAGÓGICAS (1-Clique Coletivo / Individual) */}
-      <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-5">
+      <div id="secao-atividades-pedagogicas" className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-5 scroll-mt-24">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
           <div className="flex items-center gap-2.5">
             <span className="text-2xl">🎨</span>
@@ -3380,15 +3401,26 @@ export default function PainelRotinaUnificado({
         {isProfessor && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
             <div className="space-y-1.5">
-              <label className="text-[11px] font-black uppercase tracking-wider text-slate-600 block">
-                Tema / Livro / História (Opcional):
+              <label className="text-[11px] font-black uppercase tracking-wider text-slate-600 flex items-center justify-between">
+                <span>Título / Tema da Atividade ou Projeto:</span>
+                {atividadeSelecionada === 'personalizada' && (
+                  <span className="text-[10px] font-bold text-amber-600">★ Digite o nome da atividade</span>
+                )}
               </label>
               <input
                 type="text"
                 value={atividadeTemaCustom}
                 onChange={(e) => setAtividadeTemaCustom(e.target.value)}
-                placeholder="Ex: Livro 'O Pequeno Urso' / Pintura com Cotonetes"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:border-indigo-500 font-medium"
+                placeholder={
+                  atividadeSelecionada === 'personalizada'
+                    ? "Ex: Parque / Pátio: Explorando Formas e Cores, Circuito Psicomotor..."
+                    : "Ex: Livro 'O Pequeno Urso' / Pintura com Cotonetes (Opcional)"
+                }
+                className={`w-full bg-slate-50 border rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none font-medium transition ${
+                  atividadeSelecionada === 'personalizada'
+                    ? 'border-amber-400 focus:border-amber-500 ring-1 ring-amber-200 bg-amber-50/20'
+                    : 'border-slate-200 focus:border-indigo-500'
+                }`}
               />
             </div>
 
@@ -3416,7 +3448,7 @@ export default function PainelRotinaUnificado({
                 value={atividadeObs}
                 onChange={(e) => setAtividadeObs(e.target.value)}
                 rows={2}
-                placeholder="Descreva brevemente como foi a vivência e as reações das crianças..."
+                placeholder="Descreva brevemente como foi a vivência e as reações das crianças no pátio/sala..."
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 outline-none focus:border-indigo-500 font-medium resize-none"
               />
             </div>
