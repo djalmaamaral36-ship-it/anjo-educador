@@ -3326,27 +3326,76 @@ export default function PainelRotinaUnificado({
           )}
         </div>
 
-        {/* Banner Informativo de Escopo */}
+        {/* SELETOR DE ESCOPO NO PRÓPRIO CARD: Coletiva vs Individual */}
         {isProfessor && (
-          <div className={`p-3 rounded-2xl text-xs font-bold border transition flex items-start gap-2.5 ${
-            atividadeEscopo === 'coletiva'
-              ? 'bg-indigo-50/80 border-indigo-200 text-indigo-950'
-              : 'bg-emerald-50/80 border-emerald-200 text-emerald-950'
-          }`}>
-            <span className="text-base leading-none">
-              {atividadeEscopo === 'coletiva' ? '👥' : '👤'}
-            </span>
-            <div className="space-y-0.5">
-              <span className="font-black block">
-                {atividadeEscopo === 'coletiva'
-                  ? `Modo Coletivo Ativado (Turma ${student.turma}):`
-                  : `Modo Individual Ativado (${student.nome}):`}
+          <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-4 space-y-2.5">
+            <label className="text-[11px] font-black uppercase tracking-wider text-slate-700 flex items-center justify-between">
+              <span>Como deseja aplicar esta atividade?</span>
+              <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100">
+                {atividadeEscopo === 'coletiva' ? '✓ Modo Turma Toda Ativo' : '✓ Modo Individual Ativo'}
               </span>
-              <p className="text-[11px] font-normal leading-relaxed opacity-90">
-                {atividadeEscopo === 'coletiva'
-                  ? `Ao salvar, esta experiência pedagógica será replicada instantaneamente para a linha do tempo de TODOS os ${allStudents?.length || 6} alunos da turma de forma simultânea, economizando seu tempo!`
-                  : `Registro exclusivo para ${student.nome}. Ideal para observações singulares de desenvolvimento, falas marcantes ou adaptações pedagógicas individuais.`}
-              </p>
+            </label>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {/* Opção Coletiva */}
+              <button
+                type="button"
+                onClick={() => setAtividadeEscopo('coletiva')}
+                className={`p-3.5 rounded-2xl border text-left transition flex items-start gap-3 cursor-pointer ${
+                  atividadeEscopo === 'coletiva'
+                    ? 'bg-indigo-600 border-indigo-700 text-white shadow-md ring-2 ring-indigo-300'
+                    : 'bg-white hover:bg-slate-100/80 border-slate-200 text-slate-700'
+                }`}
+              >
+                <div className={`p-2 rounded-xl text-lg ${atividadeEscopo === 'coletiva' ? 'bg-indigo-700 text-white' : 'bg-indigo-50 text-indigo-700'}`}>
+                  👥
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <strong className={`text-xs font-black block ${atividadeEscopo === 'coletiva' ? 'text-white' : 'text-slate-900'}`}>
+                      Atividade Coletiva
+                    </strong>
+                    {atividadeEscopo === 'coletiva' && (
+                      <span className="text-[10px] font-black bg-white text-indigo-700 px-1.5 py-0.5 rounded-md">
+                        Selecionado
+                      </span>
+                    )}
+                  </div>
+                  <p className={`text-[11px] mt-0.5 leading-snug ${atividadeEscopo === 'coletiva' ? 'text-indigo-100 font-medium' : 'text-slate-500'}`}>
+                    Salva e replica <strong>automaticamente no diário de todos os {allStudents?.length || 6} alunos</strong> da turma de uma só vez.
+                  </p>
+                </div>
+              </button>
+
+              {/* Opção Individual */}
+              <button
+                type="button"
+                onClick={() => setAtividadeEscopo('individual')}
+                className={`p-3.5 rounded-2xl border text-left transition flex items-start gap-3 cursor-pointer ${
+                  atividadeEscopo === 'individual'
+                    ? 'bg-emerald-600 border-emerald-700 text-white shadow-md ring-2 ring-emerald-300'
+                    : 'bg-white hover:bg-slate-100/80 border-slate-200 text-slate-700'
+                }`}
+              >
+                <div className={`p-2 rounded-xl text-lg ${atividadeEscopo === 'individual' ? 'bg-emerald-700 text-white' : 'bg-emerald-50 text-emerald-700'}`}>
+                  👤
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between">
+                    <strong className={`text-xs font-black block ${atividadeEscopo === 'individual' ? 'text-white' : 'text-slate-900'}`}>
+                      Atividade Individual
+                    </strong>
+                    {atividadeEscopo === 'individual' && (
+                      <span className="text-[10px] font-black bg-white text-emerald-700 px-1.5 py-0.5 rounded-md">
+                        Selecionado
+                      </span>
+                    )}
+                  </div>
+                  <p className={`text-[11px] mt-0.5 leading-snug ${atividadeEscopo === 'individual' ? 'text-emerald-100 font-medium' : 'text-slate-500'}`}>
+                    Salva com observação exclusiva <strong>apenas no diário de {student.nome.split(' ')[0]}</strong>.
+                  </p>
+                </div>
+              </button>
             </div>
           </div>
         )}
