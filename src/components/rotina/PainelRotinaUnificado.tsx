@@ -3,7 +3,8 @@ import {
   Play, Pause, RotateCcw, AlertTriangle, CheckCircle2, Droplet, 
   Baby, Moon, Thermometer, Smile, Utensils, HeartHandshake,
   ShieldCheck, Mic, Plus, Lock, Clock, Sparkles, MessageSquare, Send, Check,
-  UserX, UserCheck, LogOut, CalendarX, AlertCircle, Scale
+  UserX, UserCheck, LogOut, CalendarX, AlertCircle, Scale,
+  Users, User, BookOpen, Palette, Music, TreePine, Puzzle
 } from 'lucide-react';
 import { StudentPaxData, OcorrenciaEscolar } from '../../types';
 import ModalOcorrenciaDoDia from './ModalOcorrenciaDoDia';
@@ -56,6 +57,16 @@ const extractHoraFimFromSoneca = (soneca?: { valor?: string; periodo?: string },
   }
   return calcHoraFimSoneca(inicio, 90);
 };
+
+// Sugestões Rápidas de Atividades Pedagógicas Alinhadas à BNCC e Árvore da Infância®
+export const ATIVIDADES_PREDEFINIDAS = [
+  { id: 'historia', titulo: 'Contação de Histórias', icone: '📖', sub: 'Imaginação & Roda', descPadrao: 'Momento afetivo de contação de história com exploração de livros e escuta atenta.' },
+  { id: 'musica', titulo: 'Roda de Música & Cantigas', icone: '🎵', sub: 'Ritmo & Expressão', descPadrao: 'Vivência musical com instrumentos sonoros, palmas, cantigas de roda e movimento corporal.' },
+  { id: 'artes', titulo: 'Oficina de Artes & Cores', icone: '🎨', sub: 'Pintura & Sensorial', descPadrao: 'Exploração plástica com tintas naturais, texturas, livre expressão visual e sensorial.' },
+  { id: 'movimento', titulo: 'Brincadeiras no Parque', icone: '🌳', sub: 'Ar Livre & Psicomotricidade', descPadrao: 'Circuito psicomotor, exploração do espaço externo, corrida e socialização no parque.' },
+  { id: 'encaixe', titulo: 'Jogos de Encaixe & Blocos', icone: '🧩', sub: 'Raciocínio & Coordenação', descPadrao: 'Desafio lúdico com blocos lógicos, encaixe e desenvolvimento da coordenação motora fina.' },
+  { id: 'natureza', titulo: 'Horta & Contato com a Terra', icone: '🌱', sub: 'Natureza & Investigação', descPadrao: 'Vivência de conexão com o meio ambiente, plantio de mudas e exploração tátil de elementos naturais.' },
+];
 
 export default function PainelRotinaUnificado({
   student,
@@ -137,6 +148,13 @@ export default function PainelRotinaUnificado({
   const [peso, setPeso] = useState(() => (student.saudeCards?.peso?.valor || '14.0').replace(/kg/i, '').replace('º', '').trim());
   const [notaGeralSaude, setNotaGeralSaude] = useState('');
   const [showModalHistoricoPeso, setShowModalHistoricoPeso] = useState(false);
+
+  // --- ESTADOS DE ATIVIDADES PEDAGÓGICAS (Coletiva / Individual) ---
+  const [atividadeEscopo, setAtividadeEscopo] = useState<'coletiva' | 'individual'>('coletiva');
+  const [atividadeSelecionada, setAtividadeSelecionada] = useState<string>('historia');
+  const [atividadeTemaCustom, setAtividadeTemaCustom] = useState<string>('');
+  const [atividadeObs, setAtividadeObs] = useState<string>('');
+  const [atividadeParticipacao, setAtividadeParticipacao] = useState<'muito_participativo' | 'participativo' | 'observador' | 'precisou_apoio'>('muito_participativo');
 
   // --- CONTROLE DE CRONÔMETRO OBRIGATÓRIO & PREVENÇÃO DE DUPLICIDADE ---
   const [showModalCronometroDesligado, setShowModalCronometroDesligado] = useState(false);
@@ -1001,6 +1019,110 @@ export default function PainelRotinaUnificado({
         'higiene'
       );
     }
+  };
+
+  // Handler para Salvar Atividades Pedagógicas (Individual ou Coletiva com 1-Clique)
+  const handleSalvarAtividadePedagogica = (
+    atividadeIdParam?: string,
+    escopoParam?: 'coletiva' | 'individual'
+  ) => {
+    if (!isProfessor) return;
+
+    const atvId = atividadeIdParam || atividadeSelecionada;
+    const escopo = escopoParam || atividadeEscopo;
+    const predef = ATIVIDADES_PREDEFINIDAS.find((a) => a.id === atvId);
+    const titulo = atividadeTemaCustom.trim()
+      ? `Atividade Pedagógica: ${atividadeTemaCustom.trim()}`
+      : (predef ? predef.titulo : 'Atividade Pedagógica');
+
+    const rotuloParticipacao =
+      atividadeParticipacao === 'muito_participativo' ? 'Muito participativo(a) e encantado(a)' :
+      atividadeParticipacao === 'participativo' ? 'Participou com alegria e atenção' :
+      atividadeParticipacao === 'observador' ? 'Observou com atenção e tranquilidade' :
+      'Recebeu apoio carinhoso da educadora';
+
+    const descBase = atividadeObs.trim() || predef?.descPadrao || 'Vivência pedagógica lúdica realizada em sala.';
+    const horaAtual = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+
+    const executar = () => {
+      if (escopo === 'coletiva' && onUpdateAllStudents) {
+        onUpdateAllStudents((st) => {
+          const itemColetivo = {
+            id: `audit_ped_${st.id}_${Date.now()}`,
+            hora: horaAtual,
+            tipo: 'pedagogico' as const,
+            titulo: `${titulo} (Coletiva)`,
+            descricao: `${st.nome}: Participou da atividade coletiva da turma. ${descBase}`,
+            responsavel: st.professoraTitular || 'Ana Silva (Professora Titular)',
+            verificado: true,
+          };
+          return {
+            ...st,
+            auditoriaLinhaDoTempo: addOrUpdateLinhaTempo(st.auditoriaLinhaDoTempo, itemColetivo),
+          };
+        });
+
+        // Mapeia para dar baixa automática na agenda pedagógica de atividades (Aura Planner)
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('anjinho:rotina-registrada', {
+            detail: {
+              itemKey: atvId,
+              status: 'Realizado',
+              observacao: `Atividade Coletiva da Turma: ${titulo} - ${descBase}`
+            }
+          }));
+        }
+
+        triggerCardConfirmacao(
+          '📚 Atividade Coletiva Salva!',
+          `"${titulo}" registrada simultaneamente no diário de TODOS os ${allStudents?.length || 6} alunos da turma!`,
+          'pedagogico'
+        );
+      } else {
+        const itemIndividual = {
+          id: `audit_ped_${Date.now()}`,
+          hora: horaAtual,
+          tipo: 'pedagogico' as const,
+          titulo: `${titulo}`,
+          descricao: `${student.nome}: ${descBase} [Engajamento: ${rotuloParticipacao}].`,
+          responsavel: student.professoraTitular || 'Ana Silva (Professora Titular)',
+          verificado: true,
+        };
+
+        const novaLinhaTempo = addOrUpdateLinhaTempo(student.auditoriaLinhaDoTempo, itemIndividual);
+        if (onUpdateStudent) {
+          onUpdateStudent({
+            auditoriaLinhaDoTempo: novaLinhaTempo,
+          });
+        }
+
+        // Mapeia para dar baixa automática na agenda de atividades (Aura Planner)
+        if (typeof window !== 'undefined') {
+          window.dispatchEvent(new CustomEvent('anjinho:rotina-registrada', {
+            detail: {
+              itemKey: atvId,
+              status: 'Realizado',
+              observacao: `Atividade Individual de ${student.nome}: ${titulo} - ${descBase}`
+            }
+          }));
+        }
+
+        triggerCardConfirmacao(
+          '🎨 Atividade Individual Salva!',
+          `"${titulo}" registrada com sucesso no diário exclusivo de ${student.nome}.`,
+          'pedagogico'
+        );
+      }
+
+      setAtividadeTemaCustom('');
+      setAtividadeObs('');
+    };
+
+    if (!validarCronometroAtivo(titulo, executar)) {
+      return;
+    }
+
+    executar();
   };
 
   const handleSalvarHumor = () => {
@@ -3132,6 +3254,196 @@ export default function PainelRotinaUnificado({
             </button>
           )}
         </div>
+      </div>
+
+      {/* 4. VIVÊNCIAS & ATIVIDADES PEDAGÓGICAS (1-Clique Coletivo / Individual) */}
+      <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+          <div className="flex items-center gap-2.5">
+            <span className="text-2xl">🎨</span>
+            <div>
+              <h4 className="text-base sm:text-lg font-black text-slate-900 flex items-center gap-2 flex-wrap">
+                <span>Vivências & Atividades Pedagógicas</span>
+                <span className="text-[10px] font-black uppercase bg-indigo-50 text-indigo-700 border border-indigo-200 px-2 py-0.5 rounded-md">
+                  BNCC & Árvore da Infância®
+                </span>
+              </h4>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Apontamento rápido de contação de histórias, música, artes e parque com alternância entre registro coletivo da turma e individual.
+              </p>
+            </div>
+          </div>
+
+          {/* Toggle Individual vs Coletiva */}
+          {isProfessor && (
+            <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200 self-start sm:self-auto shrink-0 shadow-2xs">
+              <button
+                type="button"
+                onClick={() => setAtividadeEscopo('coletiva')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black transition cursor-pointer ${
+                  atividadeEscopo === 'coletiva'
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <Users size={14} />
+                <span>👥 Coletiva (Toda a Turma)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setAtividadeEscopo('individual')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-black transition cursor-pointer ${
+                  atividadeEscopo === 'individual'
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <User size={14} />
+                <span>👤 Individual ({student.nome.split(' ')[0]})</span>
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Banner Informativo de Escopo */}
+        {isProfessor && (
+          <div className={`p-3 rounded-2xl text-xs font-bold border transition flex items-start gap-2.5 ${
+            atividadeEscopo === 'coletiva'
+              ? 'bg-indigo-50/80 border-indigo-200 text-indigo-950'
+              : 'bg-emerald-50/80 border-emerald-200 text-emerald-950'
+          }`}>
+            <span className="text-base leading-none">
+              {atividadeEscopo === 'coletiva' ? '👥' : '👤'}
+            </span>
+            <div className="space-y-0.5">
+              <span className="font-black block">
+                {atividadeEscopo === 'coletiva'
+                  ? `Modo Coletivo Ativado (Turma ${student.turma}):`
+                  : `Modo Individual Ativado (${student.nome}):`}
+              </span>
+              <p className="text-[11px] font-normal leading-relaxed opacity-90">
+                {atividadeEscopo === 'coletiva'
+                  ? `Ao salvar, esta experiência pedagógica será replicada instantaneamente para a linha do tempo de TODOS os ${allStudents?.length || 6} alunos da turma de forma simultânea, economizando seu tempo!`
+                  : `Registro exclusivo para ${student.nome}. Ideal para observações singulares de desenvolvimento, falas marcantes ou adaptações pedagógicas individuais.`}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Grade de Atividades Rápidas (1-Clique) */}
+        <div className="space-y-2">
+          <label className="text-[11px] font-black uppercase tracking-wider text-slate-600 block">
+            Selecione a Experiência Pedagógica do Momento:
+          </label>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+            {ATIVIDADES_PREDEFINIDAS.map((atv) => {
+              const isSelected = atividadeSelecionada === atv.id;
+              return (
+                <button
+                  key={atv.id}
+                  type="button"
+                  onClick={() => {
+                    setAtividadeSelecionada(atv.id);
+                    if (!atividadeObs) {
+                      setAtividadeObs(atv.descPadrao);
+                    }
+                  }}
+                  className={`p-3 rounded-2xl border text-left transition flex flex-col justify-between gap-2 shadow-2xs cursor-pointer ${
+                    isSelected
+                      ? 'bg-indigo-600 border-indigo-700 text-white shadow-xs scale-102 ring-2 ring-indigo-300'
+                      : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-2xl">{atv.icone}</span>
+                    {isSelected && (
+                      <span className="w-4 h-4 rounded-full bg-white text-indigo-600 flex items-center justify-center text-[10px] font-black">
+                        ✓
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <strong className={`block text-xs font-black leading-snug ${isSelected ? 'text-white' : 'text-slate-900'}`}>
+                      {atv.titulo}
+                    </strong>
+                    <span className={`text-[10px] block mt-0.5 line-clamp-1 ${isSelected ? 'text-indigo-100' : 'text-slate-500'}`}>
+                      {atv.sub}
+                    </span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Campos de Personalização / Livro / Tema */}
+        {isProfessor && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-black uppercase tracking-wider text-slate-600 block">
+                Tema / Livro / História (Opcional):
+              </label>
+              <input
+                type="text"
+                value={atividadeTemaCustom}
+                onChange={(e) => setAtividadeTemaCustom(e.target.value)}
+                placeholder="Ex: Livro 'O Pequeno Urso' / Pintura com Cotonetes"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 outline-none focus:border-indigo-500 font-medium"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-black uppercase tracking-wider text-slate-600 block">
+                {atividadeEscopo === 'coletiva' ? 'Engajamento Geral da Turma:' : `Participação de ${student.nome.split(' ')[0]}:`}
+              </label>
+              <select
+                value={atividadeParticipacao}
+                onChange={(e) => setAtividadeParticipacao(e.target.value as any)}
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-800 outline-none focus:border-indigo-500 font-bold"
+              >
+                <option value="muito_participativo">⭐ Muito participativo(a) e encantado(a)</option>
+                <option value="participativo">😊 Participou com alegria e atenção</option>
+                <option value="observador">👀 Observou com calma e atenção</option>
+                <option value="precisou_apoio">🤝 Recebeu mediação / apoio carinhoso</option>
+              </select>
+            </div>
+
+            <div className="md:col-span-2 space-y-1.5">
+              <label className="text-[11px] font-black uppercase tracking-wider text-slate-600 block">
+                Observação Pedagógica / Relato do Momento:
+              </label>
+              <textarea
+                value={atividadeObs}
+                onChange={(e) => setAtividadeObs(e.target.value)}
+                rows={2}
+                placeholder="Descreva brevemente como foi a vivência e as reações das crianças..."
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-xs text-slate-800 outline-none focus:border-indigo-500 font-medium resize-none"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Botão de Gravação com Destaque de Escopo */}
+        {isProfessor && (
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={() => handleSalvarAtividadePedagogica()}
+              className={`w-full py-3 px-4 rounded-2xl font-black text-xs sm:text-sm shadow-sm transition cursor-pointer flex items-center justify-center gap-2.5 ${
+                atividadeEscopo === 'coletiva'
+                  ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                  : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+              }`}
+            >
+              <span>{atividadeEscopo === 'coletiva' ? '👥' : '👤'}</span>
+              <span>
+                {atividadeEscopo === 'coletiva'
+                  ? `Salvar Atividade Coletiva (Toda a Turma - ${allStudents?.length || 6} Alunos)`
+                  : `Salvar Atividade Individual para ${student.nome}`}
+              </span>
+            </button>
+          </div>
+        )}
       </div>
       </>
       )}

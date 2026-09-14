@@ -49,10 +49,19 @@ export default function PaxLinhaDoTempoAuditoria({ student }: Props) {
               <CheckCircle2 size={12} />
             </div>
 
-            <div className="p-4 rounded-2xl bg-slate-50/80 border border-slate-100 hover:border-slate-200 transition">
+            <div className={`p-4 rounded-2xl border transition ${
+              item.tipo === 'pedagogico'
+                ? 'bg-indigo-50/50 border-indigo-100 hover:border-indigo-200'
+                : 'bg-slate-50/80 border-slate-100 hover:border-slate-200'
+            }`}>
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <span className="text-xs font-black text-slate-800">{item.titulo}</span>
+                  {item.tipo === 'pedagogico' && (
+                    <span className="text-[9px] font-black uppercase text-indigo-700 bg-indigo-100/80 px-1.5 py-0.5 rounded">
+                      🎨 BNCC
+                    </span>
+                  )}
                   <span className="text-[10px] font-mono font-bold text-slate-400 bg-white border border-slate-200 px-1.5 py-0.5 rounded">
                     {item.hora}
                   </span>
