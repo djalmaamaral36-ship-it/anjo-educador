@@ -14,6 +14,7 @@ import ModalDesligarIndividual, { TipoDesligamento } from './ModalDesligarIndivi
 import BotaoFlutuanteOcorrencia from './BotaoFlutuanteOcorrencia';
 import { salvarDiarioRecebido, salvarAvisoMural } from '../../services/muralDiariosService';
 import { registrarLogAuditoriaLgpd } from '../../services/lgpdService';
+import { formatarDiarioCompletoWhatsApp } from '../../utils/formatadorDiarioWhatsApp';
 
 interface Props {
   student: StudentPaxData;
@@ -1510,39 +1511,21 @@ export default function PainelRotinaUnificado({
       const stFralda = st.saudeCards?.fraldas?.valor ?? fraldaDesc;
       const stTemp = st.saudeCards?.temperatura?.valor ?? temperatura;
 
-      const textoWhatsAppSt = 
-`🌟 *DIÁRIO DE CLASSE ESCOLAR — ANJO CUIDADOR* 🌟
-----------------------------------------
-👶 *Aluno(a)*: ${st.nome} (${st.turma})
-👩‍🏫 *Educadora*: ${st.professoraTitular || 'Ana Silva'}
-📅 *Data*: ${dataHoje} às ${agoraHora}
-⏱️ *Tempo em Sala*: ${tempoEmAula}
-
-💧 *HIDRATAÇÃO (ÁGUA)*:
-• Consumo: ${stAgua}ml ingeridos (Meta diária de ${st.agua?.metaMl || 600}ml)
-
-🍼 *ALIMENTAÇÃO & MAMADEIRAS*:
-• Mamadeiras servidas: ${stMamadeiras} mamadeira(s)
-• Refeição do dia: ${refeicaoTipo}
-• Aceitação: ${aceitacao}
-
-💤 *SONO & DESCANSO*:
-• ${stSoneca}
-
-🧷 *FRALDA & HIGIENE*:
-• Trocas e cuidados: ${stFralda}
-• Checklist de higiene pessoal: ${checklistCount}/5 cuidados realizados
-
-😊 *HUMOR & DESENVOLVIMENTO*:
-• Estado geral: ${humorEstado}
-• Nota da educadora: "${humorObs}"
-
-🩺 *SAÚDE & SINAIS*:
-• Temperatura: ${stTemp} (Afebril, tudo sob controle)
-
-----------------------------------------
-💬 _"Acompanhar cada pequeno passo do seu tesouro é nossa maior honra com amor e segurança!"_
-🏫 *Colégio Anjo Cuidador — Transparência em Tempo Real*`;
+      const textoWhatsAppSt = formatarDiarioCompletoWhatsApp({
+        student: st,
+        tempoEmAula,
+        dataCustom: `${dataHoje} às ${agoraHora}`,
+        aguaMl: stAgua,
+        mamadeirasContador: stMamadeiras,
+        refeicaoTipo,
+        aceitacao,
+        humor: humorEstado,
+        humorObs,
+        soneca: stSoneca,
+        fralda: stFralda,
+        temperatura: stTemp,
+        checklist,
+      });
 
       salvarDiarioRecebido({
         id: `diario_${st.id}_${Date.now()}`,

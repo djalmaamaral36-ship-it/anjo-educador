@@ -87,7 +87,63 @@ const LOGS_AUDITORIA_INICIAIS: LgpdLogRegistro[] = [
     destinatarioContato: '(11) 98765-4321',
     canal: 'whatsapp',
     conteudoResumo: 'Boletim diário: 350ml de água, 2 mamadeiras, soneca 1h30, humor calmo.',
-    conteudoIntegral: '🍼 *DIÁRIO DE CLASSE - ANJO CUIDADOR*\n👶 *Aluno(a):* Mariana Souza\n📅 *Data:* 07/09/2026\n⏱️ *Tempo em Sala:* 04h 15m\n💧 *Água:* 350ml\n🍼 *Mamadeiras:* 2\n😴 *Soneca:* 1h 30m\n👩‍🏫 *Professora:* Ana Silva',
+    conteudoIntegral: `🌟 *DIÁRIO DE CLASSE - ANJINHO ESCOLAR* 🌟
+
+👶 *Aluno(a):* Mariana Souza
+📅 *Data:* 07/09/2026 (Segunda-feira)
+👩‍🏫 *Educadora:* Ana Silva
+⏰ *Status:* Relatório do dia
+
+---
+
+🍼 *ALIMENTAÇÃO & HIDRATAÇÃO*
+• *Mamadeira:* 2x servidas (150ml) – _Tomou Tudo / Super Bem_ 🌟
+• *Água:* 350ml (3 copos) – _58% da meta diária de 600ml_ 💧
+• *Lanchinho da Manhã:* Comeu Tudo ✅
+• *Almocinho / Papinha:* Comeu Tudo ✅
+• *Lanchinho da Tarde:* Comeu Tudo ✅
+• *Jantinha:* Sem registro no período.
+
+---
+
+💤 *SONO & SAÚDE*
+• *Soneca:* Dormiu 1h30 (das 12:00 às 13:30) 😴
+• *Temperatura:* 36.5°C (Afebril) 🌡️
+• *Peso:* 12.0 kg (Adequado) ⚖️
+• *Fralda:* Xixi e Cocô + Pomada aplicada 🧷
+
+---
+
+😊 *HUMOR & CUIDADOS PESSOAIS*
+• *Estado Emocional:* Calma e Serena
+• *Checklist de Higiene:*
+  👕 Troca de roupas ✅
+  🪥 Escovação dos dentes ✅
+  🧼 Mãos e rosto ✅
+  🛁 Banho tomado ✅
+  🧴 Pomada/Protetor ✅
+
+---
+
+🎨 *VIVÊNCIAS PEDAGÓGICAS DO DIA*
+⭐ *Engajamento:* Muito participativa e encantada!
+A turma teve um dia rico em descobertas (BNCC):
+• 🤝 Acolhida e reconhecimento dos amigos.
+• 🎨 Pintura sensorial com cores primárias.
+• 📖 Contação de histórias interativa: "O Grande Rabanete".
+
+---
+
+📝 *RECADINHO DA EDUCADORA*
+"Mariana teve um dia muito calmo e acolhedor! Alimentou-se super bem e descansou no horário previsto."
+
+---
+
+🔒 *AVISO DE PRIVACIDADE (LGPD)*
+_Este relatório contém dados pessoais e de saúde protegidos pela Lei Geral de Proteção de Dados (Lei 13.709/2018). O envio é realizado exclusivamente ao responsável legal cadastrado. Em caso de dúvidas sobre o tratamento de dados, entre em contato com a secretaria da escola._
+
+📞 *Contato da Escola:* (11) 95555-4440
+💙 *Anjinho Escolar – Onde a infância é registrada com carinho.*`,
     hashIntegridade: 'BR-LGPD-88A7C1-20260907',
     baseLegalLgpd: 'Art. 14, §1º da Lei 13.709/18 c/c Consentimento Ativo de 10/02/2026',
   },

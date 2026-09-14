@@ -5,6 +5,7 @@ import {
 } from 'lucide-react';
 import { StudentPaxData } from '../../types';
 import { registrarLogAuditoriaLgpd } from '../../services/lgpdService';
+import { formatarDiarioCompletoWhatsApp } from '../../utils/formatadorDiarioWhatsApp';
 
 interface Props {
   isOpen: boolean;
@@ -46,40 +47,20 @@ export default function ModalRelatorioWhatsApp({
   const [copied, setCopied] = useState(false);
   const [encerradoSucesso, setEncerradoSucesso] = useState(false);
 
-  // Formata o texto para envio no WhatsApp
-  const textoWhatsApp = 
-`🌟 *DIÁRIO DE CLASSE ESCOLAR — ANJO CUIDADOR* 🌟
-----------------------------------------
-👶 *Aluno(a)*: ${student.nome} (${student.turma})
-👩‍🏫 *Educadora*: ${student.professoraTitular}
-📅 *Data*: ${new Date().toLocaleDateString('pt-BR')}
-⏱️ *Tempo em Sala*: ${tempoEmAula}
-
-💧 *HIDRATAÇÃO (ÁGUA)*:
-• Consumo: ${aguaMl}ml ingeridos (Meta diária de ${student.agua.metaMl}ml)
-
-🍼 *ALIMENTAÇÃO & MAMADEIRAS*:
-• Mamadeiras servidas: ${mamadeirasContador} mamadeira(s)
-• Refeição do dia: ${refeicaoTipo}
-• Aceitação: ${aceitacao}
-
-💤 *SONO & DESCANSO*:
-• ${soneca}
-
-🧷 *FRALDA & HIGIENE*:
-• Trocas e cuidados: ${fralda}
-• Checklist de higiene pessoal: ${checklistCount}/5 cuidados realizados
-
-😊 *HUMOR & DESENVOLVIMENTO*:
-• Estado geral: ${humor}
-• Nota da educadora: "${humorObs}"
-
-🩺 *SAÚDE & SINAIS*:
-• Temperatura: ${temperatura}°C (Afebril, tudo sob controle)
-
-----------------------------------------
-💬 _"Acompanhar cada pequeno passo do seu tesouro é nossa maior honra com amor e segurança!"_
-🏫 *Colégio Anjo Cuidador — Transparência em Tempo Real*`;
+  // Formata o texto para envio no WhatsApp (Padrão Completo Anjinho Escolar)
+  const textoWhatsApp = formatarDiarioCompletoWhatsApp({
+    student,
+    tempoEmAula,
+    aguaMl,
+    mamadeirasContador,
+    refeicaoTipo,
+    aceitacao,
+    humor,
+    humorObs,
+    soneca,
+    fralda,
+    temperatura,
+  });
 
   const handleCopy = () => {
     navigator.clipboard.writeText(textoWhatsApp);

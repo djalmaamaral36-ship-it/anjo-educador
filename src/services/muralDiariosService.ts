@@ -31,7 +31,65 @@ const DIARIOS_INICIAIS: DiarioRotinaRecebido[] = [
     soneca: 'Dormiu 1h 30m no soninho da tarde (13:15 às 14:45), bem tranquila.',
     fralda: '3 trocas (2 xixis normais + 1 cocô pastoso sem assadura) + Pomada protetora',
     temperatura: '36.5',
-    textoWhatsApp: `🌟 *DIÁRIO DE CLASSE ESCOLAR — ANJO CUIDADOR* 🌟\n👶 Aluno(a): Mariana Souza (Berçário I - A)\n👩‍🏫 Educadora: Ana Silva\n📅 Data: 05/09/2026\n⏱️ Tempo em Sala: 04h 15m\n💧 Água: 550ml\n🍼 Mamadeiras: 2 servidas\n🍲 Refeição: Papinha com excelente aceitação\n💤 Sono: 1h 30m no berço\n🧷 Fralda: 3 trocas sem assaduras\n😊 Humor: Muito alegre e participativa\n🩺 Temperatura: 36.5°C`,
+    textoWhatsApp: `🌟 *DIÁRIO DE CLASSE - ANJINHO ESCOLAR* 🌟
+
+👶 *Aluno(a):* Mariana Souza
+📅 *Data:* 05/09/2026 (Sexta-feira)
+👩‍🏫 *Educadora:* Ana Silva
+⏰ *Status:* Relatório do dia
+
+---
+
+🍼 *ALIMENTAÇÃO & HIDRATAÇÃO*
+• *Mamadeira:* 2x servidas (180ml) – _Tomou Tudo / Super Bem_ 🌟
+• *Água:* 550ml (5 copos) – _91% da meta diária de 600ml_ 💧
+• *Lanchinho da Manhã:* Comeu Tudo ✅
+• *Almocinho / Papinha:* Comeu Tudo ✅
+• *Lanchinho da Tarde:* Comeu Tudo ✅
+• *Jantinha:* Sem registro no período.
+
+---
+
+💤 *SONO & SAÚDE*
+• *Soneca:* Dormiu 1h30 (das 13:15 às 14:45) 😴
+• *Temperatura:* 36.5°C (Afebril) 🌡️
+• *Peso:* 12.5 kg (Adequado) ⚖️
+• *Fralda:* Xixi e Cocô + Pomada aplicada 🧷
+
+---
+
+😊 *HUMOR & CUIDADOS PESSOAIS*
+• *Estado Emocional:* Alegre e Comunicativa
+• *Checklist de Higiene:*
+  👕 Troca de roupas ✅
+  🪥 Escovação dos dentes ✅
+  🧼 Mãos e rosto ✅
+  🛁 Banho tomado ✅
+  🧴 Pomada/Protetor ✅
+
+---
+
+🎨 *VIVÊNCIAS PEDAGÓGICAS DO DIA*
+⭐ *Engajamento:* Muito participativa e encantada!
+A turma teve um dia rico em descobertas (BNCC):
+• 🤝 Acolhida e reconhecimento dos amigos.
+• 🗣️ Roda de conversa e socialização afetiva.
+• 🎨 Pintura sensorial e exploração no parque.
+• 🪞 Brincadeira de espelhos e autoconhecimento.
+• 📖 Contação de histórias: "O Grande Rabanete".
+
+---
+
+📝 *RECADINHO DA EDUCADORA*
+"Mariana teve um dia muito produtivo e alegre! Comeu super bem em todas as refeições, descansou tranquila no soninho e brincou muito no tapete sensorial com os amigos."
+
+---
+
+🔒 *AVISO DE PRIVACIDADE (LGPD)*
+_Este relatório contém dados pessoais e de saúde protegidos pela Lei Geral de Proteção de Dados (Lei 13.709/2018). O envio é realizado exclusivamente ao responsável legal cadastrado. Em caso de dúvidas sobre o tratamento de dados, entre em contato com a secretaria da escola._
+
+📞 *Contato da Escola:* (11) 95555-4440
+💙 *Anjinho Escolar – Onde a infância é registrada com carinho.*`,
     destinatarioNome: 'Clarice Souza (Mãe)',
     destinatarioTelefone: '(11) 98844-2211',
     enviadoWhatsApp: true,
@@ -56,7 +114,63 @@ const DIARIOS_INICIAIS: DiarioRotinaRecebido[] = [
     soneca: 'Dormiu 1h 10m no soninho da tarde.',
     fralda: '2 trocas regulares',
     temperatura: '36.6',
-    textoWhatsApp: `🌟 *DIÁRIO DE CLASSE ESCOLAR — ANJO CUIDADOR* 🌟\n👶 Aluno(a): Enzo Alencar (Berçário I - A)\n👩‍🏫 Educadora: Ana Silva\n📅 Data: 05/09/2026\n⏱️ Tempo em Sala: 04h 00m\n💧 Água: 480ml`,
+    textoWhatsApp: `🌟 *DIÁRIO DE CLASSE - ANJINHO ESCOLAR* 🌟
+
+👶 *Aluno(a):* Enzo Alencar
+📅 *Data:* 05/09/2026 (Sexta-feira)
+👩‍🏫 *Educadora:* Ana Silva
+⏰ *Status:* Relatório do dia
+
+---
+
+🍼 *ALIMENTAÇÃO & HIDRATAÇÃO*
+• *Mamadeira:* 2x servidas (150ml) – _Tomou Tudo_ 🌟
+• *Água:* 480ml (4 copos) – _80% da meta diária de 600ml_ 💧
+• *Lanchinho da Manhã:* Comeu Tudo ✅
+• *Almocinho / Papinha:* Comeu Tudo ✅
+• *Lanchinho da Tarde:* Comeu Tudo ✅
+• *Jantinha:* Sem registro no período.
+
+---
+
+💤 *SONO & SAÚDE*
+• *Soneca:* Dormiu 1h10 (das 13:00 às 14:10) 😴
+• *Temperatura:* 36.6°C (Afebril) 🌡️
+• *Peso:* 13 kg (Adequado) ⚖️
+• *Fralda:* 2 trocas regulares 🧷
+
+---
+
+😊 *HUMOR & CUIDADOS PESSOAIS*
+• *Estado Emocional:* Calmo e Atento
+• *Checklist de Higiene:*
+  👕 Troca de roupas ✅
+  🪥 Escovação dos dentes ✅
+  🧼 Mãos e rosto ✅
+  🛁 Banho tomado ✅
+  🧴 Pomada/Protetor ✅
+
+---
+
+🎨 *VIVÊNCIAS PEDAGÓGICAS DO DIA*
+⭐ *Engajamento:* Muito participativo!
+A turma teve um dia rico em descobertas (BNCC):
+• 🤝 Acolhida e músicas de integração.
+• 🎨 Atividades motoras no tapete sensorial.
+• 📖 Leitura guiada e cantigas de roda.
+
+---
+
+📝 *RECADINHO DA EDUCADORA*
+"Enzo esteve muito bem hoje! Desenvolveu excelente foco nas atividades motoras e alimentou-se muito bem."
+
+---
+
+🔒 *AVISO DE PRIVACIDADE (LGPD)*
+_Este relatório contém dados pessoais e de saúde protegidos pela Lei Geral de Proteção de Dados (Lei 13.709/2018). O envio é realizado exclusivamente ao responsável legal cadastrado. Em caso de dúvidas sobre o tratamento de dados, entre em contato com a secretaria da escola._
+
+📞 *Contato da Escola:* (11) 95555-4440
+💙 *Anjinho Escolar – Onde a infância é registrada com carinho.*`,
     destinatarioNome: 'Camila Duarte (Mãe)',
     destinatarioTelefone: '(11) 97722-3344',
     enviadoWhatsApp: true,
