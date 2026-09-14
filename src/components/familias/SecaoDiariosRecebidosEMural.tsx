@@ -17,7 +17,7 @@ import {
   Database,
 } from 'lucide-react';
 import { DiarioRotinaRecebido, AvisoMural } from '../../types';
-import { getDiariosRecebidos, getMuralAvisos, excluirDiarioRecebido } from '../../services/muralDiariosService';
+import { getDiariosRecebidos, getMuralAvisos, excluirDiarioRecebido, extrairTimestampDiario } from '../../services/muralDiariosService';
 
 interface Props {
   currentStudentName: string;
@@ -124,30 +124,38 @@ export default function SecaoDiariosRecebidosEMural({
     return index <= 2;
   };
 
-  const filteredDiarios = diarios.filter((d, index) => {
-    const matchTexto =
-      d.studentNome.toLowerCase().includes(filtroTexto.toLowerCase()) ||
-      d.data.includes(filtroTexto) ||
-      d.professoraNome.toLowerCase().includes(filtroTexto.toLowerCase());
-    
-    if (!matchTexto) return false;
-    if (periodoDiarios === 'recentes') {
-      return isDiarioRecente(d, index);
-    }
-    return true;
-  });
+  const filteredDiarios = diarios
+    .filter((d, index) => {
+      const matchTexto =
+        d.studentNome.toLowerCase().includes(filtroTexto.toLowerCase()) ||
+        d.data.includes(filtroTexto) ||
+        d.professoraNome.toLowerCase().includes(filtroTexto.toLowerCase());
+      
+      if (!matchTexto) return false;
+      if (periodoDiarios === 'recentes') {
+        return isDiarioRecente(d, index);
+      }
+      return true;
+    })
+    .sort((a, b) => extrairTimestampDiario(b) - extrairTimestampDiario(a));
 
-  const filteredMural = mural.filter((m, index) => {
-    const matchTexto =
-      m.titulo.toLowerCase().includes(filtroTexto.toLowerCase()) ||
-      m.conteudo.toLowerCase().includes(filtroTexto.toLowerCase());
+  const filteredMural = mural
+    .filter((m, index) => {
+      const matchTexto =
+        m.titulo.toLowerCase().includes(filtroTexto.toLowerCase()) ||
+        m.conteudo.toLowerCase().includes(filtroTexto.toLowerCase());
 
-    if (!matchTexto) return false;
-    if (periodoMural === 'vigentes') {
-      return isAvisoVigente(m, index);
-    }
-    return true;
-  });
+      if (!matchTexto) return false;
+      if (periodoMural === 'vigentes') {
+        return isAvisoVigente(m, index);
+      }
+      return true;
+    })
+    .sort((a, b) => {
+      const tsA = a.id && a.id.includes('_') ? parseInt(a.id.split('_').pop() || '0', 10) : 0;
+      const tsB = b.id && b.id.includes('_') ? parseInt(b.id.split('_').pop() || '0', 10) : 0;
+      return tsB - tsA;
+    });
 
   return (
     <div className="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-xs space-y-5">

@@ -325,17 +325,51 @@ function iniciarListenersFirestoreSeNecessario() {
 // Iniciar ao carregar o módulo
 iniciarListenersFirestoreSeNecessario();
 
-// DIÁRIOS RECEBIDOS
+// Helper para extrair timestamp ou peso cronológico de um Diário (mais recente primeiro)
+export function extrairTimestampDiario(d: DiarioRotinaRecebido): number {
+  if (d.id && d.id.includes('_')) {
+    const parts = d.id.split('_');
+    const lastPart = parts[parts.length - 1];
+    const parsedId = parseInt(lastPart, 10);
+    if (!isNaN(parsedId) && parsedId > 1000000000) return parsedId;
+  }
+  try {
+    const dataParts = (d.data || '').split('/');
+    if (dataParts.length === 3) {
+      const dia = parseInt(dataParts[0], 10);
+      const mes = parseInt(dataParts[1], 10) - 1;
+      const ano = parseInt(dataParts[2], 10);
+      let hora = 12;
+      let min = 0;
+      const horarioStr = d.horarioEncerramento || '';
+      if (horarioStr && horarioStr.includes(':')) {
+        const hParts = horarioStr.split(':');
+        hora = parseInt(hParts[0], 10) || 12;
+        min = parseInt(hParts[1], 10) || 0;
+      }
+      return new Date(ano, mes, dia, hora, min).getTime();
+    }
+  } catch {
+    // fallback
+  }
+  return 0;
+}
+
+// DIÁRIOS RECEBIDOS (Ordenados do mais recente para o mais antigo)
 export function getDiariosRecebidos(studentId?: string): DiarioRotinaRecebido[] {
   try {
     const raw = localStorage.getItem(STORAGE_DIARIOS_KEY);
     const list: DiarioRotinaRecebido[] = raw ? JSON.parse(raw) : DIARIOS_INICIAIS;
+    
+    // Ordena do mais novo para o mais velho (o mais recente sempre no topo)
+    const sorted = [...list].sort((a, b) => extrairTimestampDiario(b) - extrairTimestampDiario(a));
+
     if (studentId) {
-      return list.filter((d) => !d.studentId || d.studentId === studentId);
+      return sorted.filter((d) => !d.studentId || d.studentId === studentId);
     }
-    return list;
+    return sorted;
   } catch {
-    return DIARIOS_INICIAIS;
+    return [...DIARIOS_INICIAIS].sort((a, b) => extrairTimestampDiario(b) - extrairTimestampDiario(a));
   }
 }
 
@@ -363,15 +397,25 @@ export function excluirDiarioRecebido(diarioId: string): void {
   }
 }
 
-// MURAL DE AVISOS
+// MURAL DE AVISOS (Ordenados do mais recente para o mais antigo)
 export function getMuralAvisos(turma?: string): AvisoMural[] {
   try {
     const raw = localStorage.getItem(STORAGE_MURAL_KEY);
     const list: AvisoMural[] = raw ? JSON.parse(raw) : MURAL_INICIAIS;
+
+    const sorted = [...list].sort((a, b) => {
+      const tsA = a.id && a.id.includes('_') ? parseInt(a.id.split('_').pop() || '0', 10) : 0;
+      const tsB = b.id && b.id.includes('_') ? parseInt(b.id.split('_').pop() || '0', 10) : 0;
+      if (tsA > 1000000000 && tsB > 1000000000 && tsA !== tsB) {
+        return tsB - tsA;
+      }
+      return 0;
+    });
+
     if (turma && turma !== 'TODAS') {
-      return list.filter((a) => !a.turma || a.turma === turma || a.turma === 'TODAS');
+      return sorted.filter((a) => !a.turma || a.turma === turma || a.turma === 'TODAS');
     }
-    return list;
+    return sorted;
   } catch {
     return MURAL_INICIAIS;
   }

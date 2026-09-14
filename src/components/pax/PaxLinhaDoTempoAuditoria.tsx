@@ -25,6 +25,18 @@ export default function PaxLinhaDoTempoAuditoria({ student, userRole = 'familia'
     []
   );
 
+  // Ordena sempre de cima para baixo: o mais recente sempre em cima dos outros
+  const sortedTimeline = [...filteredTimeline].sort((a, b) => {
+    const tsA = a.id && a.id.includes('_') ? parseInt(a.id.split('_').pop() || '0', 10) : 0;
+    const tsB = b.id && b.id.includes('_') ? parseInt(b.id.split('_').pop() || '0', 10) : 0;
+    if (tsA > 1000000000 && tsB > 1000000000 && tsA !== tsB) {
+      return tsB - tsA;
+    }
+    const [hA, mA] = (a.hora || '00:00').split(':').map((v) => parseInt(v, 10) || 0);
+    const [hB, mB] = (b.hora || '00:00').split(':').map((v) => parseInt(v, 10) || 0);
+    return (hB * 60 + mB) - (hA * 60 + mA);
+  });
+
   const handleConfirmarExclusao = () => {
     if (itemParaExcluir && onDeleteItem) {
       onDeleteItem(itemParaExcluir.id);
@@ -52,13 +64,13 @@ export default function PaxLinhaDoTempoAuditoria({ student, userRole = 'familia'
       </p>
 
       {/* Lista da Linha do Tempo */}
-      {filteredTimeline.length === 0 ? (
+      {sortedTimeline.length === 0 ? (
         <div className="p-6 bg-slate-50 border border-dashed border-slate-200 rounded-2xl text-center text-xs text-slate-500 font-medium">
           Nenhuma atividade ou rotina registrada na linha do tempo ainda.
         </div>
       ) : (
         <div className="relative pl-6 sm:pl-8 space-y-4 pt-2 before:absolute before:left-3 sm:before:left-4 before:top-3 before:bottom-3 before:w-0.5 before:bg-slate-200">
-          {filteredTimeline.map((item) => (
+          {sortedTimeline.map((item) => (
             <div key={item.id} className="relative group">
               {/* Dot on line */}
               <div className="absolute -left-6 sm:-left-8 top-1.5 w-5 h-5 rounded-full bg-white border-2 border-emerald-500 flex items-center justify-center text-emerald-600 shadow-2xs">
