@@ -182,6 +182,8 @@ export interface StudentPaxData {
   alimentacao: {
     mamadeirasServidas: number;
     mamadeirasMlTotal: number;
+    ultimoVolume?: number;
+    volumeSelecionado?: number;
     refeicoes: {
       nome: string;
       status: string;

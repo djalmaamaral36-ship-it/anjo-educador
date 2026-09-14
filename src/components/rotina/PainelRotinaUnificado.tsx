@@ -58,6 +58,28 @@ const extractHoraFimFromSoneca = (soneca?: { valor?: string; periodo?: string },
   return calcHoraFimSoneca(inicio, 90);
 };
 
+// Extrai o volume da mamadeira em ml (com sincronização em tempo real entre celulares)
+const extractMamadeiraVolume = (student?: StudentPaxData): number => {
+  if (!student) return 180;
+  if (student.alimentacao?.volumeSelecionado && student.alimentacao.volumeSelecionado > 0) {
+    return student.alimentacao.volumeSelecionado;
+  }
+  if (student.alimentacao?.ultimoVolume && student.alimentacao.ultimoVolume > 0) {
+    return student.alimentacao.ultimoVolume;
+  }
+  const periodo = student.saudeCards?.mamadeiras?.periodo || '';
+  const match = periodo.match(/(\d+)\s*ml/i);
+  if (match && match[1]) {
+    const parsed = parseInt(match[1], 10);
+    if (!isNaN(parsed) && parsed > 0) return parsed;
+  }
+  if ((student.alimentacao?.mamadeirasMlTotal || 0) > 0 && (student.alimentacao?.mamadeirasServidas || 0) > 0) {
+    const media = Math.round(student.alimentacao.mamadeirasMlTotal / student.alimentacao.mamadeirasServidas);
+    if (!isNaN(media) && media > 0) return media;
+  }
+  return 180;
+};
+
 // Sugestões Rápidas de Atividades Pedagógicas Alinhadas à BNCC e Árvore da Infância®
 export const ATIVIDADES_PREDEFINIDAS = [
   { id: 'historia', titulo: 'Contação de Histórias', icone: '📖', sub: 'Imaginação & Roda', descPadrao: 'Momento afetivo de contação de história com exploração de livros e escuta atenta.' },
@@ -124,9 +146,26 @@ export default function PainelRotinaUnificado({
   // --- ESTADOS DE ALIMENTAÇÃO & MAMADEIRA (Foto 11) ---
   const [refeicaoTipo, setRefeicaoTipo] = useState('Mamadeira de Leite');
   const [aceitacao, setAceitacao] = useState('Tomou Tudo / Super Bem');
-  const [mamadeiraVolume, setMamadeiraVolume] = useState(180);
+  const [mamadeiraVolume, setMamadeiraVolume] = useState(() => extractMamadeiraVolume(student));
   const [mamadeirasContador, setMamadeirasContador] = useState(student.alimentacao?.mamadeirasServidas || 0);
   const [mamadeiraObs, setMamadeiraObs] = useState('');
+
+  // Handler para troca rápida de volume com sincronização em nuvem para outros celulares
+  const handleSelectMamadeiraVolume = (vol: number) => {
+    setMamadeiraVolume(vol);
+    if (onUpdateStudent && isProfessor) {
+      onUpdateStudent({
+        alimentacao: {
+          ...student.alimentacao,
+          mamadeirasServidas: student.alimentacao?.mamadeirasServidas || 0,
+          mamadeirasMlTotal: student.alimentacao?.mamadeirasMlTotal || 0,
+          ultimoVolume: vol,
+          volumeSelecionado: vol,
+          refeicoes: student.alimentacao?.refeicoes || [],
+        },
+      });
+    }
+  };
 
   // --- ESTADOS DE HIDRATAÇÃO RÁPIDA (ÁGUA) (Foto 11) ---
   const [copoSelecionado, setCopoSelecionado] = useState(50);
@@ -188,6 +227,11 @@ export default function PainelRotinaUnificado({
     setAguaConsumo(student.agua?.consumoMl || 0);
     setCoposContador(student.agua?.coposServidos || 0);
     setMamadeirasContador(student.alimentacao?.mamadeirasServidas || 0);
+    
+    // Sincroniza o volume da mamadeira em ml (com o que foi registrado no outro aparelho ou perfil do aluno)
+    const volSincronizado = extractMamadeiraVolume(student);
+    setMamadeiraVolume(volSincronizado);
+
     setHumorEstado(student.humor?.estado || 'Calmo / Sereno');
     setHumorObs(student.humor?.observacao || '');
     setSonecaDesc(student.saudeCards?.soneca?.valor || 'Sem Soneca Ainda');
@@ -233,6 +277,11 @@ export default function PainelRotinaUnificado({
     student.presenca?.tempoEmAulaFormatado,
     student.agua?.consumoMl,
     student.alimentacao?.mamadeirasServidas,
+    student.alimentacao?.mamadeirasMlTotal,
+    student.alimentacao?.ultimoVolume,
+    student.alimentacao?.volumeSelecionado,
+    student.saudeCards?.mamadeiras?.valor,
+    student.saudeCards?.mamadeiras?.periodo,
     student.saudeCards?.soneca?.valor,
     student.saudeCards?.soneca?.periodo,
     student.saudeCards?.fraldas?.valor,
@@ -1854,6 +1903,8 @@ export default function PainelRotinaUnificado({
           ...student.alimentacao,
           mamadeirasServidas: novoContador,
           mamadeirasMlTotal: novoVolumeMl,
+          ultimoVolume: isMamadeira ? mamadeiraVolume : (student.alimentacao?.ultimoVolume || mamadeiraVolume),
+          volumeSelecionado: isMamadeira ? mamadeiraVolume : (student.alimentacao?.volumeSelecionado || mamadeiraVolume),
           refeicoes: novasRefeicoes,
         },
         saudeCards: novosCards,
@@ -2454,7 +2505,7 @@ export default function PainelRotinaUnificado({
                   <button
                     key={vol}
                     type="button"
-                    onClick={() => setMamadeiraVolume(vol)}
+                    onClick={() => handleSelectMamadeiraVolume(vol)}
                     className={`py-1.5 text-xs font-black rounded-lg border transition cursor-pointer ${
                       mamadeiraVolume === vol
                         ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs'

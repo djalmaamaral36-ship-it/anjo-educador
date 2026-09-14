@@ -345,10 +345,18 @@ export default function PaxPortalDeTranquilidade({
         />
       )}
 
-      {/* 9. Linha do Tempo e Auditoria de Saúde (Apenas na visão da Família / Pais) */}
-      {effectiveRole === 'familia' && (
-        <PaxLinhaDoTempoAuditoria student={currentStudent} />
-      )}
+      {/* 9. Linha do Tempo e Auditoria de Saúde & Atividades */}
+      <PaxLinhaDoTempoAuditoria
+        student={currentStudent}
+        userRole={effectiveRole}
+        onDeleteItem={(itemId) => {
+          const currentList = currentStudent.auditoriaLinhaDoTempo || [];
+          const updatedTimeline = currentList.filter((item) => item.id !== itemId);
+          handleUpdateStudent({
+            auditoriaLinhaDoTempo: updatedTimeline,
+          });
+        }}
+      />
 
       {/* 10. Diários de Rotina Recebidos & Mural de Avisos em Tempo Real */}
       <SecaoDiariosRecebidosEMural
