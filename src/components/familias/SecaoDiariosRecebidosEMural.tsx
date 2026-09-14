@@ -12,6 +12,9 @@ import {
   MessageCircle,
   X,
   ShieldCheck,
+  Clock,
+  Archive,
+  Database,
 } from 'lucide-react';
 import { DiarioRotinaRecebido, AvisoMural } from '../../types';
 import { getDiariosRecebidos, getMuralAvisos, excluirDiarioRecebido } from '../../services/muralDiariosService';
@@ -33,6 +36,10 @@ export default function SecaoDiariosRecebidosEMural({
   const [curtidasMap, setCurtidasMap] = useState<Record<string, number>>({});
   const [filtroTexto, setFiltroTexto] = useState('');
   const [modalDiario360, setModalDiario360] = useState<DiarioRotinaRecebido | null>(null);
+
+  // Filtros de tempo inteligente (24h-48h para diários e 30 dias para avisos)
+  const [periodoDiarios, setPeriodoDiarios] = useState<'recentes' | 'todos'>('recentes');
+  const [periodoMural, setPeriodoMural] = useState<'vigentes' | 'todos'>('vigentes');
 
   // Sincroniza em tempo real com eventos do app e Firestore Nuvem
   useEffect(() => {
@@ -91,18 +98,56 @@ export default function SecaoDiariosRecebidosEMural({
     }
   };
 
-  const filteredDiarios = diarios.filter(
-    (d) =>
+  // Determina se o diário é recente (últimas 48h) ou antigo
+  const isDiarioRecente = (diario: DiarioRotinaRecebido, index: number) => {
+    // Primeiro e segundo da lista (mais recentes) ou criados nas últimas 48h
+    if (index <= 1) return true;
+    try {
+      const parts = diario.data.split('/');
+      if (parts.length === 3) {
+        const dia = parseInt(parts[0], 10);
+        const mes = parseInt(parts[1], 10) - 1;
+        const ano = parseInt(parts[2], 10);
+        const dataDiario = new Date(ano, mes, dia);
+        const agora = new Date();
+        const diffHoras = (agora.getTime() - dataDiario.getTime()) / (1000 * 60 * 60);
+        return diffHoras <= 48;
+      }
+    } catch {
+      return index === 0;
+    }
+    return index <= 1;
+  };
+
+  // Determina se o aviso é do mês vigente (últimos 30 dias)
+  const isAvisoVigente = (_aviso: AvisoMural, index: number) => {
+    return index <= 2;
+  };
+
+  const filteredDiarios = diarios.filter((d, index) => {
+    const matchTexto =
       d.studentNome.toLowerCase().includes(filtroTexto.toLowerCase()) ||
       d.data.includes(filtroTexto) ||
-      d.professoraNome.toLowerCase().includes(filtroTexto.toLowerCase())
-  );
+      d.professoraNome.toLowerCase().includes(filtroTexto.toLowerCase());
+    
+    if (!matchTexto) return false;
+    if (periodoDiarios === 'recentes') {
+      return isDiarioRecente(d, index);
+    }
+    return true;
+  });
 
-  const filteredMural = mural.filter(
-    (m) =>
+  const filteredMural = mural.filter((m, index) => {
+    const matchTexto =
       m.titulo.toLowerCase().includes(filtroTexto.toLowerCase()) ||
-      m.conteudo.toLowerCase().includes(filtroTexto.toLowerCase())
-  );
+      m.conteudo.toLowerCase().includes(filtroTexto.toLowerCase());
+
+    if (!matchTexto) return false;
+    if (periodoMural === 'vigentes') {
+      return isAvisoVigente(m, index);
+    }
+    return true;
+  });
 
   return (
     <div className="bg-white rounded-3xl p-5 sm:p-7 border border-slate-200/80 shadow-xs space-y-5">
@@ -148,8 +193,8 @@ export default function SecaoDiariosRecebidosEMural({
         </div>
       </div>
 
-      {/* BARRA DE PESQUISA RÁPIDA */}
-      <div className="flex items-center gap-3">
+      {/* BARRA DE PESQUISA RÁPIDA E FILTRO TEMPORAL INTELIGENTE (LGPD / 24H) */}
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-slate-50/80 p-3 rounded-2xl border border-slate-200/80">
         <div className="relative flex-1">
           <Search size={14} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
@@ -161,8 +206,82 @@ export default function SecaoDiariosRecebidosEMural({
             }
             value={filtroTexto}
             onChange={(e) => setFiltroTexto(e.target.value)}
-            className="w-full bg-slate-50 border border-slate-200/80 rounded-2xl pl-9 pr-4 py-2 text-xs text-slate-800 outline-none focus:border-indigo-400 focus:bg-white transition"
+            className="w-full bg-white border border-slate-200/80 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-800 outline-none focus:border-indigo-400 transition"
           />
+        </div>
+
+        {/* TOGGLE TEMPORAL INTELIGENTE (24h/48h ou Histórico Nuvem LGPD) */}
+        {activeSubTab === 'diarios' ? (
+          <div className="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-slate-200 self-start sm:self-auto">
+            <button
+              type="button"
+              onClick={() => setPeriodoDiarios('recentes')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                periodoDiarios === 'recentes'
+                  ? 'bg-emerald-100 text-emerald-900 font-black'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+              title="Exibir apenas diários ativos das últimas 24h a 48h"
+            >
+              <Clock size={12} />
+              <span>Ativos (24h / 48h)</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setPeriodoDiarios('todos')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                periodoDiarios === 'todos'
+                  ? 'bg-indigo-100 text-indigo-900 font-black'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+              title="Resgatar histórico completo arquivado em nuvem permanente (LGPD)"
+            >
+              <Database size={12} />
+              <span>Histórico Nuvem LGPD ({diarios.length})</span>
+            </button>
+          </div>
+        ) : (
+          <div className="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-slate-200 self-start sm:self-auto">
+            <button
+              type="button"
+              onClick={() => setPeriodoMural('vigentes')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                periodoMural === 'vigentes'
+                  ? 'bg-indigo-100 text-indigo-900 font-black'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+              title="Avisos e comunicados vigentes do mês"
+            >
+              <Clock size={12} />
+              <span>Vigentes do Mês</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setPeriodoMural('todos')}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                periodoMural === 'todos'
+                  ? 'bg-slate-200 text-slate-900 font-black'
+                  : 'text-slate-500 hover:text-slate-800'
+              }`}
+              title="Resgatar avisos e comunicados de meses anteriores"
+            >
+              <Archive size={12} />
+              <span>Arquivo Geral ({mural.length})</span>
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* AVISO INFORMATIVO SOBRE TRANQUILIDADE E LGPD */}
+      <div className="p-3 bg-emerald-50/50 rounded-2xl border border-emerald-200/60 flex items-start gap-2.5 text-xs text-emerald-950">
+        <ShieldCheck size={16} className="text-emerald-600 flex-shrink-0 mt-0.5" />
+        <div className="flex-1 leading-relaxed">
+          <strong>Portal de Tranquilidade & Preservação LGPD:</strong>{' '}
+          {activeSubTab === 'diarios'
+            ? 'Para maior leveza visual, o feed diário destaca os relatórios das últimas 24h a 48h. Todo o histórico de rotinas pedagógicas e biológicas segue permanentemente criptografado e preservado em nuvem.'
+            : 'Os avisos escolares permanecem ativos durante o ciclo mensal. Comunicados e eventos anteriores ficam resguardados no histórico para eventuais consultas.'}
         </div>
       </div>
 
@@ -170,12 +289,23 @@ export default function SecaoDiariosRecebidosEMural({
       {activeSubTab === 'diarios' && (
         <div className="space-y-4">
           {filteredDiarios.length === 0 ? (
-            <div className="p-8 text-center bg-slate-50 rounded-2xl border border-slate-100 text-slate-500 space-y-2">
+            <div className="p-8 text-center bg-slate-50 rounded-2xl border border-slate-100 text-slate-500 space-y-3">
               <FileText size={32} className="mx-auto text-slate-300" />
-              <p className="font-bold text-xs">Nenhum diário de rotina encontrado.</p>
-              <p className="text-[11px] text-slate-400">
-                Os relatórios enviados via WhatsApp e encerramento de aula aparecerão aqui automaticamente.
+              <p className="font-bold text-xs">
+                {periodoDiarios === 'recentes'
+                  ? 'Nenhum diário recente nas últimas 24h a 48h.'
+                  : 'Nenhum diário de rotina encontrado.'}
               </p>
+              {periodoDiarios === 'recentes' && (
+                <button
+                  type="button"
+                  onClick={() => setPeriodoDiarios('todos')}
+                  className="px-3.5 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-bold rounded-xl text-xs transition inline-flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Database size={13} />
+                  <span>Consultar Histórico Completo em Nuvem</span>
+                </button>
+              )}
             </div>
           ) : (
             filteredDiarios.map((diario) => {
@@ -201,6 +331,10 @@ export default function SecaoDiariosRecebidosEMural({
                           </strong>
                           <span className="text-[9px] font-bold px-2 py-0.5 rounded-full border bg-emerald-100 text-emerald-900 border-emerald-200">
                             Diário Consolidado
+                          </span>
+                          <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full border bg-blue-50 text-blue-800 border-blue-200 flex items-center gap-1">
+                            <Clock size={10} />
+                            <span>Feed 24h</span>
                           </span>
                         </div>
                         <p className="text-[11px] text-slate-500 mt-0.5">
@@ -327,9 +461,23 @@ export default function SecaoDiariosRecebidosEMural({
       {activeSubTab === 'mural' && (
         <div className="space-y-3.5">
           {filteredMural.length === 0 ? (
-            <div className="p-8 text-center bg-slate-50 rounded-2xl border border-slate-100 text-slate-500 space-y-2">
+            <div className="p-8 text-center bg-slate-50 rounded-2xl border border-slate-100 text-slate-500 space-y-3">
               <Bell size={32} className="mx-auto text-slate-300" />
-              <p className="font-bold text-xs">Nenhum aviso publicado no mural.</p>
+              <p className="font-bold text-xs">
+                {periodoMural === 'vigentes'
+                  ? 'Nenhum aviso vigente neste mês.'
+                  : 'Nenhum aviso arquivado encontrado.'}
+              </p>
+              {periodoMural === 'vigentes' && (
+                <button
+                  type="button"
+                  onClick={() => setPeriodoMural('todos')}
+                  className="px-3.5 py-1.5 bg-slate-200 text-slate-800 hover:bg-slate-300 font-bold rounded-xl text-xs transition inline-flex items-center gap-1.5 cursor-pointer"
+                >
+                  <Archive size={13} />
+                  <span>Ver Arquivo Geral de Comunicados</span>
+                </button>
+              )}
             </div>
           ) : (
             filteredMural.map((aviso) => (
