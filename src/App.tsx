@@ -14,6 +14,7 @@ import { LgpdModule } from './components/lgpd/LgpdModule';
 import { RelatoriosModule } from './components/relatorios/RelatoriosModule';
 import { FloatingRoleSwitcher } from './components/comum/FloatingRoleSwitcher';
 import { ModalSuporteContato } from './components/ModalSuporteContato';
+import { ModalGuiaRecadinho } from './components/ModalGuiaRecadinho';
 
 export function App() {
   const [tabAtiva, setTabAtiva] = useState<string>('diario');
@@ -25,6 +26,7 @@ export function App() {
   const [recadinhoTurma, setRecadinhoTurma] = useState<RecadinhoTurma>(RECADINHO_TURMA_MOCK);
 
   const [modalSuporteAberto, setModalSuporteAberto] = useState(false);
+  const [modalGuiaRecadinhoAberto, setModalGuiaRecadinhoAberto] = useState(false);
 
   const handleSalvarRecadinhoTurma = (novaMensagem: string, categoria: RecadinhoTurma['categoria']) => {
     setRecadinhoTurma({
@@ -69,7 +71,7 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-slate-100/70 text-slate-800 font-sans antialiased pb-20">
-      {/* Header com todas as Abas */}
+      {/* Header com todas as Abas e Hambúrguer */}
       <Header
         tabAtiva={tabAtiva}
         onSelectTab={setTabAtiva}
@@ -78,6 +80,7 @@ export function App() {
         onAbrirModalSuporte={() => setModalSuporteAberto(true)}
         turmaAtual={turmaAtual}
         onSelectTurma={setTurmaAtual}
+        onAbrirGuiaRecadinho={() => setModalGuiaRecadinhoAberto(true)}
       />
 
       {/* Conteúdo Principal */}
@@ -87,11 +90,14 @@ export function App() {
           <DiarioAula
             turmaAtual={turmaAtual}
             alunos={alunos}
+            setAlunos={setAlunos}
             rotinas={rotinas}
+            setRotinas={setRotinas}
             recadinhoTurma={recadinhoTurma}
             onSalvarRecadinhoTurma={handleSalvarRecadinhoTurma}
             onAtualizarPresenca={handleAtualizarPresenca}
             onAtualizarRotina={handleAtualizarRotina}
+            onAbrirGuia={() => setModalGuiaRecadinhoAberto(true)}
           />
         )}
 
@@ -158,6 +164,13 @@ export function App() {
       <ModalSuporteContato
         isOpen={modalSuporteAberto}
         onClose={() => setModalSuporteAberto(false)}
+      />
+
+      {/* Modal Guia Recadinho */}
+      <ModalGuiaRecadinho
+        isOpen={modalGuiaRecadinhoAberto}
+        onClose={() => setModalGuiaRecadinhoAberto(false)}
+        onIrParaDiario={() => setTabAtiva('diario')}
       />
     </div>
   );
