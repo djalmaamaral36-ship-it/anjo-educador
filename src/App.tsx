@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { PerfilUsuario, Aluno, RotinaDia, RecadinhoTurma } from './types';
 import { ALUNOS_MOCK, RECADINHO_TURMA_MOCK, ROTINAS_MOCK, MURAIS_MOCK } from './data/mockData';
 import { Header } from './components/Header';
-import { DiarioAula } from './components/DiarioAula';
+import { DashboardOriginal } from './components/DashboardOriginal';
 import { AnjinhaAuraModule } from './components/comum/AnjinhaAuraModule';
 import { CoordenacaoModule } from './components/coordenacao/CoordenacaoModule';
 import { DirecaoModule } from './components/direcao/DirecaoModule';
@@ -82,10 +82,11 @@ export function App() {
 
       {/* Conteúdo Principal */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-        {/* Aba Diário de Aula */}
-        {tabAtiva === 'diario' && (
-          <DiarioAula
+        {/* Aba Diário de Aula & Dashboard Original */}
+        {(tabAtiva === 'diario' || tabAtiva === 'turma' || tabAtiva === 'rotina') && (
+          <DashboardOriginal
             turmaAtual={turmaAtual}
+            onSelectTurma={setTurmaAtual}
             alunos={alunos}
             setAlunos={setAlunos}
             rotinas={rotinas}
