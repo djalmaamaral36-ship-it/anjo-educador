@@ -15,7 +15,6 @@ interface DiarioAulaProps {
   onSalvarRecadinhoTurma?: (novaMensagem: string, categoria: RecadinhoTurma['categoria']) => void;
   onAtualizarPresenca?: (alunoId: string, presente: boolean) => void;
   onAtualizarRotina?: (alunoId: string, dadosNovos: Partial<RotinaDia>) => void;
-  onAbrirGuia?: () => void;
 }
 
 export const DiarioAula: React.FC<DiarioAulaProps> = ({
@@ -27,8 +26,7 @@ export const DiarioAula: React.FC<DiarioAulaProps> = ({
   recadinhoTurma,
   onSalvarRecadinhoTurma,
   onAtualizarPresenca,
-  onAtualizarRotina,
-  onAbrirGuia
+  onAtualizarRotina
 }) => {
   const [alunoSelecionadoId, setAlunoSelecionadoId] = useState<string>(alunos[0]?.id || '1');
   const [modalWhatsappAberto, setModalWhatsappAberto] = useState(false);
@@ -121,35 +119,6 @@ Anjinho Educador ❤️`;
 
   return (
     <div className="space-y-6">
-      {/* Banner Explicativo de Como Inserir o Recadinho */}
-      <div className="bg-gradient-to-r from-rose-500 via-pink-500 to-rose-600 text-white rounded-3xl p-5 shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="w-11 h-11 bg-white/20 backdrop-blur-md text-white rounded-2xl flex items-center justify-center font-bold shrink-0">
-            <Heart className="w-6 h-6 fill-white" />
-          </div>
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-black bg-amber-300 text-slate-900 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                Explicação do Recadinho
-              </span>
-              <span className="text-xs text-rose-100 font-semibold">Anjinho Educador</span>
-            </div>
-            <h3 className="text-base font-black">Como a Educadora Insere o Recadinho?</h3>
-            <p className="text-xs text-rose-100 leading-relaxed max-w-2xl">
-              No final da página fica o <strong>Recadinho Geral da Educadora</strong> (assinado e enviado para todos os pais da turma) e em cada aluno há o campo de <strong>Observação Individual</strong>. Você pode digitar, ditar por voz (🎙️) ou usar a Anjinha Aura (👼)!
-            </p>
-          </div>
-        </div>
-
-        <button
-          onClick={onAbrirGuia}
-          className="px-4 py-2.5 bg-white text-rose-700 hover:bg-rose-50 font-black text-xs rounded-xl shadow-md transition flex items-center gap-1.5 whitespace-nowrap"
-        >
-          <HelpCircle className="w-4 h-4" />
-          <span>Ver Passo a Passo Detalhado</span>
-        </button>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Lista de Alunos na Turma */}
         <div className="lg:col-span-4 bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-3">

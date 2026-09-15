@@ -13,7 +13,6 @@ interface HeaderProps {
   onAbrirModalSuporte: () => void;
   turmaAtual: string;
   onSelectTurma: (turma: string) => void;
-  onAbrirGuiaRecadinho: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -23,8 +22,7 @@ export const Header: React.FC<HeaderProps> = ({
   onSelectPerfil,
   onAbrirModalSuporte,
   turmaAtual,
-  onSelectTurma,
-  onAbrirGuiaRecadinho
+  onSelectTurma
 }) => {
   const [drawerAberto, setDrawerAberto] = useState(false);
 
@@ -101,7 +99,7 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
             </div>
 
-            {/* Centro / Direita: Seletor de Turma + Dúvida Recadinho + Suporte */}
+            {/* Centro / Direita: Seletor de Turma + Suporte */}
             <div className="flex items-center gap-2 sm:gap-3">
               {/* Seletor de Turma */}
               <div className="hidden sm:flex items-center gap-2 bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-xs">
@@ -116,17 +114,6 @@ export const Header: React.FC<HeaderProps> = ({
                   <option value="Jardim I - Integral">Jardim I - Integral</option>
                 </select>
               </div>
-
-              {/* Botão Guia: Como Inserir Recadinho */}
-              <button
-                onClick={onAbrirGuiaRecadinho}
-                className="flex items-center gap-1.5 px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-800 text-xs font-bold rounded-xl border border-rose-200 transition shadow-xs"
-                title="Explicação passo a passo de como a educadora insere o recadinho"
-              >
-                <Heart className="w-4 h-4 text-rose-600 fill-rose-200 animate-pulse" />
-                <span className="hidden md:inline">Como Inserir Recadinho?</span>
-                <span className="md:hidden">Recadinho?</span>
-              </button>
 
               {/* Botão Anjinha Aura (Atalho) */}
               <button
