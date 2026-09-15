@@ -5,11 +5,14 @@ import { CheckCircle2, XCircle, Moon, Utensils, Smile, HeartHandshake, MessageSq
 interface DiarioAulaProps {
   turmaAtual: string;
   alunos: Aluno[];
-  setAlunos: React.Dispatch<React.SetStateAction<Aluno[]>>;
   rotinas: Record<string, RotinaDia>;
-  setRotinas: React.Dispatch<React.SetStateAction<Record<string, RotinaDia>>>;
   recadinhoTurma: RecadinhoTurma;
-  onAbrirGuia: () => void;
+  setAlunos?: React.Dispatch<React.SetStateAction<Aluno[]>>;
+  setRotinas?: React.Dispatch<React.SetStateAction<Record<string, RotinaDia>>>;
+  onSalvarRecadinhoTurma?: (novaMensagem: string, categoria: RecadinhoTurma['categoria']) => void;
+  onAtualizarPresenca?: (alunoId: string, presente: boolean) => void;
+  onAtualizarRotina?: (alunoId: string, dadosNovos: Partial<RotinaDia>) => void;
+  onAbrirGuia?: () => void;
 }
 
 export const DiarioAula: React.FC<DiarioAulaProps> = ({
@@ -19,6 +22,9 @@ export const DiarioAula: React.FC<DiarioAulaProps> = ({
   rotinas,
   setRotinas,
   recadinhoTurma,
+  onSalvarRecadinhoTurma,
+  onAtualizarPresenca,
+  onAtualizarRotina,
   onAbrirGuia
 }) => {
   const [alunoSelecionadoId, setAlunoSelecionadoId] = useState<string>(alunos[0]?.id || '1');
@@ -39,17 +45,25 @@ export const DiarioAula: React.FC<DiarioAulaProps> = ({
   };
 
   const togglePresenca = (id: string) => {
-    setAlunos(alunos.map(a => a.id === id ? { ...a, presente: !a.presente } : a));
+    if (onAtualizarPresenca) {
+      onAtualizarPresenca(id, !(alunos.find(a => a.id === id)?.presente));
+    } else if (setAlunos) {
+      setAlunos(alunos.map(a => a.id === id ? { ...a, presente: !a.presente } : a));
+    }
   };
 
   const updateRotina = (campo: keyof RotinaDia, valor: any) => {
-    setRotinas({
-      ...rotinas,
-      [alunoSelecionadoId]: {
-        ...rotinaAtual,
-        [campo]: valor
-      }
-    });
+    if (onAtualizarRotina) {
+      onAtualizarRotina(alunoSelecionadoId, { [campo]: valor });
+    } else if (setRotinas) {
+      setRotinas({
+        ...rotinas,
+        [alunoSelecionadoId]: {
+          ...rotinaAtual,
+          [campo]: valor
+        }
+      });
+    }
   };
 
   const gerarTextoWhatsAppAluno = (aluno: Aluno) => {
@@ -271,7 +285,9 @@ Anjinho Educador ❤️`;
                 value={alunoAtual?.recadinhoIndividual || ''}
                 onChange={(e) => {
                   const val = e.target.value;
-                  setAlunos(alunos.map(a => a.id === alunoAtual.id ? { ...a, recadinhoIndividual: val } : a));
+                  if (setAlunos) {
+                    setAlunos(alunos.map(a => a.id === alunoAtual.id ? { ...a, recadinhoIndividual: val } : a));
+                  }
                 }}
                 rows={2}
                 placeholder={`Ex: ${alunoAtual?.nome} adorou cantar cantigas de roda e pediu para repetir!`}

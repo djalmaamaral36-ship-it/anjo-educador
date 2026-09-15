@@ -1,3 +1,5 @@
+export type PerfilUsuario = 'educadora' | 'coordenacao' | 'direcao' | 'familia';
+
 export interface Aluno {
   id: string;
   nome: string;
@@ -7,6 +9,13 @@ export interface Aluno {
   telefoneContato: string;
   presente: boolean;
   recadinhoIndividual?: string;
+  medicamentoAtivo?: {
+    nome: string;
+    dosagem: string;
+    horario: string;
+    instrucoes: string;
+    autorizadoPor: string;
+  };
 }
 
 export interface RotinaDia {
@@ -19,7 +28,7 @@ export interface RotinaDia {
   evacuacao: 'Normal' | 'Pastoso' | 'Ausente';
   humor: 'Alegre' | 'Calmo' | 'Sensível' | 'Choroso';
   atividades: string[];
-  recadinhoEducadora: string; // Recadinho final da educadora
+  recadinhoEducadora: string;
   ocorrencia?: string;
   fotos?: string[];
 }
@@ -40,4 +49,32 @@ export interface MuralAviso {
   data: string;
   autor: string;
   categoria: 'Geral' | 'Evento' | 'Urgente';
+}
+
+export interface MensagemAura {
+  id: string;
+  remetente: 'usuario' | 'aura';
+  texto: string;
+  data: string;
+  sugestaoBncc?: string;
+  acoesRapidas?: string[];
+}
+
+export interface PlanejamentoSemanal {
+  id: string;
+  turma: string;
+  semana: string;
+  campoExperienciaBNCC: string;
+  objetivosAprendizagem: string;
+  atividadesPropostas: string;
+  status: 'Pendente' | 'Aprovado' | 'Ajustes Solicitados';
+  observacaoCoordenacao?: string;
+}
+
+export interface DadoFinanceiroPax {
+  totalAlunosMatriculados: number;
+  mensalidadesEmDia: number;
+  mensalidadesPendentes: number;
+  taxaPaxAtiva: boolean;
+  receitaMensalEstimada: string;
 }

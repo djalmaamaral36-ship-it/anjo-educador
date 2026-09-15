@@ -1,4 +1,4 @@
-import { Aluno, RotinaDia, RecadinhoTurma, MuralAviso } from '../types';
+import { Aluno, RotinaDia, RecadinhoTurma, MuralAviso, PlanejamentoSemanal, DadoFinanceiroPax } from '../types';
 
 export const ALUNOS_MOCK: Aluno[] = [
   {
@@ -8,7 +8,14 @@ export const ALUNOS_MOCK: Aluno[] = [
     responsaveis: 'Mariana Silva (Mãe)',
     telefoneContato: '(14) 99751-9181',
     presente: true,
-    recadinhoIndividual: 'Helena participou ativamente da roda de leitura hoje!'
+    recadinhoIndividual: 'Helena participou ativamente da roda de leitura e cantigas hoje!',
+    medicamentoAtivo: {
+      nome: 'Amoxicilina 250mg',
+      dosagem: '5ml',
+      horario: '14:00',
+      instrucoes: 'Dar após o lanche da tarde junto com água.',
+      autorizadoPor: 'Mariana Silva (Mãe)'
+    }
   },
   {
     id: '2',
@@ -35,7 +42,7 @@ export const ALUNOS_MOCK: Aluno[] = [
     responsaveis: 'Juliana Pereira (Mãe)',
     telefoneContato: '(14) 99751-9181',
     presente: true,
-    recadinhoIndividual: ''
+    recadinhoIndividual: 'Alice ajudou a guardar os brinquedos no final do dia!'
   },
   {
     id: '5',
@@ -44,7 +51,7 @@ export const ALUNOS_MOCK: Aluno[] = [
     responsaveis: 'Roberto Mendes (Pai)',
     telefoneContato: '(14) 99751-9181',
     presente: true,
-    recadinhoIndividual: ''
+    recadinhoIndividual: 'Ótima autonomia durante as atividades de pintura com pincel espesso.'
   }
 ];
 
@@ -88,24 +95,54 @@ export const MURAIS_MOCK: MuralAviso[] = [
   {
     id: 'm1',
     titulo: 'Reunião de Pais e Mestres',
-    conteudo: 'Convidamos todas as famílias para nossa reunião trimestral nesta sexta-feira às 18h.',
+    conteudo: 'Convidamos todas as famílias para nossa reunião trimestral nesta sexta-feira às 18h no auditório principal.',
     data: '2026-09-18',
     autor: 'Direção Pedagógica',
     categoria: 'Evento'
   },
   {
     id: 'm2',
-    titulo: 'Projeto Horta Escolar',
-    conteudo: 'Solicitamos que traguem uma garrafinha PET higienizada para nossa oficina de cultivo.',
+    titulo: 'Projeto Horta Escolar Infantil',
+    conteudo: 'Solicitamos que tragam uma garrafinha PET higienizada para nossa oficina de cultivo sustentável.',
     data: '2026-09-16',
     autor: 'Profª. Ana Cláudia',
     categoria: 'Geral'
   }
 ];
 
+export const PLANEJAMENTOS_MOCK: PlanejamentoSemanal[] = [
+  {
+    id: 'p1',
+    turma: 'Berçário II - Manhã',
+    semana: 'Semana 3 - Setembro/2026',
+    campoExperienciaBNCC: 'O eu, o outro e o nós / Traços, sons, cores e formas',
+    objetivosAprendizagem: 'Desenvolver a percepção tátil através do manuseio de massinhas naturais e texturas diversas.',
+    atividadesPropostas: 'Oficina de massinha caseira aromatizada, circuito de almofadas e rodinha de ritmos corporais.',
+    status: 'Aprovado',
+    observacaoCoordenacao: 'Excelente planejamento! Alinhado aos objetivos da BNCC EI01TS01 e EI01EO03.'
+  },
+  {
+    id: 'p2',
+    turma: 'Maternal I',
+    semana: 'Semana 3 - Setembro/2026',
+    campoExperienciaBNCC: 'Escuta, fala, pensamento e imaginação',
+    objetivosAprendizagem: 'Estimular a linguagem oral com contação de contos de fadas usando fantoches de feltro.',
+    atividadesPropostas: 'Teatrinho de fantoches "Os Três Porquinhos", desenho livre da história.',
+    status: 'Pendente'
+  }
+];
+
+export const DADOS_DIFECOES_MOCK: DadoFinanceiroPax = {
+  totalAlunosMatriculados: 128,
+  mensalidadesEmDia: 122,
+  mensalidadesPendentes: 6,
+  taxaPaxAtiva: true,
+  receitaMensalEstimada: 'R$ 84.500,00'
+};
+
 export const CONTATO_SUPORTE = {
-  nome: 'Djalma Amaral - Administração',
+  nome: 'Djalma Amaral - Administração & Direção',
   email: 'djalmaamaral.adm@gmail.com',
   telefone: '(14) 99751-9181',
-  suporteAtendimento: 'Segunda a Sexta, das 07h às 19h'
+  suporteAtendimento: 'Atendimento de Segunda a Sexta, das 07h às 19h'
 };

@@ -1,89 +1,164 @@
 import React, { useState } from 'react';
+import { PerfilUsuario, Aluno, RotinaDia, RecadinhoTurma } from './types';
+import { ALUNOS_MOCK, RECADINHO_TURMA_MOCK, ROTINAS_MOCK, MURAIS_MOCK } from './data/mockData';
 import { Header } from './components/Header';
 import { DiarioAula } from './components/DiarioAula';
-import { RecadinhoEducadoraSection } from './components/RecadinhoEducadoraSection';
+import { AnjinhaAuraModule } from './components/comum/AnjinhaAuraModule';
+import { CoordenacaoModule } from './components/coordenacao/CoordenacaoModule';
+import { DirecaoModule } from './components/direcao/DirecaoModule';
+import { FamiliasModule } from './components/familias/FamiliasModule';
+import { JornadaModule } from './components/jornada/JornadaModule';
 import { MuralAvisos } from './components/MuralAvisos';
-import { GuiaRecadinhoModal } from './components/GuiaRecadinhoModal';
+import { BrandBookModule } from './components/brandbook/BrandBookModule';
+import { LgpdModule } from './components/lgpd/LgpdModule';
+import { RelatoriosModule } from './components/relatorios/RelatoriosModule';
+import { FloatingRoleSwitcher } from './components/comum/FloatingRoleSwitcher';
 import { ModalSuporteContato } from './components/ModalSuporteContato';
-import { ALUNOS_MOCK, RECADINHO_TURMA_MOCK, ROTINAS_MOCK } from './data/mockData';
-import { Aluno, RecadinhoTurma, RotinaDia } from './types';
 
 export function App() {
+  const [tabAtiva, setTabAtiva] = useState<string>('diario');
+  const [perfilAtual, setPerfilAtual] = useState<PerfilUsuario>('educadora');
   const [turmaAtual, setTurmaAtual] = useState<string>('Berçário II - Manhã');
-  const [tabAtiva, setTabAtiva] = useState<'diario' | 'recadinho' | 'mural' | 'guia'>('diario');
+
   const [alunos, setAlunos] = useState<Aluno[]>(ALUNOS_MOCK);
-  const [recadinhoTurma, setRecadinhoTurma] = useState<RecadinhoTurma>(RECADINHO_TURMA_MOCK);
   const [rotinas, setRotinas] = useState<Record<string, RotinaDia>>(ROTINAS_MOCK);
+  const [recadinhoTurma, setRecadinhoTurma] = useState<RecadinhoTurma>(RECADINHO_TURMA_MOCK);
 
-  const [guiaAberto, setGuiaAberto] = useState(false);
-  const [suporteAberto, setSuporteAberto] = useState(false);
+  const [modalSuporteAberto, setModalSuporteAberto] = useState(false);
 
-  const handleAtualizarAlunoRecadinho = (id: string, texto: string) => {
-    setAlunos(alunos.map(a => a.id === id ? { ...a, recadinhoIndividual: texto } : a));
+  const handleSalvarRecadinhoTurma = (novaMensagem: string, categoria: RecadinhoTurma['categoria']) => {
+    setRecadinhoTurma({
+      ...recadinhoTurma,
+      mensagem: novaMensagem,
+      categoria,
+      data: new Date().toISOString().split('T')[0]
+    });
+  };
+
+  const handleAtualizarPresenca = (alunoId: string, presente: boolean) => {
+    setAlunos(alunos.map(a => a.id === alunoId ? { ...a, presente } : a));
+  };
+
+  const handleAtualizarRotina = (alunoId: string, dadosNovos: Partial<RotinaDia>) => {
+    setRotinas(prev => ({
+      ...prev,
+      [alunoId]: {
+        ...(prev[alunoId] || {
+          alunoId,
+          data: new Date().toISOString().split('T')[0],
+          alimentacao: 'Boa',
+          sono: 'Dormiu bem',
+          higiene: 'Troca de fralda OK',
+          evacuacao: 'Normal',
+          humor: 'Alegre',
+          atividades: [],
+          recadinhoEducadora: ''
+        }),
+        ...dadosNovos
+      }
+    }));
+  };
+
+  const handleUsarRecadinhoDaAura = (textoAura: string) => {
+    setRecadinhoTurma(prev => ({
+      ...prev,
+      mensagem: textoAura
+    }));
+    setTabAtiva('diario');
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-slate-100/70 text-slate-800 font-sans antialiased pb-20">
+      {/* Header com todas as Abas */}
       <Header
-        turmaAtual={turmaAtual}
-        setTurmaAtual={setTurmaAtual}
         tabAtiva={tabAtiva}
-        setTabAtiva={setTabAtiva}
-        onAbrirSuporte={() => setSuporteAberto(true)}
-        onAbrirGuia={() => setGuiaAberto(true)}
+        onSelectTab={setTabAtiva}
+        perfilAtual={perfilAtual}
+        onSelectPerfil={setPerfilAtual}
+        onAbrirModalSuporte={() => setModalSuporteAberto(true)}
+        turmaAtual={turmaAtual}
+        onSelectTurma={setTurmaAtual}
       />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6 sm:px-6 lg:px-8">
+      {/* Conteúdo Principal */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+        {/* Aba Diário de Aula */}
         {tabAtiva === 'diario' && (
           <DiarioAula
             turmaAtual={turmaAtual}
             alunos={alunos}
-            setAlunos={setAlunos}
             rotinas={rotinas}
-            setRotinas={setRotinas}
             recadinhoTurma={recadinhoTurma}
-            onAbrirGuia={() => setGuiaAberto(true)}
+            onSalvarRecadinhoTurma={handleSalvarRecadinhoTurma}
+            onAtualizarPresenca={handleAtualizarPresenca}
+            onAtualizarRotina={handleAtualizarRotina}
           />
         )}
 
-        {tabAtiva === 'recadinho' && (
-          <RecadinhoEducadoraSection
-            recadinhoTurma={recadinhoTurma}
-            setRecadinhoTurma={setRecadinhoTurma}
+        {/* Aba Anjinha Aura (IA) */}
+        {tabAtiva === 'aura' && (
+          <AnjinhaAuraModule
+            onUsarRecadinho={handleUsarRecadinhoDaAura}
+            turmaAtual={turmaAtual}
+          />
+        )}
+
+        {/* Aba Coordenação */}
+        {tabAtiva === 'coordenacao' && (
+          <CoordenacaoModule />
+        )}
+
+        {/* Aba Direção */}
+        {tabAtiva === 'direcao' && (
+          <DirecaoModule />
+        )}
+
+        {/* Aba Visão dos Pais */}
+        {tabAtiva === 'familias' && (
+          <FamiliasModule
             alunos={alunos}
-            onAtualizarAlunoRecadinho={handleAtualizarAlunoRecadinho}
+            rotinas={rotinas}
+            recadinhoTurmaMensagem={recadinhoTurma.mensagem}
           />
         )}
 
-        {tabAtiva === 'mural' && <MuralAvisos />}
+        {/* Aba Jornada Infantíl */}
+        {tabAtiva === 'jornada' && (
+          <JornadaModule />
+        )}
+
+        {/* Aba Mural de Avisos */}
+        {tabAtiva === 'mural' && (
+          <MuralAvisos murais={MURAIS_MOCK} />
+        )}
+
+        {/* Aba BrandBook */}
+        {tabAtiva === 'brandbook' && (
+          <BrandBookModule />
+        )}
+
+        {/* Aba LGPD */}
+        {tabAtiva === 'lgpd' && (
+          <LgpdModule />
+        )}
+
+        {/* Aba Relatórios */}
+        {tabAtiva === 'relatorios' && (
+          <RelatoriosModule />
+        )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 py-6 mt-12 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p>© 2026 Anjinho Educador — Agenda & Diário Escolar da Educação Infantil</p>
-          <div className="flex items-center gap-4">
-            <button onClick={() => setGuiaAberto(true)} className="hover:underline text-emerald-700 font-semibold">
-              Guia: Como Inserir Recadinho
-            </button>
-            <button onClick={() => setSuporteAberto(true)} className="hover:underline text-slate-600">
-              Contato Suporte
-            </button>
-          </div>
-        </div>
-      </footer>
+      {/* Seletor Flutuante de Perfil (Role Switcher) */}
+      <FloatingRoleSwitcher
+        perfilAtual={perfilAtual}
+        onSelectPerfil={setPerfilAtual}
+      />
 
-      {/* Modals */}
-      {guiaAberto && (
-        <GuiaRecadinhoModal
-          onFechar={() => setGuiaAberto(false)}
-          onIrParaRecadinho={() => setTabAtiva('recadinho')}
-        />
-      )}
-
-      {suporteAberto && (
-        <ModalSuporteContato onFechar={() => setSuporteAberto(false)} />
-      )}
+      {/* Modal Suporte com Djalma Amaral */}
+      <ModalSuporteContato
+        isOpen={modalSuporteAberto}
+        onClose={() => setModalSuporteAberto(false)}
+      />
     </div>
   );
 }

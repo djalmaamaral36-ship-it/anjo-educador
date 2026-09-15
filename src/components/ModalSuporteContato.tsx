@@ -3,10 +3,14 @@ import { Mail, Phone, ShieldCheck, Heart, User } from 'lucide-react';
 import { CONTATO_SUPORTE } from '../data/mockData';
 
 interface ModalSuporteContatoProps {
-  onFechar: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
+  onFechar?: () => void;
 }
 
-export const ModalSuporteContato: React.FC<ModalSuporteContatoProps> = ({ onFechar }) => {
+export const ModalSuporteContato: React.FC<ModalSuporteContatoProps> = ({ isOpen = true, onClose, onFechar }) => {
+  const handleFechar = onClose || onFechar || (() => {});
+  if (!isOpen) return null;
   return (
     <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-6">
@@ -23,7 +27,7 @@ export const ModalSuporteContato: React.FC<ModalSuporteContatoProps> = ({ onFech
             </div>
           </div>
           <button
-            onClick={onFechar}
+            onClick={handleFechar}
             className="w-7 h-7 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center font-bold text-xs"
           >
             ✕

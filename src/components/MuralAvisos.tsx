@@ -3,8 +3,12 @@ import { MuralAviso } from '../types';
 import { MURAIS_MOCK } from '../data/mockData';
 import { Calendar, Plus, Tag, User, MessageSquare } from 'lucide-react';
 
-export const MuralAvisos: React.FC = () => {
-  const [avisos, setAvisos] = useState<MuralAviso[]>(MURAIS_MOCK);
+interface MuralAvisosProps {
+  murais?: MuralAviso[];
+}
+
+export const MuralAvisos: React.FC<MuralAvisosProps> = ({ murais }) => {
+  const [avisos, setAvisos] = useState<MuralAviso[]>(murais || MURAIS_MOCK);
   const [novoTitulo, setNovoTitulo] = useState('');
   const [novoConteudo, setNovoConteudo] = useState('');
   const [novaCategoria, setNovaCategoria] = useState<'Geral' | 'Evento' | 'Urgente'>('Geral');
