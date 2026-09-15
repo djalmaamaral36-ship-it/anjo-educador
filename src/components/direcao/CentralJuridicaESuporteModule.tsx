@@ -27,7 +27,10 @@ import {
   Eye,
   Sliders,
   Mail,
-  ChevronRight
+  ChevronRight,
+  Edit3,
+  Save,
+  Smartphone
 } from 'lucide-react';
 import LogoAnjinhoEducador from '../comum/LogoAnjinhoEducador';
 
@@ -51,6 +54,35 @@ export default function CentralJuridicaESuporteModule({ userRole = 'professor', 
   const [nomeFundador, setNomeFundador] = useState<string>('Djalma Amaral');
   const [cpfFundador, setCpfFundador] = useState<string>('123.456.789-00');
   const [diasPiloto, setDiasPiloto] = useState<string>('60 dias (Gratuito)');
+  
+  // Telefones e Canais Oficiais de Atendimento (Suporte / Plantão da Engenharia)
+  const [telefonePlantao, setTelefonePlantao] = useState<string>(() => {
+    return localStorage.getItem('anjinho_telefone_suporte') || '(11) 95555-4440';
+  });
+  const [emailSuporte, setEmailSuporte] = useState<string>(() => {
+    return localStorage.getItem('anjinho_email_suporte') || 'suporte@anjinhoescolar.com.br';
+  });
+  const [isEditandoCanais, setIsEditandoCanais] = useState<boolean>(false);
+  const [canaisSalvosSucesso, setCanaisSalvosSucesso] = useState<boolean>(false);
+
+  // Helper para limpar número para o link da API do WhatsApp
+  const sanitizePhoneForWhatsApp = (phone: string) => {
+    const digitsOnly = phone.replace(/\D/g, '');
+    if (!digitsOnly) return '5511955554440';
+    if (digitsOnly.startsWith('55')) {
+      return digitsOnly;
+    }
+    return `55${digitsOnly}`;
+  };
+
+  const handleSalvarCanais = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    localStorage.setItem('anjinho_telefone_suporte', telefonePlantao);
+    localStorage.setItem('anjinho_email_suporte', emailSuporte);
+    setCanaisSalvosSucesso(true);
+    setIsEditandoCanais(false);
+    setTimeout(() => setCanaisSalvosSucesso(false), 3000);
+  };
   
   // Feedback states
   const [copiedText, setCopiedText] = useState(false);
@@ -306,7 +338,8 @@ ${cidadeEstado}, ${dataHojeStr}.`
 💬 *Descrição:* ${chamadoDescricao || 'Solicito suporte técnico da equipe.'}
 ⏰ *Horário:* ${new Date().toLocaleTimeString('pt-BR')}`;
 
-    const url = `https://api.whatsapp.com/send?phone=5511955554440&text=${encodeURIComponent(textoZap)}`;
+    const numZap = sanitizePhoneForWhatsApp(telefonePlantao);
+    const url = `https://api.whatsapp.com/send?phone=${numZap}&text=${encodeURIComponent(textoZap)}`;
     window.open(url, '_blank');
     setChamadoEnviado(true);
     setTimeout(() => setChamadoEnviado(false), 5000);
@@ -627,6 +660,20 @@ ${cidadeEstado}, ${dataHojeStr}.`
                       />
                     </div>
                   </div>
+
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-600 mb-1">WhatsApp / Suporte da Direção:</label>
+                    <input
+                      type="text"
+                      value={telefonePlantao}
+                      onChange={(e) => {
+                        setTelefonePlantao(e.target.value);
+                        localStorage.setItem('anjinho_telefone_suporte', e.target.value);
+                      }}
+                      placeholder="(11) 95555-4440"
+                      className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 focus:bg-white focus:border-indigo-500 outline-hidden"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -737,38 +784,100 @@ ${cidadeEstado}, ${dataHojeStr}.`
               </div>
 
               {/* Cartão de Canais Oficiais */}
-              <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs space-y-3">
-                <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">Canais Oficiais de Atendimento</h4>
-
-                <div className="space-y-2 text-xs">
-                  <a
-                    href="https://api.whatsapp.com/send?phone=5511955554440&text=Ol%C3%A1%2C%20sou%20da%20Dire%C3%A7%C3%A3o%20Escolar%20e%20preciso%20de%20suporte%20no%20Anjinho%20Escolar."
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 flex items-center justify-between hover:bg-emerald-100 transition group"
+              <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-xs space-y-3.5">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-400">Canais Oficiais de Atendimento</h4>
+                  <button
+                    onClick={() => setIsEditandoCanais(!isEditandoCanais)}
+                    className="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 bg-indigo-50 hover:bg-indigo-100 px-2.5 py-1 rounded-xl flex items-center gap-1 transition cursor-pointer"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 rounded-xl bg-emerald-600 text-white">
-                        <MessageCircle size={16} />
+                    <Edit3 size={13} />
+                    <span>{isEditandoCanais ? 'Fechar Edição' : 'Editar Telefone'}</span>
+                  </button>
+                </div>
+
+                {canaisSalvosSucesso && (
+                  <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold flex items-center gap-1.5 animate-in fade-in">
+                    <Check size={14} className="text-emerald-600" />
+                    <span>Telefone e canais atualizados com sucesso!</span>
+                  </div>
+                )}
+
+                {isEditandoCanais ? (
+                  <form onSubmit={handleSalvarCanais} className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-3 text-xs">
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-bold text-slate-700">WhatsApp / Telefone de Plantão:</label>
+                      <input
+                        type="text"
+                        value={telefonePlantao}
+                        onChange={(e) => setTelefonePlantao(e.target.value)}
+                        placeholder="Ex: (11) 95555-4440 ou (11) 98877-6655"
+                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl font-medium text-slate-800 focus:border-indigo-500 outline-hidden"
+                      />
+                      <span className="text-[10px] text-slate-400 block">
+                        Este número receberá os chamados e será o link oficial de suporte da Direção.
+                      </span>
+                    </div>
+
+                    <div className="space-y-1">
+                      <label className="block text-[11px] font-bold text-slate-700">E-mail de Suporte:</label>
+                      <input
+                        type="email"
+                        value={emailSuporte}
+                        onChange={(e) => setEmailSuporte(e.target.value)}
+                        placeholder="Ex: suporte@anjinhoescolar.com.br"
+                        className="w-full px-3 py-2 bg-white border border-slate-300 rounded-xl font-medium text-slate-800 focus:border-indigo-500 outline-hidden"
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-end gap-2 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => setIsEditandoCanais(false)}
+                        className="px-3 py-1.5 rounded-xl bg-slate-200 text-slate-700 font-bold text-[11px] hover:bg-slate-300 transition cursor-pointer"
+                      >
+                        Cancelar
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-3.5 py-1.5 rounded-xl bg-emerald-600 text-white font-bold text-[11px] flex items-center gap-1 hover:bg-emerald-700 transition cursor-pointer shadow-xs"
+                      >
+                        <Save size={13} />
+                        <span>Salvar Telefone</span>
+                      </button>
+                    </div>
+                  </form>
+                ) : (
+                  <div className="space-y-2 text-xs">
+                    <a
+                      href={`https://api.whatsapp.com/send?phone=${sanitizePhoneForWhatsApp(telefonePlantao)}&text=Ol%C3%A1%2C%20sou%20da%20Dire%C3%A7%C3%A3o%20Escolar%20e%20preciso%20de%20suporte%20no%20Anjinho%20Escolar.`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-3 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-950 flex items-center justify-between hover:bg-emerald-100 transition group"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="p-2 rounded-xl bg-emerald-600 text-white">
+                          <MessageCircle size={16} />
+                        </div>
+                        <div>
+                          <strong className="block font-bold">WhatsApp Direto da Direção</strong>
+                          <span className="text-[11px] text-emerald-700 font-medium">{telefonePlantao} (Plantão)</span>
+                        </div>
+                      </div>
+                      <ExternalLink size={14} className="text-emerald-600 group-hover:translate-x-0.5 transition" />
+                    </a>
+
+                    <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 flex items-center gap-3">
+                      <div className="p-2 rounded-xl bg-indigo-600 text-white">
+                        <Mail size={16} />
                       </div>
                       <div>
-                        <strong className="block font-bold">WhatsApp Direto da Direção</strong>
-                        <span className="text-[11px] text-emerald-700">(11) 95555-4440 (Plantão)</span>
+                        <strong className="block font-bold">E-mail Institucional</strong>
+                        <span className="text-[11px] text-slate-500">{emailSuporte}</span>
                       </div>
                     </div>
-                    <ExternalLink size={14} className="text-emerald-600 group-hover:translate-x-0.5 transition" />
-                  </a>
-
-                  <div className="p-3 rounded-2xl bg-slate-50 border border-slate-200 text-slate-800 flex items-center gap-3">
-                    <div className="p-2 rounded-xl bg-indigo-600 text-white">
-                      <Mail size={16} />
-                    </div>
-                    <div>
-                      <strong className="block font-bold">E-mail Institucional</strong>
-                      <span className="text-[11px] text-slate-500">suporte@anjinhoescolar.com.br</span>
-                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               {/* Tabela de Níveis de Severidade */}
