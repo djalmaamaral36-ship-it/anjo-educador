@@ -13,6 +13,7 @@ import ModuloAuditoriaLgpd from './lgpd/ModuloAuditoriaLgpd';
 import ModalConsentimentoLgpdInicial from './lgpd/ModalConsentimentoLgpdInicial';
 import CoordenacaoModule from './coordenacao/CoordenacaoModule';
 import DirecaoModule from './direcao/DirecaoModule';
+import CentralJuridicaESuporteModule from './direcao/CentralJuridicaESuporteModule';
 import BrandBookModule from './brandbook/BrandBookModule';
 import FloatingRoleSwitcher from './comum/FloatingRoleSwitcher';
 import TelaAtalhoSimuladorModal, { AtalhoPerfil } from './comum/TelaAtalhoSimuladorModal';
@@ -212,6 +213,14 @@ export default function Dashboard({ user }: Props) {
         {/* ABA: BRAND BOOK (Livro de Marca & Diretrizes Estratégicas) */}
         {activeTab === 'brand_book' && (
           <BrandBookModule />
+        )}
+
+        {/* ABA: CENTRAL JURÍDICA, CONTRATOS & SUPORTE */}
+        {activeTab === 'central_juridica' && (
+          <CentralJuridicaESuporteModule
+            userRole={userRole}
+            onNavigateTab={setActiveTab}
+          />
         )}
 
         {/* ABA: GOVERNANÇA LGPD & RESPALDO JURÍDICO */}

@@ -31,6 +31,7 @@ import {
   Award,
   Sparkle,
   Info,
+  FileCheck,
   X
 } from 'lucide-react';
 import {
@@ -261,6 +262,15 @@ export default function DirecaoModule({ userRole = 'professor', onNavigateTab }:
         </div>
 
         <div className="flex items-center gap-2 flex-wrap">
+          {onNavigateTab && (
+            <button
+              onClick={() => onNavigateTab('central_juridica')}
+              className="px-4 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black flex items-center gap-1.5 shadow-md shadow-emerald-600/20 transition active:scale-95 cursor-pointer"
+            >
+              <FileCheck size={15} />
+              <span>Central Jurídica & Suporte</span>
+            </button>
+          )}
           <span className="text-xs font-bold text-slate-400">Filtrando:</span>
           <span className="px-3.5 py-1.5 rounded-xl bg-indigo-50 text-indigo-700 text-xs font-black border border-indigo-100 shadow-xs">
             {schoolName}

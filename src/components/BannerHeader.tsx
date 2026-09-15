@@ -24,7 +24,9 @@ import {
   Crown,
   Moon,
   Sun,
-  School
+  School,
+  FileCheck,
+  Headphones
 } from 'lucide-react';
 import { signOut } from 'firebase/auth';
 import { auth } from '../services/firebase';
@@ -262,6 +264,14 @@ export default function BannerHeader({
           icon: TreeDeciduous,
           badge: 'BNCC',
           badgeColor: 'bg-emerald-100 text-emerald-800',
+        },
+        {
+          id: 'central_juridica',
+          label: 'Central Jurídica & Suporte',
+          sub: 'Termos de Uso, Contratos Piloto, LGPD, Backups e Plantão 07h',
+          icon: FileCheck,
+          badge: 'DIREÇÃO',
+          badgeColor: 'bg-emerald-500 text-white',
         },
         {
           id: 'brand_book',
