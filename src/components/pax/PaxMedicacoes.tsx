@@ -14,6 +14,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { StudentPaxData } from '../../types';
+import { VINCULO_MEMBROS_INICIAIS } from '../../data/vinculoFamiliarData';
 
 interface Props {
   student: StudentPaxData;
@@ -61,15 +62,38 @@ export default function PaxMedicacoes({ student, userRole, onOpenFullMedications
     setShowPinModal(true);
   };
 
+  const getParentPin = () => {
+    if (student.pinAcesso) return student.pinAcesso;
+    switch (student.id) {
+      case 'enzo_alencar': return '4440';
+      case 'mariana_souza': return '4321';
+      case 'beatriz_castro': return '3310';
+      case 'bernardo_teixeira': return '4567';
+      case 'cecilia_duarte': return '7654';
+      case 'lucas_moraes': return '8899';
+      case 'alice_oliveira': return '3344';
+      case 'gabriel_santos': return '3322';
+      case 'helena_costa': return '6677';
+      case 'theo_ribeiro': return '9988';
+    }
+    const foundMember = VINCULO_MEMBROS_INICIAIS.find(
+      (m) => m.nome.toLowerCase() === student.responsavelNome.toLowerCase()
+    );
+    if (foundMember && foundMember.pinAcesso) {
+      return foundMember.pinAcesso;
+    }
+    return '1234';
+  };
+
   const handleVerifyPin = () => {
-    const parentPin = student.pinAcesso || (student.id === 'beatriz_castro' ? '3310' : '1234');
-    if (pinInput === '1234' || pinInput === '2026' || pinInput === parentPin) {
+    const parentPin = getParentPin();
+    if (pinInput === '9181' || pinInput === '1234' || pinInput === '2026' || pinInput === parentPin) {
       setShowPinModal(false);
       setPinInput('');
       setPinError('');
       setShowModal(true);
     } else {
-      setPinError(`PIN incorreto! Use o PIN cadastrado pelos pais (PIN de teste para este aluno: ${parentPin}).`);
+      setPinError(`PIN incorreto! Use o PIN cadastrado (PIN de teste: ${parentPin} ou PIN do Desenvolvedor: 9181).`);
     }
   };
 
@@ -312,7 +336,7 @@ export default function PaxMedicacoes({ student, userRole, onOpenFullMedications
               />
               {pinError && <p className="text-xs text-rose-600 font-bold">{pinError}</p>}
               <p className="text-[10px] text-indigo-600 font-black bg-indigo-50 py-1 px-2 rounded-lg inline-block">
-                PIN de teste para {student.nome.split(' ')[0]}: {student.id === 'beatriz_castro' ? '3310' : student.pinAcesso || '1234'}
+                PIN de teste para {student.nome.split(' ')[0]}: {getParentPin()}
               </p>
             </div>
 

@@ -24,6 +24,7 @@ import {
 } from 'lucide-react';
 import { StudentPaxData } from '../../types';
 import { PAX_STUDENTS } from '../../data/paxStudentsData';
+import { VINCULO_MEMBROS_INICIAIS } from '../../data/vinculoFamiliarData';
 import CampoTextoVoz from '../comum/CampoTextoVoz';
 
 interface Props {
@@ -105,11 +106,35 @@ export default function ControleMedicamentosModule({
     return matchesTurno && matchesSearch;
   });
 
+  // Helper to resolve parent PIN dynamically
+  const getParentPin = () => {
+    if (currentStudent.pinAcesso) return currentStudent.pinAcesso;
+    switch (currentStudent.id) {
+      case 'enzo_alencar': return '4440';
+      case 'mariana_souza': return '4321';
+      case 'beatriz_castro': return '3310';
+      case 'bernardo_teixeira': return '4567';
+      case 'cecilia_duarte': return '7654';
+      case 'lucas_moraes': return '8899';
+      case 'alice_oliveira': return '3344';
+      case 'gabriel_santos': return '3322';
+      case 'helena_costa': return '6677';
+      case 'theo_ribeiro': return '9988';
+    }
+    const foundMember = VINCULO_MEMBROS_INICIAIS.find(
+      (m) => m.nome.toLowerCase() === currentStudent.responsavelNome.toLowerCase()
+    );
+    if (foundMember && foundMember.pinAcesso) {
+      return foundMember.pinAcesso;
+    }
+    return '1234';
+  };
+
   // Verify PIN
   const handleVerifyPin = () => {
-    // Demo PIN is 1234 or parent's specific pin (e.g. 3310 for Beatriz Castro)
-    const parentPin = currentStudent.pinAcesso || (currentStudent.id === 'beatriz_castro' ? '3310' : '1234');
-    if (pinInput === '1234' || pinInput === '2026' || pinInput === parentPin) {
+    const parentPin = getParentPin();
+    // Developer Master PIN 9181 bypasses all authorizations
+    if (pinInput === '9181' || pinInput === '1234' || pinInput === '2026' || pinInput === parentPin) {
       setIsParentAuthorized(true);
       setIsPinModalOpen(false);
       setPinError('');
@@ -139,7 +164,7 @@ export default function ControleMedicamentosModule({
         });
       }
     } else {
-      setPinError(`PIN incorreto! Use o PIN cadastrado pelos pais (PIN de teste para este aluno: ${parentPin}).`);
+      setPinError(`PIN incorreto! Use o PIN cadastrado (PIN de teste: ${parentPin} ou PIN do Desenvolvedor: 9181).`);
     }
   };
 
@@ -674,7 +699,7 @@ export default function ControleMedicamentosModule({
                 cadastrar, suspender ou excluir medicamentos. Digite seu PIN de 4 dígitos para assinar.
               </p>
               <p className="text-[11px] text-amber-800/80 font-mono">
-                PIN de demonstração para testes: <strong>1234</strong>
+                PIN de demonstração para {currentStudent.responsavelNome}: <strong>{getParentPin()}</strong> ou <strong>1234</strong>
               </p>
             </div>
 

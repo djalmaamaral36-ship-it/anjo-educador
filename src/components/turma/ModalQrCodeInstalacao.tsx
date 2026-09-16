@@ -28,6 +28,22 @@ interface Props {
   onSelectStudent?: (studentId: string) => void;
 }
 
+const getStudentPinFromId = (studentId: string) => {
+  switch (studentId) {
+    case 'enzo_alencar': return '4440';
+    case 'mariana_souza': return '4321';
+    case 'beatriz_castro': return '3310';
+    case 'bernardo_teixeira': return '4567';
+    case 'cecilia_duarte': return '7654';
+    case 'lucas_moraes': return '8899';
+    case 'alice_oliveira': return '3344';
+    case 'gabriel_santos': return '3322';
+    case 'helena_costa': return '6677';
+    case 'theo_ribeiro': return '9988';
+    default: return '1234';
+  }
+};
+
 export default function ModalQrCodeInstalacao({
   isOpen,
   onClose,
@@ -43,12 +59,7 @@ export default function ModalQrCodeInstalacao({
   if (!isOpen) return null;
 
   // Garante que o aluno tenha um PIN de 4 dígitos consistente
-  const studentPin = student.pinAcesso || (
-    student.id === 'mariana_souza' ? '4321' :
-    student.id === 'enzo_alencar' ? '4440' :
-    student.id === 'beatriz_castro' ? '3310' :
-    '2026'
-  );
+  const studentPin = student.pinAcesso || getStudentPinFromId(student.id);
 
   // URL de instalação e acesso direto da família para este aluno
   const baseUrl = window.location.origin;
@@ -367,12 +378,7 @@ export default function ModalQrCodeInstalacao({
               {/* Grid de Crachás para Recortar */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 print:grid-cols-2 print:gap-3">
                 {allStudents.map((st) => {
-                  const pin = st.pinAcesso || (
-                    st.id === 'mariana_souza' ? '4321' :
-                    st.id === 'enzo_alencar' ? '4440' :
-                    st.id === 'beatriz_castro' ? '3310' :
-                    '2026'
-                  );
+                  const pin = st.pinAcesso || getStudentPinFromId(st.id);
                   const qr = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=6&data=${encodeURIComponent(`${baseUrl}/?alunoId=${st.id}&pin=${pin}`)}`;
 
                   return (
