@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import { ShieldAlert, Users, Phone, Calendar, Heart, Plus, Sparkles, CheckCircle2, FileText, Printer } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ShieldAlert, Users, Phone, Calendar, Heart, Plus, Sparkles, CheckCircle2, FileText, Printer, MessageSquare, Send } from 'lucide-react';
 import { StudentPaxData } from '../../types';
 import ModalExportarRelatoriosPdf from '../relatorios/ModalExportarRelatoriosPdf';
+import ModalRelatorioWhatsApp from '../rotina/ModalRelatorioWhatsApp';
+import { VoiceInput } from '../VoiceInput';
 
 interface Props {
   student: StudentPaxData;
@@ -20,6 +22,37 @@ export default function PaxStudentCard({
 }: Props) {
   const [showAllergyModal, setShowAllergyModal] = useState(false);
   const [showPdfModal, setShowPdfModal] = useState(false);
+  const [showWhatsAppModal, setShowWhatsAppModal] = useState(false);
+
+  // Estados para Recados Coletivos e Individuais
+  const [recadoColetivo, setRecadoColetivo] = useState<string>('Hoje a nossa turma teve um dia maravilhoso, repleto de sorrisos, descobertas e brincadeiras ao ar livre! 🌟');
+  const [recadoIndividual, setRecadoIndividual] = useState<string>('');
+
+  // Sincroniza o recado individual quando o aluno muda
+  useEffect(() => {
+    if (student.id === 'mariana_souza') {
+      setRecadoIndividual("Mariana brincou na cabana sensorial e interagiu carinhosamente com os colegas.");
+    } else {
+      setRecadoIndividual(student.humor?.observacao || "");
+    }
+  }, [student.id, student.humor?.observacao]);
+
+  // Combina coletivo e individual conforme a inteligência do gerador
+  const obterRecadoCombinado = () => {
+    const coletivoLimpo = recadoColetivo.trim();
+    const individualLimpo = recadoIndividual.trim();
+    
+    if (coletivoLimpo && individualLimpo) {
+      return `${coletivoLimpo}\n\n📝 *Relato Individual de ${student.nome}:*\n${individualLimpo}`;
+    }
+    if (coletivoLimpo) {
+      return coletivoLimpo;
+    }
+    if (individualLimpo) {
+      return individualLimpo;
+    }
+    return "";
+  };
 
   return (
     <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/80 shadow-xs space-y-6">
@@ -188,6 +221,94 @@ export default function PaxStudentCard({
         )}
       </div>
 
+      {/* Seção Inteligente de Recados e Gerador de WhatsApp (Apenas Professora) */}
+      {userRole === 'professor' && (
+        <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200/80 space-y-4 animate-in fade-in duration-150">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center shadow-2xs">
+              <MessageSquare size={16} />
+            </div>
+            <div>
+              <h5 className="text-xs sm:text-sm font-black text-slate-800">
+                Gerador Inteligente de Diário Escolar (WhatsApp)
+              </h5>
+              <p className="text-[11px] text-slate-500">
+                Preencha e combine o recado coletivo da turma com o relato de desenvolvimento individual de {student.nome.split(' ')[0]}.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* Campo Coletivo */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-[10px] font-black uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+                  <Users size={12} className="text-indigo-600" />
+                  <span>Recado Coletivo (Geral da Turma)</span>
+                </label>
+                <VoiceInput 
+                  onTranscript={(text) => setRecadoColetivo(prev => prev ? `${prev} ${text}` : text)} 
+                  size="sm" 
+                />
+              </div>
+              <textarea
+                value={recadoColetivo}
+                onChange={(e) => setRecadoColetivo(e.target.value)}
+                rows={3}
+                placeholder="Insira a mensagem que vale para toda a turma..."
+                className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:border-indigo-500 font-medium transition resize-none"
+              />
+            </div>
+
+            {/* Campo Individual */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-[10px] font-black uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+                  <Heart size={12} className="text-rose-600" />
+                  <span>Relato Individual (de {student.nome.split(' ')[0]})</span>
+                </label>
+                <VoiceInput 
+                  onTranscript={(text) => setRecadoIndividual(prev => prev ? `${prev} ${text}` : text)} 
+                  size="sm" 
+                />
+              </div>
+              <textarea
+                value={recadoIndividual}
+                onChange={(e) => setRecadoIndividual(e.target.value)}
+                rows={3}
+                placeholder="Escreva como foi o desenvolvimento individual hoje..."
+                className="w-full bg-white border border-slate-200 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:border-indigo-500 font-medium transition resize-none"
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-1">
+            <div className="text-[10px] text-slate-500 flex items-center gap-1.5 font-medium">
+              <Sparkles size={12} className="text-amber-500" />
+              <span>
+                {recadoColetivo.trim() && recadoIndividual.trim()
+                  ? '✨ Os dois recados serão combinados de forma linda automaticamente no final!'
+                  : recadoColetivo.trim()
+                  ? '✨ Apenas o recado Coletivo será gerado no relatório.'
+                  : recadoIndividual.trim()
+                  ? '✨ Apenas o relato Individual será gerado no relatório.'
+                  : '⚠️ Escreva pelo menos um recado para gerar o boletim.'}
+              </span>
+            </div>
+            
+            <button
+              type="button"
+              onClick={() => setShowWhatsAppModal(true)}
+              disabled={!recadoColetivo.trim() && !recadoIndividual.trim()}
+              className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-black rounded-xl transition shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Send size={13} />
+              <span>Gerar Relatório WhatsApp</span>
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Modal de Alerta/Alergia */}
       {showAllergyModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
@@ -235,6 +356,26 @@ export default function PaxStudentCard({
         onClose={() => setShowPdfModal(false)}
         student={student}
       />
+
+      {/* Modal de Relatório do WhatsApp com comentários inteligentes combinados */}
+      {showWhatsAppModal && (
+        <ModalRelatorioWhatsApp
+          isOpen={showWhatsAppModal}
+          onClose={() => setShowWhatsAppModal(false)}
+          student={student}
+          tempoEmAula={student.presenca?.tempoEmAulaFormatado || '08:00:00'}
+          aguaMl={student.agua?.consumoMl || 250}
+          mamadeirasContador={student.alimentacao?.mamadeirasServidas || 1}
+          refeicaoTipo={student.alimentacao?.refeicoes?.[0]?.nome || 'Mamadeira de Leite'}
+          aceitacao={student.alimentacao?.refeicoes?.[0]?.status || 'Comeu Tudo / Super Bem'}
+          humor={student.humor?.estado || 'Calmo / Sereno'}
+          humorObs={obterRecadoCombinado()}
+          soneca={student.saudeCards?.soneca?.valor || 'Dormiu bem'}
+          fralda={student.saudeCards?.fraldas?.valor || 'Fralda limpa'}
+          temperatura={student.saudeCards?.temperatura?.valor || '36.5'}
+          checklistCount={5}
+        />
+      )}
     </div>
   );
 }
