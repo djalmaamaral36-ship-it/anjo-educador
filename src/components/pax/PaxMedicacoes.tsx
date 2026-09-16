@@ -28,6 +28,7 @@ export default function PaxMedicacoes({ student, userRole, onOpenFullMedications
   const [horarioMed, setHorarioMed] = useState('14:00');
   const [doseMed, setDoseMed] = useState('');
   const [instrucaoMed, setInstrucaoMed] = useState('');
+  const [newMedPhoto, setNewMedPhoto] = useState<string | null>(null);
 
   // PIN modal state
   const [showPinModal, setShowPinModal] = useState(false);
@@ -61,13 +62,14 @@ export default function PaxMedicacoes({ student, userRole, onOpenFullMedications
   };
 
   const handleVerifyPin = () => {
-    if (pinInput === '1234' || pinInput === '2026') {
+    const parentPin = student.pinAcesso || (student.id === 'beatriz_castro' ? '3310' : '1234');
+    if (pinInput === '1234' || pinInput === '2026' || pinInput === parentPin) {
       setShowPinModal(false);
       setPinInput('');
       setPinError('');
       setShowModal(true);
     } else {
-      setPinError('PIN incorreto! Use o PIN cadastrado pelos pais (PIN de teste: 1234).');
+      setPinError(`PIN incorreto! Use o PIN cadastrado pelos pais (PIN de teste para este aluno: ${parentPin}).`);
     }
   };
 
@@ -87,12 +89,19 @@ export default function PaxMedicacoes({ student, userRole, onOpenFullMedications
       cadastradoPor: `${student.responsavelNome} (${student.responsavelParentesco})`,
       cadastradoEm: 'Hoje com PIN verificado',
       pinAutorizado: true,
+      anexoReceitaUrl: newMedPhoto || undefined,
     };
 
-    setMedsList([...medsList, newMed]);
+    const updatedMeds = [...medsList, newMed];
+    setMedsList(updatedMeds);
+    
+    // Also save directly into parent student object in data store
+    student.medicamentos = updatedMeds;
+
     setNomeMed('');
     setDoseMed('');
     setInstrucaoMed('');
+    setNewMedPhoto(null);
     setShowModal(false);
   };
 
@@ -200,6 +209,22 @@ export default function PaxMedicacoes({ student, userRole, onOpenFullMedications
                 </div>
                 <p className="text-xs text-slate-600 font-medium">Dose: {med.dosagem}</p>
                 <p className="text-[11px] text-slate-500">{med.instrucoes}</p>
+                
+                {med.anexoReceitaUrl && (
+                  <div className="mt-2 p-2 bg-white rounded-xl border border-slate-100/90 flex items-center gap-2">
+                    <img 
+                      src={med.anexoReceitaUrl} 
+                      alt="Anexo da Medicação" 
+                      className="w-10 h-10 rounded-lg object-cover border border-slate-200" 
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <span className="text-[10px] font-black text-slate-700 block truncate">Anexo do Medicamento</span>
+                      <span className="text-[9px] text-slate-400 block truncate">Foto anexada pela mãe</span>
+                    </div>
+                  </div>
+                )}
+
                 <p className="text-[10px] text-slate-400 pt-1">
                   Autorizado por: <strong>{med.cadastradoPor || student.responsavelNome}</strong> (PIN Verificado)
                 </p>
@@ -286,7 +311,9 @@ export default function PaxMedicacoes({ student, userRole, onOpenFullMedications
                 className="w-32 mx-auto text-center text-2xl font-black py-2 bg-slate-50 border-2 border-indigo-200 focus:border-indigo-600 rounded-xl outline-hidden tracking-widest"
               />
               {pinError && <p className="text-xs text-rose-600 font-bold">{pinError}</p>}
-              <p className="text-[10px] text-slate-400 font-mono">PIN de teste: 1234</p>
+              <p className="text-[10px] text-indigo-600 font-black bg-indigo-50 py-1 px-2 rounded-lg inline-block">
+                PIN de teste para {student.nome.split(' ')[0]}: {student.id === 'beatriz_castro' ? '3310' : student.pinAcesso || '1234'}
+              </p>
             </div>
 
             <div className="flex gap-2">
@@ -404,6 +431,54 @@ export default function PaxMedicacoes({ student, userRole, onOpenFullMedications
                   placeholder="Ex: Diluir em pouca água; apenas se a febre passar de 37.8ºC..."
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 outline-none focus:bg-white focus:border-indigo-500"
                 ></textarea>
+              </div>
+
+              <div>
+                <label className="font-bold text-slate-700 block mb-1">
+                  Foto do Medicamento ou da Receita Médica (Opcional)
+                </label>
+                <div className="border-2 border-dashed border-slate-200 hover:border-indigo-400 rounded-2xl p-4 transition flex flex-col items-center justify-center bg-slate-50 relative overflow-hidden group cursor-pointer">
+                  {newMedPhoto ? (
+                    <div className="w-full flex flex-col items-center gap-2">
+                      <img 
+                        src={newMedPhoto} 
+                        alt="Foto do Medicamento" 
+                        className="h-28 object-contain rounded-lg border border-slate-200" 
+                        referrerPolicy="no-referrer"
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => { e.stopPropagation(); setNewMedPhoto(null); }}
+                        className="text-[10px] font-black text-rose-600 hover:text-rose-800 underline cursor-pointer"
+                      >
+                        Remover Foto
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="w-full h-full flex flex-col items-center justify-center cursor-pointer py-1">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              setNewMedPhoto(event.target?.result as string);
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                      <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center mb-2 border border-indigo-100 group-hover:bg-indigo-100 transition">
+                        <span>📸</span>
+                      </div>
+                      <span className="font-bold text-slate-700 block text-xs">Anexar ou Tirar Foto do Remédio</span>
+                      <span className="text-[10px] text-slate-400 block mt-0.5">Clique para selecionar da galeria ou câmera</span>
+                    </label>
+                  )}
+                </div>
               </div>
 
               <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-[11px] flex items-center gap-2">

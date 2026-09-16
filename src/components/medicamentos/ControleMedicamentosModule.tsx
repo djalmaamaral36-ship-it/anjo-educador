@@ -58,11 +58,13 @@ export default function ControleMedicamentosModule({
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [newMedNome, setNewMedNome] = useState('');
   const [newMedDosagem, setNewMedDosagem] = useState('');
-  const [newMedHorario, setNewMedHorario] = useState('14:00');
-  const [newMedTurno, setNewMedTurno] = useState<'todos' | 'manha' | 'tarde' | 'noite' | 'madrugada'>('tarde');
+  const [newMedHorarioManha, setNewMedHorarioManha] = useState('08:00');
+  const [newMedHorarioTarde, setNewMedHorarioTarde] = useState('');
+  const [newMedDiasSemana, setNewMedDiasSemana] = useState<string[]>(['Todos']);
+  const [newMedPhoto, setNewMedPhoto] = useState<string | null>(null);
+  const [newMedPhotoUrl, setNewMedPhotoUrl] = useState('');
   const [newMedInstrucoes, setNewMedInstrucoes] = useState('');
   const [newMedEstoque, setNewMedEstoque] = useState(1);
-  const [newMedReceita, setNewMedReceita] = useState('Receita Pediátrica Anexa (Dr. Lucas Mendes - CRM 184920)');
 
   // Ministering modal (Professor)
   const [isMinistrarModalOpen, setIsMinistrarModalOpen] = useState(false);
@@ -105,8 +107,9 @@ export default function ControleMedicamentosModule({
 
   // Verify PIN
   const handleVerifyPin = () => {
-    // Demo PIN is 1234 or parent's specific pin
-    if (pinInput === '1234' || pinInput === '2026') {
+    // Demo PIN is 1234 or parent's specific pin (e.g. 3310 for Beatriz Castro)
+    const parentPin = currentStudent.pinAcesso || (currentStudent.id === 'beatriz_castro' ? '3310' : '1234');
+    if (pinInput === '1234' || pinInput === '2026' || pinInput === parentPin) {
       setIsParentAuthorized(true);
       setIsPinModalOpen(false);
       setPinError('');
@@ -117,18 +120,26 @@ export default function ControleMedicamentosModule({
       if (action?.type === 'cadastrar') {
         setIsAddModalOpen(true);
       } else if (action?.type === 'suspender' && action.medId) {
-        setMedsList((prev) =>
-          prev.map((m) => (m.id === action.medId ? { ...m, suspenso: true, ativo: false } : m))
-        );
+        setMedsList((prev) => {
+          const updated = prev.map((m) => (m.id === action.medId ? { ...m, suspenso: true, ativo: false } : m));
+          currentStudent.medicamentos = updated;
+          return updated;
+        });
       } else if (action?.type === 'reativar' && action.medId) {
-        setMedsList((prev) =>
-          prev.map((m) => (m.id === action.medId ? { ...m, suspenso: false, ativo: true } : m))
-        );
+        setMedsList((prev) => {
+          const updated = prev.map((m) => (m.id === action.medId ? { ...m, suspenso: false, ativo: true } : m));
+          currentStudent.medicamentos = updated;
+          return updated;
+        });
       } else if (action?.type === 'excluir' && action.medId) {
-        setMedsList((prev) => prev.filter((m) => m.id !== action.medId));
+        setMedsList((prev) => {
+          const updated = prev.filter((m) => m.id !== action.medId);
+          currentStudent.medicamentos = updated;
+          return updated;
+        });
       }
     } else {
-      setPinError('PIN incorreto! Use o PIN cadastrado pelos pais (PIN de teste: 1234).');
+      setPinError(`PIN incorreto! Use o PIN cadastrado pelos pais (PIN de teste para este aluno: ${parentPin}).`);
     }
   };
 
@@ -157,26 +168,49 @@ export default function ControleMedicamentosModule({
     e.preventDefault();
     if (!newMedNome.trim()) return;
 
+    // Build horario display string
+    const times: string[] = [];
+    if (newMedHorarioManha) times.push(newMedHorarioManha);
+    if (newMedHorarioTarde) times.push(newMedHorarioTarde);
+    const horarioDisplay = times.length > 0 ? times.join(' e ') : 'Sob demanda';
+
+    // Build turno classification
+    let calculatedTurno: 'todos' | 'manha' | 'tarde' | 'noite' | 'madrugada' = 'todos';
+    if (newMedHorarioManha && !newMedHorarioTarde) {
+      calculatedTurno = 'manha';
+    } else if (newMedHorarioTarde && !newMedHorarioManha) {
+      calculatedTurno = 'tarde';
+    }
+
     const newMed = {
       id: `med_${Date.now()}`,
       nome: newMedNome,
-      horario: newMedHorario,
+      horario: horarioDisplay,
       dosagem: newMedDosagem || 'Conforme orientação médica',
       instrucoes: newMedInstrucoes || 'Administrar com cuidado',
       ativo: true,
-      turno: newMedTurno,
+      turno: calculatedTurno,
       ministradoHoje: false,
       cadastradoPor: `${currentStudent.responsavelNome} (${currentStudent.responsavelParentesco})`,
       cadastradoEm: 'Hoje com PIN verificado',
       pinAutorizado: true,
       estoqueFrascos: newMedEstoque,
-      anexoReceitaUrl: newMedReceita,
+      anexoReceitaUrl: newMedPhoto || undefined,
+      diasSemana: newMedDiasSemana,
     };
 
-    setMedsList([...medsList, newMed]);
+    const updatedMeds = [...medsList, newMed];
+    setMedsList(updatedMeds);
+    currentStudent.medicamentos = updatedMeds;
+
     setIsAddModalOpen(false);
     setNewMedNome('');
     setNewMedDosagem('');
+    setNewMedHorarioManha('08:00');
+    setNewMedHorarioTarde('');
+    setNewMedDiasSemana(['Todos']);
+    setNewMedPhoto(null);
+    setNewMedPhotoUrl('');
     setNewMedInstrucoes('');
   };
 
@@ -185,19 +219,20 @@ export default function ControleMedicamentosModule({
     e.preventDefault();
     if (!selectedMedToAdminister) return;
 
-    setMedsList((prev) =>
-      prev.map((m) =>
-        m.id === selectedMedToAdminister.id
-          ? {
-              ...m,
-              ministradoHoje: true,
-              ministradoPor: ministrarProf,
-              ministradoHorario: ministrarHora,
-              observacaoMinistracao: ministrarObs || 'Medicamento ministrado conforme prescrição dos pais.',
-            }
-          : m
-      )
+    const updatedMeds = medsList.map((m) =>
+      m.id === selectedMedToAdminister.id
+        ? {
+            ...m,
+            ministradoHoje: true,
+            ministradoPor: ministrarProf,
+            ministradoHorario: ministrarHora,
+            observacaoMinistracao: ministrarObs || 'Medicamento ministrado conforme prescrição dos pais.',
+          }
+        : m
     );
+
+    setMedsList(updatedMeds);
+    currentStudent.medicamentos = updatedMeds;
 
     setIsMinistrarModalOpen(false);
     setSelectedMedToAdminister(null);
@@ -731,20 +766,13 @@ export default function ControleMedicamentosModule({
       {/* MODAL 2: CADASTRAR NOVO MEDICAMENTO (EXCLUSIVO PAIS APÓS PIN) */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-150 space-y-5">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-7 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-150 space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2">
               <div className="flex items-center gap-2.5">
-                <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center">
-                  <Pill size={22} />
-                </div>
-                <div>
-                  <h3 className="text-base font-black text-slate-800">
-                    Cadastrar Medicamento & Prescrição
-                  </h3>
-                  <p className="text-xs text-slate-500">
-                    Autorizado por {currentStudent.responsavelNome} (PIN validado)
-                  </p>
-                </div>
+                <span className="text-xl font-bold text-blue-600">+</span>
+                <h3 className="text-base font-extrabold text-slate-800">
+                  Cadastrar Novo Medicamento
+                </h3>
               </div>
               <button
                 onClick={() => setIsAddModalOpen(false)}
@@ -755,86 +783,258 @@ export default function ControleMedicamentosModule({
             </div>
 
             <form onSubmit={handleSaveNewMed} className="space-y-4">
-              <CampoTextoVoz
-                label="Nome do Medicamento ou Pomada"
-                value={newMedNome}
-                onChange={setNewMedNome}
-                placeholder="Ex: Paracetamol Gotas 200mg/mL ou Amoxicilina"
-                required
-              />
-
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Horário Previsto *
+                    Nome do Medicamento <span className="text-rose-500">*</span>
                   </label>
                   <input
-                    type="time"
+                    type="text"
                     required
-                    value={newMedHorario}
-                    onChange={(e) => setNewMedHorario(e.target.value)}
-                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:border-indigo-500 transition outline-hidden"
+                    value={newMedNome}
+                    onChange={(e) => setNewMedNome(e.target.value)}
+                    placeholder="Ex: Losartana Potassica"
+                    className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:border-blue-500 transition outline-hidden"
                   />
                 </div>
-
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Turno Escolar *
+                    Dosagem <span className="text-rose-500">*</span>
                   </label>
-                  <select
-                    value={newMedTurno}
-                    onChange={(e) => setNewMedTurno(e.target.value as any)}
-                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:border-indigo-500 transition outline-hidden"
-                  >
-                    <option value="todos">Todos os Turnos / Trocas</option>
-                    <option value="manha">Manhã</option>
-                    <option value="tarde">Tarde</option>
-                    <option value="noite">Noite</option>
-                    <option value="madrugada">Madrugada</option>
-                  </select>
+                  <input
+                    type="text"
+                    required
+                    value={newMedDosagem}
+                    onChange={(e) => setNewMedDosagem(e.target.value)}
+                    placeholder="Ex: 50mg - 1 comprimido"
+                    className="w-full px-3.5 py-2.5 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:border-blue-500 transition outline-hidden"
+                  />
                 </div>
               </div>
 
-              <CampoTextoVoz
-                label="Dosagem Exata"
-                value={newMedDosagem}
-                onChange={setNewMedDosagem}
-                placeholder="Ex: 10 gotas diluídas em água, ou 2.5 mL na seringa"
-                required
-              />
+              <div className="space-y-2">
+                <label className="block text-xs font-bold text-slate-800">
+                  Horários por Turno (Preencha os horários que se aplicam)
+                </label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="p-3 bg-slate-50/50 rounded-2xl border border-slate-100/80 space-y-1">
+                    <label className="block text-[10px] font-bold text-amber-600">
+                      Manha (06h - 12h)
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="time"
+                        value={newMedHorarioManha}
+                        onChange={(e) => setNewMedHorarioManha(e.target.value)}
+                        className="w-full px-3 py-2 pr-8 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:border-blue-500 transition outline-hidden"
+                      />
+                      <Clock size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    </div>
+                  </div>
+                  <div className="p-3 bg-slate-50/50 rounded-2xl border border-slate-100/80 space-y-1">
+                    <label className="block text-[10px] font-bold text-amber-600">
+                      Tarde (12h - 18h)
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="time"
+                        value={newMedHorarioTarde}
+                        onChange={(e) => setNewMedHorarioTarde(e.target.value)}
+                        className="w-full px-3 py-2 pr-8 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:border-blue-500 transition outline-hidden"
+                      />
+                      <Clock size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-slate-700">
+                  Dias da Semana
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {['Todos', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'].map((dia) => {
+                    const isSelected = newMedDiasSemana.includes(dia);
+                    return (
+                      <button
+                        key={dia}
+                        type="button"
+                        onClick={() => {
+                          if (dia === 'Todos') {
+                            setNewMedDiasSemana(['Todos']);
+                          } else {
+                            let updated = [...newMedDiasSemana].filter(d => d !== 'Todos');
+                            if (updated.includes(dia)) {
+                              updated = updated.filter(d => d !== dia);
+                            } else {
+                              updated.push(dia);
+                            }
+                            if (updated.length === 0) {
+                              updated = ['Todos'];
+                            }
+                            setNewMedDiasSemana(updated);
+                          }
+                        }}
+                        className={`px-3 py-1.5 text-xs font-bold rounded-xl transition cursor-pointer border ${
+                          isSelected
+                            ? 'bg-blue-600 border-blue-600 text-white'
+                            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                        }`}
+                      >
+                        {dia}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="space-y-3">
+                <label className="block text-xs font-bold text-slate-800">
+                  Foto ou Imagem do Medicamento (Opcional)
+                </label>
+
+                {/* Opcao 1: Selecionar modelo rapido */}
+                <div className="space-y-1">
+                  <span className="text-[10px] text-slate-500 block font-medium">
+                    Opcao 1: Selecionar modelo rapido
+                  </span>
+                  <div className="flex gap-2.5">
+                    {[
+                      {
+                        id: 'pills',
+                        name: 'Comprimidos',
+                        url: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=120&auto=format&fit=crop&q=80',
+                      },
+                      {
+                        id: 'liquid',
+                        name: 'Gotas/Xarope',
+                        url: 'https://images.unsplash.com/photo-1550572017-edd951b55104?w=120&auto=format&fit=crop&q=80',
+                      },
+                      {
+                        id: 'capsules',
+                        name: 'Cápsulas',
+                        url: 'https://images.unsplash.com/photo-1628771065518-0d82f1116703?w=120&auto=format&fit=crop&q=80',
+                      },
+                    ].map((modelo) => {
+                      const isSelected = newMedPhoto === modelo.url;
+                      return (
+                        <button
+                          key={modelo.id}
+                          type="button"
+                          onClick={() => {
+                            setNewMedPhoto(modelo.url);
+                            setNewMedPhotoUrl('');
+                          }}
+                          className={`w-12 h-12 rounded-xl overflow-hidden border-2 relative transition cursor-pointer ${
+                            isSelected ? 'border-blue-600 ring-2 ring-blue-500/20' : 'border-slate-200 hover:border-slate-300'
+                          }`}
+                          title={modelo.name}
+                        >
+                          <img
+                            src={modelo.url}
+                            alt={modelo.name}
+                            className="w-full h-full object-cover"
+                            referrerPolicy="no-referrer"
+                          />
+                          {isSelected && (
+                            <div className="absolute inset-0 bg-blue-600/20 flex items-center justify-center">
+                              <span className="text-white text-xs font-black">✓</span>
+                            </div>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {/* Opcao 2 */}
+                  <div>
+                    <span className="text-[10px] text-slate-500 block font-medium mb-1.5">
+                      Opcao 2: Enviar foto do celular/computador
+                    </span>
+                    <div className="relative">
+                      <input
+                        type="file"
+                        accept="image/*"
+                        id="new-med-file-input"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (event) => {
+                              setNewMedPhoto(event.target?.result as string);
+                              setNewMedPhotoUrl('');
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                      <label
+                        htmlFor="new-med-file-input"
+                        className="w-full h-[42px] border-2 border-dashed border-slate-200 hover:border-blue-400 rounded-xl transition flex items-center justify-center bg-slate-50/50 cursor-pointer text-slate-600 hover:text-blue-600 gap-1.5 px-3"
+                      >
+                        <span className="text-sm">📸</span>
+                        <span className="text-[11px] font-bold">Tirar Foto / Anexar</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Opcao 3 */}
+                  <div>
+                    <span className="text-[10px] text-slate-500 block font-medium mb-1.5">
+                      Opcao 3: Inserir link da imagem (URL)
+                    </span>
+                    <input
+                      type="text"
+                      value={newMedPhotoUrl}
+                      onChange={(e) => {
+                        setNewMedPhotoUrl(e.target.value);
+                        if (e.target.value.trim()) {
+                          setNewMedPhoto(e.target.value);
+                        }
+                      }}
+                      placeholder="Ex: https://site.com/remedio.png"
+                      className="w-full h-[42px] px-3.5 bg-white border border-slate-200 rounded-xl text-xs font-medium focus:border-blue-500 transition outline-hidden"
+                    />
+                  </div>
+                </div>
+
+                {/* Miniature Preview */}
+                {newMedPhoto && (
+                  <div className="flex items-center gap-3 p-2 bg-slate-50 border border-slate-100 rounded-2xl animate-in fade-in duration-150">
+                    <img
+                      src={newMedPhoto}
+                      alt="Visualização do medicamento"
+                      className="w-12 h-12 object-cover rounded-xl border border-slate-200"
+                      referrerPolicy="no-referrer"
+                    />
+                    <div className="flex-1">
+                      <span className="text-[11px] font-bold text-slate-700 block">Imagem anexada com sucesso</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setNewMedPhoto(null);
+                          setNewMedPhotoUrl('');
+                        }}
+                        className="text-[10px] text-rose-500 font-bold hover:underline"
+                      >
+                        Remover imagem
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
 
               <CampoTextoVoz
-                label="Instruções de Cuidados para a Professora"
+                label="Instruções de administração / Observações"
                 value={newMedInstrucoes}
                 onChange={setNewMedInstrucoes}
-                placeholder="Ex: Dar somente se tiver febre acima de 37.8°C e avisar imediatamente pelo app."
+                placeholder="Ex: Tomar com estomago cheio. Diluir saco em 100ml de suco."
                 type="textarea"
-                rows={2}
+                rows={3}
               />
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Frascos em Estoque na Escola
-                  </label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={10}
-                    value={newMedEstoque}
-                    onChange={(e) => setNewMedEstoque(Number(e.target.value))}
-                    className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:border-indigo-500 transition outline-hidden"
-                  />
-                </div>
-                <div>
-                  <CampoTextoVoz
-                    label="Receita Médica / Médico"
-                    value={newMedReceita}
-                    onChange={setNewMedReceita}
-                    placeholder="Ex: CRM 184920 - Dr. Lucas"
-                  />
-                </div>
-              </div>
 
               <div className="p-3 rounded-xl bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs flex items-center gap-2">
                 <CheckCircle2 size={16} className="text-emerald-600 flex-shrink-0" />
@@ -843,20 +1043,20 @@ export default function ControleMedicamentosModule({
                 </span>
               </div>
 
-              <div className="flex items-center gap-2 pt-2">
+              <div className="flex items-center gap-3 pt-2">
                 <button
                   type="button"
                   onClick={() => setIsAddModalOpen(false)}
-                  className="flex-1 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black rounded-xl transition cursor-pointer"
+                  className="flex-1 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black rounded-2xl transition cursor-pointer text-center"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-black rounded-xl transition shadow-xs cursor-pointer flex items-center justify-center gap-1"
+                  className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white text-xs font-black rounded-2xl transition shadow-xs cursor-pointer text-center flex items-center justify-center gap-1.5"
                 >
                   <Lock size={13} />
-                  <span>Salvar com Assinatura PIN</span>
+                  <span>Confirmar Cadastro</span>
                 </button>
               </div>
             </form>

@@ -55,6 +55,33 @@ export default function AgendaEscolar({ currentStudent, userRole = 'professor' }
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
 
+  // Dynamically map active medications of the student to agenda events
+  const medEventos: EventoEscolar[] = (currentStudent.medicamentos || [])
+    .filter(med => !med.suspenso)
+    .map((med) => ({
+      id: `med_evt_${med.id}`,
+      titulo: `Medicamento: ${med.nome} (${med.dosagem})`,
+      tipo: 'Medicação Autorizada',
+      professorResponsavel: currentStudent.professoraTitular || 'Professora Titular',
+      turmas: ['bercario'],
+      publicoAlvoTexto: `Exclusivo para ${currentStudent.nome}`,
+      totalAlunosImpactados: 1,
+      local: 'Sala de Aula / Lactário',
+      data: new Date().toISOString().split('T')[0], // Hoje
+      horario: med.horario,
+      observacoes: `Instruções dos Pais: ${med.instrucoes}. Cadastrado por: ${med.cadastradoPor || 'Família'} com PIN de segurança. Autorizado e assinado.`,
+      emMassa: false,
+      notificarWhatsApp: true,
+      criadoEm: med.cadastradoEm || 'Hoje',
+      alunoId: currentStudent.id,
+    }));
+
+  const todosEventos = [...eventos, ...medEventos].sort((a, b) => {
+    // Sort by data first, then by horario
+    if (a.data !== b.data) return a.data.localeCompare(b.data);
+    return a.horario.localeCompare(b.horario);
+  });
+
   const handleAddEvento = (novo: EventoEscolar) => {
     setEventos([novo, ...eventos]);
     setFeedback(`Evento "${novo.titulo}" cadastrado com sucesso na agenda!`);
@@ -62,6 +89,10 @@ export default function AgendaEscolar({ currentStudent, userRole = 'professor' }
   };
 
   const handleExcluirEvento = (id: string, titulo: string) => {
+    if (id.startsWith('med_evt_')) {
+      alert("Para remover ou suspender um medicamento, utilize a aba de Medicamentos com o PIN do responsável.");
+      return;
+    }
     if (!window.confirm(`Deseja realmente remover o evento "${titulo}" da agenda escolar?`)) return;
     setEventos(eventos.filter((e) => e.id !== id));
     setFeedback(`Evento removido da agenda.`);
@@ -155,20 +186,23 @@ export default function AgendaEscolar({ currentStudent, userRole = 'professor' }
           </div>
 
           <div className="flex items-center justify-between text-xs font-bold text-slate-500 px-1 pt-2">
-            <span>Compromissos Agendados ({eventos.length})</span>
+            <span>Compromissos Agendados ({todosEventos.length})</span>
             <span>Aluno em Exibição: {currentStudent.nome}</span>
           </div>
 
           <div className="grid grid-cols-1 gap-4">
-            {eventos.map((evt, idx) => {
+            {todosEventos.map((evt, idx) => {
               const dataFormatada = evt.data.split('-').reverse().join('/');
-              const isRecent = idx === 0 || evt.id.startsWith('evt_'); // newly added or first in list
+              const isMed = evt.id.startsWith('med_evt_');
+              const isRecent = !isMed && (idx === 0 || evt.id.startsWith('evt_')); // newly added or first in list
 
               return (
                 <div
                   key={evt.id}
                   className={`rounded-3xl p-5 sm:p-6 border transition space-y-4 ${
-                    isRecent 
+                    isMed
+                      ? 'bg-rose-50/40 border-rose-200 shadow-xs ring-2 ring-rose-300/10'
+                      : isRecent 
                       ? 'bg-amber-50/50 border-amber-300 ring-2 ring-amber-400/10 shadow-xs' 
                       : 'bg-white border-slate-200 shadow-xs hover:border-indigo-200'
                   }`}
@@ -176,9 +210,19 @@ export default function AgendaEscolar({ currentStudent, userRole = 'professor' }
                   <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                     <div className="space-y-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-[10px] font-black uppercase bg-indigo-50 text-indigo-700 border border-indigo-100 px-2.5 py-0.5 rounded-full">
+                        <span className={`text-[10px] font-black uppercase border px-2.5 py-0.5 rounded-full ${
+                          isMed 
+                            ? 'bg-rose-50 text-rose-700 border-rose-100'
+                            : 'bg-indigo-50 text-indigo-700 border-indigo-100'
+                        }`}>
                           {evt.tipo}
                         </span>
+                        {isMed && (
+                          <span className="text-[10px] font-black uppercase bg-rose-500 text-white px-2.5 py-0.5 rounded-full flex items-center gap-1">
+                            <Sparkles size={11} className="fill-white animate-pulse" />
+                            <span>Prescrição Médica Ativa</span>
+                          </span>
+                        )}
                         {isRecent && (
                           <span className="text-[10px] font-black uppercase bg-amber-500 text-white px-2.5 py-0.5 rounded-full flex items-center gap-1 animate-pulse">
                             <Sparkles size={11} className="fill-white" />
