@@ -114,10 +114,59 @@ export default function FlorestaDoSaberSection({ onSelectStudent }: Props) {
   const [chuvaSent, setChuvaSent] = useState(false);
   const [selectedClareira, setSelectedClareira] = useState('todas');
   const [selectedBosque, setSelectedBosque] = useState('todos');
+  
+  // Contabilização real persistente de Chuvas de Carinho e Vitalidade do Solo
+  const [chuvaCount, setChuvaCount] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('anjinho_floresta_chuva_count');
+      return saved ? parseInt(saved, 10) : 48;
+    } catch {
+      return 48;
+    }
+  });
+
+  const [vitalidadeSolo, setVitalidadeSolo] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem('anjinho_floresta_vitalidade');
+      return saved ? parseInt(saved, 10) : 64;
+    } catch {
+      return 64;
+    }
+  });
+
+  const [raindrops, setRaindrops] = useState<Array<{ id: number; left: number; delay: number; icon: string }>>([]);
 
   const handleChuvaCarinho = () => {
     setChuvaSent(true);
-    setTimeout(() => setChuvaSent(false), 3500);
+    
+    // Contabiliza a nova chuva de carinho
+    const nextChuva = chuvaCount + 1;
+    const nextVitalidade = Math.min(100, vitalidadeSolo + 1);
+    
+    setChuvaCount(nextChuva);
+    setVitalidadeSolo(nextVitalidade);
+    
+    try {
+      localStorage.setItem('anjinho_floresta_chuva_count', nextChuva.toString());
+      localStorage.setItem('anjinho_floresta_vitalidade', nextVitalidade.toString());
+    } catch (e) {
+      // safe fallback
+    }
+
+    // Cria partículas animadas de chuva de carinho (gotas e corações)
+    const icons = ['💧', '💖', '✨', '🌱', '💧', '❤️', '🌸', '✨'];
+    const newDrops = Array.from({ length: 16 }).map((_, i) => ({
+      id: Date.now() + i,
+      left: Math.floor(Math.random() * 88) + 4,
+      delay: (i * 0.08) % 0.8,
+      icon: icons[i % icons.length],
+    }));
+    setRaindrops(newDrops);
+
+    setTimeout(() => {
+      setChuvaSent(false);
+      setRaindrops([]);
+    }, 3200);
   };
 
   return (
@@ -126,6 +175,25 @@ export default function FlorestaDoSaberSection({ onSelectStudent }: Props) {
       <div className="bg-gradient-to-r from-emerald-900 via-teal-900 to-emerald-950 text-white rounded-3xl p-6 sm:p-8 shadow-lg relative overflow-hidden">
         {/* Elemento Decorativo de Fundo */}
         <div className="absolute right-0 top-0 bottom-0 w-1/3 bg-emerald-800/10 rounded-full blur-3xl pointer-events-none" />
+
+        {/* Chuva Visual de Gotinhas e Corações Flutuantes */}
+        {raindrops.length > 0 && (
+          <div className="absolute inset-0 pointer-events-none overflow-hidden z-20">
+            {raindrops.map((drop) => (
+              <span
+                key={drop.id}
+                className="absolute text-xl sm:text-2xl animate-rain-droplet select-none"
+                style={{
+                  left: `${drop.left}%`,
+                  top: '10px',
+                  animationDelay: `${drop.delay}s`,
+                }}
+              >
+                {drop.icon}
+              </span>
+            ))}
+          </div>
+        )}
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div className="space-y-3 max-w-2xl">
@@ -137,6 +205,11 @@ export default function FlorestaDoSaberSection({ onSelectStudent }: Props) {
               <span className="bg-emerald-800/80 border border-emerald-700 text-emerald-200 text-[10px] font-bold uppercase px-3 py-1 rounded-full tracking-wider">
                 A FLORESTA DO SABER
               </span>
+              {chuvaSent && (
+                <span className="bg-rose-500 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full tracking-wider animate-bounce shadow-md flex items-center gap-1">
+                  <span>💖</span> +1 Gota de Afeto Coletivo!
+                </span>
+              )}
             </div>
 
             {/* Título */}
@@ -155,10 +228,23 @@ export default function FlorestaDoSaberSection({ onSelectStudent }: Props) {
           <div className="flex-shrink-0">
             <button
               onClick={handleChuvaCarinho}
-              className="bg-amber-400 hover:bg-amber-300 text-amber-950 font-black text-xs sm:text-sm px-6 py-3.5 rounded-2xl shadow-xl transition flex items-center gap-2 cursor-pointer active:scale-95 border border-amber-300"
+              className={`font-black text-xs sm:text-sm px-6 py-3.5 rounded-2xl shadow-xl transition-all duration-300 flex items-center gap-2 cursor-pointer active:scale-95 border ${
+                chuvaSent
+                  ? 'bg-rose-500 hover:bg-rose-400 text-white border-rose-300 scale-105 ring-4 ring-rose-300/50 shadow-rose-900/40'
+                  : 'bg-amber-400 hover:bg-amber-300 text-amber-950 border-amber-300 hover:shadow-2xl'
+              }`}
             >
-              <span>💧</span>
-              <span>{chuvaSent ? '✨ Chuva Envida com Amor!' : 'Chuva de Carinho Coletiva'}</span>
+              {chuvaSent ? (
+                <>
+                  <span className="text-lg animate-ping">💖</span>
+                  <span>✨ +1 Chuva Enviada com Amor! ({chuvaCount})</span>
+                </>
+              ) : (
+                <>
+                  <span className="text-lg">💧</span>
+                  <span>Chuva de Carinho Coletiva</span>
+                </>
+              )}
             </button>
           </div>
         </div>
@@ -182,8 +268,8 @@ export default function FlorestaDoSaberSection({ onSelectStudent }: Props) {
           </div>
         </div>
 
-        {/* Card 2: Vitalidade Geral do Solo */}
-        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs flex flex-col justify-between space-y-3">
+        {/* Card 2: Vitalidade Geral do Solo (Contabilizado em tempo real!) */}
+        <div className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs flex flex-col justify-between space-y-3 transition-all">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-600">Vitalidade Geral do Solo</span>
             <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-sm">
@@ -191,12 +277,22 @@ export default function FlorestaDoSaberSection({ onSelectStudent }: Props) {
             </div>
           </div>
           <div>
-            <div className="text-3xl font-black text-emerald-700">96%</div>
-            <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden mt-2">
-              <div className="bg-emerald-500 h-full rounded-full" style={{ width: '96%' }} />
+            <div className="flex items-baseline gap-2">
+              <span className="text-3xl font-black text-emerald-700">{vitalidadeSolo}%</span>
+              {chuvaSent && (
+                <span className="text-[10px] font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full animate-pulse">
+                  +1% nutrido!
+                </span>
+              )}
+            </div>
+            <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden mt-2 p-0.5 border border-slate-200">
+              <div
+                className="bg-gradient-to-r from-emerald-500 to-teal-500 h-full rounded-full transition-all duration-700"
+                style={{ width: `${vitalidadeSolo}%` }}
+              />
             </div>
             <p className="text-[11px] font-medium text-slate-500 mt-1.5">
-              Índice de nutrição afetiva geral
+              Índice de nutrição afetiva • <strong className="text-emerald-800">{chuvaCount}</strong> chuvas enviadas
             </p>
           </div>
         </div>
@@ -228,11 +324,11 @@ export default function FlorestaDoSaberSection({ onSelectStudent }: Props) {
           <div className="space-y-1 text-xs font-bold text-slate-700">
             <div className="flex justify-between items-center">
               <span className="text-slate-500 font-normal">Broto/Semente:</span>
-              <span className="bg-slate-100 px-2 py-0.5 rounded-md">0</span>
+              <span className="bg-slate-100 px-2 py-0.5 rounded-md">4</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-slate-500 font-normal">Em Crescimento:</span>
-              <span className="bg-amber-100 text-amber-900 px-2 py-0.5 rounded-md font-bold">8</span>
+              <span className="bg-amber-100 text-amber-900 px-2 py-0.5 rounded-md font-bold">4</span>
             </div>
             <div className="flex justify-between items-center">
               <span className="text-slate-500 font-normal">Flor/Fruto:</span>

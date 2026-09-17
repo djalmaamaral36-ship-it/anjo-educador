@@ -152,6 +152,12 @@ export default function JornadaDoAnjinho() {
       <MomentosFeed
         moments={moments}
         onOpenNewMoment={() => setIsModalOpen(true)}
+        onIncrementGesto={() => {
+          setTreeStatus((prev) => ({
+            ...prev,
+            gestosDeAfeto: prev.gestosDeAfeto + 1,
+          }));
+        }}
       />
 
       {/* Modal Álbum da Primeira Infância */}

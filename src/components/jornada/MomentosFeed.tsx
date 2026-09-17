@@ -6,11 +6,13 @@ import { Plus, MessageSquare, Heart, Sparkles, Share2, ShieldCheck } from 'lucid
 interface Props {
   moments: LembrancaMoment[];
   onOpenNewMoment: () => void;
+  onIncrementGesto?: () => void;
 }
 
-export default function MomentosFeed({ moments, onOpenNewMoment }: Props) {
+export default function MomentosFeed({ moments, onOpenNewMoment, onIncrementGesto }: Props) {
   const [activeFilter, setActiveFilter] = useState('todos');
   const [items, setItems] = useState<LembrancaMoment[]>(moments);
+  const [activeReaction, setActiveReaction] = useState<{ momentId: string; gesto: string; id: number } | null>(null);
 
   const filters = [
     { id: 'todos', label: 'Todos os Momentos' },
@@ -33,6 +35,17 @@ export default function MomentosFeed({ moments, onOpenNewMoment }: Props) {
   });
 
   const handleToggleGesto = (momentId: string, gestoLabel: string) => {
+    // Dispara animação visual do coraçãozinho pulsante
+    setActiveReaction({ momentId, gesto: gestoLabel, id: Date.now() });
+    setTimeout(() => {
+      setActiveReaction((curr) => (curr?.momentId === momentId && curr?.gesto === gestoLabel ? null : curr));
+    }, 1400);
+
+    // Contabiliza gesto para a árvore geral do anjinho
+    if (onIncrementGesto) {
+      onIncrementGesto();
+    }
+
     setItems((prev) =>
       prev.map((m) => {
         if (m.id !== momentId) return m;
@@ -212,19 +225,38 @@ export default function MomentosFeed({ moments, onOpenNewMoment }: Props) {
                 <div className="flex flex-wrap gap-1.5">
                   {GESTOS_DEFAULT.map((gesto) => {
                     const found = moment.gestosAfeto?.find((g) => g.label === gesto);
+                    const isJustReacted = activeReaction?.momentId === moment.id && activeReaction?.gesto === gesto;
+
                     return (
-                      <button
-                        key={gesto}
-                        onClick={() => handleToggleGesto(moment.id, gesto)}
-                        className="text-[11px] font-bold px-2.5 py-1 rounded-xl bg-white hover:bg-amber-100/60 text-slate-700 border border-slate-200 transition cursor-pointer active:scale-95 flex items-center gap-1"
-                      >
-                        <span>{gesto}</span>
-                        {found && found.count > 0 && (
-                          <span className="text-[10px] font-black text-amber-700">
-                            ({found.count})
-                          </span>
+                      <div key={gesto} className="relative inline-flex">
+                        {/* Coraçãozinho Pulsante e Flutuante Momentâneo */}
+                        {isJustReacted && (
+                          <div className="absolute -top-7 left-1/2 -translate-x-1/2 pointer-events-none z-30 flex items-center gap-1 bg-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full shadow-lg animate-float-heart whitespace-nowrap">
+                            <span className="animate-ping">💖</span>
+                            <span>+1 Afeto!</span>
+                          </div>
                         )}
-                      </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleToggleGesto(moment.id, gesto)}
+                          className={`text-[11px] font-bold px-2.5 py-1 rounded-xl transition-all duration-200 cursor-pointer active:scale-95 flex items-center gap-1 relative ${
+                            isJustReacted
+                              ? 'bg-rose-100/90 text-rose-800 border-rose-300 ring-2 ring-rose-300/60 scale-105 shadow-xs'
+                              : 'bg-white hover:bg-amber-100/60 text-slate-700 border border-slate-200 shadow-2xs'
+                          }`}
+                        >
+                          <span className={isJustReacted ? 'animate-bounce text-sm' : ''}>
+                            {isJustReacted ? '💖' : '❤️'}
+                          </span>
+                          <span>{gesto}</span>
+                          {found && found.count > 0 && (
+                            <span className={`text-[10px] font-black ${isJustReacted ? 'text-rose-700 font-extrabold' : 'text-amber-700'}`}>
+                              ({found.count})
+                            </span>
+                          )}
+                        </button>
+                      </div>
                     );
                   })}
                 </div>
