@@ -2525,29 +2525,63 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                 <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
                   {currentNote ? (
                     <div className="bg-amber-50/80 border border-amber-200/80 rounded-xl px-3 py-1.5 text-amber-900 text-xs flex items-center gap-1.5">
-                      <span className="font-bold">📝 Observação da Escola:</span>
+                      <span className="font-bold">
+                        {act.tipo === 'medicacao' ? '💊 Relato de Ministração:' : '📝 Observação da Escola:'}
+                      </span>
                       <span>{currentNote}</span>
                     </div>
                   ) : (
                     <span className="text-[11px] text-slate-500 font-medium">
-                      Planejamento pedagógico integrado • Método Árvore da Infância®
+                      {act.tipo === 'medicacao'
+                        ? 'Prescrição médica e autorização da família • Cuidado e dosagem estritamente individual'
+                        : 'Planejamento pedagógico integrado • Método Árvore da Infância®'}
                     </span>
                   )}
                   <div className="shrink-0">
                     {isEntregue ? (
-                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                        <CheckCircle2 size={12} className="text-emerald-700" />
-                        <span>Vivenciada com a Turma</span>
-                      </span>
+                      act.tipo === 'medicacao' ? (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-indigo-100 text-indigo-950 border border-indigo-300 shadow-2xs">
+                          <Pill size={12} className="text-indigo-700" />
+                          <span>Medicamento Ministrado (Individual)</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                          <CheckCircle2 size={12} className="text-emerald-700" />
+                          <span>
+                            {activityScopes[actId] === 'individual'
+                              ? 'Vivenciada Individualmente'
+                              : 'Vivenciada com a Turma'}
+                          </span>
+                        </span>
+                      )
                     ) : isRecusou ? (
-                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300">
-                        <span>Observação Registrada</span>
-                      </span>
+                      act.tipo === 'medicacao' ? (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300">
+                          <XCircle size={12} className="text-rose-700" />
+                          <span>Dose Recusada (Escola Notificada)</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300">
+                          <XCircle size={12} className="text-rose-700" />
+                          <span>Observação Registrada</span>
+                        </span>
+                      )
                     ) : (
-                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
-                        <Clock size={11} className="text-slate-500" />
-                        <span>Prevista no Plano de Aula</span>
-                      </span>
+                      act.tipo === 'medicacao' ? (
+                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200">
+                          <Clock size={11} className="text-amber-600" />
+                          <span>Horário da Dose Agendado (Individual)</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                          <Clock size={11} className="text-slate-500" />
+                          <span>
+                            {activityScopes[actId] === 'individual'
+                              ? 'Atividade Individual Prevista'
+                              : 'Prevista no Plano de Aula'}
+                          </span>
+                        </span>
+                      )
                     )}
                   </div>
                 </div>
