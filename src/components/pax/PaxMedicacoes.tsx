@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { StudentPaxData } from '../../types';
 import { VINCULO_MEMBROS_INICIAIS } from '../../data/vinculoFamiliarData';
+import { optimizeImageForDisplay } from '../../utils/imageUtils';
 
 interface Props {
   student: StudentPaxData;
@@ -489,14 +490,19 @@ export default function PaxMedicacoes({ student, userRole, onOpenFullMedications
                         type="file"
                         accept="image/*"
                         className="hidden"
-                        onChange={(e) => {
+                        onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (file) {
-                            const reader = new FileReader();
-                            reader.onload = (event) => {
-                              setNewMedPhoto(event.target?.result as string);
-                            };
-                            reader.readAsDataURL(file);
+                            try {
+                              const optimized = await optimizeImageForDisplay(file, 800, 800, 0.75);
+                              setNewMedPhoto(optimized);
+                            } catch {
+                              const reader = new FileReader();
+                              reader.onload = (event) => {
+                                setNewMedPhoto(event.target?.result as string);
+                              };
+                              reader.readAsDataURL(file);
+                            }
                           }
                         }}
                       />

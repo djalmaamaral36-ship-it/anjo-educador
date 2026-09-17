@@ -26,6 +26,7 @@ import { StudentPaxData } from '../../types';
 import { PAX_STUDENTS } from '../../data/paxStudentsData';
 import { VINCULO_MEMBROS_INICIAIS } from '../../data/vinculoFamiliarData';
 import { syncStudentToFirestore } from '../../services/firebaseSyncService';
+import { optimizeImageForDisplay } from '../../utils/imageUtils';
 import CampoTextoVoz from '../comum/CampoTextoVoz';
 
 interface Props {
@@ -552,6 +553,43 @@ export default function ControleMedicamentosModule({
                         <span className="text-slate-400 font-normal">Instruções:</span> {med.instrucoes}
                       </p>
 
+                      {/* Foto / Receita em Destaque Visual para Prevenir Erros */}
+                      {med.anexoReceitaUrl && (
+                        <div className="mt-2.5 p-2.5 bg-indigo-50/70 border border-indigo-100 rounded-xl flex items-center gap-3">
+                          <div 
+                            className="relative w-14 h-14 rounded-lg overflow-hidden border border-indigo-200 bg-white shrink-0 cursor-pointer shadow-2xs group"
+                            onClick={() => setPreviewImage(med.anexoReceitaUrl || null)}
+                            title="Clique para ampliar"
+                          >
+                            <img
+                              src={med.anexoReceitaUrl}
+                              alt="Foto do Medicamento"
+                              className="w-full h-full object-cover group-hover:scale-105 transition"
+                              referrerPolicy="no-referrer"
+                            />
+                            <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs">
+                              🔍
+                            </div>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-xs font-black text-indigo-950">Foto da Embalagem / Receita</span>
+                              <span className="text-[10px] bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded-sm font-bold">Conferência Visual</span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                              Foto visível para conferência da professora e prevenção de erros.
+                            </p>
+                            <button
+                              type="button"
+                              onClick={() => setPreviewImage(med.anexoReceitaUrl || null)}
+                              className="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 underline cursor-pointer mt-0.5"
+                            >
+                              Clique para ampliar e ver detalhes
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
                       {/* Auditoria de ministração ou cadastro */}
                       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-400 pt-1">
                         <span>
@@ -560,21 +598,6 @@ export default function ControleMedicamentosModule({
                             {med.cadastradoPor || currentStudent.responsavelNome}
                           </strong>
                         </span>
-                        {med.anexoReceitaUrl && (
-                          <button
-                            type="button"
-                            onClick={() => setPreviewImage(med.anexoReceitaUrl || null)}
-                            className="flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2 py-1 rounded-lg border border-indigo-100 transition cursor-pointer font-bold text-[10px]"
-                          >
-                            <img
-                              src={med.anexoReceitaUrl}
-                              alt="Anexo"
-                              className="w-5 h-5 object-cover rounded-md border border-indigo-200"
-                              referrerPolicy="no-referrer"
-                            />
-                            <span>Ver Receita / Foto Anexa</span>
-                          </button>
-                        )}
                       </div>
 
                       {/* Box se ministrado */}
@@ -995,15 +1018,21 @@ export default function ControleMedicamentosModule({
                         accept="image/*"
                         id="new-med-file-input"
                         className="hidden"
-                        onChange={(e) => {
+                        onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (file) {
-                            const reader = new FileReader();
-                            reader.onload = (event) => {
-                              setNewMedPhoto(event.target?.result as string);
+                            try {
+                              const optimized = await optimizeImageForDisplay(file, 800, 800, 0.75);
+                              setNewMedPhoto(optimized);
                               setNewMedPhotoUrl('');
-                            };
-                            reader.readAsDataURL(file);
+                            } catch {
+                              const reader = new FileReader();
+                              reader.onload = (event) => {
+                                setNewMedPhoto(event.target?.result as string);
+                                setNewMedPhotoUrl('');
+                              };
+                              reader.readAsDataURL(file);
+                            }
                           }
                         }}
                       />

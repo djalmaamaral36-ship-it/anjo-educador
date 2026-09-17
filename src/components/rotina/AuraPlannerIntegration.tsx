@@ -983,6 +983,9 @@ export default function AuraPlannerIntegration({
   // Escopo de aplicação por cartão: 'coletivo' (toda a turma) ou 'individual' (apenas este aluno)
   const [activityScopes, setActivityScopes] = useState<Record<string, 'coletivo' | 'individual'>>({});
 
+  // Visualizador de foto/anexo de medicamento para conferência da professora
+  const [previewMedImage, setPreviewMedImage] = useState<string | null>(null);
+
   // Sincroniza com o cronômetro / novo período: quando o cronômetro é iniciado ou religado,
   // todas as atividades da agenda entram/retornam para o status pendente
   useEffect(() => {
@@ -1169,7 +1172,8 @@ export default function AuraPlannerIntegration({
             isRotinaPadrao: false,
             objetivoBNCC: 'Cuidado, saúde e bem-estar do bebê',
             observacao: isMinistradoNoDia ? obsDia : '',
-            escopo: 'individual'
+            escopo: 'individual',
+            anexoReceitaUrl: med.anexoReceitaUrl
           });
         });
       });
@@ -2408,6 +2412,43 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                 <p className="text-xs text-slate-600 leading-relaxed">
                   {act.descricao}
                 </p>
+
+                {/* Foto / Receita Anexada para Conferência Visual da Professora */}
+                {act.anexoReceitaUrl && (
+                  <div className="mt-2 flex items-center gap-3 bg-indigo-50/90 border border-indigo-100 rounded-xl p-2.5">
+                    <div
+                      className="relative w-14 h-14 rounded-lg overflow-hidden border border-indigo-200 bg-white shrink-0 cursor-pointer shadow-2xs group"
+                      onClick={() => setPreviewMedImage(act.anexoReceitaUrl || null)}
+                      title="Clique para ampliar e conferir"
+                    >
+                      <img
+                        src={act.anexoReceitaUrl}
+                        alt="Foto do Medicamento"
+                        className="w-full h-full object-cover group-hover:scale-105 transition"
+                        referrerPolicy="no-referrer"
+                      />
+                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs">
+                        🔍
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-black text-indigo-950">Foto da Embalagem / Receita</span>
+                        <span className="text-[10px] bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded-sm font-bold">Segurança</span>
+                      </div>
+                      <p className="text-[11px] text-slate-500 truncate mt-0.5">
+                        Conferência visual para evitar trocas e dosagens incorretas.
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setPreviewMedImage(act.anexoReceitaUrl || null)}
+                        className="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 underline cursor-pointer mt-0.5"
+                      >
+                        Clique para ampliar e ver detalhes
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Observações da Atividade com Microfone de Voz */}
@@ -2576,6 +2617,49 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
               <RefreshCw size={14} className="text-slate-500" />
               <span>Restaurar Padrão (Todas Pendentes)</span>
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Visualizador de Foto / Receita de Medicamento em Alta Visibilidade para Professora */}
+      {previewMedImage && (
+        <div 
+          className="fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in duration-200"
+          onClick={() => setPreviewMedImage(null)}
+        >
+          <div 
+            className="bg-white rounded-3xl max-w-2xl w-full p-5 shadow-2xl relative flex flex-col gap-4 animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-black text-sm text-slate-800">Foto do Medicamento / Receita Médica</h3>
+                <p className="text-[11px] text-slate-500">Conferência visual para segurança e prevenção de erros</p>
+              </div>
+              <button 
+                onClick={() => setPreviewMedImage(null)}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition flex items-center justify-center font-bold text-xs cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="max-h-[70vh] overflow-auto rounded-2xl border border-slate-100 bg-slate-50 flex justify-center items-center p-2">
+              <img 
+                src={previewMedImage} 
+                alt="Foto do medicamento ampliada" 
+                className="max-w-full max-h-[60vh] object-contain rounded-xl"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <div className="flex justify-end pt-1">
+              <button
+                type="button"
+                onClick={() => setPreviewMedImage(null)}
+                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-xl transition cursor-pointer"
+              >
+                Fechar Visualização
+              </button>
+            </div>
           </div>
         </div>
       )}

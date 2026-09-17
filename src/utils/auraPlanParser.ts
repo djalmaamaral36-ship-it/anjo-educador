@@ -20,6 +20,7 @@ export interface ParsedAuraActivity {
   observacao?: string;
   escopo?: 'coletivo' | 'individual';
   isColetivo?: boolean;
+  anexoReceitaUrl?: string;
 }
 
 export interface AuraDaySummary {
