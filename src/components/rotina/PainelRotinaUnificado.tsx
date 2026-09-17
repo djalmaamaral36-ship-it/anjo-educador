@@ -2293,51 +2293,6 @@ export default function PainelRotinaUnificado({
             )}
           </div>
         </div>
-
-        {/* BARRA DE ATALHOS RÁPIDOS DA ROTINA */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
-          <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider shrink-0">
-            Ir para:
-          </span>
-          <button
-            type="button"
-            onClick={() => document.getElementById('secao-alimentacao')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold shrink-0 transition flex items-center gap-1.5 cursor-pointer"
-          >
-            <span>🍼 Alimentação</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => document.getElementById('secao-refeicoes')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold shrink-0 transition flex items-center gap-1.5 cursor-pointer"
-          >
-            <span>🍛 Refeições</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => document.getElementById('secao-soneca')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold shrink-0 transition flex items-center gap-1.5 cursor-pointer"
-          >
-            <span>💤 Soneca</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => document.getElementById('secao-saude')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold shrink-0 transition flex items-center gap-1.5 cursor-pointer"
-          >
-            <span>🧷 Fraldas & Saúde</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => document.getElementById('agenda-atividades-section')?.scrollIntoView({ behavior: 'smooth' })}
-            className="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black shrink-0 transition flex items-center gap-1.5 cursor-pointer shadow-xs"
-          >
-            <span>🎨 Agenda de Atividades</span>
-            <span className="bg-indigo-800 text-[9px] px-1.5 py-0.5 rounded-md uppercase tracking-wider font-extrabold">
-              Semanal • 07h às 17h
-            </span>
-          </button>
-        </div>
       </div>
 
       {/* 2. PAINEL DE REGISTROS DIÁRIOS (OCULTA COMANDOS SE AUSENTE / DESLIGADO INDIVIDUALMENTE) */}
@@ -2836,7 +2791,7 @@ export default function PainelRotinaUnificado({
             {/* SUB-COLUNA ESQUERDA: SONECA E FEBRE (Foto 28) */}
             <div className="space-y-4">
               {/* Soneca / Descanso com Reloginho e Escopo Individual / Coletivo */}
-              <div className="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/90 space-y-3">
+              <div id="secao-soneca" className="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/90 space-y-3 scroll-mt-24">
                 <div className="flex flex-wrap items-center justify-between gap-1.5">
                   <label className="font-black text-slate-700 block text-[11px] uppercase tracking-wider flex items-center gap-1.5">
                     <span>💤</span>

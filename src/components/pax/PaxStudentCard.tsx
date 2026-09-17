@@ -195,6 +195,64 @@ export default function PaxStudentCard({
         </div>
       </div>
 
+      {/* BARRA DE ATALHOS RÁPIDOS DA ROTINA (Posicionada Estrategicamente Abaixo da Foto do Aluno) */}
+      <div className="bg-slate-50/90 border border-slate-200/90 rounded-2xl p-2.5 sm:p-3 shadow-2xs">
+        <div className="flex items-center gap-2 overflow-x-auto pb-0.5 scrollbar-thin text-xs">
+          <span className="text-[11px] font-black uppercase text-indigo-950/70 tracking-wider shrink-0 flex items-center gap-1.5 pl-1">
+            <span className="text-sm">⚡</span>
+            <span>Ir para:</span>
+          </span>
+
+          <button
+            type="button"
+            onClick={() => document.getElementById('secao-alimentacao')?.scrollIntoView({ behavior: 'smooth' })}
+            className="px-3 py-1.5 rounded-xl bg-white hover:bg-indigo-50 hover:text-indigo-900 border border-slate-200 text-slate-700 font-bold shrink-0 transition flex items-center gap-1.5 cursor-pointer shadow-2xs hover:shadow-xs active:scale-95"
+            title="Ir direto para Alimentação (Água, Mamadeiras e Sucos)"
+          >
+            <span>🍼 Alimentação</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => document.getElementById('secao-refeicoes')?.scrollIntoView({ behavior: 'smooth' })}
+            className="px-3 py-1.5 rounded-xl bg-white hover:bg-indigo-50 hover:text-indigo-900 border border-slate-200 text-slate-700 font-bold shrink-0 transition flex items-center gap-1.5 cursor-pointer shadow-2xs hover:shadow-xs active:scale-95"
+            title="Ir direto para Refeições Sólidas (Café, Almoço, Lanche, Jantar)"
+          >
+            <span>🍛 Refeições</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => document.getElementById('secao-soneca')?.scrollIntoView({ behavior: 'smooth' })}
+            className="px-3 py-1.5 rounded-xl bg-white hover:bg-indigo-50 hover:text-indigo-900 border border-slate-200 text-slate-700 font-bold shrink-0 transition flex items-center gap-1.5 cursor-pointer shadow-2xs hover:shadow-xs active:scale-95"
+            title="Ir direto para Soneca e Descanso"
+          >
+            <span>💤 Soneca</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => document.getElementById('secao-saude')?.scrollIntoView({ behavior: 'smooth' })}
+            className="px-3 py-1.5 rounded-xl bg-white hover:bg-indigo-50 hover:text-indigo-900 border border-slate-200 text-slate-700 font-bold shrink-0 transition flex items-center gap-1.5 cursor-pointer shadow-2xs hover:shadow-xs active:scale-95"
+            title="Ir direto para Fraldas, Evacuação, Febre e Saúde"
+          >
+            <span>🧷 Fraldas & Saúde</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => document.getElementById('agenda-atividades-section')?.scrollIntoView({ behavior: 'smooth' })}
+            className="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-black shrink-0 transition flex items-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
+            title="Ir direto para a Agenda de Atividades Pedagógicas"
+          >
+            <span>🎨 Agenda de Atividades</span>
+            <span className="bg-indigo-800 text-[9px] px-1.5 py-0.5 rounded-md uppercase tracking-wider font-extrabold">
+              Semanal • 07h às 17h
+            </span>
+          </button>
+        </div>
+      </div>
+
       {/* Blue Informational Box: Painel da Sala e Switcher */}
       <div className="bg-indigo-50/60 border border-indigo-100 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
