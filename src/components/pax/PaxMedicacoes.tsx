@@ -11,7 +11,8 @@ import {
   CheckCircle2,
   Trash2,
   PauseCircle,
-  ExternalLink
+  ExternalLink,
+  Calendar
 } from 'lucide-react';
 import { StudentPaxData } from '../../types';
 import { VINCULO_MEMBROS_INICIAIS } from '../../data/vinculoFamiliarData';
@@ -30,6 +31,7 @@ export default function PaxMedicacoes({ student, userRole, onOpenFullMedications
   const [horarioMed, setHorarioMed] = useState('14:00');
   const [doseMed, setDoseMed] = useState('');
   const [instrucaoMed, setInstrucaoMed] = useState('');
+  const [diasSemanaMed, setDiasSemanaMed] = useState<string[]>(['Todos']);
   const [newMedPhoto, setNewMedPhoto] = useState<string | null>(null);
 
   // PIN modal state
@@ -116,6 +118,7 @@ export default function PaxMedicacoes({ student, userRole, onOpenFullMedications
       cadastradoEm: 'Hoje com PIN verificado',
       pinAutorizado: true,
       anexoReceitaUrl: newMedPhoto || undefined,
+      diasSemana: diasSemanaMed,
     };
 
     const updatedMeds = [...medsList, newMed];
@@ -127,6 +130,7 @@ export default function PaxMedicacoes({ student, userRole, onOpenFullMedications
     setNomeMed('');
     setDoseMed('');
     setInstrucaoMed('');
+    setDiasSemanaMed(['Todos']);
     setNewMedPhoto(null);
     setShowModal(false);
   };
@@ -229,9 +233,14 @@ export default function PaxMedicacoes({ student, userRole, onOpenFullMedications
               <div className="space-y-1">
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-black text-xs sm:text-sm text-slate-800">{med.nome}</span>
-                  <span className="text-[10px] font-black text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-full flex items-center gap-1">
-                    <Clock size={10} /> {med.horario}
-                  </span>
+                  <div className="flex flex-wrap items-center gap-1.5 shrink-0 justify-end">
+                    <span className="text-[10px] font-black text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <Clock size={10} /> {med.horario}
+                    </span>
+                    <span className="text-[10px] font-black text-blue-700 bg-blue-100/90 border border-blue-200 px-2 py-0.5 rounded-full flex items-center gap-1">
+                      <Calendar size={10} /> {med.diasSemana && med.diasSemana.length > 0 ? med.diasSemana.join(', ') : 'Todos'}
+                    </span>
+                  </div>
                 </div>
                 <p className="text-xs text-slate-600 font-medium">Dose: {med.dosagem}</p>
                 <p className="text-[11px] text-slate-500">{med.instrucoes}</p>
@@ -461,6 +470,46 @@ export default function PaxMedicacoes({ student, userRole, onOpenFullMedications
                   placeholder="Ex: Diluir em pouca água; apenas se a febre passar de 37.8ºC..."
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-800 outline-none focus:bg-white focus:border-indigo-500"
                 ></textarea>
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="font-bold text-slate-700 block">
+                  Dias da Semana para Ministrar
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {['Todos', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab', 'Dom'].map((dia) => {
+                    const isSelected = diasSemanaMed.includes(dia);
+                    return (
+                      <button
+                        key={dia}
+                        type="button"
+                        onClick={() => {
+                          if (dia === 'Todos') {
+                            setDiasSemanaMed(['Todos']);
+                          } else {
+                            let updated = [...diasSemanaMed].filter((d) => d !== 'Todos');
+                            if (updated.includes(dia)) {
+                              updated = updated.filter((d) => d !== dia);
+                            } else {
+                              updated.push(dia);
+                            }
+                            if (updated.length === 0) {
+                              updated = ['Todos'];
+                            }
+                            setDiasSemanaMed(updated);
+                          }
+                        }}
+                        className={`px-2.5 py-1 text-xs font-bold rounded-xl transition cursor-pointer border ${
+                          isSelected
+                            ? 'bg-indigo-600 border-indigo-600 text-white shadow-2xs'
+                            : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                        }`}
+                      >
+                        {dia}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
               <div>

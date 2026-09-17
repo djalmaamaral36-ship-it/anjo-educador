@@ -21,6 +21,7 @@ export interface ParsedAuraActivity {
   escopo?: 'coletivo' | 'individual';
   isColetivo?: boolean;
   anexoReceitaUrl?: string;
+  diasSemana?: string[];
 }
 
 export interface AuraDaySummary {

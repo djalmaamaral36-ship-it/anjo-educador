@@ -31,6 +31,7 @@ import {
 import { signOut } from 'firebase/auth';
 import { auth } from '../services/firebase';
 import LogoAnjinhoEducador from './comum/LogoAnjinhoEducador';
+import MiniRelogioCalendarioAura from './comum/MiniRelogioCalendarioAura';
 
 interface Props {
   user: any;
@@ -414,6 +415,9 @@ export default function BannerHeader({
 
           {/* Right Profile & Controls */}
           <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+            {/* Mini Relógio e Calendário Estilo Anjinha Aura */}
+            <MiniRelogioCalendarioAura onOpenAgenda={() => onSelectTab('agenda')} />
+
             {/* Botão de Destaque Oficial: Anjinha Aura IA (Sempre visível em todos os tamanhos de tela) */}
             <button
               onClick={handleAuraSSO}

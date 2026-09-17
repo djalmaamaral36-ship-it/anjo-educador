@@ -150,6 +150,7 @@ export const PAX_STUDENTS: Record<string, StudentPaxData> = {
         cadastradoPor: 'Clarice Souza (Mãe)',
         cadastradoEm: 'Hoje às 07:30',
         pinAutorizado: true,
+        diasSemana: ['Seg', 'Ter', 'Qua'],
         estoqueFrascos: 1,
       },
       {
@@ -164,6 +165,7 @@ export const PAX_STUDENTS: Record<string, StudentPaxData> = {
         cadastradoPor: 'Clarice Souza (Mãe)',
         cadastradoEm: '05/09/2026',
         pinAutorizado: true,
+        diasSemana: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'],
         estoqueFrascos: 2,
       },
       {
@@ -178,6 +180,7 @@ export const PAX_STUDENTS: Record<string, StudentPaxData> = {
         cadastradoPor: 'Clarice Souza (Mãe)',
         cadastradoEm: '01/09/2026',
         pinAutorizado: true,
+        diasSemana: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex'],
         estoqueFrascos: 1,
       },
     ],

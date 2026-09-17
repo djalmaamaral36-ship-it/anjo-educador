@@ -20,7 +20,9 @@ import {
   ChevronRight,
   Send,
   Eye,
-  X
+  X,
+  Calendar,
+  Edit2
 } from 'lucide-react';
 import { StudentPaxData } from '../../types';
 import { PAX_STUDENTS } from '../../data/paxStudentsData';
@@ -53,13 +55,14 @@ export default function ControleMedicamentosModule({
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState('');
   const [pinAction, setPinAction] = useState<{
-    type: 'cadastrar' | 'suspender' | 'excluir' | 'reativar';
+    type: 'cadastrar' | 'suspender' | 'excluir' | 'reativar' | 'editar';
     medId?: string;
   } | null>(null);
   const [isParentAuthorized, setIsParentAuthorized] = useState(false);
 
   // New medication modal
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [editingMedId, setEditingMedId] = useState<string | null>(null);
   const [newMedNome, setNewMedNome] = useState('');
   const [newMedDosagem, setNewMedDosagem] = useState('');
   const [newMedHorarioManha, setNewMedHorarioManha] = useState('08:00');
@@ -146,7 +149,33 @@ export default function ControleMedicamentosModule({
       setPinInput('');
 
       if (action?.type === 'cadastrar') {
+        setEditingMedId(null);
+        setNewMedNome('');
+        setNewMedDosagem('');
+        setNewMedHorarioManha('08:00');
+        setNewMedHorarioTarde('');
+        setNewMedDiasSemana(['Todos']);
+        setNewMedPhoto(null);
+        setNewMedPhotoUrl('');
+        setNewMedInstrucoes('');
+        setNewMedEstoque(1);
         setIsAddModalOpen(true);
+      } else if (action?.type === 'editar' && action.medId) {
+        const targetMed = medsList.find((m) => m.id === action.medId);
+        if (targetMed) {
+          setEditingMedId(targetMed.id);
+          setNewMedNome(targetMed.nome);
+          setNewMedDosagem(targetMed.dosagem || '');
+          setNewMedInstrucoes(targetMed.instrucoes || '');
+          setNewMedDiasSemana(targetMed.diasSemana && targetMed.diasSemana.length > 0 ? targetMed.diasSemana : ['Todos']);
+          setNewMedEstoque(targetMed.estoqueFrascos || 1);
+          setNewMedPhoto(targetMed.anexoReceitaUrl || null);
+          // parse times if possible
+          const times = (targetMed.horario || '').split(' e ');
+          setNewMedHorarioManha(times[0] || '08:00');
+          setNewMedHorarioTarde(times[1] || '');
+          setIsAddModalOpen(true);
+        }
       } else if (action?.type === 'suspender' && action.medId) {
         const updated = medsList.map((m) => (m.id === action.medId ? { ...m, suspenso: true, ativo: false } : m));
         setMedsList(updated);
@@ -169,12 +198,12 @@ export default function ControleMedicamentosModule({
   };
 
   // Request Parent Action
-  const handleRequestParentAction = (type: 'cadastrar' | 'suspender' | 'excluir' | 'reativar', medId?: string) => {
+  const handleRequestParentAction = (type: 'cadastrar' | 'suspender' | 'excluir' | 'reativar' | 'editar', medId?: string) => {
     // If teacher tries to cadastrar, suspender, or excluir
     if (userRole === 'professor') {
       setBlockedActionMessage(
-        type === 'cadastrar'
-          ? 'Professores não podem cadastrar medicamentos. Apenas a mãe ou responsável legal pode prescrever e autorizar com PIN.'
+        type === 'cadastrar' || type === 'editar'
+          ? 'Professores não podem cadastrar ou editar medicamentos. Apenas a mãe ou responsável legal pode prescrever e autorizar com PIN.'
           : 'Professores não podem suspender ou excluir medicamentos. Esta ação é de responsabilidade exclusiva dos pais com PIN.'
       );
       setIsTeacherBlockedModalOpen(true);
@@ -207,29 +236,51 @@ export default function ControleMedicamentosModule({
       calculatedTurno = 'tarde';
     }
 
-    const newMed = {
-      id: `med_${Date.now()}`,
-      nome: newMedNome,
-      horario: horarioDisplay,
-      dosagem: newMedDosagem || 'Conforme orientação médica',
-      instrucoes: newMedInstrucoes || 'Administrar com cuidado',
-      ativo: true,
-      turno: calculatedTurno,
-      ministradoHoje: false,
-      cadastradoPor: `${currentStudent.responsavelNome} (${currentStudent.responsavelParentesco})`,
-      cadastradoEm: 'Hoje com PIN verificado',
-      pinAutorizado: true,
-      estoqueFrascos: newMedEstoque,
-      anexoReceitaUrl: newMedPhoto || undefined,
-      diasSemana: newMedDiasSemana,
-    };
+    if (editingMedId) {
+      const updatedMeds = medsList.map((m) =>
+        m.id === editingMedId
+          ? {
+              ...m,
+              nome: newMedNome,
+              horario: horarioDisplay,
+              dosagem: newMedDosagem || 'Conforme orientação médica',
+              instrucoes: newMedInstrucoes || 'Administrar com cuidado',
+              turno: calculatedTurno,
+              estoqueFrascos: newMedEstoque,
+              anexoReceitaUrl: newMedPhoto !== null ? newMedPhoto : m.anexoReceitaUrl,
+              diasSemana: newMedDiasSemana,
+            }
+          : m
+      );
+      setMedsList(updatedMeds);
+      currentStudent.medicamentos = updatedMeds;
+      syncStudentToFirestore(currentStudent.id, { medicamentos: updatedMeds });
+    } else {
+      const newMed = {
+        id: `med_${Date.now()}`,
+        nome: newMedNome,
+        horario: horarioDisplay,
+        dosagem: newMedDosagem || 'Conforme orientação médica',
+        instrucoes: newMedInstrucoes || 'Administrar com cuidado',
+        ativo: true,
+        turno: calculatedTurno,
+        ministradoHoje: false,
+        cadastradoPor: `${currentStudent.responsavelNome} (${currentStudent.responsavelParentesco})`,
+        cadastradoEm: 'Hoje com PIN verificado',
+        pinAutorizado: true,
+        estoqueFrascos: newMedEstoque,
+        anexoReceitaUrl: newMedPhoto || undefined,
+        diasSemana: newMedDiasSemana,
+      };
 
-    const updatedMeds = [...medsList, newMed];
-    setMedsList(updatedMeds);
-    currentStudent.medicamentos = updatedMeds;
-    syncStudentToFirestore(currentStudent.id, { medicamentos: updatedMeds });
+      const updatedMeds = [...medsList, newMed];
+      setMedsList(updatedMeds);
+      currentStudent.medicamentos = updatedMeds;
+      syncStudentToFirestore(currentStudent.id, { medicamentos: updatedMeds });
+    }
 
     setIsAddModalOpen(false);
+    setEditingMedId(null);
     setNewMedNome('');
     setNewMedDosagem('');
     setNewMedHorarioManha('08:00');
@@ -528,6 +579,9 @@ export default function ControleMedicamentosModule({
                         <span className="text-[10px] font-black text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded-full flex items-center gap-1">
                           <Clock size={11} /> {med.horario} (Turno: {med.turno || 'Geral'})
                         </span>
+                        <span className="text-[10px] font-black text-blue-700 bg-blue-100/90 border border-blue-200 px-2 py-0.5 rounded-full flex items-center gap-1">
+                          <Calendar size={11} /> Dias: {med.diasSemana && med.diasSemana.length > 0 ? med.diasSemana.join(', ') : 'Todos os dias úteis'}
+                        </span>
                         {isSuspenso ? (
                           <span className="text-[10px] font-black text-rose-700 bg-rose-100 px-2 py-0.5 rounded-md flex items-center gap-1">
                             <PauseCircle size={11} /> Suspenso pelos Pais
@@ -655,6 +709,15 @@ export default function ControleMedicamentosModule({
                           )}
 
                           <button
+                            onClick={() => handleRequestParentAction('editar', med.id)}
+                            className="px-3 py-1.5 rounded-xl text-xs font-bold bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 transition cursor-pointer flex items-center gap-1"
+                            title="Editar horários e dias da semana com PIN"
+                          >
+                            <Edit2 size={13} />
+                            <span>Editar Dias / Horários</span>
+                          </button>
+
+                          <button
                             onClick={() => handleRequestParentAction('excluir', med.id)}
                             className="px-3 py-1.5 rounded-xl text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition cursor-pointer flex items-center gap-1"
                             title="Excluir medicamento com PIN"
@@ -668,6 +731,13 @@ export default function ControleMedicamentosModule({
                       {/* SE PROFESSOR TENTAR SUSPENDER/EXCLUIR -> BLOQUEIO */}
                       {userRole === 'professor' && (
                         <div className="flex items-center gap-1">
+                          <button
+                            onClick={() => handleRequestParentAction('editar', med.id)}
+                            className="p-2 rounded-xl text-slate-400 hover:text-blue-600 hover:bg-slate-100 transition cursor-pointer"
+                            title="Apenas pais podem editar medicamentos (bloqueado para professores)"
+                          >
+                            <Edit2 size={16} />
+                          </button>
                           <button
                             onClick={() => handleRequestParentAction('suspender', med.id)}
                             className="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer"
@@ -828,9 +898,9 @@ export default function ControleMedicamentosModule({
           <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-7 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-150 space-y-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between border-b border-slate-100 pb-2">
               <div className="flex items-center gap-2.5">
-                <span className="text-xl font-bold text-blue-600">+</span>
+                <span className="text-xl font-bold text-blue-600">{editingMedId ? '✎' : '+'}</span>
                 <h3 className="text-base font-extrabold text-slate-800">
-                  Cadastrar Novo Medicamento
+                  {editingMedId ? 'Editar Medicamento e Dias da Semana' : 'Cadastrar Novo Medicamento'}
                 </h3>
               </div>
               <button
@@ -1121,7 +1191,7 @@ export default function ControleMedicamentosModule({
                   className="flex-1 py-3 bg-blue-600 hover:bg-blue-700 text-white text-xs font-black rounded-2xl transition shadow-xs cursor-pointer text-center flex items-center justify-center gap-1.5"
                 >
                   <Lock size={13} />
-                  <span>Confirmar Cadastro</span>
+                  <span>{editingMedId ? 'Salvar Alterações (PIN)' : 'Confirmar Cadastro'}</span>
                 </button>
               </div>
             </form>

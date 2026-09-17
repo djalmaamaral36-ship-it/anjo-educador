@@ -1135,6 +1135,26 @@ export default function AuraPlannerIntegration({
     return (idxA === -1 ? 99 : idxA) - (idxB === -1 ? 99 : idxB);
   });
 
+  // Função auxiliar para verificar se o medicamento está programado para o dia da semana
+  const isMedicationForDay = (diasSemana: string[] | undefined, dayName: string): boolean => {
+    if (!diasSemana || diasSemana.length === 0 || diasSemana.includes('Todos')) {
+      return true;
+    }
+    const dLower = dayName.toLowerCase().trim();
+    return diasSemana.some((dia) => {
+      const diaLower = dia.toLowerCase().trim();
+      if (diaLower === 'todos') return true;
+      if (diaLower.startsWith('seg') && dLower.includes('seg')) return true;
+      if (diaLower.startsWith('ter') && (dLower.includes('ter') || dLower.includes('terça') || dLower.includes('terca'))) return true;
+      if (diaLower.startsWith('qua') && dLower.includes('qua')) return true;
+      if (diaLower.startsWith('qui') && dLower.includes('qui')) return true;
+      if (diaLower.startsWith('sex') && dLower.includes('sex')) return true;
+      if (diaLower.startsWith('sab') && (dLower.includes('sab') || dLower.includes('sábado') || dLower.includes('sabado'))) return true;
+      if (diaLower.startsWith('dom') && (dLower.includes('dom') || dLower.includes('domingo'))) return true;
+      return false;
+    });
+  };
+
   // Gera atividades de medicação dinamicamente a partir das prescrições ativas do aluno
   const getDynamicMedicationActivities = (): ParsedAuraActivity[] => {
     if (!student || !student.medicamentos) return [];
@@ -1152,20 +1172,25 @@ export default function AuraPlannerIntegration({
       times.forEach((timeStr, timeIdx) => {
         const cleanTime = timeStr.trim();
         
-        // Se a aba selecionada for "Todos os Dias", gera para todos os dias que possuem atividades, senão gera para o dia selecionado
+        // Se a aba selecionada for "Todos os Dias", avalia todos os dias com atividades; senão avalia apenas o dia selecionado
         const targetDays = selectedDayTab === 'all'
-          ? (daySummaries.length > 0 ? daySummaries.map(d => d.dia) : ['Terça-feira'])
+          ? (daySummaries.length > 0 ? daySummaries.map(d => d.dia) : WEEKDAY_ORDER)
           : [selectedDayTab];
+
+        // Filtra estritamente pelos dias em que o medicamento foi prescrito (ex: Seg, Ter, Qua)
+        const validDays = targetDays.filter((dayName) => isMedicationForDay(med.diasSemana, dayName));
           
-        targetDays.forEach((dayName) => {
+        validDays.forEach((dayName) => {
           const isMinistradoNoDia = med.ministradoDias?.includes(dayName) || (dayName === 'Segunda-feira' && med.ministradoHoje);
           const obsDia = med.observacoesDias?.[dayName] || med.observacaoMinistracao || '';
+          const diasTexto = med.diasSemana && med.diasSemana.length > 0 ? med.diasSemana.join(', ') : 'Todos os dias úteis';
+
           medActivities.push({
             id: `med-dyn-${med.id}-${cleanTime}-${dayName}-${timeIdx}`,
             dia: dayName,
             horario: cleanTime,
             titulo: `💊 Medicamento: ${med.nome}`,
-            descricao: `Dosagem: ${med.dosagem}. Instruções: ${med.instrucoes}. (Prescrito pelos Pais)`,
+            descricao: `Dosagem: ${med.dosagem}. Dias programados: ${diasTexto}. Instruções: ${med.instrucoes}. (Prescrito pelos Pais)`,
             tipo: 'medicacao',
             status: isMinistradoNoDia ? 'entregue' : 'pendente',
             entregue: !!isMinistradoNoDia,
@@ -1173,7 +1198,8 @@ export default function AuraPlannerIntegration({
             objetivoBNCC: 'Cuidado, saúde e bem-estar do bebê',
             observacao: isMinistradoNoDia ? obsDia : '',
             escopo: 'individual',
-            anexoReceitaUrl: med.anexoReceitaUrl
+            anexoReceitaUrl: med.anexoReceitaUrl,
+            diasSemana: med.diasSemana
           });
         });
       });
@@ -2400,9 +2426,16 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
               {/* Título e Descrição */}
               <div className="space-y-1.5 flex-1">
                 <div className="flex items-center justify-between gap-2">
-                  <h4 className={`text-base font-black leading-snug ${act.tipo === 'medicacao' ? 'text-indigo-950 font-extrabold' : 'text-slate-900'}`}>
-                    {act.titulo}
-                  </h4>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h4 className={`text-base font-black leading-snug ${act.tipo === 'medicacao' ? 'text-indigo-950 font-extrabold' : 'text-slate-900'}`}>
+                      {act.titulo}
+                    </h4>
+                    {act.tipo === 'medicacao' && (
+                      <span className="text-[10px] font-black text-blue-700 bg-blue-100/90 border border-blue-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
+                        <Calendar size={11} /> Dias: {act.diasSemana && act.diasSemana.length > 0 ? act.diasSemana.join(', ') : 'Todos os dias úteis'}
+                      </span>
+                    )}
+                  </div>
                   {act.dia && (
                     <span className="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md shrink-0">
                       {act.dia}

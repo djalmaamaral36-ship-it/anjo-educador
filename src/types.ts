@@ -169,6 +169,7 @@ export interface StudentPaxData {
     cadastradoEm?: string;
     pinAutorizado?: boolean;
     anexoReceitaUrl?: string;
+    diasSemana?: string[];
     estoqueFrascos?: number;
     suspenso?: boolean;
     ministradoDias?: string[];
