@@ -340,6 +340,8 @@ export default function PaxPortalDeTranquilidade({
       {/* 8. Planejamento Aura & Atividades Pedagógicas da Aula (Apenas na visão da Professora / Educadora) */}
       {effectiveRole === 'professor' && (
         <AuraPlannerIntegration
+          student={currentStudent}
+          onUpdateStudent={handleUpdateStudent}
           onConcluirAtividadePedagogica={handleConcluirAtividadePedagogica}
           studentNome={currentStudent.nome}
         />

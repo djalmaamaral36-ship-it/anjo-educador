@@ -2,14 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { 
   Sparkles, Clock, CheckCircle2, RotateCcw, Trash2, Edit2, Check, Mic, 
   Plus, Calendar, AlertCircle, Save, X, Utensils, Moon, Droplets, BookOpen, 
-  XCircle, Filter, RefreshCw, AlertTriangle, ArrowUpDown, Layers
+  XCircle, Filter, RefreshCw, AlertTriangle, ArrowUpDown, Layers, Pill
 } from 'lucide-react';
 import { parseAuraRawPlan, ParsedAuraActivity } from '../../utils/auraPlanParser';
 import { DEFAULT_INITIAL_ACTIVITIES as PLAN_ACTIVITIES } from '../../data/weeklyPlan';
+import { StudentPaxData } from '../../types';
 
 interface Props {
   onConcluirAtividadePedagogica?: (act: ParsedAuraActivity) => void;
   studentNome?: string;
+  student?: StudentPaxData;
+  onUpdateStudent?: (updated: Partial<StudentPaxData>) => void;
 }
 
 // Converte horário "HH:MM" para minutos para ordenação cronológica precisa
@@ -938,7 +941,12 @@ interface ConflictState {
   existingActivity: ParsedAuraActivity;
 }
 
-export default function AuraPlannerIntegration({ onConcluirAtividadePedagogica, studentNome = 'Mariana Souza' }: Props) {
+export default function AuraPlannerIntegration({ 
+  onConcluirAtividadePedagogica, 
+  studentNome = 'Mariana Souza',
+  student,
+  onUpdateStudent
+}: Props) {
   const [inputText, setInputText] = useState('');
   const [activities, setActivities] = useState<ParsedAuraActivity[]>(() => sortActivitiesBySchedule(deduplicateActivities(PLAN_ACTIVITIES)));
   const [selectedDayTab, setSelectedDayTab] = useState<string>('all');
@@ -1108,13 +1116,64 @@ export default function AuraPlannerIntegration({ onConcluirAtividadePedagogica, 
     return (idxA === -1 ? 99 : idxA) - (idxB === -1 ? 99 : idxB);
   });
 
-  // Contadores de status
-  const pendingCount = activities.filter((a) => a.status === 'pendente' || (!a.status && !a.entregue)).length;
-  const entregueCount = activities.filter((a) => a.status === 'entregue' || a.entregue).length;
-  const recusouCount = activities.filter((a) => a.status === 'recusou').length;
+  // Gera atividades de medicação dinamicamente a partir das prescrições ativas do aluno
+  const getDynamicMedicationActivities = (): ParsedAuraActivity[] => {
+    if (!student || !student.medicamentos) return [];
+    
+    const medActivities: ParsedAuraActivity[] = [];
+    
+    student.medicamentos.forEach((med) => {
+      // Ignorar se o medicamento não estiver ativo ou estiver suspenso
+      if (!med.ativo || med.suspenso) return;
+      
+      // Extrair todos os padrões de horários do tipo HH:MM (ex: "08:00 e 14:00" -> ["08:00", "14:00"])
+      const timeRegex = /\b\d{1,2}:\d{2}\b/g;
+      const times = med.horario.match(timeRegex) || [med.horario];
+      
+      times.forEach((timeStr, timeIdx) => {
+        const cleanTime = timeStr.trim();
+        
+        // Se a aba selecionada for "Todos os Dias", gera para todos os dias que possuem atividades, senão gera para o dia selecionado
+        const targetDays = selectedDayTab === 'all'
+          ? (daySummaries.length > 0 ? daySummaries.map(d => d.dia) : ['Terça-feira'])
+          : [selectedDayTab];
+          
+        targetDays.forEach((dayName) => {
+          medActivities.push({
+            id: `med-dyn-${med.id}-${cleanTime}-${dayName}-${timeIdx}`,
+            dia: dayName,
+            horario: cleanTime,
+            titulo: `💊 Medicamento: ${med.nome}`,
+            descricao: `Dosagem: ${med.dosagem}. Instruções: ${med.instrucoes}. (Prescrito pelos Pais)`,
+            tipo: 'medicacao',
+            status: med.ministradoHoje ? 'entregue' : 'pendente',
+            entregue: !!med.ministradoHoje,
+            isRotinaPadrao: false,
+            objetivoBNCC: 'Cuidado, saúde e bem-estar do bebê',
+            observacao: med.observacaoMinistracao || '',
+            escopo: 'individual'
+          });
+        });
+      });
+    });
+    
+    return medActivities;
+  };
+
+  const dynamicMedications = getDynamicMedicationActivities();
+  const allCombinedActivities = [
+    ...activities,
+    ...dynamicMedications
+  ];
+  const sortedCombined = sortActivitiesBySchedule(allCombinedActivities);
+
+  // Contadores de status (calculados sobre a lista combinada)
+  const pendingCount = sortedCombined.filter((a) => a.status === 'pendente' || (!a.status && !a.entregue)).length;
+  const entregueCount = sortedCombined.filter((a) => a.status === 'entregue' || a.entregue).length;
+  const recusouCount = sortedCombined.filter((a) => a.status === 'recusou').length;
 
   // Filtros combinados (Dia + Status)
-  const filteredActivities = activities.filter((act) => {
+  const filteredActivities = sortedCombined.filter((act) => {
     const matchesDay = selectedDayTab === 'all' || act.dia === selectedDayTab;
     if (!matchesDay) return false;
 
@@ -1322,6 +1381,43 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
     const note = activityNotes[actId] || '';
     const scope = customScope || activityScopes[actId] || 'coletivo';
     
+    if (actId.startsWith('med-dyn-')) {
+      if (student && student.medicamentos && onUpdateStudent) {
+        const parts = actId.split('-');
+        const medId = parts[2];
+        
+        const updatedMeds = student.medicamentos.map((m) => {
+          if (m.id === medId) {
+            return {
+              ...m,
+              ministradoHoje: true,
+              ministradoPor: 'Ana Silva (Professora Titular)',
+              ministradoHorario: act.horario,
+              observacaoMinistracao: note || 'Dose administrada no horário estipulado.'
+            };
+          }
+          return m;
+        });
+        
+        const horaAtual = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        const newTimelineItem = {
+          id: `audit_med_${Date.now()}`,
+          hora: act.horario || horaAtual,
+          tipo: 'saude' as const,
+          titulo: `💊 Medicamento Ministrado: ${act.titulo.replace('💊 Medicamento: ', '')}`,
+          descricao: `Dose de ${act.horario} administrada com sucesso por Ana Silva (Professora Titular).\n\n💬 Observações: ${note || 'Dose administrada no horário estipulado.'}`,
+          responsavel: 'Ana Silva (Professora Titular)',
+          verificado: true
+        };
+        
+        onUpdateStudent({
+          medicamentos: updatedMeds,
+          auditoriaLinhaDoTempo: [newTimelineItem, ...(student.auditoriaLinhaDoTempo || [])]
+        });
+      }
+      return;
+    }
+
     setActivities((prev) =>
       prev.map((a, i) => {
         const currentId = a.id || `act-${i}`;
@@ -1349,6 +1445,41 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
     const actId = act.id || `act-${idx}`;
     const note = activityNotes[actId] || '';
     const scope = customScope || activityScopes[actId] || 'coletivo';
+
+    if (actId.startsWith('med-dyn-')) {
+      if (student && student.medicamentos && onUpdateStudent) {
+        const parts = actId.split('-');
+        const medId = parts[2];
+        
+        const updatedMeds = student.medicamentos.map((m) => {
+          if (m.id === medId) {
+            return {
+              ...m,
+              ministradoHoje: false,
+              observacaoMinistracao: note || 'A dose foi recusada ou não pôde ser administrada.'
+            };
+          }
+          return m;
+        });
+        
+        const horaAtual = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+        const newTimelineItem = {
+          id: `audit_med_rec_${Date.now()}`,
+          hora: act.horario || horaAtual,
+          tipo: 'saude' as const,
+          titulo: `⚠️ Recusa de Medicamento: ${act.titulo.replace('💊 Medicamento: ', '')}`,
+          descricao: `A dose de ${act.horario} foi recusada ou não pôde ser administrada.\n\n💬 Motivo: ${note || 'Criança recusou ou não pôde tomar a dose.'}`,
+          responsavel: 'Ana Silva (Professora Titular)',
+          verificado: true
+        };
+        
+        onUpdateStudent({
+          medicamentos: updatedMeds,
+          auditoriaLinhaDoTempo: [newTimelineItem, ...(student.auditoriaLinhaDoTempo || [])]
+        });
+      }
+      return;
+    }
 
     setActivities((prev) =>
       prev.map((a, i) => {
@@ -1412,6 +1543,8 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
         return <Moon size={18} className="text-indigo-600" />;
       case 'banho':
         return <Droplets size={18} className="text-sky-600" />;
+      case 'medicacao':
+        return <Pill size={18} className="text-indigo-600 animate-pulse" />;
       default:
         return <BookOpen size={18} className="text-emerald-600" />;
     }
@@ -2160,13 +2293,17 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                   ? 'border-emerald-300/80 bg-emerald-50/20'
                   : isRecusou
                   ? 'border-rose-300/80 bg-rose-50/20'
+                  : act.tipo === 'medicacao'
+                  ? 'border-indigo-300 bg-indigo-50/15 ring-2 ring-indigo-100/50 hover:shadow-xs'
                   : 'border-amber-300/80 bg-amber-50/15 ring-1 ring-amber-200/50 hover:shadow-xs'
               }`}
             >
               {/* Topo do Card: Ícone, Horário, Status, Editar, Excluir */}
               <div className="flex items-start justify-between gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-2xl bg-slate-100 flex items-center justify-center shrink-0 border border-slate-200/80">
+                  <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 border ${
+                    act.tipo === 'medicacao' ? 'bg-indigo-50 text-indigo-700 border-indigo-200/80' : 'bg-slate-100 text-slate-700 border-slate-200/80'
+                  }`}>
                     {getCategoryIcon(act.tipo)}
                   </div>
 
@@ -2179,7 +2316,7 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                     {isEntregue ? (
                       <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase px-2 py-0.5 rounded-md flex items-center gap-1 border border-emerald-300">
                         <CheckCircle2 size={11} />
-                        <span>Entregue</span>
+                        <span>{act.tipo === 'medicacao' ? 'Ministrado' : 'Entregue'}</span>
                       </span>
                     ) : isRecusou ? (
                       <span className="bg-rose-100 text-rose-800 text-[10px] font-black uppercase px-2 py-0.5 rounded-md flex items-center gap-1 border border-rose-300">
@@ -2196,30 +2333,36 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                 </div>
 
                 {/* Ações de Edição e Exclusão */}
-                <div className="flex items-center gap-1 shrink-0">
-                  <button
-                    type="button"
-                    onClick={() => handleStartEdit(act, idx)}
-                    title="Editar atividade"
-                    className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer"
-                  >
-                    <Edit2 size={15} />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDelete(actId, idx)}
-                    title="Excluir atividade"
-                    className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer"
-                  >
-                    <Trash2 size={15} />
-                  </button>
-                </div>
+                {act.tipo !== 'medicacao' ? (
+                  <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handleStartEdit(act, idx)}
+                      title="Editar atividade"
+                      className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer"
+                    >
+                      <Edit2 size={15} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(actId, idx)}
+                      title="Excluir atividade"
+                      className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                ) : (
+                  <span className="text-[10px] font-black uppercase tracking-wider bg-indigo-100/80 text-indigo-800 px-2 py-1 rounded-md border border-indigo-200 select-none">
+                    Autorização Ativa
+                  </span>
+                )}
               </div>
 
               {/* Título e Descrição */}
               <div className="space-y-1.5 flex-1">
                 <div className="flex items-center justify-between gap-2">
-                  <h4 className="text-base font-black text-slate-900 leading-snug">
+                  <h4 className={`text-base font-black leading-snug ${act.tipo === 'medicacao' ? 'text-indigo-950 font-extrabold' : 'text-slate-900'}`}>
                     {act.titulo}
                   </h4>
                   {act.dia && (
@@ -2237,7 +2380,7 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
               <div className="space-y-1.5 pt-2 border-t border-slate-100">
                 <div className="flex items-center justify-between">
                   <label className="text-[10px] font-black uppercase tracking-wider text-slate-500">
-                    Observações da Atividade
+                    {act.tipo === 'medicacao' ? 'Observações de Ministração' : 'Observações da Atividade'}
                   </label>
                   <button
                     type="button"
@@ -2266,50 +2409,56 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                   onChange={(e) =>
                     setActivityNotes({ ...activityNotes, [actId]: e.target.value })
                   }
-                  placeholder="Ex: Realizou a atividade com capricho e atenção..."
+                  placeholder={act.tipo === 'medicacao' ? 'Ex: Tomou 10 gotas de dipirona diluídas em água.' : 'Ex: Realizou a atividade com capricho e atenção...'}
                   className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-400"
                 />
               </div>
 
               {/* Botões de Ação: [Individual / Coletivo] + [Recusou] + [Entregue] */}
               <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 mt-1">
-                {/* Seletor Individual / Coletivo Padronizado no Próprio Cartão */}
-                <div className="flex items-center bg-slate-100/90 p-0.5 rounded-xl border border-slate-200 shadow-2xs">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setActivityScopes((prev) => ({
-                        ...prev,
-                        [actId]: 'coletivo',
-                      }))
-                    }
-                    className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer ${
-                      (activityScopes[actId] || 'coletivo') === 'coletivo'
-                        ? 'bg-indigo-600 text-white shadow-2xs'
-                        : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                    title="Modo Coletivo: Salva para toda a turma de uma vez"
-                  >
-                    <span>👥 Coletivo</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setActivityScopes((prev) => ({
-                        ...prev,
-                        [actId]: 'individual',
-                      }))
-                    }
-                    className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer ${
-                      activityScopes[actId] === 'individual'
-                        ? 'bg-emerald-600 text-white shadow-2xs'
-                        : 'text-slate-600 hover:text-slate-900'
-                    }`}
-                    title={`Modo Individual: Salva apenas para ${studentNome.split(' ')[0]}`}
-                  >
-                    <span>👤 Individual</span>
-                  </button>
-                </div>
+                {act.tipo === 'medicacao' ? (
+                  <div className="flex items-center gap-1 bg-indigo-50 text-indigo-700 px-2.5 py-1.5 rounded-xl border border-indigo-100 text-[11px] font-black">
+                    <span>👤 Medicamento Individual</span>
+                  </div>
+                ) : (
+                  /* Seletor Individual / Coletivo Padronizado no Próprio Cartão */
+                  <div className="flex items-center bg-slate-100/90 p-0.5 rounded-xl border border-slate-200 shadow-2xs">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setActivityScopes((prev) => ({
+                          ...prev,
+                          [actId]: 'coletivo',
+                        }))
+                      }
+                      className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer ${
+                        (activityScopes[actId] || 'coletivo') === 'coletivo'
+                          ? 'bg-indigo-600 text-white shadow-2xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                      title="Modo Coletivo: Salva para toda a turma de uma vez"
+                    >
+                      <span>👥 Coletivo</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setActivityScopes((prev) => ({
+                          ...prev,
+                          [actId]: 'individual',
+                        }))
+                      }
+                      className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer ${
+                        activityScopes[actId] === 'individual'
+                          ? 'bg-emerald-600 text-white shadow-2xs'
+                          : 'text-slate-600 hover:text-slate-900'
+                      }`}
+                      title={`Modo Individual: Salva apenas para ${studentNome.split(' ')[0]}`}
+                    >
+                      <span>👤 Individual</span>
+                    </button>
+                  </div>
+                )}
 
                 {/* Botões de Ação: [Recusou] e [Entregue] */}
                 <div className="flex items-center gap-2">
@@ -2331,19 +2480,25 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                     className={`px-4 py-2 text-xs font-black rounded-xl transition cursor-pointer shadow-xs active:scale-95 flex items-center gap-1.5 ${
                       isEntregue
                         ? 'bg-emerald-600 text-white font-black'
+                        : act.tipo === 'medicacao'
+                        ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
                         : 'bg-emerald-600 hover:bg-emerald-700 text-white'
                     }`}
                     title={
-                      (activityScopes[actId] || 'coletivo') === 'coletivo'
+                      act.tipo === 'medicacao'
+                        ? 'Registrar ministração'
+                        : (activityScopes[actId] || 'coletivo') === 'coletivo'
                         ? 'Salvar e replicar para toda a turma'
                         : `Salvar apenas para ${studentNome.split(' ')[0]}`
                     }
                   >
                     <Check size={14} />
-                    <span>Entregue</span>
-                    <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md bg-emerald-800/60 text-emerald-100 uppercase tracking-tight">
-                      {(activityScopes[actId] || 'coletivo') === 'coletivo' ? 'Turma' : 'Indiv.'}
-                    </span>
+                    <span>{isEntregue ? (act.tipo === 'medicacao' ? 'Ministrado' : 'Entregue') : (act.tipo === 'medicacao' ? 'Ministrar' : 'Entregue')}</span>
+                    {act.tipo !== 'medicacao' && (
+                      <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md bg-emerald-800/60 text-emerald-100 uppercase tracking-tight">
+                        {(activityScopes[actId] || 'coletivo') === 'coletivo' ? 'Turma' : 'Indiv.'}
+                      </span>
+                    )}
                   </button>
                 </div>
               </div>
