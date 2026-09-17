@@ -115,137 +115,146 @@ export default function MiniRelogioCalendarioAura({ onOpenAgenda, className = ''
         </div>
       </button>
 
-      {/* Popover Mini Calendário */}
+      {/* Popover / Modal Mini Calendário */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-24px)] bg-white rounded-2xl shadow-2xl border border-slate-200/90 text-slate-800 z-50 p-3.5 animate-in fade-in zoom-in-95 duration-150">
-          {/* Header do Mini Calendário */}
-          <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-2.5">
-            <div className="flex items-center gap-1.5">
-              <div className="w-6 h-6 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold">
-                <Calendar size={13} />
-              </div>
-              <div>
-                <h4 className="text-xs font-black text-slate-900 leading-tight">
-                  {monthNames[month]} {year}
-                </h4>
-                <p className="text-[10px] text-slate-400 font-mono font-semibold">
-                  {timeStr}
-                </p>
-              </div>
-            </div>
+        <>
+          {/* Backdrop escuro suave para celular */}
+          <div
+            className="fixed inset-0 z-[99] bg-slate-900/60 backdrop-blur-xs sm:hidden"
+            onClick={() => setIsOpen(false)}
+          />
 
-            <div className="flex items-center gap-0.5">
-              <button
-                type="button"
-                onClick={handlePrevMonth}
-                className="p-1 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition cursor-pointer"
-                title="Mês anterior"
-              >
-                <ChevronLeft size={14} />
-              </button>
-              <button
-                type="button"
-                onClick={handleResetToday}
-                className="px-1.5 py-0.5 rounded-md text-[10px] font-bold text-indigo-600 hover:bg-indigo-50 transition cursor-pointer"
-                title="Voltar para hoje"
-              >
-                Hoje
-              </button>
-              <button
-                type="button"
-                onClick={handleNextMonth}
-                className="p-1 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition cursor-pointer"
-                title="Próximo mês"
-              >
-                <ChevronRight size={14} />
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsOpen(false)}
-                className="p-1 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition cursor-pointer ml-1"
-                title="Fechar"
-              >
-                <X size={14} />
-              </button>
-            </div>
-          </div>
-
-          {/* Dias da semana */}
-          <div className="grid grid-cols-7 gap-1 text-center mb-1">
-            {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((d, i) => (
-              <span
-                key={i}
-                className={`text-[10px] font-black ${
-                  i === 0 || i === 6 ? 'text-rose-500' : 'text-slate-400'
-                }`}
-              >
-                {d}
-              </span>
-            ))}
-          </div>
-
-          {/* Grid dos dias */}
-          <div className="grid grid-cols-7 gap-1 text-center">
-            {/* Dias do mês anterior */}
-            {Array.from({ length: firstDayIndex }).map((_, i) => {
-              const dayNum = daysInPrevMonth - firstDayIndex + i + 1;
-              return (
-                <div
-                  key={`prev-${i}`}
-                  className="h-7 flex items-center justify-center text-[11px] text-slate-300 select-none"
-                >
-                  {dayNum}
+          {/* Container do Calendário: Centralizado na tela no mobile, popover ancorado no desktop */}
+          <div className="fixed inset-x-4 top-1/2 -translate-y-1/2 sm:translate-y-0 sm:top-full sm:right-0 sm:left-auto sm:absolute sm:inset-x-auto sm:mt-2 w-auto sm:w-72 max-w-[340px] mx-auto sm:mx-0 bg-white rounded-3xl sm:rounded-2xl shadow-2xl border border-slate-200/90 text-slate-800 z-[100] p-4 sm:p-3.5 animate-in fade-in zoom-in-95 duration-150">
+            {/* Header do Mini Calendário */}
+            <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 mb-2.5">
+              <div className="flex items-center gap-2">
+                <div className="w-7 h-7 sm:w-6 sm:h-6 rounded-xl sm:rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold">
+                  <Calendar size={14} />
                 </div>
-              );
-            })}
+                <div>
+                  <h4 className="text-sm sm:text-xs font-black text-slate-900 leading-tight">
+                    {monthNames[month]} {year}
+                  </h4>
+                  <p className="text-[11px] sm:text-[10px] text-slate-400 font-mono font-semibold">
+                    {timeStr}
+                  </p>
+                </div>
+              </div>
 
-            {/* Dias do mês atual */}
-            {Array.from({ length: daysInMonth }).map((_, i) => {
-              const dayNum = i + 1;
-              const isToday =
-                dayNum === now.getDate() &&
-                month === now.getMonth() &&
-                year === now.getFullYear();
-              const dayOfWeek = (firstDayIndex + i) % 7;
-              const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+              <div className="flex items-center gap-1">
+                <button
+                  type="button"
+                  onClick={handlePrevMonth}
+                  className="p-1.5 sm:p-1 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition cursor-pointer"
+                  title="Mês anterior"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleResetToday}
+                  className="px-2 sm:px-1.5 py-1 sm:py-0.5 rounded-lg sm:rounded-md text-[11px] sm:text-[10px] font-bold text-indigo-600 bg-indigo-50/70 hover:bg-indigo-100 transition cursor-pointer"
+                  title="Voltar para hoje"
+                >
+                  Hoje
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNextMonth}
+                  className="p-1.5 sm:p-1 rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-800 transition cursor-pointer"
+                  title="Próximo mês"
+                >
+                  <ChevronRight size={16} />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  className="p-1.5 sm:p-1 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition cursor-pointer ml-1"
+                  title="Fechar"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
 
-              return (
-                <div
-                  key={`day-${dayNum}`}
-                  className={`h-7 flex items-center justify-center text-xs font-semibold rounded-lg transition ${
-                    isToday
-                      ? 'bg-indigo-600 text-white font-black shadow-xs ring-2 ring-indigo-200'
-                      : isWeekend
-                      ? 'text-rose-600/80 hover:bg-slate-50'
-                      : 'text-slate-700 hover:bg-slate-100'
+            {/* Dias da semana */}
+            <div className="grid grid-cols-7 gap-1 text-center mb-1.5">
+              {['D', 'S', 'T', 'Q', 'Q', 'S', 'S'].map((d, i) => (
+                <span
+                  key={i}
+                  className={`text-[11px] sm:text-[10px] font-black ${
+                    i === 0 || i === 6 ? 'text-rose-500' : 'text-slate-400'
                   }`}
                 >
-                  {dayNum}
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Rodapé com atalho para a Agenda Escolar */}
-          {onOpenAgenda && (
-            <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between">
-              <span className="text-[10px] text-slate-400 font-medium">
-                Anjinho Escolar
-              </span>
-              <button
-                type="button"
-                onClick={() => {
-                  setIsOpen(false);
-                  onOpenAgenda();
-                }}
-                className="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 transition cursor-pointer hover:underline"
-              >
-                <span>Ver Agenda Completa</span>
-                <ExternalLink size={10} />
-              </button>
+                  {d}
+                </span>
+              ))}
             </div>
-          )}
-        </div>
+
+            {/* Grid dos dias */}
+            <div className="grid grid-cols-7 gap-1 text-center">
+              {/* Dias do mês anterior */}
+              {Array.from({ length: firstDayIndex }).map((_, i) => {
+                const dayNum = daysInPrevMonth - firstDayIndex + i + 1;
+                return (
+                  <div
+                    key={`prev-${i}`}
+                    className="h-8 sm:h-7 flex items-center justify-center text-[12px] sm:text-[11px] text-slate-300 select-none"
+                  >
+                    {dayNum}
+                  </div>
+                );
+              })}
+
+              {/* Dias do mês atual */}
+              {Array.from({ length: daysInMonth }).map((_, i) => {
+                const dayNum = i + 1;
+                const isToday =
+                  dayNum === now.getDate() &&
+                  month === now.getMonth() &&
+                  year === now.getFullYear();
+                const dayOfWeek = (firstDayIndex + i) % 7;
+                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+
+                return (
+                  <div
+                    key={`day-${dayNum}`}
+                    className={`h-8 sm:h-7 flex items-center justify-center text-xs font-semibold rounded-xl sm:rounded-lg transition ${
+                      isToday
+                        ? 'bg-indigo-600 text-white font-black shadow-xs ring-2 ring-indigo-200'
+                        : isWeekend
+                        ? 'text-rose-600/80 hover:bg-slate-50'
+                        : 'text-slate-700 hover:bg-slate-100'
+                    }`}
+                  >
+                    {dayNum}
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Rodapé com atalho para a Agenda Escolar */}
+            {onOpenAgenda && (
+              <div className="mt-3.5 pt-2.5 border-t border-slate-100 flex items-center justify-between">
+                <span className="text-[11px] sm:text-[10px] text-slate-400 font-medium">
+                  Anjinho Escolar
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsOpen(false);
+                    onOpenAgenda();
+                  }}
+                  className="text-xs sm:text-[11px] font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5 transition cursor-pointer hover:underline py-1"
+                >
+                  <span>Ver Agenda Completa</span>
+                  <ExternalLink size={12} />
+                </button>
+              </div>
+            )}
+          </div>
+        </>
       )}
     </div>
   );
