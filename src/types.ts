@@ -171,6 +171,8 @@ export interface StudentPaxData {
     anexoReceitaUrl?: string;
     estoqueFrascos?: number;
     suspenso?: boolean;
+    ministradoDias?: string[];
+    observacoesDias?: Record<string, string>;
   }[];
   agua: {
     consumoMl: number;

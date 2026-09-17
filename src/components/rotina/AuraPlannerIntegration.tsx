@@ -997,6 +997,22 @@ export default function AuraPlannerIntegration({
       );
       setActivityNotes({});
       setStatusFilter('todas');
+
+      // Limpa os registros de medicamentos também ao zerar o cronômetro / iniciar novo período
+      if (student && student.medicamentos && onUpdateStudent) {
+        const resetMeds = student.medicamentos.map((m) => ({
+          ...m,
+          ministradoHoje: false,
+          ministradoDias: [],
+          observacoesDias: {},
+          ministradoPor: undefined,
+          ministradoHorario: undefined,
+          observacaoMinistracao: undefined,
+        }));
+        onUpdateStudent({
+          medicamentos: resetMeds,
+        });
+      }
     };
 
     const handleRotinaRegistrada = (e: Event) => {
@@ -1139,6 +1155,8 @@ export default function AuraPlannerIntegration({
           : [selectedDayTab];
           
         targetDays.forEach((dayName) => {
+          const isMinistradoNoDia = med.ministradoDias?.includes(dayName) || (dayName === 'Segunda-feira' && med.ministradoHoje);
+          const obsDia = med.observacoesDias?.[dayName] || med.observacaoMinistracao || '';
           medActivities.push({
             id: `med-dyn-${med.id}-${cleanTime}-${dayName}-${timeIdx}`,
             dia: dayName,
@@ -1146,11 +1164,11 @@ export default function AuraPlannerIntegration({
             titulo: `💊 Medicamento: ${med.nome}`,
             descricao: `Dosagem: ${med.dosagem}. Instruções: ${med.instrucoes}. (Prescrito pelos Pais)`,
             tipo: 'medicacao',
-            status: med.ministradoHoje ? 'entregue' : 'pendente',
-            entregue: !!med.ministradoHoje,
+            status: isMinistradoNoDia ? 'entregue' : 'pendente',
+            entregue: !!isMinistradoNoDia,
             isRotinaPadrao: false,
             objetivoBNCC: 'Cuidado, saúde e bem-estar do bebê',
-            observacao: med.observacaoMinistracao || '',
+            observacao: isMinistradoNoDia ? obsDia : '',
             escopo: 'individual'
           });
         });
@@ -1385,12 +1403,20 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
       if (student && student.medicamentos && onUpdateStudent) {
         const parts = actId.split('-');
         const medId = parts[2];
+        const targetDay = act.dia || selectedDayTab;
         
         const updatedMeds = student.medicamentos.map((m) => {
           if (m.id === medId) {
+            const currentDays = m.ministradoDias || [];
+            const nextDays = currentDays.includes(targetDay) ? currentDays : [...currentDays, targetDay];
+            const currentObs = m.observacoesDias || {};
+            const nextObs = { ...currentObs, [targetDay]: note || 'Dose administrada no horário estipulado.' };
+            
             return {
               ...m,
               ministradoHoje: true,
+              ministradoDias: nextDays,
+              observacoesDias: nextObs,
               ministradoPor: 'Ana Silva (Professora Titular)',
               ministradoHorario: act.horario,
               observacaoMinistracao: note || 'Dose administrada no horário estipulado.'
@@ -1404,8 +1430,8 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
           id: `audit_med_${Date.now()}`,
           hora: act.horario || horaAtual,
           tipo: 'saude' as const,
-          titulo: `💊 Medicamento Ministrado: ${act.titulo.replace('💊 Medicamento: ', '')}`,
-          descricao: `Dose de ${act.horario} administrada com sucesso por Ana Silva (Professora Titular).\n\n💬 Observações: ${note || 'Dose administrada no horário estipulado.'}`,
+          titulo: `💊 Medicamento Ministrado: ${act.titulo.replace('💊 Medicamento: ', '')} (${targetDay})`,
+          descricao: `Dose de ${act.horario} (${targetDay}) administrada com sucesso por Ana Silva (Professora Titular).\n\n💬 Observações: ${note || 'Dose administrada no horário estipulado.'}`,
           responsavel: 'Ana Silva (Professora Titular)',
           verificado: true
         };
@@ -1450,12 +1476,20 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
       if (student && student.medicamentos && onUpdateStudent) {
         const parts = actId.split('-');
         const medId = parts[2];
+        const targetDay = act.dia || selectedDayTab;
         
         const updatedMeds = student.medicamentos.map((m) => {
           if (m.id === medId) {
+            const currentDays = m.ministradoDias || [];
+            const nextDays = currentDays.filter(d => d !== targetDay);
+            const currentObs = m.observacoesDias || {};
+            const nextObs = { ...currentObs, [targetDay]: note || 'A dose foi recusada ou não pôde ser administrada.' };
+            
             return {
               ...m,
               ministradoHoje: false,
+              ministradoDias: nextDays,
+              observacoesDias: nextObs,
               observacaoMinistracao: note || 'A dose foi recusada ou não pôde ser administrada.'
             };
           }
@@ -1467,8 +1501,8 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
           id: `audit_med_rec_${Date.now()}`,
           hora: act.horario || horaAtual,
           tipo: 'saude' as const,
-          titulo: `⚠️ Recusa de Medicamento: ${act.titulo.replace('💊 Medicamento: ', '')}`,
-          descricao: `A dose de ${act.horario} foi recusada ou não pôde ser administrada.\n\n💬 Motivo: ${note || 'Criança recusou ou não pôde tomar a dose.'}`,
+          titulo: `⚠️ Recusa de Medicamento: ${act.titulo.replace('💊 Medicamento: ', '')} (${targetDay})`,
+          descricao: `A dose de ${act.horario} (${targetDay}) foi recusada ou não pôde ser administrada.\n\n💬 Motivo: ${note || 'Criança recusou ou não pôde tomar a dose.'}`,
           responsavel: 'Ana Silva (Professora Titular)',
           verificado: true
         };
