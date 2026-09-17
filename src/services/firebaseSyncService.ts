@@ -36,6 +36,18 @@ export function subscribeToStudents(
         map[docSnap.id] = data;
       });
 
+      // Autocorreção: Se Mariana não tiver medicamentos no Firestore ou Enzo tiver os de Mariana incorretamente
+      const marianaDb = map['mariana_souza'];
+      const enzoDb = map['enzo_alencar'];
+      if (
+        (marianaDb && (!marianaDb.medicamentos || marianaDb.medicamentos.length === 0)) ||
+        (enzoDb && enzoDb.medicamentos && enzoDb.medicamentos.some(m => m.id.startsWith('med_mariana')))
+      ) {
+        console.log('[Firestore] Detectado desalinhamento de medicamentos. Corrigindo banco...');
+        await seedInitialStudents();
+        return;
+      }
+
       onData(map);
     },
     (error) => {
