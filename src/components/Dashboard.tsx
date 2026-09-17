@@ -16,6 +16,7 @@ import DirecaoModule from './direcao/DirecaoModule';
 import CentralJuridicaESuporteModule from './direcao/CentralJuridicaESuporteModule';
 import BrandBookModule from './brandbook/BrandBookModule';
 import FloatingRoleSwitcher from './comum/FloatingRoleSwitcher';
+import BotaoVoltarAoAluno from './comum/BotaoVoltarAoAluno';
 import TelaAtalhoSimuladorModal, { AtalhoPerfil } from './comum/TelaAtalhoSimuladorModal';
 import { PAX_STUDENTS, StudentPaxData } from '../data/paxStudentsData';
 import { getLgpdConsentimentoAluno } from '../services/lgpdService';
@@ -328,6 +329,12 @@ export default function Dashboard({ user }: Props) {
           </div>
         </div>
       )}
+
+      {/* Botão Flutuante de Retorno Rápido ao Aluno/Perfil (Seta para cima com foto) */}
+      <BotaoVoltarAoAluno
+        studentName={currentStudent.nome}
+        studentPhoto={currentStudent.fotoUrl}
+      />
 
       {/* Botões Flutuantes Permanentes de Troca Rápida de Perfil (Professor, Pais/Família, Diretora) */}
       <FloatingRoleSwitcher

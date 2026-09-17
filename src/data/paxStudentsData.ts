@@ -1,4 +1,5 @@
 import { StudentPaxData } from '../types';
+export type { StudentPaxData };
 
 export const PAX_STUDENTS: Record<string, StudentPaxData> = {
   'enzo_alencar': {

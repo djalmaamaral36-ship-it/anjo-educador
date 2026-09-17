@@ -55,7 +55,10 @@ export default function PaxStudentCard({
   };
 
   return (
-    <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/80 shadow-xs space-y-6">
+    <div
+      id="perfil-aluno-card"
+      className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/80 shadow-xs space-y-6 scroll-mt-24 transition-all duration-300"
+    >
       {/* Barra de Troca Rápida de Aluno (Apenas Professor) */}
       {userRole === 'professor' && allStudents.length > 0 && (
         <div className="pb-4 border-b border-slate-100">

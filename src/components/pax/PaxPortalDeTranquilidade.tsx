@@ -337,15 +337,14 @@ export default function PaxPortalDeTranquilidade({
       {/* 7. Os 7 Cards Horizontais de Saúde, Sono & Fralda */}
       <PaxSaudeHorizontalCards student={currentStudent} />
 
-      {/* 8. Planejamento Aura & Atividades Pedagógicas da Aula (Apenas na visão da Professora / Educadora) */}
-      {effectiveRole === 'professor' && (
-        <AuraPlannerIntegration
-          student={currentStudent}
-          onUpdateStudent={handleUpdateStudent}
-          onConcluirAtividadePedagogica={handleConcluirAtividadePedagogica}
-          studentNome={currentStudent.nome}
-        />
-      )}
+      {/* 8. Planejamento Aura & Atividades Pedagógicas da Aula (Visão Completa para Professora e Acompanhamento Afetivo para Pais) */}
+      <AuraPlannerIntegration
+        student={currentStudent}
+        onUpdateStudent={handleUpdateStudent}
+        onConcluirAtividadePedagogica={handleConcluirAtividadePedagogica}
+        studentNome={currentStudent.nome}
+        userRole={effectiveRole}
+      />
 
       {/* 9. Linha do Tempo e Auditoria de Saúde & Atividades */}
       <PaxLinhaDoTempoAuditoria

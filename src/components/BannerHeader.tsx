@@ -571,7 +571,7 @@ export default function BannerHeader({
       </div>
 
       {/* Secondary Navy Bar (Child Context, Live Aura Clock & Search) */}
-      <div className="bg-[#120f30] text-white px-3 sm:px-5 py-2 border-t border-white/10">
+      <div id="aluno-context-header" className="bg-[#120f30] text-white px-3 sm:px-5 py-2 border-t border-white/10 scroll-mt-2">
         <div className="max-w-[1500px] mx-auto flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-3">
           {/* Linha Superior: Criança em Exibição + Mini Relógio Aura + Atalho PIN */}
           <div className="flex items-center justify-between gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">

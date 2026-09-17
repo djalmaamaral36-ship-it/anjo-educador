@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   Sparkles, Clock, CheckCircle2, RotateCcw, Trash2, Edit2, Check, Mic, 
   Plus, Calendar, AlertCircle, Save, X, Utensils, Moon, Droplets, BookOpen, 
-  XCircle, Filter, RefreshCw, AlertTriangle, ArrowUpDown, Layers, Pill
+  XCircle, Filter, RefreshCw, AlertTriangle, ArrowUpDown, Layers, Pill, Heart
 } from 'lucide-react';
 import { parseAuraRawPlan, ParsedAuraActivity } from '../../utils/auraPlanParser';
 import { DEFAULT_INITIAL_ACTIVITIES as PLAN_ACTIVITIES } from '../../data/weeklyPlan';
@@ -13,6 +13,7 @@ interface Props {
   studentNome?: string;
   student?: StudentPaxData;
   onUpdateStudent?: (updated: Partial<StudentPaxData>) => void;
+  userRole?: 'professor' | 'familia';
 }
 
 // Converte horário "HH:MM" para minutos para ordenação cronológica precisa
@@ -945,11 +946,31 @@ export default function AuraPlannerIntegration({
   onConcluirAtividadePedagogica, 
   studentNome = 'Mariana Souza',
   student,
-  onUpdateStudent
+  onUpdateStudent,
+  userRole = 'professor'
 }: Props) {
   const [inputText, setInputText] = useState('');
   const [activities, setActivities] = useState<ParsedAuraActivity[]>(() => sortActivitiesBySchedule(deduplicateActivities(PLAN_ACTIVITIES)));
-  const [selectedDayTab, setSelectedDayTab] = useState<string>('all');
+  const [selectedDayTab, setSelectedDayTab] = useState<string>(() => {
+    try {
+      const saved = localStorage.getItem('anjinho_planner_selected_day');
+      if (saved && (saved === 'all' || ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira'].includes(saved))) {
+        return saved;
+      }
+    } catch (e) {
+      // ignore
+    }
+    return 'all';
+  });
+
+  const handleSelectDayTab = (day: string) => {
+    setSelectedDayTab(day);
+    try {
+      localStorage.setItem('anjinho_planner_selected_day', day);
+    } catch (e) {
+      // ignore
+    }
+  };
   const [statusFilter, setStatusFilter] = useState<'todas' | 'pendentes' | 'entregues' | 'recusadas'>('todas');
   const [isProcessing, setIsProcessing] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -1630,51 +1651,60 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2">
-          <button
-            type="button"
-            onClick={handleRestoreDefault}
-            title="Restaurar grade padrão com todas as atividades em status pendente"
-            className="px-3 py-2 text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5"
-          >
-            <RefreshCw size={14} className="text-slate-600" />
-            <span>Restaurar Padrão</span>
-          </button>
+        {userRole === 'familia' ? (
+          <div className="flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200/80 px-3.5 py-2 rounded-2xl shadow-2xs">
+            <Heart size={15} className="text-emerald-600 shrink-0" />
+            <span className="text-xs font-bold">
+              Acompanhamento Pedagógico Familiar • Método Árvore da Infância®
+            </span>
+          </div>
+        ) : (
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onClick={handleRestoreDefault}
+              title="Restaurar grade padrão com todas as atividades em status pendente"
+              className="px-3 py-2 text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5"
+            >
+              <RefreshCw size={14} className="text-slate-600" />
+              <span>Restaurar Padrão</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={handleClearAll}
-            title="Limpar todas as atividades para cadastrar novas"
-            className="px-3 py-2 text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition cursor-pointer flex items-center gap-1.5"
-          >
-            <Trash2 size={13} />
-            <span>Limpar Atividades</span>
-          </button>
+            <button
+              type="button"
+              onClick={handleClearAll}
+              title="Limpar todas as atividades para cadastrar novas"
+              className="px-3 py-2 text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition cursor-pointer flex items-center gap-1.5"
+            >
+              <Trash2 size={13} />
+              <span>Limpar Atividades</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              setShowForm(true);
-              setFormMode('importar');
-            }}
-            className="px-4 py-2 text-xs font-black text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 rounded-xl shadow-xs transition cursor-pointer flex items-center gap-1.5 active:scale-95"
-          >
-            <Sparkles size={15} className="text-amber-300" />
-            <span>Importar Aura</span>
-          </button>
+            <button
+              type="button"
+              onClick={() => {
+                setShowForm(true);
+                setFormMode('importar');
+              }}
+              className="px-4 py-2 text-xs font-black text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 rounded-xl shadow-xs transition cursor-pointer flex items-center gap-1.5 active:scale-95"
+            >
+              <Sparkles size={15} className="text-amber-300" />
+              <span>Importar Aura</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => {
-              setShowForm(true);
-              setFormMode('direto');
-            }}
-            className="px-4 py-2 text-xs font-black text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition cursor-pointer flex items-center gap-1.5 active:scale-95"
-          >
-            <Plus size={16} />
-            <span>+ Nova Atividade</span>
-          </button>
-        </div>
+            <button
+              type="button"
+              onClick={() => {
+                setShowForm(true);
+                setFormMode('direto');
+              }}
+              className="px-4 py-2 text-xs font-black text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition cursor-pointer flex items-center gap-1.5 active:scale-95"
+            >
+              <Plus size={16} />
+              <span>+ Nova Atividade</span>
+            </button>
+          </div>
+        )}
       </div>
 
       {/* PAINEL DE MÉTRICAS DE GOVERNANÇA (EXIGIDO PARA MÉTRICAS DO DIRETOR) */}
@@ -1704,7 +1734,7 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
             return (
               <div 
                 key={ds.dia}
-                onClick={() => setSelectedDayTab(ds.dia)}
+                onClick={() => handleSelectDayTab(ds.dia)}
                 className={`p-4 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 ${
                   isSelected 
                     ? 'bg-gradient-to-br from-indigo-600 to-blue-600 border-indigo-600 text-white shadow-md scale-[1.02]' 
@@ -2209,7 +2239,7 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
           <div className="flex flex-wrap gap-1.5">
             <button
               type="button"
-              onClick={() => setSelectedDayTab('all')}
+              onClick={() => handleSelectDayTab('all')}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
                 selectedDayTab === 'all'
                   ? 'bg-blue-600 text-white shadow-xs font-black'
@@ -2228,7 +2258,7 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
               <button
                 key={ds.dia}
                 type="button"
-                onClick={() => setSelectedDayTab(ds.dia)}
+                onClick={() => handleSelectDayTab(ds.dia)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
                   selectedDayTab === ds.dia
                     ? 'bg-blue-600 text-white shadow-xs font-black'
@@ -2398,24 +2428,30 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
 
                 {/* Ações de Edição e Exclusão */}
                 {act.tipo !== 'medicacao' ? (
-                  <div className="flex items-center gap-1 shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => handleStartEdit(act, idx)}
-                      title="Editar atividade"
-                      className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer"
-                    >
-                      <Edit2 size={15} />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleDelete(actId, idx)}
-                      title="Excluir atividade"
-                      className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer"
-                    >
-                      <Trash2 size={15} />
-                    </button>
-                  </div>
+                  userRole !== 'familia' ? (
+                    <div className="flex items-center gap-1 shrink-0">
+                      <button
+                        type="button"
+                        onClick={() => handleStartEdit(act, idx)}
+                        title="Editar atividade"
+                        className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer"
+                      >
+                        <Edit2 size={15} />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleDelete(actId, idx)}
+                        title="Excluir atividade"
+                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer"
+                      >
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
+                  ) : (
+                    <span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
+                      Plano Semanal
+                    </span>
+                  )
                 ) : (
                   <span className="text-[10px] font-black uppercase tracking-wider bg-indigo-100/80 text-indigo-800 px-2 py-1 rounded-md border border-indigo-200 select-none">
                     Autorização Ativa
@@ -2484,132 +2520,166 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                 )}
               </div>
 
-              {/* Observações da Atividade com Microfone de Voz */}
-              <div className="space-y-1.5 pt-2 border-t border-slate-100">
-                <div className="flex items-center justify-between">
-                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-500">
-                    {act.tipo === 'medicacao' ? 'Observações de Ministração' : 'Observações da Atividade'}
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      startVoiceInput(
-                        (val) =>
-                          setActivityNotes((prev) => ({
-                            ...prev,
-                            [actId]: typeof val === 'function' ? val(prev[actId] || '') : val
-                          })),
-                        (isRec) => setListeningNoteId(isRec ? actId : null)
-                      )
-                    }
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 cursor-pointer transition ${
-                      isListeningNote ? 'bg-rose-500 text-white animate-pulse' : 'text-blue-600 hover:bg-blue-50'
-                    }`}
-                  >
-                    <Mic size={12} />
-                    <span>{isListeningNote ? 'Ouvindo voz...' : 'Gravar'}</span>
-                  </button>
-                </div>
-
-                <input
-                  type="text"
-                  value={currentNote}
-                  onChange={(e) =>
-                    setActivityNotes({ ...activityNotes, [actId]: e.target.value })
-                  }
-                  placeholder={act.tipo === 'medicacao' ? 'Ex: Tomou 10 gotas de dipirona diluídas em água.' : 'Ex: Realizou a atividade com capricho e atenção...'}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-400"
-                />
-              </div>
-
-              {/* Botões de Ação: [Individual / Coletivo] + [Recusou] + [Entregue] */}
-              <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 mt-1">
-                {act.tipo === 'medicacao' ? (
-                  <div className="flex items-center gap-1 bg-indigo-50 text-indigo-700 px-2.5 py-1.5 rounded-xl border border-indigo-100 text-[11px] font-black">
-                    <span>👤 Medicamento Individual</span>
-                  </div>
-                ) : (
-                  /* Seletor Individual / Coletivo Padronizado no Próprio Cartão */
-                  <div className="flex items-center bg-slate-100/90 p-0.5 rounded-xl border border-slate-200 shadow-2xs">
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setActivityScopes((prev) => ({
-                          ...prev,
-                          [actId]: 'coletivo',
-                        }))
-                      }
-                      className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer ${
-                        (activityScopes[actId] || 'coletivo') === 'coletivo'
-                          ? 'bg-indigo-600 text-white shadow-2xs'
-                          : 'text-slate-600 hover:text-slate-900'
-                      }`}
-                      title="Modo Coletivo: Salva para toda a turma de uma vez"
-                    >
-                      <span>👥 Coletivo</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setActivityScopes((prev) => ({
-                          ...prev,
-                          [actId]: 'individual',
-                        }))
-                      }
-                      className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer ${
-                        activityScopes[actId] === 'individual'
-                          ? 'bg-emerald-600 text-white shadow-2xs'
-                          : 'text-slate-600 hover:text-slate-900'
-                      }`}
-                      title={`Modo Individual: Salva apenas para ${studentNome.split(' ')[0]}`}
-                    >
-                      <span>👤 Individual</span>
-                    </button>
-                  </div>
-                )}
-
-                {/* Botões de Ação: [Recusou] e [Entregue] */}
-                <div className="flex items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => handleMarkRecusou(act, idx)}
-                    className={`px-3.5 py-2 text-xs font-black rounded-xl transition cursor-pointer active:scale-95 ${
-                      isRecusou
-                        ? 'bg-rose-100 text-rose-800 border border-rose-300'
-                        : 'bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-200'
-                    }`}
-                  >
-                    Recusou
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleMarkEntregue(act, idx)}
-                    className={`px-4 py-2 text-xs font-black rounded-xl transition cursor-pointer shadow-xs active:scale-95 flex items-center gap-1.5 ${
-                      isEntregue
-                        ? 'bg-emerald-600 text-white font-black'
-                        : act.tipo === 'medicacao'
-                        ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
-                        : 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                    }`}
-                    title={
-                      act.tipo === 'medicacao'
-                        ? 'Registrar ministração'
-                        : (activityScopes[actId] || 'coletivo') === 'coletivo'
-                        ? 'Salvar e replicar para toda a turma'
-                        : `Salvar apenas para ${studentNome.split(' ')[0]}`
-                    }
-                  >
-                    <Check size={14} />
-                    <span>{isEntregue ? (act.tipo === 'medicacao' ? 'Ministrado' : 'Entregue') : (act.tipo === 'medicacao' ? 'Ministrar' : 'Entregue')}</span>
-                    {act.tipo !== 'medicacao' && (
-                      <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md bg-emerald-800/60 text-emerald-100 uppercase tracking-tight">
-                        {(activityScopes[actId] || 'coletivo') === 'coletivo' ? 'Turma' : 'Indiv.'}
+              {/* Observações da Atividade com Microfone de Voz ou Visão Acolhedora Familiar */}
+              {userRole === 'familia' ? (
+                <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+                  {currentNote ? (
+                    <div className="bg-amber-50/80 border border-amber-200/80 rounded-xl px-3 py-1.5 text-amber-900 text-xs flex items-center gap-1.5">
+                      <span className="font-bold">📝 Observação da Escola:</span>
+                      <span>{currentNote}</span>
+                    </div>
+                  ) : (
+                    <span className="text-[11px] text-slate-500 font-medium">
+                      Planejamento pedagógico integrado • Método Árvore da Infância®
+                    </span>
+                  )}
+                  <div className="shrink-0">
+                    {isEntregue ? (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
+                        <CheckCircle2 size={12} className="text-emerald-700" />
+                        <span>Vivenciada com a Turma</span>
+                      </span>
+                    ) : isRecusou ? (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300">
+                        <span>Observação Registrada</span>
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
+                        <Clock size={11} className="text-slate-500" />
+                        <span>Prevista no Plano de Aula</span>
                       </span>
                     )}
-                  </button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <>
+                  <div className="space-y-1.5 pt-2 border-t border-slate-100">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[10px] font-black uppercase tracking-wider text-slate-500">
+                        {act.tipo === 'medicacao' ? 'Observações de Ministração' : 'Observações da Atividade'}
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          startVoiceInput(
+                            (val) =>
+                              setActivityNotes((prev) => ({
+                                ...prev,
+                                [actId]: typeof val === 'function' ? val(prev[actId] || '') : val
+                              })),
+                            (isRec) => setListeningNoteId(isRec ? actId : null)
+                          )
+                        }
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 cursor-pointer transition ${
+                          isListeningNote ? 'bg-rose-500 text-white animate-pulse' : 'text-blue-600 hover:bg-blue-50'
+                        }`}
+                      >
+                        <Mic size={12} />
+                        <span>{isListeningNote ? 'Ouvindo voz...' : 'Gravar'}</span>
+                      </button>
+                    </div>
+
+                    <input
+                      type="text"
+                      value={currentNote}
+                      onChange={(e) =>
+                        setActivityNotes({ ...activityNotes, [actId]: e.target.value })
+                      }
+                      placeholder={act.tipo === 'medicacao' ? 'Ex: Tomou 10 gotas de dipirona diluídas em água.' : 'Ex: Realizou a atividade com capricho e atenção...'}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-400"
+                    />
+                  </div>
+
+                  {/* Botões de Ação: [Individual / Coletivo] + [Recusou] + [Entregue] */}
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 mt-1">
+                    {act.tipo === 'medicacao' ? (
+                      <div className="flex items-center gap-1 bg-indigo-50 text-indigo-700 px-2.5 py-1.5 rounded-xl border border-indigo-100 text-[11px] font-black">
+                        <span>👤 Medicamento Individual</span>
+                      </div>
+                    ) : (
+                      /* Seletor Individual / Coletivo Padronizado no Próprio Cartão */
+                      <div className="flex items-center bg-slate-100/90 p-0.5 rounded-xl border border-slate-200 shadow-2xs">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setActivityScopes((prev) => ({
+                              ...prev,
+                              [actId]: 'coletivo',
+                            }))
+                          }
+                          className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer ${
+                            (activityScopes[actId] || 'coletivo') === 'coletivo'
+                              ? 'bg-indigo-600 text-white shadow-2xs'
+                              : 'text-slate-600 hover:text-slate-900'
+                          }`}
+                          title="Modo Coletivo: Salva para toda a turma de uma vez"
+                        >
+                          <span>👥 Coletivo</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setActivityScopes((prev) => ({
+                              ...prev,
+                              [actId]: 'individual',
+                            }))
+                          }
+                          className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer ${
+                            activityScopes[actId] === 'individual'
+                              ? 'bg-emerald-600 text-white shadow-2xs'
+                              : 'text-slate-600 hover:text-slate-900'
+                          }`}
+                          title={`Modo Individual: Salva apenas para ${studentNome.split(' ')[0]}`}
+                        >
+                          <span>👤 Individual</span>
+                        </button>
+                      </div>
+                    )}
+
+                    {/* Botões de Ação: [Recusou] e [Entregue] */}
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => handleMarkRecusou(act, idx)}
+                        className={`px-3.5 py-2 text-xs font-black rounded-xl transition cursor-pointer active:scale-95 ${
+                          isRecusou
+                            ? 'bg-rose-100 text-rose-800 border border-rose-300'
+                            : 'bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-200'
+                        }`}
+                      >
+                        Recusou
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleMarkEntregue(act, idx)}
+                        className={`px-4 py-2 text-xs font-black rounded-xl transition cursor-pointer shadow-xs active:scale-95 flex items-center gap-1.5 ${
+                          isEntregue
+                            ? 'bg-emerald-600 text-white font-black'
+                            : act.tipo === 'medicacao'
+                            ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
+                            : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                        }`}
+                        title={
+                          act.tipo === 'medicacao'
+                            ? 'Registrar ministração'
+                            : (activityScopes[actId] || 'coletivo') === 'coletivo'
+                            ? 'Salvar e replicar para toda a turma'
+                            : `Salvar apenas para ${studentNome.split(' ')[0]}`
+                        }
+                      >
+                        <Check size={14} />
+                        <span>{isEntregue ? (act.tipo === 'medicacao' ? 'Ministrado' : 'Entregue') : (act.tipo === 'medicacao' ? 'Ministrar' : 'Entregue')}</span>
+                        {act.tipo !== 'medicacao' && (
+                          <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md bg-emerald-800/60 text-emerald-100 uppercase tracking-tight">
+                            {(activityScopes[actId] || 'coletivo') === 'coletivo' ? 'Turma' : 'Indiv.'}
+                          </span>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           );
         })}

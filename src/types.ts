@@ -417,3 +417,74 @@ export interface LgpdLogRegistro {
 // Modelos do Álbum da 1ª Infância®
 export * from './types/albumInfancia';
 
+// Tipos para compatibilidade com dados de demonstração e relatórios
+export interface AlunoMedicamento {
+  nome: string;
+  dosagem: string;
+  horario: string;
+  instrucoes: string;
+  autorizadoPor: string;
+}
+
+export interface Aluno {
+  id: string;
+  nome: string;
+  turma: string;
+  responsaveis: string;
+  telefoneContato: string;
+  presente: boolean;
+  recadinhoIndividual?: string;
+  medicamentoAtivo?: AlunoMedicamento;
+}
+
+export interface RotinaDia {
+  alunoId: string;
+  data: string;
+  alimentacao: string;
+  sono: string;
+  tempoSono: string;
+  higiene: string;
+  evacuacao: string;
+  humor: string;
+  atividades: string[];
+  recadinhoEducadora: string;
+  fotos?: string[];
+}
+
+export interface RecadinhoTurma {
+  data: string;
+  turma: string;
+  mensagem: string;
+  educadoraNome: string;
+  destaque: boolean;
+  categoria: string;
+}
+
+export interface MuralAviso {
+  id: string;
+  titulo: string;
+  conteudo: string;
+  data: string;
+  autor: string;
+  categoria: string;
+}
+
+export interface PlanejamentoSemanal {
+  id: string;
+  turma: string;
+  semana: string;
+  campoExperienciaBNCC: string;
+  objetivosAprendizagem: string;
+  atividadesPropostas: string;
+  status: 'Aprovado' | 'Pendente' | 'Ajustar';
+  observacaoCoordenacao?: string;
+}
+
+export interface DadoFinanceiroPax {
+  totalAlunosMatriculados: number;
+  mensalidadesEmDia: number;
+  mensalidadesPendentes: number;
+  taxaPaxAtiva: boolean;
+  receitaMensalEstimada: string;
+}
+
