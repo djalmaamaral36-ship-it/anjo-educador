@@ -117,7 +117,7 @@ export default function MiniRelogioCalendarioAura({ onOpenAgenda, className = ''
 
       {/* Popover Mini Calendário */}
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200/90 text-slate-800 z-50 p-3.5 animate-in fade-in zoom-in-95 duration-150">
+        <div className="absolute right-0 top-full mt-2 w-72 max-w-[calc(100vw-24px)] bg-white rounded-2xl shadow-2xl border border-slate-200/90 text-slate-800 z-50 p-3.5 animate-in fade-in zoom-in-95 duration-150">
           {/* Header do Mini Calendário */}
           <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-2.5">
             <div className="flex items-center gap-1.5">

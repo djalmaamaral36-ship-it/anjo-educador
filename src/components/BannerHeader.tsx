@@ -415,15 +415,12 @@ export default function BannerHeader({
 
           {/* Right Profile & Controls */}
           <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-            {/* Mini Relógio e Calendário Estilo Anjinha Aura */}
-            <MiniRelogioCalendarioAura onOpenAgenda={() => onSelectTab('agenda')} />
-
             {/* Botão de Destaque Oficial: Anjinha Aura IA (Sempre visível em todos os tamanhos de tela) */}
             <button
               onClick={handleAuraSSO}
               disabled={isAuraLoading}
               title="Acessar Anjinha Aura - Inteligência Artificial & Apoio Pedagógico"
-              className={`px-2.5 sm:px-3.5 py-1.5 rounded-xl text-xs sm:text-xs font-black bg-gradient-to-r from-amber-400 via-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-amber-950 shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 whitespace-nowrap border border-amber-300/60 ${isAuraLoading ? 'opacity-70 cursor-wait' : ''}`}
+              className={`px-2 sm:px-3.5 py-1.5 rounded-xl text-xs sm:text-xs font-black bg-gradient-to-r from-amber-400 via-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-amber-950 shadow-md hover:shadow-lg transition-all flex items-center gap-1.5 cursor-pointer active:scale-95 whitespace-nowrap border border-amber-300/60 ${isAuraLoading ? 'opacity-70 cursor-wait' : ''}`}
             >
               {isAuraLoading ? (
                 <RotateCcw className="animate-spin text-amber-950" size={13} />
@@ -533,18 +530,7 @@ export default function BannerHeader({
               )}
             </div>
 
-            {/* Quick Role Toggle Icon (Moon/Sun) */}
-            {onToggleRole && (
-              <button
-                onClick={() => onToggleRole(userRole === 'professor' ? 'familia' : 'professor')}
-                className="p-1 sm:p-2 rounded-xl bg-white/10 hover:bg-white/20 text-indigo-100 hover:text-white transition cursor-pointer"
-                title={userRole === 'professor' ? 'Mudar para perfil de Família' : 'Mudar para perfil de Professor'}
-              >
-                {userRole === 'professor' ? <Moon size={15} /> : <Sun size={15} />}
-              </button>
-            )}
-
-            {/* Quick Logout Icon -> Opens Shortcut Screen */}
+            {/* Atalho de Seta para Trocar Perfil / PIN (Sempre visível no celular, sem corte) */}
             <button
               onClick={() => {
                 if (onOpenShortcutModal) {
@@ -553,10 +539,11 @@ export default function BannerHeader({
                   signOut(auth);
                 }
               }}
-              className="p-1 sm:p-2 rounded-xl bg-white/10 hover:bg-white/25 text-indigo-100 hover:text-white transition cursor-pointer shadow-xs"
-              title="Tela de Atalho (Simular Perfil)"
+              className="p-1.5 sm:p-2 rounded-xl bg-amber-400/20 hover:bg-amber-400/35 text-amber-300 hover:text-white border border-amber-300/40 transition cursor-pointer shadow-xs flex-shrink-0 flex items-center gap-1"
+              title="Atalho: Trocar Perfil / PIN de Acesso"
             >
-              <LogOut size={15} />
+              <LogOut size={15} className="text-amber-300" />
+              <span className="text-[10px] font-black uppercase text-amber-300 hidden sm:inline">PIN</span>
             </button>
           </div>
         </div>
@@ -583,38 +570,58 @@ export default function BannerHeader({
         </div>
       </div>
 
-      {/* Secondary Navy Bar (Child Context & Search) */}
+      {/* Secondary Navy Bar (Child Context, Live Aura Clock & Search) */}
       <div className="bg-[#120f30] text-white px-3 sm:px-5 py-2 border-t border-white/10">
-        <div className="max-w-[1500px] mx-auto flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3">
-          {/* Child in View Badge */}
-          <div
-            onClick={onOpenStudentModal}
-            className={`flex items-center gap-2.5 ${
-              onOpenStudentModal ? 'cursor-pointer hover:bg-white/5 p-1 -m-1 rounded-xl transition' : ''
-            }`}
-            title={onOpenStudentModal ? 'Clique para trocar de aluno' : undefined}
-          >
-            <div className="w-8 h-8 rounded-full overflow-hidden bg-amber-400 border border-indigo-300 flex-shrink-0">
-              <img
-                src={selectedChildPhoto}
-                alt={selectedChildName}
-                className="w-full h-full object-cover"
-              />
+        <div className="max-w-[1500px] mx-auto flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5 sm:gap-3">
+          {/* Linha Superior: Criança em Exibição + Mini Relógio Aura + Atalho PIN */}
+          <div className="flex items-center justify-between gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
+            {/* Child in View Badge */}
+            <div
+              onClick={onOpenStudentModal}
+              className={`flex items-center gap-2.5 ${
+                onOpenStudentModal ? 'cursor-pointer hover:bg-white/5 p-1 -m-1 rounded-xl transition' : ''
+              }`}
+              title={onOpenStudentModal ? 'Clique para trocar de aluno' : undefined}
+            >
+              <div className="w-8 h-8 rounded-full overflow-hidden bg-amber-400 border border-indigo-300 flex-shrink-0">
+                <img
+                  src={selectedChildPhoto}
+                  alt={selectedChildName}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div>
+                <p className="text-[9px] text-indigo-300 font-bold uppercase tracking-wider flex items-center gap-1">
+                  <span>CRIANÇA/ALUNO EM EXIBIÇÃO:</span>
+                  {onOpenStudentModal && <span className="text-[8px] bg-indigo-500/40 text-indigo-200 px-1 py-0.2 rounded">Trocar ▾</span>}
+                </p>
+                <p className="text-xs font-black text-white leading-tight">
+                  {selectedChildName}{' '}
+                  <span className="text-indigo-300 font-normal">{selectedChildDob}</span>
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-[9px] text-indigo-300 font-bold uppercase tracking-wider flex items-center gap-1">
-                <span>CRIANÇA/ALUNO EM EXIBIÇÃO:</span>
-                {onOpenStudentModal && <span className="text-[8px] bg-indigo-500/40 text-indigo-200 px-1 py-0.2 rounded">Trocar ▾</span>}
-              </p>
-              <p className="text-xs font-black text-white leading-tight">
-                {selectedChildName}{' '}
-                <span className="text-indigo-300 font-normal">{selectedChildDob}</span>
-              </p>
+
+            {/* Mini Relógio e Calendário Estilo Anjinha Aura + Atalho no Banner Escuro */}
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              <MiniRelogioCalendarioAura onOpenAgenda={() => onSelectTab('agenda')} />
+
+              {/* Atalho adicional de seta para trocar o PIN diretamente no banner da criança */}
+              {onOpenShortcutModal && (
+                <button
+                  onClick={onOpenShortcutModal}
+                  className="flex items-center gap-1 px-2 py-1.5 rounded-xl bg-amber-400/15 hover:bg-amber-400/25 text-amber-200 hover:text-white border border-amber-300/30 text-[11px] font-bold transition cursor-pointer"
+                  title="Atalho: Trocar Perfil / PIN de Acesso"
+                >
+                  <LogOut size={13} className="text-amber-300" />
+                  <span className="font-bold text-[10px] text-amber-200">Trocar PIN</span>
+                </button>
+              )}
             </div>
           </div>
 
           {/* Quick Search & Voice Input */}
-          <div className="flex items-center bg-[#1c1747] border border-indigo-950/60 rounded-xl px-3 py-1.5 max-w-md w-full focus-within:border-indigo-400 transition">
+          <div className="flex items-center bg-[#1c1747] border border-indigo-950/60 rounded-xl px-3 py-1.5 max-w-full md:max-w-xs lg:max-w-md w-full focus-within:border-indigo-400 transition">
             <Search size={14} className="text-indigo-400 mr-2 flex-shrink-0" />
             <input
               type="text"
