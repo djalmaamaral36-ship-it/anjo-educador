@@ -32,6 +32,7 @@ export default function PaxMedicacoes({ student, userRole, onOpenFullMedications
   const [newMedPhoto, setNewMedPhoto] = useState<string | null>(null);
 
   // PIN modal state
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [showPinModal, setShowPinModal] = useState(false);
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState('');
@@ -235,7 +236,11 @@ export default function PaxMedicacoes({ student, userRole, onOpenFullMedications
                 <p className="text-[11px] text-slate-500">{med.instrucoes}</p>
                 
                 {med.anexoReceitaUrl && (
-                  <div className="mt-2 p-2 bg-white rounded-xl border border-slate-100/90 flex items-center gap-2">
+                  <button 
+                    type="button"
+                    onClick={() => setPreviewImage(med.anexoReceitaUrl || null)}
+                    className="mt-2 p-2 bg-slate-50 hover:bg-indigo-50/70 rounded-xl border border-slate-100 flex items-center gap-2 cursor-pointer w-full text-left transition"
+                  >
                     <img 
                       src={med.anexoReceitaUrl} 
                       alt="Anexo da Medicação" 
@@ -244,9 +249,9 @@ export default function PaxMedicacoes({ student, userRole, onOpenFullMedications
                     />
                     <div className="min-w-0 flex-1">
                       <span className="text-[10px] font-black text-slate-700 block truncate">Anexo do Medicamento</span>
-                      <span className="text-[9px] text-slate-400 block truncate">Foto anexada pela mãe</span>
+                      <span className="text-[9px] text-indigo-600 font-bold block truncate">Clique para Ampliar 🔍</span>
                     </div>
-                  </div>
+                  </button>
                 )}
 
                 <p className="text-[10px] text-slate-400 pt-1">
@@ -597,6 +602,46 @@ export default function PaxMedicacoes({ student, userRole, onOpenFullMedications
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {/* Visualizador de Foto / Receita Anexada (Lightbox) */}
+      {previewImage && (
+        <div 
+          className="fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in duration-200"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div 
+            className="bg-white rounded-3xl max-w-2xl w-full p-5 shadow-2xl relative flex flex-col gap-4 animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="font-black text-sm text-slate-800">Visualização da Receita / Anexo</h3>
+              <button 
+                onClick={() => setPreviewImage(null)}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition flex items-center justify-center font-bold text-xs cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="max-h-[70vh] overflow-auto rounded-2xl border border-slate-100 bg-slate-50 flex justify-center items-center">
+              <img 
+                src={previewImage} 
+                alt="Receita Médica Ampliada" 
+                className="max-w-full max-h-[60vh] object-contain rounded-xl"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <div className="flex justify-end pt-2">
+              <button
+                type="button"
+                onClick={() => setPreviewImage(null)}
+                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-xl transition cursor-pointer"
+              >
+                Fechar Visualização
+              </button>
+            </div>
           </div>
         </div>
       )}

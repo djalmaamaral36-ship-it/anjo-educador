@@ -25,6 +25,7 @@ import {
 import { StudentPaxData } from '../../types';
 import { PAX_STUDENTS } from '../../data/paxStudentsData';
 import { VINCULO_MEMBROS_INICIAIS } from '../../data/vinculoFamiliarData';
+import { syncStudentToFirestore } from '../../services/firebaseSyncService';
 import CampoTextoVoz from '../comum/CampoTextoVoz';
 
 interface Props {
@@ -46,6 +47,7 @@ export default function ControleMedicamentosModule({
   const [searchTerm, setSearchTerm] = useState('');
 
   // PIN security states
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [isPinModalOpen, setIsPinModalOpen] = useState(false);
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState('');
@@ -145,23 +147,20 @@ export default function ControleMedicamentosModule({
       if (action?.type === 'cadastrar') {
         setIsAddModalOpen(true);
       } else if (action?.type === 'suspender' && action.medId) {
-        setMedsList((prev) => {
-          const updated = prev.map((m) => (m.id === action.medId ? { ...m, suspenso: true, ativo: false } : m));
-          currentStudent.medicamentos = updated;
-          return updated;
-        });
+        const updated = medsList.map((m) => (m.id === action.medId ? { ...m, suspenso: true, ativo: false } : m));
+        setMedsList(updated);
+        currentStudent.medicamentos = updated;
+        syncStudentToFirestore(currentStudent.id, { medicamentos: updated });
       } else if (action?.type === 'reativar' && action.medId) {
-        setMedsList((prev) => {
-          const updated = prev.map((m) => (m.id === action.medId ? { ...m, suspenso: false, ativo: true } : m));
-          currentStudent.medicamentos = updated;
-          return updated;
-        });
+        const updated = medsList.map((m) => (m.id === action.medId ? { ...m, suspenso: false, ativo: true } : m));
+        setMedsList(updated);
+        currentStudent.medicamentos = updated;
+        syncStudentToFirestore(currentStudent.id, { medicamentos: updated });
       } else if (action?.type === 'excluir' && action.medId) {
-        setMedsList((prev) => {
-          const updated = prev.filter((m) => m.id !== action.medId);
-          currentStudent.medicamentos = updated;
-          return updated;
-        });
+        const updated = medsList.filter((m) => m.id !== action.medId);
+        setMedsList(updated);
+        currentStudent.medicamentos = updated;
+        syncStudentToFirestore(currentStudent.id, { medicamentos: updated });
       }
     } else {
       setPinError(`PIN incorreto! Use o PIN cadastrado (PIN de teste: ${parentPin} ou PIN do Desenvolvedor: 9181).`);
@@ -227,6 +226,7 @@ export default function ControleMedicamentosModule({
     const updatedMeds = [...medsList, newMed];
     setMedsList(updatedMeds);
     currentStudent.medicamentos = updatedMeds;
+    syncStudentToFirestore(currentStudent.id, { medicamentos: updatedMeds });
 
     setIsAddModalOpen(false);
     setNewMedNome('');
@@ -258,6 +258,7 @@ export default function ControleMedicamentosModule({
 
     setMedsList(updatedMeds);
     currentStudent.medicamentos = updatedMeds;
+    syncStudentToFirestore(currentStudent.id, { medicamentos: updatedMeds });
 
     setIsMinistrarModalOpen(false);
     setSelectedMedToAdminister(null);
@@ -560,9 +561,19 @@ export default function ControleMedicamentosModule({
                           </strong>
                         </span>
                         {med.anexoReceitaUrl && (
-                          <span className="flex items-center gap-1 text-indigo-600">
-                            <FileText size={12} /> {med.anexoReceitaUrl}
-                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setPreviewImage(med.anexoReceitaUrl || null)}
+                            className="flex items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-2 py-1 rounded-lg border border-indigo-100 transition cursor-pointer font-bold text-[10px]"
+                          >
+                            <img
+                              src={med.anexoReceitaUrl}
+                              alt="Anexo"
+                              className="w-5 h-5 object-cover rounded-md border border-indigo-200"
+                              referrerPolicy="no-referrer"
+                            />
+                            <span>Ver Receita / Foto Anexa</span>
+                          </button>
                         )}
                       </div>
 
@@ -1220,6 +1231,46 @@ export default function ControleMedicamentosModule({
                 className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition cursor-pointer"
               >
                 Entendido, voltar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Visualizador de Foto / Receita Anexada (Lightbox) */}
+      {previewImage && (
+        <div 
+          className="fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in duration-200"
+          onClick={() => setPreviewImage(null)}
+        >
+          <div 
+            className="bg-white rounded-3xl max-w-2xl w-full p-5 shadow-2xl relative flex flex-col gap-4 animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between">
+              <h3 className="font-black text-sm text-slate-800">Visualização da Receita / Anexo</h3>
+              <button 
+                onClick={() => setPreviewImage(null)}
+                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition flex items-center justify-center font-bold text-xs cursor-pointer"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="max-h-[70vh] overflow-auto rounded-2xl border border-slate-100 bg-slate-50 flex justify-center items-center">
+              <img 
+                src={previewImage} 
+                alt="Receita Médica Ampliada" 
+                className="max-w-full max-h-[60vh] object-contain rounded-xl"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+            <div className="flex justify-end pt-2">
+              <button
+                type="button"
+                onClick={() => setPreviewImage(null)}
+                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-xl transition cursor-pointer"
+              >
+                Fechar Visualização
               </button>
             </div>
           </div>

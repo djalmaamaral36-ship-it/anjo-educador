@@ -17,9 +17,10 @@ import CentralJuridicaESuporteModule from './direcao/CentralJuridicaESuporteModu
 import BrandBookModule from './brandbook/BrandBookModule';
 import FloatingRoleSwitcher from './comum/FloatingRoleSwitcher';
 import TelaAtalhoSimuladorModal, { AtalhoPerfil } from './comum/TelaAtalhoSimuladorModal';
-import { PAX_STUDENTS } from '../data/paxStudentsData';
+import { PAX_STUDENTS, StudentPaxData } from '../data/paxStudentsData';
 import { getLgpdConsentimentoAluno } from '../services/lgpdService';
 import { auth, signOut } from '../services/firebase';
+import { subscribeToStudents, syncStudentToFirestore } from '../services/firebaseSyncService';
 import { Calendar, Users, BookOpen, HeartHandshake, ShieldCheck } from 'lucide-react';
 
 interface Props {
@@ -35,8 +36,18 @@ export default function Dashboard({ user }: Props) {
   const [showLgpdModal, setShowLgpdModal] = useState<boolean>(false);
   const [isShortcutModalOpen, setIsShortcutModalOpen] = useState<boolean>(false);
   const [simulatedProfile, setSimulatedProfile] = useState<AtalhoPerfil | null>(null);
+  
+  const [studentsMap, setStudentsMap] = useState<Record<string, StudentPaxData>>(PAX_STUDENTS);
 
-  const currentStudent = PAX_STUDENTS[selectedStudentId] || PAX_STUDENTS['mariana_souza'] || PAX_STUDENTS['enzo_alencar'];
+  // Subscreve às atualizações dos alunos em tempo real
+  useEffect(() => {
+    const unsubscribe = subscribeToStudents((firestoreMap) => {
+      setStudentsMap(firestoreMap);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  const currentStudent = studentsMap[selectedStudentId] || studentsMap['mariana_souza'] || studentsMap['enzo_alencar'];
 
   // Verifica parâmetros de URL caso o responsável tenha escaneado o QR Code
   useEffect(() => {
