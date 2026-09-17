@@ -362,6 +362,7 @@ export default function PaxPortalDeTranquilidade({
       {/* 10. Diários de Rotina Recebidos & Mural de Avisos em Tempo Real */}
       <SecaoDiariosRecebidosEMural
         currentStudentName={currentStudent.nome}
+        currentStudentId={currentStudent.id}
         userRole={effectiveRole}
       />
 

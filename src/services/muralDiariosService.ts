@@ -356,7 +356,7 @@ export function extrairTimestampDiario(d: DiarioRotinaRecebido): number {
 }
 
 // DIÁRIOS RECEBIDOS (Ordenados do mais recente para o mais antigo)
-export function getDiariosRecebidos(studentId?: string): DiarioRotinaRecebido[] {
+export function getDiariosRecebidos(studentId?: string, studentNome?: string): DiarioRotinaRecebido[] {
   try {
     const raw = localStorage.getItem(STORAGE_DIARIOS_KEY);
     const list: DiarioRotinaRecebido[] = raw ? JSON.parse(raw) : DIARIOS_INICIAIS;
@@ -364,8 +364,27 @@ export function getDiariosRecebidos(studentId?: string): DiarioRotinaRecebido[] 
     // Ordena do mais novo para o mais velho (o mais recente sempre no topo)
     const sorted = [...list].sort((a, b) => extrairTimestampDiario(b) - extrairTimestampDiario(a));
 
-    if (studentId) {
-      return sorted.filter((d) => !d.studentId || d.studentId === studentId);
+    if (studentId || studentNome) {
+      return sorted.filter((d) => {
+        if (studentId && d.studentId) {
+          if (d.studentId === studentId || d.studentId.includes(studentId) || studentId.includes(d.studentId)) {
+            return true;
+          }
+        }
+        if (studentNome && d.studentNome) {
+          const s1 = studentNome.toLowerCase().trim();
+          const s2 = d.studentNome.toLowerCase().trim();
+          if (s1 === s2 || s1.includes(s2) || s2.includes(s1)) {
+            return true;
+          }
+          const p1 = s1.split(' ')[0];
+          const p2 = s2.split(' ')[0];
+          if (p1 && p2 && p1 === p2 && p1.length >= 3) {
+            return true;
+          }
+        }
+        return false;
+      });
     }
     return sorted;
   } catch {

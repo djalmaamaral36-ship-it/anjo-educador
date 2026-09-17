@@ -192,7 +192,7 @@ export default function MuralAvisosERecadosModule({
   // Estado de Dados Unificados
   const [muralAvisos, setMuralAvisos] = useState<AvisoMural[]>(() => getMuralAvisos(currentStudent.turma));
   const [recados, setRecados] = useState<RecadoEscolar[]>(() => getRecadosEscolares(currentStudent.id));
-  const [diarios, setDiarios] = useState<DiarioRotinaRecebido[]>(() => getDiariosRecebidos(currentStudent.id));
+  const [diarios, setDiarios] = useState<DiarioRotinaRecebido[]>(() => getDiariosRecebidos(currentStudent.id, currentStudent.nome));
 
   // Estados de Formulário
   const [assuntoSelecionadoId, setAssuntoSelecionadoId] = useState<string>('saida');
@@ -286,7 +286,7 @@ export default function MuralAvisosERecadosModule({
     const syncData = () => {
       setMuralAvisos(getMuralAvisos(currentStudent.turma));
       setRecados(getRecadosEscolares(currentStudent.id));
-      setDiarios(getDiariosRecebidos(currentStudent.id));
+      setDiarios(getDiariosRecebidos(currentStudent.id, currentStudent.nome));
     };
 
     window.addEventListener('anjo_mural_atualizado', syncData);

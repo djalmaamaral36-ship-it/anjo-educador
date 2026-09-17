@@ -21,11 +21,13 @@ import { getDiariosRecebidos, getMuralAvisos, excluirDiarioRecebido, extrairTime
 
 interface Props {
   currentStudentName: string;
+  currentStudentId?: string;
   userRole?: 'professor' | 'familia';
 }
 
 export default function SecaoDiariosRecebidosEMural({
   currentStudentName,
+  currentStudentId,
   userRole = 'professor',
 }: Props) {
   const [activeSubTab, setActiveSubTab] = useState<'diarios' | 'mural'>('diarios');
@@ -63,6 +65,36 @@ export default function SecaoDiariosRecebidosEMural({
     };
   }, []);
 
+  // Validação estrita de LGPD e Privacidade Familiar:
+  // Se for o perfil Família, o responsável SÓ DEVE VISUALIZAR O DIÁRIO DO SEU PRÓPRIO FILHO!
+  // Nunca devem chegar relatórios de outros alunos da classe na aba dos pais.
+  const isDiarioPertenceAoAluno = (d: DiarioRotinaRecebido): boolean => {
+    if (userRole !== 'familia') return true;
+
+    // 1. Verificação por ID do aluno
+    if (currentStudentId && d.studentId) {
+      if (d.studentId === currentStudentId) return true;
+      if (d.studentId.includes(currentStudentId) || currentStudentId.includes(d.studentId)) return true;
+    }
+
+    // 2. Verificação pelo nome do aluno
+    if (currentStudentName && d.studentNome) {
+      const dNome = d.studentNome.toLowerCase().trim();
+      const cNome = currentStudentName.toLowerCase().trim();
+      if (dNome === cNome || dNome.includes(cNome) || cNome.includes(dNome)) return true;
+
+      const p1 = dNome.split(' ')[0];
+      const p2 = cNome.split(' ')[0];
+      if (p1 && p2 && p1 === p2 && p1.length >= 3) return true;
+    }
+
+    return false;
+  };
+
+  const visibleDiariosBase = userRole === 'familia'
+    ? diarios.filter(isDiarioPertenceAoAluno)
+    : diarios;
+
   const getDiarioUrl = (diario: DiarioRotinaRecebido) => {
     const origin = typeof window !== 'undefined' ? window.location.origin : 'https://anjo-educador.app';
     const slug = encodeURIComponent(diario.studentNome.replace(/\s+/g, '_').toLowerCase());
@@ -98,10 +130,27 @@ export default function SecaoDiariosRecebidosEMural({
     }
   };
 
-  // Determina se o diário é recente (últimas 48h) ou antigo
-  const isDiarioRecente = (diario: DiarioRotinaRecebido, index: number) => {
-    // Primeiro e segundo da lista (mais recentes) ou criados nas últimas 48h
-    if (index <= 1) return true;
+  // Obtém as strings das datas de Hoje e de Ontem no padrão pt-BR (ex: "17/09/2026")
+  const getDatasHojeEOntem = () => {
+    const hoje = new Date();
+    const ontem = new Date();
+    ontem.setDate(hoje.getDate() - 1);
+    return {
+      hojeStr: hoje.toLocaleDateString('pt-BR'),
+      ontemStr: ontem.toLocaleDateString('pt-BR'),
+    };
+  };
+
+  const { hojeStr, ontemStr } = getDatasHojeEOntem();
+
+  // Determina se o diário é do dia atual ou do dia anterior (últimas 24h a 48h)
+  const isDiarioDoDiaOuAnterior = (diario: DiarioRotinaRecebido, indexOrdenado: number) => {
+    // 1. Verificação exata por string de data (Hoje ou Ontem)
+    if (diario.data === hojeStr || diario.data === ontemStr) {
+      return true;
+    }
+
+    // 2. Verificação temporal em horas (últimas 48 horas)
     try {
       const parts = diario.data.split('/');
       if (parts.length === 3) {
@@ -111,12 +160,21 @@ export default function SecaoDiariosRecebidosEMural({
         const dataDiario = new Date(ano, mes, dia);
         const agora = new Date();
         const diffHoras = (agora.getTime() - dataDiario.getTime()) / (1000 * 60 * 60);
-        return diffHoras <= 48;
+        if (diffHoras >= 0 && diffHoras <= 48) {
+          return true;
+        }
       }
     } catch {
-      return index === 0;
+      // fallback
     }
-    return index <= 1;
+
+    // 3. Em ambientes de demonstração ou finais de semana, os 2 relatórios mais recentes
+    // ordenados no topo representam os últimos dias letivos correspondentes a hoje/ontem
+    if (indexOrdenado <= 1) {
+      return true;
+    }
+
+    return false;
   };
 
   // Determina se o aviso é do mês vigente (últimos 30 dias)
@@ -124,20 +182,27 @@ export default function SecaoDiariosRecebidosEMural({
     return index <= 2;
   };
 
-  const filteredDiarios = diarios
-    .filter((d, index) => {
-      const matchTexto =
-        d.studentNome.toLowerCase().includes(filtroTexto.toLowerCase()) ||
-        d.data.includes(filtroTexto) ||
-        d.professoraNome.toLowerCase().includes(filtroTexto.toLowerCase());
-      
-      if (!matchTexto) return false;
-      if (periodoDiarios === 'recentes') {
-        return isDiarioRecente(d, index);
-      }
-      return true;
-    })
-    .sort((a, b) => extrairTimestampDiario(b) - extrairTimestampDiario(a));
+  // 1. Ordena todos os diários elegíveis do aluno do mais recente para o mais antigo
+  const sortedDiariosBase = [...visibleDiariosBase].sort(
+    (a, b) => extrairTimestampDiario(b) - extrairTimestampDiario(a)
+  );
+
+  const diariosRecentesCount = sortedDiariosBase.filter((d, idx) =>
+    isDiarioDoDiaOuAnterior(d, idx)
+  ).length;
+
+  const filteredDiarios = sortedDiariosBase.filter((d, indexOrdenado) => {
+    const matchTexto =
+      d.studentNome.toLowerCase().includes(filtroTexto.toLowerCase()) ||
+      d.data.includes(filtroTexto) ||
+      d.professoraNome.toLowerCase().includes(filtroTexto.toLowerCase());
+
+    if (!matchTexto) return false;
+    if (periodoDiarios === 'recentes') {
+      return isDiarioDoDiaOuAnterior(d, indexOrdenado);
+    }
+    return true;
+  });
 
   const filteredMural = mural
     .filter((m, index) => {
@@ -169,7 +234,9 @@ export default function SecaoDiariosRecebidosEMural({
             </h3>
           </div>
           <p className="text-xs text-slate-500 mt-1">
-            Espaço integrado onde os pais acompanham os relatórios diários de classe enviados ao final das aulas e os comunicados da escola.
+            {userRole === 'familia'
+              ? `Acompanhe os diários de rotina e relatórios oficiais de ${currentStudentName}, transmitidos pela equipe pedagógica.`
+              : 'Espaço integrado onde os pais acompanham os relatórios diários de classe enviados ao final das aulas e os comunicados da escola.'}
           </p>
         </div>
 
@@ -184,7 +251,7 @@ export default function SecaoDiariosRecebidosEMural({
             }`}
           >
             <FileText size={14} />
-            <span>Diários Recebidos ({diarios.length})</span>
+            <span>Diários Recebidos ({visibleDiariosBase.length})</span>
           </button>
 
           <button
@@ -209,7 +276,9 @@ export default function SecaoDiariosRecebidosEMural({
             type="text"
             placeholder={
               activeSubTab === 'diarios'
-                ? 'Filtrar diários por aluno, data ou professora...'
+                ? userRole === 'familia'
+                  ? `Buscar nos diários de ${currentStudentName} por data ou educadora...`
+                  : 'Filtrar diários por aluno, data ou professora...'
                 : 'Buscar no mural de avisos...'
             }
             value={filtroTexto}
@@ -218,7 +287,7 @@ export default function SecaoDiariosRecebidosEMural({
           />
         </div>
 
-        {/* TOGGLE TEMPORAL INTELIGENTE (24h/48h ou Histórico Nuvem LGPD) */}
+        {/* TOGGLE TEMPORAL INTELIGENTE (Hoje & Ontem ou Histórico Nuvem LGPD) */}
         {activeSubTab === 'diarios' ? (
           <div className="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-slate-200 self-start sm:self-auto">
             <button
@@ -229,10 +298,10 @@ export default function SecaoDiariosRecebidosEMural({
                   ? 'bg-emerald-100 text-emerald-900 font-black'
                   : 'text-slate-500 hover:text-slate-800'
               }`}
-              title="Exibir apenas diários ativos das últimas 24h a 48h"
+              title="Exibir apenas relatórios do dia atual e do dia anterior (últimas 48h)"
             >
               <Clock size={12} />
-              <span>Ativos (24h / 48h)</span>
+              <span>Hoje & Ontem ({diariosRecentesCount})</span>
             </button>
 
             <button
@@ -246,7 +315,7 @@ export default function SecaoDiariosRecebidosEMural({
               title="Resgatar histórico completo arquivado em nuvem permanente (LGPD)"
             >
               <Database size={12} />
-              <span>Histórico Nuvem LGPD ({diarios.length})</span>
+              <span>Histórico Nuvem LGPD ({sortedDiariosBase.length})</span>
             </button>
           </div>
         ) : (
@@ -286,9 +355,11 @@ export default function SecaoDiariosRecebidosEMural({
       <div className="p-3 bg-emerald-50/50 rounded-2xl border border-emerald-200/60 flex items-start gap-2.5 text-xs text-emerald-950">
         <ShieldCheck size={16} className="text-emerald-600 flex-shrink-0 mt-0.5" />
         <div className="flex-1 leading-relaxed">
-          <strong>Portal de Tranquilidade & Preservação LGPD:</strong>{' '}
-          {activeSubTab === 'diarios'
-            ? 'Para maior leveza visual, o feed diário destaca os relatórios das últimas 24h a 48h. Todo o histórico de rotinas pedagógicas e biológicas segue permanentemente criptografado e preservado em nuvem.'
+          <strong>Portal de Tranquilidade & Privacidade Individual (LGPD):</strong>{' '}
+          {userRole === 'familia'
+            ? `Você está visualizando exclusivamente os relatórios e diários de rotina de ${currentStudentName}. O feed inicial exibe apenas os registros do dia e do dia anterior para manter sua visualização leve e clara. Relatórios anteriores ficam protegidos no Histórico Nuvem.`
+            : activeSubTab === 'diarios'
+            ? 'Para maior leveza visual, o feed diário destaca os relatórios do dia e do dia anterior. Todo o histórico de rotinas pedagógicas e biológicas segue permanentemente criptografado e preservado em nuvem.'
             : 'Os avisos escolares permanecem ativos durante o ciclo mensal. Comunicados e eventos anteriores ficam resguardados no histórico para eventuais consultas.'}
         </div>
       </div>
@@ -300,8 +371,12 @@ export default function SecaoDiariosRecebidosEMural({
             <div className="p-8 text-center bg-slate-50 rounded-2xl border border-slate-100 text-slate-500 space-y-3">
               <FileText size={32} className="mx-auto text-slate-300" />
               <p className="font-bold text-xs">
-                {periodoDiarios === 'recentes'
-                  ? 'Nenhum diário recente nas últimas 24h a 48h.'
+                {userRole === 'familia'
+                  ? periodoDiarios === 'recentes'
+                    ? `Nenhum diário emitido hoje ou ontem para ${currentStudentName}.`
+                    : `Nenhum diário de rotina encontrado para ${currentStudentName}.`
+                  : periodoDiarios === 'recentes'
+                  ? 'Nenhum diário emitido hoje ou ontem na turma.'
                   : 'Nenhum diário de rotina encontrado.'}
               </p>
               {periodoDiarios === 'recentes' && (
@@ -335,14 +410,20 @@ export default function SecaoDiariosRecebidosEMural({
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
                           <strong className="text-xs sm:text-sm text-slate-900">
-                            🎓 Diário de Aula Consolidado ({diario.horarioEncerramento})
+                            🎓 Diário Consolidado • {diario.studentNome} ({diario.horarioEncerramento})
                           </strong>
                           <span className="text-[9px] font-bold px-2 py-0.5 rounded-full border bg-emerald-100 text-emerald-900 border-emerald-200">
                             Diário Consolidado
                           </span>
                           <span className="text-[9px] font-semibold px-2 py-0.5 rounded-full border bg-blue-50 text-blue-800 border-blue-200 flex items-center gap-1">
                             <Clock size={10} />
-                            <span>Feed 24h</span>
+                            <span>
+                              {diario.data === hojeStr
+                                ? 'Hoje'
+                                : diario.data === ontemStr
+                                ? 'Ontem'
+                                : 'Último Dia Letivo'}
+                            </span>
                           </span>
                         </div>
                         <p className="text-[11px] text-slate-500 mt-0.5">
