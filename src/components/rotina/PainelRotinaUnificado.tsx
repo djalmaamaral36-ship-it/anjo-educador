@@ -144,9 +144,9 @@ export default function PainelRotinaUnificado({
     return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // --- ESTADOS DE ALIMENTAÇÃO & MAMADEIRA (Foto 11) ---
-  const [refeicaoTipo, setRefeicaoTipo] = useState('Mamadeira de Leite');
-  const [aceitacao, setAceitacao] = useState('Tomou Tudo / Super Bem');
+  // --- ESTADOS DE MAMADEIRA (Foto 11) ---
+  const [refeicaoTipo, setRefeicaoTipo] = useState('Mamadeira');
+  const [aceitacao, setAceitacao] = useState('Tomou Tudo');
   const [mamadeiraVolume, setMamadeiraVolume] = useState(() => extractMamadeiraVolume(student));
   const [mamadeirasContador, setMamadeirasContador] = useState(student.alimentacao?.mamadeirasServidas || 0);
   const [mamadeiraObs, setMamadeiraObs] = useState('');
@@ -2374,38 +2374,25 @@ export default function PainelRotinaUnificado({
       {/* 2. PAINEL "UM-TOQUE" DE REGISTROS DIÁRIOS (Fotos 10, 11, 12, 13) */}
       <div id="secao-alimentacao" className="grid grid-cols-1 lg:grid-cols-2 gap-6 scroll-mt-24">
         
-        {/* BLOCO ESQUERDA: ALIMENTAÇÃO & MAMADEIRA (Foto 11) */}
+        {/* BLOCO ESQUERDA: MAMADEIRA (Foto 11) */}
         <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <div className="flex items-center gap-2">
               <span className="text-xl">🍼</span>
-              <h4 className="text-base font-black text-slate-800">Alimentação & Mamadeira</h4>
+              <h4 className="text-base font-black text-slate-800">Mamadeira</h4>
             </div>
             <span className="text-xs font-black text-amber-900 bg-amber-100 px-2.5 py-1 rounded-full">
-              {mamadeirasContador} mamadeiras hoje
+              {mamadeirasContador} mamadeira{mamadeirasContador === 1 ? '' : 's'} hoje
             </span>
           </div>
 
           <div className="grid grid-cols-2 gap-3 text-xs">
             <div>
-              <label className="font-bold text-slate-600 block mb-1">REFEIÇÃO</label>
-              {isProfessor ? (
-                <select
-                  value={refeicaoTipo}
-                  onChange={(e) => setRefeicaoTipo(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 font-bold text-slate-800 outline-none"
-                >
-                  <option value="Mamadeiras de Leite / Fórmula">Mamadeiras de Leite / Fórmula</option>
-                  <option value="Lanchinho da Manhã">Lanchinho da Manhã</option>
-                  <option value="Papinha / Almocinho">Papinha / Almocinho</option>
-                  <option value="Lanchinho da Tarde">Lanchinho da Tarde</option>
-                  <option value="Jantinha Escolar">Jantinha Escolar</option>
-                </select>
-              ) : (
-                <div className="p-2.5 bg-slate-50 border border-slate-100 rounded-xl font-bold text-slate-800">
-                  {refeicaoTipo}
-                </div>
-              )}
+              <label className="font-bold text-slate-600 block mb-1">MAMADEIRA</label>
+              <div className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 font-bold text-slate-800 flex items-center gap-2">
+                <span className="text-base">🍼</span>
+                <span>Mamadeira</span>
+              </div>
             </div>
 
             <div>
@@ -2414,12 +2401,11 @@ export default function PainelRotinaUnificado({
                 <select
                   value={aceitacao}
                   onChange={(e) => setAceitacao(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 font-bold text-slate-800 outline-none"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 font-bold text-slate-800 outline-none cursor-pointer focus:border-amber-400"
                 >
-                  <option value="Tomou Tudo / Super Bem">Tomou Tudo / Super Bem</option>
-                  <option value="Comeu Tudo">Comeu Tudo</option>
-                  <option value="Aceitação Parcial">Aceitação Parcial</option>
-                  <option value="Recusou / Não Comeu">Recusou / Não Comeu</option>
+                  <option value="Tomou Tudo">Tomou Tudo</option>
+                  <option value="Pouco">Pouco</option>
+                  <option value="Recusou">Recusou</option>
                 </select>
               ) : (
                 <div className="p-2.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl font-bold">
@@ -2460,19 +2446,19 @@ export default function PainelRotinaUnificado({
           {/* Observação / Cardápio */}
           <div>
             <label className="font-bold text-slate-600 block mb-1 text-xs">
-              OBSERVAÇÃO / CARDÁPIO
+              OBSERVAÇÃO
             </label>
             {isProfessor ? (
               <input
                 type="text"
                 value={mamadeiraObs}
                 onChange={(e) => setMamadeiraObs(e.target.value)}
-                placeholder="Observação rápida (ex: Amou a banana cozida)"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 outline-none"
+                placeholder="Observação rápida (ex: Fórmula infantil, temperatura morna...)"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 outline-none focus:border-amber-400"
               />
             ) : (
               <div className="p-3 bg-slate-50 rounded-xl text-xs text-slate-600 italic">
-                {mamadeiraObs || 'Alimentou-se nos horários previstos com ótima digestão.'}
+                {mamadeiraObs || 'Alimentou-se nos horários previstos com ótima aceitação.'}
               </div>
             )}
           </div>
@@ -2482,13 +2468,7 @@ export default function PainelRotinaUnificado({
               onClick={handleSalvarMamadeira}
               className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-black text-xs rounded-xl transition shadow-xs cursor-pointer flex items-center justify-center gap-2"
             >
-              <span>
-                {refeicaoTipo.toLowerCase().includes('mamadeira') ||
-                refeicaoTipo.toLowerCase().includes('leite') ||
-                refeicaoTipo.toLowerCase().includes('fórmula')
-                  ? `+ Registrar Mamadeira (${mamadeiraVolume} ml)`
-                  : `+ Registrar ${refeicaoTipo}`}
-              </span>
+              <span>+ Registrar Mamadeira ({mamadeiraVolume} ml)</span>
             </button>
           )}
         </div>
