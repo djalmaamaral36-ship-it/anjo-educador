@@ -104,6 +104,7 @@ export default function PainelRotinaUnificado({
   // --- ESTADOS DO CRONÔMETRO ÚNICO ---
   const [timerRunning, setTimerRunning] = useState(!!student.presenca.isTimerRunning);
   const [secondsElapsed, setSecondsElapsed] = useState(0);
+ 
 
   // Calcula e atualiza o tempo decorrido usando timestamps reais (garante que não zere ao mudar de aba, sair do app ou recarregar)
   useEffect(() => {
@@ -152,7 +153,8 @@ export default function PainelRotinaUnificado({
   const [mamadeiraObs, setMamadeiraObs] = useState('');
 
   // Handler para troca rápida de volume com sincronização em nuvem para outros celulares
-  const handleSelectMamadeiraVolume = (vol: number) => {
+const handleSelectMamadeiraVolume = (vol: number) => {
+    if (!validarCronometroAtivo('Mamadeira', () => handleSelectMamadeiraVolume(vol))) return;
     setMamadeiraVolume(vol);
     if (onUpdateStudent && isProfessor) {
       onUpdateStudent({
