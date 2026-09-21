@@ -292,12 +292,19 @@ export default function ControleMedicamentosModule({
   };
 
   // Ministering medication (Professor)
-  const handleConfirmMinistracao = (e: React.FormEvent) => {
+ const handleConfirmMinistracao = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedMedToAdminister) return;
 
+    const isCronometroAtivo = currentStudent.presenca?.isTimerRunning && currentStudent.presenca?.status === 'em_aula';
+    if (!isCronometroAtivo) {
+      alert(`⏱️ Inicie o cronômetro da aula de ${currentStudent.nome || 'aluno'} para administrar medicamentos!`);
+      return;
+    }
+
     const updatedMeds = medsList.map((m) =>
       m.id === selectedMedToAdminister.id
+      
         ? {
             ...m,
             ministradoHoje: true,
