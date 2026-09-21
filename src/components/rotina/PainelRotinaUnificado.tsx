@@ -1080,7 +1080,7 @@ const handleSelectMamadeiraVolume = (vol: number) => {
     escopoParam?: 'coletiva' | 'individual'
   ) => {
     if (!isProfessor) return;
-
+if (!validarCronometroAtivo('Atividade Pedagógica', () => handleSalvarAtividadePedagogica(atividadeIdParam, escopoParam))) return;
     const atvId = atividadeIdParam || atividadeSelecionada;
     const escopo = escopoParam || atividadeEscopo;
     const predef = ATIVIDADES_PREDEFINIDAS.find((a) => a.id === atvId);
