@@ -961,7 +961,7 @@ export default function AuraPlannerIntegration({
   };
 
   const [inputText, setInputText] = useState('');
-  const [activities, setActivities] = useState<ParsedAuraActivity[]>(() => sortActivitiesBySchedule(deduplicateActivities(PLAN_...
+ const [activities, setActivities] = useState<ParsedAuraActivity[]>(() => sortActivitiesBySchedule(deduplicateActivities(PLAN_ACTIVITIES)));
  
   const [selectedDayTab, setSelectedDayTab] = useState<string>(() => {
     try {
