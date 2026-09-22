@@ -2677,12 +2677,12 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                           }`}
                           title={`Modo Individual: Salva apenas para ${studentNome.split(' ')[0]}`}
                         >
-                          <span>👤 Individual</span>
+                      <span>👤 Individual</span>
                         </button>
                       </div>
                     )}
 
-                   {/* Botões de Ação: [Recusou] e [Entregue] */}
+                    {/* Botões de Ação: [Recusou] e [Entregue] */}
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
@@ -2729,6 +2729,13 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                         )}
                       </button>
                     </div>
+                  </div>
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
 
       {filteredActivities.length === 0 && (
         <div className="text-center py-12 bg-slate-50 rounded-3xl border border-dashed border-slate-300 space-y-4 p-6">
