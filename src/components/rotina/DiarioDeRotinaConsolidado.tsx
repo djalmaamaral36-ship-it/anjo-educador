@@ -27,7 +27,13 @@ export default function DiarioDeRotinaConsolidado({ studentName = 'Mariana Souza
   const [temperatura, setTemperatura] = useState('36.5°C');
   const [alimentacaoStatus, setAlimentacaoStatus] = useState('Comeu tudo com ótima aceitação');
 
+  const isCronometroAtivo = student?.presenca?.isTimerRunning && student?.presenca?.status === 'em_aula';
+
   const handleQuickAdd = (tipo: string) => {
+    if (!isCronometroAtivo) {
+      alert(`⏱️ Inicie o cronômetro de aula de ${student?.nome || 'aluno'} para registrar a rotina!`);
+      return;
+    }
     if (tipo === 'agua') setHidratacaoTotal((prev) => prev + 100);
     if (tipo === 'fralda') setTrocasFralda((prev) => prev + 1);
     setRegistradoComSucesso(true);
