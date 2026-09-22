@@ -2682,11 +2682,14 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                       </div>
                     )}
 
-                    {/* Botões de Ação: [Recusou] e [Entregue] */}
+                   {/* Botões de Ação: [Recusou] e [Entregue] */}
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={() => handleMarkRecusou(act, idx)}
+                        onClick={() => {
+                          if (!validarCronometro()) return;
+                          handleMarkRecusou(act, idx);
+                        }}
                         className={`px-3.5 py-2 text-xs font-black rounded-xl transition cursor-pointer active:scale-95 ${
                           isRecusou
                             ? 'bg-rose-100 text-rose-800 border border-rose-300'
@@ -2698,7 +2701,10 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
 
                       <button
                         type="button"
-                        onClick={() => handleMarkEntregue(act, idx)}
+                        onClick={() => {
+                          if (!validarCronometro()) return;
+                          handleMarkEntregue(act, idx);
+                        }}
                         className={`px-4 py-2 text-xs font-black rounded-xl transition cursor-pointer shadow-xs active:scale-95 flex items-center gap-1.5 ${
                           isEntregue
                             ? 'bg-emerald-600 text-white font-black'
@@ -2723,13 +2729,6 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                         )}
                       </button>
                     </div>
-                  </div>
-                </>
-              )}
-            </div>
-          );
-        })}
-      </div>
 
       {filteredActivities.length === 0 && (
         <div className="text-center py-12 bg-slate-50 rounded-3xl border border-dashed border-slate-300 space-y-4 p-6">
