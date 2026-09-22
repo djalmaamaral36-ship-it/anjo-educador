@@ -949,8 +949,20 @@ export default function AuraPlannerIntegration({
   onUpdateStudent,
   userRole = 'professor'
 }: Props) {
+  // Trava de segurança: impede registros se o cronômetro do aluno estiver parado
+  const isCronometroAtivo = student?.presenca?.isTimerRunning && student?.presenca?.status === 'em_aula';
+
+  const validarCronometro = () => {
+    if (!isCronometroAtivo) {
+      alert(`⏱️ ATENÇÃO: O cronômetro de aula de ${student?.nome || studentNome || 'aluno'} está PARADO! Inicie a aula para registrar atividades ou medicamentos.`);
+      return false;
+    }
+    return true;
+  };
+
   const [inputText, setInputText] = useState('');
-  const [activities, setActivities] = useState<ParsedAuraActivity[]>(() => sortActivitiesBySchedule(deduplicateActivities(PLAN_ACTIVITIES)));
+  const [activities, setActivities] = useState<ParsedAuraActivity[]>(() => sortActivitiesBySchedule(deduplicateActivities(PLAN_...
+ 
   const [selectedDayTab, setSelectedDayTab] = useState<string>(() => {
     try {
       const saved = localStorage.getItem('anjinho_planner_selected_day');
