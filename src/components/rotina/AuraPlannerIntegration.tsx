@@ -1529,14 +1529,27 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
     }
   };
 
-  // Marcar como Recusou
-  const handleMarkRecusou = (act: ParsedAuraActivity, idx: number, customScope?: 'coletivo' | 'individual') => {
+// Marcar como Recusou
+  const handleMarkRecusou = (act: AtividadeAuraParsed, idx: number, customScope?: 'coletivo' | 'individual') => {
     const actId = act.id || `act-${idx}`;
-    const note = activityNotes[actId] || '';
+    let note = activityNotes[actId] || '';
     const scope = customScope || activityScopes[actId] || 'coletivo';
 
-    if (actId.startsWith('med-dyn-')) {
-      if (student && student.medicamentos && onUpdateStudent) {
+    // Se for medicamento e não tiver nota escrita, solicita o motivo da recusa
+    if (actId.startsWith('med-dyn-') || act.tipo === 'medicacao') {
+      if (!note.trim()) {
+        const justificativa = window.prompt(
+          '⚠️ Registro de Recusa de Medicamento\n\nInforme o motivo da recusa (ex: A criança cuspiu, estava dormindo, recusou tomar):'
+        );
+        if (justificativa === null) {
+          // Cancelou a ação
+          return;
+        }
+        note = justificativa.trim() || 'Dose recusada pela criança.';
+        setActivityNotes((prev) => ({ ...prev, [actId]: note }));
+      }
+
+      if (student?.medicamentos) {
         const parts = actId.split('-');
         const medId = parts[2];
         const targetDay = act.dia || selectedDayTab;
@@ -1546,14 +1559,14 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
             const currentDays = m.ministradoDias || [];
             const nextDays = currentDays.filter(d => d !== targetDay);
             const currentObs = m.observacoesDias || {};
-            const nextObs = { ...currentObs, [targetDay]: note || 'A dose foi recusada ou não pôde ser administrada.' };
+            const nextObs = { ...currentObs, [targetDay]: note };
             
             return {
               ...m,
               ministradoHoje: false,
               ministradoDias: nextDays,
               observacoesDias: nextObs,
-              observacaoMinistracao: note || 'A dose foi recusada ou não pôde ser administrada.'
+              observacaoMinistracao: note
             };
           }
           return m;
@@ -1565,7 +1578,7 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
           hora: act.horario || horaAtual,
           tipo: 'saude' as const,
           titulo: `⚠️ Recusa de Medicamento: ${act.titulo.replace('💊 Medicamento: ', '')} (${targetDay})`,
-          descricao: `A dose de ${act.horario} (${targetDay}) foi recusada ou não pôde ser administrada.\n\n💬 Motivo: ${note || 'Criança recusou ou não pôde tomar a dose.'}`,
+          descricao: `A dose de ${act.horario || horaAtual} (${targetDay}) foi recusada.\n\n💬 Motivo da Recusa: ${note}`,
           responsavel: 'Ana Silva (Professora Titular)',
           verificado: true
         };
