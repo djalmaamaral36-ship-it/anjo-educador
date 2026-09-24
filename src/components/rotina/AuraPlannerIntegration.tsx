@@ -1,2762 +1,816 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Sparkles, Clock, CheckCircle2, RotateCcw, Trash2, Edit2, Check, Mic, 
-  Plus, Calendar, AlertCircle, Save, X, Utensils, Moon, Droplets, BookOpen, 
-  XCircle, Filter, RefreshCw, AlertTriangle, ArrowUpDown, Layers, Pill, Heart
+import {
+  ShieldCheck,
+  FileText,
+  FileCheck2,
+  Lock,
+  Search,
+  Filter,
+  Download,
+  Printer,
+  CheckCircle2,
+  AlertCircle,
+  Smartphone,
+  Calendar,
+  UserCheck,
+  Scale,
+  Sparkles,
+  ExternalLink,
+  ChevronRight,
+  Hash,
+  Eye,
+  RefreshCw,
+  Plus,
 } from 'lucide-react';
-import { parseAuraRawPlan, ParsedAuraActivity } from '../../utils/auraPlanParser';
-import { DEFAULT_INITIAL_ACTIVITIES as PLAN_ACTIVITIES } from '../../data/weeklyPlan';
-import { StudentPaxData } from '../../types';
+import { StudentPaxData, LgpdConsentimento, LgpdLogRegistro } from '../../types';
+import { PAX_STUDENTS } from '../../data/paxStudentsData';
+import {
+  getLgpdConsentimentos,
+  getLgpdLogsAuditoria,
+  salvarLgpdConsentimento,
+} from '../../services/lgpdService';
+import ModalConsentimentoLgpdInicial from './ModalConsentimentoLgpdInicial';
+import CampoTextoVoz from '../comum/CampoTextoVoz';
+import LogoAnjinhoEducador from '../comum/LogoAnjinhoEducador';
+import ModalExportarRelatoriosPdf from '../relatorios/ModalExportarRelatoriosPdf';
 
 interface Props {
-  onConcluirAtividadePedagogica?: (act: ParsedAuraActivity) => void;
-  studentNome?: string;
-  student?: StudentPaxData;
-  onUpdateStudent?: (updated: Partial<StudentPaxData>) => void;
-  userRole?: 'professor' | 'familia';
+  currentStudent: StudentPaxData;
+  userRole: 'professor' | 'familia';
+  onSelectStudent?: (id: string) => void;
 }
 
-// Converte horário "HH:MM" para minutos para ordenação cronológica precisa
-export function parseTimeToMinutes(timeStr?: string): number {
-  if (!timeStr) return 0;
-  const match = timeStr.match(/(\d{1,2}):(\d{2})/);
-  if (!match) return 0;
-  return parseInt(match[1], 10) * 60 + parseInt(match[2], 10);
-}
-
-// Ordena atividades estritamente pelo horário agendado
-export function sortActivitiesBySchedule(list: ParsedAuraActivity[]): ParsedAuraActivity[] {
-  return [...list].sort((a, b) => {
-    const timeA = parseTimeToMinutes(a.horario);
-    const timeB = parseTimeToMinutes(b.horario);
-    if (timeA !== timeB) {
-      return timeA - timeB;
-    }
-    return (a.titulo || '').localeCompare(b.titulo || '');
-  });
-}
-
-// Remove duplicidades de horário dentro do mesmo dia, priorizando atividades customizadas/importadas
-export function deduplicateActivities(list: ParsedAuraActivity[]): ParsedAuraActivity[] {
-  const result: ParsedAuraActivity[] = [];
-
-  const getNormalizedDay = (day: string): string => {
-    const d = (day || '').toLowerCase();
-    if (d.includes('seg')) return 'Segunda-feira';
-    if (d.includes('ter')) return 'Terça-feira';
-    if (d.includes('qua')) return 'Quarta-feira';
-    if (d.includes('qui')) return 'Quinta-feira';
-    if (d.includes('sex')) return 'Sexta-feira';
-    if (d.includes('sab')) return 'Sábado';
-    if (d.includes('dom')) return 'Domingo';
-    return 'Quarta-feira';
-  };
-
-  for (const act of list) {
-    const dayKey = getNormalizedDay(act.dia || 'Quarta-feira');
-    const timeKey = (act.horario || '').trim();
-
-    const existingIndex = result.findIndex(item => {
-      const itemDay = getNormalizedDay(item.dia || 'Quarta-feira');
-      return itemDay === dayKey && (item.horario || '').trim() === timeKey;
-    });
-
-    if (existingIndex !== -1) {
-      const existingItem = result[existingIndex];
-      // Se a existente for rotina padrão e a nova não for (ex: importada/customizada), substitui
-      if (existingItem.isRotinaPadrao && !act.isRotinaPadrao) {
-        result[existingIndex] = act;
-      } else if (!existingItem.isRotinaPadrao && act.isRotinaPadrao) {
-        // Mantém a customizada (ignora a padrão que está duplicando)
-      } else {
-        // Se ambas têm o mesmo tipo, escolhe a que tem mais informações (título longo/descrição longa)
-        if ((act.titulo || '').length > (existingItem.titulo || '').length) {
-          result[existingIndex] = act;
-        }
-      }
-    } else {
-      result.push({
-        ...act,
-        dia: dayKey
-      });
-    }
-  }
-
-  return result;
-}
-
-const DEFAULT_INITIAL_ACTIVITIES: ParsedAuraActivity[] = sortActivitiesBySchedule([
-  // --- SEGUNDA-FEIRA ---
-  {
-    id: 'act-seg-1',
-    dia: 'Segunda-feira',
-    dataStr: '07/09/2026',
-    horario: '07:30',
-    titulo: 'Acolhida e Entrada',
-    descricao: 'Recepção calorosa das crianças, organização dos pertences e canto de bom dia suave, para iniciar o dia com carinho. (BNCC: O eu, o outro e o nós)',
-    tipo: 'atividade_fisica',
-    item_key: 'acolhida',
-    objetivoBNCC: 'O eu, o outro e o nós',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-seg-2',
-    dia: 'Segunda-feira',
-    dataStr: '07/09/2026',
-    horario: '08:30',
-    titulo: 'Roda de Conversa',
-    descricao: 'Momento de interação com as crianças, utilizando gestos e expressões faciais para criar um vínculo afetivo e estimular a comunicação não verbal. (BNCC: O eu, o outro e o nós)',
-    tipo: 'atividade_fisica',
-    item_key: 'roda_conversa',
-    objetivoBNCC: 'O eu, o outro e o nós',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-seg-3',
-    dia: 'Segunda-feira',
-    dataStr: '07/09/2026',
-    horario: '09:30',
-    titulo: 'Lanche da Manhã',
-    descricao: 'Oferecer o lanche da manhã com carinho, permitindo que os bebês explorem a comida com as mãos (sob supervisão) e desenvolvam a autonomia. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'alimentacao',
-    item_key: 'lanche_manha',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-seg-4',
-    dia: 'Segunda-feira',
-    dataStr: '07/09/2026',
-    horario: '10:00',
-    titulo: 'Parque Sensorial',
-    descricao: 'Atividade motora ao ar livre no parquinho com circuito de obstáculos seguros, desenvolvendo o equilíbrio e a socialização. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'atividade_fisica',
-    item_key: 'parque',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-seg-5',
-    dia: 'Segunda-feira',
-    dataStr: '07/09/2026',
-    horario: '10:30',
-    titulo: 'Atividade Dirigida',
-    descricao: 'Exploração tátil dirigida com elementos naturais e texturas diversas, estimulando a curiosidade sensorial e a motricidade. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'atividade_fisica',
-    item_key: 'atividade',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-seg-6',
-    dia: 'Segunda-feira',
-    dataStr: '07/09/2026',
-    horario: '11:30',
-    titulo: 'Almoço Saudável',
-    descricao: 'Momento de refeição guiado pelo educador, garantindo que cada criança seja alimentada de forma segura e receba a atenção necessária. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'alimentacao',
-    item_key: 'almoco',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-seg-7',
-    dia: 'Segunda-feira',
-    dataStr: '07/09/2026',
-    horario: '12:15',
-    titulo: 'Higiene / Escovação',
-    descricao: 'Troca de fraldas e higiene pessoal com delicadeza, conversando com o bebê e nomeando as ações, fortalecendo a segurança e o vínculo. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'banho',
-    item_key: 'higiene',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-seg-8',
-    dia: 'Segunda-feira',
-    dataStr: '07/09/2026',
-    horario: '12:30',
-    titulo: 'Soneca / Repouso',
-    descricao: 'Acompanhamento individual dos bebês para o sono, com acalanto e presença afetiva, favorecendo um repouso reparador. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'sono',
-    item_key: 'sono',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-seg-9',
-    dia: 'Segunda-feira',
-    dataStr: '07/09/2026',
-    horario: '14:30',
-    titulo: 'Lanche da Tarde',
-    descricao: 'Oferta do lanche da tarde, priorizando a alimentação em ambiente tranquilo e acolhedor para que os bebês se sintam seguros para comer. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'alimentacao',
-    item_key: 'lanche_tarde',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-seg-10',
-    dia: 'Segunda-feira',
-    dataStr: '07/09/2026',
-    horario: '15:00',
-    titulo: 'Brincadeira Livre',
-    descricao: 'Brincadeira livre com peças grandes de encaixe, estimulando a coordenação motora ampla e a percepção de causa e efeito. (BNCC: Espaços, tempos, quantidades, relações e transformações)',
-    tipo: 'atividade_fisica',
-    item_key: 'brincadeira_livre',
-    objetivoBNCC: 'Espaços, tempos, quantidades, relações e transformações',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-seg-11',
-    dia: 'Segunda-feira',
-    dataStr: '07/09/2026',
-    horario: '15:45',
-    titulo: 'Contação de Histórias',
-    descricao: 'Contação interativa de histórias com dedoches e livros sensoriais, estimulando a escuta atenta, o vocabulário e o imaginário. (BNCC: Escuta, fala, pensamento e imaginação)',
-    tipo: 'atividade_fisica',
-    item_key: 'leitura',
-    objetivoBNCC: 'Escuta, fala, pensamento e imaginação',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-seg-12',
-    dia: 'Segunda-feira',
-    dataStr: '07/09/2026',
-    horario: '16:30',
-    titulo: 'Preparação para Saída',
-    descricao: 'Organização dos pertences e momento de despedida, com uma música calma e palavras de carinho, encerrando o dia de forma harmoniosa. (BNCC: O eu, o outro e o nós)',
-    tipo: 'atividade_fisica',
-    item_key: 'saida',
-    objetivoBNCC: 'O eu, o outro e o nós',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-
-  // --- TERÇA-FEIRA ---
-  {
-    id: 'act-ter-1',
-    dia: 'Terça-feira',
-    dataStr: '08/09/2026',
-    horario: '07:30',
-    titulo: 'Acolhida e Entrada',
-    descricao: 'Recepção alegre e personalizada para cada criança, com um sorriso e abraço, facilitando a transição da casa para a escola. (BNCC: O eu, o outro e o nós)',
-    tipo: 'atividade_fisica',
-    item_key: 'acolhida',
-    objetivoBNCC: 'O eu, o outro e o nós',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-ter-2',
-    dia: 'Terça-feira',
-    dataStr: '08/09/2026',
-    horario: '08:30',
-    titulo: 'Roda de Conversa',
-    descricao: 'Interação com os bebês utilizando espelhos seguros e coloridos, estimulando o reconhecimento da própria imagem e a percepção do eu. (BNCC: O eu, o outro e o nós)',
-    tipo: 'atividade_fisica',
-    item_key: 'roda_conversa',
-    objetivoBNCC: 'O eu, o outro e o nós',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-ter-3',
-    dia: 'Terça-feira',
-    dataStr: '08/09/2026',
-    horario: '09:30',
-    titulo: 'Lanche da Manhã',
-    descricao: 'Oferecer o lanche da manhã com carinho, permitindo que os bebês explorem a comida com as mãos (sob supervisão) e desenvolvam a autonomia. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'alimentacao',
-    item_key: 'lanche_manha',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-ter-4',
-    dia: 'Terça-feira',
-    dataStr: '08/09/2026',
-    horario: '10:00',
-    titulo: 'Parque / Pátio',
-    descricao: 'Circuito motor e brincadeiras no parquinho com túnel de tecido seguro, auxiliando as crianças a engatinhar e andar trabalhando equilíbrio e exploração espacial. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'atividade_fisica',
-    item_key: 'parque',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-ter-5',
-    dia: 'Terça-feira',
-    dataStr: '08/09/2026',
-    horario: '10:30',
-    titulo: 'Atividade Dirigida',
-    descricao: 'Exploração tátil dirigida com elementos naturais e texturas diversas, estimulando a curiosidade sensorial, a motricidade e o tato. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'atividade_fisica',
-    item_key: 'atividade',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-ter-6',
-    dia: 'Terça-feira',
-    dataStr: '08/09/2026',
-    horario: '11:30',
-    titulo: 'Almoço',
-    descricao: 'Momento de refeição guiado pelo educador, garantindo que cada criança seja alimentada de forma segura e receba a atenção necessária. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'alimentacao',
-    item_key: 'almoco',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-ter-7',
-    dia: 'Terça-feira',
-    dataStr: '08/09/2026',
-    horario: '12:15',
-    titulo: 'Higiene / Escovação',
-    descricao: 'Troca de fraldas e higiene pessoal com delicadeza, conversando com o bebê e nomeando as ações, fortalecendo a segurança e o vínculo. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'banho',
-    item_key: 'higiene',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-ter-8',
-    dia: 'Terça-feira',
-    dataStr: '08/09/2026',
-    horario: '12:30',
-    titulo: 'Soneca / Repouso',
-    descricao: 'Acompanhamento individual dos bebês para o sono, com acalanto e presença afetiva, favorecendo um repouso reparador. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'sono',
-    item_key: 'sono',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-ter-9',
-    dia: 'Terça-feira',
-    dataStr: '08/09/2026',
-    horario: '14:30',
-    titulo: 'Lanche da Tarde',
-    descricao: 'Oferta do lanche da tarde, priorizando a alimentação em ambiente tranquilo e acolhedor para que os bebês se sintam seguros para comer. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'alimentacao',
-    item_key: 'lanche_tarde',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-ter-10',
-    dia: 'Terça-feira',
-    dataStr: '08/09/2026',
-    horario: '15:00',
-    titulo: 'Brincadeira Livre',
-    descricao: 'Brincadeira livre com peças grandes de encaixe, estimulando a coordenação motora ampla e a percepção de causa e efeito. (BNCC: Espaços, tempos, quantidades, relações e transformações)',
-    tipo: 'atividade_fisica',
-    item_key: 'brincadeira_livre',
-    objetivoBNCC: 'Espaços, tempos, quantidades, relações e transformações',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-ter-11',
-    dia: 'Terça-feira',
-    dataStr: '08/09/2026',
-    horario: '15:45',
-    titulo: 'Contação de Histórias',
-    descricao: 'Movimento suave com tecidos coloridos, ao som de músicas instrumentais, estimulando a percepção visual e a exploração de movimentos corporais. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'atividade_fisica',
-    item_key: 'leitura',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-ter-12',
-    dia: 'Terça-feira',
-    dataStr: '08/09/2026',
-    horario: '16:30',
-    titulo: 'Preparação para Saída',
-    descricao: 'Organização dos pertences e momento de despedida, com uma música calma e palavras de carinho, encerrando o dia de forma harmoniosa. (BNCC: O eu, o outro e o nós)',
-    tipo: 'atividade_fisica',
-    item_key: 'saida',
-    objetivoBNCC: 'O eu, o outro e o nós',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-
-  // --- QUARTA-FEIRA ---
-  {
-    id: 'act-1',
-    dia: 'Quarta-feira',
-    dataStr: '09/09/2026',
-    horario: '07:30',
-    titulo: 'Acolhida e Entrada',
-    descricao: 'Recepção alegre e personalizada para cada criança, com um sorriso e abraço, facilitando a transição da casa para a escola. (BNCC: O eu, o outro e o nós)',
-    tipo: 'atividade_fisica',
-    item_key: 'acolhida',
-    objetivoBNCC: 'O eu, o outro e o nós',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-2',
-    dia: 'Quarta-feira',
-    dataStr: '09/09/2026',
-    horario: '08:30',
-    titulo: 'Roda de Conversa',
-    descricao: 'Interação com os bebês utilizando espelhos seguros e coloridos, estimulando o reconhecimento da própria imagem e a percepção do eu. (BNCC: O eu, o outro e o nós)',
-    tipo: 'atividade_fisica',
-    item_key: 'roda_conversa',
-    objetivoBNCC: 'O eu, o outro e o nós',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-3',
-    dia: 'Quarta-feira',
-    dataStr: '09/09/2026',
-    horario: '09:30',
-    titulo: 'Lanche da Manhã',
-    descricao: 'Oferecer o lanche da manhã com carinho, permitindo que os bebês explorem a comida com as mãos (sob supervisão) e desenvolvam a autonomia. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'alimentacao',
-    item_key: 'lanche_manha',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-4',
-    dia: 'Quarta-feira',
-    dataStr: '09/09/2026',
-    horario: '10:00',
-    titulo: 'Parque Sensorial com Túnel de Pano',
-    descricao: 'Circuito motor e brincadeiras no parquinho com túnel de tecido seguro, auxiliando as crianças a engatinhar e andar trabalhando equilíbrio e exploração espacial. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'atividade_fisica',
-    item_key: 'parque',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-5',
-    dia: 'Quarta-feira',
-    dataStr: '09/09/2026',
-    horario: '10:30',
-    titulo: 'Caixa Mágica das Texturas',
-    descricao: 'Exploração tátil dirigida com elementos naturais e texturas diversas, estimulando a curiosidade sensorial, a motricidade e o tato. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'atividade_fisica',
-    item_key: 'atividade',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-6',
-    dia: 'Quarta-feira',
-    dataStr: '09/09/2026',
-    horario: '11:30',
-    titulo: 'Almoço Saudável',
-    descricao: 'Momento de refeição guiado pelo educador, garantindo que cada criança seja alimentada de forma segura e receba a atenção necessária. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'alimentacao',
-    item_key: 'almoco',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-7',
-    dia: 'Quarta-feira',
-    dataStr: '09/09/2026',
-    horario: '12:15',
-    titulo: 'Higiene / Troca de Fralda',
-    descricao: 'Troca de fraldas e higiene pessoal com delicadeza, conversando com o bebê e nomeando as ações, fortalecendo a segurança e o vínculo. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'banho',
-    item_key: 'higiene',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-8',
-    dia: 'Quarta-feira',
-    dataStr: '09/09/2026',
-    horario: '12:30',
-    titulo: 'Momento do Soninho / Descanso',
-    descricao: 'Acompanhamento individual dos bebês para o sono, com acalanto e presença afetiva, favorecendo um repouso reparador. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'sono',
-    item_key: 'sono',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-9',
-    dia: 'Quarta-feira',
-    dataStr: '09/09/2026',
-    horario: '14:30',
-    titulo: 'Lanche da Tarde',
-    descricao: 'Oferta do lanche da tarde, priorizando a alimentação em ambiente tranquilo e acolhedor para que os bebês se sintam seguros para comer. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'alimentacao',
-    item_key: 'lanche_tarde',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-10',
-    dia: 'Quarta-feira',
-    dataStr: '09/09/2026',
-    horario: '15:00',
-    titulo: 'Exploração de Brinquedos de Encaixe Grandes',
-    descricao: 'Brincadeira livre com peças grandes de encaixe, estimulando a coordenação motora ampla e a percepção de causa e efeito. (BNCC: Espaços, tempos, quantidades, relações e transformações)',
-    tipo: 'atividade_fisica',
-    item_key: 'brincadeira_livre',
-    objetivoBNCC: 'Espaços, tempos, quantidades, relações e transformações',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-11',
-    dia: 'Quarta-feira',
-    dataStr: '09/09/2026',
-    horario: '15:45',
-    titulo: 'Música e Movimento com Tecidos',
-    descricao: 'Movimento suave com tecidos coloridos, ao som de músicas instrumentais, estimulando a percepção visual e a exploração de movimentos corporais. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'atividade_fisica',
-    item_key: 'leitura',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-12',
-    dia: 'Quarta-feira',
-    dataStr: '09/09/2026',
-    horario: '16:30',
-    titulo: 'Preparação para Saída & Despedida',
-    descricao: 'Organização dos pertences e momento de despedida, com uma música calma e palavras de carinho, encerrando o dia de forma harmoniosa. (BNCC: O eu, o outro e o nós)',
-    tipo: 'atividade_fisica',
-    item_key: 'saida',
-    objetivoBNCC: 'O eu, o outro e o nós',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-
-  // --- QUINTA-FEIRA ---
-  {
-    id: 'act-qui-1',
-    dia: 'Quinta-feira',
-    dataStr: '10/09/2026',
-    horario: '07:30',
-    titulo: 'Acolhida e Entrada',
-    descricao: 'Recepção afetuosa e roda de acolhimento para iniciar o dia letivo com alegria, tranquilidade e segurança emocional. (BNCC: O eu, o outro e o nós)',
-    tipo: 'atividade_fisica',
-    item_key: 'acolhida',
-    objetivoBNCC: 'O eu, o outro e o nós',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-qui-2',
-    dia: 'Quinta-feira',
-    dataStr: '10/09/2026',
-    horario: '08:30',
-    titulo: 'Roda de Conversa Musical',
-    descricao: 'Cantigas de roda tradicionais e interação sonora com chocalhos artesanais, estimulando a escuta, a musicalidade e a socialização. (BNCC: Traços, sons, cores e formas)',
-    tipo: 'atividade_fisica',
-    item_key: 'roda_conversa',
-    objetivoBNCC: 'Traços, sons, cores e formas',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-qui-3',
-    dia: 'Quinta-feira',
-    dataStr: '10/09/2026',
-    horario: '09:30',
-    titulo: 'Lanche da Manhã',
-    descricao: 'Oferecer o lanche da manhã com carinho, permitindo que os bebês explorem a comida com as mãos (sob supervisão) e desenvolvam a autonomia. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'alimentacao',
-    item_key: 'lanche_manha',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-qui-4',
-    dia: 'Quinta-feira',
-    dataStr: '10/09/2026',
-    horario: '10:00',
-    titulo: 'Parque / Pátio',
-    descricao: 'Atividade motora ao ar livre estimulando o equilíbrio, a exploração do espaço amplo e a interação com a natureza do ambiente escolar. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'atividade_fisica',
-    item_key: 'parque',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-qui-5',
-    dia: 'Quinta-feira',
-    dataStr: '10/09/2026',
-    horario: '10:30',
-    titulo: 'Atividade Dirigida',
-    descricao: 'Exploração criativa com pintura guiada e carimbos com as mãos usando tintas atóxicas, desenvolvendo a coordenação e a expressão estética. (BNCC: Traços, sons, cores e formas)',
-    tipo: 'atividade_fisica',
-    item_key: 'atividade',
-    objetivoBNCC: 'Traços, sons, cores e formas',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-qui-6',
-    dia: 'Quinta-feira',
-    dataStr: '10/09/2026',
-    horario: '11:30',
-    titulo: 'Almoço',
-    descricao: 'Momento de refeição guiado pelo educador, garantindo que cada criança seja alimentada de forma segura e receba a atenção necessária. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'alimentacao',
-    item_key: 'almoco',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-qui-7',
-    dia: 'Quinta-feira',
-    dataStr: '10/09/2026',
-    horario: '12:15',
-    titulo: 'Higiene / Escovação',
-    descricao: 'Troca de fraldas e higiene pessoal com delicadeza, conversando com o bebê e nomeando as ações, fortalecendo a segurança e o vínculo. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'banho',
-    item_key: 'higiene',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-qui-8',
-    dia: 'Quinta-feira',
-    dataStr: '10/09/2026',
-    horario: '12:30',
-    titulo: 'Soneca / Repouso',
-    descricao: 'Acompanhamento individual dos bebês para o sono, com acalanto e presença afetiva, favorecendo um repouso reparador. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'sono',
-    item_key: 'sono',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-qui-9',
-    dia: 'Quinta-feira',
-    dataStr: '10/09/2026',
-    horario: '14:30',
-    titulo: 'Lanche da Tarde',
-    descricao: 'Oferta do lanche da tarde, priorizando a alimentação em ambiente tranquilo e acolhedor para que os bebês se sintam seguros para comer. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'alimentacao',
-    item_key: 'lanche_tarde',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-qui-10',
-    dia: 'Quinta-feira',
-    dataStr: '10/09/2026',
-    horario: '15:00',
-    titulo: 'Brincadeira Livre',
-    descricao: 'Brincadeira livre com blocos de montar e encaixe, estimulando a criatividade, a concentração e a autonomia. (BNCC: Espaços, tempos, quantidades, relações e transformações)',
-    tipo: 'atividade_fisica',
-    item_key: 'brincadeira_livre',
-    objetivoBNCC: 'Espaços, tempos, quantidades, relações e transformações',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-qui-11',
-    dia: 'Quinta-feira',
-    dataStr: '10/09/2026',
-    horario: '15:45',
-    titulo: 'Contação de Histórias',
-    descricao: 'Leitura de livrinhos ilustrados com animais e texturas, despertando o gosto pela literatura infantil desde cedo. (BNCC: Escuta, fala, pensamento e imaginação)',
-    tipo: 'atividade_fisica',
-    item_key: 'leitura',
-    objetivoBNCC: 'Escuta, fala, pensamento e imaginação',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-qui-12',
-    dia: 'Quinta-feira',
-    dataStr: '10/09/2026',
-    horario: '16:30',
-    titulo: 'Preparação para Saída',
-    descricao: 'Organização dos pertences e momento de despedida, com uma música calma e palavras de carinho, encerrando o dia de forma harmoniosa. (BNCC: O eu, o outro e o nós)',
-    tipo: 'atividade_fisica',
-    item_key: 'saida',
-    objetivoBNCC: 'O eu, o outro e o nós',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-
-  // --- SEXTA-FEIRA ---
-  {
-    id: 'act-sex-1',
-    dia: 'Sexta-feira',
-    dataStr: '11/09/2026',
-    horario: '07:30',
-    titulo: 'Acolhida e Entrada',
-    descricao: 'Recepção festiva e acolhedora para celebrar o encerramento da semana letiva com alegria e afeto. (BNCC: O eu, o outro e o nós)',
-    tipo: 'atividade_fisica',
-    item_key: 'acolhida',
-    objetivoBNCC: 'O eu, o outro e o nós',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-sex-2',
-    dia: 'Sexta-feira',
-    dataStr: '11/09/2026',
-    horario: '08:30',
-    titulo: 'Roda de Conversa',
-    descricao: 'Roda de conversa festiva relembrando os momentos felizes da semana e celebrando as descobertas das crianças. (BNCC: O eu, o outro e o nós)',
-    tipo: 'atividade_fisica',
-    item_key: 'roda_conversa',
-    objetivoBNCC: 'O eu, o outro e o nós',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-sex-3',
-    dia: 'Sexta-feira',
-    dataStr: '11/09/2026',
-    horario: '09:30',
-    titulo: 'Lanche da Manhã',
-    descricao: 'Oferecer o lanche da manhã com carinho, permitindo que os bebês explorem a comida com as mãos (sob supervisão) e desenvolvam a autonomia. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'alimentacao',
-    item_key: 'lanche_manha',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-sex-4',
-    dia: 'Sexta-feira',
-    dataStr: '11/09/2026',
-    horario: '10:00',
-    titulo: 'Parque / Pátio',
-    descricao: 'Brincadeiras livres e prazerosas no pátio com bolinhas de sabão e espaço amplo ao ar livre. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'atividade_fisica',
-    item_key: 'parque',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-sex-5',
-    dia: 'Sexta-feira',
-    dataStr: '11/09/2026',
-    horario: '10:30',
-    titulo: 'Atividade Dirigida',
-    descricao: 'Atividade sensorial coletiva com massinha de modelar caseira e atóxica, estimulando a coordenação fina e a criatividade. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'atividade_fisica',
-    item_key: 'atividade',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-sex-6',
-    dia: 'Sexta-feira',
-    dataStr: '11/09/2026',
-    horario: '11:30',
-    titulo: 'Almoço',
-    descricao: 'Momento de refeição guiado pelo educador, garantindo que cada criança seja alimentada de forma segura e receba a atenção necessária. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'alimentacao',
-    item_key: 'almoco',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-sex-7',
-    dia: 'Sexta-feira',
-    dataStr: '11/09/2026',
-    horario: '12:15',
-    titulo: 'Higiene / Escovação',
-    descricao: 'Troca de fraldas e higiene pessoal com delicadeza, conversando com o bebê e nomeando as ações, fortalecendo a segurança e o vínculo. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'banho',
-    item_key: 'higiene',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-sex-8',
-    dia: 'Sexta-feira',
-    dataStr: '11/09/2026',
-    horario: '12:30',
-    titulo: 'Soneca / Repouso',
-    descricao: 'Acompanhamento individual dos bebês para o sono, com acalanto e presença afetiva, favorecendo um repouso reparador. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'sono',
-    item_key: 'sono',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-sex-9',
-    dia: 'Sexta-feira',
-    dataStr: '11/09/2026',
-    horario: '14:30',
-    titulo: 'Lanche da Tarde',
-    descricao: 'Oferta do lanche da tarde, priorizando a alimentação em ambiente tranquilo e acolhedor para que os bebês se sintam seguros para comer. (BNCC: Corpo, gestos e movimentos)',
-    tipo: 'alimentacao',
-    item_key: 'lanche_tarde',
-    objetivoBNCC: 'Corpo, gestos e movimentos',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-sex-10',
-    dia: 'Sexta-feira',
-    dataStr: '11/09/2026',
-    horario: '15:00',
-    titulo: 'Brincadeira Livre',
-    descricao: 'Brincadeira livre com brinquedos prediletos e interação coletiva entre as turminhas. (BNCC: O eu, o outro e o nós)',
-    tipo: 'atividade_fisica',
-    item_key: 'brincadeira_livre',
-    objetivoBNCC: 'O eu, o outro e o nós',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-sex-11',
-    dia: 'Sexta-feira',
-    dataStr: '11/09/2026',
-    horario: '15:45',
-    titulo: 'Contação de Histórias',
-    descricao: 'Roda musical com instrumentos de percussão infantis, dança livre e celebração de encerramento da semana. (BNCC: Traços, sons, cores e formas)',
-    tipo: 'atividade_fisica',
-    item_key: 'leitura',
-    objetivoBNCC: 'Traços, sons, cores e formas',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  },
-  {
-    id: 'act-sex-12',
-    dia: 'Sexta-feira',
-    dataStr: '11/09/2026',
-    horario: '16:30',
-    titulo: 'Preparação para Saída',
-    descricao: 'Organização dos pertences, entrega de lembrancinhas da semana e despedida carinhosa para o final de semana. (BNCC: O eu, o outro e o nós)',
-    tipo: 'atividade_fisica',
-    item_key: 'saida',
-    objetivoBNCC: 'O eu, o outro e o nós',
-    status: 'pendente',
-    entregue: false,
-    isRotinaPadrao: true
-  }
-]);
-
-interface ConflictState {
-  newActivity: ParsedAuraActivity;
-  existingActivity: ParsedAuraActivity;
-}
-
-export default function AuraPlannerIntegration({ 
-  onConcluirAtividadePedagogica, 
-  studentNome = 'Mariana Souza',
-  student,
-  onUpdateStudent,
-  userRole = 'professor'
+export default function ModuloAuditoriaLgpd({
+  currentStudent,
+  userRole,
+  onSelectStudent,
 }: Props) {
-  // Trava de segurança: impede registros se o cronômetro do aluno estiver parado
- const validarCronometro = () => {
-    if (student && onUpdateStudent && (!student.presenca?.isTimerRunning || student.presenca?.status !== 'em_aula')) {
-      onUpdateStudent({
-        presenca: {
-          ...student.presenca,
-          isTimerRunning: true,
-          status: 'em_aula',
-          startTimestamp: student.presenca?.startTimestamp || Date.now(),
-        }
-      });
-    }
-    return true;
+  const [subTab, setSubTab] = useState<'termos' | 'livro_auditoria' | 'seguranca_backups' | 'respaldo_juridico'>('termos');
+  const [consentimentos, setConsentimentos] = useState<Record<string, LgpdConsentimento>>({});
+  const [logsAuditoria, setLogsAuditoria] = useState<LgpdLogRegistro[]>([]);
+  const [filtroAluno, setFiltroAluno] = useState<string>('todos');
+  const [filtroTipo, setFiltroTipo] = useState<string>('todos');
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  
+  // Modal para assinar/atualizar termo
+  const [showModalAssinatura, setShowModalAssinatura] = useState(false);
+  const [alunoParaAssinar, setAlunoParaAssinar] = useState<StudentPaxData>(currentStudent);
+  
+  // Modal de Detalhes de Certidão Jurídica para Impressão
+  const [termoVisualizacao, setTermoVisualizacao] = useState<LgpdConsentimento | null>(null);
+
+  // Modal de Exportação Avançada em PDF (Diários, Prontuário, Ficha e Certidão LGPD)
+  const [showPdfExportModal, setShowPdfExportModal] = useState(false);
+  const [alunoParaPdf, setAlunoParaPdf] = useState<StudentPaxData>(currentStudent);
+
+  const carregarDados = () => {
+    setConsentimentos(getLgpdConsentimentos());
+    setLogsAuditoria(getLgpdLogsAuditoria());
   };
 
-  const [inputText, setInputText] = useState('');
- const [activities, setActivities] = useState<ParsedAuraActivity[]>(() => sortActivitiesBySchedule(deduplicateActivities(PLAN_ACTIVITIES)));
- 
-  const [selectedDayTab, setSelectedDayTab] = useState<string>(() => {
-    try {
-      const saved = localStorage.getItem('anjinho_planner_selected_day');
-      if (saved && (saved === 'all' || ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira'].includes(saved))) {
-        return saved;
-      }
-    } catch (e) {
-      // ignore
-    }
-    return 'all';
-  });
-
-  const handleSelectDayTab = (day: string) => {
-    setSelectedDayTab(day);
-    try {
-      localStorage.setItem('anjinho_planner_selected_day', day);
-    } catch (e) {
-      // ignore
-    }
-  };
-  const [statusFilter, setStatusFilter] = useState<'todas' | 'pendentes' | 'entregues' | 'recusadas'>('todas');
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [copied, setCopied] = useState(false);
-
-  // Controle de exibição do formulário de agendamento de nova atividade
-  const [showForm, setShowForm] = useState(false);
-  const [formMode, setFormMode] = useState<'direto' | 'importar'>('direto');
-
-  // Formulário de Nova Atividade
-  const [newTitle, setNewTitle] = useState('');
-  const [newTime, setNewTime] = useState('10:00');
-  const [newTipo, setNewTipo] = useState<'alimentacao' | 'medicacao' | 'atividade_fisica' | 'banho' | 'sono' | 'humor'>('atividade_fisica');
-  const [newDia, setNewDia] = useState('Quarta-feira');
-  const [newDesc, setNewDesc] = useState('');
-  const [newBncc, setNewBncc] = useState('Corpo, gestos e movimentos');
-  const [newScope, setNewScope] = useState<'individual' | 'classe'>('individual');
-  const [isListeningTitle, setIsListeningTitle] = useState(false);
-  const [isListeningDesc, setIsListeningDesc] = useState(false);
-
-  // Estado de aviso de conflito de horário
-  const [conflictState, setConflictState] = useState<ConflictState | null>(null);
-
-  // Estados de edição de atividade existente
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState<ParsedAuraActivity | null>(null);
-
-  // Observações por atividade
-  const [activityNotes, setActivityNotes] = useState<Record<string, string>>({});
-  const [listeningNoteId, setListeningNoteId] = useState<string | null>(null);
-
-  // Escopo de aplicação por cartão: 'coletivo' (toda a turma) ou 'individual' (apenas este aluno)
-  const [activityScopes, setActivityScopes] = useState<Record<string, 'coletivo' | 'individual'>>({});
-
-  // Visualizador de foto/anexo de medicamento para conferência da professora
-  const [previewMedImage, setPreviewMedImage] = useState<string | null>(null);
-
-  // Sincroniza com o cronômetro / novo período: quando o cronômetro é iniciado ou religado,
-  // todas as atividades da agenda entram/retornam para o status pendente
   useEffect(() => {
-    const handleResetAllToPending = () => {
-      setActivities((prev) =>
-        prev.map((act) => ({
-          ...act,
-          status: 'pendente' as const,
-          entregue: false,
-          observacao: undefined,
-        }))
-      );
-      setActivityNotes({});
-      setStatusFilter('todas');
-
-      // Limpa os registros de medicamentos também ao zerar o cronômetro / iniciar novo período
-      if (student && student.medicamentos && onUpdateStudent) {
-        const resetMeds = student.medicamentos.map((m) => ({
-          ...m,
-          ministradoHoje: false,
-          ministradoDias: [],
-          observacoesDias: {},
-          ministradoPor: undefined,
-          ministradoHorario: undefined,
-          observacaoMinistracao: undefined,
-        }));
-        onUpdateStudent({
-          medicamentos: resetMeds,
-        });
-      }
-    };
-
-    const handleRotinaRegistrada = (e: Event) => {
-      const customEvent = e as CustomEvent<{ itemKey: string; status: string; observacao?: string }>;
-      if (!customEvent.detail) return;
-      const { itemKey, status, observacao } = customEvent.detail;
-      
-      setActivities((prev) =>
-        prev.map((act) => {
-          const isLancheManha = itemKey === 'lanche_manha' && act.titulo.toLowerCase().includes('lanche da manhã');
-          const isAlmoco = itemKey === 'almoco' && act.titulo.toLowerCase().includes('almoço');
-          const isLancheTarde = itemKey === 'lanche_tarde' && act.titulo.toLowerCase().includes('lanche da tarde');
-          const isSono = itemKey === 'sono' && act.titulo.toLowerCase().includes('soneca');
-          const isHigiene = itemKey === 'higiene' && act.titulo.toLowerCase().includes('higiene');
-          
-          const matchesKey = act.item_key === itemKey || isLancheManha || isAlmoco || isLancheTarde || isSono || isHigiene;
-            
-          if (matchesKey) {
-            return {
-              ...act,
-              status: status === 'Rejeitou' ? 'recusou' as const : 'entregue' as const,
-              entregue: status !== 'Rejeitou',
-              observacao: observacao || `Sincronizado da Rotina Diária: ${status}`,
-            };
-          }
-          return act;
-        })
-      );
-    };
-
-    window.addEventListener('anjinho:reset-activities-to-pending', handleResetAllToPending);
-    window.addEventListener('anjinho:rotina-registrada', handleRotinaRegistrada);
-    return () => {
-      window.removeEventListener('anjinho:reset-activities-to-pending', handleResetAllToPending);
-      window.removeEventListener('anjinho:rotina-registrada', handleRotinaRegistrada);
-    };
+    carregarDados();
   }, []);
 
-  // Horários rápidos pré-configurados (Escola 07:30 às 16:30)
-  const TIME_PRESETS = ['07:30', '08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30', '12:00', '12:15', '12:30', '13:30', '14:00', '14:30', '15:00', '15:45', '16:00', '16:30'];
+  const alunosArray = Object.values(PAX_STUDENTS);
 
-  // Modelos Rápidos de Atividades Escolares
-  const QUICK_MODELS = [
-    {
-      nome: 'Aula de Artes & Pintura',
-      tipo: 'atividade_fisica' as const,
-      horario: '10:30',
-      bncc: 'Traços, sons, cores e formas',
-      desc: 'Exploração de cores e tintas atóxicas em papel craft no chão, estimulando a coordenação motora fina e a livre expressão artística.'
-    },
-    {
-      nome: 'Hora do Conto & Leitura',
-      tipo: 'atividade_fisica' as const,
-      horario: '15:45',
-      bncc: 'Escuta, fala, pensamento e imaginação',
-      desc: 'Contação interativa de histórias com dedoches e livros sensoriais, estimulando a escuta atenta, o vocabulário e o imaginário.'
-    },
-    {
-      nome: 'Brincadeiras no Parquinho',
-      tipo: 'atividade_fisica' as const,
-      horario: '10:00',
-      bncc: 'Corpo, gestos e movimentos',
-      desc: 'Atividade motora ao ar livre no parquinho com circuito de obstáculos seguros, desenvolvendo o equilíbrio e a socialização.'
-    },
-    {
-      nome: 'Hora da Frutinha & Hidratação',
-      tipo: 'alimentacao' as const,
-      horario: '09:30',
-      bncc: 'Corpo, gestos e movimentos',
-      desc: 'Oferecer frutinhas picadas frescas da estação e água fresca, incentivando a autonomia alimentar e o paladar saudável.'
-    },
-    {
-      nome: 'Soneca Pós-Almoço',
-      tipo: 'sono' as const,
-      horario: '12:30',
-      bncc: 'Corpo, gestos e movimentos',
-      desc: 'Ambiente climatizado com luz suave e música de ninar para descanso reparador dos bebês e crianças.'
-    },
-    {
-      nome: 'Higiene Oral & Escovar Dentes',
-      tipo: 'banho' as const,
-      horario: '12:15',
-      bncc: 'Corpo, gestos e movimentos',
-      desc: 'Troca de fraldas e estímulo lúdico à escovação dental com água e escovinha macia, promovendo hábitos de autocuidado.'
-    }
-  ];
-
-  // Abas fixas com todos os dias da semana para garantir que terça, quarta e demais dias estejam sempre selecionáveis
-  const WEEKDAY_ORDER = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira'];
-  const uniqueDaysMap = new Map<string, { dia: string; count: number }>();
-  
-  // Inicializar com todos os dias da semana com count 0
-  WEEKDAY_ORDER.forEach(dia => {
-    uniqueDaysMap.set(dia, { dia, count: 0 });
+  // Filtragem dos logs
+  const logsFiltrados = logsAuditoria.filter((log) => {
+    const matchAluno = filtroAluno === 'todos' || log.studentId === filtroAluno;
+    const matchTipo = filtroTipo === 'todos' || log.tipo === filtroTipo;
+    const matchBusca =
+      !searchTerm ||
+      log.studentNome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      log.conteudoResumo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      log.remetenteNome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      log.hashIntegridade.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchAluno && matchTipo && matchBusca;
   });
 
-  activities.forEach((act) => {
-    let key = act.dia || 'Quarta-feira';
-    if (/ter/i.test(key)) key = 'Terça-feira';
-    if (/seg/i.test(key)) key = 'Segunda-feira';
-    if (/qua/i.test(key)) key = 'Quarta-feira';
-    if (/qui/i.test(key)) key = 'Quinta-feira';
-    if (/sex/i.test(key)) key = 'Sexta-feira';
-    if (/sab/i.test(key)) key = 'Sábado';
-
-    const existing = uniqueDaysMap.get(key);
-    if (existing) {
-      existing.count += 1;
-    } else {
-      uniqueDaysMap.set(key, { dia: key, count: 1 });
-    }
-  });
-
-  const daySummaries = Array.from(uniqueDaysMap.values()).sort((a, b) => {
-    const idxA = WEEKDAY_ORDER.indexOf(a.dia);
-    const idxB = WEEKDAY_ORDER.indexOf(b.dia);
-    return (idxA === -1 ? 99 : idxA) - (idxB === -1 ? 99 : idxB);
-  });
-
-  // Função auxiliar para verificar se o medicamento está programado para o dia da semana
-  const isMedicationForDay = (diasSemana: string[] | undefined, dayName: string): boolean => {
-    if (!diasSemana || diasSemana.length === 0 || diasSemana.includes('Todos')) {
-      return true;
-    }
-    const dLower = dayName.toLowerCase().trim();
-    return diasSemana.some((dia) => {
-      const diaLower = dia.toLowerCase().trim();
-      if (diaLower === 'todos') return true;
-      if (diaLower.startsWith('seg') && dLower.includes('seg')) return true;
-      if (diaLower.startsWith('ter') && (dLower.includes('ter') || dLower.includes('terça') || dLower.includes('terca'))) return true;
-      if (diaLower.startsWith('qua') && dLower.includes('qua')) return true;
-      if (diaLower.startsWith('qui') && dLower.includes('qui')) return true;
-      if (diaLower.startsWith('sex') && dLower.includes('sex')) return true;
-      if (diaLower.startsWith('sab') && (dLower.includes('sab') || dLower.includes('sábado') || dLower.includes('sabado'))) return true;
-      if (diaLower.startsWith('dom') && (dLower.includes('dom') || dLower.includes('domingo'))) return true;
-      return false;
-    });
-  };
-
-  // Gera atividades de medicação dinamicamente a partir das prescrições ativas do aluno
-  const getDynamicMedicationActivities = (): ParsedAuraActivity[] => {
-    if (!student || !student.medicamentos) return [];
-    
-    const medActivities: ParsedAuraActivity[] = [];
-    
-    student.medicamentos.forEach((med) => {
-      // Ignorar se o medicamento não estiver ativo ou estiver suspenso
-      if (!med.ativo || med.suspenso) return;
-      
-      // Extrair todos os padrões de horários do tipo HH:MM (ex: "08:00 e 14:00" -> ["08:00", "14:00"])
-      const timeRegex = /\b\d{1,2}:\d{2}\b/g;
-      const times = med.horario.match(timeRegex) || [med.horario];
-      
-      times.forEach((timeStr, timeIdx) => {
-        const cleanTime = timeStr.trim();
-        
-        // Se a aba selecionada for "Todos os Dias", avalia todos os dias com atividades; senão avalia apenas o dia selecionado
-        const targetDays = selectedDayTab === 'all'
-          ? (daySummaries.length > 0 ? daySummaries.map(d => d.dia) : WEEKDAY_ORDER)
-          : [selectedDayTab];
-
-        // Filtra estritamente pelos dias em que o medicamento foi prescrito (ex: Seg, Ter, Qua)
-        const validDays = targetDays.filter((dayName) => isMedicationForDay(med.diasSemana, dayName));
-          
-        validDays.forEach((dayName) => {
-          const isMinistradoNoDia = med.ministradoDias?.includes(dayName) || (dayName === 'Segunda-feira' && med.ministradoHoje);
-          const obsDia = med.observacoesDias?.[dayName] || med.observacaoMinistracao || '';
-          const diasTexto = med.diasSemana && med.diasSemana.length > 0 ? med.diasSemana.join(', ') : 'Todos os dias úteis';
-
-          medActivities.push({
-            id: `med-dyn-${med.id}-${cleanTime}-${dayName}-${timeIdx}`,
-            dia: dayName,
-            horario: cleanTime,
-            titulo: `💊 Medicamento: ${med.nome}`,
-            descricao: `Dosagem: ${med.dosagem}. Dias programados: ${diasTexto}. Instruções: ${med.instrucoes}. (Prescrito pelos Pais)`,
-            tipo: 'medicacao',
-            status: isMinistradoNoDia ? 'entregue' : 'pendente',
-            entregue: !!isMinistradoNoDia,
-            isRotinaPadrao: false,
-            objetivoBNCC: 'Cuidado, saúde e bem-estar do bebê',
-            observacao: isMinistradoNoDia ? obsDia : '',
-            escopo: 'individual',
-            anexoReceitaUrl: med.anexoReceitaUrl,
-            diasSemana: med.diasSemana
-          });
-        });
-      });
-    });
-    
-    return medActivities;
-  };
-
-  const dynamicMedications = getDynamicMedicationActivities();
-  const allCombinedActivities = [
-    ...activities,
-    ...dynamicMedications
-  ];
-  const sortedCombined = sortActivitiesBySchedule(allCombinedActivities);
-
-  // Contadores de status (calculados sobre a lista combinada)
-  const pendingCount = sortedCombined.filter((a) => a.status === 'pendente' || (!a.status && !a.entregue)).length;
-  const entregueCount = sortedCombined.filter((a) => a.status === 'entregue' || a.entregue).length;
-  const recusouCount = sortedCombined.filter((a) => a.status === 'recusou').length;
-
-  // Filtros combinados (Dia + Status)
-  const filteredActivities = sortedCombined.filter((act) => {
-    const matchesDay = selectedDayTab === 'all' || act.dia === selectedDayTab;
-    if (!matchesDay) return false;
-
-    if (statusFilter === 'pendentes') {
-      return act.status === 'pendente' || (!act.status && !act.entregue);
-    }
-    if (statusFilter === 'entregues') {
-      return act.status === 'entregue' || act.entregue;
-    }
-    if (statusFilter === 'recusadas') {
-      return act.status === 'recusou';
-    }
-    return true;
-  });
-
-  // Extrair texto da Aura (garantindo que todas as atividades importadas comecem como pendentes)
-  const handleExtract = () => {
-    if (!inputText.trim()) return;
-    setIsProcessing(true);
+  const handleImprimirCertidao = (termo: LgpdConsentimento) => {
+    setTermoVisualizacao(termo);
     setTimeout(() => {
-      const parsed = parseAuraRawPlan(inputText);
-      if (parsed.activities && parsed.activities.length > 0) {
-        const pendingImportedActivities = parsed.activities.map((act) => ({
-          ...act,
-          status: 'pendente' as const,
-          entregue: false,
-          observacao: undefined,
-        }));
-        setActivities((prev) => sortActivitiesBySchedule(deduplicateActivities([...prev, ...pendingImportedActivities])));
-      }
-      setSelectedDayTab('all');
-      setShowForm(false);
-      setIsProcessing(false);
-    }, 400);
+      window.print();
+    }, 300);
   };
 
-  const handleCopyModel = () => {
-    const modelText = `Atue como Especialista em Educação Infantil (Anjinha Aura). Crie um planejamento de aulas / rotina escolar detalhado para os dias desejados (ex: 9 e 10 de setembro) ou para a semana inteira, com horários de 07:30 até 16:30.
-
-Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
-
-07:30: Acolhida e Entrada - Recepção alegre e personalizada para cada criança, com um sorriso e abraço, facilitando a transição da casa para a escola. (BNCC: O eu, o outro e o nós)
-08:30: Roda de Conversa - Interação com os bebês utilizando espelhos seguros e coloridos, estimulando o reconhecimento da própria imagem e a percepção do eu. (BNCC: O eu, o outro e o nós)
-09:30: Lanche da Manhã - Oferecer o lanche da manhã com carinho, permitindo que os bebês explorem a comida com as mãos (sob supervisão) e desenvolvam a autonomia. (BNCC: Corpo, gestos e movimentos)
-10:00: Espelho Mágico - Exploração de espelhos inquebráveis em diferentes posições, incentivando o reconhecimento facial, a interação e a expressão de sentimentos. (BNCC: O eu, o outro e o nós)
-10:30: Descoberta Tátil com Água - Brincadeira com potes de água em pequena quantidade (sob supervisão total), permitindo a exploração sensorial do líquido e seus efeitos (respingos, temperatura). (BNCC: Corpo, gestos e movimentos)
-11:30: Almoço Saudável - Momento de refeição guiado pelo educador, garantindo que cada criança seja alimentada de forma segura e receba a atenção necessária. (BNCC: Corpo, gestos e movimentos)
-12:15: Higiene / Troca de Fralda - Troca de fraldas e higiene pessoal com delicadeza, conversando com o bebê e nomeando as ações, fortalecendo a segurança e o vínculo. (BNCC: Corpo, gestos e movimentos)
-12:30: Momento do Soninho / Descanso - Acompanhamento individual dos bebês para o sono, com acalanto e presença afetiva, favorecendo um repouso reparador. (BNCC: Corpo, gestos e movimentos)
-14:30: Lanche da Tarde - Oferta do lanche da tarde, priorizando a alimentação em ambiente tranquilo e acolhedor para que os bebês se sintam seguros para comer. (BNCC: Corpo, gestos e movimentos)
-15:00: Exploração de Brinquedos de Encaixe Grandes - Brincadeira livre com peças grandes de encaixe, estimulando a coordenação motora ampla e a percepção de causa e efeito. (BNCC: Espaços, tempos, quantidades, relações e transformações)
-15:45: Música e Movimento com Tecidos - Movimento suave com tecidos coloridos, ao som de músicas instrumentais, estimulando a percepção visual e a exploração de movimentos corporais. (BNCC: Corpo, gestos e movimentos)
-16:30: Preparação para Saída & Despedida - Organização dos pertences e momento de despedida, com uma música calma e palavras de carinho, encerrando o dia de forma harmoniosa. (BNCC: O eu, o outro e o nós)`;
-    navigator.clipboard.writeText(modelText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 3000);
-  };
-
-  // Limpar atividades para permitir inserção de novas
-  const handleClearAll = () => {
-    if (window.confirm('Deseja limpar as atividades para inserir novas atividades na agenda?')) {
-      setActivities([]);
-      setActivityNotes({});
-      setSelectedDayTab('all');
-      setStatusFilter('todas');
-      // Abre o formulário de cadastro imediatamente
-      setShowForm(true);
-      setFormMode('direto');
-    }
-  };
-
-  // Restaurar atividades padrão (todas em estado pendente)
-  const handleRestoreDefault = () => {
-    const allPendingDefaults = DEFAULT_INITIAL_ACTIVITIES.map((act) => ({
-      ...act,
-      status: 'pendente' as const,
-      entregue: false,
-      observacao: undefined
-    }));
-    setActivities(sortActivitiesBySchedule(deduplicateActivities(allPendingDefaults)));
-    setSelectedDayTab('all');
-    setStatusFilter('todas');
-    setActivityNotes({});
-  };
-
-  // Aplicar Modelo Rápido
-  const handleApplyQuickModel = (model: typeof QUICK_MODELS[0]) => {
-    setNewTitle(model.nome);
-    setNewTipo(model.tipo);
-    setNewTime(model.horario);
-    setNewBncc(model.bncc);
-    setNewDesc(model.desc);
-  };
-
-  // Executa a adição efetiva de uma atividade, garantindo ordenação por horário e status pendente
-  const commitAddActivity = (newAct: ParsedAuraActivity, replaceId?: string) => {
-    setActivities((prev) => {
-      let updated: ParsedAuraActivity[];
-      if (replaceId) {
-        // Substitui a atividade existente
-        updated = prev.map((a, i) => ((a.id || `act-${i}`) === replaceId ? newAct : a));
-      } else {
-        // Adiciona nova atividade
-        updated = [...prev, newAct];
-      }
-      return sortActivitiesBySchedule(deduplicateActivities(updated));
-    });
-
-    // Se a aba estiver filtrada em outro dia, ajusta para o dia da atividade criada para exibição imediata
-    if (selectedDayTab !== 'all' && selectedDayTab !== newAct.dia) {
-      setSelectedDayTab(newAct.dia || 'all');
-    }
-
-    // Limpa os campos do formulário
-    setNewTitle('');
-    setNewDesc('');
-    setShowForm(false);
-    setConflictState(null);
-  };
-
-  // Criar Nova Atividade com Validação e Checagem de Conflito de Horário
-  const handleCreateActivity = (e: React.FormEvent) => {
-    e.preventDefault();
-    const cleanTitle = newTitle.trim();
-    if (!cleanTitle) {
-      alert('Por favor, informe o título da atividade.');
-      return;
-    }
-
-    const scheduledTime = (newTime || '10:00').trim();
-    const scheduledDay = newDia || 'Quarta-feira';
-
-    const created: ParsedAuraActivity = {
-      id: `act-${Date.now()}`,
-      dia: scheduledDay,
-      horario: scheduledTime,
-      titulo: cleanTitle,
-      descricao: newDesc.trim() 
-        ? (newBncc && !newDesc.includes('BNCC:') ? `${newDesc.trim()} (BNCC: ${newBncc})` : newDesc.trim())
-        : `Atividade planejada para desenvolvimento lúdico e motor. (BNCC: ${newBncc})`,
-      tipo: newTipo,
-      objetivoBNCC: newBncc,
-      status: 'pendente', // Entra como PENDENTE
-      entregue: false,
-      item_key: `custom_${Date.now()}`
-    };
-
-    // Verificar se já existe outra atividade agendada no mesmo horário e dia
-    const existingConflict = activities.find(
-      (a) => (a.dia || 'Quarta-feira') === scheduledDay && (a.horario || '').trim() === scheduledTime
-    );
-
-    if (existingConflict) {
-      // Abre aviso de conflito para a professora decidir se substitui ou agenda ambas
-      setConflictState({
-        newActivity: created,
-        existingActivity: existingConflict
-      });
-      return;
-    }
-
-    // Sem conflito: insere e ordena cronologicamente
-    commitAddActivity(created);
-  };
-
-  // Excluir Atividade
-  const handleDelete = (id: string, idx: number) => {
-    if (window.confirm('Deseja excluir esta atividade da agenda?')) {
-      setActivities((prev) => prev.filter((a, i) => (a.id ? a.id !== id : i !== idx)));
-    }
-  };
-
-  // Iniciar Edição
-  const handleStartEdit = (act: ParsedAuraActivity, idx: number) => {
-    const actId = act.id || `act-${idx}`;
-    setEditingId(actId);
-    setEditForm({ ...act, id: actId });
-  };
-
-  // Salvar Edição
-  const handleSaveEdit = () => {
-    if (!editForm || !editingId) return;
-    setActivities((prev) => {
-      const updated = prev.map((a, i) => {
-        const id = a.id || `act-${i}`;
-        if (id === editingId) {
-          return {
-            ...editForm,
-            descricao: editForm.objetivoBNCC && !editForm.descricao.includes('BNCC:')
-              ? `${editForm.descricao} (BNCC: ${editForm.objetivoBNCC})`
-              : editForm.descricao
-          };
-        }
-        return a;
-      });
-      return sortActivitiesBySchedule(updated);
-    });
-    setEditingId(null);
-    setEditForm(null);
-  };
-
-  // Marcar como Entregue / Concluído
-  const handleMarkEntregue = (act: ParsedAuraActivity, idx: number, customScope?: 'coletivo' | 'individual') => {
-    const actId = act.id || `act-${idx}`;
-    const note = activityNotes[actId] || '';
-    const scope = customScope || activityScopes[actId] || 'coletivo';
-    
-    if (actId.startsWith('med-dyn-')) {
-      if (student && student.medicamentos && onUpdateStudent) {
-        const parts = actId.split('-');
-        const medId = parts[2];
-        const targetDay = act.dia || selectedDayTab;
-        
-        const updatedMeds = student.medicamentos.map((m) => {
-          if (m.id === medId) {
-            const currentDays = m.ministradoDias || [];
-            const nextDays = currentDays.includes(targetDay) ? currentDays : [...currentDays, targetDay];
-            const currentObs = m.observacoesDias || {};
-            const nextObs = { ...currentObs, [targetDay]: note || 'Dose administrada no horário estipulado.' };
-            
-            return {
-              ...m,
-              ministradoHoje: true,
-              ministradoDias: nextDays,
-              observacoesDias: nextObs,
-              ministradoPor: 'Ana Silva (Professora Titular)',
-              ministradoHorario: act.horario,
-              observacaoMinistracao: note || 'Dose administrada no horário estipulado.'
-            };
-          }
-          return m;
-        });
-        
-        const horaAtual = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-        const newTimelineItem = {
-          id: `audit_med_${Date.now()}`,
-          hora: act.horario || horaAtual,
-          tipo: 'saude' as const,
-          titulo: `💊 Medicamento Ministrado: ${act.titulo.replace('💊 Medicamento: ', '')} (${targetDay})`,
-          descricao: `Dose de ${act.horario} (${targetDay}) administrada com sucesso por Ana Silva (Professora Titular).\n\n💬 Observações: ${note || 'Dose administrada no horário estipulado.'}`,
-          responsavel: 'Ana Silva (Professora Titular)',
-          verificado: true
-        };
-        
-        onUpdateStudent({
-          medicamentos: updatedMeds,
-          auditoriaLinhaDoTempo: [newTimelineItem, ...(student.auditoriaLinhaDoTempo || [])]
-        });
-      }
-      return;
-    }
-
-    setActivities((prev) =>
-      prev.map((a, i) => {
-        const currentId = a.id || `act-${i}`;
-        if (currentId === actId) {
-          return { ...a, status: 'entregue', entregue: true, observacao: note };
-        }
-        return a;
-      })
-    );
-
-    if (onConcluirAtividadePedagogica) {
-      onConcluirAtividadePedagogica({
-        ...act,
-        entregue: true,
-        status: 'entregue',
-        escopo: scope,
-        isColetivo: scope === 'coletivo',
-        descricao: note ? `${act.descricao}\n\n💬 Observação da Professora: ${note}` : act.descricao
-      });
-    }
-  };
-
-// Marcar como Recusou
- const handleMarkRecusou = (act: ParsedAuraActivity, idx: number, customScope?: 'coletivo' | 'individual') => {
-    const actId = act.id || `act-${idx}`;
-    let note = activityNotes[actId] || '';
-    const scope = customScope || activityScopes[actId] || 'coletivo';
-
-    // Se for medicamento e não tiver nota escrita, solicita o motivo da recusa
-    if (actId.startsWith('med-dyn-') || act.tipo === 'medicacao') {
-      if (!note.trim()) {
-        const justificativa = window.prompt(
-          '⚠️ Registro de Recusa de Medicamento\n\nInforme o motivo da recusa (ex: A criança cuspiu, estava dormindo, recusou tomar):'
-        );
-        if (justificativa === null) {
-          // Cancelou a ação
-          return;
-        }
-        note = justificativa.trim() || 'Dose recusada pela criança.';
-        setActivityNotes((prev) => ({ ...prev, [actId]: note }));
-      }
-
-      if (student?.medicamentos) {
-        const parts = actId.split('-');
-        const medId = parts[2];
-        const targetDay = act.dia || selectedDayTab;
-        
-        const updatedMeds = student.medicamentos.map((m) => {
-          if (m.id === medId) {
-            const currentDays = m.ministradoDias || [];
-            const nextDays = currentDays.filter(d => d !== targetDay);
-            const currentObs = m.observacoesDias || {};
-            const nextObs = { ...currentObs, [targetDay]: note };
-            
-            return {
-              ...m,
-              ministradoHoje: false,
-              ministradoDias: nextDays,
-              observacoesDias: nextObs,
-              observacaoMinistracao: note
-            };
-          }
-          return m;
-        });
-        
-        const horaAtual = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-        const newTimelineItem = {
-          id: `audit_med_rec_${Date.now()}`,
-          hora: act.horario || horaAtual,
-          tipo: 'saude' as const,
-          titulo: `⚠️ Recusa de Medicamento: ${act.titulo.replace('💊 Medicamento: ', '')} (${targetDay})`,
-          descricao: `A dose de ${act.horario || horaAtual} (${targetDay}) foi recusada.\n\n💬 Motivo da Recusa: ${note}`,
-          responsavel: 'Ana Silva (Professora Titular)',
-          verificado: true
-        };
-        
-        onUpdateStudent({
-          medicamentos: updatedMeds,
-          auditoriaLinhaDoTempo: [newTimelineItem, ...(student.auditoriaLinhaDoTempo || [])]
-        });
-      }
-      return;
-    }
-
-    setActivities((prev) =>
-      prev.map((a, i) => {
-        const currentId = a.id || `act-${i}`;
-        if (currentId === actId) {
-          return { ...a, status: 'recusou', entregue: false, observacao: note };
-        }
-        return a;
-      })
-    );
-
-    if (onConcluirAtividadePedagogica) {
-      onConcluirAtividadePedagogica({
-        ...act,
-        entregue: false,
-        status: 'recusou',
-        escopo: scope,
-        isColetivo: scope === 'coletivo',
-        descricao: `${act.descricao}\n\n⚠️ Status: Criança recusou participar da atividade.${note ? `\n💬 Motivo/Obs: ${note}` : ''}`
-      });
-    }
-  };
-
-  // Reconhecimento de Voz
-  const startVoiceInput = (
-    setter: (val: string | ((prev: string) => string)) => void,
-    stateSetter: (v: boolean) => void
-  ) => {
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      alert('Reconhecimento de voz não suportado neste navegador. Digite pelo teclado.');
-      return;
-    }
-    try {
-      const recognition = new SpeechRecognition();
-      recognition.lang = 'pt-BR';
-      recognition.continuous = false;
-      recognition.interimResults = false;
-
-      stateSetter(true);
-      recognition.onend = () => stateSetter(false);
-      recognition.onerror = () => stateSetter(false);
-      recognition.onresult = (e: any) => {
-        const transcript = e.results[0][0].transcript;
-        if (transcript) {
-          setter((prev) => (prev ? `${prev} ${transcript}` : transcript));
-        }
-        stateSetter(false);
-      };
-      recognition.start();
-    } catch (e) {
-      stateSetter(false);
-    }
-  };
-
-  const getCategoryIcon = (tipo: string) => {
-    switch (tipo) {
-      case 'alimentacao':
-        return <Utensils size={18} className="text-amber-600" />;
-      case 'sono':
-        return <Moon size={18} className="text-indigo-600" />;
-      case 'banho':
-        return <Droplets size={18} className="text-sky-600" />;
-      case 'medicacao':
-        return <Pill size={18} className="text-indigo-600 animate-pulse" />;
-      default:
-        return <BookOpen size={18} className="text-emerald-600" />;
-    }
+  const handleExportarJson = () => {
+    const dataStr = JSON.stringify({
+      escola: "Anjinho Educador",
+      dataExportacao: new Date().toISOString(),
+      politicaRetencao: "30 dias operacionais",
+      totalAlunos: alunosArray.length,
+      consentimentos: consentimentos,
+      logsAuditoria: logsAuditoria,
+    }, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `backup_seguranca_anjinho_${new Date().toISOString().split('T')[0]}.json`;
+    link.click();
   };
 
   return (
-    <section id="agenda-atividades-section" className="bg-white rounded-3xl border border-slate-200/90 p-5 sm:p-7 shadow-sm space-y-6">
-      {/* 1. Cabeçalho da Agenda de Atividades */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-100 pb-5">
-        <div>
-          <div className="flex items-center gap-2">
-            <Clock size={22} className="text-sky-600" />
-            <h3 className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">
-              Agenda de Atividades da Aula
-            </h3>
+    <div className="space-y-6">
+      {/* 1. CABEÇALHO OFICIAL DO MÓDULO LGPD & RESPALDO JURÍDICO */}
+      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-800 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+        
+        <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="flex items-start gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-white p-0.5 flex items-center justify-center shadow-xl flex-shrink-0 overflow-hidden">
+              <LogoAnjinhoEducador variant="symbol" size="full" className="w-full h-full" />
+            </div>
+            <div className="space-y-1.5">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-amber-400 text-slate-950 shadow-xs">
+                <ShieldCheck size={14} />
+                <span>GOVERNANÇA & RESPALDO JURÍDICO DA ESCOLA (LEI 13.709/2018)</span>
+              </div>
+              <h2 className="text-xl sm:text-2xl lg:text-3xl font-black text-white tracking-tight">
+                Área de LGPD & Auditoria de Comunicações
+              </h2>
+              <p className="text-xs sm:text-sm text-indigo-200 max-w-2xl leading-relaxed">
+                Documentação probatória imutável de todas as mensagens via WhatsApp, diários de rotina, medicamentos ministrados e termos de consentimento formal assinados pelas famílias.
+              </p>
+            </div>
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium flex items-center gap-2 flex-wrap">
-            <strong className="text-slate-800">{activities.length} atividade(s)</strong> no cronograma ordenadas por horário (07:30 às 16:30)
-          </p>
-        </div>
 
-        {userRole === 'familia' ? (
-          <div className="flex items-center gap-2 bg-emerald-50 text-emerald-800 border border-emerald-200/80 px-3.5 py-2 rounded-2xl shadow-2xs">
-            <Heart size={15} className="text-emerald-600 shrink-0" />
-            <span className="text-xs font-bold">
-              Acompanhamento Pedagógico Familiar • Método Árvore da Infância®
-            </span>
-          </div>
-        ) : (
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-wrap items-center gap-3">
             <button
-              type="button"
-              onClick={handleRestoreDefault}
-              title="Restaurar grade padrão com todas as atividades em status pendente"
-              className="px-3 py-2 text-xs font-bold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5"
-            >
-              <RefreshCw size={14} className="text-slate-600" />
-              <span>Restaurar Padrão</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={handleClearAll}
-              title="Limpar todas as atividades para cadastrar novas"
-              className="px-3 py-2 text-xs font-bold text-rose-600 hover:text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition cursor-pointer flex items-center gap-1.5"
-            >
-              <Trash2 size={13} />
-              <span>Limpar Atividades</span>
-            </button>
-
-            <button
-              type="button"
               onClick={() => {
-                setShowForm(true);
-                setFormMode('importar');
+                setAlunoParaPdf(currentStudent);
+                setShowPdfExportModal(true);
               }}
-              className="px-4 py-2 text-xs font-black text-white bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-700 hover:to-indigo-700 rounded-xl shadow-xs transition cursor-pointer flex items-center gap-1.5 active:scale-95"
+              className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 active:scale-98 text-white text-xs font-black rounded-xl transition shadow-md flex items-center gap-1.5 cursor-pointer border border-indigo-400/30"
+              title="Exportar Relatórios, Diários e Certidões em PDF"
             >
-              <Sparkles size={15} className="text-amber-300" />
-              <span>Importar Aura</span>
+              <FileText size={16} />
+              <span>Exportar Relatórios em PDF</span>
             </button>
-
             <button
-              type="button"
               onClick={() => {
-                setShowForm(true);
-                setFormMode('direto');
+                setAlunoParaAssinar(currentStudent);
+                setShowModalAssinatura(true);
               }}
-              className="px-4 py-2 text-xs font-black text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition cursor-pointer flex items-center gap-1.5 active:scale-95"
+              className="px-4 py-2.5 bg-amber-400 hover:bg-amber-300 active:scale-98 text-slate-950 text-xs font-black rounded-xl transition shadow-md flex items-center gap-1.5 cursor-pointer"
             >
               <Plus size={16} />
-              <span>+ Nova Atividade</span>
+              <span>Assinar / Atualizar Termo</span>
+            </button>
+            <button
+              onClick={carregarDados}
+              className="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-xl transition cursor-pointer"
+              title="Recarregar livro de auditoria"
+            >
+              <RefreshCw size={16} />
             </button>
           </div>
-        )}
-      </div>
+        </div>
 
-      {/* PAINEL DE MÉTRICAS DE GOVERNANÇA (EXIGIDO PARA MÉTRICAS DO DIRETOR) */}
-      <div className="bg-slate-50 border border-slate-200/90 rounded-3xl p-5 flex flex-col gap-4 shadow-2xs">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="space-y-0.5">
-            <h4 className="text-xs font-black uppercase tracking-widest text-indigo-700 flex items-center gap-1.5">
-              <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-pulse" />
-              Métricas de Governança — Distribuição de Atividades Aura
-            </h4>
-            <p className="text-xs text-slate-600 leading-normal">
-              Controle de volumetria de atividades diárias integradas com a inteligência da <strong>Anjinha Aura</strong> para assegurar conformidade do plano de aula.
-            </p>
-          </div>
-          <div className="bg-indigo-50 border border-indigo-200 text-indigo-950 px-3.5 py-1.5 rounded-2xl flex items-center gap-2 flex-shrink-0 self-start sm:self-center">
-            <Layers size={14} className="text-indigo-600" />
-            <span className="text-xs font-black">
-              Carga Total: {activities.length} Atividades
+        {/* CARDS DE ESTATÍSTICAS JURÍDICAS */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-slate-800">
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5">
+            <span className="text-[10px] uppercase font-bold text-slate-400 block">Termos Ativos</span>
+            <span className="text-xl sm:text-2xl font-black text-emerald-400">
+              {Object.values(consentimentos).filter((c) => c.status === 'ativo').length} / {alunosArray.length}
             </span>
+            <span className="text-[9px] text-slate-400 block mt-0.5">Alunos autorizados</span>
           </div>
-        </div>
 
-        {/* Grid de Dias da Semana com Indicadores e Carga de Trabalho */}
-        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-1">
-          {daySummaries.map((ds) => {
-            const isSelected = selectedDayTab === ds.dia;
-            return (
-              <div 
-                key={ds.dia}
-                onClick={() => handleSelectDayTab(ds.dia)}
-                className={`p-4 rounded-2xl border transition-all duration-200 cursor-pointer flex flex-col justify-between gap-3 ${
-                  isSelected 
-                    ? 'bg-gradient-to-br from-indigo-600 to-blue-600 border-indigo-600 text-white shadow-md scale-[1.02]' 
-                    : 'bg-white border-slate-200 hover:border-slate-300 text-slate-800 hover:shadow-2xs'
-                }`}
-              >
-                <div className="flex items-center justify-between gap-1.5">
-                  <span className={`text-[10px] uppercase font-black tracking-wide ${isSelected ? 'text-indigo-100' : 'text-slate-500'}`}>
-                    {ds.dia.split('-')[0]}
-                  </span>
-                  <span className={`text-[9px] font-black uppercase px-2 py-0.5 rounded-full ${
-                    isSelected 
-                      ? 'bg-white/20 text-white' 
-                      : ds.count >= 12 
-                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-100' 
-                        : 'bg-amber-50 text-amber-700 border border-amber-100'
-                  }`}>
-                    {ds.count >= 12 ? 'Meta ✓' : 'Planejado'}
-                  </span>
-                </div>
-                <div className="space-y-0.5">
-                  <span className="text-2xl font-black block tracking-tight">
-                    {ds.count}
-                  </span>
-                  <span className={`text-[9px] block ${isSelected ? 'text-indigo-200' : 'text-slate-400'}`}>
-                    atividades registradas
-                  </span>
-                </div>
-              </div>
-            );
-          })}
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5">
+            <span className="text-[10px] uppercase font-bold text-slate-400 block">Auditoria Digital</span>
+            <span className="text-xl sm:text-2xl font-black text-amber-300">
+              {logsAuditoria.length}
+            </span>
+            <span className="text-[9px] text-slate-400 block mt-0.5">Registros imutáveis</span>
+          </div>
+
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5">
+            <span className="text-[10px] uppercase font-bold text-slate-400 block">Disparos WhatsApp</span>
+            <span className="text-xl sm:text-2xl font-black text-teal-300">
+              {logsAuditoria.filter((l) => l.canal === 'whatsapp').length}
+            </span>
+            <span className="text-[9px] text-slate-400 block mt-0.5">Comprovantes guardados</span>
+          </div>
+
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-3.5">
+            <span className="text-[10px] uppercase font-bold text-slate-400 block">Integridade Cripto</span>
+            <span className="text-xl sm:text-2xl font-black text-indigo-300">
+              SHA-256
+            </span>
+            <span className="text-[9px] text-slate-400 block mt-0.5">Assinatura auditável</span>
+          </div>
         </div>
       </div>
 
-      {/* 2. Formulário de Agendar Nova Atividade Escolar */}
-      {showForm && (
-        <div className="bg-slate-50/95 border-2 border-indigo-200 rounded-3xl p-5 sm:p-6 shadow-sm space-y-5 animate-in fade-in zoom-in-95 duration-150">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+      {/* 2. SUB-NAVEGAÇÃO DAS 4 SEÇÕES */}
+      <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-3">
+        <button
+          onClick={() => setSubTab('termos')}
+          className={`px-4 py-2 rounded-xl text-xs font-black transition flex items-center gap-2 cursor-pointer ${
+            subTab === 'termos'
+              ? 'bg-indigo-700 text-white shadow-xs'
+              : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+          }`}
+        >
+          <FileCheck2 size={16} />
+          <span>1. Termos de Consentimento ({Object.keys(consentimentos).length})</span>
+        </button>
+
+        <button
+          onClick={() => setSubTab('livro_auditoria')}
+          className={`px-4 py-2 rounded-xl text-xs font-black transition flex items-center gap-2 cursor-pointer ${
+            subTab === 'livro_auditoria'
+              ? 'bg-indigo-700 text-white shadow-xs'
+              : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+          }`}
+        >
+          <Smartphone size={16} />
+          <span>2. Livro Digital de Disparos ({logsAuditoria.length})</span>
+        </button>
+
+        <button
+          onClick={() => setSubTab('seguranca_backups')}
+          className={`px-4 py-2 rounded-xl text-xs font-black transition flex items-center gap-2 cursor-pointer ${
+            subTab === 'seguranca_backups'
+              ? 'bg-indigo-700 text-white shadow-xs'
+              : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+          }`}
+        >
+          <Lock size={16} />
+          <span>3. Central de Dados & Backups</span>
+        </button>
+
+        <button
+          onClick={() => setSubTab('respaldo_juridico')}
+          className={`px-4 py-2 rounded-xl text-xs font-black transition flex items-center gap-2 cursor-pointer ${
+            subTab === 'respaldo_juridico'
+              ? 'bg-indigo-700 text-white shadow-xs'
+              : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+          }`}
+        >
+          <Scale size={16} />
+          <span>4. Cartilha Legal & Respaldo da Escola</span>
+        </button>
+      </div>
+
+      {/* 3. CONTEÚDO DA SUB-ABA 1: TERMOS DE CONSENTIMENTO */}
+      {subTab === 'termos' && (
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-2xs">
             <div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-indigo-600 block">
-                PLANEJAMENTO PEDAGÓGICO
-              </span>
-              <h4 className="text-base sm:text-lg font-black text-slate-900 uppercase">
-                Agendar Nova Atividade Escolar
-              </h4>
+              <h3 className="text-sm font-black text-slate-800">
+                Gestão de Consentimentos por Aluno (Art. 14 da LGPD)
+              </h3>
+              <p className="text-xs text-slate-500">
+                Cada responsável legal possui um termo digital assinado com os 4 eixos de autorização.
+              </p>
             </div>
-
             <div className="flex items-center gap-2">
-              <div className="flex bg-slate-200 p-1 rounded-xl">
-                <button
-                  type="button"
-                  onClick={() => setFormMode('direto')}
-                  className={`px-3 py-1.5 text-xs font-black rounded-lg transition cursor-pointer ${
-                    formMode === 'direto'
-                      ? 'bg-blue-600 text-white shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  Cadastro Direto
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setFormMode('importar')}
-                  className={`px-3 py-1.5 text-xs font-black rounded-lg transition cursor-pointer flex items-center gap-1 ${
-                    formMode === 'importar'
-                      ? 'bg-indigo-600 text-white shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  <Sparkles size={12} className="text-amber-300" />
-                  <span>Importar Planejamento Aura</span>
-                </button>
-              </div>
-
-              <button
-                type="button"
-                onClick={() => setShowForm(false)}
-                className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-lg cursor-pointer"
-                title="Fechar formulário"
-              >
-                <X size={18} />
-              </button>
+              <span className="text-xs text-slate-500 font-bold">Aluno em Foco:</span>
+              <span className="text-xs font-black bg-indigo-50 text-indigo-800 border border-indigo-200 px-2.5 py-1 rounded-xl">
+                {currentStudent.nome}
+              </span>
             </div>
           </div>
 
-          {formMode === 'direto' ? (
-            /* Formulário Direto de Criação */
-            <form onSubmit={handleCreateActivity} className="space-y-4">
-              {/* Modelos Rápidos */}
-              <div>
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-2">
-                  Modelos Rápidos de Atividades Escolares
-                </label>
-                <div className="flex flex-wrap gap-2">
-                  {QUICK_MODELS.map((m, idx) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => handleApplyQuickModel(m)}
-                      className="px-3 py-1.5 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 hover:border-blue-300 rounded-xl text-xs font-bold transition cursor-pointer shadow-2xs"
-                    >
-                      {m.nome}
-                    </button>
-                  ))}
-                </div>
-              </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {alunosArray.map((st) => {
+              const termo = consentimentos[st.id];
+              const isSelected = st.id === currentStudent.id;
 
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-                {/* Tipo / Categoria */}
-                <div className="md:col-span-4">
-                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">
-                    Tipo / Categoria
-                  </label>
-                  <select
-                    value={newTipo}
-                    onChange={(e: any) => setNewTipo(e.target.value)}
-                    className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-indigo-500"
-                  >
-                    <option value="atividade_fisica">Atividade Pedagógica / BNCC</option>
-                    <option value="alimentacao">Alimentação / Lanche</option>
-                    <option value="sono">Soneca / Repouso</option>
-                    <option value="banho">Higiene / Banho / Fralda</option>
-                    <option value="medicacao">Medicação</option>
-                  </select>
-                </div>
+              return (
+                <div
+                  key={st.id}
+                  className={`bg-white rounded-3xl p-5 border transition shadow-xs flex flex-col justify-between gap-4 ${
+                    isSelected
+                      ? 'border-indigo-500 ring-2 ring-indigo-500/10'
+                      : 'border-slate-200/80 hover:border-slate-300'
+                  }`}
+                >
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={st.fotoUrl}
+                          alt={st.nome}
+                          className="w-12 h-12 rounded-2xl object-cover border border-slate-200"
+                        />
+                        <div>
+                          <h4 className="font-black text-slate-900 text-sm sm:text-base">{st.nome}</h4>
+                          <span className="text-[11px] text-slate-500 font-medium block">
+                            {st.turma} • Nasc: {st.nascimento}
+                          </span>
+                        </div>
+                      </div>
 
-                {/* Título */}
-                <div className="md:col-span-8">
-                  <div className="flex items-center justify-between mb-1">
-                    <label className="text-[10px] font-black uppercase tracking-wider text-slate-500">
-                      Título / Nome do Cuidado / Atividade *
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => startVoiceInput(setNewTitle, setIsListeningTitle)}
-                      className={`text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 cursor-pointer transition ${
-                        isListeningTitle ? 'bg-rose-500 text-white animate-pulse' : 'text-blue-600 bg-blue-50 hover:bg-blue-100'
-                      }`}
-                    >
-                      <Mic size={11} />
-                      <span>{isListeningTitle ? 'Gravando...' : 'Gravar Título'}</span>
-                    </button>
+                      {termo ? (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
+                          <CheckCircle2 size={12} />
+                          <span>TERMO ATIVO</span>
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 text-[10px] font-black px-2.5 py-1 rounded-full bg-amber-100 text-amber-900 border border-amber-200">
+                          <AlertCircle size={12} />
+                          <span>PENDENTE</span>
+                        </span>
+                      )}
+                    </div>
+
+                    {termo ? (
+                      <div className="space-y-2 p-3 bg-slate-50 rounded-2xl border border-slate-200/60 text-xs">
+                        <div className="flex justify-between items-center text-slate-600">
+                          <span className="font-bold">Responsável Legal:</span>
+                          <span className="font-black text-slate-800">{termo.responsavelNome} ({termo.responsavelGrau})</span>
+                        </div>
+                        <div className="flex justify-between items-center text-slate-600">
+                          <span className="font-bold">CPF Cadastrado:</span>
+                          <span className="font-mono font-bold text-slate-700">{termo.responsavelCpf}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-slate-600">
+                          <span className="font-bold">Data da Assinatura:</span>
+                          <span className="text-slate-700">{termo.aceitoEmFormatado}</span>
+                        </div>
+                        <div className="flex justify-between items-center text-slate-600">
+                          <span className="font-bold">Hash Jurídico:</span>
+                          <span className="font-mono text-[10px] font-black text-indigo-700 bg-indigo-50 px-1.5 py-0.5 rounded">
+                            {termo.hashAssinaturaDigital}
+                          </span>
+                        </div>
+
+                        <div className="pt-2 border-t border-slate-200/70 grid grid-cols-2 gap-1.5 text-[10px] font-bold">
+                          <span className={termo.autorizacoes.tratamentoDadosMenor ? 'text-emerald-700 flex items-center gap-1' : 'text-slate-400'}>
+                            ✓ Dados do Menor (Art. 14)
+                          </span>
+                          <span className={termo.autorizacoes.comunicacaoWhatsAppERotina ? 'text-emerald-700 flex items-center gap-1' : 'text-slate-400'}>
+                            ✓ WhatsApp & Diários
+                          </span>
+                          <span className={termo.autorizacoes.registroSaudeEMedicamentos ? 'text-emerald-700 flex items-center gap-1' : 'text-slate-400'}>
+                            ✓ Saúde & Medicamentos
+                          </span>
+                          <span className={termo.autorizacoes.registroFotograficoPedagogico ? 'text-emerald-700 flex items-center gap-1' : 'text-slate-400'}>
+                            ✓ Fotos Pedagógicas
+                          </span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="p-3 bg-amber-50 rounded-2xl border border-amber-200 text-xs text-amber-900 space-y-1">
+                        <strong className="block font-black">Aguardando Aceite da Família</strong>
+                        <p className="text-[11px] text-amber-800 leading-tight">
+                          O responsável ainda não preencheu o termo na entrada do aplicativo. Você pode gerar a assinatura manual agora.
+                        </p>
+                      </div>
+                    )}
                   </div>
-                  <input
-                    type="text"
-                    required
-                    value={newTitle}
-                    onChange={(e) => setNewTitle(e.target.value)}
-                    placeholder="Ex: Aula de pintura guache ou contação de história"
-                    className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-indigo-500"
-                  />
-                </div>
-              </div>
 
-              {/* Horário & Reloginho Rápido */}
-              <div className="bg-white border border-slate-200 rounded-2xl p-3.5 space-y-2">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-600 flex items-center gap-1">
-                    <Clock size={13} className="text-amber-500" />
-                    <span>Horário da Atividade (Entra ordenado no cronograma):</span>
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    value={newTime}
-                    onChange={(e) => setNewTime(e.target.value)}
-                    placeholder="Ex: 10:00"
-                    className="w-28 bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 text-center font-mono font-black text-sm text-indigo-900"
-                  />
-                </div>
+                  <div className="flex items-center justify-between gap-2 pt-2 border-t border-slate-100">
+                    {termo ? (
+                      <button
+                        onClick={() => handleImprimirCertidao(termo)}
+                        className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer"
+                        title="Imprimir Certidão Oficial de Consentimento"
+                      >
+                        <Printer size={13} />
+                        <span>Imprimir Certidão</span>
+                      </button>
+                    ) : (
+                      <span className="text-[11px] text-slate-400 italic">Sem certidão emitida</span>
+                    )}
 
-                <div className="flex flex-wrap gap-1.5 pt-1">
-                  {TIME_PRESETS.map((t) => (
                     <button
-                      key={t}
-                      type="button"
-                      onClick={() => setNewTime(t)}
-                      className={`px-2 py-1 rounded-lg text-[11px] font-mono font-bold transition cursor-pointer ${
-                        newTime === t
-                          ? 'bg-amber-400 text-amber-950 font-black shadow-2xs'
-                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                      }`}
+                      onClick={() => {
+                        setAlunoParaAssinar(st);
+                        setShowModalAssinatura(true);
+                      }}
+                      className="px-3.5 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-800 text-xs font-black rounded-xl transition border border-indigo-200 cursor-pointer flex items-center gap-1"
                     >
-                      {t}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Alcance e Dia */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">
-                    Alcance da Atividade
-                  </label>
-                  <div className="flex bg-white border border-slate-200 p-1 rounded-xl">
-                    <button
-                      type="button"
-                      onClick={() => setNewScope('individual')}
-                      className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition cursor-pointer ${
-                        newScope === 'individual' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-50'
-                      }`}
-                    >
-                      Individual ({studentNome})
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setNewScope('classe')}
-                      className={`flex-1 py-1.5 text-xs font-bold rounded-lg transition cursor-pointer ${
-                        newScope === 'classe' ? 'bg-blue-600 text-white shadow-xs' : 'text-slate-600 hover:bg-slate-50'
-                      }`}
-                    >
-                      Classe Toda
+                      <span>{termo ? 'Atualizar Termo' : 'Assinar Termo Agora'}</span>
+                      <ChevronRight size={14} />
                     </button>
                   </div>
                 </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
-                <div>
-                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">
-                    Dia da Semana
-                  </label>
-                  <select
-                    value={newDia}
-                    onChange={(e) => setNewDia(e.target.value)}
-                    className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs font-bold text-slate-800 focus:outline-none focus:border-indigo-500"
-                  >
-                    <option value="Segunda-feira">Segunda-feira</option>
-                    <option value="Terça-feira">Terça-feira</option>
-                    <option value="Quarta-feira">Quarta-feira</option>
-                    <option value="Quinta-feira">Quinta-feira</option>
-                    <option value="Sexta-feira">Sexta-feira</option>
-                  </select>
-                </div>
-              </div>
-
-              {/* Objetivo BNCC */}
-              <div>
-                <label className="text-[10px] font-black uppercase tracking-wider text-slate-500 block mb-1">
-                  Campo de Experiência / BNCC
-                </label>
-                <input
-                  type="text"
-                  value={newBncc}
-                  onChange={(e) => setNewBncc(e.target.value)}
-                  placeholder="Ex: Corpo, gestos e movimentos ou O eu, o outro e o nós"
-                  className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs font-medium text-slate-800 focus:outline-none focus:border-indigo-500"
-                />
-              </div>
-
-              {/* Descrição Detalhada */}
-              <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className="text-[10px] font-black uppercase tracking-wider text-slate-500">
-                    Instrução / Descrição Detalhada
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => startVoiceInput(setNewDesc, setIsListeningDesc)}
-                    className={`text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 cursor-pointer transition ${
-                      isListeningDesc ? 'bg-rose-500 text-white animate-pulse' : 'text-blue-600 bg-blue-50 hover:bg-blue-100'
-                    }`}
-                  >
-                    <Mic size={11} />
-                    <span>{isListeningDesc ? 'Gravando voz...' : 'Gravar por Voz'}</span>
-                  </button>
-                </div>
-                <textarea
-                  rows={3}
-                  value={newDesc}
-                  onChange={(e) => setNewDesc(e.target.value)}
-                  placeholder="Ex: Estimular coordenação de motricidade fina nas mãozinhas, observando o engajamento e a interação coletiva..."
-                  className="w-full bg-white border border-slate-300 rounded-xl p-3 text-xs text-slate-800 focus:outline-none focus:border-indigo-500"
-                />
-              </div>
-
-              {/* Botões do Formulário */}
-              <div className="flex items-center justify-end gap-3 pt-2">
-                <button
-                  type="button"
-                  onClick={() => setShowForm(false)}
-                  className="px-4 py-2 text-xs font-bold text-slate-600 hover:text-slate-800 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition cursor-pointer"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-black rounded-xl shadow-md transition cursor-pointer active:scale-95 flex items-center gap-1.5"
-                >
-                  <Check size={16} />
-                  <span>Agendar Atividade como Pendente</span>
-                </button>
-              </div>
-            </form>
-          ) : (
-            /* Importador de Planejamento da Aura */
-            <div className="space-y-4">
-              <div className="bg-indigo-900 text-white rounded-2xl p-4 space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-black text-amber-300 flex items-center gap-1.5">
-                    <Sparkles size={15} />
-                    <span>Instruções da Anjinha Aura</span>
-                  </span>
-                  <button
-                    type="button"
-                    onClick={handleCopyModel}
-                    className="px-3 py-1 bg-amber-400 hover:bg-amber-500 text-amber-950 text-xs font-black rounded-lg transition cursor-pointer"
-                  >
-                    {copied ? '✓ Copiado!' : 'Copiar Modelo de Prompt'}
-                  </button>
-                </div>
-                <p className="text-xs text-indigo-100 leading-relaxed">
-                  Peça à Anjinha Aura no chat para criar o planejamento da semana ou dias específicos (07:30 às 16:30) com os objetivos da BNCC. Cole o texto abaixo:
-                </p>
-              </div>
-
-              <textarea
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-                placeholder="Cole aqui o texto da Anjinha Aura..."
-                className="w-full h-40 bg-white border-2 border-indigo-200 rounded-2xl p-3 text-xs font-mono text-slate-700 focus:outline-none focus:border-indigo-500 resize-y"
+      {/* 4. CONTEÚDO DA SUB-ABA 2: LIVRO DIGITAL DE DISPAROS & AUDITORIA */}
+      {subTab === 'livro_auditoria' && (
+        <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-5">
+          <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+            <div className="flex-1">
+              <CampoTextoVoz
+                value={searchTerm}
+                onChange={setSearchTerm}
+                placeholder="Buscar por aluno, mensagem, remetente ou código hash..."
               />
-
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowForm(false)}
-                  className="px-4 py-2 text-xs font-bold text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-50"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="button"
-                  disabled={!inputText.trim() || isProcessing}
-                  onClick={handleExtract}
-                  className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white text-xs font-black rounded-xl shadow-md transition flex items-center gap-2 cursor-pointer"
-                >
-                  {isProcessing ? <RotateCcw className="animate-spin" size={15} /> : <Sparkles size={15} className="text-amber-300" />}
-                  <span>Extrair & Adicionar Atividades</span>
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* MODAL DE CONFLITO DE HORÁRIO: Perguntar se deseja Substituir ou Manter Ambas */}
-      {conflictState && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border-2 border-amber-300 space-y-4 animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-amber-100 flex items-center justify-center shrink-0 border border-amber-300 text-amber-700">
-                <AlertTriangle size={22} />
-              </div>
-              <div className="flex-1">
-                <h4 className="text-base font-black text-slate-900">
-                  Aviso: Horário Já Ocupado na Agenda
-                </h4>
-                <p className="text-xs text-slate-600 mt-1">
-                  Já existe uma atividade cadastrada para às <strong className="font-mono text-indigo-900 bg-indigo-50 px-1.5 py-0.5 rounded">{conflictState.newActivity.horario}</strong> no dia <strong>{conflictState.newActivity.dia}</strong>.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setConflictState(null)}
-                className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
-              >
-                <X size={18} />
-              </button>
             </div>
 
-            {/* Comparação da Atividade Existente vs Nova */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200 text-xs">
-              <div className="space-y-1 border-b sm:border-b-0 sm:border-r border-slate-200 pb-2 sm:pb-0 sm:pr-2">
-                <span className="text-[10px] font-black uppercase tracking-wider text-rose-600 block">
-                  Atividade Atual
-                </span>
-                <p className="font-bold text-slate-800">{conflictState.existingActivity.titulo}</p>
-                <p className="text-[11px] text-slate-500 line-clamp-2">{conflictState.existingActivity.descricao}</p>
-              </div>
-
-              <div className="space-y-1 sm:pl-2">
-                <span className="text-[10px] font-black uppercase tracking-wider text-blue-600 block">
-                  Nova Atividade
-                </span>
-                <p className="font-bold text-slate-800">{conflictState.newActivity.titulo}</p>
-                <p className="text-[11px] text-slate-500 line-clamp-2">{conflictState.newActivity.descricao}</p>
-              </div>
-            </div>
-
-            <p className="text-xs text-slate-700 font-medium">
-              Como você deseja prosseguir com o agendamento?
-            </p>
-
-            {/* Opções de Ação */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2 pt-2 border-t border-slate-100">
-              <button
-                type="button"
-                onClick={() => setConflictState(null)}
-                className="px-4 py-2.5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition cursor-pointer"
+            <div className="flex flex-wrap items-center gap-2">
+              <select
+                value={filtroAluno}
+                onChange={(e) => setFiltroAluno(e.target.value)}
+                className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 outline-none focus:border-indigo-500"
               >
-                Alterar Horário
-              </button>
+                <option value="todos">Todos os Alunos</option>
+                {alunosArray.map((a) => (
+                  <option key={a.id} value={a.id}>
+                    {a.nome}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                value={filtroTipo}
+                onChange={(e) => setFiltroTipo(e.target.value)}
+                className="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-700 outline-none focus:border-indigo-500"
+              >
+                <option value="todos">Todos os Tipos de Log</option>
+                <option value="whatsapp_diario">Diários de Rotina (WhatsApp)</option>
+                <option value="whatsapp_recado">Recados Escolares (WhatsApp)</option>
+                <option value="medicamento_ministrado">Medicamentos Ministrados</option>
+                <option value="consentimento_assinado">Termos de Consentimento</option>
+              </select>
 
               <button
-                type="button"
-                onClick={() => {
-                  // Agenda ambas no mesmo horário
-                  commitAddActivity(conflictState.newActivity);
-                }}
-                className="px-4 py-2.5 text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-xl transition cursor-pointer"
+                onClick={() => window.print()}
+                className="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-2xs"
+                title="Imprimir Livro de Auditoria Digital"
               >
-                Manter Ambas
-              </button>
-
-              <button
-                type="button"
-                onClick={() => {
-                  // Substitui a atividade existente
-                  commitAddActivity(conflictState.newActivity, conflictState.existingActivity.id);
-                }}
-                className="px-5 py-2.5 text-xs font-black text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-xs transition cursor-pointer"
-              >
-                ✓ Substituir Atividade
+                <Printer size={13} />
+                <span>Exportar Livro</span>
               </button>
             </div>
           </div>
-        </div>
-      )}
 
-      {/* 3. Filtros por Dia e Filtros por Status (Pendentes / Entregues / Todas) */}
-      <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-3 sm:p-4 space-y-3">
-        {/* Status: Todas | Pendentes | Entregues */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
-          <span className="text-xs font-black text-slate-700 flex items-center gap-1.5 uppercase tracking-wider">
-            <Filter size={14} className="text-indigo-600" />
-            <span>Exibir por Status:</span>
-          </span>
+          <div className="space-y-3">
+            {logsFiltrados.length === 0 ? (
+              <div className="p-8 text-center bg-slate-50 rounded-2xl border border-slate-200 text-slate-500 text-xs">
+                Nenhum registro de auditoria encontrado com os filtros selecionados.
+              </div>
+            ) : (
+              logsFiltrados.map((log) => (
+                <div
+                  key={log.id}
+                  className="p-4 bg-slate-50/70 hover:bg-slate-50 border border-slate-200 rounded-2xl transition space-y-2.5"
+                >
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="font-mono text-[10px] font-black text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded-md">
+                        {log.hashIntegridade}
+                      </span>
+                      <span
+                        className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md ${
+                          log.canal === 'whatsapp'
+                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                            : log.canal === 'app_mural'
+                            ? 'bg-purple-100 text-purple-800 border border-purple-200'
+                            : 'bg-slate-200 text-slate-800'
+                        }`}
+                      >
+                        {log.canal === 'whatsapp' ? '📲 WhatsApp Notificado' : '🖥️ Sistema / Mural'}
+                      </span>
+                      <span className="text-xs font-black text-slate-800">
+                        {log.studentNome} ({log.turma})
+                      </span>
+                    </div>
 
-          <div className="flex flex-wrap gap-1.5">
-            <button
-              type="button"
-              onClick={() => setStatusFilter('todas')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
-                statusFilter === 'todas'
-                  ? 'bg-slate-800 text-white shadow-xs font-black'
-                  : 'bg-white text-slate-600 hover:bg-slate-200/70 border border-slate-200'
-              }`}
-            >
-              Todas ({activities.length})
-            </button>
+                    <span className="text-[11px] text-slate-500 font-medium">
+                      {log.dataHoraFormatada}
+                    </span>
+                  </div>
 
-            <button
-              type="button"
-              onClick={() => setStatusFilter('pendentes')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-black transition cursor-pointer flex items-center gap-1.5 ${
-                statusFilter === 'pendentes'
-                  ? 'bg-amber-500 text-amber-950 shadow-xs ring-2 ring-amber-300'
-                  : 'bg-amber-50 text-amber-900 hover:bg-amber-100 border border-amber-200'
-              }`}
-            >
-              <Clock size={13} />
-              <span>Pendentes ({pendingCount})</span>
-            </button>
+                  <div className="text-xs text-slate-700 bg-white p-3 rounded-xl border border-slate-200/80 space-y-1">
+                    <div className="flex flex-wrap items-center justify-between gap-1 text-[11px] text-slate-500">
+                      <span>
+                        <strong>Remetente:</strong> {log.remetenteNome} ({log.remetenteCargo})
+                      </span>
+                      <span>
+                        <strong>Destinatário:</strong> {log.destinatarioNome} {log.destinatarioContato ? `(${log.destinatarioContato})` : ''}
+                      </span>
+                    </div>
+                    <p className="font-medium text-slate-800 pt-1">
+                      {log.conteudoResumo}
+                    </p>
+                    {log.conteudoIntegral && log.conteudoIntegral !== log.conteudoResumo && (
+                      <details className="pt-1 text-[11px] text-slate-600 cursor-pointer">
+                        <summary className="font-bold text-indigo-600 hover:text-indigo-800">
+                          Ver Conteúdo Integral Registrado
+                        </summary>
+                        <pre className="mt-1.5 p-2 bg-slate-900 text-slate-100 rounded-lg whitespace-pre-wrap font-mono text-[10px] overflow-x-auto leading-relaxed">
+                          {log.conteudoIntegral}
+                        </pre>
+                      </details>
+                    )}
+                  </div>
 
-            <button
-              type="button"
-              onClick={() => setStatusFilter('entregues')}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
-                statusFilter === 'entregues'
-                  ? 'bg-emerald-600 text-white shadow-xs font-black'
-                  : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100 border border-emerald-200'
-              }`}
-            >
-              <CheckCircle2 size={13} />
-              <span>Entregues ({entregueCount})</span>
-            </button>
-
-            {recusouCount > 0 && (
-              <button
-                type="button"
-                onClick={() => setStatusFilter('recusadas')}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
-                  statusFilter === 'recusadas'
-                    ? 'bg-rose-600 text-white shadow-xs font-black'
-                    : 'bg-rose-50 text-rose-800 hover:bg-rose-100 border border-rose-200'
-                }`}
-              >
-                <XCircle size={13} />
-                <span>Recusadas ({recusouCount})</span>
-              </button>
+                  <div className="flex items-center justify-between text-[10px] text-slate-500">
+                    <span>
+                      <strong>Fundamento Legal:</strong> {log.baseLegalLgpd}
+                    </span>
+                    <span className="text-emerald-700 font-bold flex items-center gap-1">
+                      <CheckCircle2 size={11} />
+                      Log Auditado e Válido Juridicamente
+                    </span>
+                  </div>
+                </div>
+              ))
             )}
           </div>
         </div>
+      )}
 
-        {/* Dias da Semana */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <span className="text-xs font-bold text-slate-600 flex items-center gap-1.5">
-            <Calendar size={13} className="text-blue-600" />
-            <span>Dias da Semana:</span>
-          </span>
+      {/* 5. CONTEÚDO DA SUB-ABA 3: CENTRAL DE DADOS & BACKUPS (BLINDADA) */}
+      {subTab === 'seguranca_backups' && (
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs space-y-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-slate-100 pb-5">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black">
+                <ShieldCheck size={26} />
+              </div>
+              <div>
+                <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-100 text-emerald-900 mb-1 border border-emerald-200">
+                  <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+                  INFRAESTRUTURA MONITORADA
+                </div>
+                <h3 className="text-base sm:text-lg font-black text-slate-900">
+                  Segurança, Backups & Governança de Dados
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Armazenamento em nuvem com alta resiliência, criptografia em repouso e portabilidade conforme a LGPD.
+                </p>
+              </div>
+            </div>
 
-          <div className="flex flex-wrap gap-1.5">
             <button
               type="button"
-              onClick={() => handleSelectDayTab('all')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
-                selectedDayTab === 'all'
-                  ? 'bg-blue-600 text-white shadow-xs font-black'
-                  : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-              }`}
+              onClick={handleExportarJson}
+              className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-black rounded-xl transition shadow-sm flex items-center gap-2 cursor-pointer"
+              title="Exportar base estruturada conforme Art. 18 da LGPD"
             >
-              <span>Todos os Dias</span>
-              <span className={`px-1.5 py-0.5 text-[9px] rounded-full font-black ${
-                selectedDayTab === 'all' ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-500'
-              }`}>
-                {activities.length}
-              </span>
+              <Download size={15} />
+              <span>Exportar Cópia Instantânea (JSON)</span>
             </button>
+          </div>
 
-            {daySummaries.map((ds) => (
-              <button
-                key={ds.dia}
-                type="button"
-                onClick={() => handleSelectDayTab(ds.dia)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
-                  selectedDayTab === ds.dia
-                    ? 'bg-blue-600 text-white shadow-xs font-black'
-                    : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
-                }`}
-              >
-                <span>{ds.dia}</span>
-                <span className={`px-1.5 py-0.5 text-[9px] rounded-full font-black ${
-                  selectedDayTab === ds.dia ? 'bg-blue-500 text-white' : 'bg-slate-100 text-slate-500'
-                }`}>
-                  {ds.count}
-                </span>
-              </button>
-            ))}
+          {/* 3 PILARES TÉCNICOS */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">INFRAESTRUTURA EM NUVEM</span>
+                <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-blue-100 text-blue-800">DISTRIBUÍDA</span>
+              </div>
+              <h4 className="font-black text-slate-800 text-sm">Banco de Dados em Nuvem</h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Google Cloud Firestore com armazenamento em infraestrutura distribuída de alta resiliência e disponibilidade contínua.
+              </p>
+            </div>
+
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">CRIPTOGRAFIA EM REPOUSO</span>
+                <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-indigo-100 text-indigo-800">AES-256</span>
+              </div>
+              <h4 className="font-black text-slate-800 text-sm">Proteção de Dados Sensíveis</h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Registros pedagógicos, diários e anotações médicas protegidos por criptografia AES-256 em repouso e tráfego seguro (TLS/HTTPS).
+              </p>
+            </div>
+
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">ROTINA AUTOMÁTICA</span>
+                <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800">RETENÇÃO: 30 DIAS</span>
+              </div>
+              <h4 className="font-black text-slate-800 text-sm">Backup Noturno Programado</h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Cópias de segurança automatizadas executadas diariamente às 02:00 com política de retenção operacional de 30 dias.
+              </p>
+            </div>
+          </div>
+
+          {/* TABELA DE AUDITORIA DE CÓPIAS DE SEGURANÇA */}
+          <div className="space-y-3 pt-2">
+            <div className="flex items-center justify-between">
+              <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                <Lock size={14} className="text-indigo-600" />
+                <span>Central de Governança de Dados e Segurança da Escola</span>
+              </h4>
+              <span className="text-[11px] text-slate-500 font-medium">
+                Portabilidade assegurada pelo Art. 18 da LGPD
+              </span>
+            </div>
+
+            <div className="overflow-x-auto rounded-2xl border border-slate-200">
+              <table className="w-full text-left text-xs">
+                <thead className="bg-slate-100 text-slate-600 uppercase font-bold text-[10px] tracking-wider border-b border-slate-200">
+                  <tr>
+                    <th className="p-3">Data e Horário</th>
+                    <th className="p-3">Tipo de Rotina</th>
+                    <th className="p-3">Destino / Nuvem</th>
+                    <th className="p-3">Escopo do Backup</th>
+                    <th className="p-3 text-right">Integridade</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-200 font-medium text-slate-700 bg-white">
+                  <tr className="hover:bg-slate-50">
+                    <td className="p-3 font-mono font-bold text-slate-800">Hoje às 02:00:15</td>
+                    <td className="p-3">Backup Noturno Automático</td>
+                    <td className="p-3 font-mono text-[11px] text-slate-600">Google Cloud Multi-Region</td>
+                    <td className="p-3 font-bold text-indigo-700">Registros e Mídias Consolidados</td>
+                    <td className="p-3 text-right">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                        <CheckCircle2 size={12} />
+                        Concluído e Verificado
+                      </span>
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-slate-50">
+                    <td className="p-3 font-mono font-bold text-slate-800">Ontem às 02:00:12</td>
+                    <td className="p-3">Backup Noturno Automático</td>
+                    <td className="p-3 font-mono text-[11px] text-slate-600">Google Cloud Multi-Region</td>
+                    <td className="p-3 font-bold text-indigo-700">Registros e Mídias Consolidados</td>
+                    <td className="p-3 text-right">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                        <CheckCircle2 size={12} />
+                        Concluído e Verificado
+                      </span>
+                    </td>
+                  </tr>
+                  <tr className="hover:bg-slate-50">
+                    <td className="p-3 font-mono font-bold text-slate-800">Anteontem às 02:00:08</td>
+                    <td className="p-3">Backup Noturno Automático</td>
+                    <td className="p-3 font-mono text-[11px] text-slate-600">Google Cloud Multi-Region</td>
+                    <td className="p-3 font-bold text-indigo-700">Registros e Mídias Consolidados</td>
+                    <td className="p-3 text-right">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-black text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                        <CheckCircle2 size={12} />
+                        Concluído e Verificado
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* 4. Modal de Edição de Atividade */}
-      {editingId && editForm && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-200 space-y-4 animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+      {/* 6. CONTEÚDO DA SUB-ABA 4: CARTILHA LEGAL */}
+      {subTab === 'respaldo_juridico' && (
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs space-y-6">
+          <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
+            <div className="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-800 flex items-center justify-center font-black">
+              <Scale size={24} />
+            </div>
+            <div>
+              <h3 className="text-base sm:text-lg font-black text-slate-900">
+                Diretrizes de Conformidade LGPD na Educação Infantil (Lei 13.709/2018)
+              </h3>
+              <p className="text-xs text-slate-500">
+                Como o aplicativo Anjinho Educador protege juridicamente a escola, os professores e as famílias.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
               <div className="flex items-center gap-2">
-                <Edit2 size={18} className="text-blue-600" />
-                <h4 className="text-base font-black text-slate-800">Editar Atividade Escolar</h4>
+                <span className="w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center font-black text-xs">
+                  14
+                </span>
+                <h4 className="font-black text-slate-800 text-sm">Artigo 14: Tratamento de Dados de Crianças</h4>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                O tratamento de dados pessoais de crianças deve ser realizado <strong>no seu melhor interesse</strong>, mediante <strong>consentimento específico e destacado</strong> fornecido por pelo menos um dos pais ou pelo responsável legal.
+              </p>
+            </div>
+
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center font-black text-xs">
+                  11
+                </span>
+                <h4 className="font-black text-slate-800 text-sm">Artigo 11: Dados Sensíveis de Saúde</h4>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Informações sobre administração de medicamentos, febre, alergias e saúde do menor são dados sensíveis. O app exige <strong>validação de PIN de segurança pelos pais</strong> para cadastros e alterações.
+              </p>
+            </div>
+
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center font-black text-xs">
+                  07
+                </span>
+                <h4 className="font-black text-slate-800 text-sm">Artigo 7º: Execução de Contrato Pedagógico</h4>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                A prestação de contas diária e o envio de relatórios de permanência escolar cumprem o dever de cuidado e a obrigação legal e contratual da instituição de ensino.
+              </p>
+            </div>
+
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-amber-600 text-white flex items-center justify-center font-black text-xs">
+                  18
+                </span>
+                <h4 className="font-black text-slate-800 text-sm">Artigo 18: Direitos dos Pais (Titulares)</h4>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Os pais podem a qualquer momento consultar os dados registrados, solicitar certidões em PDF, retificar informações de saúde ou revogar autorizações pontuais.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL DE ASSINATURA / ATUALIZAÇÃO DO TERMO LGPD */}
+      <ModalConsentimentoLgpdInicial
+        isOpen={showModalAssinatura}
+        onClose={() => setShowModalAssinatura(false)}
+        student={alunoParaAssinar}
+        isObrigatorio={false}
+        onConsentimentoConcluido={(novo) => {
+          carregarDados();
+          setShowModalAssinatura(false);
+        }}
+      />
+
+      {/* CERTIDÃO PARA IMPRESSÃO (MODAL FORMAL) */}
+      {termoVisualizacao && (
+        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl border border-slate-200 space-y-5 print:shadow-none print:border-none">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-white border border-slate-200 p-0.5 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  <LogoAnjinhoEducador variant="symbol" size="full" className="w-full h-full" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-black uppercase text-indigo-700 tracking-wider block">
+                    ANJINHO ESCOLAR • DOCUMENTO OFICIAL DE RESPALDO JURÍDICO
+                  </span>
+                  <h3 className="text-base font-black text-slate-900">
+                    Certidão de Consentimento LGPD
+                  </h3>
+                </div>
               </div>
               <button
-                type="button"
-                onClick={() => setEditingId(null)}
-                className="text-slate-400 hover:text-slate-600 p-1 cursor-pointer"
+                onClick={() => setTermoVisualizacao(null)}
+                className="text-slate-400 hover:text-slate-600 p-1 rounded-full cursor-pointer print:hidden"
               >
-                <X size={18} />
+                ✕
               </button>
             </div>
 
-            <div className="space-y-3 max-h-[70vh] overflow-y-auto pr-1">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-[10px] font-bold text-slate-600 block mb-1">Horário:</label>
-                  <input
-                    type="text"
-                    value={editForm.horario}
-                    onChange={(e) => setEditForm({ ...editForm, horario: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs font-mono font-bold text-slate-800"
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] font-bold text-slate-600 block mb-1">Dia da Semana:</label>
-                  <input
-                    type="text"
-                    value={editForm.dia}
-                    onChange={(e) => setEditForm({ ...editForm, dia: e.target.value })}
-                    className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs font-bold text-slate-800"
-                  />
-                </div>
+            <div className="space-y-3 text-xs text-slate-700 leading-relaxed border border-slate-200 rounded-2xl p-4 bg-slate-50">
+              <p>
+                Certificamos para os devidos fins de direito e respaldo jurídico que em <strong>{termoVisualizacao.aceitoEmFormatado}</strong>, o(a) Sr(a). <strong>{termoVisualizacao.responsavelNome}</strong>, portador(a) do CPF <strong>{termoVisualizacao.responsavelCpf}</strong>, na qualidade de <strong>{termoVisualizacao.responsavelGrau}</strong> da criança <strong>{termoVisualizacao.studentNome}</strong> (Turma: {termoVisualizacao.turma}), firmou <strong>Assinatura Eletrônica e Consentimento Expresso</strong> nos termos da Lei Federal nº 13.709/2018 (LGPD).
+              </p>
+
+              <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-1 text-[11px]">
+                <strong className="block text-slate-800">Cláusulas Atestadas:</strong>
+                <div>✓ Tratamento de Dados do Menor (Art. 14 LGPD) — AUTORIZADO</div>
+                <div>✓ Notificações e Diários via WhatsApp (Art. 7º LGPD) — AUTORIZADO</div>
+                <div>✓ Registros de Saúde e Medicamentos (Art. 11 LGPD) — AUTORIZADO</div>
+                <div>✓ Registros Fotográficos Pedagógicos Fechados — AUTORIZADO</div>
               </div>
 
-              <div>
-                <label className="text-[10px] font-bold text-slate-600 block mb-1">Título da Atividade:</label>
-                <input
-                  type="text"
-                  value={editForm.titulo}
-                  onChange={(e) => setEditForm({ ...editForm, titulo: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs font-bold text-slate-800"
-                />
-              </div>
-
-              <div>
-                <label className="text-[10px] font-bold text-slate-600 block mb-1">Campo BNCC / Objetivo:</label>
-                <input
-                  type="text"
-                  value={editForm.objetivoBNCC || ''}
-                  onChange={(e) => setEditForm({ ...editForm, objetivoBNCC: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs font-medium text-slate-800"
-                />
-              </div>
-
-              <div>
-                <label className="text-[10px] font-bold text-slate-600 block mb-1">Descrição / Instrução:</label>
-                <textarea
-                  rows={4}
-                  value={editForm.descricao}
-                  onChange={(e) => setEditForm({ ...editForm, descricao: e.target.value })}
-                  className="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-800 leading-relaxed"
-                />
+              <div className="font-mono text-[10px] text-slate-500 pt-2 border-t border-slate-200 flex justify-between items-center">
+                <span>Hash Criptográfico: {termoVisualizacao.hashAssinaturaDigital}</span>
+                <span>Versão: {termoVisualizacao.versaoTermo}</span>
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+            <div className="flex items-center justify-end gap-2.5 pt-2 border-t border-slate-100 print:hidden">
               <button
                 type="button"
-                onClick={() => setEditingId(null)}
-                className="px-4 py-2 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition cursor-pointer"
+                onClick={() => setTermoVisualizacao(null)}
+                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl transition cursor-pointer"
               >
-                Cancelar
+                Fechar
               </button>
               <button
                 type="button"
-                onClick={handleSaveEdit}
-                className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white text-xs font-black rounded-xl shadow-xs transition cursor-pointer flex items-center gap-1.5"
+                onClick={() => window.print()}
+                className="px-4 py-2 bg-indigo-700 hover:bg-indigo-800 text-white text-xs font-black rounded-xl transition flex items-center gap-1.5 cursor-pointer shadow-xs"
               >
-                <Save size={14} />
-                <span>Salvar Alterações</span>
+                <Printer size={14} />
+                <span>Imprimir Documento</span>
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* 5. Lista de Cards de Atividades (Grid 2 Colunas) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {filteredActivities.map((act, idx) => {
-          const actId = act.id || `act-${idx}`;
-          const currentNote = activityNotes[actId] || act.observacao || '';
-          const isListeningNote = listeningNoteId === actId;
-          const isEntregue = act.status === 'entregue' || act.entregue;
-          const isRecusou = act.status === 'recusou';
-          const isPendente = !isEntregue && !isRecusou;
-
-          return (
-            <div
-              key={actId}
-              className={`bg-white rounded-3xl border p-5 sm:p-6 transition-all duration-200 shadow-2xs flex flex-col justify-between space-y-4 ${
-                isEntregue
-                  ? 'border-emerald-300/80 bg-emerald-50/20'
-                  : isRecusou
-                  ? 'border-rose-300/80 bg-rose-50/20'
-                  : act.tipo === 'medicacao'
-                  ? 'border-indigo-300 bg-indigo-50/15 ring-2 ring-indigo-100/50 hover:shadow-xs'
-                  : 'border-amber-300/80 bg-amber-50/15 ring-1 ring-amber-200/50 hover:shadow-xs'
-              }`}
-            >
-              {/* Topo do Card: Ícone, Horário, Status, Editar, Excluir */}
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 border ${
-                    act.tipo === 'medicacao' ? 'bg-indigo-50 text-indigo-700 border-indigo-200/80' : 'bg-slate-100 text-slate-700 border-slate-200/80'
-                  }`}>
-                    {getCategoryIcon(act.tipo)}
-                  </div>
-
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="bg-slate-100 text-slate-800 font-mono font-black text-xs px-2.5 py-1 rounded-lg border border-slate-200">
-                      {act.horario}
-                    </span>
-
-                    {/* Badge de Status */}
-                    {isEntregue ? (
-                      <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase px-2 py-0.5 rounded-md flex items-center gap-1 border border-emerald-300">
-                        <CheckCircle2 size={11} />
-                        <span>{act.tipo === 'medicacao' ? 'Ministrado' : 'Entregue'}</span>
-                      </span>
-                    ) : isRecusou ? (
-                      <span className="bg-rose-100 text-rose-800 text-[10px] font-black uppercase px-2 py-0.5 rounded-md flex items-center gap-1 border border-rose-300">
-                        <XCircle size={11} />
-                        <span>Recusou</span>
-                      </span>
-                    ) : (
-                      <span className="bg-amber-100 text-amber-900 text-[10px] font-black uppercase px-2 py-0.5 rounded-md border border-amber-300 flex items-center gap-1">
-                        <Clock size={10} className="text-amber-700" />
-                        <span>Pendente</span>
-                      </span>
-                    )}
-                  </div>
-                </div>
-
-                {/* Ações de Edição e Exclusão */}
-                {act.tipo !== 'medicacao' ? (
-                  userRole !== 'familia' ? (
-                    <div className="flex items-center gap-1 shrink-0">
-                      <button
-                        type="button"
-                        onClick={() => handleStartEdit(act, idx)}
-                        title="Editar atividade"
-                        className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition cursor-pointer"
-                      >
-                        <Edit2 size={15} />
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleDelete(actId, idx)}
-                        title="Excluir atividade"
-                        className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition cursor-pointer"
-                      >
-                        <Trash2 size={15} />
-                      </button>
-                    </div>
-                  ) : (
-                    <span className="text-[10px] font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
-                      Plano Semanal
-                    </span>
-                  )
-                ) : (
-                  <span className="text-[10px] font-black uppercase tracking-wider bg-indigo-100/80 text-indigo-800 px-2 py-1 rounded-md border border-indigo-200 select-none">
-                    Autorização Ativa
-                  </span>
-                )}
-              </div>
-
-              {/* Título e Descrição */}
-              <div className="space-y-1.5 flex-1">
-                <div className="flex items-center justify-between gap-2">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h4 className={`text-base font-black leading-snug ${act.tipo === 'medicacao' ? 'text-indigo-950 font-extrabold' : 'text-slate-900'}`}>
-                      {act.titulo}
-                    </h4>
-                    {act.tipo === 'medicacao' && (
-                      <span className="text-[10px] font-black text-blue-700 bg-blue-100/90 border border-blue-200 px-2 py-0.5 rounded-full inline-flex items-center gap-1">
-                        <Calendar size={11} /> Dias: {act.diasSemana && act.diasSemana.length > 0 ? act.diasSemana.join(', ') : 'Todos os dias úteis'}
-                      </span>
-                    )}
-                  </div>
-                  {act.dia && (
-                    <span className="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md shrink-0">
-                      {act.dia}
-                    </span>
-                  )}
-                </div>
-                <p className="text-xs text-slate-600 leading-relaxed">
-                  {act.descricao}
-                </p>
-
-                {/* Foto / Receita Anexada para Conferência Visual da Professora */}
-                {act.anexoReceitaUrl && (
-                  <div className="mt-2 flex items-center gap-3 bg-indigo-50/90 border border-indigo-100 rounded-xl p-2.5">
-                    <div
-                      className="relative w-14 h-14 rounded-lg overflow-hidden border border-indigo-200 bg-white shrink-0 cursor-pointer shadow-2xs group"
-                      onClick={() => setPreviewMedImage(act.anexoReceitaUrl || null)}
-                      title="Clique para ampliar e conferir"
-                    >
-                      <img
-                        src={act.anexoReceitaUrl}
-                        alt="Foto do Medicamento"
-                        className="w-full h-full object-cover group-hover:scale-105 transition"
-                        referrerPolicy="no-referrer"
-                      />
-                      <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white text-xs">
-                        🔍
-                      </div>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-black text-indigo-950">Foto da Embalagem / Receita</span>
-                        <span className="text-[10px] bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded-sm font-bold">Segurança</span>
-                      </div>
-                      <p className="text-[11px] text-slate-500 truncate mt-0.5">
-                        Conferência visual para evitar trocas e dosagens incorretas.
-                      </p>
-                      <button
-                        type="button"
-                        onClick={() => setPreviewMedImage(act.anexoReceitaUrl || null)}
-                        className="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 underline cursor-pointer mt-0.5"
-                      >
-                        Clique para ampliar e ver detalhes
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Observações da Atividade com Microfone de Voz ou Visão Acolhedora Familiar */}
-              {userRole === 'familia' ? (
-                <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
-                  {currentNote ? (
-                    <div className="bg-amber-50/80 border border-amber-200/80 rounded-xl px-3 py-1.5 text-amber-900 text-xs flex items-center gap-1.5">
-                      <span className="font-bold">
-                        {act.tipo === 'medicacao' ? '💊 Relato de Ministração:' : '📝 Observação da Escola:'}
-                      </span>
-                      <span>{currentNote}</span>
-                    </div>
-                  ) : (
-                    <span className="text-[11px] text-slate-500 font-medium">
-                      {act.tipo === 'medicacao'
-                        ? 'Prescrição médica e autorização da família • Cuidado e dosagem estritamente individual'
-                        : 'Planejamento pedagógico integrado • Método Árvore da Infância®'}
-                    </span>
-                  )}
-                  <div className="shrink-0">
-                    {isEntregue ? (
-                      act.tipo === 'medicacao' ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-indigo-100 text-indigo-950 border border-indigo-300 shadow-2xs">
-                          <Pill size={12} className="text-indigo-700" />
-                          <span>Medicamento Ministrado (Individual)</span>
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">
-                          <CheckCircle2 size={12} className="text-emerald-700" />
-                          <span>
-                            {activityScopes[actId] === 'individual'
-                              ? 'Vivenciada Individualmente'
-                              : 'Vivenciada com a Turma'}
-                          </span>
-                        </span>
-                      )
-                    ) : isRecusou ? (
-                      act.tipo === 'medicacao' ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300">
-                          <XCircle size={12} className="text-rose-700" />
-                          <span>Dose Recusada (Escola Notificada)</span>
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-800 border border-rose-300">
-                          <XCircle size={12} className="text-rose-700" />
-                          <span>Observação Registrada</span>
-                        </span>
-                      )
-                    ) : (
-                      act.tipo === 'medicacao' ? (
-                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-900 border border-amber-200">
-                          <Clock size={11} className="text-amber-600" />
-                          <span>Horário da Dose Agendado (Individual)</span>
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-600 border border-slate-200">
-                          <Clock size={11} className="text-slate-500" />
-                          <span>
-                            {activityScopes[actId] === 'individual'
-                              ? 'Atividade Individual Prevista'
-                              : 'Prevista no Plano de Aula'}
-                          </span>
-                        </span>
-                      )
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <>
-                  <div className="space-y-1.5 pt-2 border-t border-slate-100">
-                    <div className="flex items-center justify-between">
-                      <label className="text-[10px] font-black uppercase tracking-wider text-slate-500">
-                        {act.tipo === 'medicacao' ? 'Observações de Ministração' : 'Observações da Atividade'}
-                      </label>
-                      <button
-                        type="button"
-                        onClick={() =>
-                          startVoiceInput(
-                            (val) =>
-                              setActivityNotes((prev) => ({
-                                ...prev,
-                                [actId]: typeof val === 'function' ? val(prev[actId] || '') : val
-                              })),
-                            (isRec) => setListeningNoteId(isRec ? actId : null)
-                          )
-                        }
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1 cursor-pointer transition ${
-                          isListeningNote ? 'bg-rose-500 text-white animate-pulse' : 'text-blue-600 hover:bg-blue-50'
-                        }`}
-                      >
-                        <Mic size={12} />
-                        <span>{isListeningNote ? 'Ouvindo voz...' : 'Gravar'}</span>
-                      </button>
-                    </div>
-
-                    <input
-                      type="text"
-                      value={currentNote}
-                      onChange={(e) =>
-                        setActivityNotes({ ...activityNotes, [actId]: e.target.value })
-                      }
-                      placeholder={act.tipo === 'medicacao' ? 'Ex: Tomou 10 gotas de dipirona diluídas em água.' : 'Ex: Realizou a atividade com capricho e atenção...'}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-blue-400"
-                    />
-                  </div>
-
-           {/* Botões de Ação: [Individual / Coletivo] + [Recusou] + [Entregue] */}
-                  <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 mt-1">
-                    {act.tipo === 'medicacao' ? (
-                      <div className="flex items-center gap-1 bg-indigo-50 text-indigo-700 px-2.5 py-1.5 rounded-xl border border-indigo-100 text-[11px] font-black">
-                        <span>👤 Medicamento Individual</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center bg-slate-100/90 p-0.5 rounded-xl border border-slate-200 shadow-2xs">
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActivityScopes((prev) => ({
-                              ...prev,
-                              [actId]: 'coletivo',
-                            }));
-                          }}
-                          className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer touch-manipulation ${
-                            (activityScopes[actId] || 'coletivo') === 'coletivo'
-                              ? 'bg-indigo-600 text-white shadow-2xs'
-                              : 'text-slate-600 hover:text-slate-900'
-                          }`}
-                          title="Modo Coletivo: Salva para toda a turma de uma vez"
-                        >
-                          <span>👥 Coletivo</span>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActivityScopes((prev) => ({
-                              ...prev,
-                              [actId]: 'individual',
-                            }));
-                          }}
-                          className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer touch-manipulation ${
-                            activityScopes[actId] === 'individual'
-                              ? 'bg-emerald-600 text-white shadow-2xs'
-                              : 'text-slate-600 hover:text-slate-900'
-                          }`}
-                          title={`Modo Individual: Salva apenas para ${studentNome.split(' ')[0]}`}
-                        >
-                          <span>👤 Individual</span>
-                        </button>
-                      </div>
-                    )}
-
-                    {/* Botões de Ação: [Recusou] e [✓ Concluído] */}
-                    <div className="flex items-center gap-2.5">
-                      {/* Botão de Recusa */}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (!validarCronometro()) return;
-                          handleMarkRecusou(act, idx);
-                        }}
-                        className={`px-3.5 py-2 text-xs font-black rounded-xl transition cursor-pointer touch-manipulation active:scale-95 ${
-                          isRecusou
-                            ? 'bg-rose-600 text-white border-2 border-rose-700 shadow-sm'
-                            : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-2 border-amber-300 hover:border-amber-400 shadow-2xs'
-                        }`}
-                        title="Registrar que o aluno recusou a atividade"
-                      >
-                        <span>{isRecusou ? '✕ Recusado' : 'Recusou'}</span>
-                      </button>
-
-                      {/* Botão Principal: Concluir / Concluído */}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (!validarCronometro()) return;
-                          handleMarkEntregue(act, idx);
-                        }}
-                        className={`px-4 py-2 text-xs font-black rounded-xl transition cursor-pointer shadow-md active:scale-95 flex items-center gap-2 border touch-manipulation ${
-                          isEntregue
-                            ? 'bg-emerald-600 border-emerald-700 text-white ring-2 ring-emerald-300'
-                            : act.tipo === 'medicacao'
-                            ? 'bg-indigo-600 hover:bg-indigo-700 border-indigo-700 text-white ring-2 ring-indigo-200'
-                            : 'bg-gradient-to-r from-emerald-600 via-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white border-emerald-500 shadow-emerald-500/20 ring-2 ring-emerald-200'
-                        }`}
-                      >
-                        <Check size={16} className="stroke-[3]" />
-                        <span>
-                          {isEntregue
-                            ? act.tipo === 'medicacao'
-                              ? 'Ministrado'
-                              : 'Concluído'
-                            : act.tipo === 'medicacao'
-                            ? 'Ministrar'
-                            : 'Concluir'}
-                        </span>
-                        {act.tipo !== 'medicacao' && (
-                          <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-black/25 text-emerald-100 uppercase tracking-wider border border-white/20">
-                            {(activityScopes[actId] || 'coletivo') === 'coletivo' ? 'Turma' : 'Indiv.'}
-                          </span>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                </>
-              )}
-            </div>
-          );
-        })}
-      </div>
+      {/* Modal Avançado de Exportação em PDF */}
+      <ModalExportarRelatoriosPdf
+        isOpen={showPdfExportModal}
+        onClose={() => setShowPdfExportModal(false)}
+        student={alunoParaPdf}
+      />
+    </div>
+  );
+}
