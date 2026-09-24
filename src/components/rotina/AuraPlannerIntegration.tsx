@@ -2695,8 +2695,9 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                       </div>
                     )}
 
-                    {/* Botões de Ação: [Recusou] e [Entregue] */}
-                    <div className="flex items-center gap-2">
+                 {/* Botões de Ação: [Recusou] e [✓ Concluído] - Visual Elegante, Vibrante e Nítido */}
+                    <div className="flex items-center gap-2.5">
+                      {/* Botão de Recusa */}
                       <button
                         type="button"
                         onClick={() => {
@@ -2705,50 +2706,53 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                         }}
                         className={`px-3.5 py-2 text-xs font-black rounded-xl transition cursor-pointer active:scale-95 ${
                           isRecusou
-                            ? 'bg-rose-100 text-rose-800 border border-rose-300'
-                            : 'bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-200'
+                            ? 'bg-rose-600 text-white border-2 border-rose-700 shadow-sm'
+                            : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-2 border-amber-300 hover:border-amber-400 shadow-2xs'
                         }`}
+                        title="Registrar que o aluno recusou a atividade"
                       >
-                        Recusou
+                        <span>{isRecusou ? '✕ Recusado' : 'Recusou'}</span>
                       </button>
 
+                      {/* Botão Principal: Concluir / Concluído */}
                       <button
                         type="button"
                         onClick={() => {
                           if (!validarCronometro()) return;
                           handleMarkEntregue(act, idx);
                         }}
-                        className={`px-4 py-2 text-xs font-black rounded-xl transition cursor-pointer shadow-xs active:scale-95 flex items-center gap-1.5 ${
+                        className={`px-4 py-2 text-xs font-black rounded-xl transition cursor-pointer shadow-md active:scale-95 flex items-center gap-2 border ${
                           isEntregue
-                            ? 'bg-emerald-600 text-white font-black'
+                            ? 'bg-emerald-600 border-emerald-700 text-white ring-2 ring-emerald-300'
                             : act.tipo === 'medicacao'
-                            ? 'bg-indigo-600 hover:bg-indigo-700 text-white'
-                            : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                            ? 'bg-indigo-600 hover:bg-indigo-700 border-indigo-700 text-white ring-2 ring-indigo-200'
+                            : 'bg-gradient-to-r from-emerald-600 via-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white border-emerald-500 shadow-emerald-500/20 ring-2 ring-emerald-200'
                         }`}
                         title={
                           act.tipo === 'medicacao'
                             ? 'Registrar ministração'
                             : (activityScopes[actId] || 'coletivo') === 'coletivo'
-                            ? 'Salvar e replicar para toda a turma'
-                            : `Salvar apenas para ${studentNome.split(' ')[0]}`
+                            ? 'Salvar como Concluído e replicar para toda a turma'
+                            : `Salvar como Concluído apenas para ${studentNome.split(' ')[0]}`
                         }
                       >
-                        <Check size={14} />
-                        <span>{isEntregue ? (act.tipo === 'medicacao' ? 'Ministrado' : 'Entregue') : (act.tipo === 'medicacao' ? 'Ministrar' : 'Entregue')}</span>
+                        <Check size={16} className="stroke-[3]" />
+                        <span>
+                          {isEntregue
+                            ? act.tipo === 'medicacao'
+                              ? 'Ministrado'
+                              : 'Concluído'
+                            : act.tipo === 'medicacao'
+                            ? 'Ministrar'
+                            : 'Concluir'}
+                        </span>
                         {act.tipo !== 'medicacao' && (
-                          <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md bg-emerald-800/60 text-emerald-100 uppercase tracking-tight">
+                          <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-black/25 text-emerald-100 uppercase tracking-wider border border-white/20">
                             {(activityScopes[actId] || 'coletivo') === 'coletivo' ? 'Turma' : 'Indiv.'}
                           </span>
                         )}
                       </button>
                     </div>
-                  </div>
-                </>
-              )}
-            </div>
-          );
-        })}
-      </div>
 
       {filteredActivities.length === 0 && (
         <div className="text-center py-12 bg-slate-50 rounded-3xl border border-dashed border-slate-300 space-y-4 p-6">
