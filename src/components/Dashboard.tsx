@@ -330,11 +330,13 @@ export default function Dashboard({ user }: Props) {
         </div>
       )}
 
-      {/* Botão Flutuante de Retorno Rápido ao Aluno/Perfil (Seta para cima com foto) */}
-      <BotaoVoltarAoAluno
-        studentName={currentStudent.nome}
-        studentPhoto={currentStudent.fotoUrl}
-      />
+     {/* Botão de Retorno Rápido ao Aluno - Exclusivo do Diário Escolar */}
+      {activeTab === 'diario_escolar' && (
+        <BotaoVoltarAoAluno
+          studentName={currentStudent.nome}
+          studentPhoto={currentStudent.fotoUrl}
+        />
+      )}
 
       {/* Botões Flutuantes Permanentes de Troca Rápida de Perfil (Professor, Pais/Família, Diretora) */}
       <FloatingRoleSwitcher
