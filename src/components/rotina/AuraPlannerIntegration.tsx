@@ -58,7 +58,7 @@ export function deduplicateActivities(list: ParsedAuraActivity[]): ParsedAuraAct
       if (existingItem.isRotinaPadrao && !act.isRotinaPadrao) {
         result[existingIndex] = act;
       } else if (!existingItem.isRotinaPadrao && act.isRotinaPadrao) {
-        // Mantém
+        // Mantém customizada
       } else if ((act.titulo || '').length > (existingItem.titulo || '').length) {
         result[existingIndex] = act;
       }
@@ -115,7 +115,6 @@ export default function AuraPlannerIntegration({
   const [activityNotes, setActivityNotes] = useState<Record<string, string>>({});
   const [activityScopes, setActivityScopes] = useState<Record<string, 'coletivo' | 'individual'>>({});
 
-  // Sincroniza e grava no LocalStorage sempre que uma atividade for concluída
   const salvarEAtualizarAtividades = (novasAtividades: ParsedAuraActivity[]) => {
     setActivities(novasAtividades);
     try {
@@ -260,7 +259,7 @@ export default function AuraPlannerIntegration({
     }, 400);
   };
 
-  // Concluir Atividade (100% responsivo para Mobile e Desktop)
+  // Concluir Atividade (Localiza com 100% de precisão no Celular e Computador)
   const handleMarkEntregue = (act: ParsedAuraActivity, idx: number) => {
     const actId = act.id || `act-${idx}`;
     const note = activityNotes[actId] || '';
@@ -289,8 +288,9 @@ export default function AuraPlannerIntegration({
       return;
     }
 
-    const novasAtividades = activities.map((a, i) => {
-      if ((a.id || `act-${i}`) === actId) {
+    const novasAtividades = activities.map((a) => {
+      const isMatch = (a.id && a.id === act.id) || (a.titulo === act.titulo && a.horario === act.horario && a.dia === act.dia);
+      if (isMatch) {
         return { ...a, status: 'entregue' as const, entregue: true, observacao: note };
       }
       return a;
@@ -332,8 +332,9 @@ export default function AuraPlannerIntegration({
     const note = activityNotes[actId] || 'Recusou participar da atividade';
     const scope = activityScopes[actId] || 'coletivo';
 
-    const novasAtividades = activities.map((a, i) => {
-      if ((a.id || `act-${i}`) === actId) {
+    const novasAtividades = activities.map((a) => {
+      const isMatch = (a.id && a.id === act.id) || (a.titulo === act.titulo && a.horario === act.horario && a.dia === act.dia);
+      if (isMatch) {
         return { ...a, status: 'recusou' as const, entregue: false, observacao: note };
       }
       return a;
@@ -571,12 +572,19 @@ export default function AuraPlannerIntegration({
                     />
                   </div>
 
-                  {/* Botões de Ação com Toque Imediato */}
+                  {/* Botões de Ação com Toque Imediato no Celular */}
                   <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 mt-1">
                     <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200">
                       <button
                         type="button"
-                        onClick={() => setActivityScopes((prev) => ({ ...prev, [actId]: 'coletivo' }))}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActivityScopes((prev) => ({ ...prev, [actId]: 'coletivo' }));
+                        }}
+                        onTouchEnd={(e) => {
+                          e.stopPropagation();
+                          setActivityScopes((prev) => ({ ...prev, [actId]: 'coletivo' }));
+                        }}
                         className={`px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer touch-manipulation ${
                           (activityScopes[actId] || 'coletivo') === 'coletivo' ? 'bg-indigo-600 text-white' : 'text-slate-600'
                         }`}
@@ -585,7 +593,14 @@ export default function AuraPlannerIntegration({
                       </button>
                       <button
                         type="button"
-                        onClick={() => setActivityScopes((prev) => ({ ...prev, [actId]: 'individual' }))}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActivityScopes((prev) => ({ ...prev, [actId]: 'individual' }));
+                        }}
+                        onTouchEnd={(e) => {
+                          e.stopPropagation();
+                          setActivityScopes((prev) => ({ ...prev, [actId]: 'individual' }));
+                        }}
                         className={`px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer touch-manipulation ${
                           activityScopes[actId] === 'individual' ? 'bg-emerald-600 text-white' : 'text-slate-600'
                         }`}
@@ -597,7 +612,15 @@ export default function AuraPlannerIntegration({
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          validarCronometro();
+                          handleMarkRecusou(act, idx);
+                        }}
+                        onTouchEnd={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
                           validarCronometro();
                           handleMarkRecusou(act, idx);
                         }}
@@ -610,7 +633,15 @@ export default function AuraPlannerIntegration({
 
                       <button
                         type="button"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          validarCronometro();
+                          handleMarkEntregue(act, idx);
+                        }}
+                        onTouchEnd={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
                           validarCronometro();
                           handleMarkEntregue(act, idx);
                         }}
