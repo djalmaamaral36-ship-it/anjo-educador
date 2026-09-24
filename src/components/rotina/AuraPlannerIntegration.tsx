@@ -950,12 +950,16 @@ export default function AuraPlannerIntegration({
   userRole = 'professor'
 }: Props) {
   // Trava de segurança: impede registros se o cronômetro do aluno estiver parado
-  const isCronometroAtivo = student?.presenca?.isTimerRunning && student?.presenca?.status === 'em_aula';
-
-  const validarCronometro = () => {
-    if (!isCronometroAtivo) {
-      alert(`⏱️ ATENÇÃO: O cronômetro de aula de ${student?.nome || studentNome || 'aluno'} está PARADO! Inicie a aula para registrar atividades ou medicamentos.`);
-      return false;
+ const validarCronometro = () => {
+    if (student && onUpdateStudent && (!student.presenca?.isTimerRunning || student.presenca?.status !== 'em_aula')) {
+      onUpdateStudent({
+        presenca: {
+          ...student.presenca,
+          isTimerRunning: true,
+          status: 'em_aula',
+          startTimestamp: student.presenca?.startTimestamp || Date.now(),
+        }
+      });
     }
     return true;
   };
@@ -1530,7 +1534,7 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
   };
 
 // Marcar como Recusou
-  const handleMarkRecusou = (act: AtividadeAuraParsed, idx: number, customScope?: 'coletivo' | 'individual') => {
+ const handleMarkRecusou = (act: ParsedAuraActivity, idx: number, customScope?: 'coletivo' | 'individual') => {
     const actId = act.id || `act-${idx}`;
     let note = activityNotes[actId] || '';
     const scope = customScope || activityScopes[actId] || 'coletivo';
@@ -2695,16 +2699,16 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                       </div>
                     )}
 
-          {/* Botões de Ação: [Recusou] e [✓ Concluído] - Visual Elegante, Vibrante e Nítido */}
-                    <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2.5">
                       {/* Botão de Recusa */}
                       <button
                         type="button"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           if (!validarCronometro()) return;
                           handleMarkRecusou(act, idx);
                         }}
-                        className={`px-3.5 py-2 text-xs font-black rounded-xl transition cursor-pointer active:scale-95 ${
+                        className={`px-3.5 py-2 text-xs font-black rounded-xl transition cursor-pointer touch-manipulation active:scale-95 ${
                           isRecusou
                             ? 'bg-rose-600 text-white border-2 border-rose-700 shadow-sm'
                             : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-2 border-amber-300 hover:border-amber-400 shadow-2xs'
@@ -2717,11 +2721,12 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                       {/* Botão Principal: Concluir / Concluído */}
                       <button
                         type="button"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           if (!validarCronometro()) return;
                           handleMarkEntregue(act, idx);
                         }}
-                        className={`px-4 py-2 text-xs font-black rounded-xl transition cursor-pointer shadow-md active:scale-95 flex items-center gap-2 border ${
+                        className={`px-4 py-2 text-xs font-black rounded-xl transition cursor-pointer shadow-md active:scale-95 flex items-center gap-2 border touch-manipulation ${
                           isEntregue
                             ? 'bg-emerald-600 border-emerald-700 text-white ring-2 ring-emerald-300'
                             : act.tipo === 'medicacao'
@@ -2753,13 +2758,6 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                         )}
                       </button>
                     </div>
-                  </div>
-                </>
-              )}
-            </div>
-          );
-        })}
-      </div>
 
       {filteredActivities.length === 0 && (
         <div className="text-center py-12 bg-slate-50 rounded-3xl border border-dashed border-slate-300 space-y-4 p-6">
