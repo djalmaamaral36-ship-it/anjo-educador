@@ -2695,7 +2695,7 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                       </div>
                     )}
 
-                 {/* Botões de Ação: [Recusou] e [✓ Concluído] - Visual Elegante, Vibrante e Nítido */}
+          {/* Botões de Ação: [Recusou] e [✓ Concluído] - Visual Elegante, Vibrante e Nítido */}
                     <div className="flex items-center gap-2.5">
                       {/* Botão de Recusa */}
                       <button
@@ -2753,6 +2753,13 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                         )}
                       </button>
                     </div>
+                  </div>
+                </>
+              )}
+            </div>
+          );
+        })}
+      </div>
 
       {filteredActivities.length === 0 && (
         <div className="text-center py-12 bg-slate-50 rounded-3xl border border-dashed border-slate-300 space-y-4 p-6">
@@ -2837,4 +2844,5 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
       )}
     </section>
   );
-}
+}      
+        
