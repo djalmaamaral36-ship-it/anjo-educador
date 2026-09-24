@@ -58,7 +58,7 @@ export function deduplicateActivities(list: ParsedAuraActivity[]): ParsedAuraAct
       if (existingItem.isRotinaPadrao && !act.isRotinaPadrao) {
         result[existingIndex] = act;
       } else if (!existingItem.isRotinaPadrao && act.isRotinaPadrao) {
-        // Mantém customizada
+        // Mantém
       } else if ((act.titulo || '').length > (existingItem.titulo || '').length) {
         result[existingIndex] = act;
       }
@@ -76,6 +76,8 @@ export default function AuraPlannerIntegration({
   onUpdateStudent,
   userRole = 'professor'
 }: Props) {
+  const storageKey = `anjinho_activities_state_${student?.id || 'main'}`;
+
   const validarCronometro = () => {
     if (student && onUpdateStudent && (!student.presenca?.isTimerRunning || student.presenca?.status !== 'em_aula')) {
       onUpdateStudent({
@@ -91,9 +93,18 @@ export default function AuraPlannerIntegration({
   };
 
   const [inputText, setInputText] = useState('');
-  const [activities, setActivities] = useState<ParsedAuraActivity[]>(() => 
-    sortActivitiesBySchedule(deduplicateActivities(PLAN_ACTIVITIES || []))
-  );
+  const [activities, setActivities] = useState<ParsedAuraActivity[]>(() => {
+    try {
+      const saved = localStorage.getItem(storageKey);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          return sortActivitiesBySchedule(parsed);
+        }
+      }
+    } catch (e) {}
+    return sortActivitiesBySchedule(deduplicateActivities(PLAN_ACTIVITIES || []));
+  });
  
   const [selectedDayTab, setSelectedDayTab] = useState<string>('all');
   const [statusFilter, setStatusFilter] = useState<'todas' | 'pendentes' | 'entregues' | 'recusadas'>('todas');
@@ -104,16 +115,23 @@ export default function AuraPlannerIntegration({
   const [activityNotes, setActivityNotes] = useState<Record<string, string>>({});
   const [activityScopes, setActivityScopes] = useState<Record<string, 'coletivo' | 'individual'>>({});
 
+  // Sincroniza e grava no LocalStorage sempre que uma atividade for concluída
+  const salvarEAtualizarAtividades = (novasAtividades: ParsedAuraActivity[]) => {
+    setActivities(novasAtividades);
+    try {
+      localStorage.setItem(storageKey, JSON.stringify(novasAtividades));
+    } catch (e) {}
+  };
+
   useEffect(() => {
     const handleResetAllToPending = () => {
-      setActivities((prev) =>
-        prev.map((act) => ({
-          ...act,
-          status: 'pendente' as const,
-          entregue: false,
-          observacao: undefined,
-        }))
-      );
+      const reset = activities.map((act) => ({
+        ...act,
+        status: 'pendente' as const,
+        entregue: false,
+        observacao: undefined,
+      }));
+      salvarEAtualizarAtividades(reset);
       setActivityNotes({});
       setStatusFilter('todas');
     };
@@ -123,25 +141,24 @@ export default function AuraPlannerIntegration({
       if (!customEvent.detail) return;
       const { itemKey, status, observacao } = customEvent.detail;
       
-      setActivities((prev) =>
-        prev.map((act) => {
-          const isLancheManha = itemKey === 'lanche_manha' && act.titulo.toLowerCase().includes('lanche da manhã');
-          const isAlmoco = itemKey === 'almoco' && act.titulo.toLowerCase().includes('almoço');
-          const isLancheTarde = itemKey === 'lanche_tarde' && act.titulo.toLowerCase().includes('lanche da tarde');
-          const isSono = itemKey === 'sono' && act.titulo.toLowerCase().includes('soneca');
-          const isHigiene = itemKey === 'higiene' && act.titulo.toLowerCase().includes('higiene');
-          
-          if (act.item_key === itemKey || isLancheManha || isAlmoco || isLancheTarde || isSono || isHigiene) {
-            return {
-              ...act,
-              status: status === 'Rejeitou' ? 'recusou' as const : 'entregue' as const,
-              entregue: status !== 'Rejeitou',
-              observacao: observacao || `Sincronizado da Rotina: ${status}`,
-            };
-          }
-          return act;
-        })
-      );
+      const updated = activities.map((act) => {
+        const isLancheManha = itemKey === 'lanche_manha' && act.titulo.toLowerCase().includes('lanche da manhã');
+        const isAlmoco = itemKey === 'almoco' && act.titulo.toLowerCase().includes('almoço');
+        const isLancheTarde = itemKey === 'lanche_tarde' && act.titulo.toLowerCase().includes('lanche da tarde');
+        const isSono = itemKey === 'sono' && act.titulo.toLowerCase().includes('soneca');
+        const isHigiene = itemKey === 'higiene' && act.titulo.toLowerCase().includes('higiene');
+        
+        if (act.item_key === itemKey || isLancheManha || isAlmoco || isLancheTarde || isSono || isHigiene) {
+          return {
+            ...act,
+            status: status === 'Rejeitou' ? 'recusou' as const : 'entregue' as const,
+            entregue: status !== 'Rejeitou',
+            observacao: observacao || `Sincronizado da Rotina: ${status}`,
+          };
+        }
+        return act;
+      });
+      salvarEAtualizarAtividades(updated);
     };
 
     window.addEventListener('anjinho:reset-activities-to-pending', handleResetAllToPending);
@@ -150,7 +167,7 @@ export default function AuraPlannerIntegration({
       window.removeEventListener('anjinho:reset-activities-to-pending', handleResetAllToPending);
       window.removeEventListener('anjinho:rotina-registrada', handleRotinaRegistrada);
     };
-  }, []);
+  }, [activities]);
 
   const WEEKDAY_ORDER = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira'];
   const uniqueDaysMap = new Map<string, { dia: string; count: number }>();
@@ -235,7 +252,7 @@ export default function AuraPlannerIntegration({
           status: 'pendente' as const,
           entregue: false,
         }));
-        setActivities((prev) => sortActivitiesBySchedule(deduplicateActivities([...prev, ...pending])));
+        salvarEAtualizarAtividades(sortActivitiesBySchedule(deduplicateActivities([...activities, ...pending])));
       }
       setSelectedDayTab('all');
       setShowForm(false);
@@ -243,6 +260,7 @@ export default function AuraPlannerIntegration({
     }, 400);
   };
 
+  // Concluir Atividade (100% responsivo para Mobile e Desktop)
   const handleMarkEntregue = (act: ParsedAuraActivity, idx: number) => {
     const actId = act.id || `act-${idx}`;
     const note = activityNotes[actId] || '';
@@ -271,14 +289,14 @@ export default function AuraPlannerIntegration({
       return;
     }
 
-    setActivities((prev) =>
-      prev.map((a, i) => {
-        if ((a.id || `act-${i}`) === actId) {
-          return { ...a, status: 'entregue', entregue: true, observacao: note };
-        }
-        return a;
-      })
-    );
+    const novasAtividades = activities.map((a, i) => {
+      if ((a.id || `act-${i}`) === actId) {
+        return { ...a, status: 'entregue' as const, entregue: true, observacao: note };
+      }
+      return a;
+    });
+
+    salvarEAtualizarAtividades(novasAtividades);
 
     if (student && onUpdateStudent) {
       const horaAtual = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
@@ -308,19 +326,20 @@ export default function AuraPlannerIntegration({
     }
   };
 
+  // Recusar Atividade
   const handleMarkRecusou = (act: ParsedAuraActivity, idx: number) => {
     const actId = act.id || `act-${idx}`;
     const note = activityNotes[actId] || 'Recusou participar da atividade';
     const scope = activityScopes[actId] || 'coletivo';
 
-    setActivities((prev) =>
-      prev.map((a, i) => {
-        if ((a.id || `act-${i}`) === actId) {
-          return { ...a, status: 'recusou', entregue: false, observacao: note };
-        }
-        return a;
-      })
-    );
+    const novasAtividades = activities.map((a, i) => {
+      if ((a.id || `act-${i}`) === actId) {
+        return { ...a, status: 'recusou' as const, entregue: false, observacao: note };
+      }
+      return a;
+    });
+
+    salvarEAtualizarAtividades(novasAtividades);
 
     if (onConcluirAtividadePedagogica) {
       onConcluirAtividadePedagogica({
@@ -370,7 +389,8 @@ export default function AuraPlannerIntegration({
             <button
               type="button"
               onClick={() => {
-                setActivities((prev) => prev.map(a => ({ ...a, status: 'pendente', entregue: false })));
+                const reset = activities.map(a => ({ ...a, status: 'pendente' as const, entregue: false }));
+                salvarEAtualizarAtividades(reset);
               }}
               className="px-3 py-2 text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5 touch-manipulation"
             >
@@ -459,33 +479,6 @@ export default function AuraPlannerIntegration({
           </div>
         </div>
       </div>
-
-      {/* Modal de Importação Aura */}
-      {showForm && (
-        <div className="bg-slate-50 border-2 border-indigo-200 rounded-3xl p-5 space-y-4">
-          <div className="flex justify-between items-center">
-            <h4 className="text-sm font-black text-slate-900 uppercase">Importar Planejamento Aura</h4>
-            <button type="button" onClick={() => setShowForm(false)} className="text-slate-400 hover:text-slate-600">✕</button>
-          </div>
-          <textarea
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            placeholder="Cole aqui o texto da Anjinha Aura..."
-            className="w-full h-32 bg-white border border-slate-300 rounded-2xl p-3 text-xs font-mono"
-          />
-          <div className="flex justify-end gap-2">
-            <button type="button" onClick={() => setShowForm(false)} className="px-4 py-2 text-xs font-bold text-slate-600 bg-white border rounded-xl">Cancelar</button>
-            <button
-              type="button"
-              disabled={!inputText.trim() || isProcessing}
-              onClick={handleExtract}
-              className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-xl cursor-pointer touch-manipulation"
-            >
-              Extrair & Adicionar
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Grid de Cards de Atividades */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -578,15 +571,12 @@ export default function AuraPlannerIntegration({
                     />
                   </div>
 
-                  {/* Botões de Ação com Toque Mobile Otimizado */}
+                  {/* Botões de Ação com Toque Imediato */}
                   <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 mt-1">
                     <div className="flex items-center bg-slate-100 p-0.5 rounded-xl border border-slate-200">
                       <button
                         type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActivityScopes((prev) => ({ ...prev, [actId]: 'coletivo' }));
-                        }}
+                        onClick={() => setActivityScopes((prev) => ({ ...prev, [actId]: 'coletivo' }))}
                         className={`px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer touch-manipulation ${
                           (activityScopes[actId] || 'coletivo') === 'coletivo' ? 'bg-indigo-600 text-white' : 'text-slate-600'
                         }`}
@@ -595,10 +585,7 @@ export default function AuraPlannerIntegration({
                       </button>
                       <button
                         type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActivityScopes((prev) => ({ ...prev, [actId]: 'individual' }));
-                        }}
+                        onClick={() => setActivityScopes((prev) => ({ ...prev, [actId]: 'individual' }))}
                         className={`px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer touch-manipulation ${
                           activityScopes[actId] === 'individual' ? 'bg-emerald-600 text-white' : 'text-slate-600'
                         }`}
@@ -610,9 +597,8 @@ export default function AuraPlannerIntegration({
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (!validarCronometro()) return;
+                        onClick={() => {
+                          validarCronometro();
                           handleMarkRecusou(act, idx);
                         }}
                         className={`px-3 py-2 text-xs font-black rounded-xl transition cursor-pointer touch-manipulation active:scale-95 ${
@@ -624,9 +610,8 @@ export default function AuraPlannerIntegration({
 
                       <button
                         type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          if (!validarCronometro()) return;
+                        onClick={() => {
+                          validarCronometro();
                           handleMarkEntregue(act, idx);
                         }}
                         className={`px-4 py-2 text-xs font-black rounded-xl transition cursor-pointer shadow-md active:scale-95 flex items-center gap-1.5 border touch-manipulation ${
