@@ -2653,24 +2653,24 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                     />
                   </div>
 
-                  {/* Botões de Ação: [Individual / Coletivo] + [Recusou] + [Entregue] */}
+           {/* Botões de Ação: [Individual / Coletivo] + [Recusou] + [Entregue] */}
                   <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 mt-1">
                     {act.tipo === 'medicacao' ? (
                       <div className="flex items-center gap-1 bg-indigo-50 text-indigo-700 px-2.5 py-1.5 rounded-xl border border-indigo-100 text-[11px] font-black">
                         <span>👤 Medicamento Individual</span>
                       </div>
                     ) : (
-                      /* Seletor Individual / Coletivo Padronizado no Próprio Cartão */
                       <div className="flex items-center bg-slate-100/90 p-0.5 rounded-xl border border-slate-200 shadow-2xs">
                         <button
                           type="button"
-                          onClick={() =>
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setActivityScopes((prev) => ({
                               ...prev,
                               [actId]: 'coletivo',
-                            }))
-                          }
-                          className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer ${
+                            }));
+                          }}
+                          className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer touch-manipulation ${
                             (activityScopes[actId] || 'coletivo') === 'coletivo'
                               ? 'bg-indigo-600 text-white shadow-2xs'
                               : 'text-slate-600 hover:text-slate-900'
@@ -2681,25 +2681,27 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                         </button>
                         <button
                           type="button"
-                          onClick={() =>
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setActivityScopes((prev) => ({
                               ...prev,
                               [actId]: 'individual',
-                            }))
-                          }
-                          className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer ${
+                            }));
+                          }}
+                          className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-black transition cursor-pointer touch-manipulation ${
                             activityScopes[actId] === 'individual'
                               ? 'bg-emerald-600 text-white shadow-2xs'
                               : 'text-slate-600 hover:text-slate-900'
                           }`}
                           title={`Modo Individual: Salva apenas para ${studentNome.split(' ')[0]}`}
                         >
-                      <span>👤 Individual</span>
+                          <span>👤 Individual</span>
                         </button>
                       </div>
                     )}
 
-        <div className="flex items-center gap-2.5">
+                    {/* Botões de Ação: [Recusou] e [✓ Concluído] */}
+                    <div className="flex items-center gap-2.5">
                       {/* Botão de Recusa */}
                       <button
                         type="button"
@@ -2733,13 +2735,6 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                             ? 'bg-indigo-600 hover:bg-indigo-700 border-indigo-700 text-white ring-2 ring-indigo-200'
                             : 'bg-gradient-to-r from-emerald-600 via-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white border-emerald-500 shadow-emerald-500/20 ring-2 ring-emerald-200'
                         }`}
-                        title={
-                          act.tipo === 'medicacao'
-                            ? 'Registrar ministração'
-                            : (activityScopes[actId] || 'coletivo') === 'coletivo'
-                            ? 'Salvar como Concluído e replicar para toda a turma'
-                            : `Salvar como Concluído apenas para ${studentNome.split(' ')[0]}`
-                        }
                       >
                         <Check size={16} className="stroke-[3]" />
                         <span>
@@ -2758,89 +2753,10 @@ Siga o padrão com horários, títulos, descrições afetivas e objetivos BNCC:
                         )}
                       </button>
                     </div>
-
-      {filteredActivities.length === 0 && (
-        <div className="text-center py-12 bg-slate-50 rounded-3xl border border-dashed border-slate-300 space-y-4 p-6">
-          <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center mx-auto border border-blue-200">
-            <Plus size={24} />
-          </div>
-          <div className="space-y-1">
-            <h4 className="text-base font-black text-slate-800">
-              {activities.length === 0 ? 'Agenda Limpa para Novas Atividades' : 'Nenhuma atividade encontrada'}
-            </h4>
-            <p className="text-xs font-medium text-slate-500 max-w-md mx-auto">
-              {activities.length === 0
-                ? 'A agenda foi limpa. Você pode criar novas atividades personalizadas ou restaurar a rotina padrão com todas as atividades no estado pendente.'
-                : 'Nenhuma atividade corresponde aos filtros selecionados de dia ou status.'}
-            </p>
-          </div>
-          <div className="flex flex-wrap justify-center gap-2 pt-2">
-            <button
-              type="button"
-              onClick={() => {
-                setShowForm(true);
-                setFormMode('direto');
-              }}
-              className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-black rounded-xl shadow-xs transition cursor-pointer flex items-center gap-1.5 active:scale-95"
-            >
-              <Plus size={15} />
-              <span>+ Inserir Nova Atividade</span>
-            </button>
-            <button
-              type="button"
-              onClick={handleRestoreDefault}
-              className="px-4 py-2.5 bg-white hover:bg-slate-100 text-slate-700 text-xs font-bold rounded-xl border border-slate-300 transition cursor-pointer flex items-center gap-1.5"
-            >
-              <RefreshCw size={14} className="text-slate-500" />
-              <span>Restaurar Padrão (Todas Pendentes)</span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Visualizador de Foto / Receita de Medicamento em Alta Visibilidade para Professora */}
-      {previewMedImage && (
-        <div 
-          className="fixed inset-0 bg-slate-950/80 z-50 flex items-center justify-center p-4 backdrop-blur-xs animate-in fade-in duration-200"
-          onClick={() => setPreviewMedImage(null)}
-        >
-          <div 
-            className="bg-white rounded-3xl max-w-2xl w-full p-5 shadow-2xl relative flex flex-col gap-4 animate-in zoom-in-95 duration-200"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-black text-sm text-slate-800">Foto do Medicamento / Receita Médica</h3>
-                <p className="text-[11px] text-slate-500">Conferência visual para segurança e prevenção de erros</p>
-              </div>
-              <button 
-                onClick={() => setPreviewMedImage(null)}
-                className="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition flex items-center justify-center font-bold text-xs cursor-pointer"
-              >
-                ✕
-              </button>
+                  </div>
+                </>
+              )}
             </div>
-            <div className="max-h-[70vh] overflow-auto rounded-2xl border border-slate-100 bg-slate-50 flex justify-center items-center p-2">
-              <img 
-                src={previewMedImage} 
-                alt="Foto do medicamento ampliada" 
-                className="max-w-full max-h-[60vh] object-contain rounded-xl"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-            <div className="flex justify-end pt-1">
-              <button
-                type="button"
-                onClick={() => setPreviewMedImage(null)}
-                className="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-black rounded-xl transition cursor-pointer"
-              >
-                Fechar Visualização
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </section>
-  );
-}      
-        
+          );
+        })}
+      </div>
