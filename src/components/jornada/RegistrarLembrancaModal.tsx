@@ -65,9 +65,10 @@ export default function RegistrarLembrancaModal({
   const [nomeAnexo, setNomeAnexo] = useState('');
   const [isListeningTitle, setIsListeningTitle] = useState(false);
   const [isListeningDesc, setIsListeningDesc] = useState(false);
-  const [isWebcamActive, setIsWebcamActive] = useState(false);
 
+  // Referências para Galeria e Câmera Direta do Celular
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
 
   if (!isOpen) return null;
 
@@ -125,7 +126,7 @@ export default function RegistrarLembrancaModal({
       }
     }
 
-    // Fallback simulado se a API não estiver disponível no iframe
+    // Fallback amigável se a API não estiver disponível no navegador
     if (target === 'title') {
       setIsListeningTitle(true);
       setTimeout(() => {
@@ -143,7 +144,7 @@ export default function RegistrarLembrancaModal({
     }
   };
 
-  // Upload de Imagem de arquivo local
+  // Captura de Foto (seja da Câmera ou da Galeria)
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -155,17 +156,6 @@ export default function RegistrarLembrancaModal({
       };
       reader.readAsDataURL(file);
     }
-  };
-
-  // Simular Captura por Webcam
-  const handleWebcamCapture = () => {
-    setIsWebcamActive(true);
-    setTimeout(() => {
-      setFotoUrl(
-        'https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&auto=format&fit=crop&q=80'
-      );
-      setIsWebcamActive(false);
-    }, 1200);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -356,13 +346,13 @@ export default function RegistrarLembrancaModal({
             </div>
           </div>
 
-          {/* Coluna 3: Foto do Momento (Upload, Webcam, Preset e URL) */}
+          {/* Coluna 3: Foto do Momento (Câmera Celular, Galeria, Preset e URL) */}
           <div className="space-y-4">
             <label className="block text-xs font-black text-slate-700 uppercase tracking-wider">
-              Foto do Momento (Galeria ou C):
+              Foto do Momento (Câmera ou Galeria):
             </label>
 
-            {/* Input de Arquivo Escondido */}
+            {/* Input Escondido: Galeria */}
             <input
               type="file"
               ref={fileInputRef}
@@ -371,24 +361,36 @@ export default function RegistrarLembrancaModal({
               className="hidden"
             />
 
-            {/* Botoes de Ação para Foto */}
+            {/* Input Escondido: Câmera do Celular em Tempo Real */}
+            <input
+              type="file"
+              ref={cameraInputRef}
+              accept="image/*"
+              capture="environment"
+              onChange={handleFileUpload}
+              className="hidden"
+            />
+
+            {/* Botões de Ação para Foto */}
             <div className="grid grid-cols-2 gap-2">
+              {/* Botão Câmera Celular */}
+              <button
+                type="button"
+                onClick={() => cameraInputRef.current?.click()}
+                className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-xs py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-md active:scale-95 border border-emerald-500"
+              >
+                <Camera size={16} className="stroke-[2.5]" />
+                <span className="truncate">Tirar Foto Agora</span>
+              </button>
+
+              {/* Botão Galeria */}
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs"
+                className="bg-indigo-50 border-2 border-indigo-200 hover:bg-indigo-100 text-indigo-800 font-black text-xs py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer shadow-xs active:scale-95"
               >
                 <Upload size={14} />
-                <span className="truncate">Enviar Foto da Galeria / Celular</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={handleWebcamCapture}
-                className="bg-sky-50 border border-sky-300 text-sky-800 hover:bg-sky-100 font-bold text-xs py-2.5 px-3 rounded-xl transition flex items-center justify-center gap-1.5 cursor-pointer"
-              >
-                <Camera size={14} />
-                <span>{isWebcamActive ? 'Capturando...' : 'Web C ao Vivo'}</span>
+                <span className="truncate">Da Galeria</span>
               </button>
             </div>
 
@@ -408,17 +410,17 @@ export default function RegistrarLembrancaModal({
               </div>
 
               {fotoUrl ? (
-                <div className="w-full h-40 rounded-xl overflow-hidden bg-slate-200 relative border border-slate-200">
+                <div className="w-full h-40 rounded-xl overflow-hidden bg-slate-200 relative border border-slate-200 shadow-inner">
                   <img
                     src={fotoUrl}
-                    alt="Preview"
+                    alt="Preview do momento capturado"
                     className="w-full h-full object-cover"
                   />
                 </div>
               ) : (
                 <div className="w-full h-40 rounded-xl border-2 border-dashed border-slate-300 flex flex-col items-center justify-center text-slate-400 p-4 text-center">
                   <ImageIcon size={32} />
-                  <p className="text-xs font-bold mt-2">Nenhuma foto selecionada</p>
+                  <p className="text-xs font-bold mt-2">Toque em "Tirar Foto Agora" para fotografar</p>
                 </div>
               )}
 
