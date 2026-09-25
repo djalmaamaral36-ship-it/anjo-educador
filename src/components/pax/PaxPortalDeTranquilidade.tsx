@@ -337,6 +337,7 @@ export default function PaxPortalDeTranquilidade({
       <PaxSaudeHorizontalCards student={currentStudent} />
 
      {/* 8. Planejamento Aura & Atividades Pedagógicas da Aula (Exclusivo para Professora / Oculto para os Pais) */}
+       {/* 8. Planejamento Aura */}
         {effectiveRole !== 'familia' && effectiveRole !== 'pais' && (
           <AuraPlannerIntegration
             student={currentStudent}
@@ -417,8 +418,7 @@ export default function PaxPortalDeTranquilidade({
                         </p>
                       </div>
                     </div>
-                    {isSelected && (
-                      <span className="text-xs font-black text-indigo-700 bg-white px-2 py-1 rounded-lg shadow-2xs">
+                    {isSelected && (                      <span className="text-xs font-black text-indigo-700 bg-white px-2 py-1 rounded-lg shadow-2xs">
                         Em Exibição
                       </span>
                     )}
