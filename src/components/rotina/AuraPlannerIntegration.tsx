@@ -76,9 +76,18 @@ export default function AuraPlannerIntegration({
   onUpdateStudent,
   userRole = 'professor'
 }: Props) {
-  // Se for perfil de Pais/Família, não exibe a Agenda de Atividades da Aula
-  if (userRole === 'família' || userRole === 'familia' || userRole === 'pais') {
+ // 🚫 Oculta a Agenda de Atividades da Aula para qualquer perfil de pais/família
+  const roleLower = String(userRole || '').toLowerCase();
+  if (
+    roleLower.includes('pai') || 
+    roleLower.includes('fam') || 
+    roleLower.includes('resp') ||
+    roleLower === 'pais' || 
+    roleLower === 'familia' || 
+    roleLower === 'família'
+  ) {
     return null;
+  }
   }
   const storageKey = `anjinho_activities_state_${student?.id || 'main'}`;
 
