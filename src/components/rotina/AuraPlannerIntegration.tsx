@@ -69,17 +69,19 @@ export function deduplicateActivities(list: ParsedAuraActivity[]): ParsedAuraAct
   return result;
 }
 
-export default function AuraPlannerIntegration({ 
-  onConcluirAtividadePedagogica, 
+export default function AuraPlannerIntegration({
+  onConcluirAtividadePedagogica,
   studentNome = 'Mariana Souza',
   student,
   onUpdateStudent,
   userRole = 'professor'
 }: Props) {
- // 🚫 Oculta a Agenda de Atividades da Aula para qualquer perfil de pais/família
-// Oculta a Agenda de Atividades da Aula para os Pais
-  const roleLower = String(userRole || '').toLowerCase();
-  if (
+  // 🚫 Oculta a Agenda de Atividades se o perfil for Pais / Família
+  if (userRole === 'pais' || userRole === 'familia' || userRole === 'família') {
+    return null;
+  }
+
+  const storageKey = `anjinho_activities_state_${student?.id || 'main'}`;
     roleLower.includes('pai') || 
     roleLower.includes('fam') || 
     roleLower.includes('resp') ||
