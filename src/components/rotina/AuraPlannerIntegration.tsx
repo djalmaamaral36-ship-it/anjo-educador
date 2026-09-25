@@ -77,6 +77,7 @@ export default function AuraPlannerIntegration({
   userRole = 'professor'
 }: Props) {
  // 🚫 Oculta a Agenda de Atividades da Aula para qualquer perfil de pais/família
+// Oculta a Agenda de Atividades da Aula para os Pais
   const roleLower = String(userRole || '').toLowerCase();
   if (
     roleLower.includes('pai') || 
@@ -88,8 +89,6 @@ export default function AuraPlannerIntegration({
   ) {
     return null;
   }
-  }
-  const storageKey = `anjinho_activities_state_${student?.id || 'main'}`;
 
   const validarCronometro = () => {
     if (student && onUpdateStudent && (!student.presenca?.isTimerRunning || student.presenca?.status !== 'em_aula')) {
