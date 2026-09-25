@@ -88,8 +88,7 @@ export default function PaxPortalDeTranquilidade({
 
   const currentStudent = studentsMap[selectedStudentId] || classStudents[0] || studentsMap['mariana_souza'] || studentsMap['enzo_alencar'];
 
-  const handleSelectStudent = (id: string) => {
-    setSelectedStudentId(id);
+  const handleSelectStudent = (id: string) =>    setSelectedStudentId(id);
     if (onSelectStudentId) {
       onSelectStudentId(id);
     }
