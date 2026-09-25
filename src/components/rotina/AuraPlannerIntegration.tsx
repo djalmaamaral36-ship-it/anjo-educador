@@ -76,6 +76,10 @@ export default function AuraPlannerIntegration({
   onUpdateStudent,
   userRole = 'professor'
 }: Props) {
+  // Se for perfil de Pais/Família, não exibe a Agenda de Atividades da Aula
+  if (userRole === 'família' || userRole === 'familia' || userRole === 'pais') {
+    return null;
+  }
   const storageKey = `anjinho_activities_state_${student?.id || 'main'}`;
 
   const validarCronometro = () => {
