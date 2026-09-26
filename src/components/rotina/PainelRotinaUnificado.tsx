@@ -106,7 +106,7 @@ export default function PainelRotinaUnificado({
  const [secondsElapsed, setSecondsElapsed] = useState(0);
 
   // Cronômetro em tempo real contínuo
- useEffect(() => {
+useEffect(() => {
     let interval: any = null;
     if (timerRunning) {
       interval = setInterval(() => {
