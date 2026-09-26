@@ -136,6 +136,18 @@ export const ATIVIDADES_PLANEJADAS_PADRAO: AtividadeItem[] = [
   }
 ];
 
+// Função de desduplicação exportada
+export function deduplicateActivities(activities: any[]): any[] {
+  if (!Array.isArray(activities)) return [];
+  const map = new Map();
+  activities.forEach(item => {
+    if (item && item.id) {
+      map.set(item.id, item);
+    }
+  });
+  return Array.from(map.values());
+}
+
 export default function AuraPlannerIntegration({
   onConcluirAtividadePedagogica,
   studentNome = 'Mariana Souza',
