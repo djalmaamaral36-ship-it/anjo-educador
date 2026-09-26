@@ -43,12 +43,21 @@ export default function Dashboard({ user }: Props) {
   // Subscreve às atualizações dos alunos em tempo real
   useEffect(() => {
     const unsubscribe = subscribeToStudents((firestoreMap) => {
-      setStudentsMap(firestoreMap);
+      if (firestoreMap && Object.keys(firestoreMap).length > 0) {
+        setStudentsMap(firestoreMap);
+      }
     });
     return () => unsubscribe();
   }, []);
 
-  const currentStudent = studentsMap[selectedStudentId] || studentsMap['mariana_souza'] || studentsMap['enzo_alencar'];
+  const currentStudent: StudentPaxData =
+    studentsMap[selectedStudentId] ||
+    studentsMap['mariana_souza'] ||
+    PAX_STUDENTS[selectedStudentId] ||
+    PAX_STUDENTS['mariana_souza'] ||
+    Object.values(PAX_STUDENTS)[0];
+
+  const studentFirstName = currentStudent?.nome ? currentStudent.nome.split(' ')[0] : 'Aluno';
 
   // Verifica parâmetros de URL caso o responsável tenha escaneado o QR Code
   useEffect(() => {
@@ -56,7 +65,7 @@ export default function Dashboard({ user }: Props) {
       const params = new URLSearchParams(window.location.search);
       const urlAlunoId = params.get('alunoId');
       const urlOrigem = params.get('origem');
-      if (urlAlunoId && PAX_STUDENTS[urlAlunoId]) {
+      if (urlAlunoId && (PAX_STUDENTS[urlAlunoId] || studentsMap[urlAlunoId])) {
         setSelectedStudentId(urlAlunoId);
         if (urlOrigem === 'qrcode_secretaria') {
           setUserRole('familia');
@@ -67,11 +76,11 @@ export default function Dashboard({ user }: Props) {
     } catch (e) {
       console.error(e);
     }
-  }, []);
+  }, [studentsMap]);
 
-  // Verifica se o responsável já assinou os termos LGPD para o aluno (Primeira tela obrigatória para a família)
+  // Verifica se o responsável já assinou os termos LGPD para o aluno
   useEffect(() => {
-    if (userRole === 'familia') {
+    if (userRole === 'familia' && selectedStudentId) {
       const termo = getLgpdConsentimentoAluno(selectedStudentId);
       if (!termo) {
         setShowLgpdModal(true);
@@ -83,7 +92,6 @@ export default function Dashboard({ user }: Props) {
     setUserRole(newRole);
     if (newRole === 'familia') {
       setActiveMode('pax');
-      // Verifica se o responsável já assinou os termos LGPD para o aluno
       const termo = getLgpdConsentimentoAluno(selectedStudentId);
       if (!termo) {
         setShowLgpdModal(true);
@@ -116,9 +124,9 @@ export default function Dashboard({ user }: Props) {
         user={user}
         activeTab={activeTab}
         onSelectTab={setActiveTab}
-        selectedChildName={currentStudent.nome}
-        selectedChildDob={currentStudent.nascimento}
-        selectedChildPhoto={currentStudent.fotoUrl}
+        selectedChildName={currentStudent?.nome || 'Aluno'}
+        selectedChildDob={currentStudent?.nascimento || ''}
+        selectedChildPhoto={currentStudent?.fotoUrl || ''}
         userRole={userRole}
         onToggleRole={handleToggleRole}
         onOpenStudentModal={() => setIsStudentModalOpen(true)}
@@ -127,13 +135,13 @@ export default function Dashboard({ user }: Props) {
           simulatedProfile?.tituloExibicao ||
           (userRole === 'professor'
             ? 'Ana Silva (Professora Titular)'
-            : `${currentStudent.responsavelNome} (${currentStudent.responsavelParentesco || 'Responsável'} de ${currentStudent.nome.split(' ')[0]})`)
+            : `${currentStudent?.responsavelNome || 'Responsável'} (${currentStudent?.responsavelParentesco || 'Família'} de ${studentFirstName})`)
         }
         currentProfilePhoto={
           simulatedProfile?.fotoUrl ||
           (userRole === 'professor'
             ? 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=100&auto=format&fit=crop&q=80'
-            : (currentStudent.responsavelNome === 'Mariana Castro'
+            : (currentStudent?.responsavelNome === 'Mariana Castro'
                 ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'
                 : 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80'))
         }
@@ -145,7 +153,7 @@ export default function Dashboard({ user }: Props) {
 
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
-        {/* ABA: PAINEL DA DIREÇÃO ESCOLAR (Visão 360º, Turmas, Desempenho e Corpo Docente) */}
+        {/* ABA: PAINEL DA DIREÇÃO ESCOLAR */}
         {activeTab === 'direcao' && (
           <DirecaoModule
             userRole={userRole}
@@ -153,7 +161,7 @@ export default function Dashboard({ user }: Props) {
           />
         )}
 
-        {/* ABA: COORDENAÇÃO PEDAGÓGICA (Identificação Precoce, Encaminhamentos e Mediação de Conflitos) */}
+        {/* ABA: COORDENAÇÃO PEDAGÓGICA */}
         {activeTab === 'coordenacao' && (
           <CoordenacaoModule userRole={userRole} />
         )}
@@ -168,17 +176,17 @@ export default function Dashboard({ user }: Props) {
           />
         )}
 
-        {/* ABA: FAMÍLIAS (Vínculo Familiar, Pais e Equipe Escolar - Fotos 23 a 27) */}
+        {/* ABA: FAMÍLIAS */}
         {activeTab === 'familias' && (
           <VinculoFamiliarModule
-            currentStudentName={currentStudent.nome}
+            currentStudentName={currentStudent?.nome || 'Aluno'}
             currentStudent={currentStudent}
             userRole={userRole}
             onSelectStudent={setSelectedStudentId}
           />
         )}
 
-        {/* ABA: DIÁRIO ESCOLAR UNIFICADO (Com Foto, Dados da Criança, Portal de Tranquilidade, Troca Rápida de Alunos e Diário 1-Clique/Voz Foto 28) */}
+        {/* ABA: DIÁRIO ESCOLAR UNIFICADO */}
         {activeTab === 'diario_escolar' && (
           <PaxPortalDeTranquilidade
             userRole={userRole}
@@ -192,7 +200,7 @@ export default function Dashboard({ user }: Props) {
           />
         )}
 
-        {/* ABA: MEDICAMENTOS (Exclusivo para Pais cadastrarem/suspenderem com PIN; Professores apenas ministram) */}
+        {/* ABA: MEDICAMENTOS */}
         {activeTab === 'medicamentos' && (
           <ControleMedicamentosModule
             currentStudent={currentStudent}
@@ -202,7 +210,7 @@ export default function Dashboard({ user }: Props) {
           />
         )}
 
-        {/* ABA: JORNADA DO ANJINHO (Árvore, Método LIVRO, Memórias) */}
+        {/* ABA: JORNADA DO ANJINHO */}
         {activeTab === 'jornada' && <JornadaDoAnjinho />}
 
         {/* ABA: TURMA & ALUNOS */}
@@ -222,7 +230,7 @@ export default function Dashboard({ user }: Props) {
           />
         )}
 
-        {/* ABA: BRAND BOOK (Livro de Marca & Diretrizes Estratégicas) */}
+        {/* ABA: BRAND BOOK */}
         {activeTab === 'brand_book' && (
           <BrandBookModule />
         )}
@@ -245,15 +253,13 @@ export default function Dashboard({ user }: Props) {
         )}
       </main>
 
-      {/* Modal de Onboarding Inicial LGPD para Famílias (Primeira Tela) */}
+      {/* Modal de Onboarding Inicial LGPD para Famílias */}
       <ModalConsentimentoLgpdInicial
         isOpen={showLgpdModal}
         onClose={() => setShowLgpdModal(false)}
         student={currentStudent}
         isObrigatorio={false}
-        onConsentimentoConcluido={(consentimento) => {
-          setShowLgpdModal(false);
-        }}
+        onConsentimentoConcluido={() => setShowLgpdModal(false)}
       />
 
       {/* Modal Global de Troca Rápida de Aluno */}
@@ -268,6 +274,7 @@ export default function Dashboard({ user }: Props) {
                 </h3>
               </div>
               <button
+                type="button"
                 onClick={() => setIsStudentModalOpen(false)}
                 className="text-slate-400 hover:text-slate-600 text-sm font-bold cursor-pointer"
               >
@@ -276,11 +283,11 @@ export default function Dashboard({ user }: Props) {
             </div>
 
             <p className="text-xs text-slate-500">
-              Selecione o aluno para carregar a foto, ficha de saúde, portal de tranquilidade e diário:
+              Selecione o aluno para carregar a rotina:
             </p>
 
             <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
-              {Object.values(PAX_STUDENTS).map((st) => {
+              {Object.values(studentsMap).map((st) => {
                 const isSelected = st.id === selectedStudentId;
                 return (
                   <div
@@ -311,7 +318,7 @@ export default function Dashboard({ user }: Props) {
                         Ativo
                       </span>
                     ) : (
-                      <span className="text-xs font-bold text-slate-400 group-hover:text-indigo-600">
+                      <span className="text-xs font-bold text-slate-400">
                         Selecionar &gt;
                       </span>
                     )}
@@ -321,6 +328,7 @@ export default function Dashboard({ user }: Props) {
             </div>
 
             <button
+              type="button"
               onClick={() => setIsStudentModalOpen(false)}
               className="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-black rounded-xl transition cursor-pointer"
             >
@@ -330,15 +338,15 @@ export default function Dashboard({ user }: Props) {
         </div>
       )}
 
-     {/* Botão de Retorno Rápido ao Aluno - Exclusivo do Diário Escolar */}
+      {/* Botão de Retorno Rápido ao Aluno */}
       {activeTab === 'diario_escolar' && (
         <BotaoVoltarAoAluno
-          studentName={currentStudent.nome}
-          studentPhoto={currentStudent.fotoUrl}
+          studentName={currentStudent?.nome || 'Aluno'}
+          studentPhoto={currentStudent?.fotoUrl || ''}
         />
       )}
 
-      {/* Botões Flutuantes Permanentes de Troca Rápida de Perfil (Professor, Pais/Família, Diretora) */}
+      {/* Botões Flutuantes Permanentes de Troca de Perfil */}
       <FloatingRoleSwitcher
         userRole={userRole}
         activeTab={activeTab}
@@ -351,7 +359,7 @@ export default function Dashboard({ user }: Props) {
         onSelectDirecao={() => setActiveTab('direcao')}
       />
 
-      {/* Tela de Atalho / Simulador de Perfis (Acessada pelo botão superior direito) */}
+      {/* Tela de Atalho / Simulador de Perfis */}
       <TelaAtalhoSimuladorModal
         isOpen={isShortcutModalOpen}
         onClose={() => setIsShortcutModalOpen(false)}
