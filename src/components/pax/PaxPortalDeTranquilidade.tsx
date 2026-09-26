@@ -127,11 +127,7 @@ export default function PaxPortalDeTranquilidade({
     }
   };
 
-  const effectiveRole: 'professor' | 'familia' = (simulatedProfile?.role === 'familia' || userRole === 'familia') ? 'familia' : 'professor';
-
-  if (!currentStudent) {
-    return <div className="p-8 text-center text-slate-500">Carregando aluno...</div>;
-  }
+  const effectiveRole = simulatedProfile?.role || userRole;
 
   return (
     <div className="space-y-6">
@@ -178,16 +174,14 @@ export default function PaxPortalDeTranquilidade({
       {/* 7. Cards Horizontais de Saúde, Sono & Fralda */}
       <PaxSaudeHorizontalCards student={currentStudent} />
 
-      {/* 8. Planejamento Aura & Atividades Pedagógicas (Aparece SOMENTE para Professora) */}
-      {effectiveRole === 'professor' && (
-        <AuraPlannerIntegration
-          student={currentStudent}
-          onUpdateStudent={handleUpdateStudent}
-          onConcluirAtividadePedagogica={handleConcluirAtividadePedagogica}
-          studentNome={currentStudent.nome}
-          userRole={effectiveRole}
-        />
-      )}
+      {/* 8. Planejamento Aura & Atividades Pedagógicas da Aula (Visão Completa e Sincronizada) */}
+      <AuraPlannerIntegration
+        student={currentStudent}
+        onUpdateStudent={handleUpdateStudent}
+        onConcluirAtividadePedagogica={handleConcluirAtividadePedagogica}
+        studentNome={currentStudent.nome}
+        userRole={effectiveRole}
+      />
 
       {/* 9. Linha do Tempo e Auditoria de Saúde & Atividades */}
       <PaxLinhaDoTempoAuditoria
