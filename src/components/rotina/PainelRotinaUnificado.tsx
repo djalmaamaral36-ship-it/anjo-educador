@@ -105,6 +105,13 @@ export default function PainelRotinaUnificado({
   const [timerRunning, setTimerRunning] = useState(!!student.presenca.isTimerRunning);
 const [secondsElapsed, setSecondsElapsed] = useState(0);
 
+  const formatTimer = (totalSec: number) => {
+    const hrs = Math.floor(totalSec / 3600).toString().padStart(2, '0');
+    const mins = Math.floor((totalSec % 3600) / 60).toString().padStart(2, '0');
+    const secs = (totalSec % 60).toString().padStart(2, '0');
+    return `${hrs}:${mins}:${secs}`;
+  };
+
   useEffect(() => {
     let interval: any = null;
     if (timerRunning) {
