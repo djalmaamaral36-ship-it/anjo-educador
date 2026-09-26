@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, CheckCircle2, Clock, Play, BookOpen, Smile, Award, Flame, Star, ChevronDown, ChevronUp } from 'lucide-react';
+import { Sparkles, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
 import { StudentPaxData } from '../../types';
 
 interface Props {
@@ -22,10 +22,6 @@ export interface AtividadeItem {
   objetivoPedagogico: string;
   materiaisNecessarios: string[];
   duracaoSugerida: string;
-  metodologiaLivre?: string;
-  tags?: string[];
-  fotosRegistradas?: string[];
-  observacaoEducador?: string;
 }
 
 export const ATIVIDADES_PLANEJADAS_PADRAO: AtividadeItem[] = [
@@ -40,8 +36,7 @@ export const ATIVIDADES_PLANEJADAS_PADRAO: AtividadeItem[] = [
     descricao: 'Recepção carinhosa de cada criança, acolhimento aos pais e roda matinal de cantigas de bom dia com instrumentos suaves.',
     objetivoPedagogico: 'Fortalecer os vínculos de apego seguro e pertencimento à comunidade escolar.',
     materiaisNecessarios: ['Chocalhos suaves', 'Tapete sensorial', 'Livro de boas-vindas'],
-    duracaoSugerida: '60 min',
-    metodologiaLivre: 'Árvore da Infância® - Raízes Afetivas'
+    duracaoSugerida: '60 min'
   },
   {
     id: 'atv_frutinha',
@@ -90,7 +85,7 @@ export const ATIVIDADES_PLANEJADAS_PADRAO: AtividadeItem[] = [
     icone: '🍲',
     campoBncc: 'O eu, o outro e o nós (EI01EO03)',
     status: 'Pendente',
-    descricao: 'Momento de calma para lavagem das mãozinhas com sabão suave, seguido do almocinho nutritivo com acompanhamento individualizado.',
+    descricao: 'Momento de calma para lavagem das mãozinhas com sabão suave, seguido do almocinho nutritivo.',
     objetivoPedagogico: 'Construir hábitos diários de higiene e autocuidado com prazer.',
     materiaisNecessarios: ['Toalhinhas individuais', 'Cadeirões ergonômicos', 'Cardápio nutricional'],
     duracaoSugerida: '75 min'
@@ -103,9 +98,9 @@ export const ATIVIDADES_PLANEJADAS_PADRAO: AtividadeItem[] = [
     icone: '💤',
     campoBncc: 'Corpo, gestos e movimentos (EI01CG01)',
     status: 'Pendente',
-    descricao: 'Quarto na penumbra com música instrumental suave, massagem relaxante e descanso individual de até 2 horas.',
-    objetivoPedagogico: 'Garantir a restauração biológica e o processamento cognitivo das vivências da manhã.',
-    materiaisNecessarios: ['Colchonetes higienizados', 'Naninhas pessoais', 'Caixa de som com sons da natureza'],
+    descricao: 'Quarto na penumbra com música instrumental suave, massagem relaxante e descanso individual.',
+    objetivoPedagogico: 'Garantir a restauração biológica e o processamento cognitivo.',
+    materiaisNecessarios: ['Colchonetes higienizados', 'Naninhas pessoais', 'Sons da natureza'],
     duracaoSugerida: '120 min'
   },
   {
@@ -116,8 +111,8 @@ export const ATIVIDADES_PLANEJADAS_PADRAO: AtividadeItem[] = [
     icone: '📖',
     campoBncc: 'Escuta, fala, pensamento e imaginação (EI01EF01)',
     status: 'Pendente',
-    descricao: 'Teatrinho de fantoches de animais da floresta, explorando diferentes timbres de voz e interação lúdica com as crianças.',
-    objetivoPedagogico: 'Expandir o repertório auditivo e estimular as primeiras vocalizações e palavras.',
+    descricao: 'Teatrinho de fantoches de animais da floresta, explorando diferentes timbres de voz.',
+    objetivoPedagogico: 'Expandir o repertório auditivo e estimular as primeiras vocalizações.',
     materiaisNecessarios: ['Fantoches de feltro', 'Livros cartonados', 'Tapete temático'],
     duracaoSugerida: '45 min'
   },
@@ -129,7 +124,7 @@ export const ATIVIDADES_PLANEJADAS_PADRAO: AtividadeItem[] = [
     icone: '🧸',
     campoBncc: 'O eu, o outro e o nós (EI01EO04)',
     status: 'Pendente',
-    descricao: 'Fechamento do dia com canções calmas de despedida e entrega de cada criança com relatório verbal afetivo aos responsáveis.',
+    descricao: 'Fechamento do dia com canções calmas de despedida e entrega de cada criança com carinho.',
     objetivoPedagogico: 'Proporcionar segurança emocional e previsibilidade no retorno ao lar.',
     materiaisNecessarios: ['Mochilinhas organizadas', 'Diário do dia preenchido'],
     duracaoSugerida: '60 min'
@@ -223,7 +218,6 @@ export default function AuraPlannerIntegration({
 
   return (
     <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5">
-      {/* Toast Feedback */}
       {feedbackToast && (
         <div className="p-3 bg-emerald-600 text-white font-bold text-xs rounded-2xl shadow-lg flex items-center gap-2 animate-in fade-in">
           <Sparkles size={16} />
@@ -231,7 +225,6 @@ export default function AuraPlannerIntegration({
         </div>
       )}
 
-      {/* Header do Planner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
         <div className="flex items-center gap-3">
           <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-2xl shrink-0 text-indigo-600 shadow-inner">
@@ -261,7 +254,6 @@ export default function AuraPlannerIntegration({
         </div>
       </div>
 
-      {/* Barra de Filtros */}
       <div className="flex items-center justify-between gap-2">
         <div className="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl text-xs font-bold">
           <button
@@ -294,12 +286,11 @@ export default function AuraPlannerIntegration({
         </div>
       </div>
 
-      {/* Lista de Atividades */}
       <div className="space-y-3">
         {atividadesFiltradas.map((atv) => {
           const isDone = atv?.status === 'Realizado';
           const isExpanded = expandedId === atv?.id;
-          const bnccTexto = (atv?.campoBncc || 'BNCC Geral').split('(')[0];
+          const bnccTexto = String(atv?.campoBncc || 'BNCC Geral').split('(')[0];
 
           return (
             <div
@@ -353,7 +344,6 @@ export default function AuraPlannerIntegration({
                 </div>
               </div>
 
-              {/* Detalhes Expandidos */}
               {isExpanded && (
                 <div className="mt-3 pt-3 border-t border-slate-100 space-y-2 text-xs text-slate-600 animate-in fade-in duration-150">
                   <p><strong>Descrição:</strong> {atv.descricao || 'Vivência pedagógica.'}</p>
