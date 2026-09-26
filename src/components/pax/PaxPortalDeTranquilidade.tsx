@@ -13,19 +13,19 @@ import AuraPlannerIntegration from '../rotina/AuraPlannerIntegration';
 import { PAX_STUDENTS } from '../../data/paxStudentsData';
 import { StudentPaxData } from '../../types';
 import { Users } from 'lucide-react';
-import { 
-  subscribeToStudents, 
-  syncStudentToFirestore, 
-  syncAllStudentsToFirestore 
+import {
+  subscribeToStudents,
+  syncStudentToFirestore,
+  syncAllStudentsToFirestore
 } from '../../services/firebaseSyncService';
 
 interface Props {
   userRole: 'professor' | 'familia';
-  onChangeUserRole: (role: 'professor' | 'familia') => void;
+  onChangeUserRole?: (role: 'professor' | 'familia') => void;
   activeMode: 'aula' | 'pax';
   onChangeMode: (mode: 'aula' | 'pax') => void;
-  currentStudentId?: string;
-  onSelectStudentId?: (id: string) => void;
+  currentStudentId: string;
+  onSelectStudentId: (id: string) => void;
   onOpenFullMedicationsTab?: () => void;
   simulatedProfile?: any;
 }
@@ -35,318 +35,147 @@ export default function PaxPortalDeTranquilidade({
   onChangeUserRole,
   activeMode,
   onChangeMode,
-  currentStudentId = 'mariana_souza',
+  currentStudentId,
   onSelectStudentId,
   onOpenFullMedicationsTab,
-  simulatedProfile,
+  simulatedProfile
 }: Props) {
-  const [studentsMap, setStudentsMap] = useState<Record<string, StudentPaxData>>(PAX_STUDENTS);
-  const [selectedStudentId, setSelectedStudentId] = useState<string>(currentStudentId);
-  const [selectedRoom, setSelectedRoom] = useState<string>('bercario_1a');
-  const [showClassListModal, setShowClassListModal] = useState<boolean>(false);
+  const [students, setStudents] = useState<Record<string, StudentPaxData>>(PAX_STUDENTS);
+  const [isStudentModalOpen, setIsStudentModalOpen] = useState(false);
 
-  // Escuta em tempo real todas as alterações do Firestore (notebook <-> celular em tempo real)
   useEffect(() => {
-    const unsubscribe = subscribeToStudents((firestoreMap) => {
-      setStudentsMap(firestoreMap);
+    const unsubscribe = subscribeToStudents((firestoreStudents) => {
+      setStudents(firestoreStudents);
     });
     return () => unsubscribe();
   }, []);
 
-  const isPaxMode = activeMode === 'pax' || userRole === 'familia';
-  const effectiveRole: 'professor' | 'familia' = isPaxMode ? 'familia' : 'professor';
+  const currentStudent = students[currentStudentId] || students['mariana_souza'] || PAX_STUDENTS['mariana_souza'];
 
-  // Filtro de Alunos por Turma e Autorização de Acesso Docente
-  // Professores só têm acesso aos alunos vinculados à classe da qual são responsáveis
-  const activeTurmaName = selectedRoom === 'maternal_1a' ? 'Maternal I - A' : 'Berçário I - A';
-  const activeProfessora = selectedRoom === 'maternal_1a' ? 'Cláudia Mendes (Professora Titular)' : 'Ana Silva (Professora Titular)';
-
-  const classStudents = Object.values(studentsMap).filter((st) => {
-    if (selectedRoom === 'maternal_1a') {
-      return st.turma?.includes('Maternal');
-    }
-    return st.turma?.includes('Berçário') || !st.turma?.includes('Maternal');
-  });
-
-  const visibleStudents = effectiveRole === 'professor' ? classStudents : [studentsMap[selectedStudentId] || studentsMap['mariana_souza'] || Object.values(studentsMap)[0]];
-
-  // Garante que o aluno selecionado pertença à turma ativa da professora
-  useEffect(() => {
-    if (effectiveRole === 'professor') {
-      const isCurrentInClass = classStudents.some((st) => st.id === selectedStudentId);
-      if (!isCurrentInClass && classStudents.length > 0) {
-        setSelectedStudentId(classStudents[0].id);
-      }
-    }
-  }, [selectedRoom, effectiveRole, selectedStudentId]);
-
-  useEffect(() => {
-    if (currentStudentId && currentStudentId !== selectedStudentId) {
-      setSelectedStudentId(currentStudentId);
-    }
-  }, [currentStudentId]);
-
-  const currentStudent = studentsMap[selectedStudentId] || classStudents[0] || studentsMap['mariana_souza'] || studentsMap['enzo_alencar'];
-
-  const handleSelectStudent = (id: string) =>    setSelectedStudentId(id);
-    if (onSelectStudentId) {
-      onSelectStudentId(id);
-    }
-  };
-
-  const handleUpdateStudent = (updated: Partial<StudentPaxData>) => {
-    setStudentsMap((prev) => {
-      const existing = prev[selectedStudentId];
-      if (!existing) return prev;
-      const nextStudent = {
-        ...existing,
-        ...updated,
-      };
-      // Sincroniza em tempo real com o Firestore para atualizar instantaneamente no celular / notebook
-      syncStudentToFirestore(selectedStudentId, nextStudent);
-      return {
-        ...prev,
-        [selectedStudentId]: nextStudent,
-      };
-    });
+  const handleUpdateStudent = (updatedFields: Partial<StudentPaxData>) => {
+    const updatedStudent: StudentPaxData = {
+      ...currentStudent,
+      ...updatedFields,
+    };
+    setStudents((prev) => ({
+      ...prev,
+      [currentStudent.id]: updatedStudent,
+    }));
+    syncStudentToFirestore(updatedStudent);
   };
 
   const handleUpdateAllStudents = (updater: (st: StudentPaxData) => StudentPaxData) => {
-    setStudentsMap((prev) => {
-      const nextMap: Record<string, StudentPaxData> = {};
-      Object.keys(prev).forEach((id) => {
-        nextMap[id] = updater(prev[id]);
-      });
-      // Sincroniza em tempo real com o Firestore para todos os alunos
-      syncAllStudentsToFirestore(updater, prev);
-      return nextMap;
+    const updatedMap: Record<string, StudentPaxData> = {};
+    const updatedList: StudentPaxData[] = [];
+
+    Object.values(students).forEach((st) => {
+      const updated = updater(st);
+      updatedMap[st.id] = updated;
+      updatedList.push(updated);
     });
+
+    setStudents(updatedMap);
+    syncAllStudentsToFirestore(updatedList);
   };
 
-  const handleConcluirAtividadePedagogica = (act: any) => {
+  const handleConcluirAtividadePedagogica = (
+    titulo: string,
+    tipo: string,
+    escopo: 'coletiva' | 'individual'
+  ) => {
     const horaAtual = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    
-    let descFinal = act.descricao || 'Atividade realizada em sala de aula.';
-    if (act.objetivoBNCC && !descFinal.includes(act.objetivoBNCC)) {
-      descFinal += `\n\n📌 Objetivo BNCC / Campo de Experiência: ${act.objetivoBNCC}`;
-    }
-    if (act.materiais && act.materiais.length > 0 && !descFinal.includes('Materiais')) {
-      descFinal += `\n🎨 Materiais Necessários: ${act.materiais.join(', ')}`;
-    }
 
-    const isMeal = /lanche|almoço|almocinho|janta|mamadeira|refeição/i.test(act.titulo);
-    const tipoItem = isMeal ? 'alimentacao' : 'pedagogico';
-    const tituloItem = isMeal ? `Alimentação & Nutrição: ${act.titulo}` : `Atividade Pedagógica: ${act.titulo}`;
-
-    const novaLinhaTempoItem = {
-      id: `audit_${isMeal ? 'alim' : 'pedag'}_${Date.now()}`,
-      hora: act.horario || horaAtual,
-      tipo: tipoItem as any,
-      titulo: tituloItem,
-      descricao: descFinal,
-      responsavel: currentStudent.professoraTitular || 'Ana Silva (Professora Titular)',
-      verificado: true,
-    };
-
-    // Remove any existing timeline entry for this same activity/meal name to prevent duplicates
-    const existingList = currentStudent.auditoriaLinhaDoTempo || [];
-    const filteredList = existingList.filter(item => 
-      !item.titulo.toLowerCase().includes(act.titulo.toLowerCase()) &&
-      !act.titulo.toLowerCase().includes(item.titulo.replace(/Atividade Pedagógica: |Alimentação & Nutrição: /g, '').toLowerCase())
-    );
-
-    const updatedTimeline = [novaLinhaTempoItem, ...filteredList];
-
-    // If it's a meal, also update alimentacao.refeicoes
-    let updatedAlimentacao = currentStudent.alimentacao;
-    if (isMeal && updatedAlimentacao?.refeicoes) {
-      const updatedRefeicoes = updatedAlimentacao.refeicoes.map(ref => {
-        if (ref.nome.toLowerCase().includes(act.titulo.toLowerCase()) || act.titulo.toLowerCase().includes(ref.nome.toLowerCase())) {
-          return { ...ref, status: act.status === 'recusou' ? 'Recusou' : 'Comeu Tudo', horario: act.horario || horaAtual };
-        }
-        return ref;
-      });
-      updatedAlimentacao = { ...updatedAlimentacao, refeicoes: updatedRefeicoes };
-    }
-
-    const isColetivo = act.escopo === 'coletivo' || act.isColetivo;
-
-    if (isColetivo) {
+    if (escopo === 'coletiva') {
       handleUpdateAllStudents((st) => {
-        const studentExistingList = st.auditoriaLinhaDoTempo || [];
-        const studentFilteredList = studentExistingList.filter(item => 
-          !item.titulo.toLowerCase().includes(act.titulo.toLowerCase()) &&
-          !act.titulo.toLowerCase().includes(item.titulo.replace(/Atividade Pedagógica: |Alimentação & Nutrição: /g, '').toLowerCase())
-        );
-
-        const studentNovaLinhaTempo = {
-          ...novaLinhaTempoItem,
-          id: `audit_${isMeal ? 'alim' : 'pedag'}_${st.id}_${Date.now()}`,
+        const itemColetivo = {
+          id: `audit_ped_${st.id}_${Date.now()}`,
+          hora: horaAtual,
+          tipo: 'pedagogico' as const,
+          titulo: `${titulo} (Coletiva)`,
+          descricao: `${st.nome}: Participou da atividade coletiva da turma: ${titulo}.`,
           responsavel: st.professoraTitular || 'Ana Silva (Professora Titular)',
+          verificado: true,
         };
-
-        const studentUpdatedTimeline = [studentNovaLinhaTempo, ...studentFilteredList];
-
-        let studentAlim = st.alimentacao;
-        if (isMeal && studentAlim?.refeicoes) {
-          const updatedRef = studentAlim.refeicoes.map(ref => {
-            if (ref.nome.toLowerCase().includes(act.titulo.toLowerCase()) || act.titulo.toLowerCase().includes(ref.nome.toLowerCase())) {
-              return { ...ref, status: act.status === 'recusou' ? 'Recusou' : 'Comeu Tudo', horario: act.horario || horaAtual };
-            }
-            return ref;
-          });
-          studentAlim = { ...studentAlim, refeicoes: updatedRef };
-        }
-
+        const currentList = st.auditoriaLinhaDoTempo || [];
         return {
           ...st,
-          alimentacao: studentAlim,
-          auditoriaLinhaDoTempo: studentUpdatedTimeline,
+          auditoriaLinhaDoTempo: [itemColetivo, ...currentList],
         };
       });
     } else {
+      const itemIndividual = {
+        id: `audit_ped_${Date.now()}`,
+        hora: horaAtual,
+        tipo: 'pedagogico' as const,
+        titulo: `${titulo}`,
+        descricao: `${currentStudent.nome}: Participou da vivência pedagógica individual: ${titulo}.`,
+        responsavel: currentStudent.professoraTitular || 'Ana Silva (Professora Titular)',
+        verificado: true,
+      };
+      const currentList = currentStudent.auditoriaLinhaDoTempo || [];
       handleUpdateStudent({
-        alimentacao: updatedAlimentacao,
-        auditoriaLinhaDoTempo: updatedTimeline,
+        auditoriaLinhaDoTempo: [itemIndividual, ...currentList],
       });
     }
   };
 
+  const effectiveRole = simulatedProfile?.role || userRole;
+
   return (
     <div className="space-y-6">
-      {/* 1. Contexto Escolar do Topo (Instituição, Busca Rápida, Central de Salas, Banner Maternal) */}
+      {/* 1. Cabeçalho de Contexto */}
       <PaxHeaderContext
-        selectedStudentId={selectedStudentId}
-        onSelectStudent={handleSelectStudent}
-        selectedRoom={selectedRoom}
-        onSelectRoom={setSelectedRoom}
         userRole={effectiveRole}
+        activeMode={activeMode}
+        currentStudent={currentStudent}
+        onOpenStudentModal={() => setIsStudentModalOpen(true)}
       />
 
-      {/* 2. O Switcher Principal de Modo (AULA vs PAX) com Perfis e Conexão Nuvem */}
+      {/* 2. Seletor de Modo (Aula vs PAX) */}
       <PaxModeSwitcher
         activeMode={activeMode}
         onChangeMode={onChangeMode}
-        userRole={userRole}
-        onChangeUserRole={onChangeUserRole}
-        selectedStudentName={currentStudent.nome}
-        onOpenStudentModal={() => setShowClassListModal(true)}
-        selectedStudentResponsibleName={currentStudent.responsavelNome}
-        selectedStudentResponsibleRelation={currentStudent.responsavelParentesco}
-        simulatedProfile={simulatedProfile}
+        userRole={effectiveRole}
       />
 
-      {/* Banner Informativo do Modo Atual */}
-      {isPaxMode ? (
-        <div className="bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 text-white rounded-3xl p-5 sm:p-6 shadow-sm border border-emerald-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-in fade-in">
-          <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-xs flex items-center justify-center text-2xl flex-shrink-0 shadow-inner">
-              🕊️
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black uppercase tracking-widest bg-emerald-950/40 text-emerald-200 px-2.5 py-0.5 rounded-full border border-emerald-400/20">
-                  PORTAL DE TRANQUILIDADE (PAX)
-                </span>
-                <span className="text-[10px] font-bold text-emerald-100 flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-emerald-300 animate-pulse"></span>
-                  Transmissão Oficial
-                </span>
-              </div>
-              <h3 className="text-lg sm:text-xl font-black text-white tracking-tight mt-0.5">
-                Acompanhamento em Tempo Real das Atividades Diárias
-              </h3>
-              <p className="text-xs text-emerald-100/90 mt-0.5">
-                Espaço dedicado aos pais e responsáveis para leitura transparente dos cuidados, tempo em aula, nutrição e bem-estar de <strong>{currentStudent.nome}</strong>.
-              </p>
-            </div>
-          </div>
-          <div className="self-end sm:self-center bg-white/10 backdrop-blur-xs border border-white/20 px-3.5 py-2 rounded-2xl text-right">
-            <span className="text-[9px] font-black uppercase tracking-wider text-emerald-200 block">MODO ATIVO</span>
-            <span className="text-xs font-black text-white">Leitura & Acompanhamento</span>
-          </div>
-        </div>
-      ) : (
-        <div className="bg-gradient-to-r from-indigo-700 via-indigo-800 to-slate-900 text-white rounded-3xl p-5 sm:p-6 shadow-sm border border-indigo-600/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-in fade-in">
-          <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-xs flex items-center justify-center text-2xl flex-shrink-0 shadow-inner">
-              👩‍🏫
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black uppercase tracking-widest bg-indigo-950/60 text-indigo-200 px-2.5 py-0.5 rounded-full border border-indigo-400/20">
-                  PAINEL DA PROFESSORA (AULA)
-                </span>
-                <span className="text-[10px] font-bold text-emerald-300 flex items-center gap-1">
-                  ● Gestão de Rotina & Cronômetro
-                </span>
-              </div>
-              <h3 className="text-lg sm:text-xl font-black text-white tracking-tight mt-0.5">
-                Lançamento Rápido da Rotina de Sala
-              </h3>
-              <p className="text-xs text-indigo-100/90 mt-0.5">
-                Controle do cronômetro coletivo da turma, dosagens de água/mamadeira, sonecas e intercorrências de <strong>{currentStudent.nome}</strong>.
-              </p>
-            </div>
-          </div>
-          <div className="self-end sm:self-center bg-white/10 backdrop-blur-xs border border-white/20 px-3.5 py-2 rounded-2xl text-right">
-            <span className="text-[9px] font-black uppercase tracking-wider text-indigo-200 block">MODO ATIVO</span>
-            <span className="text-xs font-black text-white">Registro & Gestão Docente</span>
-          </div>
-        </div>
-      )}
-
-      {/* 3. Ficha do Aluno Selecionado com Foto, Dados e Troca Rápida de Alunos */}
+      {/* 3. Card do Aluno Selecionado */}
       <PaxStudentCard
         student={currentStudent}
         userRole={effectiveRole}
-        onOpenClassList={() => setShowClassListModal(true)}
-        onSelectStudent={handleSelectStudent}
-        allStudents={classStudents}
+        onOpenStudentModal={() => setIsStudentModalOpen(true)}
       />
 
-      {/* 4. Gráfico das Métricas de Governança & Segurança da Rotina Hoje (Circular Donut Charts para os Pais e Escola) */}
+      {/* 4. Presença & Governança */}
       <PaxPresencaGovernanca
         student={currentStudent}
         userRole={effectiveRole}
         onUpdateStudent={handleUpdateStudent}
       />
 
-      {/* 5. Painel Integrado e Unificado de Rotina & Cronômetro Compartilhado (Professor Edita / Família Acompanha) */}
-      <PainelRotinaUnificado
+      {/* 5. Medicações do Dia */}
+      <PaxMedicacoes
         student={currentStudent}
         userRole={effectiveRole}
         onUpdateStudent={handleUpdateStudent}
-        allStudents={classStudents}
-        onUpdateAllStudents={handleUpdateAllStudents}
+        onOpenFullMedicationsTab={onOpenFullMedicationsTab}
       />
 
-      {/* 5. Medicações & Autorizações do Aluno (Apenas na visão da Família / Pais, professores apenas ministram se houver prescrição) */}
-      {effectiveRole === 'familia' && (
-        <PaxMedicacoes
-          student={currentStudent}
-          userRole={effectiveRole}
-          onOpenFullMedicationsTab={onOpenFullMedicationsTab}
-        />
-      )}
-
-      {/* 6. Os 3 Blocos de Cuidado: Consumo de Água (Jarrinha Animada), Nutrição & Humor */}
+      {/* 6. Os 3 Blocos de Cuidado: Consumo de Água, Nutrição & Humor */}
       <PaxPainelNutricaoAguaHumor student={currentStudent} />
 
-      {/* 7. Os 7 Cards Horizontais de Saúde, Sono & Fralda */}
+      {/* 7. Cards Horizontais de Saúde, Sono & Fralda */}
       <PaxSaudeHorizontalCards student={currentStudent} />
 
-     {/* 8. Planejamento Aura & Atividades Pedagógicas da Aula (Exclusivo para Professora / Oculto para os Pais) */}
-       {/* 8. Planejamento Aura */}
-        {effectiveRole !== 'familia' && effectiveRole !== 'pais' && (
-          <AuraPlannerIntegration
-            student={currentStudent}
-            onUpdateStudent={handleUpdateStudent}
-            onConcluirAtividadePedagogica={handleConcluirAtividadePedagogica}
-            studentNome={currentStudent.nome}
-            userRole={effectiveRole}
-          />
-        )}
+      {/* 8. Planejamento Aura & Atividades (Exclusivo para Professor / Oculto para os Pais) */}
+      {effectiveRole !== 'familia' && effectiveRole !== 'pais' && (
+        <AuraPlannerIntegration
+          student={currentStudent}
+          onUpdateStudent={handleUpdateStudent}
+          onConcluirAtividadePedagogica={handleConcluirAtividadePedagogica}
+          studentNome={currentStudent.nome}
+          userRole={effectiveRole}
+        />
+      )}
 
       {/* 9. Linha do Tempo e Auditoria de Saúde & Atividades */}
       <PaxLinhaDoTempoAuditoria
@@ -355,32 +184,39 @@ export default function PaxPortalDeTranquilidade({
         onDeleteItem={(itemId) => {
           const currentList = currentStudent.auditoriaLinhaDoTempo || [];
           const updatedTimeline = currentList.filter((item) => item.id !== itemId);
-          handleUpdateStudent({
-            auditoriaLinhaDoTempo: updatedTimeline,
-          });
+          handleUpdateStudent({ auditoriaLinhaDoTempo: updatedTimeline });
         }}
       />
 
-      {/* 10. Diários de Rotina Recebidos & Mural de Avisos em Tempo Real */}
+      {/* 10. Diário Escolar da Turma */}
+      <PainelRotinaUnificado
+        student={currentStudent}
+        userRole={effectiveRole}
+        onUpdateStudent={handleUpdateStudent}
+        allStudents={Object.values(students)}
+        onUpdateAllStudents={handleUpdateAllStudents}
+      />
+
+      {/* 11. Seção de Diários Recebidos e Mural de Avisos para Famílias */}
       <SecaoDiariosRecebidosEMural
-        currentStudentName={currentStudent.nome}
-        currentStudentId={currentStudent.id}
+        student={currentStudent}
         userRole={effectiveRole}
       />
 
-      {/* Modal de Lista de Alunos da Turma */}
-      {showClassListModal && (
+      {/* Modal de Troca Rápida de Aluno */}
+      {isStudentModalOpen && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 animate-in fade-in zoom-in-95 duration-150 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2">
                 <Users size={20} className="text-indigo-600" />
                 <h3 className="text-base font-black text-slate-800">
-                  Alunos da Classe — {activeTurmaName} ({classStudents.length} Crianças)
+                  Troca Rápida de Aluno — Berçário I - A
                 </h3>
               </div>
               <button
-                onClick={() => setShowClassListModal(false)}
+                type="button"
+                onClick={() => setIsStudentModalOpen(false)}
                 className="text-slate-400 hover:text-slate-600 text-sm font-bold cursor-pointer"
               >
                 ✕
@@ -388,18 +224,18 @@ export default function PaxPortalDeTranquilidade({
             </div>
 
             <p className="text-xs text-slate-500">
-              Professora Responsável: <strong>{activeProfessora}</strong>. Selecione o aluno da turma para gerenciar a rotina:
+              Selecione o aluno para carregar a rotina:
             </p>
 
-            <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
-              {classStudents.map((st) => {
-                const isSelected = st.id === selectedStudentId;
+            <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
+              {Object.values(students).map((st) => {
+                const isSelected = st.id === currentStudentId;
                 return (
                   <div
                     key={st.id}
                     onClick={() => {
-                      handleSelectStudent(st.id);
-                      setShowClassListModal(false);
+                      onSelectStudentId(st.id);
+                      setIsStudentModalOpen(false);
                     }}
                     className={`p-3.5 rounded-2xl border transition cursor-pointer flex items-center justify-between ${
                       isSelected
@@ -408,18 +244,23 @@ export default function PaxPortalDeTranquilidade({
                     }`}
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full overflow-hidden bg-amber-100 border border-slate-200 flex-shrink-0">
+                      <div className="w-11 h-11 rounded-full overflow-hidden bg-amber-100 border border-slate-200 flex-shrink-0">
                         <img src={st.fotoUrl} alt={st.nome} className="w-full h-full object-cover" />
                       </div>
                       <div>
-                        <h4 className="font-black text-xs sm:text-sm text-slate-800">{st.nome}</h4>
+                        <h4 className="font-black text-sm text-slate-800">{st.nome}</h4>
                         <p className="text-[11px] text-slate-500">
-                          {st.nascimento} • {st.responsavelParentesco}: {st.responsavelNome}
+                          {st.nascimento} ({st.idadeStr}) • {st.responsavelParentesco}: {st.responsavelNome}
                         </p>
                       </div>
                     </div>
-                    {isSelected && (                      <span className="text-xs font-black text-indigo-700 bg-white px-2 py-1 rounded-lg shadow-2xs">
-                        Em Exibição
+                    {isSelected ? (
+                      <span className="text-xs font-black text-indigo-700 bg-white px-2.5 py-1 rounded-lg shadow-2xs border border-indigo-200">
+                        Ativo
+                      </span>
+                    ) : (
+                      <span className="text-xs font-bold text-slate-400">
+                        Selecionar &gt;
                       </span>
                     )}
                   </div>
@@ -428,7 +269,8 @@ export default function PaxPortalDeTranquilidade({
             </div>
 
             <button
-              onClick={() => setShowClassListModal(false)}
+              type="button"
+              onClick={() => setIsStudentModalOpen(false)}
               className="w-full py-2.5 bg-slate-800 hover:bg-slate-900 text-white text-xs font-black rounded-xl transition cursor-pointer"
             >
               Fechar
