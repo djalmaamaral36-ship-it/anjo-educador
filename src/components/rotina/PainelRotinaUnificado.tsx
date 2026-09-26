@@ -21,7 +21,6 @@ interface Props {
   onUpdateAllStudents?: (updater: (st: StudentPaxData) => StudentPaxData) => void;
 }
 
-// Utilitário para término da soneca
 const calcHoraFimSoneca = (inicio: string, duracaoMinutos: number): string => {
   if (!inicio || !inicio.includes(':')) return '14:00';
   const [h, m] = inicio.split(':').map((v) => parseInt(v, 10));
@@ -74,8 +73,8 @@ export default function PainelRotinaUnificado({
 }: Props) {
   const isProfessor = userRole === 'professor';
 
-  // --- CRONÔMETRO ---
-  const [timerRunning, setTimerRunning] = useState(false);
+  // --- CRONÔMETRO SINCRONIZADO ---
+  const [timerRunning, setTimerRunning] = useState(!!student.presenca?.isTimerRunning);
   const [secondsElapsed, setSecondsElapsed] = useState(0);
 
   const formatTimer = (totalSec: number) => {
@@ -96,6 +95,38 @@ export default function PainelRotinaUnificado({
       if (interval) clearInterval(interval);
     };
   }, [timerRunning]);
+
+  // Função central para ligar/desligar o cronômetro sincronizando com TODAS as abas e atividades
+  const sincronizarCronometroGlobal = (running: boolean) => {
+    setTimerRunning(running);
+    
+    if (onUpdateAllStudents) {
+      onUpdateAllStudents((st) => ({
+        ...st,
+        presenca: {
+          ...st.presenca,
+          isTimerRunning: running,
+          status: running ? 'em_aula' : st.presenca.status,
+          tempoEmAulaFormatado: formatTimer(secondsElapsed),
+        },
+      }));
+    } else if (onUpdateStudent) {
+      onUpdateStudent({
+        presenca: {
+          ...student.presenca,
+          isTimerRunning: running,
+          status: running ? 'em_aula' : student.presenca.status,
+          tempoEmAulaFormatado: formatTimer(secondsElapsed),
+        },
+      });
+    }
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('anjinho:timer-status-changed', {
+        detail: { isTimerRunning: running, status: running ? 'em_aula' : 'pausado' }
+      }));
+    }
+  };
 
   // --- ESTADOS DA ROTINA ---
   const [refeicaoTipo, setRefeicaoTipo] = useState('Mamadeira');
@@ -147,7 +178,7 @@ export default function PainelRotinaUnificado({
     setTimeout(() => setCardConfirmacao(null), 4500);
   };
 
-  // 🔒 VALIDAÇÃO OBRIGATÓRIA DE CRONÔMETRO
+  // 🔒 VALIDAÇÃO DE CRONÔMETRO
   const validarCronometroAtivo = (acaoNome: string, executarAcao: () => void): boolean => {
     if (!isProfessor) return false;
     if (!timerRunning) {
@@ -159,9 +190,9 @@ export default function PainelRotinaUnificado({
   };
 
   const handleLigarCronometroEExecutarPendente = () => {
-    setTimerRunning(true);
+    sincronizarCronometroGlobal(true);
     setShowModalCronometroDesligado(false);
-    showFeedback('⏱️ Cronômetro iniciado! Registrando rotina...');
+    showFeedback('⏱️ Cronômetro iniciado e sincronizado com as Atividades!');
     if (acaoPendenteCronometro) {
       const fn = acaoPendenteCronometro.executar;
       setTimeout(() => {
@@ -171,10 +202,10 @@ export default function PainelRotinaUnificado({
     }
   };
 
-  // FUNÇÃO MESTRE QUE ZERA TUDO PARA O NOVO DIA
-  const resetarTodaRotinaLocalESalvar = () => {
+  const handleResetTimer = () => {
+    if (!isProfessor) return;
     setSecondsElapsed(0);
-    setTimerRunning(false);
+    sincronizarCronometroGlobal(false);
     setAguaConsumo(0);
     setCoposContador(0);
     setMamadeirasContador(0);
@@ -245,18 +276,15 @@ export default function PainelRotinaUnificado({
     } else if (onUpdateStudent) {
       onUpdateStudent(resetObj(student));
     }
-  };
 
-  const handleResetTimer = () => {
-    if (!isProfessor) return;
-    resetarTodaRotinaLocalESalvar();
     showFeedback('🔄 Cronômetro e Rotina Zerados para o Novo Dia!');
   };
 
   const handleToggleTimer = () => {
     if (!isProfessor) return;
-    setTimerRunning(!timerRunning);
-    showFeedback(!timerRunning ? '⏱️ Cronômetro ligado!' : '⏸️ Cronômetro pausado.');
+    const nextState = !timerRunning;
+    sincronizarCronometroGlobal(nextState);
+    showFeedback(nextState ? '⏱️ Cronômetro ligado e sincronizado com as Atividades!' : '⏸️ Cronômetro pausado.');
   };
 
   // Mamadeira
@@ -1008,7 +1036,7 @@ export default function PainelRotinaUnificado({
         </div>
       </div>
 
-      {/* 🛑 MODAL DE CRONÔMETRO DESLIGADO (BLOQUEIO DE SEGURANÇA) */}
+      {/* 🛑 MODAL DE CRONÔMETRO DESLIGADO */}
       {showModalCronometroDesligado && (
         <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 text-left space-y-4 animate-in fade-in zoom-in duration-200">
@@ -1024,7 +1052,7 @@ export default function PainelRotinaUnificado({
 
             <div className="p-4 bg-amber-50/80 rounded-2xl border border-amber-200/80 space-y-2 text-xs text-amber-950 font-medium">
               <p>
-                <strong>Regra de Governança Escolar:</strong> Não é permitido realizar lançamentos de rotina (alimentação, soneca, higiene ou cuidados) com o cronômetro desligado.
+                <strong>Regra de Governança Escolar:</strong> Não é permitido realizar lançamentos de rotina ou atividades pedagógicas com o cronômetro desligado.
               </p>
               {acaoPendenteCronometro && (
                 <div className="p-2.5 bg-white/90 rounded-xl border border-amber-200 text-slate-800">
@@ -1078,7 +1106,7 @@ export default function PainelRotinaUnificado({
         temperatura={temperatura}
         checklistCount={Object.values(checklist).filter((v) => v === 'Realizado').length}
         onConfirmar={() => {
-          setTimerRunning(false);
+          sincronizarCronometroGlobal(false);
           setShowModalConfirmarColetivo(false);
           showFeedback('🎓 Aulas Encerradas!');
         }}
@@ -1101,7 +1129,7 @@ export default function PainelRotinaUnificado({
         temperatura={temperatura}
         checklistCount={Object.values(checklist).filter((v) => v === 'Realizado').length}
         onConfirmarEncerramento={() => {
-          setTimerRunning(false);
+          sincronizarCronometroGlobal(false);
           setShowModalRelatorio(false);
         }}
       />
