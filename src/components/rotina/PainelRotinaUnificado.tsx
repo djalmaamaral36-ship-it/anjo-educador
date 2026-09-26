@@ -106,28 +106,18 @@ export default function PainelRotinaUnificado({
   const [secondsElapsed, setSecondsElapsed] = useState(0);
  
 
-  // Calcula e atualiza o tempo decorrido usando timestamps reais (garante que não zere ao mudar de aba, sair do app ou recarregar)
+// Cronômetro em tempo real contínuo
   useEffect(() => {
-    let interval: any;
-
-    const calcElapsed = () => {
-      if (student.presenca.startTimestamp && student.presenca.isTimerRunning) {
-        const now = Date.now();
-        const elapsed = Math.max(0, Math.floor((now - student.presenca.startTimestamp) / 1000) - (student.presenca.totalPausedSeconds || 0));
-        setSecondsElapsed(elapsed);
-      } else if (!student.presenca.isTimerRunning) {
-        if (student.presenca.tempoEmAulaFormatado) {
-          const parts = student.presenca.tempoEmAulaFormatado.split(':');
-          if (parts.length === 3) {
-            const h = parseInt(parts[0], 10) || 0;
-            const m = parseInt(parts[1], 10) || 0;
-            const s = parseInt(parts[2], 10) || 0;
-            setSecondsElapsed(h * 3600 + m * 60 + s);
-          }
-        }
-      }
+    let interval: any = null;
+    if (timerRunning) {
+      interval = setInterval(() => {
+        setSecondsElapsed((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => {
+      if (interval) clearInterval(interval);
     };
-
+  }, [timerRunning]);
     calcElapsed();
 
     if (timerRunning) {
