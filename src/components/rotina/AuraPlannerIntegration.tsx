@@ -149,58 +149,31 @@ export default function AuraPlannerIntegration({
   onUpdateStudent,
   userRole = 'professor'
 }: Props) {
-  const storageKey = `anjinho_activities_state_${student?.id || 'main'}`;
-
-  const [atividades, setAtividades] = useState<AtividadeItem[]>(() => {
-    try {
-      const saved = localStorage.getItem(storageKey);
-      if (saved) {
-        return JSON.parse(saved);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-    return ATIVIDADES_PLANEJADAS_PADRAO;
-  });
-
+  const [atividades, setAtividades] = useState<AtividadeItem[]>(ATIVIDADES_PLANEJADAS_PADRAO);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [filtroStatus, setFiltroStatus] = useState<'todas' | 'pendentes' | 'realizadas'>('todas');
   const [feedbackToast, setFeedbackToast] = useState<string | null>(null);
 
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem(storageKey);
-      if (saved) {
-        setAtividades(JSON.parse(saved));
-      } else {
-        setAtividades(ATIVIDADES_PLANEJADAS_PADRAO);
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }, [student?.id, storageKey]);
-
   const handleStatusChange = (id: string, novoStatus: 'Pendente' | 'Em Andamento' | 'Realizado') => {
     const updated = atividades.map((atv) => {
-      if (atv.id === id) {
+      if (atv && atv.id === id) {
         return { ...atv, status: novoStatus };
       }
       return atv;
     });
 
     setAtividades(updated);
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(updated));
-    } catch (e) {
-      console.error(e);
-    }
 
-    const itemModificado = atividades.find((a) => a.id === id);
+    const itemModificado = atividades.find((a) => a && a.id === id);
     if (novoStatus === 'Realizado' && itemModificado) {
       if (onConcluirAtividadePedagogica) {
-        onConcluirAtividadePedagogica(itemModificado.titulo, itemModificado.campoBncc || 'EI01', 'coletiva');
+        onConcluirAtividadePedagogica(
+          itemModificado.titulo || 'Atividade',
+          itemModificado.campoBncc || 'BNCC Geral',
+          'coletiva'
+        );
       }
-      setFeedbackToast(`✨ "${itemModificado.titulo}" concluída e registrada no diário!`);
+      setFeedbackToast(`✨ "${itemModificado.titulo || 'Atividade'}" concluída e registrada no diário!`);
       setTimeout(() => setFeedbackToast(null), 3500);
     }
   };
@@ -290,11 +263,12 @@ export default function AuraPlannerIntegration({
         {atividadesFiltradas.map((atv) => {
           const isDone = atv?.status === 'Realizado';
           const isExpanded = expandedId === atv?.id;
-          const bnccTexto = String(atv?.campoBncc || 'BNCC Geral').split('(')[0];
+          const rawBncc = atv?.campoBncc ? String(atv.campoBncc) : 'BNCC Geral';
+          const bnccTexto = rawBncc.includes('(') ? rawBncc.split('(')[0] : rawBncc;
 
           return (
             <div
-              key={atv.id}
+              key={atv.id || Math.random()}
               className={`p-4 rounded-2xl border transition ${
                 isDone
                   ? 'bg-emerald-50/40 border-emerald-200'
@@ -303,20 +277,20 @@ export default function AuraPlannerIntegration({
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-start gap-3">
-                  <span className="text-2xl shrink-0 p-2 bg-slate-100 rounded-xl">{atv.icone || '📚'}</span>
+                  <span className="text-2xl shrink-0 p-2 bg-slate-100 rounded-xl">{atv?.icone || '📚'}</span>
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
-                        {atv.horario || 'Horário'}
+                        {atv?.horario || 'Horário'}
                       </span>
                       <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md">
                         {bnccTexto}
                       </span>
                     </div>
                     <h5 className={`font-black text-sm mt-1 ${isDone ? 'text-emerald-900 line-through' : 'text-slate-800'}`}>
-                      {atv.titulo || 'Atividade'}
+                      {atv?.titulo || 'Atividade'}
                     </h5>
-                    <p className="text-xs text-slate-500 mt-0.5">{atv.subtitulo || ''}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">{atv?.subtitulo || ''}</p>
                   </div>
                 </div>
 
@@ -346,9 +320,9 @@ export default function AuraPlannerIntegration({
 
               {isExpanded && (
                 <div className="mt-3 pt-3 border-t border-slate-100 space-y-2 text-xs text-slate-600 animate-in fade-in duration-150">
-                  <p><strong>Descrição:</strong> {atv.descricao || 'Vivência pedagógica.'}</p>
-                  <p><strong>Objetivo Pedagógico:</strong> {atv.objetivoPedagogico || 'Desenvolvimento integral.'}</p>
-                  {atv.materiaisNecessarios && atv.materiaisNecessarios.length > 0 && (
+                  <p><strong>Descrição:</strong> {atv?.descricao || 'Vivência pedagógica.'}</p>
+                  <p><strong>Objetivo Pedagógico:</strong> {atv?.objetivoPedagogico || 'Desenvolvimento integral.'}</p>
+                  {atv?.materiaisNecessarios && atv.materiaisNecessarios.length > 0 && (
                     <p><strong>Materiais:</strong> {atv.materiaisNecessarios.join(', ')}</p>
                   )}
                 </div>
