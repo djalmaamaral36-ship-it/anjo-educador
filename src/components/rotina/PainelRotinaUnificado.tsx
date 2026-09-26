@@ -12,9 +12,6 @@ import ModalRelatorioWhatsApp from './ModalRelatorioWhatsApp';
 import ModalConfirmarEncerramentoColetivo from './ModalConfirmarEncerramentoColetivo';
 import ModalDesligarIndividual, { TipoDesligamento } from './ModalDesligarIndividual';
 import BotaoFlutuanteOcorrencia from './BotaoFlutuanteOcorrencia';
-import { salvarDiarioRecebido, salvarAvisoMural } from '../../services/muralDiariosService';
-import { registrarLogAuditoriaLgpd } from '../../services/lgpdService';
-import { formatarDiarioCompletoWhatsApp } from '../../utils/formatadorDiarioWhatsApp';
 
 interface Props {
   student: StudentPaxData;
@@ -24,7 +21,7 @@ interface Props {
   onUpdateAllStudents?: (updater: (st: StudentPaxData) => StudentPaxData) => void;
 }
 
-// Utilitário para calcular término da soneca
+// Utilitário para término da soneca
 const calcHoraFimSoneca = (inicio: string, duracaoMinutos: number): string => {
   if (!inicio || !inicio.includes(':')) return '14:00';
   const [h, m] = inicio.split(':').map((v) => parseInt(v, 10));
@@ -78,7 +75,7 @@ export default function PainelRotinaUnificado({
   const isProfessor = userRole === 'professor';
 
   // --- CRONÔMETRO ---
-  const [timerRunning, setTimerRunning] = useState(true);
+  const [timerRunning, setTimerRunning] = useState(false);
   const [secondsElapsed, setSecondsElapsed] = useState(0);
 
   const formatTimer = (totalSec: number) => {
@@ -100,19 +97,17 @@ export default function PainelRotinaUnificado({
     };
   }, [timerRunning]);
 
-  // --- ESTADOS DA ROTINA DO DIA ---
+  // --- ESTADOS DA ROTINA ---
   const [refeicaoTipo, setRefeicaoTipo] = useState('Mamadeira');
   const [aceitacao, setAceitacao] = useState('Tomou Tudo');
   const [mamadeiraVolume, setMamadeiraVolume] = useState(() => extractMamadeiraVolume(student));
   const [mamadeirasContador, setMamadeirasContador] = useState(student.alimentacao?.mamadeirasServidas || 0);
-  const [mamadeiraObs, setMamadeiraObs] = useState('');
 
   const [copoSelecionado, setCopoSelecionado] = useState(50);
   const [aguaConsumo, setAguaConsumo] = useState(student.agua?.consumoMl || 0);
   const [coposContador, setCoposContador] = useState(student.agua?.coposServidos || 0);
 
   const [humorEstado, setHumorEstado] = useState(student.humor?.estado || 'Calmo / Sereno');
-  const [humorObs, setHumorObs] = useState(student.humor?.observacao || '');
 
   const [sonecaDesc, setSonecaDesc] = useState(student.saudeCards?.soneca?.valor || 'Sem Soneca Ainda');
   const [horaSonecaInicio, setHoraSonecaInicio] = useState(() => extractHoraInicioFromSoneca(student.saudeCards?.soneca));
@@ -122,53 +117,58 @@ export default function PainelRotinaUnificado({
   const [fraldaDesc, setFraldaDesc] = useState(student.saudeCards?.fraldas?.valor || 'Nenhuma Troca');
   const [temperatura, setTemperatura] = useState('36.5');
   const [peso, setPeso] = useState(() => (student.saudeCards?.peso?.valor || '14.0').replace(/kg/i, '').replace('º', '').trim());
-  const [notaGeralSaude, setNotaGeralSaude] = useState('');
 
   const [checklist, setChecklist] = useState<{
     trocaRoupas: 'Realizado' | 'Pendente';
     escovacaoDentes: 'Realizado' | 'Pendente';
     maosERosto: 'Realizado' | 'Pendente';
-    banhoTomado: 'Realizado' | 'Pendente';
-    pomadaProtetor: 'Realizado' | 'Pendente';
   }>({
     trocaRoupas: student.higieneChecklist?.trocaRoupas || 'Pendente',
     escovacaoDentes: student.higieneChecklist?.escovacaoDentes || 'Pendente',
     maosERosto: student.higieneChecklist?.maosERosto || 'Pendente',
-    banhoTomado: student.higieneChecklist?.banhoTomado || 'Pendente',
-    pomadaProtetor: student.higieneChecklist?.pomadaProtetor || 'Pendente',
   });
 
   // Modais
-  const [showModalOcorrencia, setShowModalOcorrencia] = useState(false);
   const [showModalRelatorio, setShowModalRelatorio] = useState(false);
   const [showModalConfirmarColetivo, setShowModalConfirmarColetivo] = useState(false);
-  const [showModalDesligarIndividual, setShowModalDesligarIndividual] = useState(false);
-  
-  const [statusAluno, setStatusAluno] = useState<'em_aula' | 'saida_antecipada' | 'ausencia_temporaria' | 'falta_hoje'>(
-    student.presenca.status === 'em_aula' ? 'em_aula' : (student.presenca.status === 'ausente' ? 'falta_hoje' : 'em_aula')
-  );
-  const [motivoAusencia, setMotivoAusencia] = useState<string>('');
-  const [responsavelRetirada, setResponsavelRetirada] = useState<string>('');
-  const [ocorrenciasList, setOcorrenciasList] = useState<OcorrenciaEscolar[]>(student.ocorrenciasHoje || []);
-  const [aulaFinalizada, setAulaFinalizada] = useState(student.presenca.status === 'encerrada');
+  const [showModalCronometroDesligado, setShowModalCronometroDesligado] = useState(false);
+  const [acaoPendenteCronometro, setAcaoPendenteCronometro] = useState<{ nome: string; executar: () => void } | null>(null);
 
   const [feedbackMsg, setFeedbackMsg] = useState<string | null>(null);
-  const [cardConfirmacao, setCardConfirmacao] = useState<{
-    titulo: string;
-    mensagem: string;
-    tipo?: string;
-  } | null>(null);
+  const [cardConfirmacao, setCardConfirmacao] = useState<{ titulo: string; mensagem: string } | null>(null);
 
   const showFeedback = (msg: string) => {
     setFeedbackMsg(msg);
     setTimeout(() => setFeedbackMsg(null), 3500);
   };
 
-  const triggerCardConfirmacao = (titulo: string, mensagem: string, tipo: string = 'geral') => {
-    setCardConfirmacao({ titulo, mensagem, tipo });
-    setTimeout(() => {
-      setCardConfirmacao(null);
-    }, 4500);
+  const triggerCardConfirmacao = (titulo: string, mensagem: string) => {
+    setCardConfirmacao({ titulo, mensagem });
+    setTimeout(() => setCardConfirmacao(null), 4500);
+  };
+
+  // 🔒 VALIDAÇÃO OBRIGATÓRIA DE CRONÔMETRO
+  const validarCronometroAtivo = (acaoNome: string, executarAcao: () => void): boolean => {
+    if (!isProfessor) return false;
+    if (!timerRunning) {
+      setAcaoPendenteCronometro({ nome: acaoNome, executar: executarAcao });
+      setShowModalCronometroDesligado(true);
+      return false;
+    }
+    return true;
+  };
+
+  const handleLigarCronometroEExecutarPendente = () => {
+    setTimerRunning(true);
+    setShowModalCronometroDesligado(false);
+    showFeedback('⏱️ Cronômetro iniciado! Registrando rotina...');
+    if (acaoPendenteCronometro) {
+      const fn = acaoPendenteCronometro.executar;
+      setTimeout(() => {
+        fn();
+        setAcaoPendenteCronometro(null);
+      }, 50);
+    }
   };
 
   // FUNÇÃO MESTRE QUE ZERA TUDO PARA O NOVO DIA
@@ -178,20 +178,15 @@ export default function PainelRotinaUnificado({
     setAguaConsumo(0);
     setCoposContador(0);
     setMamadeirasContador(0);
-    setMamadeiraObs('');
     setSonecaDesc('Sem Soneca Ainda');
     setHoraSonecaInicio('');
     setHoraSonecaFim('');
     setFraldaDesc('Nenhuma Troca');
     setHumorEstado('Calmo / Sereno');
-    setHumorObs('');
-    setNotaGeralSaude('');
     setChecklist({
       trocaRoupas: 'Pendente',
       escovacaoDentes: 'Pendente',
       maosERosto: 'Pendente',
-      banhoTomado: 'Pendente',
-      pomadaProtetor: 'Pendente',
     });
 
     const resetObj = (st: StudentPaxData): StudentPaxData => ({
@@ -264,41 +259,11 @@ export default function PainelRotinaUnificado({
     showFeedback(!timerRunning ? '⏱️ Cronômetro ligado!' : '⏸️ Cronômetro pausado.');
   };
 
-  // Encerramento Coletivo
-  const handleConfirmarEncerramentoColetivo = (opcoes: { enviarWhatsApp: boolean; publicarMural: boolean }) => {
-    setTimerRunning(false);
-    setAulaFinalizada(true);
-
-    const dataHoje = new Date().toLocaleDateString('pt-BR');
-    const agoraHora = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    const tempoEmAula = formatTimer(secondsElapsed);
-
-    if (onUpdateStudent) {
-      onUpdateStudent({
-        presenca: {
-          ...student.presenca,
-          status: 'encerrada',
-          titulo: 'Aula Encerrada',
-          descricao: 'Atividades finalizadas com sucesso.',
-        },
-      });
-    }
-
-    triggerCardConfirmacao(
-      '🎓 Aulas Encerradas!',
-      `Relatório consolidado e salvo com sucesso.`,
-      'encerramento'
-    );
-  };
-
   // Mamadeira
-  const handleSalvarMamadeira = () => {
-    if (!isProfessor) return;
+  const executarSalvarMamadeira = () => {
     const novoContador = mamadeirasContador + 1;
     const novoTotalMl = (student.alimentacao?.mamadeirasMlTotal || 0) + mamadeiraVolume;
     setMamadeirasContador(novoContador);
-
-    const horaAtual = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
 
     if (onUpdateStudent) {
       onUpdateStudent({
@@ -319,16 +284,16 @@ export default function PainelRotinaUnificado({
       });
     }
 
-    triggerCardConfirmacao(
-      '🍼 Mamadeira Salva',
-      `Mamadeira de ${mamadeiraVolume}ml (${aceitacao}) registrada para ${student.nome}!`,
-      'alimentacao'
-    );
+    triggerCardConfirmacao('🍼 Mamadeira Salva', `Mamadeira de ${mamadeiraVolume}ml (${aceitacao}) registrada para ${student.nome}!`);
+  };
+
+  const handleSalvarMamadeira = () => {
+    if (!validarCronometroAtivo('Registrar Mamadeira', () => executarSalvarMamadeira())) return;
+    executarSalvarMamadeira();
   };
 
   // Água
-  const handleAdicionarAgua = () => {
-    if (!isProfessor) return;
+  const executarAdicionarAgua = () => {
     const novoTotal = aguaConsumo + copoSelecionado;
     const novosCopos = coposContador + 1;
     setAguaConsumo(novoTotal);
@@ -355,18 +320,17 @@ export default function PainelRotinaUnificado({
       });
     }
 
-    triggerCardConfirmacao(
-      '💧 Água Registrada',
-      `${student.nome} bebeu +${copoSelecionado}ml de água. Jarrinha atualizada!`,
-      'agua'
-    );
+    triggerCardConfirmacao('💧 Água Registrada', `${student.nome} bebeu +${copoSelecionado}ml de água.`);
+  };
+
+  const handleAdicionarAgua = () => {
+    if (!validarCronometroAtivo('Oferecer Água', () => executarAdicionarAgua())) return;
+    executarAdicionarAgua();
   };
 
   // Refeições Sólidas
-  const handleSalvarRefeicaoDireta = (refeicaoNome: string, aceitacaoValor: string) => {
-    if (!isProfessor) return;
+  const executarSalvarRefeicao = (refeicaoNome: string, aceitacaoValor: string) => {
     const horaAtual = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-
     const defaultRefeicoes = [
       { nome: 'Lanchinho da Manhã', status: 'SEM REGISTRO' },
       { nome: 'Papinha / Almocinho', status: 'SEM REGISTRO' },
@@ -394,12 +358,16 @@ export default function PainelRotinaUnificado({
       });
     }
 
-    triggerCardConfirmacao('🍴 Refeição Registrada', `${refeicaoNome} (${aceitacaoValor}) salvo!`, 'alimentacao');
+    triggerCardConfirmacao('🍴 Refeição Registrada', `${refeicaoNome} (${aceitacaoValor}) salvo!`);
+  };
+
+  const handleSalvarRefeicaoDireta = (refeicaoNome: string, aceitacaoValor: string) => {
+    if (!validarCronometroAtivo(`Refeição (${refeicaoNome})`, () => executarSalvarRefeicao(refeicaoNome, aceitacaoValor))) return;
+    executarSalvarRefeicao(refeicaoNome, aceitacaoValor);
   };
 
   // Soneca
-  const handleToqueRapidoSoneca = (duracao: string) => {
-    if (!isProfessor) return;
+  const executarSoneca = (duracao: string) => {
     const hInicio = horaSonecaInicio || '12:30';
     let hFim = horaSonecaFim || '14:00';
     let desc = `Dormiu das ${hInicio} às ${hFim}`;
@@ -433,12 +401,16 @@ export default function PainelRotinaUnificado({
       });
     }
 
-    triggerCardConfirmacao('💤 Soneca Salva', desc, 'sono');
+    triggerCardConfirmacao('💤 Soneca Salva', desc);
+  };
+
+  const handleToqueRapidoSoneca = (duracao: string) => {
+    if (!validarCronometroAtivo('Registrar Soneca', () => executarSoneca(duracao))) return;
+    executarSoneca(duracao);
   };
 
   // Febre
-  const handleToqueRapidoFebre = (temp: string) => {
-    if (!isProfessor) return;
+  const executarFebre = (temp: string) => {
     setTemperatura(temp);
     const cleanTemp = `${temp}°C`;
 
@@ -451,12 +423,16 @@ export default function PainelRotinaUnificado({
       });
     }
 
-    triggerCardConfirmacao('🩺 Temperatura Salva', `Aferição: ${cleanTemp}`, 'temperatura');
+    triggerCardConfirmacao('🩺 Temperatura Salva', `Aferição: ${cleanTemp}`);
+  };
+
+  const handleToqueRapidoFebre = (temp: string) => {
+    if (!validarCronometroAtivo('Aferição de Febre', () => executarFebre(temp))) return;
+    executarFebre(temp);
   };
 
   // Fralda
-  const handleToqueRapidoFralda = (tipo: string) => {
-    if (!isProfessor) return;
+  const executarFralda = (tipo: string) => {
     let novaFralda = fraldaDesc;
     if (tipo === 'xixi') novaFralda = 'Apenas Xixi';
     else if (tipo === 'coco') novaFralda = 'Apenas Cocô';
@@ -472,12 +448,16 @@ export default function PainelRotinaUnificado({
       });
     }
 
-    triggerCardConfirmacao('🧷 Fralda Salva', novaFralda, 'fralda');
+    triggerCardConfirmacao('🧷 Fralda Salva', novaFralda);
+  };
+
+  const handleToqueRapidoFralda = (tipo: string) => {
+    if (!validarCronometroAtivo('Troca de Fralda', () => executarFralda(tipo))) return;
+    executarFralda(tipo);
   };
 
   // Humor
-  const handleSalvarHumorDireto = (estado: string) => {
-    if (!isProfessor) return;
+  const executarHumor = (estado: string) => {
     setHumorEstado(estado);
 
     if (onUpdateStudent) {
@@ -489,12 +469,16 @@ export default function PainelRotinaUnificado({
       });
     }
 
-    triggerCardConfirmacao('😊 Humor Salvo', estado, 'humor');
+    triggerCardConfirmacao('😊 Humor Salvo', estado);
+  };
+
+  const handleSalvarHumorDireto = (estado: string) => {
+    if (!validarCronometroAtivo('Registro de Humor', () => executarHumor(estado))) return;
+    executarHumor(estado);
   };
 
   // Higiene
-  const handleToggleHigieneDireto = (key: string, label: string) => {
-    if (!isProfessor) return;
+  const executarHigiene = (key: string, label: string) => {
     const statusAtual = checklist[key as keyof typeof checklist] || 'Pendente';
     const nextState = statusAtual === 'Realizado' ? 'Pendente' : 'Realizado';
     const novoChecklist = { ...checklist, [key]: nextState };
@@ -504,7 +488,12 @@ export default function PainelRotinaUnificado({
       onUpdateStudent({ hygieneChecklist: novoChecklist });
     }
 
-    triggerCardConfirmacao(nextState === 'Realizado' ? `✨ ${label} Marcado` : `🔄 ${label} Removido`, label, 'higiene');
+    triggerCardConfirmacao(nextState === 'Realizado' ? `✨ ${label} Marcado` : `🔄 ${label} Removido`, label);
+  };
+
+  const handleToggleHigieneDireto = (key: string, label: string) => {
+    if (!validarCronometroAtivo(`Cuidado (${label})`, () => executarHigiene(key, label))) return;
+    executarHigiene(key, label);
   };
 
   const percentAgua = Math.min(100, Math.round((aguaConsumo / (student.agua?.metaMl || 800)) * 100));
@@ -552,7 +541,7 @@ export default function PainelRotinaUnificado({
               timerRunning ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' : 'bg-amber-100 text-amber-800 border border-amber-200'
             }`}
           >
-            {timerRunning ? '● EM AULA (AO VIVO)' : '⏸️ PAUSADO'}
+            {timerRunning ? '● EM AULA (AO VIVO)' : '⏸️ CRONÔMETRO DESLIGADO'}
           </span>
         </div>
 
@@ -1019,6 +1008,59 @@ export default function PainelRotinaUnificado({
         </div>
       </div>
 
+      {/* 🛑 MODAL DE CRONÔMETRO DESLIGADO (BLOQUEIO DE SEGURANÇA) */}
+      {showModalCronometroDesligado && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 text-left space-y-4 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl shrink-0 border border-amber-200 shadow-2xs">
+                ⏱️
+              </div>
+              <div>
+                <h3 className="text-base font-black text-slate-900">Período de Aula Desligado</h3>
+                <p className="text-xs font-bold text-amber-700">Cronômetro não está em execução</p>
+              </div>
+            </div>
+
+            <div className="p-4 bg-amber-50/80 rounded-2xl border border-amber-200/80 space-y-2 text-xs text-amber-950 font-medium">
+              <p>
+                <strong>Regra de Governança Escolar:</strong> Não é permitido realizar lançamentos de rotina (alimentação, soneca, higiene ou cuidados) com o cronômetro desligado.
+              </p>
+              {acaoPendenteCronometro && (
+                <div className="p-2.5 bg-white/90 rounded-xl border border-amber-200 text-slate-800">
+                  <span className="text-[10px] font-black uppercase text-amber-800 block">Ação solicitada:</span>
+                  <span className="font-black text-xs text-indigo-900">{acaoPendenteCronometro.nome}</span>
+                </div>
+              )}
+            </div>
+
+            <p className="text-xs text-slate-600 font-medium">
+              Deseja <strong>iniciar o cronômetro agora</strong> para registrar a atividade automaticamente?
+            </p>
+
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setShowModalCronometroDesligado(false);
+                  setAcaoPendenteCronometro(null);
+                }}
+                className="px-4 py-2.5 rounded-xl font-bold text-xs text-slate-600 hover:bg-slate-100 transition cursor-pointer"
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                onClick={handleLigarCronometroEExecutarPendente}
+                className="px-5 py-2.5 rounded-xl font-black text-xs bg-indigo-600 hover:bg-indigo-700 text-white shadow-md transition cursor-pointer flex items-center gap-1.5"
+              >
+                <span>▶️ Iniciar Cronômetro & Registrar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* MODAL COLETIVO */}
       <ModalConfirmarEncerramentoColetivo
         isOpen={showModalConfirmarColetivo}
@@ -1030,12 +1072,16 @@ export default function PainelRotinaUnificado({
         refeicaoTipo={refeicaoTipo}
         aceitacao={aceitacao}
         humor={humorEstado}
-        humorObs={humorObs}
+        humorObs=""
         soneca={sonecaDesc}
         fralda={fraldaDesc}
         temperatura={temperatura}
         checklistCount={Object.values(checklist).filter((v) => v === 'Realizado').length}
-        onConfirmar={handleConfirmarEncerramentoColetivo}
+        onConfirmar={() => {
+          setTimerRunning(false);
+          setShowModalConfirmarColetivo(false);
+          showFeedback('🎓 Aulas Encerradas!');
+        }}
       />
 
       {/* MODAL WHATSAPP */}
@@ -1049,12 +1095,15 @@ export default function PainelRotinaUnificado({
         refeicaoTipo={refeicaoTipo}
         aceitacao={aceitacao}
         humor={humorEstado}
-        humorObs={humorObs}
+        humorObs=""
         soneca={sonecaDesc}
         fralda={fraldaDesc}
         temperatura={temperatura}
         checklistCount={Object.values(checklist).filter((v) => v === 'Realizado').length}
-        onConfirmarEncerramento={() => handleConfirmarEncerramentoColetivo({ enviarWhatsApp: true, publicarMural: true })}
+        onConfirmarEncerramento={() => {
+          setTimerRunning(false);
+          setShowModalRelatorio(false);
+        }}
       />
     </div>
   );
