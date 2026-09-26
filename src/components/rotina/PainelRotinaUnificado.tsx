@@ -103,10 +103,9 @@ export default function PainelRotinaUnificado({
 
   // --- ESTADOS DO CRONÔMETRO ÚNICO ---
   const [timerRunning, setTimerRunning] = useState(!!student.presenca.isTimerRunning);
- const [secondsElapsed, setSecondsElapsed] = useState(0);
+const [secondsElapsed, setSecondsElapsed] = useState(0);
 
-  // Cronômetro em tempo real contínuo
-useEffect(() => {
+  useEffect(() => {
     let interval: any = null;
     if (timerRunning) {
       interval = setInterval(() => {
@@ -117,17 +116,6 @@ useEffect(() => {
       if (interval) clearInterval(interval);
     };
   }, [timerRunning]);
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [timerRunning, student.presenca.startTimestamp, student.presenca.totalPausedSeconds, student.presenca.isTimerRunning, student.presenca.tempoEmAulaFormatado]);
-
-  const formatTimer = (totalSeconds: number) => {
-    const hrs = Math.floor(totalSeconds / 3600);
-    const mins = Math.floor((totalSeconds % 3600) / 60);
-    const secs = totalSeconds % 60;
-    return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
 
   // --- ESTADOS DE MAMADEIRA (Foto 11) ---
   const [refeicaoTipo, setRefeicaoTipo] = useState('Mamadeira');
