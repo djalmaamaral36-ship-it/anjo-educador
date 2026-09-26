@@ -45,14 +45,22 @@ export default function PaxPortalDeTranquilidade({
 
   useEffect(() => {
     const unsubscribe = subscribeToStudents((firestoreStudents) => {
-      setStudents(firestoreStudents);
+      if (firestoreStudents && Object.keys(firestoreStudents).length > 0) {
+        setStudents(firestoreStudents);
+      }
     });
     return () => unsubscribe();
   }, []);
 
-  const currentStudent = students[currentStudentId] || students['mariana_souza'] || PAX_STUDENTS['mariana_souza'];
+  const currentStudent =
+    students[currentStudentId] ||
+    students['mariana_souza'] ||
+    PAX_STUDENTS[currentStudentId] ||
+    PAX_STUDENTS['mariana_souza'] ||
+    Object.values(PAX_STUDENTS)[0];
 
   const handleUpdateStudent = (updatedFields: Partial<StudentPaxData>) => {
+    if (!currentStudent) return;
     const updatedStudent: StudentPaxData = {
       ...currentStudent,
       ...updatedFields,
@@ -119,7 +127,11 @@ export default function PaxPortalDeTranquilidade({
     }
   };
 
-  const effectiveRole = simulatedProfile?.role || userRole;
+  const effectiveRole: 'professor' | 'familia' = (simulatedProfile?.role === 'familia' || userRole === 'familia') ? 'familia' : 'professor';
+
+  if (!currentStudent) {
+    return <div className="p-8 text-center text-slate-500">Carregando aluno...</div>;
+  }
 
   return (
     <div className="space-y-6">
@@ -166,8 +178,8 @@ export default function PaxPortalDeTranquilidade({
       {/* 7. Cards Horizontais de Saúde, Sono & Fralda */}
       <PaxSaudeHorizontalCards student={currentStudent} />
 
-      {/* 8. Planejamento Aura & Atividades (Exclusivo para Professor / Oculto para os Pais) */}
-      {effectiveRole !== 'familia' && effectiveRole !== 'pais' && (
+      {/* 8. Planejamento Aura & Atividades Pedagógicas (Aparece SOMENTE para Professora) */}
+      {effectiveRole === 'professor' && (
         <AuraPlannerIntegration
           student={currentStudent}
           onUpdateStudent={handleUpdateStudent}
