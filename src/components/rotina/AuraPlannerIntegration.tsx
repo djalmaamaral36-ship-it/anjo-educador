@@ -136,7 +136,6 @@ export const ATIVIDADES_PLANEJADAS_PADRAO: AtividadeItem[] = [
   }
 ];
 
-// Função de desduplicação exportada
 export function deduplicateActivities(activities: any[]): any[] {
   if (!Array.isArray(activities)) return [];
   const map = new Map();
@@ -204,18 +203,19 @@ export default function AuraPlannerIntegration({
     const itemModificado = atividades.find((a) => a.id === id);
     if (novoStatus === 'Realizado' && itemModificado) {
       if (onConcluirAtividadePedagogica) {
-        onConcluirAtividadePedagogica(itemModificado.titulo, itemModificado.campoBncc, 'coletiva');
+        onConcluirAtividadePedagogica(itemModificado.titulo, itemModificado.campoBncc || 'EI01', 'coletiva');
       }
       setFeedbackToast(`✨ "${itemModificado.titulo}" concluída e registrada no diário!`);
       setTimeout(() => setFeedbackToast(null), 3500);
     }
   };
 
-  const concluidasCount = atividades.filter((a) => a.status === 'Realizado').length;
-  const totalCount = atividades.length;
+  const concluidasCount = atividades.filter((a) => a && a.status === 'Realizado').length;
+  const totalCount = atividades.length || 1;
   const progressoPercent = Math.round((concluidasCount / totalCount) * 100);
 
   const atividadesFiltradas = atividades.filter((atv) => {
+    if (!atv) return false;
     if (filtroStatus === 'pendentes') return atv.status !== 'Realizado';
     if (filtroStatus === 'realizadas') return atv.status === 'Realizado';
     return true;
@@ -245,7 +245,7 @@ export default function AuraPlannerIntegration({
               <span className="text-[10px] font-bold text-slate-400">BNCC & Árvore da Infância®</span>
             </div>
             <h4 className="text-base sm:text-lg font-black text-slate-800 mt-0.5">
-              Agenda de Atividades da Aula ({studentNome})
+              Agenda de Atividades da Aula ({studentNome || 'Turma'})
             </h4>
           </div>
         </div>
@@ -297,8 +297,9 @@ export default function AuraPlannerIntegration({
       {/* Lista de Atividades */}
       <div className="space-y-3">
         {atividadesFiltradas.map((atv) => {
-          const isDone = atv.status === 'Realizado';
-          const isExpanded = expandedId === atv.id;
+          const isDone = atv?.status === 'Realizado';
+          const isExpanded = expandedId === atv?.id;
+          const bnccTexto = (atv?.campoBncc || 'BNCC Geral').split('(')[0];
 
           return (
             <div
@@ -311,20 +312,20 @@ export default function AuraPlannerIntegration({
             >
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-start gap-3">
-                  <span className="text-2xl shrink-0 p-2 bg-slate-100 rounded-xl">{atv.icone}</span>
+                  <span className="text-2xl shrink-0 p-2 bg-slate-100 rounded-xl">{atv.icone || '📚'}</span>
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="text-[10px] font-mono font-bold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">
-                        {atv.horario}
+                        {atv.horario || 'Horário'}
                       </span>
                       <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md">
-                        {atv.campoBncc.split('(')[0]}
+                        {bnccTexto}
                       </span>
                     </div>
                     <h5 className={`font-black text-sm mt-1 ${isDone ? 'text-emerald-900 line-through' : 'text-slate-800'}`}>
-                      {atv.titulo}
+                      {atv.titulo || 'Atividade'}
                     </h5>
-                    <p className="text-xs text-slate-500 mt-0.5">{atv.subtitulo}</p>
+                    <p className="text-xs text-slate-500 mt-0.5">{atv.subtitulo || ''}</p>
                   </div>
                 </div>
 
@@ -355,9 +356,11 @@ export default function AuraPlannerIntegration({
               {/* Detalhes Expandidos */}
               {isExpanded && (
                 <div className="mt-3 pt-3 border-t border-slate-100 space-y-2 text-xs text-slate-600 animate-in fade-in duration-150">
-                  <p><strong>Descrição:</strong> {atv.descricao}</p>
-                  <p><strong>Objetivo Pedagógico:</strong> {atv.objetivoPedagogico}</p>
-                  <p><strong>Materiais:</strong> {atv.materiaisNecessarios.join(', ')}</p>
+                  <p><strong>Descrição:</strong> {atv.descricao || 'Vivência pedagógica.'}</p>
+                  <p><strong>Objetivo Pedagógico:</strong> {atv.objetivoPedagogico || 'Desenvolvimento integral.'}</p>
+                  {atv.materiaisNecessarios && atv.materiaisNecessarios.length > 0 && (
+                    <p><strong>Materiais:</strong> {atv.materiaisNecessarios.join(', ')}</p>
+                  )}
                 </div>
               )}
             </div>
