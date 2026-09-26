@@ -103,10 +103,9 @@ export default function PainelRotinaUnificado({
 
   // --- ESTADOS DO CRONÔMETRO ÚNICO ---
   const [timerRunning, setTimerRunning] = useState(!!student.presenca.isTimerRunning);
-  const [secondsElapsed, setSecondsElapsed] = useState(0);
- 
+ const [secondsElapsed, setSecondsElapsed] = useState(0);
 
-// Cronômetro em tempo real contínuo
+  // Cronômetro em tempo real contínuo
   useEffect(() => {
     let interval: any = null;
     if (timerRunning) {
@@ -118,11 +117,6 @@ export default function PainelRotinaUnificado({
       if (interval) clearInterval(interval);
     };
   }, [timerRunning]);
-    calcElapsed();
-
-    if (timerRunning) {
-      interval = setInterval(() => {
-        calcElapsed();
       }, 1000);
     }
     return () => clearInterval(interval);
