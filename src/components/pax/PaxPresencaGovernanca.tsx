@@ -1,311 +1,262 @@
 import React, { useState, useEffect } from 'react';
-import { RefreshCw, CheckCircle2, ShieldCheck, Activity } from 'lucide-react';
 import { StudentPaxData } from '../../types';
-import { DEFAULT_INITIAL_ACTIVITIES as PLAN_ACTIVITIES } from '../../data/weeklyPlan';
-import { deduplicateActivities } from '../rotina/AuraPlannerIntegration';
+import { Play, Pause, RotateCcw, ShieldCheck, Clock, CheckCircle2, Lock } from 'lucide-react';
 
 interface Props {
   student: StudentPaxData;
-  userRole?: 'professor' | 'familia';
-  onUpdateStudent?: (updated: Partial<StudentPaxData>) => void;
+  userRole?: string;
+  onUpdateStudent?: (updatedFields: Partial<StudentPaxData>) => void;
 }
 
-// Componente de Gráfico Circular Donut com Anel de Progresso SVG
-function CircularDonutChart({
-  percent,
-  label,
-  color = '#0d9488',
-  trackColor = '#e2e8f0',
-  size = 110,
-  strokeWidth = 9,
-}: {
-  percent: number;
-  label: string;
-  color?: string;
-  trackColor?: string;
-  size?: number;
-  strokeWidth?: number;
-}) {
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  const clampedPercent = Math.max(0, Math.min(100, Math.round(percent)));
-  const strokeDashoffset = circumference - (clampedPercent / 100) * circumference;
+export default function PaxPresencaGovernanca({
+  student,
+  userRole = 'professor',
+  onUpdateStudent
+}: Props) {
+  const isTeacher = userRole === 'professor' || userRole === 'educador';
 
-  return (
-    <div className="flex flex-col items-center justify-center">
-      <div className="relative flex items-center justify-center" style={{ width: size, height: size }}>
-        <svg className="w-full h-full -rotate-90" viewBox={`0 0 ${size} ${size}`}>
-          {/* Trilha de fundo */}
-          <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            fill="none"
-            stroke={trackColor}
-            strokeWidth={strokeWidth}
-          />
-          {/* Anel de progresso preenchido */}
-          <circle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            fill="none"
-            stroke={color}
-            strokeWidth={strokeWidth}
-            strokeDasharray={circumference}
-            strokeDashoffset={strokeDashoffset}
-            strokeLinecap="round"
-            className="transition-all duration-700 ease-out"
-          />
-        </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-xl sm:text-2xl font-black text-slate-800 tracking-tight">
-            {clampedPercent}%
-          </span>
-        </div>
-      </div>
-      <p className="text-[10px] sm:text-[11px] font-black uppercase text-slate-500 tracking-wider mt-2.5">
-        {label}
-      </p>
-    </div>
-  );
-}
+  // Timer state inicializado e persistido
+  const [isRunning, setIsRunning] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem(`pax_timer_running_${student?.id || 'main'}`);
+      return saved !== null ? JSON.parse(saved) : true;
+    } catch {
+      return true;
+    }
+  });
 
-export default function PaxPresencaGovernanca({ student, userRole = 'familia', onUpdateStudent }: Props) {
-  const isProfessor = userRole === 'professor';
-  const [lastSyncTime, setLastSyncTime] = useState('Agora mesmo');
+  const [seconds, setSeconds] = useState<number>(() => {
+    try {
+      const saved = localStorage.getItem(`pax_timer_seconds_${student?.id || 'main'}`);
+      return saved !== null ? Number(saved) : 15155; // ~04:12:35 inicial
+    } catch {
+      return 15155;
+    }
+  });
 
-  // Listener para evento de reset do cronômetro
+  // Tique-taque em tempo real a cada 1 segundo
   useEffect(() => {
-    const handleReset = () => {
-      setLastSyncTime('Agora mesmo');
-    };
-    window.addEventListener('anjinho:reset-activities-to-pending', handleReset);
-    return () => window.removeEventListener('anjinho:reset-activities-to-pending', handleReset);
-  }, []);
-
-  // Cálculo Dinâmico e Realista das Métricas de Governança
-  const isTimerAtZero =
-    student.presenca?.tempoEmAulaFormatado === '00:00:00' ||
-    student.presenca?.status === 'sem_aula';
-
-  // Obter as atividades semanais desduplicadas
-  const deduplicatedAll = deduplicateActivities(PLAN_ACTIVITIES);
-  
-  // Determinar dinamicamente o dia simulado ativo: buscamos o dia da semana que possui o maior número de
-  // atividades correspondidas na linha de tempo do aluno. Se nenhum tiver correspondência, usamos 'Quarta-feira' como padrão.
-  const WEEKDAYS = ['Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira'];
-  let simulatedDay = 'Quarta-feira';
-  let maxMatches = 0;
-
-  WEEKDAYS.forEach(day => {
-    const dayActivities = deduplicatedAll.filter(act => (act.dia || 'Quarta-feira') === day);
-    let matches = 0;
-    dayActivities.forEach(p => {
-      const normalizedPlanned = p.titulo.toLowerCase().trim();
-      const hasMatch = (student.auditoriaLinhaDoTempo || []).some(item => {
-        const normalizedAudit = item.titulo.replace(/Atividade Pedagógica: |Alimentação & Nutrição: /g, '').toLowerCase().trim();
-        return normalizedAudit.includes(normalizedPlanned) || normalizedPlanned.includes(normalizedAudit);
-      });
-      if (hasMatch) matches++;
-    });
-    if (matches > maxMatches) {
-      maxMatches = matches;
-      simulatedDay = day;
-    }
-  });
-
-  const plannedForToday = deduplicatedAll.filter(act => (act.dia || 'Quarta-feira') === simulatedDay);
-
-  let plannedCompletedCount = 0;
-  let totalRefeicoesRecusadas = 0;
-
-  plannedForToday.forEach(p => {
-    let isCompleted = false;
-
-    // A. Verifica se há um registro correspondente na linha do tempo de auditoria
-    const normalizedPlanned = p.titulo.toLowerCase().trim();
-    const auditItem = (student.auditoriaLinhaDoTempo || []).find(item => {
-      const normalizedAudit = item.titulo.replace(/Atividade Pedagógica: |Alimentação & Nutrição: /g, '').toLowerCase().trim();
-      return normalizedAudit.includes(normalizedPlanned) || normalizedPlanned.includes(normalizedAudit);
-    });
-
-    if (auditItem) {
-      isCompleted = true;
-      const descLower = (auditItem.descricao || '').toLowerCase();
-      if (descLower.includes('recusa') || descLower.includes('recusou') || descLower.includes('rejeit')) {
-        totalRefeicoesRecusadas += 1;
-      }
-    }
-
-    // B. Fallbacks para garantir que ações diretas nos cartões de saúde/alimentação também dêem baixa sem duplicar:
-    if (!isCompleted) {
-      if (p.item_key === 'sono' || p.tipo === 'sono') {
-        const sonecaVal = student.saudeCards?.soneca?.valor;
-        if (sonecaVal && sonecaVal !== 'Sem Soneca Ainda' && sonecaVal !== 'Sem registros' && sonecaVal !== 'Sem Registros') {
-          isCompleted = true;
-        }
-      } else if (p.item_key === 'almoco' || p.item_key === 'lanche' || p.tipo === 'alimentacao') {
-        const matchingRef = (student.alimentacao?.refeicoes || []).find(ref => {
-          const rName = ref.nome.toLowerCase();
-          return rName.includes(normalizedPlanned) || normalizedPlanned.includes(rName);
-        });
-        if (matchingRef && matchingRef.status && matchingRef.status !== 'SEM REGISTRO' && !matchingRef.status.includes('PREVISTO')) {
-          isCompleted = true;
-          if (matchingRef.status.toLowerCase().includes('recus') || matchingRef.status.toLowerCase().includes('rejeit')) {
-            totalRefeicoesRecusadas += 1;
+    let interval: any = null;
+    if (isRunning) {
+      interval = setInterval(() => {
+        setSeconds((prev) => {
+          const next = prev + 1;
+          try {
+            localStorage.setItem(`pax_timer_seconds_${student?.id || 'main'}`, String(next));
+          } catch (e) {
+            console.error(e);
           }
-        }
-      } else if (p.item_key === 'higiene' || p.tipo === 'banho') {
-        const fraldaVal = student.saudeCards?.fraldas?.valor;
-        if (fraldaVal && fraldaVal !== 'Nenhuma Troca' && fraldaVal !== 'Sem trocas' && fraldaVal !== 'Verificada / Limpa') {
-          isCompleted = true;
-        }
-      } else if ((p.tipo as string) === 'presenca') {
-        if (student.presenca?.status === 'em_aula' || student.presenca?.status === 'encerrada') {
-          isCompleted = true;
-        }
-      }
+          return next;
+        });
+      }, 1000);
     }
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [isRunning, student?.id]);
 
-    if (isCompleted) {
-      plannedCompletedCount += 1;
+  const toggleTimer = () => {
+    const nextRunning = !isRunning;
+    setIsRunning(nextRunning);
+    try {
+      localStorage.setItem(`pax_timer_running_${student?.id || 'main'}`, JSON.stringify(nextRunning));
+    } catch (e) {
+      console.error(e);
     }
-  });
+  };
 
-  // Outras rotinas complementares essenciais que não estão no cronograma pedagógico principal:
-  let extraRoutinesExpected = 0;
-  let extraRoutinesCompleted = 0;
+  const resetTimer = () => {
+    setSeconds(0);
+    try {
+      localStorage.setItem(`pax_timer_seconds_${student?.id || 'main'}`, '0');
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
-  // Fraldas:
-  const fraldaVal = student.saudeCards?.fraldas?.valor;
-  if (fraldaVal && fraldaVal !== 'Nenhuma Troca' && fraldaVal !== 'Sem trocas') {
-    extraRoutinesExpected += 1;
-    extraRoutinesCompleted += 1;
-  }
-
-  // Hidratação extra:
-  const copoVal = student.agua?.coposServidos || 0;
-  if (copoVal > 0) {
-    extraRoutinesExpected += 1;
-    extraRoutinesCompleted += 1;
-  }
-
-  // Carga e realização total desduplicada
-  const totalExpected = plannedForToday.length + extraRoutinesExpected;
-  const totalCompleted = plannedCompletedCount + extraRoutinesCompleted;
-
-  // Quantidade de rotinas realizadas e recusas finais
-  let rotinasRealizadas = totalCompleted;
-  let rotinasRecusas = totalRefeicoesRecusadas;
-
-  // Se o timer estiver em zero e nenhuma rotina foi iniciada
-  if (isTimerAtZero && rotinasRealizadas === 0 && (!student.auditoriaLinhaDoTempo || student.auditoriaLinhaDoTempo.length === 0)) {
-    rotinasRealizadas = 0;
-    rotinasRecusas = 0;
-  }
-
-  // Se o usuário interagiu com o aplicativo, usamos 100% da métrica dinâmica calculada em tempo real para não ser sobreposta por mock estático
-  const hasInteraction = (student.auditoriaLinhaDoTempo && student.auditoriaLinhaDoTempo.length > 0) || 
-                         (student.saudeCards?.soneca?.valor && student.saudeCards.soneca.valor !== 'Sem Soneca Ainda' && student.saudeCards.soneca.valor !== 'Sem registros' && student.saudeCards.soneca.valor !== 'Sem Registros') ||
-                         (student.saudeCards?.fraldas?.valor && student.saudeCards.fraldas.valor !== 'Nenhuma Troca' && student.saudeCards.fraldas.valor !== 'Sem trocas') ||
-                         (student.agua?.coposServidos !== undefined && student.agua.coposServidos > 0) ||
-                         (student.alimentacao?.refeicoes && student.alimentacao.refeicoes.some(r => r.status && r.status !== 'SEM REGISTRO' && !r.status.includes('PREVISTO')));
-
-  // Calculamos a porcentagem de conformidade com precisão baseada em planejamento e realização reais
-  const conformidadeCalculada = totalExpected > 0 ? Math.min(100, Math.round((rotinasRealizadas / totalExpected) * 100)) : 0;
-  const conformidade = hasInteraction 
-    ? conformidadeCalculada 
-    : (student.governanca?.conformidadePercent !== undefined ? student.governanca.conformidadePercent : conformidadeCalculada);
-
-  // Qualidade baseada em anomalias (Febre, Recusas, Atrasos, etc.)
-  const isFebril = parseFloat(student.saudeCards?.temperatura?.valor || '36.5') >= 37.8;
-  const qualidadeCalculada = Math.max(70, Math.min(100, 100 - rotinasRecusas * 15 - (isFebril ? 15 : 0)));
-  const qualidade = hasInteraction 
-    ? qualidadeCalculada 
-    : (student.governanca?.qualidadePercent !== undefined ? student.governanca.qualidadePercent : qualidadeCalculada);
+  const formatTime = (totalSec: number) => {
+    const hrs = Math.floor(totalSec / 3600).toString().padStart(2, '0');
+    const mins = Math.floor((totalSec % 3600) / 60).toString().padStart(2, '0');
+    const secs = (totalSec % 60).toString().padStart(2, '0');
+    return `${hrs} : ${mins} : ${secs}`;
+  };
 
   return (
-    <div className="space-y-4">
-      {/* 2 COLUNAS: MÉTRICAS DE GOVERNANÇA (GRÁFICOS CIRCULARES) & SEGURANÇA DA ROTINA HOJE */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-        {/* Coluna Esquerda: Métricas de Governança com Gráficos Circulares */}
-        <div className="lg:col-span-4 bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xs flex flex-col justify-between space-y-4">
-          <div>
-            <div className="flex items-center justify-between">
-              <span className="text-[10px] sm:text-[11px] font-black uppercase text-slate-400 tracking-wider">
-                MÉTRICAS DE GOVERNANÇA
-              </span>
-              {rotinasRealizadas === 0 && (
-                <span className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md">
-                  Início de Período
-                </span>
-              )}
-            </div>
-
-            {/* Dois Gráficos Circulares Donut Lado a Lado (Conformidade & Qualidade) */}
-            <div className="grid grid-cols-2 gap-4 mt-4 items-center justify-items-center">
-              {/* Conformidade (Verde Esmeralda/Teal) */}
-              <CircularDonutChart
-                percent={conformidade}
-                label="CONFORMIDADE"
-                color="#0d9488"
-                trackColor="#e2e8f0"
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* 1. Métricas de Governança Card (%100 Conformidade) */}
+      <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between text-center space-y-3">
+        <div>
+          <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">
+            MÉTRICAS DE GOVERNANÇA
+          </span>
+          <div className="relative w-24 h-24 mx-auto my-2 flex items-center justify-center">
+            <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+              <circle
+                cx="50"
+                cy="50"
+                r="40"
+                stroke="#E2E8F0"
+                strokeWidth="10"
+                fill="none"
               />
-
-              {/* Qualidade (Azul Índigo/Roxo) */}
-              <CircularDonutChart
-                percent={qualidade}
-                label="QUALIDADE"
-                color="#4f46e5"
-                trackColor="#e2e8f0"
+              <circle
+                cx="50"
+                cy="50"
+                r="40"
+                stroke="#5B46EB"
+                strokeWidth="10"
+                fill="none"
+                strokeDasharray="251.2"
+                strokeDashoffset="0"
+                strokeLinecap="round"
               />
+            </svg>
+            <div className="absolute flex items-baseline justify-center">
+              <span className="text-xl font-black text-[#5B46EB] tracking-tight">100%</span>
             </div>
           </div>
-
-          <p className="text-xs text-slate-500 pt-3 border-t border-slate-100 leading-relaxed text-center sm:text-left">
-            <strong>{rotinasRealizadas}</strong> rotina(s) realizada(s) e{' '}
-            <strong>{rotinasRecusas}</strong> recusa(s) com registro técnico no período.
+          <span className="text-xs font-extrabold uppercase tracking-wider text-slate-700 block">
+            CONFORMIDADE
+          </span>
+          <p className="text-[11px] text-slate-500 mt-1">
+            Registros e rotinas validadas com conformidade técnica.
           </p>
         </div>
+      </div>
 
-        {/* Coluna Direita: Segurança da Rotina Hoje */}
-        <div className="lg:col-span-8 bg-white rounded-3xl p-6 border border-emerald-300/80 shadow-xs space-y-4 flex flex-col justify-between bg-gradient-to-br from-white to-emerald-50/30">
-          <div className="space-y-3">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="text-[10px] sm:text-[11px] font-black uppercase text-slate-500 tracking-wider">
-                SEGURANÇA DA ROTINA HOJE
-              </span>
-              <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-900 border border-emerald-300 px-3 py-1 rounded-full text-[11px] sm:text-xs font-black">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span>{student.governanca?.statusRotinaBadge || 'STATUS: ROTINA ESCOLAR DENTRO DO ESPERADO'}</span>
-              </div>
-            </div>
-
-            <h4 className="text-lg sm:text-xl font-black text-slate-800 tracking-tight">
-              {student.governanca?.statusRotinaTitulo || 'Tudo Sob Controle na Escola'}
-            </h4>
-
-            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-              {rotinasRealizadas === 0
-                ? `O cronômetro e o novo período foram iniciados para ${student.nome}. As rotinas e cuidados previstos na escala estão aguardando execução pelas professoras. O Anjinho Escolar apontará e auditará cada ação em tempo real.`
-                : student.governanca?.statusRotinaDescricao ||
-                  `Tudo correndo tranquilamente hoje. Das atividades previstas na escala, ${rotinasRealizadas} foram realizadas com sucesso pelas professoras. O Anjinho Escolar audita e monitora cada ação. Fique despreocupado: qualquer falha gerará um alerta imediato para o seu celular.`}
-            </p>
+      {/* 2. Status da Rotina Hoje */}
+      <div className="bg-white rounded-3xl p-6 border border-emerald-100 shadow-sm flex flex-col justify-between space-y-3">
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
+              SEGURANÇA DA ROTINA
+            </span>
+            <span
+              className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold border ${
+                isRunning
+                  ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                  : 'bg-amber-50 text-amber-800 border-amber-200'
+              }`}
+            >
+              {isRunning ? 'EM ANDAMENTO' : 'PAUSADO'}
+            </span>
           </div>
-
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pt-3 border-t border-emerald-100 text-xs text-slate-500 font-medium">
-            <p>
-              Responsável da Classe:{' '}
-              <strong className="text-slate-800">
-                {student.governanca?.responsavelClasse || student.professoraTitular || 'Ana Silva (Professora Titular)'}
+          <h3 className="text-base sm:text-lg font-black text-slate-900 leading-tight">
+            {isRunning ? 'Tudo Sob Controle na Escola' : 'Cronômetro em Pausa'}
+          </h3>
+          <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+            {isRunning
+              ? 'O período de aula está ativo. As atividades e rotinas registradas são auditadas em tempo real.'
+              : 'O cronômetro está em pausa. Clique em Iniciar para continuar o cômputo do tempo.'}
+          </p>
+        </div>
+        <div className="pt-2 border-t border-slate-100 text-xs text-slate-600 space-y-1">
+          <div>
+            Responsável: <strong>{student?.professoraTitular || 'Professora Titular'}</strong>
+          </div>
+          <div className="text-[11px] text-slate-500 flex items-center justify-between">
+            <span>
+              Status:{' '}
+              <strong className={isRunning ? 'text-emerald-600' : 'text-amber-600'}>
+                {isRunning ? 'Auditando' : 'Pausado'}
               </strong>
-            </p>
-            <p>
-              Último Contato Realizado via API:{' '}
-              <strong className="text-indigo-600 font-bold">{lastSyncTime}</strong>
-            </p>
+            </span>
+            <span className="text-[10px] text-slate-400">Tempo Real</span>
           </div>
+        </div>
+      </div>
+
+      {/* 3. Trava de Segurança Pedagógica */}
+      <div className="bg-white rounded-3xl p-6 border border-indigo-100 shadow-sm flex flex-col justify-between space-y-3">
+        <div className="flex items-start gap-3">
+          <div className="w-10 h-10 rounded-2xl bg-[#5B46EB] text-white flex items-center justify-center shrink-0 shadow-xs">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <div className="text-xs text-slate-600 leading-relaxed">
+            <h5 className="font-black text-slate-800 text-xs mb-0.5">
+              Trava de Segurança Pedagógica
+            </h5>
+            <span>
+              Acompanhamento oficial de <strong>{student?.nome || 'Mariana Souza'}</strong> com integridade de dados e proteção LGPD.
+            </span>
+          </div>
+        </div>
+        <div className="p-2.5 rounded-2xl border text-[11px] font-medium bg-indigo-50/70 border-indigo-100 text-indigo-900">
+          🔒 Acesso seguro e auditável pelo responsável legal.
+        </div>
+      </div>
+
+      {/* 4. Permanência em Aula / Cronômetro Digital Ativo */}
+      <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-3">
+        <div>
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">
+              TEMPO EM AULA
+            </span>
+            <span
+              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold border ${
+                isRunning
+                  ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                  : 'bg-amber-50 text-amber-800 border-amber-200'
+              }`}
+            >
+              {isRunning ? '▶️ EM AULA (ATIVO)' : '⏸️ EM AULA (PAUSADO)'}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between mt-1">
+            <h3 className="text-base font-black text-slate-900 leading-tight">
+              Permanência em Aula
+            </h3>
+
+            {isTeacher && (
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  onClick={toggleTimer}
+                  className={`px-2.5 py-1 rounded-lg text-xs font-black flex items-center gap-1 transition-all active:scale-95 cursor-pointer shadow-xs ${
+                    isRunning
+                      ? 'bg-amber-500 hover:bg-amber-600 text-white'
+                      : 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                  }`}
+                >
+                  {isRunning ? (
+                    <>
+                      <Pause className="w-3 h-3 fill-white" />
+                      <span>Pausar</span>
+                    </>
+                  ) : (
+                    <>
+                      <Play className="w-3 h-3 fill-white" />
+                      <span>Iniciar</span>
+                    </>
+                  )}
+                </button>
+                <button
+                  type="button"
+                  onClick={resetTimer}
+                  title="Reiniciar tempo"
+                  className="p-1 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition cursor-pointer"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Display Digital do Cronômetro com Atualização ao Vivo */}
+          <div className="bg-slate-950 rounded-2xl p-3 my-2 text-center text-white space-y-0.5 shadow-inner">
+            <span className="text-[9px] uppercase font-bold tracking-widest text-emerald-400 block">
+              {isRunning ? 'TEMPO EM ANDAMENTO' : 'TEMPO COMPUTADO (PAUSADO)'}
+            </span>
+            <div className="text-2xl sm:text-3xl font-mono font-bold text-emerald-400 tracking-wider">
+              {formatTime(seconds)}
+            </div>
+          </div>
+        </div>
+
+        <div className="text-[11px] text-slate-500 text-center font-bold">
+          {isRunning ? '🟢 Cronômetro ativo segundo a segundo' : '🟡 Cronômetro pausado'}
         </div>
       </div>
     </div>
