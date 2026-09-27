@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Play, Pause, RotateCcw, AlertTriangle, CheckCircle2, Droplet, 
   Baby, Moon, Thermometer, Smile, Utensils, HeartHandshake,
@@ -12,9 +12,6 @@ import ModalRelatorioWhatsApp from './ModalRelatorioWhatsApp';
 import ModalConfirmarEncerramentoColetivo from './ModalConfirmarEncerramentoColetivo';
 import ModalDesligarIndividual, { TipoDesligamento } from './ModalDesligarIndividual';
 import BotaoFlutuanteOcorrencia from './BotaoFlutuanteOcorrencia';
-import { salvarDiarioRecebido, salvarAvisoMural } from '../../services/muralDiariosService';
-import { registrarLogAuditoriaLgpd } from '../../services/lgpdService';
-import { formatarDiarioCompletoWhatsApp } from '../../utils/formatadorDiarioWhatsApp';
 
 interface Props {
   student: StudentPaxData;
@@ -76,7 +73,7 @@ export default function PainelRotinaUnificado({
 }: Props) {
   const isProfessor = userRole === 'professor';
 
-  // --- CRONÔMETRO SINCRONIZADO ---
+  // --- CRONÔMETRO SINCRONIZADO EM NUVEM ---
   const [timerRunning, setTimerRunning] = useState(!!student.presenca?.isTimerRunning);
   const [secondsElapsed, setSecondsElapsed] = useState(0);
 
@@ -87,80 +84,39 @@ export default function PainelRotinaUnificado({
     return `${hrs}:${mins}:${secs}`;
   };
 
+  // Motor do cronômetro sincronizado com relógio real para coincidir em todos os celulares
   useEffect(() => {
     let interval: any = null;
     if (timerRunning) {
       interval = setInterval(() => {
-        setSecondsElapsed((prev) => prev + 1);
+        if (student.presenca?.startTimestamp) {
+          const now = Date.now();
+          const elapsed = Math.max(0, Math.floor((now - student.presenca.startTimestamp) / 1000) - (student.presenca.totalPausedSeconds || 0));
+          setSecondsElapsed(elapsed);
+        } else {
+          setSecondsElapsed((prev) => prev + 1);
+        }
       }, 1000);
     }
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [timerRunning]);
+  }, [timerRunning, student.presenca?.startTimestamp, student.presenca?.totalPausedSeconds]);
 
-  const sincronizarCronometroGlobal = (running: boolean) => {
-    setTimerRunning(running);
-    if (onUpdateAllStudents) {
-      onUpdateAllStudents((st) => ({
-        ...st,
-        presenca: {
-          ...st.presenca,
-          isTimerRunning: running,
-          status: running ? 'em_aula' : st.presenca.status,
-          tempoEmAulaFormatado: formatTimer(secondsElapsed),
-        },
-      }));
-    } else if (onUpdateStudent) {
-      onUpdateStudent({
-        presenca: {
-          ...student.presenca,
-          isTimerRunning: running,
-          status: running ? 'em_aula' : student.presenca.status,
-          tempoEmAulaFormatado: formatTimer(secondsElapsed),
-        },
-      });
-    }
-
-    if (typeof window !== 'undefined') {
-      window.dispatchEvent(new CustomEvent('anjinho:timer-status-changed', {
-        detail: { isTimerRunning: running, status: running ? 'em_aula' : 'pausado' }
-      }));
-    }
-  };
-
-  // --- ESTADOS DE MAMADEIRA ---
+  // --- ESTADOS DA ROTINA ---
   const [refeicaoTipo, setRefeicaoTipo] = useState('Mamadeira');
   const [aceitacao, setAceitacao] = useState('Tomou Tudo');
   const [mamadeiraVolume, setMamadeiraVolume] = useState(() => extractMamadeiraVolume(student));
   const [mamadeirasContador, setMamadeirasContador] = useState(student.alimentacao?.mamadeirasServidas || 0);
   const [mamadeiraObs, setMamadeiraObs] = useState('');
 
-  const handleSelectMamadeiraVolume = (vol: number) => {
-    setMamadeiraVolume(vol);
-    if (onUpdateStudent && isProfessor) {
-      onUpdateStudent({
-        alimentacao: {
-          ...student.alimentacao,
-          mamadeirasServidas: student.alimentacao?.mamadeirasServidas || 0,
-          mamadeirasMlTotal: student.alimentacao?.mamadeirasMlTotal || 0,
-          ultimoVolume: vol,
-          volumeSelecionado: vol,
-        },
-      });
-    }
-  };
-
-  // --- ESTADOS DE HIDRATAÇÃO RÁPIDA (ÁGUA) ---
   const [copoSelecionado, setCopoSelecionado] = useState(50);
   const [aguaConsumo, setAguaConsumo] = useState(student.agua?.consumoMl || 0);
   const [coposContador, setCoposContador] = useState(student.agua?.coposServidos || 0);
 
-  // --- ESTADOS DE HUMOR ---
   const [humorEstado, setHumorEstado] = useState(student.humor?.estado || 'Calmo / Sereno');
   const [humorObs, setHumorObs] = useState(student.humor?.observacao || '');
 
-  // --- ESTADOS DE SAÚDE, SONO, FRALDA & CUIDADOS ---
   const [sonecaDesc, setSonecaDesc] = useState(student.saudeCards?.soneca?.valor || 'Sem Soneca Ainda');
   const [horaSonecaInicio, setHoraSonecaInicio] = useState(() => extractHoraInicioFromSoneca(student.saudeCards?.soneca));
   const [horaSonecaFim, setHoraSonecaFim] = useState(() =>
@@ -173,7 +129,46 @@ export default function PainelRotinaUnificado({
   const [notaGeralSaude, setNotaGeralSaude] = useState('');
   const [showModalHistoricoPeso, setShowModalHistoricoPeso] = useState(false);
 
-  // Reconhecimento de Voz (Microfone)
+  // 🔄 SINCRONIZADOR EM TEMPO REAL COM O CELULAR E OUTROS APARELHOS
+  useEffect(() => {
+    setTimerRunning(!!student.presenca?.isTimerRunning);
+    setAguaConsumo(student.agua?.consumoMl || 0);
+    setCoposContador(student.agua?.coposServidos || 0);
+    setMamadeirasContador(student.alimentacao?.mamadeirasServidas || 0);
+    setMamadeiraVolume(extractMamadeiraVolume(student));
+    setHumorEstado(student.humor?.estado || 'Calmo / Sereno');
+    setHumorObs(student.humor?.observacao || '');
+    setSonecaDesc(student.saudeCards?.soneca?.valor || 'Sem Soneca Ainda');
+    const hInicioCalc = extractHoraInicioFromSoneca(student.saudeCards?.soneca);
+    setHoraSonecaInicio(hInicioCalc);
+    setHoraSonecaFim(extractHoraFimFromSoneca(student.saudeCards?.soneca, hInicioCalc));
+    setFraldaDesc(student.saudeCards?.fraldas?.valor || 'Nenhuma Troca');
+    setTemperatura(student.saudeCards?.temperatura?.valor?.replace('°C', '').trim() || '36.5');
+    setPeso((student.saudeCards?.peso?.valor || '14.0').replace(/kg/i, '').replace('º', '').trim() || '14.0');
+    setChecklist({
+      trocaRoupas: student.higieneChecklist?.trocaRoupas || 'Pendente',
+      escovacaoDentes: student.higieneChecklist?.escovacaoDentes || 'Pendente',
+      maosERosto: student.higieneChecklist?.maosERosto || 'Pendente',
+      banhoTomado: student.higieneChecklist?.banhoTomado || 'Pendente',
+      pomadaProtetor: student.higieneChecklist?.pomadaProtetor || 'Pendente',
+    });
+  }, [
+    student.id,
+    student.presenca?.isTimerRunning,
+    student.agua?.consumoMl,
+    student.agua?.coposServidos,
+    student.alimentacao?.mamadeirasServidas,
+    student.alimentacao?.mamadeirasMlTotal,
+    student.alimentacao?.ultimoVolume,
+    student.saudeCards?.soneca?.valor,
+    student.saudeCards?.fraldas?.valor,
+    student.saudeCards?.temperatura?.valor,
+    student.saudeCards?.peso?.valor,
+    student.saudeCards?.humor?.valor,
+    student.higieneChecklist,
+  ]);
+
+  // Microfone de Voz
   const [isListeningHumor, setIsListeningHumor] = useState(false);
   const [isListeningFralda, setIsListeningFralda] = useState(false);
 
@@ -220,7 +215,7 @@ export default function PainelRotinaUnificado({
     }
   };
 
-  // Checklist de Higiene (5 Itens)
+  // Checklist de Higiene
   const [checklist, setChecklist] = useState<{
     trocaRoupas: 'Realizado' | 'Pendente';
     escovacaoDentes: 'Realizado' | 'Pendente';
@@ -254,7 +249,38 @@ export default function PainelRotinaUnificado({
     setTimeout(() => setCardConfirmacao(null), 4500);
   };
 
-  // 🔒 VALIDAÇÃO OBRIGATÓRIA DE CRONÔMETRO
+  // Sincronizador Global do Cronômetro
+  const sincronizarCronometroGlobal = (running: boolean) => {
+    setTimerRunning(running);
+    let startTs = student.presenca?.startTimestamp;
+    if (running && !startTs) {
+      startTs = Date.now() - secondsElapsed * 1000;
+    }
+
+    const payload = {
+      presenca: {
+        ...student.presenca,
+        isTimerRunning: running,
+        status: running ? 'em_aula' as const : student.presenca.status,
+        startTimestamp: running ? startTs : null,
+        tempoEmAulaFormatado: formatTimer(secondsElapsed),
+      },
+    };
+
+    if (onUpdateAllStudents) {
+      onUpdateAllStudents((st) => ({ ...st, ...payload }));
+    } else if (onUpdateStudent) {
+      onUpdateStudent(payload);
+    }
+
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('anjinho:timer-status-changed', {
+        detail: { isTimerRunning: running, status: running ? 'em_aula' : 'pausado' }
+      }));
+    }
+  };
+
+  // Validação do Cronômetro Ativo
   const validarCronometroAtivo = (acaoNome: string, executarAcao: () => void): boolean => {
     if (!isProfessor) return false;
     if (!timerRunning) {
@@ -268,7 +294,7 @@ export default function PainelRotinaUnificado({
   const handleLigarCronometroEExecutarPendente = () => {
     sincronizarCronometroGlobal(true);
     setShowModalCronometroDesligado(false);
-    showFeedback('⏱️ Cronômetro iniciado e sincronizado com as Atividades!');
+    showFeedback('⏱️ Cronômetro iniciado e sincronizado com o celular!');
     if (acaoPendenteCronometro) {
       const fn = acaoPendenteCronometro.executar;
       setTimeout(() => {
@@ -278,7 +304,7 @@ export default function PainelRotinaUnificado({
     }
   };
 
-  // ZERA TUDO PARA O NOVO DIA
+  // Zerar Dia
   const handleResetTimer = () => {
     if (!isProfessor) return;
     setSecondsElapsed(0);
@@ -476,7 +502,7 @@ export default function PainelRotinaUnificado({
     executarSalvarRefeicao(refeicaoNome, aceitacaoValor);
   };
 
-  // Soneca (Reloginho + Manual + Duração Rápida)
+  // Soneca (Reloginho + Manual + 1-Clique)
   const executarSoneca = (desc: string, hFim: string) => {
     const hInicio = horaSonecaInicio || '12:30';
     setSonecaDesc(desc);
@@ -1038,7 +1064,7 @@ export default function PainelRotinaUnificado({
           </div>
         </div>
 
-        {/* SAÚDE, SONO, FRALDA & CUIDADOS (COMPLETO E RESTAURADO) */}
+        {/* SAÚDE, SONO, FRALDA & CUIDADOS */}
         <div id="secao-saude" className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4 scroll-mt-24">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <span className="text-xl">🩺</span>
@@ -1087,7 +1113,7 @@ export default function PainelRotinaUnificado({
             )}
           </div>
 
-          {/* DUAS COLUNAS: SONECA COM RELOGINHO E FRALDA COM MICROFONE */}
+          {/* SONECA & FRALDA */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             
             {/* SUB-COLUNA ESQUERDA: SONECA E FEBRE */}
@@ -1562,7 +1588,7 @@ export default function PainelRotinaUnificado({
               <button
                 type="button"
                 onClick={() => setShowModalHistoricoPeso(false)}
-                className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold"
+                className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold cursor-pointer"
               >
                 ✕
               </button>
@@ -1579,7 +1605,7 @@ export default function PainelRotinaUnificado({
             <button
               type="button"
               onClick={() => setShowModalHistoricoPeso(false)}
-              className="w-full py-2.5 bg-slate-800 text-white font-black text-xs rounded-xl"
+              className="w-full py-2.5 bg-slate-800 text-white font-black text-xs rounded-xl cursor-pointer"
             >
               Fechar
             </button>
