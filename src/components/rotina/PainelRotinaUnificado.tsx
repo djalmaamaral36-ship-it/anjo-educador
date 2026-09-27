@@ -12,6 +12,9 @@ import ModalRelatorioWhatsApp from './ModalRelatorioWhatsApp';
 import ModalConfirmarEncerramentoColetivo from './ModalConfirmarEncerramentoColetivo';
 import ModalDesligarIndividual, { TipoDesligamento } from './ModalDesligarIndividual';
 import BotaoFlutuanteOcorrencia from './BotaoFlutuanteOcorrencia';
+import { salvarDiarioRecebido, salvarAvisoMural } from '../../services/muralDiariosService';
+import { registrarLogAuditoriaLgpd } from '../../services/lgpdService';
+import { formatarDiarioCompletoWhatsApp } from '../../utils/formatadorDiarioWhatsApp';
 
 interface Props {
   student: StudentPaxData;
@@ -96,10 +99,8 @@ export default function PainelRotinaUnificado({
     };
   }, [timerRunning]);
 
-  // Função central para ligar/desligar o cronômetro sincronizando com TODAS as abas e atividades
   const sincronizarCronometroGlobal = (running: boolean) => {
     setTimerRunning(running);
-    
     if (onUpdateAllStudents) {
       onUpdateAllStudents((st) => ({
         ...st,
@@ -128,35 +129,110 @@ export default function PainelRotinaUnificado({
     }
   };
 
-  // --- ESTADOS DA ROTINA ---
+  // --- ESTADOS DE MAMADEIRA ---
   const [refeicaoTipo, setRefeicaoTipo] = useState('Mamadeira');
   const [aceitacao, setAceitacao] = useState('Tomou Tudo');
   const [mamadeiraVolume, setMamadeiraVolume] = useState(() => extractMamadeiraVolume(student));
   const [mamadeirasContador, setMamadeirasContador] = useState(student.alimentacao?.mamadeirasServidas || 0);
+  const [mamadeiraObs, setMamadeiraObs] = useState('');
 
+  const handleSelectMamadeiraVolume = (vol: number) => {
+    setMamadeiraVolume(vol);
+    if (onUpdateStudent && isProfessor) {
+      onUpdateStudent({
+        alimentacao: {
+          ...student.alimentacao,
+          mamadeirasServidas: student.alimentacao?.mamadeirasServidas || 0,
+          mamadeirasMlTotal: student.alimentacao?.mamadeirasMlTotal || 0,
+          ultimoVolume: vol,
+          volumeSelecionado: vol,
+        },
+      });
+    }
+  };
+
+  // --- ESTADOS DE HIDRATAÇÃO RÁPIDA (ÁGUA) ---
   const [copoSelecionado, setCopoSelecionado] = useState(50);
   const [aguaConsumo, setAguaConsumo] = useState(student.agua?.consumoMl || 0);
   const [coposContador, setCoposContador] = useState(student.agua?.coposServidos || 0);
 
+  // --- ESTADOS DE HUMOR ---
   const [humorEstado, setHumorEstado] = useState(student.humor?.estado || 'Calmo / Sereno');
+  const [humorObs, setHumorObs] = useState(student.humor?.observacao || '');
 
+  // --- ESTADOS DE SAÚDE, SONO, FRALDA & CUIDADOS ---
   const [sonecaDesc, setSonecaDesc] = useState(student.saudeCards?.soneca?.valor || 'Sem Soneca Ainda');
   const [horaSonecaInicio, setHoraSonecaInicio] = useState(() => extractHoraInicioFromSoneca(student.saudeCards?.soneca));
   const [horaSonecaFim, setHoraSonecaFim] = useState(() =>
     extractHoraFimFromSoneca(student.saudeCards?.soneca, extractHoraInicioFromSoneca(student.saudeCards?.soneca))
   );
+  const [sonecaEscopo, setSonecaEscopo] = useState<'individual' | 'coletiva'>('coletiva');
   const [fraldaDesc, setFraldaDesc] = useState(student.saudeCards?.fraldas?.valor || 'Nenhuma Troca');
   const [temperatura, setTemperatura] = useState('36.5');
   const [peso, setPeso] = useState(() => (student.saudeCards?.peso?.valor || '14.0').replace(/kg/i, '').replace('º', '').trim());
+  const [notaGeralSaude, setNotaGeralSaude] = useState('');
+  const [showModalHistoricoPeso, setShowModalHistoricoPeso] = useState(false);
 
+  // Reconhecimento de Voz (Microfone)
+  const [isListeningHumor, setIsListeningHumor] = useState(false);
+  const [isListeningFralda, setIsListeningFralda] = useState(false);
+
+  const handleVoiceRecord = (field: 'humor' | 'fralda') => {
+    if (!isProfessor) return;
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      showFeedback('⚠️ Reconhecimento de voz não suportado neste navegador. Digite pelo teclado.');
+      return;
+    }
+
+    try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'pt-BR';
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      if (field === 'humor') {
+        setIsListeningHumor(true);
+        recognition.onend = () => setIsListeningHumor(false);
+        recognition.onerror = () => setIsListeningHumor(false);
+        recognition.onresult = (e: any) => {
+          const transcript = e.results[0][0].transcript;
+          setHumorObs((prev) => (prev ? `${prev} ${transcript}` : transcript));
+          setIsListeningHumor(false);
+          showFeedback(`🎙️ Humor gravado por voz: "${transcript}"`);
+        };
+      } else {
+        setIsListeningFralda(true);
+        recognition.onend = () => setIsListeningFralda(false);
+        recognition.onerror = () => setIsListeningFralda(false);
+        recognition.onresult = (e: any) => {
+          const transcript = e.results[0][0].transcript;
+          setFraldaDesc(transcript);
+          setIsListeningFralda(false);
+          showFeedback(`🎙️ Fralda gravada por voz: "${transcript}"`);
+        };
+      }
+      recognition.start();
+    } catch (err) {
+      console.error(err);
+      setIsListeningHumor(false);
+      setIsListeningFralda(false);
+    }
+  };
+
+  // Checklist de Higiene (5 Itens)
   const [checklist, setChecklist] = useState<{
     trocaRoupas: 'Realizado' | 'Pendente';
     escovacaoDentes: 'Realizado' | 'Pendente';
     maosERosto: 'Realizado' | 'Pendente';
+    banhoTomado: 'Realizado' | 'Pendente';
+    pomadaProtetor: 'Realizado' | 'Pendente';
   }>({
     trocaRoupas: student.higieneChecklist?.trocaRoupas || 'Pendente',
     escovacaoDentes: student.higieneChecklist?.escovacaoDentes || 'Pendente',
     maosERosto: student.higieneChecklist?.maosERosto || 'Pendente',
+    banhoTomado: student.higieneChecklist?.banhoTomado || 'Pendente',
+    pomadaProtetor: student.higieneChecklist?.pomadaProtetor || 'Pendente',
   });
 
   // Modais
@@ -178,7 +254,7 @@ export default function PainelRotinaUnificado({
     setTimeout(() => setCardConfirmacao(null), 4500);
   };
 
-  // 🔒 VALIDAÇÃO DE CRONÔMETRO
+  // 🔒 VALIDAÇÃO OBRIGATÓRIA DE CRONÔMETRO
   const validarCronometroAtivo = (acaoNome: string, executarAcao: () => void): boolean => {
     if (!isProfessor) return false;
     if (!timerRunning) {
@@ -202,6 +278,7 @@ export default function PainelRotinaUnificado({
     }
   };
 
+  // ZERA TUDO PARA O NOVO DIA
   const handleResetTimer = () => {
     if (!isProfessor) return;
     setSecondsElapsed(0);
@@ -209,15 +286,20 @@ export default function PainelRotinaUnificado({
     setAguaConsumo(0);
     setCoposContador(0);
     setMamadeirasContador(0);
+    setMamadeiraObs('');
     setSonecaDesc('Sem Soneca Ainda');
     setHoraSonecaInicio('');
     setHoraSonecaFim('');
     setFraldaDesc('Nenhuma Troca');
     setHumorEstado('Calmo / Sereno');
+    setHumorObs('');
+    setNotaGeralSaude('');
     setChecklist({
       trocaRoupas: 'Pendente',
       escovacaoDentes: 'Pendente',
       maosERosto: 'Pendente',
+      banhoTomado: 'Pendente',
+      pomadaProtetor: 'Pendente',
     });
 
     const resetObj = (st: StudentPaxData): StudentPaxData => ({
@@ -284,7 +366,7 @@ export default function PainelRotinaUnificado({
     if (!isProfessor) return;
     const nextState = !timerRunning;
     sincronizarCronometroGlobal(nextState);
-    showFeedback(nextState ? '⏱️ Cronômetro ligado e sincronizado com as Atividades!' : '⏸️ Cronômetro pausado.');
+    showFeedback(nextState ? '⏱️ Cronômetro ligado!' : '⏸️ Cronômetro pausado.');
   };
 
   // Mamadeira
@@ -394,8 +476,35 @@ export default function PainelRotinaUnificado({
     executarSalvarRefeicao(refeicaoNome, aceitacaoValor);
   };
 
-  // Soneca
-  const executarSoneca = (duracao: string) => {
+  // Soneca (Reloginho + Manual + Duração Rápida)
+  const executarSoneca = (desc: string, hFim: string) => {
+    const hInicio = horaSonecaInicio || '12:30';
+    setSonecaDesc(desc);
+    setHoraSonecaFim(hFim);
+
+    if (sonecaEscopo === 'coletiva' && onUpdateAllStudents) {
+      onUpdateAllStudents((st) => ({
+        ...st,
+        saudeCards: {
+          ...st.saudeCards,
+          soneca: { valor: desc, periodo: hInicio && hFim ? `${hInicio} às ${hFim}` : 'Hoje' },
+        },
+      }));
+      triggerCardConfirmacao('💤 Soneca Coletiva Salva', `Soneca registrada para toda a turma: ${desc}`);
+    } else {
+      if (onUpdateStudent) {
+        onUpdateStudent({
+          saudeCards: {
+            ...student.saudeCards,
+            soneca: { valor: desc, periodo: hInicio && hFim ? `${hInicio} às ${hFim}` : 'Hoje' },
+          },
+        });
+      }
+      triggerCardConfirmacao('💤 Soneca Salva', desc);
+    }
+  };
+
+  const handleToqueRapidoSoneca = (duracao: string) => {
     const hInicio = horaSonecaInicio || '12:30';
     let hFim = horaSonecaFim || '14:00';
     let desc = `Dormiu das ${hInicio} às ${hFim}`;
@@ -417,24 +526,35 @@ export default function PainelRotinaUnificado({
       hFim = '';
     }
 
-    setSonecaDesc(desc);
-    setHoraSonecaFim(hFim);
+    if (!validarCronometroAtivo('Registrar Soneca', () => executarSoneca(desc, hFim))) return;
+    executarSoneca(desc, hFim);
+  };
+
+  const handleAlterarHoraSonecaInicio = (novoInicio: string) => {
+    if (!novoInicio) return;
+    setHoraSonecaInicio(novoInicio);
+    const novoFim = calcHoraFimSoneca(novoInicio, 90);
+    setHoraSonecaFim(novoFim);
+    const novoPeriodo = `${novoInicio} às ${novoFim}`;
+    const descAtualizada = `Dormiu das ${novoInicio} às ${novoFim}`;
+    setSonecaDesc(descAtualizada);
 
     if (onUpdateStudent) {
       onUpdateStudent({
         saudeCards: {
           ...student.saudeCards,
-          soneca: { valor: desc, periodo: hInicio && hFim ? `${hInicio} às ${hFim}` : 'Hoje' },
+          soneca: { valor: descAtualizada, periodo: novoPeriodo },
         },
       });
     }
-
-    triggerCardConfirmacao('💤 Soneca Salva', desc);
   };
 
-  const handleToqueRapidoSoneca = (duracao: string) => {
-    if (!validarCronometroAtivo('Registrar Soneca', () => executarSoneca(duracao))) return;
-    executarSoneca(duracao);
+  const handleSalvarSonecaManual = () => {
+    const hInicio = horaSonecaInicio || '12:30';
+    const hFim = horaSonecaFim || '14:00';
+    const desc = sonecaDesc.trim() || `Dormiu das ${hInicio} às ${hFim}`;
+    if (!validarCronometroAtivo('Salvar Soneca Manual', () => executarSoneca(desc, hFim))) return;
+    executarSoneca(desc, hFim);
   };
 
   // Febre
@@ -459,11 +579,14 @@ export default function PainelRotinaUnificado({
     executarFebre(temp);
   };
 
-  // Fralda
+  // Fralda (5 Botões Rápidos + Microfone de Voz)
   const executarFralda = (tipo: string) => {
     let novaFralda = fraldaDesc;
     if (tipo === 'xixi') novaFralda = 'Apenas Xixi';
     else if (tipo === 'coco') novaFralda = 'Apenas Cocô';
+    else if (tipo === 'xixi_coco') novaFralda = 'Xixi e Cocô';
+    else if (tipo === 'pomada') novaFralda = fraldaDesc.includes('Pomada') ? fraldaDesc : `${fraldaDesc ? `${fraldaDesc} + ` : ''}Pomada Aplicada`;
+    else if (tipo === 'seca') novaFralda = 'Seca / Limpa';
 
     setFraldaDesc(novaFralda);
 
@@ -482,6 +605,25 @@ export default function PainelRotinaUnificado({
   const handleToqueRapidoFralda = (tipo: string) => {
     if (!validarCronometroAtivo('Troca de Fralda', () => executarFralda(tipo))) return;
     executarFralda(tipo);
+  };
+
+  // Peso Corporal
+  const handleSalvarPesoDireto = (valorDigitado: string) => {
+    if (!isProfessor) return;
+    const pesoNumerico = valorDigitado.replace(/kg/i, '').replace('º', '').trim();
+    setPeso(pesoNumerico || '14.0');
+    const cleanPeso = `${pesoNumerico || '14.0'} kg`;
+
+    if (onUpdateStudent) {
+      onUpdateStudent({
+        saudeCards: {
+          ...student.saudeCards,
+          peso: { valor: cleanPeso, status: 'Adequado' },
+        },
+      });
+    }
+
+    triggerCardConfirmacao('⚖️ Peso Atualizado', `Peso corporal: ${cleanPeso}`);
   };
 
   // Humor
@@ -505,7 +647,7 @@ export default function PainelRotinaUnificado({
     executarHumor(estado);
   };
 
-  // Higiene
+  // Higiene (5 Itens)
   const executarHigiene = (key: string, label: string) => {
     const statusAtual = checklist[key as keyof typeof checklist] || 'Pendente';
     const nextState = statusAtual === 'Realizado' ? 'Pendente' : 'Realizado';
@@ -513,7 +655,7 @@ export default function PainelRotinaUnificado({
     setChecklist(novoChecklist);
 
     if (onUpdateStudent) {
-      onUpdateStudent({ hygieneChecklist: novoChecklist });
+      onUpdateStudent({ higieneChecklist: novoChecklist });
     }
 
     triggerCardConfirmacao(nextState === 'Realizado' ? `✨ ${label} Marcado` : `🔄 ${label} Removido`, label);
@@ -522,6 +664,37 @@ export default function PainelRotinaUnificado({
   const handleToggleHigieneDireto = (key: string, label: string) => {
     if (!validarCronometroAtivo(`Cuidado (${label})`, () => executarHigiene(key, label))) return;
     executarHigiene(key, label);
+  };
+
+  // Salvar Situação Completa de Saúde
+  const handleSalvarSituacaoSaude = () => {
+    if (!validarCronometroAtivo('Consolidação de Saúde', () => {
+      if (onUpdateStudent) {
+        onUpdateStudent({
+          saudeCards: {
+            ...student.saudeCards,
+            soneca: { valor: sonecaDesc, periodo: horaSonecaInicio && horaSonecaFim ? `${horaSonecaInicio} às ${horaSonecaFim}` : 'Hoje' },
+            fraldas: { valor: fraldaDesc, periodo: 'Hoje' },
+            temperatura: { valor: `${temperatura}°C`, status: parseFloat(temperatura) >= 37.8 ? 'Alerta Febril' : 'Afebril' },
+            peso: { valor: `${peso} kg`, status: 'Adequado' },
+          },
+        });
+      }
+      triggerCardConfirmacao('🩺 Situação de Saúde Salva', 'Todos os cuidados de saúde foram atualizados!');
+    })) return;
+
+    if (onUpdateStudent) {
+      onUpdateStudent({
+        saudeCards: {
+          ...student.saudeCards,
+          soneca: { valor: sonecaDesc, periodo: horaSonecaInicio && horaSonecaFim ? `${horaSonecaInicio} às ${horaSonecaFim}` : 'Hoje' },
+          fraldas: { valor: fraldaDesc, periodo: 'Hoje' },
+          temperatura: { valor: `${temperatura}°C`, status: parseFloat(temperatura) >= 37.8 ? 'Alerta Febril' : 'Afebril' },
+          peso: { valor: `${peso} kg`, status: 'Adequado' },
+        },
+      });
+    }
+    triggerCardConfirmacao('🩺 Situação de Saúde Salva', 'Todos os cuidados de saúde foram atualizados!');
   };
 
   const percentAgua = Math.min(100, Math.round((aguaConsumo / (student.agua?.metaMl || 800)) * 100));
@@ -700,7 +873,7 @@ export default function PainelRotinaUnificado({
                   <button
                     key={vol}
                     type="button"
-                    onClick={() => setMamadeiraVolume(vol)}
+                    onClick={() => handleSelectMamadeiraVolume(vol)}
                     className={`py-1.5 text-xs font-black rounded-lg border transition cursor-pointer ${
                       mamadeiraVolume === vol
                         ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs'
@@ -865,24 +1038,24 @@ export default function PainelRotinaUnificado({
           </div>
         </div>
 
-        {/* SAÚDE, SONO & FRALDA */}
+        {/* SAÚDE, SONO, FRALDA & CUIDADOS (COMPLETO E RESTAURADO) */}
         <div id="secao-saude" className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4 scroll-mt-24">
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <span className="text-xl">🩺</span>
             <h4 className="text-base font-black text-slate-800">
-              Saúde, Sono, Fralda & Cuidados
+              Saúde, Sono, Fralda & Cuidados do Aluno
             </h4>
           </div>
 
-          {/* HUMOR */}
+          {/* ESTADO DE HUMOR */}
           <div className="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/95 space-y-2.5">
             <div className="flex items-center justify-between">
               <label className="font-black text-slate-700 block text-[11px] uppercase tracking-wider flex items-center gap-1.5">
                 <span>😊</span>
-                <span>Estado de Humor</span>
+                <span>Estado de Humor do Aluno</span>
               </label>
-              <span className="text-[10px] font-bold text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-lg">
-                Humor: <strong className="text-indigo-600 font-extrabold">{student.saudeCards?.humor?.valor || 'Calmo / Sereno'}</strong>
+              <span className="text-[10px] font-bold text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-lg shadow-2xs">
+                Humor: <strong className="text-indigo-600 font-extrabold">{humorEstado}</strong>
               </span>
             </div>
 
@@ -898,7 +1071,11 @@ export default function PainelRotinaUnificado({
                     key={item.estado}
                     type="button"
                     onClick={() => handleSalvarHumorDireto(item.estado)}
-                    className="p-2 rounded-xl border bg-white border-slate-200 hover:bg-indigo-50 text-slate-700 flex flex-col items-center justify-center gap-1 transition cursor-pointer text-center"
+                    className={`p-2 rounded-xl border flex flex-col items-center justify-center gap-1 transition cursor-pointer text-center ${
+                      humorEstado === item.estado
+                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs scale-102 font-extrabold'
+                        : 'bg-white border-slate-200 text-slate-700 hover:bg-indigo-50'
+                    }`}
                   >
                     <span className="text-base">{item.emoji}</span>
                     <span className="text-[9px] font-bold tracking-tight block leading-none">
@@ -910,51 +1087,176 @@ export default function PainelRotinaUnificado({
             )}
           </div>
 
+          {/* DUAS COLUNAS: SONECA COM RELOGINHO E FRALDA COM MICROFONE */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* SONECA */}
+            
+            {/* SUB-COLUNA ESQUERDA: SONECA E FEBRE */}
             <div className="space-y-4">
               <div id="secao-soneca" className="p-3.5 bg-slate-50/80 rounded-2xl border border-slate-200/90 space-y-3 scroll-mt-24">
-                <label className="font-black text-slate-700 block text-[11px] uppercase tracking-wider">
-                  💤 SONECA
-                </label>
+                <div className="flex flex-wrap items-center justify-between gap-1.5">
+                  <label className="font-black text-slate-700 block text-[11px] uppercase tracking-wider flex items-center gap-1.5">
+                    <span>💤</span>
+                    <span>SONECA / DESCANSO</span>
+                  </label>
 
-                {isProfessor && (
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    {['30m', '1h', '1h30', '2h', 'nao_dormiu'].map((btn) => (
+                  {/* Seletor Individual vs Coletiva */}
+                  {isProfessor && (
+                    <div className="flex items-center gap-1 bg-white p-0.5 rounded-xl border border-slate-200 shadow-2xs">
                       <button
-                        key={btn}
                         type="button"
-                        onClick={() => handleToqueRapidoSoneca(btn)}
-                        className="px-2.5 py-1 text-[11px] font-bold bg-white hover:bg-indigo-50 text-slate-700 rounded-lg border border-slate-200 transition cursor-pointer"
+                        onClick={() => setSonecaEscopo('individual')}
+                        className={`px-2 py-0.5 rounded-lg text-[10px] font-black transition cursor-pointer ${
+                          sonecaEscopo === 'individual' ? 'bg-indigo-600 text-white' : 'text-slate-500'
+                        }`}
                       >
-                        {btn}
+                        👤 Indiv.
                       </button>
-                    ))}
+                      <button
+                        type="button"
+                        onClick={() => setSonecaEscopo('coletiva')}
+                        className={`px-2 py-0.5 rounded-lg text-[10px] font-black transition cursor-pointer ${
+                          sonecaEscopo === 'coletiva' ? 'bg-indigo-600 text-white' : 'text-slate-500'
+                        }`}
+                      >
+                        👥 Turma
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* ⏰ RELOGINHO DE INÍCIO */}
+                {isProfessor && (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-black text-slate-600 text-[10px] uppercase tracking-wider flex items-center gap-1">
+                        <Clock size={12} className="text-indigo-600" />
+                        Início da Soneca:
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const now = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                          handleAlterarHoraSonecaInicio(now);
+                        }}
+                        className="text-[10px] font-black text-indigo-600 hover:underline cursor-pointer"
+                      >
+                        🕒 Agora
+                      </button>
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-xl px-2 py-1 shadow-2xs">
+                        <Clock size={12} className="text-indigo-600" />
+                        <input
+                          type="time"
+                          value={horaSonecaInicio}
+                          onChange={(e) => handleAlterarHoraSonecaInicio(e.target.value)}
+                          className="text-xs font-black text-slate-800 outline-none bg-transparent"
+                        />
+                      </div>
+
+                      {['12:00', '12:30', '13:00', '13:30'].map((h) => (
+                        <button
+                          key={h}
+                          type="button"
+                          onClick={() => handleAlterarHoraSonecaInicio(h)}
+                          className={`px-2 py-1 text-[10px] font-bold rounded-lg border transition cursor-pointer ${
+                            horaSonecaInicio === h
+                              ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs'
+                              : 'bg-white text-slate-700 border-slate-200'
+                          }`}
+                        >
+                          {h}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
 
-                <div className="p-2.5 bg-white rounded-xl font-bold text-slate-800 text-xs border border-slate-200">
-                  {sonecaDesc}
-                </div>
+                {/* DURAÇÃO RÁPIDA */}
+                {isProfessor && (
+                  <div>
+                    <label className="font-bold text-slate-600 block mb-1 text-[10px] uppercase tracking-wider">
+                      DURAÇÃO & 1-CLIQUE:
+                    </label>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {['30m', '1h', '1h30', '2h', 'nao_dormiu'].map((btn) => (
+                        <button
+                          key={btn}
+                          type="button"
+                          onClick={() => handleToqueRapidoSoneca(btn)}
+                          className="px-2.5 py-1 text-[11px] font-bold bg-white hover:bg-indigo-50 text-slate-700 rounded-lg border border-slate-200 shadow-2xs transition cursor-pointer"
+                        >
+                          {btn}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Resumo e Salvar Manual */}
+                {isProfessor ? (
+                  <div className="space-y-1.5 pt-1">
+                    <input
+                      type="text"
+                      value={sonecaDesc}
+                      onChange={(e) => setSonecaDesc(e.target.value)}
+                      placeholder="Ex: Dormiu das 12:30 às 14:00"
+                      className="w-full bg-white border border-slate-200 rounded-xl p-2 font-bold text-slate-800 text-xs outline-none focus:border-indigo-500 shadow-2xs"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleSalvarSonecaManual}
+                      className="w-full py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-2xs transition cursor-pointer"
+                    >
+                      💾 Salvar Soneca {sonecaEscopo === 'coletiva' ? '(Toda a Turma)' : `(${student.nome})`}
+                    </button>
+                  </div>
+                ) : (
+                  <div className="p-2.5 bg-white rounded-xl font-bold text-slate-800 text-xs border border-slate-200">
+                    {sonecaDesc}
+                  </div>
+                )}
               </div>
 
               {/* Febre */}
-              <div>
+              <div className="pt-1">
                 <label className="font-bold text-slate-600 block mb-1 text-[11px] uppercase tracking-wider">
-                  FEBRE (°C)
+                  FEBRE / TEMP (°C)
                 </label>
+                {isProfessor ? (
+                  <input
+                    type="text"
+                    value={temperatura}
+                    onChange={(e) => setTemperatura(e.target.value)}
+                    placeholder="Ex: 36.5"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 font-bold text-slate-800 text-xs outline-none focus:border-indigo-500"
+                  />
+                ) : (
+                  <div className="p-2.5 bg-emerald-50 text-emerald-800 rounded-xl font-bold text-xs">
+                    {temperatura}°C (Afebril)
+                  </div>
+                )}
+
                 {isProfessor && (
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    {['36.5', '37.0', '37.5', '38.0'].map((t) => (
+                  <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                    {[
+                      { temp: '36.5', label: '36,5°C' },
+                      { temp: '37.0', label: '37,0°C' },
+                      { temp: '37.5', label: '37,5°C' },
+                      { temp: '38.0', label: '38,0°C [!]' },
+                    ].map((btn) => (
                       <button
-                        key={t}
+                        key={btn.temp}
                         type="button"
-                        onClick={() => handleToqueRapidoFebre(t)}
+                        onClick={() => handleToqueRapidoFebre(btn.temp)}
                         className={`px-2 py-1 text-[11px] font-black rounded-lg border transition cursor-pointer ${
-                          temperatura === t ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-700'
+                          temperatura === btn.temp
+                            ? 'bg-indigo-600 text-white border-indigo-600'
+                            : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
                         }`}
                       >
-                        {t}°C
+                        {btn.label}
                       </button>
                     ))}
                   </div>
@@ -962,57 +1264,179 @@ export default function PainelRotinaUnificado({
               </div>
             </div>
 
-            {/* FRALDA & PESO */}
+            {/* SUB-COLUNA DIREITA: FRALDA COM MICROFONE E PESO */}
             <div className="space-y-3.5">
               <div>
-                <label className="font-bold text-slate-600 block text-[11px] uppercase tracking-wider mb-1">
-                  FRALDA
-                </label>
-                {isProfessor && (
+                <div className="flex items-center justify-between mb-1">
+                  <label className="font-bold text-slate-600 block text-[11px] uppercase tracking-wider">
+                    FRALDA (XIXI OU COCO)
+                  </label>
+                  {/* 🎙️ BOTÃO FALAR: MICROFONE */}
+                  {isProfessor && (
+                    <button
+                      type="button"
+                      onClick={() => handleVoiceRecord('fralda')}
+                      className={`flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition cursor-pointer ${
+                        isListeningFralda
+                          ? 'bg-rose-500 text-white animate-pulse'
+                          : 'text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200'
+                      }`}
+                    >
+                      <Mic size={12} />
+                      <span>FALAR: 🎙️</span>
+                    </button>
+                  )}
+                </div>
+
+                {isProfessor ? (
+                  <input
+                    type="text"
+                    value={fraldaDesc}
+                    onChange={(e) => setFraldaDesc(e.target.value)}
+                    placeholder="Ex: Fez Coco / Pomada"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 font-bold text-slate-800 text-xs outline-none focus:border-indigo-500"
+                  />
+                ) : (
+                  <div className="p-2.5 bg-slate-50 rounded-xl font-bold text-slate-800 text-xs">{fraldaDesc}</div>
+                )}
+              </div>
+
+              {/* 🧷 5 BOTÕES DE SELEÇÃO RÁPIDA DE FRALDA / TOALETE */}
+              {isProfessor && (
+                <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
+                  <span className="text-[10px] font-black uppercase text-slate-600 block tracking-wider">
+                    🧷 SELEÇÃO RÁPIDA DE FRALDA / TOALETE:
+                  </span>
                   <div className="grid grid-cols-2 gap-1.5">
                     <button
                       type="button"
                       onClick={() => handleToqueRapidoFralda('xixi')}
-                      className="p-2 text-xs font-bold bg-white hover:bg-sky-50 text-sky-800 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5"
+                      className="p-2 text-left text-xs font-bold bg-white hover:bg-sky-50 text-sky-800 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
                     >
-                      💧 Apenas Xixi
+                      <span>💧</span>
+                      <span>Apenas Xixi</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => handleToqueRapidoFralda('coco')}
-                      className="p-2 text-xs font-bold bg-white hover:bg-amber-50 text-amber-900 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5"
+                      className="p-2 text-left text-xs font-bold bg-white hover:bg-amber-50 text-amber-900 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
                     >
-                      💩 Apenas Cocô
+                      <span>💩</span>
+                      <span>Apenas Coco</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleToqueRapidoFralda('xixi_coco')}
+                      className="p-2 text-left text-xs font-bold bg-white hover:bg-indigo-50 text-indigo-900 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                    >
+                      <span>💧💩</span>
+                      <span>Xixi e Coco</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleToqueRapidoFralda('pomada')}
+                      className="p-2 text-left text-xs font-bold bg-white hover:bg-purple-50 text-purple-900 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                    >
+                      <span>🧴</span>
+                      <span>+ Pomada</span>
                     </button>
                   </div>
-                )}
-              </div>
-
-              {/* Peso */}
-              <div>
-                <label className="font-bold text-slate-600 text-[11px] uppercase tracking-wider block mb-1">
-                  PESO CORPORAL
-                </label>
-                <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between font-bold text-slate-800 text-xs">
-                  <span>{student.saudeCards?.peso?.valor || `${peso} kg`}</span>
-                  <span className="text-[10px] font-black uppercase text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">
-                    {student.saudeCards?.peso?.status || 'Adequado'}
-                  </span>
+                  <button
+                    type="button"
+                    onClick={() => handleToqueRapidoFralda('seca')}
+                    className="w-full p-2 text-left text-xs font-bold bg-white hover:bg-emerald-50 text-emerald-800 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-2xs justify-center"
+                  >
+                    <span>✨</span>
+                    <span>Seca / Limpa</span>
+                  </button>
                 </div>
+              )}
+
+              {/* ⚖️ PESO CORPORAL */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="font-bold text-slate-600 text-[11px] uppercase tracking-wider flex items-center gap-1">
+                    <span>⚖️</span>
+                    <span>PESO CORPORAL (KG)</span>
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowModalHistoricoPeso(true)}
+                    className="text-[10px] font-black text-indigo-600 hover:underline cursor-pointer flex items-center gap-1 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100"
+                  >
+                    <Scale size={11} className="text-indigo-600" />
+                    <span>Ver Histórico</span>
+                  </button>
+                </div>
+                {isProfessor ? (
+                  <div className="flex items-center gap-1.5">
+                    <div className="relative flex-1">
+                      <input
+                        type="text"
+                        value={peso}
+                        onChange={(e) => setPeso(e.target.value)}
+                        placeholder="14.0"
+                        className="w-full bg-white border border-slate-300 rounded-xl p-2 font-black text-slate-800 text-xs outline-none focus:border-indigo-500 pr-8 shadow-2xs"
+                      />
+                      <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400">
+                        kg
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const num = Math.max(2, parseFloat(peso.replace(',', '.')) || 14.0);
+                        const novo = (num - 0.1).toFixed(1);
+                        handleSalvarPesoDireto(novo);
+                      }}
+                      className="px-2 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-[11px] rounded-xl border border-slate-200 transition cursor-pointer"
+                    >
+                      -0.1
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const num = parseFloat(peso.replace(',', '.')) || 14.0;
+                        const novo = (num + 0.1).toFixed(1);
+                        handleSalvarPesoDireto(novo);
+                      }}
+                      className="px-2 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-[11px] rounded-xl border border-slate-200 transition cursor-pointer"
+                    >
+                      +0.1
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSalvarPesoDireto(peso)}
+                      className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-[11px] rounded-xl shadow-2xs transition cursor-pointer flex items-center gap-1"
+                    >
+                      <Check size={12} />
+                      Salvar
+                    </button>
+                  </div>
+                ) : (
+                  <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between font-bold text-slate-800 text-xs">
+                    <span>{peso} kg</span>
+                    <span className="text-[10px] font-black uppercase text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">
+                      Adequado
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
 
-          {/* HIGIENE */}
+          {/* ✨ CHECKLIST COMPLETO DE HIGIENE (5 ITENS) */}
           <div className="pt-2 border-t border-slate-100">
             <span className="text-[10px] font-black uppercase text-slate-400 block mb-2">
-              CHECKLIST DE HIGIENE
+              CHECKLIST DE HIGIENE & CUIDADOS PESSOAIS
             </span>
-            <div className="grid grid-cols-3 gap-2 text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
               {[
                 { key: 'trocaRoupas', label: 'Troca de Roupas', icon: '👕' },
-                { key: 'escovacaoDentes', label: 'Escovação', icon: '🪥' },
+                { key: 'escovacaoDentes', label: 'Escovação Dentes', icon: '🪥' },
                 { key: 'maosERosto', label: 'Mãos e Rosto', icon: '🧼' },
+                { key: 'banhoTomado', label: 'Banho Tomado', icon: '🛁' },
+                { key: 'pomadaProtetor', label: 'Pomada / Protetor', icon: '🧴' },
               ].map((item) => {
                 const status = (checklist as any)[item.key];
                 const isOk = status === 'Realizado';
@@ -1022,17 +1446,54 @@ export default function PainelRotinaUnificado({
                     type="button"
                     disabled={!isProfessor}
                     onClick={() => handleToggleHigieneDireto(item.key, item.label)}
-                    className={`p-2 rounded-xl border text-left transition flex items-center justify-between ${
-                      isOk ? 'bg-emerald-500 text-white font-extrabold' : 'bg-slate-50 text-slate-500'
-                    }`}
+                    className={`p-2.5 rounded-xl border text-left transition flex items-center justify-between ${
+                      isOk
+                        ? 'bg-emerald-500 border-emerald-600 text-white font-extrabold shadow-2xs scale-102'
+                        : 'bg-slate-50 border-slate-200 text-slate-500'
+                    } ${isProfessor ? 'cursor-pointer hover:border-slate-300' : 'cursor-default'}`}
                   >
-                    <span>{item.icon} {item.label}</span>
-                    <span>{isOk ? '✓' : '...'}</span>
+                    <div>
+                      <span className="mr-1.5">{item.icon}</span>
+                      <span className="font-bold text-[11px]">{item.label}</span>
+                    </div>
+                    <span className="text-[10px] font-black uppercase bg-white/20 px-1.5 py-0.5 rounded-md">
+                      {isOk ? '✓' : '...'}
+                    </span>
                   </button>
                 );
               })}
             </div>
           </div>
+
+          {/* NOTAS GERAIS DE SAÚDE */}
+          <div>
+            <label className="font-bold text-slate-600 block mb-1 text-xs">
+              NOTAS GERAIS DE SAÚDE / ROTINA DO BEBÊ
+            </label>
+            {isProfessor ? (
+              <input
+                type="text"
+                value={notaGeralSaude}
+                onChange={(e) => setNotaGeralSaude(e.target.value)}
+                placeholder="Observações de saúde adicionais..."
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 outline-none"
+              />
+            ) : (
+              <div className="p-3 bg-slate-50 rounded-xl text-xs text-slate-600 italic">
+                "{notaGeralSaude || 'Sem observações especiais hoje.'}"
+              </div>
+            )}
+          </div>
+
+          {isProfessor && (
+            <button
+              type="button"
+              onClick={handleSalvarSituacaoSaude}
+              className="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs rounded-xl transition shadow-xs cursor-pointer flex items-center justify-center gap-2"
+            >
+              <span>Salvar Situação de Saúde & Alertar Pais</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -1089,6 +1550,43 @@ export default function PainelRotinaUnificado({
         </div>
       )}
 
+      {/* MODAL HISTÓRICO DE PESO */}
+      {showModalHistoricoPeso && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-100 space-y-4 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <Scale size={20} className="text-indigo-600" />
+                <h3 className="text-base font-black text-slate-800">Histórico Ponderal</h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowModalHistoricoPeso(false)}
+                className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 font-bold"
+              >
+                ✕
+              </button>
+            </div>
+            <div className="p-4 bg-indigo-50 rounded-2xl border border-indigo-100 flex justify-between items-center">
+              <div>
+                <span className="text-[10px] font-black uppercase text-indigo-600">PESO ATUAL</span>
+                <p className="text-2xl font-black text-indigo-950">{peso} kg</p>
+              </div>
+              <span className="text-xs font-bold text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
+                Adequado
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowModalHistoricoPeso(false)}
+              className="w-full py-2.5 bg-slate-800 text-white font-black text-xs rounded-xl"
+            >
+              Fechar
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* MODAL COLETIVO */}
       <ModalConfirmarEncerramentoColetivo
         isOpen={showModalConfirmarColetivo}
@@ -1100,7 +1598,7 @@ export default function PainelRotinaUnificado({
         refeicaoTipo={refeicaoTipo}
         aceitacao={aceitacao}
         humor={humorEstado}
-        humorObs=""
+        humorObs={humorObs}
         soneca={sonecaDesc}
         fralda={fraldaDesc}
         temperatura={temperatura}
@@ -1123,7 +1621,7 @@ export default function PainelRotinaUnificado({
         refeicaoTipo={refeicaoTipo}
         aceitacao={aceitacao}
         humor={humorEstado}
-        humorObs=""
+        humorObs={humorObs}
         soneca={sonecaDesc}
         fralda={fraldaDesc}
         temperatura={temperatura}
