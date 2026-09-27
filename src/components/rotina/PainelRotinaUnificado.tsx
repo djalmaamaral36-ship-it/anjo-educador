@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Play, Pause, RotateCcw, AlertTriangle, CheckCircle2, Droplet, 
   Baby, Moon, Thermometer, Smile, Utensils, HeartHandshake,
@@ -12,6 +12,9 @@ import ModalRelatorioWhatsApp from './ModalRelatorioWhatsApp';
 import ModalConfirmarEncerramentoColetivo from './ModalConfirmarEncerramentoColetivo';
 import ModalDesligarIndividual, { TipoDesligamento } from './ModalDesligarIndividual';
 import BotaoFlutuanteOcorrencia from './BotaoFlutuanteOcorrencia';
+import { salvarDiarioRecebido, salvarAvisoMural } from '../../services/muralDiariosService';
+import { registrarLogAuditoriaLgpd } from '../../services/lgpdService';
+import { formatarDiarioCompletoWhatsApp } from '../../utils/formatadorDiarioWhatsApp';
 
 interface Props {
   student: StudentPaxData;
@@ -73,22 +76,9 @@ export default function PainelRotinaUnificado({
 }: Props) {
   const isProfessor = userRole === 'professor';
 
-  // --- MOTOR BLINDADO DO CRONÔMETRO (NUNCA TRAVA NO CELULAR) ---
-  const [timerRunning, setTimerRunning] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('anjo_cronometro_running');
-      if (saved !== null) return saved === 'true';
-    }
-    return !!student.presenca?.isTimerRunning;
-  });
-
-  const [secondsElapsed, setSecondsElapsed] = useState<number>(() => {
-    if (typeof window !== 'undefined') {
-      const savedSec = localStorage.getItem('anjo_cronometro_seconds');
-      if (savedSec) return parseInt(savedSec, 10) || 0;
-    }
-    return 0;
-  });
+  // --- CRONÔMETRO SINCRONIZADO NUVEM / CELULAR ---
+  const [timerRunning, setTimerRunning] = useState(!!student.presenca?.isTimerRunning);
+  const [secondsElapsed, setSecondsElapsed] = useState(0);
 
   const formatTimer = (totalSec: number) => {
     const hrs = Math.floor(totalSec / 3600).toString().padStart(2, '0');
@@ -97,24 +87,40 @@ export default function PainelRotinaUnificado({
     return `${hrs}:${mins}:${secs}`;
   };
 
-  // Ticker contínuo de 1 em 1 segundo
+  // Sincronizador de tempo real por Timestamp (mesmo segundo no Celular, PC e Painel dos Pais)
   useEffect(() => {
     let interval: any = null;
-    if (timerRunning) {
-      interval = setInterval(() => {
-        setSecondsElapsed((prev) => {
-          const next = prev + 1;
-          if (typeof window !== 'undefined' && next % 5 === 0) {
-            localStorage.setItem('anjo_cronometro_seconds', next.toString());
+    const isRunning = !!student.presenca?.isTimerRunning;
+    setTimerRunning(isRunning);
+
+    const updateTime = () => {
+      if (isRunning && student.presenca?.startTimestamp) {
+        const now = Date.now();
+        const elapsed = Math.max(0, Math.floor((now - student.presenca.startTimestamp) / 1000) - (student.presenca.totalPausedSeconds || 0));
+        setSecondsElapsed(elapsed);
+      } else if (!isRunning) {
+        if (student.presenca?.tempoEmAulaFormatado && student.presenca.tempoEmAulaFormatado !== '00:00:00') {
+          const parts = student.presenca.tempoEmAulaFormatado.split(':');
+          if (parts.length === 3) {
+            const h = parseInt(parts[0], 10) || 0;
+            const m = parseInt(parts[1], 10) || 0;
+            const s = parseInt(parts[2], 10) || 0;
+            setSecondsElapsed(h * 3600 + m * 60 + s);
           }
-          return next;
-        });
-      }, 1000);
+        }
+      }
+    };
+
+    updateTime();
+
+    if (isRunning) {
+      interval = setInterval(updateTime, 1000);
     }
+
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [timerRunning]);
+  }, [student.presenca?.isTimerRunning, student.presenca?.startTimestamp, student.presenca?.totalPausedSeconds, student.presenca?.tempoEmAulaFormatado]);
 
   // --- ESTADOS DA ROTINA ---
   const [refeicaoTipo, setRefeicaoTipo] = useState('Mamadeira');
@@ -142,7 +148,7 @@ export default function PainelRotinaUnificado({
   const [notaGeralSaude, setNotaGeralSaude] = useState('');
   const [showModalHistoricoPeso, setShowModalHistoricoPeso] = useState(false);
 
-  // Sincronização de dados do aluno sem derrubar o cronômetro
+  // Sincronização de propriedades
   useEffect(() => {
     setAguaConsumo(student.agua?.consumoMl || 0);
     setCoposContador(student.agua?.coposServidos || 0);
@@ -167,9 +173,8 @@ export default function PainelRotinaUnificado({
   }, [
     student.id,
     student.agua?.consumoMl,
-    student.agua?.coposServidos,
     student.alimentacao?.mamadeirasServidas,
-    student.alimentacao?.mamadeirasMlTotal,
+    student.alimentacao?.ultimoVolume,
     student.saudeCards?.soneca?.valor,
     student.saudeCards?.fraldas?.valor,
     student.saudeCards?.temperatura?.valor,
@@ -178,14 +183,15 @@ export default function PainelRotinaUnificado({
     student.higieneChecklist,
   ]);
 
-  // Microfone de Voz
+  // Microfone
   const [isListeningHumor, setIsListeningHumor] = useState(false);
   const [isListeningFralda, setIsListeningFralda] = useState(false);
 
   const handleVoiceRecord = (field: 'humor' | 'fralda') => {
+    if (!isProfessor) return;
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      showFeedback('⚠️ Reconhecimento de voz não disponível neste navegador.');
+      showFeedback('⚠️ Reconhecimento de voz não suportado neste navegador.');
       return;
     }
 
@@ -224,7 +230,7 @@ export default function PainelRotinaUnificado({
     }
   };
 
-  // Checklist de Higiene
+  // Checklist de Higiene (5 itens)
   const [checklist, setChecklist] = useState<{
     trocaRoupas: 'Realizado' | 'Pendente';
     escovacaoDentes: 'Realizado' | 'Pendente';
@@ -258,12 +264,12 @@ export default function PainelRotinaUnificado({
     setTimeout(() => setCardConfirmacao(null), 4500);
   };
 
-  // Liga/Desliga com persistência no Celular
+  // Sincronização Oficial do Cronômetro
   const sincronizarCronometroGlobal = (running: boolean) => {
     setTimerRunning(running);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('anjo_cronometro_running', running ? 'true' : 'false');
-      localStorage.setItem('anjo_cronometro_seconds', secondsElapsed.toString());
+    let startTs = student.presenca?.startTimestamp;
+    if (running && !startTs) {
+      startTs = Date.now() - secondsElapsed * 1000;
     }
 
     const payload = {
@@ -271,6 +277,7 @@ export default function PainelRotinaUnificado({
         ...student.presenca,
         isTimerRunning: running,
         status: running ? ('em_aula' as const) : student.presenca.status,
+        startTimestamp: running ? startTs : null,
         tempoEmAulaFormatado: formatTimer(secondsElapsed),
       },
     };
@@ -289,6 +296,7 @@ export default function PainelRotinaUnificado({
   };
 
   const validarCronometroAtivo = (acaoNome: string, executarAcao: () => void): boolean => {
+    if (!isProfessor) return false;
     if (!timerRunning) {
       setAcaoPendenteCronometro({ nome: acaoNome, executar: executarAcao });
       setShowModalCronometroDesligado(true);
@@ -300,7 +308,7 @@ export default function PainelRotinaUnificado({
   const handleLigarCronometroEExecutarPendente = () => {
     sincronizarCronometroGlobal(true);
     setShowModalCronometroDesligado(false);
-    showFeedback('⏱️ Cronômetro iniciado com sucesso!');
+    showFeedback('⏱️ Cronômetro iniciado!');
     if (acaoPendenteCronometro) {
       const fn = acaoPendenteCronometro.executar;
       setTimeout(() => {
@@ -311,11 +319,9 @@ export default function PainelRotinaUnificado({
   };
 
   const handleResetTimer = () => {
+    if (!isProfessor) return;
     setSecondsElapsed(0);
     sincronizarCronometroGlobal(false);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('anjo_cronometro_seconds', '0');
-    }
     setAguaConsumo(0);
     setCoposContador(0);
     setMamadeirasContador(0);
@@ -396,12 +402,13 @@ export default function PainelRotinaUnificado({
   };
 
   const handleToggleTimer = () => {
+    if (!isProfessor) return;
     const nextState = !timerRunning;
     sincronizarCronometroGlobal(nextState);
     showFeedback(nextState ? '⏱️ Cronômetro ligado!' : '⏸️ Cronômetro pausado.');
   };
 
-  // Mamadeira
+  // Mamadeira (Sem mexer em água)
   const executarSalvarMamadeira = () => {
     const novoContador = mamadeirasContador + 1;
     const novoTotalMl = (student.alimentacao?.mamadeirasMlTotal || 0) + mamadeiraVolume;
@@ -434,7 +441,7 @@ export default function PainelRotinaUnificado({
     executarSalvarMamadeira();
   };
 
-  // Água
+  // Água (Sem mexer em mamadeira)
   const executarAdicionarAgua = () => {
     const novoTotal = aguaConsumo + copoSelecionado;
     const novosCopos = coposContador + 1;
@@ -508,7 +515,7 @@ export default function PainelRotinaUnificado({
     executarSalvarRefeicao(refeicaoNome, aceitacaoValor);
   };
 
-  // Soneca
+  // Soneca (Individual ou Coletiva)
   const executarSoneca = (desc: string, hFim: string) => {
     const hInicio = horaSonecaInicio || '12:30';
     setSonecaDesc(desc);
@@ -641,6 +648,7 @@ export default function PainelRotinaUnificado({
 
   // Peso Corporal
   const handleSalvarPesoDireto = (valorDigitado: string) => {
+    if (!isProfessor) return;
     const pesoNumerico = valorDigitado.replace(/kg/i, '').replace('º', '').trim();
     setPeso(pesoNumerico || '14.0');
     const cleanPeso = `${pesoNumerico || '14.0'} kg`;
@@ -686,7 +694,7 @@ export default function PainelRotinaUnificado({
     setChecklist(novoChecklist);
 
     if (onUpdateStudent) {
-      onUpdateStudent({ hygieneChecklist: novoChecklist });
+      onUpdateStudent({ higieneChecklist: novoChecklist });
     }
 
     triggerCardConfirmacao(nextState === 'Realizado' ? `✨ ${label} Marcado` : `🔄 ${label} Removido`, label);
@@ -748,6 +756,47 @@ export default function PainelRotinaUnificado({
         </div>
       )}
 
+      {/* BANNER DE IDENTIFICAÇÃO DE MODO (PAIS VS PROFESSORA) */}
+      {!isProfessor ? (
+        <div className="p-4 rounded-2xl bg-indigo-50/80 border border-indigo-200/80 flex items-center justify-between text-xs text-indigo-950">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center flex-shrink-0">
+              <Lock size={18} />
+            </div>
+            <div>
+              <p className="font-black text-slate-800">
+                Visualização Exclusiva do Responsável (Modo Acompanhamento)
+              </p>
+              <p className="text-slate-600 mt-0.5">
+                Você está acompanhando a rotina em tempo real de <strong>{student.nome}</strong>.
+              </p>
+            </div>
+          </div>
+          <span className="text-[10px] font-black text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
+            Tempo Real Conectado
+          </span>
+        </div>
+      ) : (
+        <div className="p-4 rounded-2xl bg-emerald-50/80 border border-emerald-200 flex items-center justify-between text-xs text-emerald-950">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center flex-shrink-0">
+              <CheckCircle2 size={18} />
+            </div>
+            <div>
+              <p className="font-black text-slate-800">
+                Modo Professora Ativo — Edição Liberada
+              </p>
+              <p className="text-slate-600 mt-0.5">
+                Os dados controlados nesta tela são transmitidos instantaneamente para a família de <strong>{student.nome}</strong>.
+              </p>
+            </div>
+          </div>
+          <span className="text-[10px] font-black text-indigo-700 bg-white border border-indigo-200 px-3 py-1 rounded-full">
+            Painel Unificado
+          </span>
+        </div>
+      )}
+
       {/* FEEDBACK TOAST */}
       {feedbackMsg && (
         <div className="p-3.5 bg-emerald-600 text-white font-bold text-xs rounded-2xl shadow-lg flex items-center gap-2 animate-in fade-in zoom-in-95 duration-150">
@@ -761,7 +810,7 @@ export default function PainelRotinaUnificado({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
           <div>
             <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider">
-              CLASSE E PRESENÇA DO ALUNO
+              {isProfessor ? 'CLASSE E PRESENÇA DO ALUNO' : 'PERMANÊNCIA & TEMPO EM AULA'}
             </span>
             <h3 className="text-lg sm:text-xl font-black text-slate-800">
               {timerRunning ? `Em Aula — ${student.nome}` : `Aula Pausada (${student.nome})`}
@@ -787,56 +836,77 @@ export default function PainelRotinaUnificado({
                 {formatTimer(secondsElapsed)}
               </span>
             </div>
-            <button
-              type="button"
-              onClick={handleResetTimer}
-              title="Zerar cronômetro e limpar rotina para novo dia"
-              className="text-[10px] font-bold text-rose-300 hover:text-rose-100 bg-rose-950/50 hover:bg-rose-950 px-2 py-1 rounded-lg transition border border-rose-800/40 cursor-pointer"
-            >
-              Zerar Dia
-            </button>
+            {isProfessor && (
+              <button
+                type="button"
+                onClick={handleResetTimer}
+                title="Zerar cronômetro e limpar rotina para novo dia"
+                className="text-[10px] font-bold text-rose-300 hover:text-rose-100 bg-rose-950/50 hover:bg-rose-950 px-2 py-1 rounded-lg transition border border-rose-800/40 cursor-pointer"
+              >
+                Zerar Dia
+              </button>
+            )}
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            {!timerRunning ? (
-              <button
-                type="button"
-                onClick={handleToggleTimer}
-                className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white text-xs font-black rounded-xl transition shadow-xs flex items-center gap-1.5 cursor-pointer"
-              >
-                <Play size={13} className="fill-white" />
-                <span>Ligar Cronômetro</span>
-              </button>
+            {isProfessor ? (
+              <>
+                {!timerRunning ? (
+                  <button
+                    type="button"
+                    onClick={handleToggleTimer}
+                    className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-98 text-white text-xs font-black rounded-xl transition shadow-xs flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <Play size={13} className="fill-white" />
+                    <span>Ligar Cronômetro</span>
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setShowModalConfirmarColetivo(true)}
+                    className="px-3.5 py-2 bg-slate-900 hover:bg-rose-900 active:scale-98 text-white text-xs font-black rounded-xl transition shadow-xs flex items-center gap-1.5 cursor-pointer border border-slate-700"
+                  >
+                    <Clock size={13} className="text-amber-400" />
+                    <span>Desligar Coletivo (Encerrar Aulas)</span>
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={handleToggleTimer}
+                  className={`px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
+                    timerRunning ? 'bg-amber-500 hover:bg-amber-600 text-white' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200'
+                  }`}
+                >
+                  {timerRunning ? <Pause size={13} /> : <Play size={13} />}
+                  <span>{timerRunning ? 'Pausar' : 'Continuar'}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setShowModalRelatorio(true)}
+                  className="px-3 py-2 bg-emerald-700 hover:bg-emerald-800 active:scale-98 text-white text-xs font-bold rounded-xl transition shadow-xs flex items-center gap-1.5 cursor-pointer"
+                >
+                  <MessageSquare size={13} />
+                  <span>Boletim WhatsApp</span>
+                </button>
+              </>
             ) : (
-              <button
-                type="button"
-                onClick={() => setShowModalConfirmarColetivo(true)}
-                className="px-3.5 py-2 bg-slate-900 hover:bg-rose-900 active:scale-98 text-white text-xs font-black rounded-xl transition shadow-xs flex items-center gap-1.5 cursor-pointer border border-slate-700"
-              >
-                <Clock size={13} className="text-amber-400" />
-                <span>Desligar Coletivo (Encerrar Aulas)</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <div className="px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-600 flex items-center gap-2">
+                  <Clock size={14} className="text-emerald-600" />
+                  <span>Tempo ao vivo registrado pela escola</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowModalRelatorio(true)}
+                  className="px-3.5 py-2 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800 text-xs font-bold rounded-xl transition flex items-center gap-1.5 cursor-pointer"
+                >
+                  <MessageSquare size={14} className="text-emerald-600" />
+                  <span>Ver Boletim do Dia</span>
+                </button>
+              </div>
             )}
-
-            <button
-              type="button"
-              onClick={handleToggleTimer}
-              className={`px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer ${
-                timerRunning ? 'bg-amber-500 hover:bg-amber-600 text-white' : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200'
-              }`}
-            >
-              {timerRunning ? <Pause size={13} /> : <Play size={13} />}
-              <span>{timerRunning ? 'Pausar' : 'Continuar'}</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setShowModalRelatorio(true)}
-              className="px-3 py-2 bg-emerald-700 hover:bg-emerald-800 active:scale-98 text-white text-xs font-bold rounded-xl transition shadow-xs flex items-center gap-1.5 cursor-pointer"
-            >
-              <MessageSquare size={13} />
-              <span>Boletim WhatsApp</span>
-            </button>
           </div>
         </div>
       </div>
@@ -866,15 +936,21 @@ export default function PainelRotinaUnificado({
 
             <div>
               <label className="font-bold text-slate-600 block mb-1">ACEITAÇÃO</label>
-              <select
-                value={aceitacao}
-                onChange={(e) => setAceitacao(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 font-bold text-slate-800 outline-none cursor-pointer"
-              >
-                <option value="Tomou Tudo">Tomou Tudo</option>
-                <option value="Pouco">Pouco</option>
-                <option value="Recusou">Recusou</option>
-              </select>
+              {isProfessor ? (
+                <select
+                  value={aceitacao}
+                  onChange={(e) => setAceitacao(e.target.value)}
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 font-bold text-slate-800 outline-none cursor-pointer"
+                >
+                  <option value="Tomou Tudo">Tomou Tudo</option>
+                  <option value="Pouco">Pouco</option>
+                  <option value="Recusou">Recusou</option>
+                </select>
+              ) : (
+                <div className="p-2.5 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-xl font-bold">
+                  {aceitacao}
+                </div>
+              )}
             </div>
           </div>
 
@@ -886,31 +962,35 @@ export default function PainelRotinaUnificado({
                 {mamadeiraVolume} ml
               </span>
             </div>
-            <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5 pt-1">
-              {[60, 90, 120, 150, 180, 210, 240, 300].map((vol) => (
-                <button
-                  key={vol}
-                  type="button"
-                  onClick={() => setMamadeiraVolume(vol)}
-                  className={`py-1.5 text-xs font-black rounded-lg border transition cursor-pointer ${
-                    mamadeiraVolume === vol
-                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs'
-                      : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
-                  }`}
-                >
-                  {vol}ml
-                </button>
-              ))}
-            </div>
+            {isProfessor && (
+              <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5 pt-1">
+                {[60, 90, 120, 150, 180, 210, 240, 300].map((vol) => (
+                  <button
+                    key={vol}
+                    type="button"
+                    onClick={() => setMamadeiraVolume(vol)}
+                    className={`py-1.5 text-xs font-black rounded-lg border transition cursor-pointer ${
+                      mamadeiraVolume === vol
+                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs'
+                        : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                    }`}
+                  >
+                    {vol}ml
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
 
-          <button
-            type="button"
-            onClick={handleSalvarMamadeira}
-            className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-black text-xs rounded-xl transition shadow-xs cursor-pointer flex items-center justify-center gap-2"
-          >
-            <span>+ Registrar Mamadeira ({mamadeiraVolume} ml)</span>
-          </button>
+          {isProfessor && (
+            <button
+              type="button"
+              onClick={handleSalvarMamadeira}
+              className="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-black text-xs rounded-xl transition shadow-xs cursor-pointer flex items-center justify-center gap-2"
+            >
+              <span>+ Registrar Mamadeira ({mamadeiraVolume} ml)</span>
+            </button>
+          )}
         </div>
 
         {/* HIDRATAÇÃO ÁGUA */}
@@ -927,25 +1007,27 @@ export default function PainelRotinaUnificado({
             </div>
 
             <p className="text-xs text-slate-500 mt-2">
-              Escolha a quantidade de água servida em mL para {student.nome}.
+              Quantidade de água servida em mL para {student.nome}.
             </p>
 
-            <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 pt-3">
-              {[50, 100, 150, 200, 250, 300].map((ml) => (
-                <button
-                  key={ml}
-                  type="button"
-                  onClick={() => setCopoSelecionado(ml)}
-                  className={`py-2 text-xs font-black rounded-xl border transition cursor-pointer ${
-                    copoSelecionado === ml
-                      ? 'bg-sky-500 text-white border-sky-500 shadow-2xs'
-                      : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
-                  }`}
-                >
-                  {ml}ml
-                </button>
-              ))}
-            </div>
+            {isProfessor && (
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 pt-3">
+                {[50, 100, 150, 200, 250, 300].map((ml) => (
+                  <button
+                    key={ml}
+                    type="button"
+                    onClick={() => setCopoSelecionado(ml)}
+                    className={`py-2 text-xs font-black rounded-xl border transition cursor-pointer ${
+                      copoSelecionado === ml
+                        ? 'bg-sky-500 text-white border-sky-500 shadow-2xs'
+                        : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
+                    }`}
+                  >
+                    {ml}ml
+                  </button>
+                ))}
+              </div>
+            )}
 
             <div className="p-4 mt-4 bg-sky-50/60 rounded-2xl border border-sky-100 flex items-center justify-between">
               <div>
@@ -965,14 +1047,16 @@ export default function PainelRotinaUnificado({
             </div>
           </div>
 
-          <button
-            type="button"
-            onClick={handleAdicionarAgua}
-            className="w-full py-3 bg-sky-500 hover:bg-sky-600 text-white font-black text-xs rounded-xl transition shadow-xs cursor-pointer flex items-center justify-center gap-2"
-          >
-            <Droplet size={16} />
-            <span>Oferecer Copo (+{copoSelecionado}ml) — Jarrinha Sobe!</span>
-          </button>
+          {isProfessor && (
+            <button
+              type="button"
+              onClick={handleAdicionarAgua}
+              className="w-full py-3 bg-sky-500 hover:bg-sky-600 text-white font-black text-xs rounded-xl transition shadow-xs cursor-pointer flex items-center justify-center gap-2"
+            >
+              <Droplet size={16} />
+              <span>Oferecer Copo (+{copoSelecionado}ml) — Jarrinha Sobe!</span>
+            </button>
+          )}
         </div>
       </div>
 
@@ -1012,35 +1096,43 @@ export default function PainelRotinaUnificado({
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
-                    <button
-                      type="button"
-                      onClick={() => handleSalvarRefeicaoDireta(item.nome, 'Comeu Tudo')}
-                      className={`px-2.5 py-1.5 text-[10px] font-black rounded-lg transition ${
-                        statusAtual === 'Comeu Tudo' ? 'bg-emerald-600 text-white' : 'bg-emerald-500 text-white'
-                      }`}
-                    >
-                      ✓ Comeu Tudo
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleSalvarRefeicaoDireta(item.nome, 'Aceitou Bem')}
-                      className={`px-2.5 py-1.5 text-[10px] font-black rounded-lg transition ${
-                        statusAtual === 'Aceitou Bem' ? 'bg-sky-600 text-white' : 'bg-sky-500 text-white'
-                      }`}
-                    >
-                      Aceitou Bem
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleSalvarRefeicaoDireta(item.nome, 'Rejeitou')}
-                      className={`px-2.5 py-1.5 text-[10px] font-black rounded-lg transition ${
-                        statusAtual === 'Rejeitou' ? 'bg-rose-700 text-white' : 'bg-rose-500 text-white'
-                      }`}
-                    >
-                      ✕ Rejeitou
-                    </button>
-                  </div>
+                  {isProfessor ? (
+                    <div className="flex items-center gap-1.5 shrink-0 flex-wrap">
+                      <button
+                        type="button"
+                        onClick={() => handleSalvarRefeicaoDireta(item.nome, 'Comeu Tudo')}
+                        className={`px-2.5 py-1.5 text-[10px] font-black rounded-lg transition cursor-pointer ${
+                          statusAtual === 'Comeu Tudo' ? 'bg-emerald-600 text-white' : 'bg-emerald-500 text-white'
+                        }`}
+                      >
+                        ✓ Comeu Tudo
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSalvarRefeicaoDireta(item.nome, 'Aceitou Bem')}
+                        className={`px-2.5 py-1.5 text-[10px] font-black rounded-lg transition cursor-pointer ${
+                          statusAtual === 'Aceitou Bem' ? 'bg-sky-600 text-white' : 'bg-sky-500 text-white'
+                        }`}
+                      >
+                        Aceitou Bem
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleSalvarRefeicaoDireta(item.nome, 'Rejeitou')}
+                        className={`px-2.5 py-1.5 text-[10px] font-black rounded-lg transition cursor-pointer ${
+                          statusAtual === 'Rejeitou' ? 'bg-rose-700 text-white' : 'bg-rose-500 text-white'
+                        }`}
+                      >
+                        ✕ Rejeitou
+                      </button>
+                    </div>
+                  ) : (
+                    <span className={`px-2.5 py-1 text-xs font-bold rounded-lg ${
+                      statusAtual !== 'SEM REGISTRO' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'
+                    }`}>
+                      {statusAtual}
+                    </span>
+                  )}
                 </div>
               );
             })}
@@ -1052,7 +1144,7 @@ export default function PainelRotinaUnificado({
           <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
             <span className="text-xl">🩺</span>
             <h4 className="text-base font-black text-slate-800">
-              Saúde, Sono, Fralda & Cuidados do Aluno
+              Saúde, Sono, Fralda & Cuidados
             </h4>
           </div>
 
@@ -1061,37 +1153,43 @@ export default function PainelRotinaUnificado({
             <div className="flex items-center justify-between">
               <label className="font-black text-slate-700 block text-[11px] uppercase tracking-wider flex items-center gap-1.5">
                 <span>😊</span>
-                <span>Estado de Humor do Aluno</span>
+                <span>Estado de Humor</span>
               </label>
               <span className="text-[10px] font-bold text-slate-500 bg-white border border-slate-200 px-2 py-0.5 rounded-lg shadow-2xs">
                 Humor: <strong className="text-indigo-600 font-extrabold">{humorEstado}</strong>
               </span>
             </div>
 
-            <div className="grid grid-cols-4 gap-2">
-              {[
-                { estado: 'Feliz', emoji: '😊' },
-                { estado: 'Calmo / Sereno', emoji: '😌' },
-                { estado: 'Cansado / Sonolento', emoji: '😴' },
-                { estado: 'Choroso / Inquieto', emoji: '😢' },
-              ].map((item) => (
-                <button
-                  key={item.estado}
-                  type="button"
-                  onClick={() => handleSalvarHumorDireto(item.estado)}
-                  className={`p-2 rounded-xl border flex flex-col items-center justify-center gap-1 transition cursor-pointer text-center ${
-                    humorEstado === item.estado
-                      ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs scale-102 font-extrabold'
-                      : 'bg-white border-slate-200 text-slate-700 hover:bg-indigo-50'
-                  }`}
-                >
-                  <span className="text-base">{item.emoji}</span>
-                  <span className="text-[9px] font-bold tracking-tight block leading-none">
-                    {item.estado.split(' ')[0]}
-                  </span>
-                </button>
-              ))}
-            </div>
+            {isProfessor ? (
+              <div className="grid grid-cols-4 gap-2">
+                {[
+                  { estado: 'Feliz', emoji: '😊' },
+                  { estado: 'Calmo / Sereno', emoji: '😌' },
+                  { estado: 'Cansado / Sonolento', emoji: '😴' },
+                  { estado: 'Choroso / Inquieto', emoji: '😢' },
+                ].map((item) => (
+                  <button
+                    key={item.estado}
+                    type="button"
+                    onClick={() => handleSalvarHumorDireto(item.estado)}
+                    className={`p-2 rounded-xl border flex flex-col items-center justify-center gap-1 transition cursor-pointer text-center ${
+                      humorEstado === item.estado
+                        ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs scale-102 font-extrabold'
+                        : 'bg-white border-slate-200 text-slate-700 hover:bg-indigo-50'
+                    }`}
+                  >
+                    <span className="text-base">{item.emoji}</span>
+                    <span className="text-[9px] font-bold tracking-tight block leading-none">
+                      {item.estado.split(' ')[0]}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <div className="p-2.5 bg-white border border-slate-200 rounded-xl text-center">
+                <span className="text-xs font-bold text-slate-700">{student.nome} está {humorEstado} hoje.</span>
+              </div>
+            )}
           </div>
 
           {/* SONECA & FRALDA */}
@@ -1103,113 +1201,125 @@ export default function PainelRotinaUnificado({
                 <div className="flex flex-wrap items-center justify-between gap-1.5">
                   <label className="font-black text-slate-700 block text-[11px] uppercase tracking-wider flex items-center gap-1.5">
                     <span>💤</span>
-                    <span>SONECA / DESCANSO</span>
+                    <span>SONECA</span>
                   </label>
 
-                  <div className="flex items-center gap-1 bg-white p-0.5 rounded-xl border border-slate-200 shadow-2xs">
-                    <button
-                      type="button"
-                      onClick={() => setSonecaEscopo('individual')}
-                      className={`px-2 py-0.5 rounded-lg text-[10px] font-black transition cursor-pointer ${
-                        sonecaEscopo === 'individual' ? 'bg-indigo-600 text-white' : 'text-slate-500'
-                      }`}
-                    >
-                      👤 Indiv.
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setSonecaEscopo('coletiva')}
-                      className={`px-2 py-0.5 rounded-lg text-[10px] font-black transition cursor-pointer ${
-                        sonecaEscopo === 'coletiva' ? 'bg-indigo-600 text-white' : 'text-slate-500'
-                      }`}
-                    >
-                      👥 Turma
-                    </button>
-                  </div>
+                  {isProfessor && (
+                    <div className="flex items-center gap-1 bg-white p-0.5 rounded-xl border border-slate-200 shadow-2xs">
+                      <button
+                        type="button"
+                        onClick={() => setSonecaEscopo('individual')}
+                        className={`px-2 py-0.5 rounded-lg text-[10px] font-black transition cursor-pointer ${
+                          sonecaEscopo === 'individual' ? 'bg-indigo-600 text-white' : 'text-slate-500'
+                        }`}
+                      >
+                        👤 Indiv.
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setSonecaEscopo('coletiva')}
+                        className={`px-2 py-0.5 rounded-lg text-[10px] font-black transition cursor-pointer ${
+                          sonecaEscopo === 'coletiva' ? 'bg-indigo-600 text-white' : 'text-slate-500'
+                        }`}
+                      >
+                        👥 Turma
+                      </button>
+                    </div>
+                  )}
                 </div>
 
                 {/* RELOGINHO */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="font-black text-slate-600 text-[10px] uppercase tracking-wider flex items-center gap-1">
-                      <Clock size={12} className="text-indigo-600" />
-                      Início da Soneca:
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        const now = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-                        handleAlterarHoraSonecaInicio(now);
-                      }}
-                      className="text-[10px] font-black text-indigo-600 hover:underline cursor-pointer"
-                    >
-                      🕒 Agora
-                    </button>
-                  </div>
-
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-xl px-2 py-1 shadow-2xs">
-                      <Clock size={12} className="text-indigo-600" />
-                      <input
-                        type="time"
-                        value={horaSonecaInicio}
-                        onChange={(e) => handleAlterarHoraSonecaInicio(e.target.value)}
-                        className="text-xs font-black text-slate-800 outline-none bg-transparent"
-                      />
+                {isProfessor ? (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="font-black text-slate-600 text-[10px] uppercase tracking-wider flex items-center gap-1">
+                        <Clock size={12} className="text-indigo-600" />
+                        Início da Soneca:
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const now = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+                          handleAlterarHoraSonecaInicio(now);
+                        }}
+                        className="text-[10px] font-black text-indigo-600 hover:underline cursor-pointer"
+                      >
+                        🕒 Agora
+                      </button>
                     </div>
 
-                    {['12:00', '12:30', '13:00', '13:30'].map((h) => (
-                      <button
-                        key={h}
-                        type="button"
-                        onClick={() => handleAlterarHoraSonecaInicio(h)}
-                        className={`px-2 py-1 text-[10px] font-bold rounded-lg border transition cursor-pointer ${
-                          horaSonecaInicio === h
-                            ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs'
-                            : 'bg-white text-slate-700 border-slate-200'
-                        }`}
-                      >
-                        {h}
-                      </button>
-                    ))}
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      <div className="flex items-center gap-1 bg-white border border-slate-300 rounded-xl px-2 py-1 shadow-2xs">
+                        <Clock size={12} className="text-indigo-600" />
+                        <input
+                          type="time"
+                          value={horaSonecaInicio}
+                          onChange={(e) => handleAlterarHoraSonecaInicio(e.target.value)}
+                          className="text-xs font-black text-slate-800 outline-none bg-transparent"
+                        />
+                      </div>
+
+                      {['12:00', '12:30', '13:00', '13:30'].map((h) => (
+                        <button
+                          key={h}
+                          type="button"
+                          onClick={() => handleAlterarHoraSonecaInicio(h)}
+                          className={`px-2 py-1 text-[10px] font-bold rounded-lg border transition cursor-pointer ${
+                            horaSonecaInicio === h
+                              ? 'bg-indigo-600 text-white border-indigo-600 shadow-2xs'
+                              : 'bg-white text-slate-700 border-slate-200'
+                          }`}
+                        >
+                          {h}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                ) : null}
 
                 {/* DURAÇÃO RÁPIDA */}
-                <div>
-                  <label className="font-bold text-slate-600 block mb-1 text-[10px] uppercase tracking-wider">
-                    DURAÇÃO & 1-CLIQUE:
-                  </label>
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    {['30m', '1h', '1h30', '2h', 'nao_dormiu'].map((btn) => (
-                      <button
-                        key={btn}
-                        type="button"
-                        onClick={() => handleToqueRapidoSoneca(btn)}
-                        className="px-2.5 py-1 text-[11px] font-bold bg-white hover:bg-indigo-50 text-slate-700 rounded-lg border border-slate-200 shadow-2xs transition cursor-pointer"
-                      >
-                        {btn}
-                      </button>
-                    ))}
+                {isProfessor && (
+                  <div>
+                    <label className="font-bold text-slate-600 block mb-1 text-[10px] uppercase tracking-wider">
+                      DURAÇÃO:
+                    </label>
+                    <div className="flex flex-wrap items-center gap-1.5">
+                      {['30m', '1h', '1h30', '2h', 'nao_dormiu'].map((btn) => (
+                        <button
+                          key={btn}
+                          type="button"
+                          onClick={() => handleToqueRapidoSoneca(btn)}
+                          className="px-2.5 py-1 text-[11px] font-bold bg-white hover:bg-indigo-50 text-slate-700 rounded-lg border border-slate-200 shadow-2xs transition cursor-pointer"
+                        >
+                          {btn}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
-                <div className="space-y-1.5 pt-1">
-                  <input
-                    type="text"
-                    value={sonecaDesc}
-                    onChange={(e) => setSonecaDesc(e.target.value)}
-                    placeholder="Ex: Dormiu das 12:30 às 14:00"
-                    className="w-full bg-white border border-slate-200 rounded-xl p-2 font-bold text-slate-800 text-xs outline-none focus:border-indigo-500 shadow-2xs"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleSalvarSonecaManual}
-                    className="w-full py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-2xs transition cursor-pointer"
-                  >
-                    💾 Salvar Soneca {sonecaEscopo === 'coletiva' ? '(Toda a Turma)' : `(${student.nome})`}
-                  </button>
-                </div>
+                {isProfessor ? (
+                  <div className="space-y-1.5 pt-1">
+                    <input
+                      type="text"
+                      value={sonecaDesc}
+                      onChange={(e) => setSonecaDesc(e.target.value)}
+                      placeholder="Ex: Dormiu das 12:30 às 14:00"
+                      className="w-full bg-white border border-slate-200 rounded-xl p-2 font-bold text-slate-800 text-xs outline-none focus:border-indigo-500 shadow-2xs"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleSalvarSonecaManual}
+                      className="w-full py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-xs rounded-xl shadow-2xs transition cursor-pointer"
+                    >
+                      💾 Salvar Soneca
+                    </button>
+                  </div>
+                ) : (
+                  <div className="p-2.5 bg-white rounded-xl font-bold text-slate-800 text-xs border border-slate-200">
+                    {sonecaDesc}
+                  </div>
+                )}
               </div>
 
               {/* Febre */}
@@ -1217,35 +1327,43 @@ export default function PainelRotinaUnificado({
                 <label className="font-bold text-slate-600 block mb-1 text-[11px] uppercase tracking-wider">
                   FEBRE / TEMP (°C)
                 </label>
-                <input
-                  type="text"
-                  value={temperatura}
-                  onChange={(e) => setTemperatura(e.target.value)}
-                  placeholder="Ex: 36.5"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 font-bold text-slate-800 text-xs outline-none focus:border-indigo-500"
-                />
+                {isProfessor ? (
+                  <>
+                    <input
+                      type="text"
+                      value={temperatura}
+                      onChange={(e) => setTemperatura(e.target.value)}
+                      placeholder="Ex: 36.5"
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2 font-bold text-slate-800 text-xs outline-none focus:border-indigo-500"
+                    />
 
-                <div className="flex flex-wrap items-center gap-1.5 mt-2">
-                  {[
-                    { temp: '36.5', label: '36,5°C' },
-                    { temp: '37.0', label: '37,0°C' },
-                    { temp: '37.5', label: '37,5°C' },
-                    { temp: '38.0', label: '38,0°C [!]' },
-                  ].map((btn) => (
-                    <button
-                      key={btn.temp}
-                      type="button"
-                      onClick={() => handleToqueRapidoFebre(btn.temp)}
-                      className={`px-2 py-1 text-[11px] font-black rounded-lg border transition cursor-pointer ${
-                        temperatura === btn.temp
-                          ? 'bg-indigo-600 text-white border-indigo-600'
-                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
-                      }`}
-                    >
-                      {btn.label}
-                    </button>
-                  ))}
-                </div>
+                    <div className="flex flex-wrap items-center gap-1.5 mt-2">
+                      {[
+                        { temp: '36.5', label: '36,5°C' },
+                        { temp: '37.0', label: '37,0°C' },
+                        { temp: '37.5', label: '37,5°C' },
+                        { temp: '38.0', label: '38,0°C [!]' },
+                      ].map((btn) => (
+                        <button
+                          key={btn.temp}
+                          type="button"
+                          onClick={() => handleToqueRapidoFebre(btn.temp)}
+                          className={`px-2 py-1 text-[11px] font-black rounded-lg border transition cursor-pointer ${
+                            temperatura === btn.temp
+                              ? 'bg-indigo-600 text-white border-indigo-600'
+                              : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
+                          }`}
+                        >
+                          {btn.label}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <div className="p-2.5 bg-emerald-50 text-emerald-800 rounded-xl font-bold text-xs">
+                    {temperatura}°C (Afebril)
+                  </div>
+                )}
               </div>
             </div>
 
@@ -1256,77 +1374,85 @@ export default function PainelRotinaUnificado({
                   <label className="font-bold text-slate-600 block text-[11px] uppercase tracking-wider">
                     FRALDA (XIXI OU COCO)
                   </label>
-                  <button
-                    type="button"
-                    onClick={() => handleVoiceRecord('fralda')}
-                    className={`flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition cursor-pointer ${
-                      isListeningFralda
-                        ? 'bg-rose-500 text-white animate-pulse'
-                        : 'text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200'
-                    }`}
-                  >
-                    <Mic size={12} />
-                    <span>FALAR: 🎙️</span>
-                  </button>
+                  {isProfessor && (
+                    <button
+                      type="button"
+                      onClick={() => handleVoiceRecord('fralda')}
+                      className={`flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition cursor-pointer ${
+                        isListeningFralda
+                          ? 'bg-rose-500 text-white animate-pulse'
+                          : 'text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200'
+                      }`}
+                    >
+                      <Mic size={12} />
+                      <span>FALAR: 🎙️</span>
+                    </button>
+                  )}
                 </div>
 
-                <input
-                  type="text"
-                  value={fraldaDesc}
-                  onChange={(e) => setFraldaDesc(e.target.value)}
-                  placeholder="Ex: Fez Coco / Pomada"
-                  className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 font-bold text-slate-800 text-xs outline-none focus:border-indigo-500"
-                />
+                {isProfessor ? (
+                  <input
+                    type="text"
+                    value={fraldaDesc}
+                    onChange={(e) => setFraldaDesc(e.target.value)}
+                    placeholder="Ex: Fez Coco / Pomada"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 font-bold text-slate-800 text-xs outline-none focus:border-indigo-500"
+                  />
+                ) : (
+                  <div className="p-2.5 bg-slate-50 rounded-xl font-bold text-slate-800 text-xs">{fraldaDesc}</div>
+                )}
               </div>
 
               {/* 5 BOTÕES DE SELEÇÃO RÁPIDA DE FRALDA */}
-              <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
-                <span className="text-[10px] font-black uppercase text-slate-600 block tracking-wider">
-                  🧷 SELEÇÃO RÁPIDA DE FRALDA / TOALETE:
-                </span>
-                <div className="grid grid-cols-2 gap-1.5">
+              {isProfessor && (
+                <div className="p-3 bg-slate-50 rounded-2xl border border-slate-100 space-y-2">
+                  <span className="text-[10px] font-black uppercase text-slate-600 block tracking-wider">
+                    🧷 SELEÇÃO RÁPIDA DE FRALDA / TOALETE:
+                  </span>
+                  <div className="grid grid-cols-2 gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => handleToqueRapidoFralda('xixi')}
+                      className="p-2 text-left text-xs font-bold bg-white hover:bg-sky-50 text-sky-800 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                    >
+                      <span>💧</span>
+                      <span>Apenas Xixi</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleToqueRapidoFralda('coco')}
+                      className="p-2 text-left text-xs font-bold bg-white hover:bg-amber-50 text-amber-900 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                    >
+                      <span>💩</span>
+                      <span>Apenas Coco</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleToqueRapidoFralda('xixi_coco')}
+                      className="p-2 text-left text-xs font-bold bg-white hover:bg-indigo-50 text-indigo-900 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                    >
+                      <span>💧💩</span>
+                      <span>Xixi e Coco</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleToqueRapidoFralda('pomada')}
+                      className="p-2 text-left text-xs font-bold bg-white hover:bg-purple-50 text-purple-900 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                    >
+                      <span>🧴</span>
+                      <span>+ Pomada</span>
+                    </button>
+                  </div>
                   <button
                     type="button"
-                    onClick={() => handleToqueRapidoFralda('xixi')}
-                    className="p-2 text-left text-xs font-bold bg-white hover:bg-sky-50 text-sky-800 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                    onClick={() => handleToqueRapidoFralda('seca')}
+                    className="w-full p-2 text-left text-xs font-bold bg-white hover:bg-emerald-50 text-emerald-800 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-2xs justify-center"
                   >
-                    <span>💧</span>
-                    <span>Apenas Xixi</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleToqueRapidoFralda('coco')}
-                    className="p-2 text-left text-xs font-bold bg-white hover:bg-amber-50 text-amber-900 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
-                  >
-                    <span>💩</span>
-                    <span>Apenas Coco</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleToqueRapidoFralda('xixi_coco')}
-                    className="p-2 text-left text-xs font-bold bg-white hover:bg-indigo-50 text-indigo-900 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
-                  >
-                    <span>💧💩</span>
-                    <span>Xixi e Coco</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleToqueRapidoFralda('pomada')}
-                    className="p-2 text-left text-xs font-bold bg-white hover:bg-purple-50 text-purple-900 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-2xs"
-                  >
-                    <span>🧴</span>
-                    <span>+ Pomada</span>
+                    <span>✨</span>
+                    <span>Seca / Limpa</span>
                   </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => handleToqueRapidoFralda('seca')}
-                  className="w-full p-2 text-left text-xs font-bold bg-white hover:bg-emerald-50 text-emerald-800 border border-slate-200 rounded-xl transition cursor-pointer flex items-center gap-1.5 shadow-2xs justify-center"
-                >
-                  <span>✨</span>
-                  <span>Seca / Limpa</span>
-                </button>
-              </div>
+              )}
 
               {/* PESO CORPORAL */}
               <div>
@@ -1344,55 +1470,64 @@ export default function PainelRotinaUnificado({
                     <span>Ver Histórico</span>
                   </button>
                 </div>
-                <div className="flex items-center gap-1.5">
-                  <div className="relative flex-1">
-                    <input
-                      type="text"
-                      value={peso}
-                      onChange={(e) => setPeso(e.target.value)}
-                      placeholder="14.0"
-                      className="w-full bg-white border border-slate-300 rounded-xl p-2 font-black text-slate-800 text-xs outline-none focus:border-indigo-500 pr-8 shadow-2xs"
-                    />
-                    <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400">
-                      kg
+                {isProfessor ? (
+                  <div className="flex items-center gap-1.5">
+                    <div className="relative flex-1">
+                      <input
+                        type="text"
+                        value={peso}
+                        onChange={(e) => setPeso(e.target.value)}
+                        placeholder="14.0"
+                        className="w-full bg-white border border-slate-300 rounded-xl p-2 font-black text-slate-800 text-xs outline-none focus:border-indigo-500 pr-8 shadow-2xs"
+                      />
+                      <span className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-400">
+                        kg
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const num = Math.max(2, parseFloat(peso.replace(',', '.')) || 14.0);
+                        const novo = (num - 0.1).toFixed(1);
+                        handleSalvarPesoDireto(novo);
+                      }}
+                      className="px-2 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-[11px] rounded-xl border border-slate-200 transition cursor-pointer"
+                    >
+                      -0.1
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const num = parseFloat(peso.replace(',', '.')) || 14.0;
+                        const novo = (num + 0.1).toFixed(1);
+                        handleSalvarPesoDireto(novo);
+                      }}
+                      className="px-2 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-[11px] rounded-xl border border-slate-200 transition cursor-pointer"
+                    >
+                      +0.1
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSalvarPesoDireto(peso)}
+                      className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-[11px] rounded-xl shadow-2xs transition cursor-pointer flex items-center gap-1"
+                    >
+                      <Check size={12} />
+                      Salvar
+                    </button>
+                  </div>
+                ) : (
+                  <div className="p-2.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between font-bold text-slate-800 text-xs">
+                    <span>{peso} kg</span>
+                    <span className="text-[10px] font-black uppercase text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">
+                      Adequado
                     </span>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const num = Math.max(2, parseFloat(peso.replace(',', '.')) || 14.0);
-                      const novo = (num - 0.1).toFixed(1);
-                      handleSalvarPesoDireto(novo);
-                    }}
-                    className="px-2 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-[11px] rounded-xl border border-slate-200 transition cursor-pointer"
-                  >
-                    -0.1
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const num = parseFloat(peso.replace(',', '.')) || 14.0;
-                      const novo = (num + 0.1).toFixed(1);
-                      handleSalvarPesoDireto(novo);
-                    }}
-                    className="px-2 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-black text-[11px] rounded-xl border border-slate-200 transition cursor-pointer"
-                  >
-                    +0.1
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleSalvarPesoDireto(peso)}
-                    className="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-[11px] rounded-xl shadow-2xs transition cursor-pointer flex items-center gap-1"
-                  >
-                    <Check size={12} />
-                    Salvar
-                  </button>
-                </div>
+                )}
               </div>
             </div>
           </div>
 
-          {/* CHECKLIST COMPLETO DE HIGIENE */}
+          {/* CHECKLIST COMPLETO DE HIGIENE (5 ITENS) */}
           <div className="pt-2 border-t border-slate-100">
             <span className="text-[10px] font-black uppercase text-slate-400 block mb-2">
               CHECKLIST DE HIGIENE & CUIDADOS PESSOAIS
@@ -1411,12 +1546,13 @@ export default function PainelRotinaUnificado({
                   <button
                     key={item.key}
                     type="button"
+                    disabled={!isProfessor}
                     onClick={() => handleToggleHigieneDireto(item.key, item.label)}
-                    className={`p-2.5 rounded-xl border text-left transition flex items-center justify-between cursor-pointer ${
+                    className={`p-2.5 rounded-xl border text-left transition flex items-center justify-between ${
                       isOk
                         ? 'bg-emerald-500 border-emerald-600 text-white font-extrabold shadow-2xs scale-102'
-                        : 'bg-slate-50 border-slate-200 text-slate-500 hover:border-slate-300'
-                    }`}
+                        : 'bg-slate-50 border-slate-200 text-slate-500'
+                    } ${isProfessor ? 'cursor-pointer hover:border-slate-300' : 'cursor-default'}`}
                   >
                     <div>
                       <span className="mr-1.5">{item.icon}</span>
@@ -1436,22 +1572,30 @@ export default function PainelRotinaUnificado({
             <label className="font-bold text-slate-600 block mb-1 text-xs">
               NOTAS GERAIS DE SAÚDE / ROTINA DO BEBÊ
             </label>
-            <input
-              type="text"
-              value={notaGeralSaude}
-              onChange={(e) => setNotaGeralSaude(e.target.value)}
-              placeholder="Observações de saúde adicionais..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 outline-none"
-            />
+            {isProfessor ? (
+              <input
+                type="text"
+                value={notaGeralSaude}
+                onChange={(e) => setNotaGeralSaude(e.target.value)}
+                placeholder="Observações de saúde adicionais..."
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 outline-none"
+              />
+            ) : (
+              <div className="p-3 bg-slate-50 rounded-xl text-xs text-slate-600 italic">
+                "{notaGeralSaude || 'Sem observações especiais hoje.'}"
+              </div>
+            )}
           </div>
 
-          <button
-            type="button"
-            onClick={handleSalvarSituacaoSaude}
-            className="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs rounded-xl transition shadow-xs cursor-pointer flex items-center justify-center gap-2"
-          >
-            <span>Salvar Situação de Saúde & Alertar Pais</span>
-          </button>
+          {isProfessor && (
+            <button
+              type="button"
+              onClick={handleSalvarSituacaoSaude}
+              className="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs rounded-xl transition shadow-xs cursor-pointer flex items-center justify-center gap-2"
+            >
+              <span>Salvar Situação de Saúde & Alertar Pais</span>
+            </button>
+          )}
         </div>
       </div>
 
