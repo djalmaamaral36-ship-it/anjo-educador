@@ -1,5 +1,12 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  signOut, 
+  onAuthStateChanged,
+  User 
+} from 'firebase/auth';
 import { 
   getFirestore, 
   doc, 
@@ -14,6 +21,9 @@ import { MealStatus, MedicationItem, TimelineEvent, NoticeItem } from '../types'
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();
+export { signInWithPopup, signOut, onAuthStateChanged, GoogleAuthProvider };
+export type { User };
 
 // Tipagem do estado sincronizado
 export interface DailyStateFirebase {
@@ -36,10 +46,10 @@ export interface DailyStateFirebase {
   humor?: string;
   hygieneChecklist?: Record<string, string | boolean>;
   hygieneChecks?: Record<string, boolean>;
-  meals: MealStatus[];
-  medications: MedicationItem[];
-  timelineEvents: TimelineEvent[];
-  notices: NoticeItem[];
+  meals?: MealStatus[];
+  medications?: MedicationItem[];
+  timelineEvents?: TimelineEvent[];
+  notices?: NoticeItem[];
   updatedAt?: string;
 }
 
