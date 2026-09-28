@@ -6,7 +6,13 @@ import {
   getDoc, 
   onSnapshot 
 } from 'firebase/firestore';
-import { getAuth } from 'firebase/auth';
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  signOut, 
+  onAuthStateChanged 
+} from 'firebase/auth';
 
 // Configuração Firebase do Projeto
 const firebaseConfig = {
@@ -22,6 +28,8 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app);
 export const auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();
+export { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged };
 
 // Interface para o estado diário da criança
 export interface DailyStudentState {
