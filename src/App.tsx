@@ -20,17 +20,53 @@ import {
   Utensils, 
   Moon, 
   Droplets, 
+  HeartPulse, 
+  Plus,
   ShieldCheck,
   Building2,
+  GraduationCap,
+  Lock,
   Play,
   Pause,
+  RotateCcw,
+  LogIn,
+  LogOut,
+  Thermometer,
+  Smile,
+  Frown,
+  Meh,
+  Activity,
   Check,
   X,
   Cloud,
-  FileSpreadsheet
+  Send,
+  Printer,
+  ChevronRight,
+  UserCheck,
+  FileSpreadsheet,
+  Layers,
+  ChevronUp,
+  TreePine,
+  Compass,
+  Award,
+  BookMarked,
+  BarChart3,
+  Briefcase,
+  Star,
+  CheckCircle,
+  TrendingUp,
+  Eye,
+  Info,
+  Sparkle,
+  Image as ImageIcon,
+  Camera,
+  CheckSquare
 } from 'lucide-react';
 import { subscribeToDailyState, saveDailyState, DailyStateFirebase } from './services/firebase';
 
+// ==========================================
+// DADOS & TIPAGENS DO ANJINHO ESCOLAR
+// ==========================================
 export interface StudentProfile {
   id: string;
   name: string;
@@ -47,6 +83,8 @@ export interface StudentProfile {
   teacherRole: string;
   teacherPhoto: string;
   allergyNotice: string;
+  bloodType: string;
+  emergencyPhone: string;
 }
 
 export interface MealStatus {
@@ -82,7 +120,6 @@ export interface TimelineEvent {
   badge?: string;
   badgeColor?: 'emerald' | 'amber' | 'purple' | 'teal' | 'indigo' | 'rose';
   icon: string;
-  photoUrl?: string;
   verified?: boolean;
 }
 
@@ -95,6 +132,19 @@ export interface NoticeItem {
   authorRole: string;
   badge: string;
   badgeColor: 'indigo' | 'emerald' | 'amber' | 'rose';
+}
+
+export interface PedagogicalActivity {
+  id: string;
+  title: string;
+  time: string;
+  bnccCode: string;
+  bnccField: string;
+  description: string;
+  materials: string;
+  studentEngagement: 'Excelente' | 'Boa' | 'Em desenvolvimento';
+  imageUrl: string;
+  photosCount: number;
 }
 
 const INITIAL_STUDENT: StudentProfile = {
@@ -113,6 +163,8 @@ const INITIAL_STUDENT: StudentProfile = {
   teacherRole: 'Professora Titular',
   teacherPhoto: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=160&h=160&fit=crop&crop=faces&q=80',
   allergyNotice: 'Alergia: Leite Integral (Lactose) / Frutos do Mar',
+  bloodType: 'O+',
+  emergencyPhone: '(11) 98765-4321',
 };
 
 const INITIAL_MEALS: MealStatus[] = [
@@ -126,101 +178,89 @@ const INITIAL_MEDICATIONS: MedicationItem[] = [
   {
     id: 'med-1',
     name: 'Paracetamol 200mg/mL Gotas',
-    dose: '10 gotas se febre > 37.8°C',
-    instructions: 'Diluir em 2 colheres de água filtrada. Avisar a mãe no app imediatamente.',
-    scheduleDescription: 'Uso SOS / Sintomático',
+    dose: '12 gotas (6 em 6 horas se febre > 37.8°C)',
+    instructions: 'Administrar somente se a temperatura axilar ultrapassar 37.8°C.',
+    scheduleDescription: 'Uso conforme necessidade com aviso imediato aos pais.',
     authorizedBy: 'Clarice Souza (Mãe)',
-    authorizedRole: 'Responsável Legal',
+    authorizedRole: 'Mãe / Responsável Legal',
     pinVerified: true,
     status: 'active',
-    lastAdministeredAt: 'Hoje às 10:20',
-    lastAdministeredBy: 'Ana Silva (Professora Titular)',
-  },
-  {
-    id: 'med-2',
-    name: 'Soro Fisiológico Nasal 0.9% (Maresis Baby)',
-    dose: '2 jatos em cada narina',
-    instructions: 'Higienização nasal suave antes do soninho da tarde.',
-    scheduleDescription: 'Diário no Berçário • 12:15',
-    authorizedBy: 'Clarice Souza (Mãe)',
-    authorizedRole: 'Responsável Legal',
-    pinVerified: true,
-    status: 'active',
-    lastAdministeredAt: 'Hoje às 12:15',
-    lastAdministeredBy: 'Ana Silva (Professora Titular)',
-  },
-  {
-    id: 'med-3',
-    name: 'Pomada Bepantol Baby Protetora',
-    dose: 'Camada fina na região das fraldas',
-    instructions: 'Prevenção de assaduras nas trocas de fraldas da tarde.',
-    scheduleDescription: 'A cada troca de fralda',
-    authorizedBy: 'Clarice Souza (Mãe)',
-    authorizedRole: 'Responsável Legal',
-    pinVerified: true,
-    status: 'active'
+    lastAdministeredAt: 'Hoje às 11:30 (12 gotas ministradas por Tia Ana)',
+    lastAdministeredBy: 'Ana Silva'
   }
 ];
 
 const INITIAL_TIMELINE_EVENTS: TimelineEvent[] = [
   {
-    id: 'tl-1',
+    id: 'evt-1',
     time: '07:30',
     title: 'Acolhimento & Entrada no Berçário',
-    description: 'Mariana chegou muito tranquila e sorridente no colo da mãe. Pertences e mochila conferidos.',
+    description: 'Mariana chegou sorridente e tranquila com a mamãe Clarice. Sem queixas clínicas.',
     category: 'geral',
-    registeredBy: 'Ana Silva (Professora Titular)',
+    registeredBy: 'Ana Silva (Educadora)',
     badge: 'Presença Confirmada',
     badgeColor: 'emerald',
     icon: 'baby',
     verified: true
   },
   {
-    id: 'tl-2',
-    time: '08:00',
-    title: 'Mamadeira Nutritiva Matinal',
-    description: '180 ml de fórmula hipoalergênica oferecida e ingerida integralmente com boa aceitação.',
+    id: 'evt-2',
+    time: '08:45',
+    title: 'Mamadeira APLV (Sem Lactose)',
+    description: 'Ingeriu 180ml de fórmula hipoalergênica. Ótima sucção, sem regurgitação.',
     category: 'alimentacao',
-    registeredBy: 'Ana Silva (Professora Titular)',
-    badge: '180 ml • Aceitou Tudo',
+    registeredBy: 'Ana Silva (Educadora)',
+    badge: '180ml Consumidos',
     badgeColor: 'amber',
     icon: 'bottle',
     verified: true
   },
   {
-    id: 'tl-3',
-    time: '08:45',
-    title: 'Troca de Fralda & Higiene Preventiva',
-    description: 'Troca de fralda número 1 (xixi). Pele limpa e aplicação suave de pomada protetora.',
-    category: 'higiene',
-    registeredBy: 'Ana Silva (Professora Titular)',
-    badge: 'Fralda Troca 1 • Normal',
-    badgeColor: 'teal',
+    id: 'evt-3',
+    time: '09:30',
+    title: 'Atividade Sensorial & Musicalização',
+    description: 'Interagiu com chocalhos e tapete tátil. Demonstrou alegria ao som das cantigas.',
+    category: 'atividade',
+    registeredBy: 'Ana Silva (Educadora)',
+    badge: 'BNCC EI01TS01',
+    badgeColor: 'purple',
     icon: 'sparkles',
     verified: true
   },
   {
-    id: 'tl-4',
-    time: '09:20',
-    title: 'Roda de Cantigas & Expressão Musical (BNCC EI01TS01)',
-    description: 'Mariana bateu palminhas ao som da cantiga "Dona Aranha" e interagiu com os chocalhos.',
-    category: 'atividade',
-    registeredBy: 'Ana Silva (Professora Titular)',
-    badge: 'Vivenciada com a Turma',
-    badgeColor: 'indigo',
-    icon: 'music',
+    id: 'evt-4',
+    time: '10:15',
+    title: 'Troca de Fralda & Higiene',
+    description: 'Troca realizada: Xixi abundante. Pomada preventiva aplicada conforme prescrição.',
+    category: 'higiene',
+    registeredBy: 'Carla Dias (Auxiliar)',
+    badge: 'Higiene Concluída',
+    badgeColor: 'teal',
+    icon: 'droplets',
     verified: true
   },
   {
-    id: 'tl-5',
-    time: '10:15',
-    title: 'Aferição de Temperatura & Checagem Preventiva',
-    description: 'Temperatura corporal aferida em 36.6°C (Afebril). Criança alegre e hidratada.',
-    category: 'saude',
-    registeredBy: 'Ana Silva (Professora Titular)',
-    badge: '36.6°C • Afebril',
+    id: 'evt-5',
+    time: '11:15',
+    title: 'Papinha / Almoço Nutritivo',
+    description: 'Purê de abóbora, cenoura cozida e franguinho. Excelente aceitação.',
+    category: 'alimentacao',
+    registeredBy: 'Ana Silva (Educadora)',
+    badge: 'Aceitou Tudo',
     badgeColor: 'emerald',
-    icon: 'thermometer',
+    icon: 'utensils',
+    verified: true
+  },
+  {
+    id: 'evt-6',
+    time: '12:00',
+    title: 'Soneca Restauradora',
+    description: 'Dorme tranquilamente no berço individual ao som de ruído branco suave.',
+    category: 'sono',
+    registeredBy: 'Ana Silva (Educadora)',
+    badge: 'Em Andamento',
+    badgeColor: 'indigo',
+    icon: 'moon',
     verified: true
   }
 ];
@@ -228,336 +268,418 @@ const INITIAL_TIMELINE_EVENTS: TimelineEvent[] = [
 const INITIAL_NOTICES: NoticeItem[] = [
   {
     id: 'not-1',
-    date: 'Hoje às 08:30',
-    title: 'Piquenique da Primavera & Feira de Arte dos Bebês',
-    content: 'Convidamos todas as famílias para nosso piquenique de integração no próximo sábado das 09h às 11h.',
+    date: '27 de Setembro de 2026',
+    title: '🌸 Festa da Primavera e Piquenique no Pátio',
+    content: 'Queridas famílias, na próxima sexta-feira teremos nosso piquenique da Primavera! Convidamos as crianças a virem com roupas confortáveis e estampadas.',
     author: 'Coordenação Pedagógica',
-    authorRole: 'Direção Geral',
-    badge: 'Evento Escolar',
+    authorRole: 'Coordenação',
+    badge: 'Geral',
     badgeColor: 'indigo'
   },
   {
     id: 'not-2',
-    date: 'Ontem às 16:45',
-    title: 'Solicitação de Reposição de Pomada & Fraldas',
-    content: 'O estoque de fraldas da Mariana tem 3 unidades restantes no armário. Solicitamos envio amanhã.',
+    date: '25 de Setembro de 2026',
+    title: '🧴 Reposição de Fraldas & Pomada',
+    content: 'Lembramos que o pacote de fraldas da Mariana tem previsão de término para a próxima semana. Favor enviar um pacote extra na mochila.',
     author: 'Ana Silva',
     authorRole: 'Professora Titular',
-    badge: 'Recado da Sala',
+    badge: 'Individual',
     badgeColor: 'amber'
   }
 ];
 
+const INITIAL_ACTIVITIES: PedagogicalActivity[] = [
+  {
+    id: 'act-1',
+    title: 'Exploração dos Sons & Chocalhos Coloridos',
+    time: '09:30 - 10:15',
+    bnccCode: 'EI01TS01',
+    bnccField: 'Traços, Sons, Cores e Formas',
+    description: 'Vivência musical com instrumentos infantis, estimulando a discriminação auditiva, ritmo e expressão corporal.',
+    materials: 'Chocalhos, pandeirinhos de madeira, tapete sonoro e cantigas populares.',
+    studentEngagement: 'Excelente',
+    imageUrl: 'https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?w=500&auto=format&fit=crop&q=80',
+    photosCount: 4
+  },
+  {
+    id: 'act-2',
+    title: 'Tapete Tátil & Circuitos de Estimulação Motora',
+    time: '14:00 - 14:45',
+    bnccCode: 'EI01CG02',
+    bnccField: 'Corpo, Gestos e Movimentos',
+    description: 'Atividade de exploração sensorial com diferentes texturas (algodão, EVA, tecido liso e rugoso) para incentivo ao engatinhar e firmeza postural.',
+    materials: 'Almofadas macias, tapetes sensoriais e rolos pedagógicos.',
+    studentEngagement: 'Excelente',
+    imageUrl: 'https://images.unsplash.com/photo-1587654780291-39c9404d746b?w=500&auto=format&fit=crop&q=80',
+    photosCount: 6
+  }
+];
+
 export function App() {
+  // Estados Globais e Perfil
+  const [currentRole, setCurrentRole] = useState<'professor' | 'familia'>('professor');
+  const [activeTab, setActiveTab] = useState<'diario' | 'direcao' | 'coordenacao' | 'arvore' | 'jornada' | 'atividades' | 'turma' | 'avisos' | 'medicamentos'>('diario');
+  const [activeQuickNav, setActiveQuickNav] = useState('feeding');
+  
+  // Modais
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAuraOpen, setIsAuraOpen] = useState(false);
+  const [isPinModalOpen, setIsPinModalOpen] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+  const [isNewActivityModalOpen, setIsNewActivityModalOpen] = useState(false);
+  const [pinInput, setPinInput] = useState('');
+  const [pinSuccess, setPinSuccess] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Dados do Aluno e Rotina
   const [student] = useState<StudentProfile>(INITIAL_STUDENT);
   const [meals, setMeals] = useState<MealStatus[]>(INITIAL_MEALS);
   const [medications, setMedications] = useState<MedicationItem[]>(INITIAL_MEDICATIONS);
   const [timelineEvents, setTimelineEvents] = useState<TimelineEvent[]>(INITIAL_TIMELINE_EVENTS);
   const [notices] = useState<NoticeItem[]>(INITIAL_NOTICES);
+  const [activities, setActivities] = useState<PedagogicalActivity[]>(INITIAL_ACTIVITIES);
 
-  // Estados de Rotina Diária
+  // Estados Dinâmicos Sincronizados
   const [waterMl, setWaterMl] = useState<number>(150);
-  const [bottleVolume, setBottleVolume] = useState<number>(180);
   const [bottleDone, setBottleDone] = useState<boolean>(true);
-  const [mood, setMood] = useState<'Calmo / Sereno' | 'Alegre' | 'Sonolento' | 'Choroso'>('Calmo / Sereno');
-  const [temperature, setTemperature] = useState<number>(36.6);
-  const [napStatus, setNapStatus] = useState<string>('Soneca em Andamento');
-  const [napStartTime, setNapStartTime] = useState<string>('12:30');
-  const [diaperCount, setDiaperCount] = useState<number>(2);
+  const [bottleVolume, setBottleVolume] = useState<number>(180);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [elapsedSeconds, setElapsedSeconds] = useState<number>(18240); // 05h 04m
+  const [temperature, setTemperature] = useState<number>(36.5);
+  const [mood, setMood] = useState<'Alegre' | 'Calmo / Sereno' | 'Sonolento' | 'Choroso'>('Calmo / Sereno');
+  const [napStatus, setNapStatus] = useState<string>('Dormindo no Berço');
+  const [napStartTime, setNapStartTime] = useState<string>('12:00');
   const [diaperStatus, setDiaperStatus] = useState<string>('Xixi + Pomada');
+  const [entryTime, setEntryTime] = useState<string>('07:30');
+  const [exitTime, setExitTime] = useState<string>('17:30');
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const [activeTab, setActiveTab] = useState('diario');
-  const [activeQuickNav, setActiveQuickNav] = useState('timeline');
-  const [currentRole, setCurrentRole] = useState<'professor' | 'familia'>('professor');
-  
-  // Modais
-  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isAuraOpen, setIsAuraOpen] = useState(false);
-  const [isPinModalOpen, setIsPinModalOpen] = useState(false);
-  const [pinInput, setPinInput] = useState('');
-  const [pinSuccess, setPinSuccess] = useState(false);
+  // Relógio Topo
+  const [currentTime, setCurrentTime] = useState('08:00');
+  const [currentDate, setCurrentDate] = useState('27/09/2026');
 
-  // Cronômetro de Permanência
-  const [isPaused, setIsPaused] = useState(false);
-  const [startTimestamp, setStartTimestamp] = useState<number | null>(Date.now() - (3 * 3600 + 45 * 60) * 1000);
-  const [elapsedSeconds, setElapsedSeconds] = useState(3 * 3600 + 45 * 60);
-
-  // 🔄 SINCRONIZAÇÃO EM TEMPO REAL COM FIREBASE FIRESTORE
+  // Relógio do Sistema
   useEffect(() => {
-    const unsubscribe = subscribeToDailyState('mariana-souza', (liveData: DailyStateFirebase) => {
-      if (liveData.meals) setMeals(liveData.meals);
-      if (liveData.medications) setMedications(liveData.medications);
-      if (liveData.timelineEvents) setTimelineEvents(liveData.timelineEvents);
-      if (typeof liveData.waterMl === 'number') setWaterMl(liveData.waterMl);
-      if (typeof liveData.bottleVolume === 'number') setBottleVolume(liveData.bottleVolume);
-      if (typeof liveData.bottleDone === 'boolean') setBottleDone(liveData.bottleDone);
-      if (liveData.mood || liveData.humor) setMood((liveData.mood || liveData.humor) as any);
-      if (typeof liveData.temperature === 'string') setTemperature(parseFloat(liveData.temperature) || 36.6);
-      if (liveData.sleepStatus) setNapStatus(liveData.sleepStatus);
-      if (liveData.sleepStart) setNapStartTime(liveData.sleepStart);
-      if (liveData.diaperStatus) setDiaperStatus(liveData.diaperStatus);
-      if (typeof liveData.isTimerRunning === 'boolean') {
-        setIsPaused(!liveData.isTimerRunning);
-      }
-      if (liveData.startTimestamp) {
-        setStartTimestamp(liveData.startTimestamp);
-        const now = Date.now();
-        const diff = Math.max(0, Math.floor((now - liveData.startTimestamp) / 1000));
-        setElapsedSeconds(diff);
-      } else if (typeof liveData.elapsedSeconds === 'number') {
-        setElapsedSeconds(liveData.elapsedSeconds);
-      }
-    });
-
-    return () => unsubscribe();
+    const updateTime = () => {
+      const now = new Date();
+      setCurrentTime(now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }));
+      setCurrentDate(now.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }));
+    };
+    updateTime();
+    const timer = setInterval(updateTime, 1000);
+    return () => clearInterval(timer);
   }, []);
 
-  // Motor do Cronômetro
+  // Cronômetro de Permanência
   useEffect(() => {
     let interval: any = null;
     if (!isPaused) {
       interval = setInterval(() => {
-        if (startTimestamp) {
-          const now = Date.now();
-          setElapsedSeconds(Math.max(0, Math.floor((now - startTimestamp) / 1000)));
-        } else {
-          setElapsedSeconds((prev) => prev + 1);
-        }
+        setElapsedSeconds(prev => prev + 1);
       }, 1000);
     }
     return () => {
       if (interval) clearInterval(interval);
     };
-  }, [isPaused, startTimestamp]);
+  }, [isPaused]);
 
-  const currentDate = '24/09/2026';
-  const currentTime = '10:15:00';
-
-  const formatTimer = (totalSec: number) => {
-    const hrs = Math.floor(totalSec / 3600);
-    const mins = Math.floor((totalSec % 3600) / 60);
-    const secs = totalSec % 60;
-    return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const handleTogglePause = () => {
-    const nextPaused = !isPaused;
-    setIsPaused(nextPaused);
-    let newStart = startTimestamp;
-    if (!nextPaused && !newStart) {
-      newStart = Date.now() - elapsedSeconds * 1000;
-      setStartTimestamp(newStart);
-    }
-    saveDailyState('mariana-souza', {
-      isTimerRunning: !nextPaused,
-      startTimestamp: nextPaused ? null : newStart,
-      elapsedSeconds,
+  // Sincronização em Tempo Real com Firestore
+  useEffect(() => {
+    const unsubscribe = subscribeToDailyState(student.id, (state: DailyStateFirebase) => {
+      if (state.waterMl !== undefined) setWaterMl(state.waterMl);
+      if (state.bottleDone !== undefined) setBottleDone(state.bottleDone);
+      if (state.bottleVolume !== undefined) setBottleVolume(state.bottleVolume);
+      if (state.isTimerRunning !== undefined) setIsPaused(!state.isTimerRunning);
+      if (state.elapsedSeconds !== undefined) setElapsedSeconds(state.elapsedSeconds);
+      if (state.temperature !== undefined) {
+        const parsed = parseFloat(state.temperature);
+        if (!isNaN(parsed)) setTemperature(parsed);
+      }
+      if (state.mood !== undefined) setMood(state.mood as any);
+      if (state.sleepStatus !== undefined) setNapStatus(state.sleepStatus);
+      if (state.diaperStatus !== undefined) setDiaperStatus(state.diaperStatus);
     });
+
+    return () => unsubscribe();
+  }, [student.id]);
+
+  // Formatador de Cronômetro
+  const formatTimer = (totalSec: number) => {
+    const hours = Math.floor(totalSec / 3600);
+    const minutes = Math.floor((totalSec % 3600) / 60);
+    const seconds = totalSec % 60;
+    return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   };
 
+  // Funções de Interação e Persistência
   const handleAddWater = (amount: number) => {
-    const newWater = Math.max(0, waterMl + amount);
-    setWaterMl(newWater);
-    saveDailyState('mariana-souza', { waterMl: newWater });
+    const newAmount = Math.max(0, Math.min(1000, waterMl + amount));
+    setWaterMl(newAmount);
+    saveDailyState(student.id, { waterMl: newAmount });
+
+    const newEvt: TimelineEvent = {
+      id: `water-${Date.now()}`,
+      time: currentTime,
+      title: `Hidratação Registrada (+${amount > 0 ? amount : amount}ml)`,
+      description: `Mariana bebeu água fresca na jarrinha escolar. Total acumulado no dia: ${newAmount}ml.`,
+      category: 'alimentacao',
+      registeredBy: 'Ana Silva (Educadora)',
+      badge: `${newAmount}ml no Dia`,
+      badgeColor: 'teal',
+      icon: 'droplets',
+      verified: true
+    };
+    setTimelineEvents(prev => [newEvt, ...prev]);
+  };
+
+  const handleResetWater = () => {
+    setWaterMl(0);
+    saveDailyState(student.id, { waterMl: 0 });
   };
 
   const handleToggleBottle = () => {
-    const nextDone = !bottleDone;
-    setBottleDone(nextDone);
-    saveDailyState('mariana-souza', { bottleDone: nextDone });
+    const nextState = !bottleDone;
+    setBottleDone(nextState);
+    saveDailyState(student.id, { bottleDone: nextState });
+
+    if (nextState) {
+      const newEvt: TimelineEvent = {
+        id: `bottle-${Date.now()}`,
+        time: currentTime,
+        title: `Mamadeira APLV Concluída (${bottleVolume}ml)`,
+        description: `Fórmula sem lactose ingerida com sucesso por Mariana.`,
+        category: 'alimentacao',
+        registeredBy: 'Ana Silva (Educadora)',
+        badge: 'Nutrição Concluída',
+        badgeColor: 'emerald',
+        icon: 'bottle',
+        verified: true
+      };
+      setTimelineEvents(prev => [newEvt, ...prev]);
+    }
   };
 
-  const handleSetMood = (m: 'Calmo / Sereno' | 'Alegre' | 'Sonolento' | 'Choroso') => {
+  const handleSelectBottleVolume = (vol: number) => {
+    setBottleVolume(vol);
+    saveDailyState(student.id, { bottleVolume: vol });
+  };
+
+  const handleTogglePause = () => {
+    const next = !isPaused;
+    setIsPaused(next);
+    saveDailyState(student.id, { isTimerRunning: !next, elapsedSeconds });
+  };
+
+  const handleResetTimer = () => {
+    setElapsedSeconds(0);
+    saveDailyState(student.id, { elapsedSeconds: 0 });
+  };
+
+  const handleSetEntryTime = () => {
+    setEntryTime(currentTime);
+    const newEvt: TimelineEvent = {
+      id: `entry-${Date.now()}`,
+      time: currentTime,
+      title: 'Registro de Entrada Confirmado',
+      description: `Mariana deu entrada no Colégio Pequeno Anjo às ${currentTime}.`,
+      category: 'geral',
+      registeredBy: 'Portaria & Ana Silva',
+      badge: 'Entrada Oficial',
+      badgeColor: 'emerald',
+      icon: 'baby',
+      verified: true
+    };
+    setTimelineEvents(prev => [newEvt, ...prev]);
+  };
+
+  const handleSetExitTime = () => {
+    setExitTime(currentTime);
+    const newEvt: TimelineEvent = {
+      id: `exit-${Date.now()}`,
+      time: currentTime,
+      title: 'Registro de Saída & Entrega',
+      description: `Mariana foi entregue aos responsáveis legais (${student.responsible}) às ${currentTime}.`,
+      category: 'geral',
+      registeredBy: 'Portaria & Ana Silva',
+      badge: 'Saída Autorizada',
+      badgeColor: 'purple',
+      icon: 'shield',
+      verified: true
+    };
+    setTimelineEvents(prev => [newEvt, ...prev]);
+  };
+
+  const handleSetTemperature = (temp: number) => {
+    setTemperature(temp);
+    saveDailyState(student.id, { temperature: temp.toString() });
+  };
+
+  const handleSetMood = (m: 'Alegre' | 'Calmo / Sereno' | 'Sonolento' | 'Choroso') => {
     setMood(m);
-    saveDailyState('mariana-souza', { humor: m, mood: m });
+    saveDailyState(student.id, { mood: m });
   };
 
-  const handleSetTemperature = (t: number) => {
-    setTemperature(t);
-    saveDailyState('mariana-souza', { temperature: t.toString() });
-  };
+  const handleSetDiaper = (dp: string) => {
+    setDiaperStatus(dp);
+    saveDailyState(student.id, { diaperStatus: dp });
 
-  const handleSetNap = (status: string, startTime?: string) => {
-    setNapStatus(status);
-    if (startTime) setNapStartTime(startTime);
-    saveDailyState('mariana-souza', {
-      sleepStatus: status,
-      sleepStart: startTime || napStartTime,
-    });
-  };
-
-  const handleSetDiaper = (tipo: string) => {
-    const newCount = diaperCount + 1;
-    setDiaperCount(newCount);
-    setDiaperStatus(tipo);
-    saveDailyState('mariana-souza', {
-      diaperStatus: tipo,
-    });
+    const newEvt: TimelineEvent = {
+      id: `diaper-${Date.now()}`,
+      time: currentTime,
+      title: `Troca de Fralda (${dp})`,
+      description: `Troca realizada no fraldário. Higienização completa e pomada aplicada.`,
+      category: 'higiene',
+      registeredBy: 'Ana Silva (Educadora)',
+      badge: dp,
+      badgeColor: 'teal',
+      icon: 'droplets',
+      verified: true
+    };
+    setTimelineEvents(prev => [newEvt, ...prev]);
   };
 
   const handleUpdateMeal = (mealId: string, status: MealStatus['status']) => {
-    const updated = meals.map((m) => (m.id === mealId ? { ...m, status } : m));
-    setMeals(updated);
-
-    const meal = meals.find((m) => m.id === mealId);
-    let updatedEvents = timelineEvents;
-    if (meal && status !== 'SEM REGISTRO') {
-      const nowTime = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-      const newEvent: TimelineEvent = {
-        id: `tl-meal-${Date.now()}`,
-        time: nowTime,
-        title: `Alimentação: ${meal.name}`,
-        description: `Registro efetuado: Status "${status}". Acompanhamento nutricional completo.`,
-        category: 'alimentacao',
-        registeredBy: `${student.teacherName} (${student.teacherRole})`,
-        badge: status,
-        badgeColor: 'amber',
-        icon: 'utensils',
-        verified: true,
-      };
-      updatedEvents = [newEvent, ...timelineEvents];
-      setTimelineEvents(updatedEvents);
-    }
-
-    saveDailyState('mariana-souza', {
-      meals: updated,
-      timelineEvents: updatedEvents,
-    });
+    setMeals(prev => prev.map(m => m.id === mealId ? { ...m, status } : m));
+    const mealName = meals.find(m => m.id === mealId)?.name || 'Refeição';
+    const newEvt: TimelineEvent = {
+      id: `meal-${Date.now()}`,
+      time: currentTime,
+      title: `${mealName}: ${status}`,
+      description: `Registro alimentar atualizado pela educadora responsável.`,
+      category: 'alimentacao',
+      registeredBy: 'Ana Silva (Educadora)',
+      badge: status,
+      badgeColor: status === 'ACEITOU TUDO' ? 'emerald' : status === 'PARCIAL' ? 'amber' : 'rose',
+      icon: 'utensils',
+      verified: true
+    };
+    setTimelineEvents(prev => [newEvt, ...prev]);
   };
 
   const handleAdministerMedication = (medId: string) => {
-    const nowTime = new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    const nowFormatted = `Hoje às ${nowTime}`;
-
-    const updatedMeds = medications.map((med) => {
-      if (med.id === medId) {
+    setMedications(prev => prev.map(m => {
+      if (m.id === medId) {
         return {
-          ...med,
-          lastAdministeredAt: nowFormatted,
-          lastAdministeredBy: student.teacherName,
+          ...m,
+          status: 'administered',
+          lastAdministeredAt: `Hoje às ${currentTime} (${m.dose} por Tia Ana)`,
+          lastAdministeredBy: 'Ana Silva'
         };
       }
-      return med;
-    });
-    setMedications(updatedMeds);
+      return m;
+    }));
 
-    const targetMed = medications.find((m) => m.id === medId);
-    let updatedEvents = timelineEvents;
-    if (targetMed) {
-      const newEvent: TimelineEvent = {
-        id: `tl-med-${Date.now()}`,
-        time: nowTime,
-        title: `Medicamento: ${targetMed.name}`,
-        description: `Dose (${targetMed.dose}) ministrada com sucesso via PIN Legal #7842.`,
-        category: 'medicamento',
-        registeredBy: `${student.teacherName} (${student.teacherRole})`,
-        badge: 'PIN Legal • Ministrado',
-        badgeColor: 'purple',
-        icon: 'pill',
-        verified: true,
-      };
-      updatedEvents = [newEvent, ...timelineEvents];
-      setTimelineEvents(updatedEvents);
-    }
-
-    saveDailyState('mariana-souza', {
-      medications: updatedMeds,
-      timelineEvents: updatedEvents,
-    });
+    const newEvt: TimelineEvent = {
+      id: `med-${Date.now()}`,
+      time: currentTime,
+      title: 'Medicamento Ministrado com Validação de PIN',
+      description: 'Paracetamol gotas administrado conforme autorização e prescrição médica.',
+      category: 'medicamento',
+      registeredBy: 'Ana Silva (Educadora)',
+      badge: 'PIN #7842 Validado',
+      badgeColor: 'rose',
+      icon: 'pill',
+      verified: true
+    };
+    setTimelineEvents(prev => [newEvt, ...prev]);
   };
 
   const handleSelectQuickNav = (id: string) => {
     setActiveQuickNav(id);
     const element = document.getElementById(`section-${id}`);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   };
 
+  const percentWater = Math.min(100, Math.round((waterMl / 600) * 100));
+  const cupsCount = Math.floor(waterMl / 50);
+
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-900 flex flex-col font-sans pb-24 selection:bg-[#5B46EB] selection:text-white relative">
+    <div className="min-h-screen bg-[#F4F6F9] text-slate-900 font-sans pb-28 antialiased selection:bg-[#5B46EB] selection:text-white">
       
-      {/* 🚀 1. HEADER OFICIAL COMPLETO (ANJINHO ESCOLAR) */}
-      <header className="sticky top-0 z-40 bg-gradient-to-r from-[#5B46EB] via-[#6355EE] to-[#7B42F6] text-white shadow-lg border-b border-indigo-900/20">
+      {/* 1. TOPO CABEÇALHO ROXO (PADRÃO OFICIAL ANJINHO ESCOLAR) */}
+      <header className="sticky top-0 z-40 bg-gradient-to-r from-[#4A329A] via-[#5B46EB] to-[#7B42F6] text-white shadow-md">
+        
+        {/* Barra Superior Principal */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex items-center justify-between gap-4">
           
-          <div className="flex items-center gap-4">
+          {/* Logo & Botão Menu Hambúrguer */}
+          <div className="flex items-center gap-3">
             <button
-              type="button"
               onClick={() => setIsMenuOpen(true)}
-              className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-white text-sm font-bold backdrop-blur-md transition-all active:scale-95 border border-white/20 shadow-xs cursor-pointer"
+              aria-label="Abrir menu lateral"
+              className="p-2 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 text-white transition cursor-pointer border border-white/20"
             >
-              <Menu className="w-4 h-4" />
-              <span>Menu</span>
+              <Menu className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-2xl bg-white flex items-center justify-center shadow-md p-1">
-                <span className="text-2xl">👼</span>
+            <div className="flex items-center gap-2.5">
+              <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-xl shadow-inner border border-white/30">
+                👼
               </div>
-              <div>
-                <h1 className="text-lg sm:text-xl font-black tracking-tight leading-none text-white drop-shadow-xs">
-                  Anjinho Escolar
-                </h1>
-                <p className="text-[11px] text-indigo-100 font-medium tracking-wide mt-0.5">
+              <div className="leading-tight">
+                <div className="flex items-center gap-1.5">
+                  <h1 className="text-base sm:text-lg font-black tracking-tight text-white drop-shadow-xs">
+                    Anjinho Escolar
+                  </h1>
+                  <span className="text-[10px] bg-amber-400/30 text-amber-200 font-extrabold px-1.5 py-0.5 rounded-md border border-amber-300/40 uppercase tracking-wider">
+                    PRO
+                  </span>
+                </div>
+                <p className="text-[11px] text-indigo-100/90 font-medium hidden sm:block">
                   Onde a infância é registrada para sempre
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          {/* Botões do Topo: Anjinha Aura, Perfil & PIN */}
+          <div className="flex items-center gap-2 sm:gap-3">
             <button
-              type="button"
               onClick={() => setIsAuraOpen(true)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-amber-950 text-xs sm:text-sm font-black shadow-md transition-all active:scale-95 border border-amber-300 cursor-pointer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-amber-950 font-black text-xs shadow-md transition active:scale-95 cursor-pointer border border-amber-300"
             >
-              <Sparkles className="w-4 h-4 text-amber-900 fill-amber-900" />
-              <span>Anjinha Aura</span>
+              <Sparkles className="w-3.5 h-3.5 fill-current" />
+              <span className="hidden sm:inline">Anjinha Aura</span>
+              <span className="sm:hidden">Aura</span>
             </button>
 
-            <div 
-              onClick={() => setIsMenuOpen(true)}
-              className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 backdrop-blur-sm cursor-pointer transition-all"
-            >
+            {/* Perfil Selecionado */}
+            <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/20">
               <img
                 src={student.teacherPhoto}
-                alt="Ana Silva"
-                className="w-8 h-8 rounded-full object-cover border border-white/40 shadow-xs"
+                alt={student.teacherName}
+                className="w-7 h-7 rounded-full object-cover border border-white"
               />
-              <div className="text-left hidden sm:block leading-tight">
-                <div className="flex items-center gap-1">
-                  <span className="text-xs font-black text-white">Ana Silva (Professora Titular)</span>
-                  <ChevronDown className="w-3.5 h-3.5 text-indigo-200" />
-                </div>
-                <span className="text-[10px] font-bold text-indigo-200 uppercase tracking-wider block">
-                  MASTER [DEV] BERÇÁRIO I - A
-                </span>
+              <div className="text-left hidden md:block leading-none">
+                <span className="text-xs font-bold text-white block">{student.teacherName}</span>
+                <span className="text-[10px] text-indigo-200">{currentRole === 'professor' ? 'Educadora' : 'Responsável'}</span>
               </div>
             </div>
 
+            {/* Validação de PIN */}
             <button
-              type="button"
               onClick={() => setIsPinModalOpen(true)}
-              className="flex items-center gap-1 px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/25 text-xs font-bold transition-all active:scale-95 cursor-pointer text-indigo-100 hover:text-white"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-bold text-amber-300 border border-amber-400/40 transition cursor-pointer"
             >
               <KeyRound className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">PIN</span>
+              <span className="hidden sm:inline">PIN #7842</span>
             </button>
           </div>
         </div>
 
-        {/* Abas */}
+        {/* Abas com Painel da Direção, Coordenação, Árvore da Infância, Jornada e Atividades */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-2 pt-1 border-t border-white/10 text-xs font-bold">
           {[
             { id: 'diario', label: 'Diário Escolar', icon: BookOpen },
+            { id: 'direcao', label: 'Painel da Direção', icon: Briefcase },
+            { id: 'coordenacao', label: 'Coordenação Pedagógica', icon: GraduationCap },
+            { id: 'arvore', label: 'Árvore da Infância', icon: TreePine },
+            { id: 'jornada', label: 'Jornada do Anjinho', icon: Compass },
+            { id: 'atividades', label: 'Atividades Pedagógicas', icon: Award },
             { id: 'turma', label: 'Turma & Alunos', icon: Users },
             { id: 'avisos', label: 'Mural de Avisos', icon: Bell },
             { id: 'medicamentos', label: 'Medicamentos', icon: Pill },
-            { id: 'agenda', label: 'Agenda', icon: Calendar },
-            { id: 'familias', label: 'Famílias', icon: Heart },
           ].map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -565,11 +687,10 @@ export function App() {
               <button
                 key={tab.id}
                 onClick={() => {
-                  setActiveTab(tab.id);
-                  if (tab.id === 'avisos') handleSelectQuickNav('notices');
+                  setActiveTab(tab.id as any);
+                  if (tab.id === 'diario') handleSelectQuickNav('feeding');
+                  else if (tab.id === 'avisos') handleSelectQuickNav('notices');
                   else if (tab.id === 'medicamentos') handleSelectQuickNav('medications');
-                  else if (tab.id === 'diario') handleSelectQuickNav('timeline');
-                  else if (tab.id === 'turma') handleSelectQuickNav('hero');
                 }}
                 className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg whitespace-nowrap transition-all cursor-pointer ${
                   isActive
@@ -584,7 +705,7 @@ export function App() {
           })}
         </div>
 
-        {/* Subcabeçalho Violeta */}
+        {/* Subcabeçalho Violeta (#1C164C) */}
         <div className="bg-[#1C164C] px-4 sm:px-6 lg:px-8 py-2.5 border-t border-indigo-950/60 shadow-inner">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
             <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
@@ -611,7 +732,7 @@ export function App() {
                   </div>
                   <div className="text-xs font-black text-white flex items-center gap-2">
                     <span>{student.name}</span>
-                    <span className="text-[11px] font-normal text-indigo-300">{student.birthDate}</span>
+                    <span className="text-[11px] font-normal text-indigo-300">{student.birthDate} ({student.ageFormatted})</span>
                   </div>
                 </div>
               </div>
@@ -656,351 +777,513 @@ export function App() {
       {/* 2. CONTAINER PRINCIPAL */}
       <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
 
-        {/* 🕊️ BANNER VERDE DO PORTAL DE TRANQUILIDADE (PAX) */}
-        <div className="bg-[#00897B] rounded-3xl p-5 sm:p-6 text-white shadow-md relative overflow-hidden">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="flex items-start gap-3.5">
-              <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center text-2xl shrink-0 border border-white/30 shadow-xs">
-                🕊️
-              </div>
-              <div className="space-y-0.5">
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-100">
-                    PORTAL DE TRANQUILIDADE (PAX)
-                  </span>
-                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-100 bg-emerald-800/40 px-2 py-0.5 rounded-full border border-emerald-400/30">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-300 animate-pulse"></span>
-                    Transmissão Oficial
-                  </span>
-                </div>
-                <h2 className="text-lg sm:text-xl font-black tracking-tight leading-snug">
-                  Acompanhamento em Tempo Real das Atividades Diárias
-                </h2>
-                <p className="text-xs text-emerald-100 leading-relaxed max-w-2xl">
-                  Espaço dedicado aos pais e responsáveis para leitura transparente dos cuidados, tempo em aula, nutrição e bem-estar de <strong>{student.name}</strong>.
-                </p>
-              </div>
-            </div>
-
-            <div className="bg-emerald-900/40 rounded-2xl p-3 border border-emerald-400/30 text-right shrink-0">
-              <span className="text-[9px] uppercase font-black tracking-widest text-emerald-300 block mb-0.5">
-                MODO ATIVO
-              </span>
-              <span className="text-xs font-black text-white block">
-                Leitura & Acompanhamento
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* 👶 CARD DA MARIANA SOUZA COM DETALHES E BARRA 'IR PARA' */}
-        <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200/80 shadow-sm space-y-6">
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-              <div className="relative">
-                <img
-                  src={student.photoUrl}
-                  alt={student.name}
-                  className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl object-cover border-4 border-emerald-400 shadow-md"
-                />
-                <div className="absolute -top-2 -right-2 w-7 h-7 bg-emerald-500 rounded-full border-2 border-white flex items-center justify-center text-white shadow-xs">
-                  <CheckCircle2 className="w-4 h-4" />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex flex-wrap items-center gap-2.5">
-                  <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-                    {student.name}
-                  </h2>
-                  <span className="px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 text-[10px] font-black uppercase tracking-wider border border-blue-200">
-                    ALUNO VERIFICADO
-                  </span>
-                  <span className="px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-wider border border-emerald-200 flex items-center gap-1">
-                    <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    ONLINE NO BERÇÁRIO
-                  </span>
-                </div>
-
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 text-xs text-slate-600">
-                  <div>Responsável: <strong className="text-slate-900">{student.responsible}</strong></div>
-                  <div>•</div>
-                  <div>Nascimento: <strong className="text-slate-900">{student.birthDate} ({student.ageFormatted})</strong></div>
-                  <div>•</div>
-                  <div>Turma: <strong className="text-[#5B46EB]">{student.roomName}</strong></div>
-                </div>
-
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-50 border border-amber-200 text-amber-900 text-xs font-bold">
-                  <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
-                  <span>{student.allergyNotice}</span>
-                </div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => setIsReportModalOpen(true)}
-              className="flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-[#5B46EB] to-[#7B42F6] hover:from-[#4F3BE0] hover:to-[#6C34E8] text-white font-bold text-xs sm:text-sm shadow-md transition-all active:scale-95 cursor-pointer"
-            >
-              <FileText className="w-4 h-4" />
-              <span>Relatório em PDF</span>
-            </button>
-          </div>
-
-          {/* Barra 'IR PARA' */}
-          <div className="pt-4 border-t border-slate-100 flex flex-wrap items-center gap-2">
-            <span className="text-xs font-black uppercase tracking-wider text-slate-600 mr-2 flex items-center gap-1">
-              <span className="text-amber-500">⚡</span>
-              <span>IR PARA:</span>
-            </span>
-            {[
-              { id: 'feeding', label: 'Alimentação' },
-              { id: 'water', label: 'Água / Mamadeira' },
-              { id: 'health', label: 'Saúde & Temperatura' },
-              { id: 'nap', label: 'Soneca & Sono' },
-              { id: 'diapers', label: 'Trocas & Higiene' },
-              { id: 'medications', label: 'Medicamentos' },
-              { id: 'timeline', label: 'Linha do Tempo' },
-              { id: 'notices', label: 'Avisos da Turma' },
-            ].map((btn) => (
-              <button
-                key={btn.id}
-                onClick={() => handleSelectQuickNav(btn.id)}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
-                  activeQuickNav === btn.id
-                    ? 'bg-slate-900 text-white border-slate-900 shadow-xs'
-                    : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border-slate-200'
-                }`}
-              >
-                {btn.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* 🏫 HERO INSTITUCIONAL & PROFESSORA */}
-        <div id="section-hero" className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
-            <div className="flex items-start gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shrink-0 shadow-inner">
-                <Building2 className="w-7 h-7" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#5B46EB] block mb-0.5">
-                  INSTITUIÇÃO CREDENCIADA
-                </span>
-                <h2 className="text-lg font-black text-slate-900 tracking-tight leading-snug">{student.schoolName}</h2>
-                <p className="text-xs text-slate-600 mt-1 leading-relaxed">{student.schoolSubtitle}</p>
-              </div>
-            </div>
-            <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full text-[11px] font-semibold border border-emerald-200">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Selo de Qualidade Digital</span>
-              </span>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
-            <div>
-              <span className="text-[10px] font-black uppercase tracking-wider text-blue-600 block mb-0.5">BUSCA DIRETA POR NOME</span>
-              <h3 className="text-base font-black text-slate-900 leading-tight">Busca Rápida de Alunos & Crianças</h3>
-              <div className="relative pt-2">
-                <input
-                  type="text"
-                  placeholder="Buscar por nome ou turma..."
-                  className="w-full bg-slate-50 text-slate-800 text-xs rounded-xl pl-9 pr-4 py-2.5 border border-slate-200 focus:ring-2 focus:ring-[#5B46EB]"
-                />
-                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-4.5" />
-              </div>
-            </div>
-            <div className="p-3 rounded-2xl bg-amber-50/80 border border-amber-200/70 text-[11px] text-amber-900 font-medium">
-              🔒 Perfil Familiar: Acesso restrito e exclusivo a {student.name}.
-            </div>
-          </div>
-
-          <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col justify-between space-y-4">
-            <div>
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-extrabold uppercase text-slate-500">AULA Painel da Professora</span>
-                <span className="text-[11px] font-bold text-indigo-600">{student.teacherRole}</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <img
-                  src={student.teacherPhoto}
-                  alt={student.teacherName}
-                  className="w-12 h-12 rounded-full object-cover border-2 border-indigo-200 shadow-xs"
-                />
-                <div>
-                  <h4 className="text-sm font-black text-slate-900">{student.teacherName}</h4>
-                  <p className="text-xs text-slate-500">Maternal I & Berçário B</p>
-                </div>
-              </div>
-            </div>
-            <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-emerald-700 font-bold">
-              <span className="flex items-center gap-1">🟢 Sessão Segura e Ativa</span>
-            </div>
-          </div>
-        </div>
-
-        {/* ⏱️ GOVERNANÇA & TEMPO DE PERMANÊNCIA COM CRONÔMETRO */}
-        <div id="section-timeline" className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-5">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-[#5B46EB] font-bold text-xl">
-                ⏱️
-              </div>
-              <div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-[#5B46EB] block">AUDITORIA E COMPLIANCE</span>
-                <h3 className="text-lg font-black text-slate-900">Governança & Tempo de Permanência</h3>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-3 w-full md:w-auto justify-end">
-              <div className="bg-slate-900 text-white px-5 py-2.5 rounded-2xl shadow-md flex items-center gap-3">
-                <Clock className="w-5 h-5 text-emerald-400" />
-                <span className="text-2xl font-black font-mono text-emerald-400">{formatTimer(elapsedSeconds)}</span>
-              </div>
-
-              {currentRole === 'professor' && (
-                <button
-                  onClick={handleTogglePause}
-                  className={`px-4 py-2.5 rounded-2xl font-bold text-xs transition flex items-center gap-2 shadow-xs cursor-pointer ${
-                    isPaused ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : 'bg-amber-500 hover:bg-amber-600 text-white'
-                  }`}
-                >
-                  {isPaused ? <Play className="w-4 h-4" /> : <Pause className="w-4 h-4" />}
-                  <span>{isPaused ? 'Retomar Aula' : 'Pausar Aula'}</span>
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* 🍼 ALIMENTAÇÃO, MAMADEIRA & ÁGUA */}
-        <div id="section-feeding" className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-            {/* Mamadeira */}
-            <div id="section-water" className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
-              <div className="flex items-center justify-between">
+        {/* 🏢 SEÇÃO: PAINEL DA DIREÇÃO GERAL (Quando a aba 'direcao' está ativa) */}
+        {activeTab === 'direcao' && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-slate-900 text-white rounded-3xl p-6 sm:p-7 shadow-lg border border-indigo-700/50">
+              <div className="flex items-center justify-between flex-wrap gap-4 mb-2">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl font-bold">
-                    🍼
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-500/30 flex items-center justify-center text-indigo-300 border border-indigo-400/30">
+                    <Briefcase className="w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-base font-black text-slate-900">Mamadeira Nutritiva</h3>
-                    <p className="text-xs text-slate-500 font-medium">Fórmula Especial Hipoalergênica APLV</p>
+                    <h2 className="text-xl font-black">Painel Executivo da Direção Escolar & Governança</h2>
+                    <p className="text-xs text-indigo-200">Visão integrada de conformidade jurídica, capacidade de vagas, presença em tempo real e segurança institucional.</p>
                   </div>
                 </div>
-                <span className={`text-xs font-black px-3 py-1 rounded-full ${
-                  bottleDone ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-slate-100 text-slate-600'
-                }`}>
-                  {bottleDone ? `${bottleVolume} ml • Tomou Tudo` : 'Pendente'}
-                </span>
+                <button
+                  onClick={() => setIsReportModalOpen(true)}
+                  className="px-4 py-2.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white font-bold text-xs shadow-md transition cursor-pointer flex items-center gap-2"
+                >
+                  <FileSpreadsheet className="w-4 h-4" />
+                  <span>Auditoria Geral (PDF)</span>
+                </button>
               </div>
 
-              {currentRole === 'professor' && (
-                <div className="flex gap-2">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                <div className="p-4 rounded-2xl bg-white/10 border border-white/10">
+                  <span className="text-[10px] font-bold text-indigo-300 uppercase block">Ocupação de Vagas</span>
+                  <span className="text-2xl font-black text-white">96%</span>
+                  <span className="text-[10px] text-emerald-400 block mt-1">48 de 50 vagas preenchidas</span>
+                </div>
+                <div className="p-4 rounded-2xl bg-white/10 border border-white/10">
+                  <span className="text-[10px] font-bold text-indigo-300 uppercase block">Conformidade Legal</span>
+                  <span className="text-2xl font-black text-emerald-400">100%</span>
+                  <span className="text-[10px] text-indigo-200 block mt-1">Todos os diários auditados</span>
+                </div>
+                <div className="p-4 rounded-2xl bg-white/10 border border-white/10">
+                  <span className="text-[10px] font-bold text-indigo-300 uppercase block">Medicamentos com PIN</span>
+                  <span className="text-2xl font-black text-amber-300">100%</span>
+                  <span className="text-[10px] text-indigo-200 block mt-1">Validação médica rigorosa</span>
+                </div>
+                <div className="p-4 rounded-2xl bg-white/10 border border-white/10">
+                  <span className="text-[10px] font-bold text-indigo-300 uppercase block">Presença Hoje</span>
+                  <span className="text-2xl font-black text-white">94.5%</span>
+                  <span className="text-[10px] text-emerald-400 block mt-1">Berçário & Maternal</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Quadro de Auditoria Institucional das Salas */}
+            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+              <h3 className="text-base font-black text-slate-900">Salas de Aula & Monitoramento em Tempo Real</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {[
+                  { sala: 'Berçário A (0 a 1 ano)', educadora: 'Carla Dias', alunos: '12 / 12', status: 'Conformidade 100%', cor: 'emerald' },
+                  { sala: 'Berçário B (1 a 2 anos)', educadora: 'Ana Silva', alunos: '14 / 15', status: 'Conformidade 100%', cor: 'emerald' },
+                  { sala: 'Maternal I (2 a 3 anos)', educadora: 'Juliana Castro', alunos: '22 / 23', status: 'Conformidade 100%', cor: 'emerald' }
+                ].map((s, idx) => (
+                  <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-black text-slate-900">{s.sala}</span>
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">{s.status}</span>
+                    </div>
+                    <div className="text-xs text-slate-600">Educadora Titular: <strong>{s.educadora}</strong></div>
+                    <div className="text-xs text-slate-600">Lotação: <strong>{s.alunos} crianças</strong></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 👩‍🏫 SEÇÃO: COORDENAÇÃO PEDAGÓGICA & BNCC (Quando a aba 'coordenacao' está ativa) */}
+        {activeTab === 'coordenacao' && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-sm space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                  <GraduationCap className="w-6 h-6" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-black text-slate-900">Planejamento Pedagógico & Alinhamento com a BNCC</h2>
+                  <p className="text-xs text-slate-500">Validação, acompanhamento e registro das experiências da primeira infância</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                <div className="p-4 rounded-2xl bg-indigo-50/60 border border-indigo-100 space-y-2">
+                  <span className="text-xs font-black text-indigo-950">EI01TS01 • Traços, Sons, Cores e Formas</span>
+                  <p className="text-xs text-slate-600">Exploração e discriminação sonora através de instrumentos musicais infantis e cantigas tradicionais.</p>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-100 text-indigo-800 inline-block">Executada Hoje por Tia Ana</span>
+                </div>
+                <div className="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-100 space-y-2">
+                  <span className="text-xs font-black text-emerald-950">EI01CG02 • Corpo, Gestos e Movimentos</span>
+                  <p className="text-xs text-slate-600">Desenvolvimento da coordenação motora ampla com tapetes táteis e circuitos macios.</p>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-800 inline-block">Planejada para Amanhã</span>
+                </div>
+                <div className="p-4 rounded-2xl bg-purple-50/60 border border-purple-100 space-y-2">
+                  <span className="text-xs font-black text-purple-950">EI01EO03 • O Eu, o Outro e o Nós</span>
+                  <p className="text-xs text-slate-600">Interação afetiva na rodinha de acolhimento e reconhecimento do próprio corpinho e dos colegas.</p>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-purple-100 text-purple-800 inline-block">Em Acompanhamento Diário</span>
+                </div>
+                <div className="p-4 rounded-2xl bg-amber-50/60 border border-amber-100 space-y-2">
+                  <span className="text-xs font-black text-amber-950">EI01EF01 • Escuta, Fala, Pensamento e Imaginação</span>
+                  <p className="text-xs text-slate-600">Contação de histórias com fantoches de tecido macio e entonação de voz expressiva.</p>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-amber-100 text-amber-800 inline-block">Sexta-feira Cultural</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 🌳 SEÇÃO: ÁRVORE DA INFÂNCIA (Quando a aba 'arvore' está ativa) */}
+        {activeTab === 'arvore' && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="bg-gradient-to-b from-emerald-50 to-teal-50 rounded-3xl p-6 sm:p-8 border border-emerald-200 shadow-sm space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-2xl shadow-md">
+                  🌳
+                </div>
+                <div>
+                  <h2 className="text-xl font-black text-emerald-950">Árvore da Infância • {student.name}</h2>
+                  <p className="text-xs text-emerald-800">Mapa vivo de desenvolvimento socioemocional, motor e cognitivo</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="p-5 rounded-2xl bg-white border border-emerald-200 shadow-xs space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black text-emerald-900">🍃 Expressão & Linguagem</span>
+                    <span className="text-xs font-black text-emerald-600">85%</span>
+                  </div>
+                  <p className="text-xs text-slate-600">Emite balbucios expressivos, responde ao próprio nome e reconhece a voz dos educadores.</p>
+                  <div className="w-full bg-emerald-100 h-2 rounded-full overflow-hidden">
+                    <div className="bg-emerald-500 h-full rounded-full" style={{ width: '85%' }}></div>
+                  </div>
+                </div>
+
+                <div className="p-5 rounded-2xl bg-white border border-emerald-200 shadow-xs space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black text-emerald-900">🌿 Coordenação & Movimento</span>
+                    <span className="text-xs font-black text-emerald-600">90%</span>
+                  </div>
+                  <p className="text-xs text-slate-600">Senta-se sem apoio, engatinha com firmeza e segura pequenos objetos com a pinça digital.</p>
+                  <div className="w-full bg-emerald-100 h-2 rounded-full overflow-hidden">
+                    <div className="bg-emerald-500 h-full rounded-full" style={{ width: '90%' }}></div>
+                  </div>
+                </div>
+
+                <div className="p-5 rounded-2xl bg-white border border-emerald-200 shadow-xs space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-black text-emerald-900">🌸 Vínculo & Socioafetivo</span>
+                    <span className="text-xs font-black text-emerald-600">95%</span>
+                  </div>
+                  <p className="text-xs text-slate-600">Interage com os colegas na rodinha, sorri durante o acolhimento e aceita o colinho com serenidade.</p>
+                  <div className="w-full bg-emerald-100 h-2 rounded-full overflow-hidden">
+                    <div className="bg-emerald-500 h-full rounded-full" style={{ width: '95%' }}></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 🚀 SEÇÃO: JORNADA DO ANJINHO (Quando a aba 'jornada' está ativa) */}
+        {activeTab === 'jornada' && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                  <Compass className="w-6 h-6" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-black text-slate-900">Jornada do Anjinho • Linha de Conquistas</h2>
+                  <p className="text-xs text-slate-500">Marcos afetivos da adaptação e descobertas da Mariana no Colégio Pequeno Anjo</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {[
+                  { data: '15/08/2026', titulo: 'Primeiro Dia de Acolhimento', desc: 'Adaptação com a mamãe Clarice e primeiro contato com a turma do Berçário B.', badge: 'Adaptação Concluída' },
+                  { data: '02/09/2026', titulo: 'Primeira Palminha na Cantiga', desc: 'Acompanhou o ritmo da música "Dona Aranha" com grande alegria.', badge: 'Marco Motor' },
+                  { data: '18/09/2026', titulo: 'Autonomia Alimentar', desc: 'Segurou a colherzinha sozinha pela primeira vez durante a papinha de abóbora.', badge: 'Nutrição & Autonomia' },
+                ].map((item, i) => (
+                  <div key={i} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex items-start gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600 flex items-center justify-center font-bold text-sm">
+                      {i + 1}
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <h4 className="text-xs font-black text-slate-900">{item.titulo}</h4>
+                        <span className="text-[10px] font-bold text-slate-400">{item.data}</span>
+                      </div>
+                      <p className="text-xs text-slate-600 mt-1">{item.desc}</p>
+                      <span className="text-[10px] font-bold text-indigo-700 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-100 inline-block mt-2">{item.badge}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 🎨 SEÇÃO: ATIVIDADES PEDAGÓGICAS DO DIA */}
+        {activeTab === 'atividades' && (
+          <div className="space-y-6 animate-fade-in">
+            <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-sm space-y-5">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl">
+                    🎨
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-black text-slate-900">Atividades Pedagógicas & Vivências BNCC</h2>
+                    <p className="text-xs text-slate-500">Registro fotográfico, engajamento e relatórios de aprendizagem</p>
+                  </div>
+                </div>
+
+                {currentRole === 'professor' && (
                   <button
+                    onClick={() => setIsNewActivityModalOpen(true)}
+                    className="px-4 py-2 rounded-xl bg-[#5B46EB] hover:bg-indigo-700 text-white font-black text-xs shadow-md transition flex items-center gap-2 cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Nova Atividade</span>
+                  </button>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                {activities.map((act) => (
+                  <div key={act.id} className="rounded-2xl border border-slate-200 bg-slate-50 overflow-hidden space-y-3">
+                    <img src={act.imageUrl} alt={act.title} className="w-full h-44 object-cover" />
+                    <div className="p-4 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black px-2 py-0.5 rounded-md bg-purple-100 text-purple-800 font-mono">
+                          {act.bnccCode}
+                        </span>
+                        <span className="text-[11px] font-bold text-slate-400">{act.time}</span>
+                      </div>
+                      <h4 className="text-sm font-black text-slate-900">{act.title}</h4>
+                      <p className="text-xs text-slate-600">{act.description}</p>
+                      <div className="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px]">
+                        <span className="text-slate-500 font-medium">Materiais: {act.materials}</span>
+                        <span className="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded">Engajamento: {act.studentEngagement}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 👶 SEÇÃO PRINCIPAL DO DIÁRIO (CARD DO ALUNO + CRONÔMETRO + JARRINHA + REFEIÇÕES) */}
+        <div id="section-hero" className="space-y-6">
+
+          {/* Card Principal do Aluno com Cronômetro de Permanência e Botões de Entrada/Saída */}
+          <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-sm space-y-6">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-5 border-b border-slate-100 pb-5">
+              
+              {/* Foto + Informações Pessoais */}
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <img
+                    src={student.photoUrl}
+                    alt={student.name}
+                    className="w-20 h-20 rounded-3xl object-cover border-4 border-[#5B46EB]/20 shadow-md"
+                  />
+                  <span className="absolute -bottom-1 -right-1 px-2 py-0.5 bg-emerald-500 text-white text-[10px] font-black rounded-full border-2 border-white shadow-xs">
+                    EM SALA
+                  </span>
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-xl font-black text-slate-900">{student.name}</h2>
+                    <span className="text-xs bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-md border border-indigo-100">
+                      {student.roomName}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Nascimento: {student.birthDate} ({student.ageFormatted}) • Responsável: <strong>{student.responsible}</strong>
+                  </p>
+                  <p className="text-xs font-bold text-rose-600 mt-1 flex items-center gap-1">
+                    <AlertTriangle className="w-3.5 h-3.5" />
+                    <span>{student.allergyNotice}</span>
+                  </p>
+                </div>
+              </div>
+
+              {/* Bloco Cronômetro de Permanência e Botões */}
+              <div className="w-full md:w-auto flex flex-col sm:flex-row items-center gap-3 bg-slate-50 p-3.5 rounded-2xl border border-slate-200">
+                <div className="text-center sm:text-left">
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                    Permanência em Tempo Real
+                  </span>
+                  <div className="text-2xl font-black font-mono text-[#5B46EB]">
+                    {formatTimer(elapsedSeconds)}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1.5 w-full sm:w-auto">
+                  <button
+                    onClick={handleTogglePause}
+                    aria-label={isPaused ? "Retomar cronômetro" : "Pausar cronômetro"}
+                    className="p-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 transition cursor-pointer shadow-2xs"
+                  >
+                    {isPaused ? <Play className="w-4 h-4 text-emerald-600 fill-current" /> : <Pause className="w-4 h-4 text-amber-600 fill-current" />}
+                  </button>
+                  <button
+                    onClick={handleResetTimer}
+                    aria-label="Reiniciar cronômetro"
+                    className="p-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 transition cursor-pointer shadow-2xs"
+                  >
+                    <RotateCcw className="w-4 h-4 text-slate-500" />
+                  </button>
+                  
+                  {currentRole === 'professor' && (
+                    <>
+                      <button
+                        onClick={handleSetEntryTime}
+                        className="flex-1 sm:flex-none px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-xs transition flex items-center gap-1 cursor-pointer"
+                      >
+                        <LogIn className="w-3.5 h-3.5" />
+                        <span>Entrada ({entryTime})</span>
+                      </button>
+                      <button
+                        onClick={handleSetExitTime}
+                        className="flex-1 sm:flex-none px-3 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-black text-xs shadow-xs transition flex items-center gap-1 cursor-pointer"
+                      >
+                        <LogOut className="w-3.5 h-3.5" />
+                        <span>Saída ({exitTime})</span>
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+
+            </div>
+
+            {/* Sub-barra de Status Rápidos */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1">
+              <div className="p-3 rounded-2xl bg-indigo-50/50 border border-indigo-100">
+                <span className="text-[10px] font-bold text-indigo-400 block uppercase">Educadora</span>
+                <span className="text-xs font-black text-indigo-950">{student.teacherName}</span>
+              </div>
+              <div className="p-3 rounded-2xl bg-emerald-50/50 border border-emerald-100">
+                <span className="text-[10px] font-bold text-emerald-500 block uppercase">Tipo Sanguíneo</span>
+                <span className="text-xs font-black text-emerald-950">{student.bloodType}</span>
+              </div>
+              <div className="p-3 rounded-2xl bg-amber-50/50 border border-amber-100">
+                <span className="text-[10px] font-bold text-amber-500 block uppercase">Emergência</span>
+                <span className="text-xs font-black text-amber-950">{student.emergencyPhone}</span>
+              </div>
+              <div className="p-3 rounded-2xl bg-purple-50/50 border border-purple-100">
+                <span className="text-[10px] font-bold text-purple-500 block uppercase">PIN Autorizado</span>
+                <span className="text-xs font-black text-purple-950">#7842 (Válido)</span>
+              </div>
+            </div>
+          </div>
+
+          {/* 🍼 JARRINHA DE ÁGUA, MAMADEIRA E REFEIÇÕES */}
+          <div id="section-feeding" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+            {/* Jarrinha de Água & Mamadeira */}
+            <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-sm space-y-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center font-bold text-lg">
+                    💧
+                  </div>
+                  <div>
+                    <h3 className="text-base font-black text-slate-900">Jarrinha de Hidratação</h3>
+                    <p className="text-xs text-slate-500 font-medium">Meta diária recomendada: 600ml</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="text-2xl font-black text-sky-600 font-mono">{waterMl}</span>
+                  <span className="text-xs font-bold text-slate-400"> / 600ml</span>
+                </div>
+              </div>
+
+              {/* Barra de Progresso Visual da Jarrinha */}
+              <div className="space-y-2">
+                <div className="w-full bg-slate-100 h-4 rounded-full overflow-hidden p-0.5 border border-slate-200">
+                  <div
+                    className="bg-gradient-to-r from-sky-400 to-blue-600 h-full rounded-full transition-all duration-500"
+                    style={{ width: `${percentWater}%` }}
+                  ></div>
+                </div>
+                <div className="flex items-center justify-between text-[11px] font-bold text-slate-400">
+                  <span>{percentWater}% da meta alcançada</span>
+                  <span>{cupsCount} copinhos de 50ml</span>
+                </div>
+              </div>
+
+              {/* Botões de Ação da Água */}
+              {currentRole === 'professor' && (
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  <button
+                    onClick={() => handleAddWater(50)}
+                    className="flex-1 py-2 px-3 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-black border border-sky-200 transition cursor-pointer"
+                  >
+                    +50ml (1 Copo)
+                  </button>
+                  <button
+                    onClick={() => handleAddWater(100)}
+                    className="flex-1 py-2 px-3 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-black border border-sky-200 transition cursor-pointer"
+                  >
+                    +100ml (2 Copos)
+                  </button>
+                  <button
+                    onClick={() => handleAddWater(150)}
+                    className="flex-1 py-2 px-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-black shadow-xs transition cursor-pointer"
+                  >
+                    +150ml (Jarrinha)
+                  </button>
+                  <button
+                    onClick={handleResetWater}
+                    className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-bold transition cursor-pointer"
+                    title="Zerar água"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                </div>
+              )}
+
+              {/* Mamadeira APLV */}
+              <div className="pt-4 border-t border-slate-100 space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <span className="text-lg">🍼</span>
+                    <div>
+                      <h4 className="text-xs font-black text-slate-900">Mamadeira Hipoalergênica (Sem Lactose)</h4>
+                      <p className="text-[10px] text-slate-400">Fórmula especial para dieta restritiva</p>
+                    </div>
+                  </div>
+                  <button
+                    disabled={currentRole !== 'professor'}
                     onClick={handleToggleBottle}
-                    className={`flex-1 py-2.5 rounded-xl font-bold text-xs transition border flex items-center justify-center gap-2 ${
-                      bottleDone ? 'bg-slate-100 text-slate-700' : 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600'
+                    className={`px-3 py-1.5 rounded-xl text-xs font-black transition cursor-pointer ${
+                      bottleDone ? 'bg-emerald-600 text-white shadow-xs' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                     }`}
                   >
-                    <Check className="w-4 h-4" />
-                    {bottleDone ? 'Desmarcar' : 'Confirmar Mamadeira Tomada'}
+                    {bottleDone ? '✓ 180ml Tomou Tudo' : 'Registrar Mamadeira'}
                   </button>
                 </div>
-              )}
+              </div>
             </div>
 
-            {/* Água */}
-            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+            {/* Alimentação & Cardápio Nutricional */}
+            <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-sm space-y-5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-sky-50 text-sky-600 flex items-center justify-center font-bold">
-                    <Droplets className="w-6 h-6" />
+                  <div className="w-10 h-10 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-lg">
+                    🍲
                   </div>
                   <div>
-                    <h3 className="text-base font-black text-slate-900">Ingestão Hídrica (Água)</h3>
-                    <p className="text-xs text-slate-500 font-medium">Meta Diária: 600 ml</p>
+                    <h3 className="text-base font-black text-slate-900">Refeições & Alimentação</h3>
+                    <p className="text-xs text-slate-500 font-medium">Controle de aceitação e papinhas</p>
                   </div>
                 </div>
-                <span className="text-xl font-black text-sky-600 font-mono">{waterMl} ml</span>
               </div>
 
-              <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
-                <div className="bg-sky-500 h-full rounded-full transition-all duration-500" style={{ width: `${Math.min(100, (waterMl / 600) * 100)}%` }} />
-              </div>
+              <div className="space-y-3">
+                {meals.map((meal) => (
+                  <div key={meal.id} className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-xl bg-white border border-slate-200 flex items-center justify-center text-sm shadow-2xs">
+                        {meal.icon === 'apple' ? '🍎' : meal.icon === 'utensils' ? '🥣' : meal.icon === 'sun' ? '🍊' : '🍲'}
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-black text-slate-800 leading-none">{meal.name}</h4>
+                        <span className="text-[10px] text-amber-600 font-bold">{meal.status}</span>
+                      </div>
+                    </div>
 
-              {currentRole === 'professor' && (
-                <div className="flex gap-2">
-                  {[+50, +100, +150].map((amt) => (
-                    <button
-                      key={amt}
-                      onClick={() => handleAddWater(amt)}
-                      className="flex-1 py-2 rounded-xl bg-sky-50 hover:bg-sky-100 text-sky-700 text-xs font-black border border-sky-200 transition"
-                    >
-                      +{amt} ml
-                    </button>
-                  ))}
-                  <button
-                    onClick={() => handleAddWater(-50)}
-                    className="px-3 py-2 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-600 text-xs font-bold border border-slate-200 transition"
-                  >
-                    -50
-                  </button>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Refeições Rápidas */}
-          <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
-            <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
-              <Utensils className="w-5 h-5 text-emerald-600" />
-              <span>Cardápio & Refeições Rápidas</span>
-            </h3>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {meals.map((meal) => (
-                <div key={meal.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between gap-3">
-                  <div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-black text-slate-900">{meal.time} • {meal.name}</span>
-                      <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${
-                        meal.status === 'ACEITOU TUDO' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
-                        meal.status === 'ACEITOU BEM' ? 'bg-amber-50 text-amber-700 border-amber-200' :
-                        'bg-slate-100 text-slate-500 border-slate-200'
+                    {currentRole === 'professor' ? (
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => handleUpdateMeal(meal.id, 'ACEITOU TUDO')}
+                          className={`px-2 py-1 rounded-lg text-[10px] font-bold transition cursor-pointer ${
+                            meal.status === 'ACEITOU TUDO' ? 'bg-emerald-600 text-white shadow-xs' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+                          }`}
+                        >
+                          Aceitou
+                        </button>
+                        <button
+                          onClick={() => handleUpdateMeal(meal.id, 'PARCIAL')}
+                          className={`px-1.5 py-1 rounded-lg text-[10px] font-bold transition cursor-pointer ${
+                            meal.status === 'PARCIAL' ? 'bg-amber-500 text-white shadow-xs' : 'bg-white hover:bg-slate-100 text-slate-700 border border-slate-200'
+                          }`}
+                        >
+                          1/2
+                        </button>
+                      </div>
+                    ) : (
+                      <span className={`px-2 py-0.5 rounded-md text-[10px] font-bold ${
+                        meal.status === 'ACEITOU TUDO' ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'
                       }`}>
                         {meal.status}
                       </span>
-                    </div>
-                    {meal.observation && (
-                      <p className="text-xs text-slate-600 mt-2">{meal.observation}</p>
                     )}
                   </div>
-
-                  {currentRole === 'professor' && (
-                    <div className="grid grid-cols-3 gap-1.5 pt-2 border-t border-slate-200">
-                      {(['ACEITOU TUDO', 'ACEITOU BEM', 'RECUSOU'] as const).map((st) => (
-                        <button
-                          key={st}
-                          onClick={() => handleUpdateMeal(meal.id, st as any)}
-                          className={`py-1.5 px-2 rounded-xl text-[10px] font-black transition border ${
-                            meal.status === st 
-                              ? 'bg-indigo-600 text-white border-indigo-600 shadow-xs' 
-                              : 'bg-white hover:bg-slate-100 text-slate-700 border-slate-200'
-                          }`}
-                        >
-                          {st === 'ACEITOU TUDO' ? 'Tudo' : st === 'ACEITOU BEM' ? 'Bem' : 'Recusou'}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
+
         </div>
 
         {/* 🌡️ SAÚDE, SONECA, HIGIENE & MEDICAMENTOS */}
@@ -1110,7 +1393,7 @@ export function App() {
         </div>
 
         {/* 📜 LINHA DO TEMPO & AUDITORIA */}
-        <div className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-sm space-y-4">
+        <div id="section-timeline" className="bg-white rounded-3xl p-6 sm:p-7 border border-slate-200 shadow-sm space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold text-lg">
@@ -1219,11 +1502,14 @@ export function App() {
               <nav className="space-y-1.5 text-xs font-bold">
                 {[
                   { label: 'Diário Escolar Completo', icon: BookOpen, action: () => { setActiveTab('diario'); handleSelectQuickNav('timeline'); setIsMenuOpen(false); } },
+                  { label: 'Painel da Direção Geral', icon: Briefcase, action: () => { setActiveTab('direcao'); setIsMenuOpen(false); } },
+                  { label: 'Coordenação Pedagógica (BNCC)', icon: GraduationCap, action: () => { setActiveTab('coordenacao'); setIsMenuOpen(false); } },
+                  { label: 'Árvore da Infância', icon: TreePine, action: () => { setActiveTab('arvore'); setIsMenuOpen(false); } },
+                  { label: 'Jornada do Anjinho', icon: Compass, action: () => { setActiveTab('jornada'); setIsMenuOpen(false); } },
+                  { label: 'Atividades Pedagógicas', icon: Award, action: () => { setActiveTab('atividades'); setIsMenuOpen(false); } },
                   { label: 'Gerenciar Turmas & Alunos', icon: Users, action: () => { setActiveTab('turma'); handleSelectQuickNav('hero'); setIsMenuOpen(false); } },
                   { label: 'Mural de Avisos & Circulares', icon: Bell, action: () => { setActiveTab('avisos'); handleSelectQuickNav('notices'); setIsMenuOpen(false); } },
                   { label: 'Medicamentos & Prescrições', icon: Pill, action: () => { setActiveTab('medicamentos'); handleSelectQuickNav('health'); setIsMenuOpen(false); } },
-                  { label: 'Agenda & Eventos Escolares', icon: Calendar, action: () => { setActiveTab('agenda'); handleSelectQuickNav('hero'); setIsMenuOpen(false); } },
-                  { label: 'Canal Direto com as Famílias', icon: Heart, action: () => { setActiveTab('familias'); setIsMenuOpen(false); } },
                   { label: 'Relatórios & Exportações PDF', icon: FileSpreadsheet, action: () => { setIsReportModalOpen(true); setIsMenuOpen(false); } },
                   { label: 'Anjinha Aura (IA Pedagógica)', icon: Sparkles, action: () => { setIsAuraOpen(true); setIsMenuOpen(false); } },
                 ].map((item, idx) => {
