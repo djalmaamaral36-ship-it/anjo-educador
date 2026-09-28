@@ -1,20 +1,23 @@
-import { initializeApp } from 'firebase/app';
+import { initializeApp, getApps, getApp } from 'firebase/app';
 import { 
   getFirestore, 
   doc, 
   setDoc, 
   getDoc, 
-  onSnapshot 
+  onSnapshot,
+  collection
 } from 'firebase/firestore';
 import { 
   getAuth, 
   GoogleAuthProvider, 
   signInWithPopup, 
   signOut, 
-  onAuthStateChanged 
+  onAuthStateChanged,
+  signInWithRedirect,
+  getRedirectResult
 } from 'firebase/auth';
 
-// Configuração Firebase do Projeto
+// Configuração do Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyDummyKeyForDevEnvironmentOnly",
   authDomain: "ai-studio-anjinhoescolar.firebaseapp.com",
@@ -24,12 +27,26 @@ const firebaseConfig = {
   appId: "1:78716392594:web:6ec9737890ae447581a43c"
 };
 
-// Inicialização do Firebase
-export const app = initializeApp(firebaseConfig);
+// Inicialização segura
+export const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
-export { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged };
+
+// Exportações explícitas para compatibilidade total
+export { 
+  signInWithPopup, 
+  signOut, 
+  onAuthStateChanged, 
+  GoogleAuthProvider,
+  signInWithRedirect,
+  getRedirectResult,
+  doc,
+  setDoc,
+  getDoc,
+  onSnapshot,
+  collection
+};
 
 // Interface para o estado diário da criança
 export interface DailyStudentState {
