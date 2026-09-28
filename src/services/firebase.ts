@@ -1,119 +1,122 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
+import { initializeApp } from 'firebase/app';
+import { 
+  getAuth, 
+  GoogleAuthProvider, 
+  signInWithPopup, 
+  signOut,
+  onAuthStateChanged,
+  User 
+} from 'firebase/auth';
 import { 
   getFirestore, 
   doc, 
   setDoc, 
   getDoc, 
   onSnapshot,
-  collection
+  Unsubscribe 
 } from 'firebase/firestore';
-import { 
-  getAuth, 
-  GoogleAuthProvider, 
-  signInWithPopup, 
-  signOut, 
-  onAuthStateChanged,
-  signInWithRedirect,
-  getRedirectResult
-} from 'firebase/auth';
+import { MealStatus, MedicationItem, TimelineEvent, NoticeItem } from '../types';
 
-// Configuração do Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyDummyKeyForDevEnvironmentOnly",
-  authDomain: "ai-studio-anjinhoescolar.firebaseapp.com",
-  projectId: "ai-studio-anjinhoescolar-6ec97378-90ae-4475-81a4-3c4cf0d9cfb6",
-  storageBucket: "ai-studio-anjinhoescolar.appspot.com",
-  messagingSenderId: "78716392594",
-  appId: "1:78716392594:web:6ec9737890ae447581a43c"
+  projectId: "capable-weaver-583b3",
+  appId: "1:480442416005:web:d6503ebf590a3209b322ec",
+  apiKey: "AIzaSyD8S9g0wDe5-1g11AMzVl8KUNesgZL5TA8",
+  authDomain: "capable-weaver-583b3.firebaseapp.com",
+  firestoreDatabaseId: "ai-studio-anjinhoescolar-6ec97378-90ae-4475-81a4-3c4cf0d9cfb6",
+  storageBucket: "capable-weaver-583b3.firebasestorage.app",
+  messagingSenderId: "480442416005"
 };
 
-// Inicialização segura
-export const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
-export const db = getFirestore(app);
+const app = initializeApp(firebaseConfig);
+export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+export { signInWithPopup, signOut, onAuthStateChanged, GoogleAuthProvider };
+export type { User };
 
-// Exportações explícitas para compatibilidade total
-export { 
-  signInWithPopup, 
-  signOut, 
-  onAuthStateChanged, 
-  GoogleAuthProvider,
-  signInWithRedirect,
-  getRedirectResult,
-  doc,
-  setDoc,
-  getDoc,
-  onSnapshot,
-  collection
-};
-
-// Interface para o estado diário da criança
-export interface DailyStudentState {
-  waterMl?: number;
-  bottleDone?: boolean;
-  napStatus?: string;
-  sleepStatus?: string;
-  diaperStatus?: string;
-  temperature?: string;
-  weight?: string;
+export interface DailyStateFirebase {
+  studentId: string;
+  studentName: string;
+  isTimerRunning: boolean;
+  startTimestamp: number | null;
+  elapsedSeconds: number;
+  waterMl: number;
+  bottleVolume: number;
+  bottleDone: boolean;
+  bottleCount: number;
+  sleepStatus: string;
+  sleepStart: string;
+  sleepEnd: string;
+  diaperStatus: string;
+  temperature: string;
+  weight: string;
   mood?: string;
-  meals?: any[];
-  medications?: any[];
-  timelineEvents?: any[];
-  notices?: any[];
-  lastUpdated?: string;
-  updatedBy?: string;
+  humor?: string;
+  hygieneChecklist?: Record<string, string | boolean>;
+  hygieneChecks?: Record<string, boolean>;
+  meals: MealStatus[];
+  medications: MedicationItem[];
+  timelineEvents: TimelineEvent[];
+  notices: NoticeItem[];
+  updatedAt?: string;
 }
 
-/**
- * Salva ou atualiza os dados diários do aluno no Firestore
- */
-export const saveDailyState = async (studentId: string, data: Partial<DailyStudentState>) => {
+// Ouvinte em tempo real para sincronização instantânea entre Celular e Notebook
+export const subscribeToDailyState = (
+  studentId: string, 
+  onUpdate: (data: DailyStateFirebase) => void
+): Unsubscribe => {
   try {
-    const today = new Date().toISOString().split('T')[0];
-    const docRef = doc(db, 'students_daily', `${studentId}_${today}`);
-    
-    await setDoc(docRef, {
-      ...data,
-      studentId,
-      date: today,
-      lastUpdated: new Date().toISOString()
-    }, { merge: true });
-    
-    return true;
-  } catch (error) {
-    console.warn('Salvando offline:', error);
-    return false;
+    const docRef = doc(db, 'dailyStates', studentId);
+    return onSnapshot(docRef, (docSnap) => {
+      if (docSnap.exists()) {
+        onUpdate(docSnap.data() as DailyStateFirebase);
+      } else {
+        saveDailyState(studentId, {
+          studentId,
+          studentName: 'Mariana Souza',
+          isTimerRunning: true,
+          startTimestamp: Date.now() - (3 * 3600 + 45 * 60) * 1000,
+          elapsedSeconds: 3 * 3600 + 45 * 60,
+          waterMl: 150,
+          bottleVolume: 180,
+          bottleDone: true,
+          bottleCount: 1,
+          sleepStatus: 'Soneca em Andamento',
+          sleepStart: '12:30',
+          sleepEnd: '',
+          diaperStatus: 'Xixi + Pomada',
+          temperature: '36.6',
+          weight: '9.8',
+          mood: 'Calmo / Sereno',
+          meals: [],
+          medications: [],
+          timelineEvents: [],
+          notices: []
+        });
+      }
+    }, (error) => {
+      console.error('Erro na sincronização em tempo real do Firestore:', error);
+    });
+  } catch (err) {
+    console.error('Erro ao conectar Firestore:', err);
+    return () => {};
   }
 };
 
-/**
- * Escuta mudanças em tempo real do estado diário do aluno
- */
-export const subscribeToDailyState = (studentId: string, callback: (data: DailyStudentState) => void) => {
-  const today = new Date().toISOString().split('T')[0];
-  const docRef = doc(db, 'students_daily', `${studentId}_${today}`);
-
-  return onSnapshot(docRef, (docSnap) => {
-    if (docSnap.exists()) {
-      callback(docSnap.data() as DailyStudentState);
-    } else {
-      callback({
-        waterMl: 450,
-        bottleDone: true,
-        napStatus: 'Dormindo Tranquilo',
-        diaperStatus: 'Xixi Normal',
-        temperature: '36.6',
-        weight: '9.8',
-        mood: 'Calmo / Sereno',
-        meals: [],
-        medications: [],
-        timelineEvents: [],
-        notices: []
-      });
-    }
-  }, (error) => {
-    console.warn('Usando sincronização local para este documento:', error);
-  });
+// Salvar / atualizar o estado na nuvem
+export const saveDailyState = async (
+  studentId: string, 
+  data: Partial<DailyStateFirebase>
+) => {
+  try {
+    const docRef = doc(db, 'dailyStates', studentId);
+    await setDoc(docRef, {
+      ...data,
+      studentId,
+      updatedAt: new Date().toISOString(),
+    }, { merge: true });
+  } catch (err) {
+    console.error('Erro ao salvar no Firestore:', err);
+  }
 };
